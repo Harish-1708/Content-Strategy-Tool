@@ -1,0 +1,5450 @@
+{
+ "brand": "duderobe",
+ "count": 31,
+ "products": [
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "",
+   "description": "",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 1
+     }
+    }
+   },
+   "family": "Dad & LittleDude",
+   "flags": [
+    "on_sale"
+   ],
+   "handle": "the-dad-littledude-bundle",
+   "image_count": 1,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/dad-and-littledude-bundle.png?v=1792387968"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [
+    "description"
+   ],
+   "on_sale": true,
+   "pocket_claims": "",
+   "price_max": 175.0,
+   "price_min": 175.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/dad-and-littledude-bundle.png?v=1792387968",
+   "product_id": "15979789844766",
+   "readiness": "needs_facts",
+   "status": "active",
+   "tags": [
+    "kelson-bundle"
+   ],
+   "title": "Dad & LittleDude",
+   "url": "https://duderobe.com/products/the-dad-littledude-bundle",
+   "variant_count": 1,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": 196.0,
+     "id": 60282235420958,
+     "options": [
+      {
+       "name": "Title",
+       "value": "Default Title"
+      }
+     ],
+     "price": 175.0,
+     "sku": null,
+     "title": "Default Title"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "merch",
+   "description": "The Best Seat In The House print: a cowboy riding a recliner like it owes him money. For the guy who already knows where he is spending his evening. Classic crew neck and a regular fit, roomy enough to throw a DudeRobe over. Pre-shrunk, so it keeps its shape wash after wash. Printed to order at our warehouse, so give it a couple of extra days to ship. How to wear it: under a DudeRobe on Sunday morning, with lounge pants on the couch, or on its own anywhere else.",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 466
+     }
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 2
+     }
+    }
+   },
+   "family": "DudeRobe Tee - Best Seat In The House",
+   "flags": [],
+   "handle": "best-seat-in-the-house-tee-ash-black",
+   "image_count": 2,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-best-seat-ash-black-v3.jpg?v=1792173186",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-lifestyle-05-best-seat-ash-black-with-robe.jpg?v=1792156704"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 25.0,
+   "price_min": 25.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-best-seat-ash-black-v3.jpg?v=1792173186",
+   "product_id": "15987017548062",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "Coastal Colors",
+    "DPS Custom",
+    "dude-tees",
+    "edd-exclude",
+    "FW26",
+    "POD"
+   ],
+   "title": "DudeRobe Tee - Best Seat In The House - Ash Black",
+   "url": "https://duderobe.com/products/best-seat-in-the-house-tee-ash-black",
+   "variant_count": 6,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319690719518,
+     "options": [
+      {
+       "name": "Size",
+       "value": "S"
+      },
+      {
+       "name": "Color",
+       "value": "Ash Black"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-CV1-S",
+     "title": "S / Ash Black"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319690752286,
+     "options": [
+      {
+       "name": "Size",
+       "value": "M"
+      },
+      {
+       "name": "Color",
+       "value": "Ash Black"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-CV1-M",
+     "title": "M / Ash Black"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319690785054,
+     "options": [
+      {
+       "name": "Size",
+       "value": "L"
+      },
+      {
+       "name": "Color",
+       "value": "Ash Black"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-CV1-L",
+     "title": "L / Ash Black"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319690817822,
+     "options": [
+      {
+       "name": "Size",
+       "value": "XL"
+      },
+      {
+       "name": "Color",
+       "value": "Ash Black"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-CV1-XL",
+     "title": "XL / Ash Black"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319690850590,
+     "options": [
+      {
+       "name": "Size",
+       "value": "2XL"
+      },
+      {
+       "name": "Color",
+       "value": "Ash Black"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-CV1-XXL",
+     "title": "2XL / Ash Black"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319690883358,
+     "options": [
+      {
+       "name": "Size",
+       "value": "3XL"
+      },
+      {
+       "name": "Color",
+       "value": "Ash Black"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-CV1-XXXL",
+     "title": "3XL / Ash Black"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "merch",
+   "description": "The Best Seat In The House print: a cowboy riding a recliner like it owes him money. For the guy who already knows where he is spending his evening. Classic crew neck and a regular fit, roomy enough to throw a DudeRobe over. Pre-shrunk, so it keeps its shape wash after wash. Printed to order at our warehouse, so give it a couple of extra days to ship. How to wear it: under a DudeRobe on Sunday morning, with lounge pants on the couch, or on its own anywhere else.",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 466
+     }
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 1
+     }
+    }
+   },
+   "family": "DudeRobe Tee - Best Seat In The House",
+   "flags": [],
+   "handle": "best-seat-in-the-house-tee-olive-branch",
+   "image_count": 1,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-best-seat-olive-branch-v3.jpg?v=1792173195"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 25.0,
+   "price_min": 25.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-best-seat-olive-branch-v3.jpg?v=1792173195",
+   "product_id": "15987017482526",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "Coastal Colors",
+    "DPS Custom",
+    "dude-tees",
+    "edd-exclude",
+    "FW26",
+    "POD"
+   ],
+   "title": "DudeRobe Tee - Best Seat In The House - Olive Branch",
+   "url": "https://duderobe.com/products/best-seat-in-the-house-tee-olive-branch",
+   "variant_count": 5,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319690096926,
+     "options": [
+      {
+       "name": "Size",
+       "value": "S"
+      },
+      {
+       "name": "Color",
+       "value": "Olive Branch"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OVB-S",
+     "title": "S / Olive Branch"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319690129694,
+     "options": [
+      {
+       "name": "Size",
+       "value": "M"
+      },
+      {
+       "name": "Color",
+       "value": "Olive Branch"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OVB-M",
+     "title": "M / Olive Branch"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319690162462,
+     "options": [
+      {
+       "name": "Size",
+       "value": "L"
+      },
+      {
+       "name": "Color",
+       "value": "Olive Branch"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OVB-L",
+     "title": "L / Olive Branch"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319690195230,
+     "options": [
+      {
+       "name": "Size",
+       "value": "XL"
+      },
+      {
+       "name": "Color",
+       "value": "Olive Branch"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OVB-XL",
+     "title": "XL / Olive Branch"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319690227998,
+     "options": [
+      {
+       "name": "Size",
+       "value": "2XL"
+      },
+      {
+       "name": "Color",
+       "value": "Olive Branch"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OVB-XXL",
+     "title": "2XL / Olive Branch"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "merch",
+   "description": "The Best Seat In The House print: a cowboy riding a recliner like it owes him money. For the guy who already knows where he is spending his evening. Classic crew neck and a regular fit, roomy enough to throw a DudeRobe over. Pre-shrunk, so it keeps its shape wash after wash. Printed to order at our warehouse, so give it a couple of extra days to ship. How to wear it: under a DudeRobe on Sunday morning, with lounge pants on the couch, or on its own anywhere else.",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 466
+     }
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 2
+     }
+    }
+   },
+   "family": "DudeRobe Tee - Best Seat In The House",
+   "flags": [],
+   "handle": "best-seat-in-the-house-tee-oxford-blue",
+   "image_count": 2,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-best-seat-oxford-blue-v3.jpg?v=1792173177",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-lifestyle-01-best-seat-oxford-blue-tee.jpg?v=1792156699"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 25.0,
+   "price_min": 25.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-best-seat-oxford-blue-v3.jpg?v=1792173177",
+   "product_id": "15987017416990",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "Coastal Colors",
+    "DPS Custom",
+    "dude-tees",
+    "edd-exclude",
+    "FW26",
+    "POD"
+   ],
+   "title": "DudeRobe Tee - Best Seat In The House - Oxford Blue",
+   "url": "https://duderobe.com/products/best-seat-in-the-house-tee-oxford-blue",
+   "variant_count": 5,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319689376030,
+     "options": [
+      {
+       "name": "Size",
+       "value": "S"
+      },
+      {
+       "name": "Color",
+       "value": "Oxford Blue"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OXF-S",
+     "title": "S / Oxford Blue"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319689408798,
+     "options": [
+      {
+       "name": "Size",
+       "value": "M"
+      },
+      {
+       "name": "Color",
+       "value": "Oxford Blue"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OXF-M",
+     "title": "M / Oxford Blue"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319689441566,
+     "options": [
+      {
+       "name": "Size",
+       "value": "L"
+      },
+      {
+       "name": "Color",
+       "value": "Oxford Blue"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OXF-L",
+     "title": "L / Oxford Blue"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319689474334,
+     "options": [
+      {
+       "name": "Size",
+       "value": "XL"
+      },
+      {
+       "name": "Color",
+       "value": "Oxford Blue"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OXF-XL",
+     "title": "XL / Oxford Blue"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319689507102,
+     "options": [
+      {
+       "name": "Size",
+       "value": "2XL"
+      },
+      {
+       "name": "Color",
+       "value": "Oxford Blue"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OXF-XXL",
+     "title": "2XL / Oxford Blue"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "merch",
+   "description": "The Just Chillin' print, straight from the Indoor Athletic Dept. For the couch, the long weekend, and every guy who has turned lounging into a skill. Classic crew neck and a regular fit, roomy enough to throw a DudeRobe over. Pre-shrunk, so it keeps its shape wash after wash. Printed to order at our warehouse, so give it a couple of extra days to ship. How to wear it: under a DudeRobe on Sunday morning, with lounge pants on the couch, or on its own anywhere else.",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 467
+     }
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 2
+     }
+    }
+   },
+   "family": "DudeRobe Tee - Just Chillin'",
+   "flags": [],
+   "handle": "just-chillin-tee-ash-black",
+   "image_count": 2,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-just-chillin-black.jpg?v=1791992988",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-lifestyle-04-just-chillin-ash-black-tee.jpg?v=1792156702"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 25.0,
+   "price_min": 25.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-just-chillin-black.jpg?v=1791992988",
+   "product_id": "15987017744670",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "Coastal Colors",
+    "DPS Custom",
+    "dude-tees",
+    "edd-exclude",
+    "FW26",
+    "POD"
+   ],
+   "title": "DudeRobe Tee - Just Chillin' - Ash Black",
+   "url": "https://duderobe.com/products/just-chillin-tee-ash-black",
+   "variant_count": 6,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319692357918,
+     "options": [
+      {
+       "name": "Size",
+       "value": "S"
+      },
+      {
+       "name": "Color",
+       "value": "Ash Black"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-CV1-S",
+     "title": "S / Ash Black"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319692390686,
+     "options": [
+      {
+       "name": "Size",
+       "value": "M"
+      },
+      {
+       "name": "Color",
+       "value": "Ash Black"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-CV1-M",
+     "title": "M / Ash Black"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319692423454,
+     "options": [
+      {
+       "name": "Size",
+       "value": "L"
+      },
+      {
+       "name": "Color",
+       "value": "Ash Black"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-CV1-L",
+     "title": "L / Ash Black"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319692456222,
+     "options": [
+      {
+       "name": "Size",
+       "value": "XL"
+      },
+      {
+       "name": "Color",
+       "value": "Ash Black"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-CV1-XL",
+     "title": "XL / Ash Black"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319692488990,
+     "options": [
+      {
+       "name": "Size",
+       "value": "2XL"
+      },
+      {
+       "name": "Color",
+       "value": "Ash Black"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-CV1-XXL",
+     "title": "2XL / Ash Black"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319692521758,
+     "options": [
+      {
+       "name": "Size",
+       "value": "3XL"
+      },
+      {
+       "name": "Color",
+       "value": "Ash Black"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-CV1-XXXL",
+     "title": "3XL / Ash Black"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "merch",
+   "description": "The Just Chillin' print, straight from the Indoor Athletic Dept. For the couch, the long weekend, and every guy who has turned lounging into a skill. Classic crew neck and a regular fit, roomy enough to throw a DudeRobe over. Pre-shrunk, so it keeps its shape wash after wash. Printed to order at our warehouse, so give it a couple of extra days to ship. How to wear it: under a DudeRobe on Sunday morning, with lounge pants on the couch, or on its own anywhere else.",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 467
+     }
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 2
+     }
+    }
+   },
+   "family": "DudeRobe Tee - Just Chillin'",
+   "flags": [],
+   "handle": "just-chillin-tee-olive-branch",
+   "image_count": 2,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-just-chillin-olive-v2.jpg?v=1792009704",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-lifestyle-02-just-chillin-olive-branch-tee.jpg?v=1792156700"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 25.0,
+   "price_min": 25.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-just-chillin-olive-v2.jpg?v=1792009704",
+   "product_id": "15987017679134",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "Coastal Colors",
+    "DPS Custom",
+    "dude-tees",
+    "edd-exclude",
+    "FW26",
+    "POD"
+   ],
+   "title": "DudeRobe Tee - Just Chillin' - Olive Branch",
+   "url": "https://duderobe.com/products/just-chillin-tee-olive-branch",
+   "variant_count": 5,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319691735326,
+     "options": [
+      {
+       "name": "Size",
+       "value": "S"
+      },
+      {
+       "name": "Color",
+       "value": "Olive Branch"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OVB-S",
+     "title": "S / Olive Branch"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319691768094,
+     "options": [
+      {
+       "name": "Size",
+       "value": "M"
+      },
+      {
+       "name": "Color",
+       "value": "Olive Branch"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OVB-M",
+     "title": "M / Olive Branch"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319691800862,
+     "options": [
+      {
+       "name": "Size",
+       "value": "L"
+      },
+      {
+       "name": "Color",
+       "value": "Olive Branch"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OVB-L",
+     "title": "L / Olive Branch"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319691833630,
+     "options": [
+      {
+       "name": "Size",
+       "value": "XL"
+      },
+      {
+       "name": "Color",
+       "value": "Olive Branch"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OVB-XL",
+     "title": "XL / Olive Branch"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319691866398,
+     "options": [
+      {
+       "name": "Size",
+       "value": "2XL"
+      },
+      {
+       "name": "Color",
+       "value": "Olive Branch"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OVB-XXL",
+     "title": "2XL / Olive Branch"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "merch",
+   "description": "The Just Chillin' print, straight from the Indoor Athletic Dept. For the couch, the long weekend, and every guy who has turned lounging into a skill. Classic crew neck and a regular fit, roomy enough to throw a DudeRobe over. Pre-shrunk, so it keeps its shape wash after wash. Printed to order at our warehouse, so give it a couple of extra days to ship. How to wear it: under a DudeRobe on Sunday morning, with lounge pants on the couch, or on its own anywhere else.",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 467
+     }
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 2
+     }
+    }
+   },
+   "family": "DudeRobe Tee - Just Chillin'",
+   "flags": [],
+   "handle": "just-chillin-tee-oxford-blue",
+   "image_count": 2,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-just-chillin-blue-v2.jpg?v=1792009698",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-lifestyle-06-just-chillin-oxford-blue-with-robe.jpg?v=1792156706"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 25.0,
+   "price_min": 25.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-just-chillin-blue-v2.jpg?v=1792009698",
+   "product_id": "15987017646366",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "Coastal Colors",
+    "DPS Custom",
+    "dude-tees",
+    "edd-exclude",
+    "FW26",
+    "POD"
+   ],
+   "title": "DudeRobe Tee - Just Chillin' - Oxford Blue",
+   "url": "https://duderobe.com/products/just-chillin-tee-oxford-blue",
+   "variant_count": 5,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319691571486,
+     "options": [
+      {
+       "name": "Size",
+       "value": "S"
+      },
+      {
+       "name": "Color",
+       "value": "Oxford Blue"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OXF-S",
+     "title": "S / Oxford Blue"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319691604254,
+     "options": [
+      {
+       "name": "Size",
+       "value": "M"
+      },
+      {
+       "name": "Color",
+       "value": "Oxford Blue"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OXF-M",
+     "title": "M / Oxford Blue"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319691637022,
+     "options": [
+      {
+       "name": "Size",
+       "value": "L"
+      },
+      {
+       "name": "Color",
+       "value": "Oxford Blue"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OXF-L",
+     "title": "L / Oxford Blue"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319691669790,
+     "options": [
+      {
+       "name": "Size",
+       "value": "XL"
+      },
+      {
+       "name": "Color",
+       "value": "Oxford Blue"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OXF-XL",
+     "title": "XL / Oxford Blue"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60319691702558,
+     "options": [
+      {
+       "name": "Size",
+       "value": "2XL"
+      },
+      {
+       "name": "Color",
+       "value": "Oxford Blue"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-OXF-XXL",
+     "title": "2XL / Oxford Blue"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "merch",
+   "description": "The Welcome Home tee: the DudeRobe D on the left chest, for the guy whose favorite part of the day is walking back through his own front door. Classic crew neck and a regular fit, roomy enough to throw a DudeRobe over. Pre-shrunk, so it keeps its shape wash after wash. Printed to order at our warehouse, so give it a couple of extra days to ship. How to wear it: under a DudeRobe on Sunday morning, with lounge pants on the couch, or on its own anywhere else.",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 460
+     }
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 3
+     }
+    }
+   },
+   "family": "DudeRobe Tee - Welcome Home",
+   "flags": [],
+   "handle": "welcome-home-tee-hazy-days",
+   "image_count": 3,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-welcome-home-hazy-v2.jpg?v=1792009712",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-lifestyle-03-welcome-home-hazy-days-tee.jpg?v=1792156701",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-lifestyle-07-welcome-home-hazy-days-with-robe.jpg?v=1792156707"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 25.0,
+   "price_min": 25.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-welcome-home-hazy-v2.jpg?v=1792009712",
+   "product_id": "15987538559262",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "Coastal Colors",
+    "DPS Custom",
+    "dude-tees",
+    "edd-exclude",
+    "FW26",
+    "POD"
+   ],
+   "title": "DudeRobe Tee - Welcome Home - Hazy Days",
+   "url": "https://duderobe.com/products/welcome-home-tee-hazy-days",
+   "variant_count": 5,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60321201684766,
+     "options": [
+      {
+       "name": "Size",
+       "value": "S"
+      },
+      {
+       "name": "Color",
+       "value": "Hazy Days"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-6AZ-S",
+     "title": "S / Hazy Days"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60321201717534,
+     "options": [
+      {
+       "name": "Size",
+       "value": "M"
+      },
+      {
+       "name": "Color",
+       "value": "Hazy Days"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-6AZ-M",
+     "title": "M / Hazy Days"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60321201750302,
+     "options": [
+      {
+       "name": "Size",
+       "value": "L"
+      },
+      {
+       "name": "Color",
+       "value": "Hazy Days"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-6AZ-L",
+     "title": "L / Hazy Days"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60321201783070,
+     "options": [
+      {
+       "name": "Size",
+       "value": "XL"
+      },
+      {
+       "name": "Color",
+       "value": "Hazy Days"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-6AZ-XL",
+     "title": "XL / Hazy Days"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60321201815838,
+     "options": [
+      {
+       "name": "Size",
+       "value": "2XL"
+      },
+      {
+       "name": "Color",
+       "value": "Hazy Days"
+      }
+     ],
+     "price": 25.0,
+     "sku": "23414DR-6AZ-XXL",
+     "title": "2XL / Hazy Days"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "",
+   "description": "Shopping for someone else but not sure what to give them? Give them the gift of choice with a DudeRobe gift card! As a bonus, you won't have to worry about potential shipping delays or getting the wrong size! Gift cards are delivered by email and contain instructions to redeem them at checkout. Our gift cards have no additional processing fees.",
+   "excluded": true,
+   "excluded_reason": "product type 'Gift Cards'",
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 346
+     }
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 1
+     }
+    }
+   },
+   "family": "Gift Card",
+   "flags": [],
+   "handle": "gift-card-1",
+   "image_count": 1,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/products/duderobe-gift-card-as-seen-on-shark-tank-choice-no-fees-email-delivery.jpg?v=1763403074"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 500.0,
+   "price_min": 50.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/products/duderobe-gift-card-as-seen-on-shark-tank-choice-no-fees-email-delivery.jpg?v=1763403074",
+   "product_id": "7009053737041",
+   "readiness": "excluded",
+   "status": "excluded",
+   "tags": [],
+   "title": "Gift Card",
+   "url": "https://duderobe.com/products/gift-card-1",
+   "variant_count": 8,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 40179104284753,
+     "options": [
+      {
+       "name": "Denominations",
+       "value": "$50"
+      }
+     ],
+     "price": 50.0,
+     "sku": null,
+     "title": "$50"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 40179152617553,
+     "options": [
+      {
+       "name": "Denominations",
+       "value": "$100"
+      }
+     ],
+     "price": 100.0,
+     "sku": null,
+     "title": "$100"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 40179152650321,
+     "options": [
+      {
+       "name": "Denominations",
+       "value": "$150"
+      }
+     ],
+     "price": 150.0,
+     "sku": null,
+     "title": "$150"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 40179152683089,
+     "options": [
+      {
+       "name": "Denominations",
+       "value": "$200"
+      }
+     ],
+     "price": 200.0,
+     "sku": null,
+     "title": "$200"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 40179152715857,
+     "options": [
+      {
+       "name": "Denominations",
+       "value": "$250"
+      }
+     ],
+     "price": 250.0,
+     "sku": null,
+     "title": "$250"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 40179152748625,
+     "options": [
+      {
+       "name": "Denominations",
+       "value": "$300"
+      }
+     ],
+     "price": 300.0,
+     "sku": null,
+     "title": "$300"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 40179152781393,
+     "options": [
+      {
+       "name": "Denominations",
+       "value": "$350"
+      }
+     ],
+     "price": 350.0,
+     "sku": null,
+     "title": "$350"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 40179152814161,
+     "options": [
+      {
+       "name": "Denominations",
+       "value": "$500"
+      }
+     ],
+     "price": 500.0,
+     "sku": null,
+     "title": "$500"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [
+    "him"
+   ],
+   "audience_stated": "",
+   "category": "robes_and_tops",
+   "description": "He's not hiding. He's just off-duty. Meet IndoorCamo™, the ultimate camo robe for men who take lounging seriously… and stealth even more seriously. This limited edition DudeRobe blends tactical attitude with all-day comfort, so he can dominate the couch, disappear from responsibilities, and still look like he means business. Why He'll Love It: Tactical Tailoring : A structured fit with full camo attitude. Stealth perfection, achieved. Mission-Ready Fabric : Soft, durable, and built for all-day chill ops. No scratchy nonsense. Never-Lost™ Belt : Permanently attached, because losing belts is for rookies. Deep Recon Pockets : Wide enough for remotes, controllers, snacks… and secret snacks. Non-Floppy Sleeves : Because real legends don't droop. The Vibe : Rugged, funny, effortlessly masculine. Terrain Options : Desert Camo for elite couch ops. Green Camo for houseplant hideouts. The vibe? Rugged. Funny. Effortlessly masculine. The best camo robe for men isn't hiding in the woods. It's on your couch, and it's limited edition. The perfect gift for any guy who has mastered the art of avoiding chores, or who simply deserves to disappear in style. Limited Edition. Once it's gone, it's gone dark.",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 1205
+     }
+    },
+    "features": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Tactical Tailoring : A structured fit with full camo attitude. Stealth perfection, achieved.",
+      "Mission-Ready Fabric : Soft, durable, and built for all-day chill ops. No scratchy nonsense.",
+      "Never-Lost™ Belt : Permanently attached, because losing belts is for rookies.",
+      "Deep Recon Pockets : Wide enough for remotes, controllers, snacks… and secret snacks.",
+      "Non-Floppy Sleeves : Because real legends don't droop.",
+      "The Vibe : Rugged, funny, effortlessly masculine.",
+      "Terrain Options : Desert Camo for elite couch ops. Green Camo for houseplant hideouts."
+     ]
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 14
+     }
+    }
+   },
+   "family": "IndoorCamo™ Limited Edition DudeRobe",
+   "flags": [
+    "limited_edition"
+   ],
+   "handle": "indoorcamo",
+   "image_count": 14,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/indoorcamo-limited-edition-duderobe-mens-hooded-camouflage-bathrobe-best-seller.png?v=1773393898",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/indoorcamo-limited-edition-duderobe-mens-hooded-camouflage-bathrobe-best-seller-2.png?v=1776161459",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/IndoorCamo_Limited_Edition_Mens_Hooded_Camo_Bathrobe_Best_Seller.png?v=1776161459",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/indoorcamo-limited-edition-mens-hooded-camo-bathrobe-camouflage-bathrobe.png?v=1776161459",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/indoorcamo-limited-edition-duderobe-mens-hooded-camo-bathrobe-camouflage-bathrobe-detail.jpg?v=1776161459",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/indoorcamo-limited-edition-duderobe-mens-hooded-bathrobe-tag-details.jpg?v=1776161459",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/IndoorCamo-Limited-Edition-DudeRobe-Mens-Hooded-Camo-Bathrobe-Camouflage-Bathrobe-Back-View.jpg?v=1776161459",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/indoorcamo-limited-edition-duderobe-mens-camo-bathrobe-hooded-camouflage-bestseller.png?v=1776161459",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/indoorcamo-limited-edition-duderobe-mens-hooded-camo-bathrobe-best-seller.png?v=1776161459",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/21.png?v=1776161459",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/indoorcamo-limited-edition-duderobe-men-camo-bathrobe-hooded-camouflage-bathrobe.jpg?v=1776161459",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/indoorcamo-limited-edition-duderobe-camo-bathrobe-mens-hooded-bathrobe-camouflage-bathrobe-internal-pocket-detail.jpg?v=1776161459",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/IndoorCamo-Limited-Edition-DudeRobe-mens-hooded-camo-bathrobe-back-view.jpg?v=1776161459",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/all-american-mens-hooded-bathrobe-size-chart-patriotic-robes-for-men.png?v=1776246736"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 134.0,
+   "price_min": 134.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/indoorcamo-limited-edition-duderobe-mens-hooded-camouflage-bathrobe-best-seller.png?v=1773393898",
+   "product_id": "9916033073438",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "igg26_for_him",
+    "tier-eligible"
+   ],
+   "title": "IndoorCamo™ Limited Edition DudeRobe",
+   "url": "https://duderobe.com/products/indoorcamo",
+   "variant_count": 8,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50310763577630,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Green Camo"
+      },
+      {
+       "name": "Size",
+       "value": "XS"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1-GGC-XS",
+     "title": "Green Camo / XS"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50310722584862,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Green Camo"
+      },
+      {
+       "name": "Size",
+       "value": "S-M"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1-GNC-S/M",
+     "title": "Green Camo / S-M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50310722552094,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Green Camo"
+      },
+      {
+       "name": "Size",
+       "value": "L-XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1-GNC-L/XL",
+     "title": "Green Camo / L-XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50310722617630,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Green Camo"
+      },
+      {
+       "name": "Size",
+       "value": "2XL-3XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1-GNC-2XL/3XL",
+     "title": "Green Camo / 2XL-3XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50310763610398,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Desert Camo"
+      },
+      {
+       "name": "Size",
+       "value": "XS"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1-CAO-XS",
+     "title": "Desert Camo / XS"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50310722683166,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Desert Camo"
+      },
+      {
+       "name": "Size",
+       "value": "S-M"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1-341-S/M",
+     "title": "Desert Camo / S-M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50310722650398,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Desert Camo"
+      },
+      {
+       "name": "Size",
+       "value": "L-XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1-341-L/XL",
+     "title": "Desert Camo / L-XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50310722715934,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Desert Camo"
+      },
+      {
+       "name": "Size",
+       "value": "2XL-3XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1-341-2XL/3XL",
+     "title": "Desert Camo / 2XL-3XL"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [
+    "kids"
+   ],
+   "audience_stated": "",
+   "category": "robes_and_tops",
+   "description": "The robe they'll actually want to wear. The best-selling DudeRobe, now sized down for kids. As seen on Kickstarter and ABC's Shark Tank, DudeRobe is the modern twist on the boring old bathrobe — and now the littlest dudes (and dudettes) can get in on it too. Whether your kid is a robe person or not, they'd wear a DudeRobe. It's built for after the shower, lounging around the house, lazy mornings, and every chill moment in between. Why Kids Love It: Hoodie Fit and Style : Looks and feels like their favorite hoodie, not a stuffy bathrobe. Premium Sweatshirt Outside : Soft, cool exterior with a comfy, extra-absorbent terry cloth interior. Never-Lost™ Belt : Permanently attached, because kids lose everything. Non-Floppy Arm Cuffs : Stays in place, no matter how much they're flopping around. Logo'd Drawstring : That little detail that makes it feel legit. Extra Inside Pocket : For snacks, treasures, and whatever else they're carrying around. Above-The-Knee Length : Easy to move in, easy to live in. Shorts and Pants Options : Extra comfort, extra cool factor, and zero chance of wardrobe malfunctions. The perfect kids robe for after bath time, lazy weekends, or as a matching set with dad. Makes an awesome gift any kid will actually get excited about. Father-son. Father-daughter. The whole crew.",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 1308
+     }
+    },
+    "features": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Hoodie Fit and Style : Looks and feels like their favorite hoodie, not a stuffy bathrobe.",
+      "Premium Sweatshirt Outside : Soft, cool exterior with a comfy, extra-absorbent terry cloth interior.",
+      "Never-Lost™ Belt : Permanently attached, because kids lose everything.",
+      "Non-Floppy Arm Cuffs : Stays in place, no matter how much they're flopping around.",
+      "Logo'd Drawstring : That little detail that makes it feel legit.",
+      "Extra Inside Pocket : For snacks, treasures, and whatever else they're carrying around.",
+      "Above-The-Knee Length : Easy to move in, easy to live in.",
+      "Shorts and Pants Options : Extra comfort, extra cool factor, and zero chance of wardrobe malfunctions."
+     ]
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 8
+     }
+    }
+   },
+   "family": "Kids DudeRobe",
+   "flags": [],
+   "handle": "kids-hooded-bathrobe",
+   "image_count": 8,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/kids-duderobe-best-seller-boys-hooded-bathrobe-childrens-robes-cozy-loungewear.png?v=1773394128",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/kids-duderobe-family-photo-boys-bathrobes-hooded-robes-5-star-review.png?v=1776160420",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/kids-duderobe-boys-bathrobes-modern-hooded-robes-for-children-lounging-and-play.jpg?v=1776160420",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/kids-duderobe-boys-bathrobe-hooded-lounge-robes-fun-parent-child-time.png?v=1776160420",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/kids-duderobe-father-son-reading-together-boys-bathrobes-hooded-robes-relaxation.png?v=1776160420",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/kids-duderobe-boys-bathrobes-fun-living-room-lifestyle.jpg?v=1776160420",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/kids-duderobe-family-bathrobes-dad-son-daughter-hooded-children-bathrobe-robe-for-kids.jpg?v=1776160420",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/all-american-mens-hooded-bathrobe-size-chart-patriotic-robes-for-men.png?v=1776246736"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 68.0,
+   "price_min": 68.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/kids-duderobe-best-seller-boys-hooded-bathrobe-childrens-robes-cozy-loungewear.png?v=1773394128",
+   "product_id": "8927175672094",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "Google Shopping Feed",
+    "igg26_for_kids",
+    "tier-eligible"
+   ],
+   "title": "Kids DudeRobe",
+   "url": "https://duderobe.com/products/kids-hooded-bathrobe",
+   "variant_count": 6,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 47471190147358,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "Youth (5-9 Year Old)"
+      }
+     ],
+     "price": 68.0,
+     "sku": "ROBEYOUTH-NAVY-OS",
+     "title": "Navy / Youth (5-9 Year Old)"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 47532988760350,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "XS (10-15 Year Old)"
+      }
+     ],
+     "price": 68.0,
+     "sku": "ROBE1-NAVY-XS",
+     "title": "Navy / XS (10-15 Year Old)"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 47471189983518,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "Youth (5-9 Year Old)"
+      }
+     ],
+     "price": 68.0,
+     "sku": "ROBEYOUTH-GRAY-OS",
+     "title": "Grey / Youth (5-9 Year Old)"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 47532988727582,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "XS (10-15 Year Old)"
+      }
+     ],
+     "price": 68.0,
+     "sku": "ROBE1-GRAY-XS",
+     "title": "Grey / XS (10-15 Year Old)"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 47471190311198,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "Youth (5-9 Year Old)"
+      }
+     ],
+     "price": 68.0,
+     "sku": "ROBEYOUTH-BLACK-OS",
+     "title": "Black / Youth (5-9 Year Old)"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 47532988793118,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "XS (10-15 Year Old)"
+      }
+     ],
+     "price": 68.0,
+     "sku": "ROBE1-BLACK-XS",
+     "title": "Black / XS (10-15 Year Old)"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "",
+   "description": "",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 1
+     }
+    }
+   },
+   "family": "Mom & LittleDude",
+   "flags": [
+    "on_sale"
+   ],
+   "handle": "the-mom-me-bundle",
+   "image_count": 1,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mom-and-littledude-bundle.png?v=1792387968"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [
+    "description"
+   ],
+   "on_sale": true,
+   "pocket_claims": "",
+   "price_max": 175.0,
+   "price_min": 175.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/mom-and-littledude-bundle.png?v=1792387968",
+   "product_id": "10109410443550",
+   "readiness": "needs_facts",
+   "status": "active",
+   "tags": [
+    "kelson-bundle"
+   ],
+   "title": "Mom & LittleDude",
+   "url": "https://duderobe.com/products/the-mom-me-bundle",
+   "variant_count": 1,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": 196.0,
+     "id": 51861463105822,
+     "options": [
+      {
+       "name": "Title",
+       "value": "Default Title"
+      }
+     ],
+     "price": 175.0,
+     "sku": null,
+     "title": "Default Title"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "",
+   "description": "Name Drop personalization, printed on the chest. Final sale.",
+   "excluded": true,
+   "excluded_reason": "product type 'Personalization'",
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 60
+     }
+    }
+   },
+   "family": "Personalization",
+   "flags": [],
+   "handle": "duderobe-personalization",
+   "image_count": 0,
+   "images": [],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "images",
+    "materials",
+    "features"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 9.0,
+   "price_min": 9.0,
+   "primary_image": "",
+   "product_id": "15945149186334",
+   "readiness": "excluded",
+   "status": "excluded",
+   "tags": [
+    "hidden",
+    "personalization-fee"
+   ],
+   "title": "Personalization",
+   "url": "https://duderobe.com/products/duderobe-personalization",
+   "variant_count": 1,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60146552209694,
+     "options": [
+      {
+       "name": "Title",
+       "value": "Default Title"
+      }
+     ],
+     "price": 9.0,
+     "sku": null,
+     "title": "Default Title"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [
+    "him"
+   ],
+   "audience_stated": "",
+   "category": "robes_and_tops",
+   "description": "You asked. We upgraded. The Reversible DudeHoodie takes everything you loved about the original and doubles down with two distinct sides, two pocket styles, and zero reason to ever wear a basic hoodie again. Flip it. Style it. Own it. Two Sides, Twice the Good: A Side (Towel-Lined) : Ultra-soft, absorbent towel lining with clean welted pockets for a streamlined look. B Side (Sweatshirt) : Our signature ultra-soft hoodie material with a classic kangaroo pocket for that lived-in, everyday feel. Towel-Lined Hood : Because even your head deserves the good stuff. Hoodie Fit and Style : The same familiar fit you know, now working twice as hard. Logo'd Drawstring : That signature detail, on both sides. The best reversible hoodie for men isn't just a hoodie. It's a two-in-one upgrade to your entire loungewear game. One piece, two complete looks, and double the pockets. The perfect gift for any guy who hates doing laundry. Or just loves options.",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 950
+     }
+    },
+    "features": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "A Side (Towel-Lined) : Ultra-soft, absorbent towel lining with clean welted pockets for a streamlined look.",
+      "B Side (Sweatshirt) : Our signature ultra-soft hoodie material with a classic kangaroo pocket for that lived-in, everyday feel.",
+      "Towel-Lined Hood : Because even your head deserves the good stuff.",
+      "Hoodie Fit and Style : The same familiar fit you know, now working twice as hard.",
+      "Logo'd Drawstring : That signature detail, on both sides."
+     ]
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 17
+     }
+    },
+    "pocket_claims": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      {
+       "count": 2,
+       "phrase": "two pocket"
+      }
+     ]
+    }
+   },
+   "family": "Reversible DudeHoodie",
+   "flags": [],
+   "handle": "reversible-hoodie-f25",
+   "image_count": 17,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/reversible-black-grey-hoodie-mens-reversible-hooded-sweatshirt.png?v=1773395303",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/reversible-black-grey-dudehoodie-mens-reversible-hooded-sweatshirt.png?v=1773395303",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/reversible-dudehoodie-black-grey-mens-hoodies-reversible-hooded-sweatshirt_1.png?v=1773395303",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/reversible-dudehoodie-black-grey-mens-hoodies-hooded-sweatshirt-absorbent-welted-pockets.png?v=1773395303",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/reversible-black-grey-hoodie-mens-hoodies-ultra-soft-reversible-hooded-sweatshirt.png?v=1773395303",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/reversible-dudehoodie-black-grey-mens-hoodies-reversible-hooded-sweatshirt.png?v=1773395303",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/reversible-grey-hoodie-mens-ultra-soft-kangaroo-pockets-welted-reversible-hooded-sweatshirt.png?v=1773395303",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/reversible-dudehoodie-grey-hoodie-mens-hooded-sweatshirt-ultra-soft-style.png?v=1773395303",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/reversible-dudehoodie-grey-mens-hoodie-ultra-soft-sweatshirt-double-pockets.png?v=1773395303",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/reversible-grey-hoodie-ultra-soft-mens-hooded-sweatshirt-double-pockets.png?v=1773395303",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/reversible-dudehoodie-grey-hoodie-mens-hooded-sweatshirt-double-side-pockets.png?v=1773395303",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/reversible-mens-black-hoodie-dudehoodie-ultra-soft-double-side-pockets.png?v=1773395303",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/black-reversible-dudehoodie-mens-hooded-sweatshirt-ultra-soft-kangaroo-pocket.png?v=1773395302",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/reversible-dudehoodie-black-grey-mens-hoodies-reversible-hooded-sweatshirt_2.png?v=1773395303",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/reversible-black-hoodie-mens-hooded-sweatshirt-double-side-pockets-absorptive-material.png?v=1773395303",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/reversible-black-hoodie-grey-hoodie-mens-hoodies-reversible-hooded-sweatshirt.png?v=1773395302",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-hoodie-size-chart-mens-hoodies-reversible-hooded-sweatshirt.png?v=1773395302"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "2",
+   "price_max": 98.0,
+   "price_min": 98.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/reversible-black-grey-hoodie-mens-reversible-hooded-sweatshirt.png?v=1773395303",
+   "product_id": "9747382927646",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "b​onsai_excluded",
+    "Google Shopping Feed",
+    "igg26_for_him"
+   ],
+   "title": "Reversible DudeHoodie",
+   "url": "https://duderobe.com/products/reversible-hoodie-f25",
+   "variant_count": 18,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913382686,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "S"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-NAVY-S",
+     "title": "Navy / S"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913415454,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "M"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-NAVY-M",
+     "title": "Navy / M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913448222,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "L"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-NAVY-L",
+     "title": "Navy / L"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913480990,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "XL"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-NAVY-XL",
+     "title": "Navy / XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913513758,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "2XL"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-NAVY-XXL",
+     "title": "Navy / 2XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913546526,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "3XL"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-NAVY-XXXL",
+     "title": "Navy / 3XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913579294,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "S"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-GRAY-S",
+     "title": "Grey / S"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913612062,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "M"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-GRAY-M",
+     "title": "Grey / M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913644830,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "L"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-GRAY-L",
+     "title": "Grey / L"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913677598,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "XL"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-GRAY-XL",
+     "title": "Grey / XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913710366,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "2XL"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-GRAY-XXL",
+     "title": "Grey / 2XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913743134,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "3XL"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-GRAY-XXXL",
+     "title": "Grey / 3XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913775902,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "S"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-BLACK-S",
+     "title": "Black / S"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913808670,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "M"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-BLACK-M",
+     "title": "Black / M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913841438,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "L"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-BLACK-L",
+     "title": "Black / L"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913874206,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "XL"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-BLACK-XL",
+     "title": "Black / XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49738913906974,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "2XL"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-BLACK-XXL",
+     "title": "Black / 2XL"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 49738913939742,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "3XL"
+      }
+     ],
+     "price": 98.0,
+     "sku": "F25HOODIE-BLACK-XXXL",
+     "title": "Black / 3XL"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [
+    "him"
+   ],
+   "audience_stated": "",
+   "category": "",
+   "description": "Buttons that don't suck. Finally. Getting dressed shouldn't require patience, coordination, or a second pair of hands. The 1-Second Flannel is the world's fastest flannel, built with magnetic buttons that snap shut in one motion so you can throw it on and get on with your day. For when you're not in a robe mood. WFH. Making breakfast. Trash duty. Walking the dog. Coffee runs. Quick errands. The 1-Second Flannel handles all of it. Why It's Different: 1-Second On and Off : Magnetic buttons that close instantly, open just as fast, and hang themselves up ridiculously quickly too. Ridiculously Soft Flannel : A broken-in, favorite-flannel feel from the very first wear. No stiff-flannel-break-in period required. Built-In Stretch : 63% Polyester, 33% Rayon, 4% Spandex means it moves how you move, not the other way around. Throw-On Ready : Structured enough to wear out, comfortable enough to wear all day at home. The best magnetic button shirt on the market, designed for guys who want to look put-together without the effort. Fast on. Fast off. No fumbling. The perfect gift for any guy who's ever lost a button, been late because of one, or just wants to make mornings slightly less annoying.",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 1199
+     }
+    },
+    "features": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "1-Second On and Off : Magnetic buttons that close instantly, open just as fast, and hang themselves up ridiculously quickly too.",
+      "Ridiculously Soft Flannel : A broken-in, favorite-flannel feel from the very first wear. No stiff-flannel-break-in period required.",
+      "Built-In Stretch : 63% Polyester, 33% Rayon, 4% Spandex means it moves how you move, not the other way around.",
+      "Throw-On Ready : Structured enough to wear out, comfortable enough to wear all day at home."
+     ]
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 11
+     }
+    },
+    "materials": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "consistent": true,
+      "items": [
+       {
+        "label": "Polyester",
+        "material": "polyester",
+        "percent": 63
+       },
+       {
+        "label": "Rayon",
+        "material": "rayon",
+        "percent": 33
+       },
+       {
+        "label": "Spandex",
+        "material": "spandex",
+        "percent": 4
+       }
+      ],
+      "total": 100
+     }
+    }
+   },
+   "family": "The 1-Second Flannel",
+   "flags": [],
+   "handle": "one-second-flannel",
+   "image_count": 11,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/the-1-second-flannel-magnetic-button-shirt-cooking-modern-kitchen.jpg?v=1773381968",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/the-1-second-flannel-magnetic-button-shirt-magnetic-shirts-casual-fashion.gif?v=1773381968",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/the-1-second-flannel-magnetic-button-shirt-magnetic-shirts-mens-fashion-outerwear.gif?v=1773381968",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/the-1-second-flannel-magnetic-button-shirt-reading-man-with-dog.jpg?v=1773381968",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/the-1-second-flannel-magnetic-button-shirt-blue-flannel-magnetic-shirts.gif?v=1773381968",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/the-1-second-flannel-magnetic-button-shirt-blue-plaid-magnetic-shirts.jpg?v=1773381968",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/the-1-second-flannel-magnetic-button-shirt-mens-magnetic-shirts-indigo.png?v=1773381968",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/the-1-second-flannel-magnetic-button-shirt-magnetic-shirts-mens-fashion.jpg?v=1773381968",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/the-1-second-flannel-magnetic-button-shirt-magnetic-shirts-men-fashion.jpg?v=1773381968",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/DR_DRModel2_Plaid_uwm2_5.jpg?v=1771501445",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/the-1-second-flannel-magnetic-button-shirt-magnetic-shirts-mens-fashion-blue.jpg?v=1773381968"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "polyester 63%; rayon 33%; spandex 4%",
+   "missing_expected": [],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 98.0,
+   "price_min": 98.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/the-1-second-flannel-magnetic-button-shirt-cooking-modern-kitchen.jpg?v=1773381968",
+   "product_id": "9984465994014",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "igg26_for_him"
+   ],
+   "title": "The 1-Second Flannel",
+   "url": "https://duderobe.com/products/one-second-flannel",
+   "variant_count": 14,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50541308870942,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Blue Plaid"
+      },
+      {
+       "name": "Size",
+       "value": "Small"
+      }
+     ],
+     "price": 98.0,
+     "sku": "FLANNEL1-BLJ-SMALL",
+     "title": "Blue Plaid / Small"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50541308903710,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Blue Plaid"
+      },
+      {
+       "name": "Size",
+       "value": "Medium"
+      }
+     ],
+     "price": 98.0,
+     "sku": "FLANNEL1-BLJ-MED",
+     "title": "Blue Plaid / Medium"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50541308936478,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Blue Plaid"
+      },
+      {
+       "name": "Size",
+       "value": "Large"
+      }
+     ],
+     "price": 98.0,
+     "sku": "FLANNEL1-BLJ-LARGE",
+     "title": "Blue Plaid / Large"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50541308969246,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Blue Plaid"
+      },
+      {
+       "name": "Size",
+       "value": "Extra-Large"
+      }
+     ],
+     "price": 98.0,
+     "sku": "FLANNEL1-BLJ-XL",
+     "title": "Blue Plaid / Extra-Large"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50541309002014,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Blue Plaid"
+      },
+      {
+       "name": "Size",
+       "value": "XX-Large"
+      }
+     ],
+     "price": 98.0,
+     "sku": "FLANNEL1-BLJ-XXL",
+     "title": "Blue Plaid / XX-Large"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 50541309034782,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Blue Plaid"
+      },
+      {
+       "name": "Size",
+       "value": "3XL"
+      }
+     ],
+     "price": 98.0,
+     "sku": "FLANNEL1-BLJ-3XL",
+     "title": "Blue Plaid / 3XL"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 50541309067550,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Blue Plaid"
+      },
+      {
+       "name": "Size",
+       "value": "4XL"
+      }
+     ],
+     "price": 98.0,
+     "sku": "FLANNEL1-BLJ-4XL",
+     "title": "Blue Plaid / 4XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50541309100318,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Indigo"
+      },
+      {
+       "name": "Size",
+       "value": "Small"
+      }
+     ],
+     "price": 98.0,
+     "sku": "FLANNEL1-YBD-SMALL",
+     "title": "Indigo / Small"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50541309133086,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Indigo"
+      },
+      {
+       "name": "Size",
+       "value": "Medium"
+      }
+     ],
+     "price": 98.0,
+     "sku": "FLANNEL1-YBD-MED",
+     "title": "Indigo / Medium"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50541309165854,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Indigo"
+      },
+      {
+       "name": "Size",
+       "value": "Large"
+      }
+     ],
+     "price": 98.0,
+     "sku": "FLANNEL1-YBD-LARGE",
+     "title": "Indigo / Large"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50541309198622,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Indigo"
+      },
+      {
+       "name": "Size",
+       "value": "Extra-Large"
+      }
+     ],
+     "price": 98.0,
+     "sku": "FLANNEL1-YBD-XL",
+     "title": "Indigo / Extra-Large"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50541309231390,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Indigo"
+      },
+      {
+       "name": "Size",
+       "value": "XX-Large"
+      }
+     ],
+     "price": 98.0,
+     "sku": "FLANNEL1-YBD-XXL",
+     "title": "Indigo / XX-Large"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50541309264158,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Indigo"
+      },
+      {
+       "name": "Size",
+       "value": "3XL"
+      }
+     ],
+     "price": 98.0,
+     "sku": "FLANNEL1-YBD-3XL",
+     "title": "Indigo / 3XL"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 50541309296926,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Indigo"
+      },
+      {
+       "name": "Size",
+       "value": "4XL"
+      }
+     ],
+     "price": 98.0,
+     "sku": "FLANNEL1-YBD-4XL",
+     "title": "Indigo / 4XL"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [
+    "him"
+   ],
+   "audience_stated": "",
+   "category": "robes_and_tops",
+   "description": "Lounge like a legend. Rep like a patriot. Whether you're a robe guy or not, you'll wear this. The All-American (Dude)Robe is a limited-edition USA print built for post-shower lounging, game day chilling, backyard grilling, dorm hangs, dog walks, and anywhere else you want to be comfortable without looking like you raided your grandpa's closet. This isn't just an american flag robe . It's a statement. Bold, clean, and built to rep. USA Edition Highlights: Limited-Edition USA Print : Bold, clean, and designed to stand out without trying too hard. Hoodie Fit and Style : Looks and wears like your favorite hoodie, not a stuffy hotel bathrobe. Premium Sweatshirt Exterior : Soft, durable fabric that actually holds up. Towel-Lined Interior : Absorbent, cozy, and zero unnecessary fluff. Never-Lost™ Belt : Permanently attached, because real legends don't fish around for their belt. Non-Floppy Arm Cuffs : Cuffed sleeves that stay in place and out of your food. Logo'd Drawstring and Trim : The details that make it feel intentional. Hidden Stash Pocket : For your phone, wallet, snacks, and general freedom. Below-the-Knee Length : Designed for dudes who want full coverage without the floor-length drama. Pairs with DudeShorts or DudePants : Full chill mode, unlocked. No wardrobe malfunctions. No belt hunting. No boring robes. Just comfort, pride, and the best american flag robe you'll ever own. The perfect gift for any guy, any occasion, any day that ends in freedom. 🦅 Proudly designed to lounge like a legend.",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 1520
+     }
+    },
+    "features": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Limited-Edition USA Print : Bold, clean, and designed to stand out without trying too hard.",
+      "Hoodie Fit and Style : Looks and wears like your favorite hoodie, not a stuffy hotel bathrobe.",
+      "Premium Sweatshirt Exterior : Soft, durable fabric that actually holds up.",
+      "Towel-Lined Interior : Absorbent, cozy, and zero unnecessary fluff.",
+      "Never-Lost™ Belt : Permanently attached, because real legends don't fish around for their belt.",
+      "Non-Floppy Arm Cuffs : Cuffed sleeves that stay in place and out of your food.",
+      "Logo'd Drawstring and Trim : The details that make it feel intentional.",
+      "Hidden Stash Pocket : For your phone, wallet, snacks, and general freedom.",
+      "Below-the-Knee Length : Designed for dudes who want full coverage without the floor-length drama.",
+      "Pairs with DudeShorts or DudePants : Full chill mode, unlocked."
+     ]
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 16
+     }
+    }
+   },
+   "family": "The All-American (Dude)Robe",
+   "flags": [],
+   "handle": "usa-duderobe",
+   "image_count": 16,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-hooded-american-flag-robe-patriotic-bathrobe-best-seller-shark-tank-dorm-gift-4th-of-july.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-hooded-bathrobe-american-flag-patriotic-robes-for-men-4th-of-july-gift-usa-edition_1060x-2.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-modern-lounge-robes-best-mens-robe.jpg?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-modern-twist-navy-blue-robe-comfort-lounge.jpg?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-hooded-bathrobe-american-flag-robe-patriotic-robe-for-men-all-american-dude-robe.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-hooded-bathrobe-review-family-happy-in-duderobe.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-hooded-bathrobe-american-flag-patriotic-robe-for-men-all-american-dude-robe-4th-of-july-gift.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/the-all-american-dude-robe-mens-hooded-bathrobe-american-flag-patriotic-gift.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-modern-lounge-apparel-gray-hooded-robes.jpg?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-grey-hooded-mens-bathrobe-modern-lounge-wear.jpg?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/grandma-scores-duderobe-review-mentoring-moments-comfortable-bathrobe.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/family-testimonials-duderobe-happy-customers-mens-hooded-bathrobe.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-hooded-bathrobe-duderobe-casual-lounging-review-joey-judy.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-best-gift-ever-reviewed.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-hooded-bathrobe-user-review-duderobe-father-sons-in-laws-loved-it.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/all-american-mens-hooded-bathrobe-size-chart-patriotic-robes-for-men.png?v=1776246736"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 134.0,
+   "price_min": 134.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-hooded-american-flag-robe-patriotic-bathrobe-best-seller-shark-tank-dorm-gift-4th-of-july.png?v=1776158592",
+   "product_id": "9885198549278",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "Google Shopping Feed",
+    "igg26_for_him",
+    "tier-eligible"
+   ],
+   "title": "The All-American (Dude)Robe",
+   "url": "https://duderobe.com/products/usa-duderobe",
+   "variant_count": 8,
+   "variants": [
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 50216131821854,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "XS"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1AMERICA-NAVY-XS",
+     "title": "Navy / XS"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50216131854622,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "S-M"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1AMERICA-NAVY-S/M",
+     "title": "Navy / S-M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50216131887390,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "L-XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1AMERICA-NAVY-L/XL",
+     "title": "Navy / L-XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50216131920158,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "2XL-3XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1AMERICA-NAVY-2XL/3XL",
+     "title": "Navy / 2XL-3XL"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 50216131952926,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "XS"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1USAMAP-GREY-XS",
+     "title": "Grey / XS"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50216131985694,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "S-M"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1USAMAP-GREY-S/M",
+     "title": "Grey / S-M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50216132018462,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "L-XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1USAMAP-GREY-L/XL",
+     "title": "Grey / L-XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50216132051230,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "2XL-3XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1USAMAP-GREY-2XL/3XL",
+     "title": "Grey / 2XL-3XL"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [
+    "wellness"
+   ],
+   "audience_stated": "men",
+   "category": "",
+   "description": "",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "audience": {
+     "source": "manual",
+     "status": "stated_by_user",
+     "value": "men"
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 4
+     }
+    }
+   },
+   "family": "The BroThrow",
+   "flags": [],
+   "handle": "the-brothrow",
+   "image_count": 4,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/BroThrow_Callouts_FoldedShot_R9.png?v=1779901261",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/BT7.png?v=1779776412",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/Feature3.png?v=1778732718",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/BT_Carousel_4.png?v=1778732556"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [
+    "description"
+   ],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 98.0,
+   "price_min": 98.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/BroThrow_Callouts_FoldedShot_R9.png?v=1779901261",
+   "product_id": "10084653662494",
+   "readiness": "needs_facts",
+   "status": "active",
+   "tags": [
+    "igg26_for_wellness"
+   ],
+   "title": "The BroThrow",
+   "url": "https://duderobe.com/products/the-brothrow",
+   "variant_count": 1,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 51787292049694,
+     "options": [
+      {
+       "name": "Title",
+       "value": "Default Title"
+      }
+     ],
+     "price": 98.0,
+     "sku": "BROTHROW-BLX-OS",
+     "title": "Default Title"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "",
+   "description": "",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 1
+     }
+    }
+   },
+   "family": "The Couch Setup",
+   "flags": [
+    "on_sale"
+   ],
+   "handle": "the-couch-setup-bundle",
+   "image_count": 1,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/couch-setup-bundle.png?v=1792387968"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [
+    "description"
+   ],
+   "on_sale": true,
+   "pocket_claims": "",
+   "price_max": 199.0,
+   "price_min": 199.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/couch-setup-bundle.png?v=1792387968",
+   "product_id": "15979792367902",
+   "readiness": "needs_facts",
+   "status": "active",
+   "tags": [
+    "kelson-bundle"
+   ],
+   "title": "The Couch Setup",
+   "url": "https://duderobe.com/products/the-couch-setup-bundle",
+   "variant_count": 1,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": 226.0,
+     "id": 60282238337310,
+     "options": [
+      {
+       "name": "Title",
+       "value": "Default Title"
+      }
+     ],
+     "price": 199.0,
+     "sku": null,
+     "title": "Default Title"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "couples",
+   "category": "",
+   "description": "",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "audience": {
+     "source": "manual",
+     "status": "stated_by_user",
+     "value": "couples"
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 1
+     }
+    }
+   },
+   "family": "The Couple Bundle",
+   "flags": [
+    "on_sale"
+   ],
+   "handle": "the-couple-bundle-1",
+   "image_count": 1,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/couple-bundle.png?v=1792387969"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [
+    "description"
+   ],
+   "on_sale": true,
+   "pocket_claims": "",
+   "price_max": 229.0,
+   "price_min": 229.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/couple-bundle.png?v=1792387969",
+   "product_id": "10114039054622",
+   "readiness": "needs_facts",
+   "status": "active",
+   "tags": [
+    "kelson-bundle"
+   ],
+   "title": "The Couple Bundle",
+   "url": "https://duderobe.com/products/the-couple-bundle-1",
+   "variant_count": 1,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": 256.0,
+     "id": 51888822059294,
+     "options": [
+      {
+       "name": "Title",
+       "value": "Default Title"
+      }
+     ],
+     "price": 229.0,
+     "sku": null,
+     "title": "Default Title"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [
+    "him"
+   ],
+   "audience_stated": "",
+   "category": "robes_and_tops",
+   "description": "Featured on Kickstarter & ABC's Shark Tank , DudeRobe's a modern twist on the boring old bathrobe. We re-designed & re-engineered the robe into something guys today actually want to wear. Whether you wear a robe...or you're just not a \"robe guy,\" you'd wear a DudeRobe. It's the mens hooded bathrobe built for out of the shower, lounging around the house, walking the dog and just about anywhere else you want to chill & be comfortable. Why It's the Best Mens Hooded Bathrobe Around: Hoodie Fit & Style Premium Sweatshirt Outside, Comfy & Extra Absorbent Inside Never-Lost Belt™ Permanently Attached Non-Floppy Arm Cuffs Logo’d Drawstring Extra Pocket Inside Above-The-Knee Length Shorts & Pants Options Add Extra Comfort & Cool Factor...While Eliminating the Possibility of D!@k$lip Perfect Gift for Any Guy",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 808
+     }
+    },
+    "features": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Hoodie Fit & Style",
+      "Premium Sweatshirt Outside, Comfy & Extra Absorbent Inside",
+      "Never-Lost Belt™ Permanently Attached",
+      "Non-Floppy Arm Cuffs",
+      "Logo’d Drawstring",
+      "Extra Pocket Inside",
+      "Above-The-Knee Length",
+      "Shorts & Pants Options Add Extra Comfort & Cool Factor...While Eliminating the Possibility of D!@k$lip",
+      "Perfect Gift for Any Guy"
+     ]
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 34
+     }
+    }
+   },
+   "family": "The DudeRobe",
+   "flags": [],
+   "handle": "luxury-mens-hooded-bathrobe",
+   "image_count": 34,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-best-seller-modern-lounge-wear-shark-tank.png?v=1776157749",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-best-seller-modern-lounge-wear-shark-tank_7378f3f9-813b-4646-b805-07550a26adbc.png?v=1781174861",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-hooded-bathrobe-review-family-happy-in-duderobe.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-best-seller-grey-black-blue.png?v=1776157397",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-gift-modern-loungewear-chill-style.png?v=1776157397",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-best-seller-modern-robes-shark-tank.png?v=1776157397",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-hooded-bathrobe-duderobe-modern-twist-best-mens-robe-guy-lifestyle-obsessed.png?v=1776157397",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-modern-lounge-robes-best-mens-robe.jpg?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-modern-twist-navy-blue-robe-comfort-lounge.jpg?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/family-testimonials-duderobe-happy-customers-mens-hooded-bathrobe.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/grandma-scores-duderobe-review-mentoring-moments-comfortable-bathrobe.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-premium-material-comfortable-style-absorbent-towel.png?v=1776158248",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-best-seller-mens-hooded-bathrobe-modern-lounge-wear-shark-tank.png?v=1776158248",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-best-seller-mens-hooded-bathrobe-modern-robe-with-hood-comfortable-lounge-wear.png?v=1776158248",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-hooded-bathrobe-duderobe-casual-lounging-review-joey-judy.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-modern-lounge-apparel-gray-hooded-robes.jpg?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-review-lounge-casual-style-christmas-tree.png?v=1776158248",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-grey-hooded-mens-bathrobe-modern-lounge-wear.jpg?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-hooded-bathrobe-user-review-duderobe-father-sons-in-laws-loved-it.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-best-seller-shark-tank-modern-lounge-robes.png?v=1774507736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-review-day-or-night-comfort-lounge.png?v=1774507736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-best-seller-featured-on-shark-tank-and-media.png?v=1774507736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-modern-comfort-black.jpg?v=1774507736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/best-mens-hooded-bathrobe-gift-reviewed-duderobe-shark-tank.png?v=1774507736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-hooded-bathrobe-duderobe-black-lounge-robes-best-mens-robes.jpg?v=1774507736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-customer-review-worth-the-investment-mens-hooded-bathrobe.png?v=1774507736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-best-seller-as-seen-on-shark-tank-lounge-robe.png?v=1774507736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-best-seller-mens-hooded-bathrobe-modern-lounge-robes.png?v=1774507736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-review-dude-style-comfort-lounge.png?v=1774507736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-hooded-bathrobe-duderobe-modern-comfort-best-seller-as-seen-on-shark-tank.png?v=1774507736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-best-seller-mens-hooded-bathrobe-modern-lounge-robes_1.png?v=1774507736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-best-gift-ever-reviewed.png?v=1776158592",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-customer-review-hooded-bathrobe-five-stars-lifestyle.png?v=1774507736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-size-guide-hooded-robes-best-mens-robe.png?v=1774507736"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 128.0,
+   "price_min": 128.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-hooded-bathrobe-best-seller-modern-lounge-wear-shark-tank.png?v=1776157749",
+   "product_id": "1363889356843",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "Google Shopping Feed",
+    "igg26_for_him",
+    "Loop Advanced Exchange",
+    "pod-configurator",
+    "tier-eligible"
+   ],
+   "title": "The DudeRobe",
+   "url": "https://duderobe.com/products/luxury-mens-hooded-bathrobe",
+   "variant_count": 16,
+   "variants": [
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 47315787940126,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "XS"
+      }
+     ],
+     "price": 128.0,
+     "sku": "ROBE1-NAVY-XS",
+     "title": "Navy / XS"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947168907345,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "S-M"
+      }
+     ],
+     "price": 128.0,
+     "sku": "ROBE1-NAVY-S/M",
+     "title": "Navy / S-M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947175198801,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "L-XL"
+      }
+     ],
+     "price": 128.0,
+     "sku": "ROBE1-NAVY-L/XL",
+     "title": "Navy / L-XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947197907025,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "2XL-3XL"
+      }
+     ],
+     "price": 128.0,
+     "sku": "ROBE1-NAVY-2XL/3XL",
+     "title": "Navy / 2XL-3XL"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 47315794952478,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "XS"
+      }
+     ],
+     "price": 128.0,
+     "sku": "ROBE1-GRAY-XS",
+     "title": "Grey / XS"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947185848401,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "S-M"
+      }
+     ],
+     "price": 128.0,
+     "sku": "ROBE1-Gray-S/M",
+     "title": "Grey / S-M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947194073169,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "L-XL"
+      }
+     ],
+     "price": 128.0,
+     "sku": "ROBE1-Gray-L/XL",
+     "title": "Grey / L-XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947194761297,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "2XL-3XL"
+      }
+     ],
+     "price": 128.0,
+     "sku": "ROBE1-GRAY-2XL/3XL",
+     "title": "Grey / 2XL-3XL"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 47315796820254,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "XS"
+      }
+     ],
+     "price": 128.0,
+     "sku": "ROBE1-BLACK-XS",
+     "title": "Black / XS"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 39307874697297,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "S-M"
+      }
+     ],
+     "price": 128.0,
+     "sku": "ROBE1-Black-S/M",
+     "title": "Black / S-M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 39307876466769,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "L-XL"
+      }
+     ],
+     "price": 128.0,
+     "sku": "ROBE1-Black-L/XL",
+     "title": "Black / L-XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 39307877875793,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "2XL-3XL"
+      }
+     ],
+     "price": 128.0,
+     "sku": "ROBE1-BLACK-2XL/3XL",
+     "title": "Black / 2XL-3XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 59869788635422,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Sage Green"
+      },
+      {
+       "name": "Size",
+       "value": "XS"
+      }
+     ],
+     "price": 128.0,
+     "sku": "ROBE1-100-XS",
+     "title": "Sage Green / XS"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 59869788668190,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Sage Green"
+      },
+      {
+       "name": "Size",
+       "value": "S-M"
+      }
+     ],
+     "price": 128.0,
+     "sku": "ROBE1-SGE-S/M",
+     "title": "Sage Green / S-M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 59869788700958,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Sage Green"
+      },
+      {
+       "name": "Size",
+       "value": "L-XL"
+      }
+     ],
+     "price": 128.0,
+     "sku": "ROBE1-SGE-L/XL",
+     "title": "Sage Green / L-XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 59869788733726,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Sage Green"
+      },
+      {
+       "name": "Size",
+       "value": "2XL-3XL"
+      }
+     ],
+     "price": 128.0,
+     "sku": "ROBE1-SGE-2XL/3XL",
+     "title": "Sage Green / 2XL-3XL"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "",
+   "description": "",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 1
+     }
+    }
+   },
+   "family": "The Family Bundle",
+   "flags": [
+    "on_sale"
+   ],
+   "handle": "the-family-bundle-1",
+   "image_count": 1,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/family-bundle.png?v=1792387969"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [
+    "description"
+   ],
+   "on_sale": true,
+   "pocket_claims": "",
+   "price_max": 269.0,
+   "price_min": 269.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/family-bundle.png?v=1792387969",
+   "product_id": "15972926488862",
+   "readiness": "needs_facts",
+   "status": "active",
+   "tags": [
+    "kelson-bundle"
+   ],
+   "title": "The Family Bundle",
+   "url": "https://duderobe.com/products/the-family-bundle-1",
+   "variant_count": 1,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": 324.0,
+     "id": 60245613117726,
+     "options": [
+      {
+       "name": "Title",
+       "value": "Default Title"
+      }
+     ],
+     "price": 269.0,
+     "sku": null,
+     "title": "Default Title"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "",
+   "description": "",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 1
+     }
+    }
+   },
+   "family": "The Full Kit",
+   "flags": [
+    "on_sale"
+   ],
+   "handle": "the-full-kit-bundle",
+   "image_count": 1,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/full-kit-bundle.png?v=1792387968"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [
+    "description"
+   ],
+   "on_sale": true,
+   "pocket_claims": "",
+   "price_max": 229.0,
+   "price_min": 229.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/full-kit-bundle.png?v=1792387968",
+   "product_id": "15979805180190",
+   "readiness": "needs_facts",
+   "status": "active",
+   "tags": [
+    "kelson-bundle"
+   ],
+   "title": "The Full Kit",
+   "url": "https://duderobe.com/products/the-full-kit-bundle",
+   "variant_count": 1,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": 261.0,
+     "id": 60282255802654,
+     "options": [
+      {
+       "name": "Title",
+       "value": "Default Title"
+      }
+     ],
+     "price": 229.0,
+     "sku": null,
+     "title": "Default Title"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [
+    "him"
+   ],
+   "audience_stated": "",
+   "category": "robes_and_tops",
+   "description": "He doesn’t always lounge... but when he does, he wears this. The Hef is our smoothest, boldest, most legendary robe yet — inspired by the icon himself. Smoking-jacket vibes. Luxury feel. Legend status dialed all the way up. Why he'll love it: Tailored Like a Boss — Shawl Collar, Hoodie Style, WeekendBlend™ Fabric Interior Stash Pocket — because legends carry stash Never-Lost™ Belt — permanently attached so he can’t lose it Knee-Length — because longer just isn’t part of the vibe The Vibe - Moody, masculine & guaranteed to make your significant other (and your Amazon delivery guy) jealous Non-Floppy Sleeves - legends don’t do floppy 🎁 The perfect gift for any guy. 🦅 Proudly designed to lounge like a legend.",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 715
+     }
+    },
+    "features": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Tailored Like a Boss — Shawl Collar, Hoodie Style, WeekendBlend™ Fabric",
+      "Interior Stash Pocket — because legends carry stash",
+      "Never-Lost™ Belt — permanently attached so he can’t lose it",
+      "Knee-Length — because longer just isn’t part of the vibe",
+      "The Vibe - Moody, masculine & guaranteed to make your significant other (and your Amazon delivery guy) jealous",
+      "Non-Floppy Sleeves - legends don’t do floppy"
+     ]
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 11
+     }
+    }
+   },
+   "family": "The Hef — A “Smoking Jacket” Robe",
+   "flags": [],
+   "handle": "the-hef-luxury-smoking-robe-by-duderobe",
+   "image_count": 11,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/Model_Front_White_Background.png?v=1780301522",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ModelCloseWhiteBackground.png?v=1780301546",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/HEF_NOT_YOUR_GIRLFRIEND_15_f0dd7a11-0023-449f-b8c3-461e5ec319b8.png?v=1765475067",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/Model_Side_Transparent.png?v=1780301572",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/HEF_NOT_YOUR_GIRLFRIEND_16_312dd99a-fcbd-49d1-852e-0ac0401e6bf3.png?v=1765475077",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/HEF_ROBE_CLOSE_UP_f44117fa-538a-4fa3-8707-6251d56f9097.png?v=1765475081",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/Model_Back_Transparent.png?v=1780301597",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/HEF_ROBE_CLOSE_UP_2_03bdea87-a88e-4231-bf62-463d5799c270.png?v=1765475090",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/HEF_NOT_YOUR_GIRLFRIEND_17_f36ee31a-fddc-41b9-a72b-3e2cc3960c55.png?v=1765475097",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/HEF_ROBE_FRONT_66260068-5c9f-47b2-b9e4-06a2b68c1e59.png?v=1765475100",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/HEF_ROBE_BACK_af7b76ee-3a51-4db4-b96c-0146a91b406c.png?v=1765475103"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 134.0,
+   "price_min": 134.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/Model_Front_White_Background.png?v=1780301522",
+   "product_id": "9904126296350",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "igg26_for_him",
+    "pod-configurator",
+    "tier-eligible"
+   ],
+   "title": "The Hef — A “Smoking Jacket” Robe",
+   "url": "https://duderobe.com/products/the-hef-luxury-smoking-robe-by-duderobe",
+   "variant_count": 4,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50310736380190,
+     "options": [
+      {
+       "name": "Size",
+       "value": "XS"
+      },
+      {
+       "name": "Color",
+       "value": "Burgundy"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1-701-XS",
+     "title": "XS / Burgundy"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50283802722590,
+     "options": [
+      {
+       "name": "Size",
+       "value": "S-M"
+      },
+      {
+       "name": "Color",
+       "value": "Burgundy"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1-BUR-S/M",
+     "title": "S-M / Burgundy"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50283802755358,
+     "options": [
+      {
+       "name": "Size",
+       "value": "L-XL"
+      },
+      {
+       "name": "Color",
+       "value": "Burgundy"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1-BUR-L/XL",
+     "title": "L-XL / Burgundy"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50283802788126,
+     "options": [
+      {
+       "name": "Size",
+       "value": "2XL-3XL"
+      },
+      {
+       "name": "Color",
+       "value": "Burgundy"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1-BUR-2XL/3XL",
+     "title": "2XL-3XL / Burgundy"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [
+    "him"
+   ],
+   "audience_stated": "",
+   "category": "bottoms",
+   "description": "Sweatpants that actually keep up. You gym. You beach. You party. You chill. You shower. Repeat. Most sweatpants can handle one of those. The DudePants handle all of them. On the outside, they look like any other men's sweatpants . On the inside, they're lined with the same super-absorbent, super-soft towel fabric as the DudeRobe. Soak up sweat, dry off after a shower, or just sink into the couch. These pants don't care what's on the agenda, as long as you are. Why They're the Last Sweatpants You'll Buy: Absorbent Towel Lining Inside : The secret weapon. Soft, moisture-wicking, and built for whatever comes next. Relaxed Leg Holes : Easy on, easy off, no gymnastics required. Extra Deep Pockets : Actually deep. Phone, keys, snacks, no problem. Premium Comfort Waistband : Stays put without digging in, no matter how long you wear them. Premium Logo'd Drawstrings : That signature DudeRobe detail on the best men's sweatpants you've ever owned. Faux Fly : Looks right, fits right, and guarantees zero peep show situations. Wear them solo. Pair them with the DudeRobe for the full combo. Either way, your sweatpants game just leveled up permanently. The perfect gift for any active dude who refuses to compromise on comfort.",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 1229
+     }
+    },
+    "features": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Absorbent Towel Lining Inside : The secret weapon. Soft, moisture-wicking, and built for whatever comes next.",
+      "Relaxed Leg Holes : Easy on, easy off, no gymnastics required.",
+      "Extra Deep Pockets : Actually deep. Phone, keys, snacks, no problem.",
+      "Premium Comfort Waistband : Stays put without digging in, no matter how long you wear them.",
+      "Premium Logo'd Drawstrings : That signature DudeRobe detail on the best men's sweatpants you've ever owned.",
+      "Faux Fly : Looks right, fits right, and guarantees zero peep show situations."
+     ]
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 19
+     }
+    }
+   },
+   "family": "The Pants",
+   "flags": [],
+   "handle": "pants",
+   "image_count": 19,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-black-sweatpants-comfortable-sweatpants-with-pockets-activewear-dudepants.png?v=1773382408",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-sweatpants-navy-blue-comfortable-lounge-pants.png?v=1773394373",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/luxury-mens-bathrobe-shorts-bundle-detail-closeup-duderobe-blue.png?v=1773392843",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/dudepants-mens-sweatpants-black-comfortable-sweatpants-absorbent-towel-lining-pockets.jpg?v=1773382407",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-black-sweatpants-back-view-comfortable-activewear-with-pockets.png?v=1773382408",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-sweatpants-comfortable-black-sweatpants-with-pockets-absorbent-towel-lining-dudepants.jpg?v=1773382408",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-comfortable-sweatpants-with-pockets-grey-activewear-dude-pants.png?v=1773382407",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-grey-sweatpants-comfortable-lounge-pants-for-men.png?v=1773394373",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-bathrobe-and-shorts-bundle-grey-elastic-waistband-closeup.png?v=1773392843",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-comfortable-sweatpants-with-pockets-grey-active-lifestyle-relaxed-fit.jpg?v=1773382408",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/men_s_light_gray_sweatpants_cuff_detail_comfortable_with_pockets_activewear.jpg?v=1773382407",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-comfortable-sweatpants-with-pockets-gray-back-view-activewear.png?v=1773382407",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/dudepants-black-men-sweatpants-comfortable-with-pockets-absorbent-towel-lining-activewear.png?v=1773382407",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-black-sweatpants-comfortable-lounge-pants-modern-design.png?v=1773394373",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-shorts-bundle-black-elastic-waistband-detail.png?v=1773392843",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-black-sweatpants-comfortable-activewear-with-pockets-absorbent-towel-lining.jpg?v=1773382407",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-black-sweatpants-back-view-comfortable-activewear-with-pockets-absorbent-towel-lining.png?v=1773382407",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/dudepants-mens-sweatpants-black-comfortable-sweatpants-with-pockets-absorbent-towel-lining.jpg?v=1773382407",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-pants-size-guide-hooded-bathrobe-sweatpants-combo.png?v=1773394373"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 72.0,
+   "price_min": 72.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-black-sweatpants-comfortable-sweatpants-with-pockets-activewear-dudepants.png?v=1773382408",
+   "product_id": "711287898155",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "Google Shopping Feed",
+    "igg26_for_him"
+   ],
+   "title": "The Pants",
+   "url": "https://duderobe.com/products/pants",
+   "variant_count": 9,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947248533585,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "S-M"
+      }
+     ],
+     "price": 72.0,
+     "sku": "PANT1-NAVY-S/M",
+     "title": "Navy / S-M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947253940305,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "L-XL"
+      }
+     ],
+     "price": 72.0,
+     "sku": "PANT1-NAVY-L/XL",
+     "title": "Navy / L-XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947261935697,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "2XL-3XL"
+      }
+     ],
+     "price": 72.0,
+     "sku": "PANT1-NAVY-2XL/3XL",
+     "title": "Navy / 2XL-3XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947249680465,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "S-M"
+      }
+     ],
+     "price": 72.0,
+     "sku": "PANT1-GRAY-S/M",
+     "title": "Grey / S-M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947255513169,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "L-XL"
+      }
+     ],
+     "price": 72.0,
+     "sku": "PANT1-GRAY-L/XL",
+     "title": "Grey / L-XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947263901777,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "2XL-3XL"
+      }
+     ],
+     "price": 72.0,
+     "sku": "PANT1-GRAY-2XL/3XL",
+     "title": "Grey / 2XL-3XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 39369896460369,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "S-M"
+      }
+     ],
+     "price": 72.0,
+     "sku": "PANT1-BLACK-S/M",
+     "title": "Black / S-M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 39369896656977,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "L-XL"
+      }
+     ],
+     "price": 72.0,
+     "sku": "PANT1-BLACK-L/XL",
+     "title": "Black / L-XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 39369897508945,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "2XL-3XL"
+      }
+     ],
+     "price": 72.0,
+     "sku": "PANT1-BLACK-2XL/3XL",
+     "title": "Black / 2XL-3XL"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [
+    "her"
+   ],
+   "audience_stated": "women",
+   "category": "",
+   "description": "",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "audience": {
+     "source": "manual",
+     "status": "stated_by_user",
+     "value": "women"
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 8
+     }
+    }
+   },
+   "family": "The SheRobe",
+   "flags": [],
+   "handle": "the-sherobe",
+   "image_count": 8,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/hcXnnwXkf8KqI8bbKwX4.jpg?v=1775236337",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/rVbnH5w3L6Ggt2pTdzUZ.jpg?v=1775236353",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/uEIV9oKdfH2XnvLLzwyA.jpg?v=1775236377",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/cgXklvrP6bE6BKYgV14l.jpg?v=1775236407",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ref1_3.png?v=1790972305",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/TWS7qWieAdkDt9OIEa6Z.jpg?v=1776140332",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/UJ2WhRvvOUOnyMvabVhv.jpg?v=1776140421",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ref2_1.png?v=1790972305"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [
+    "description"
+   ],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 128.0,
+   "price_min": 128.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/hcXnnwXkf8KqI8bbKwX4.jpg?v=1775236337",
+   "product_id": "10055698743582",
+   "readiness": "needs_facts",
+   "status": "active",
+   "tags": [
+    "igg26_for_her",
+    "Loop Advanced Exchange",
+    "tier-eligible"
+   ],
+   "title": "The SheRobe",
+   "url": "https://duderobe.com/products/the-sherobe",
+   "variant_count": 12,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50751974015262,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "Extra Small"
+      }
+     ],
+     "price": 128.0,
+     "sku": "SHEROBE-073-XS",
+     "title": "Grey / Extra Small"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50751974048030,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "Small/Medium"
+      }
+     ],
+     "price": 128.0,
+     "sku": "SHEROBE-073-S/M",
+     "title": "Grey / Small/Medium"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50751974080798,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "Large/Extra Large"
+      }
+     ],
+     "price": 128.0,
+     "sku": "SHEROBE-073-L/XL",
+     "title": "Grey / Large/Extra Large"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50751974113566,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "XXL/3XL"
+      }
+     ],
+     "price": 128.0,
+     "sku": "SHEROBE-073-2XL/3XL",
+     "title": "Grey / XXL/3XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50751974146334,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Rose"
+      },
+      {
+       "name": "Size",
+       "value": "Extra Small"
+      }
+     ],
+     "price": 128.0,
+     "sku": "SHEROBE-816-XS",
+     "title": "Rose / Extra Small"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 50751974179102,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Rose"
+      },
+      {
+       "name": "Size",
+       "value": "Small/Medium"
+      }
+     ],
+     "price": 128.0,
+     "sku": "SHEROBE-816-S/M",
+     "title": "Rose / Small/Medium"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 50751974211870,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Rose"
+      },
+      {
+       "name": "Size",
+       "value": "Large/Extra Large"
+      }
+     ],
+     "price": 128.0,
+     "sku": "SHEROBE-816-L/XL",
+     "title": "Rose / Large/Extra Large"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50751974244638,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Rose"
+      },
+      {
+       "name": "Size",
+       "value": "XXL/3XL"
+      }
+     ],
+     "price": 128.0,
+     "sku": "SHEROBE-816-2XL/3XL",
+     "title": "Rose / XXL/3XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50751974277406,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Mauve"
+      },
+      {
+       "name": "Size",
+       "value": "Extra Small"
+      }
+     ],
+     "price": 128.0,
+     "sku": "SHEROBE-MVE-XS",
+     "title": "Mauve / Extra Small"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 50751974310174,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Mauve"
+      },
+      {
+       "name": "Size",
+       "value": "Small/Medium"
+      }
+     ],
+     "price": 128.0,
+     "sku": "SHEROBE-MVE-S/M",
+     "title": "Mauve / Small/Medium"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 50751974342942,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Mauve"
+      },
+      {
+       "name": "Size",
+       "value": "Large/Extra Large"
+      }
+     ],
+     "price": 128.0,
+     "sku": "SHEROBE-MVE-L/XL",
+     "title": "Mauve / Large/Extra Large"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 50751974375710,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Mauve"
+      },
+      {
+       "name": "Size",
+       "value": "XXL/3XL"
+      }
+     ],
+     "price": 128.0,
+     "sku": "SHEROBE-MVE-2XL/3XL",
+     "title": "Mauve / XXL/3XL"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [
+    "him"
+   ],
+   "audience_stated": "",
+   "category": "bottoms",
+   "description": "Shorts that work as hard as you do. You gym. You beach. You party. You chill. You shower. Repeat. Most shorts tap out after one of those. The DudeShorts go the full rotation. On the outside, they look like any other men's shorts . On the inside, they're lined with the same super-absorbent, super-soft towel fabric as the DudeRobe. Perfect length, perfect width, and built for true comfort whether you're soaking up sweat, drying off after a shower, or just existing on the couch at peak relaxation. Why They're the Only Shorts You Need: Absorbent Towel Lining Inside : The upgrade you didn't know your shorts were missing. Soft, moisture-wicking, and ready for anything. Premium Comfort Waistband : Stays in place without digging in, from morning to night. Extra Deep Pockets : Actually deep. Phone, keys, snacks, all of it fits. Premium Logo'd Drawstrings : That signature DudeRobe detail on the best men's shorts you've ever owned. Faux Fly : Looks right, fits right, zero peep show risk. Wear them solo on a beach day. Pair them with the DudeRobe after a shower. Either way, your shorts game just got a serious upgrade. The perfect gift for any active dude who wants comfort without sacrificing style.",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 1205
+     }
+    },
+    "features": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Absorbent Towel Lining Inside : The upgrade you didn't know your shorts were missing. Soft, moisture-wicking, and ready for anything.",
+      "Premium Comfort Waistband : Stays in place without digging in, from morning to night.",
+      "Extra Deep Pockets : Actually deep. Phone, keys, snacks, all of it fits.",
+      "Premium Logo'd Drawstrings : That signature DudeRobe detail on the best men's shorts you've ever owned.",
+      "Faux Fly : Looks right, fits right, zero peep show risk."
+     ]
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 11
+     }
+    }
+   },
+   "family": "The Shorts",
+   "flags": [],
+   "handle": "shorts",
+   "image_count": 11,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-lounge-shorts-bathrobe-combo-set-navy.png?v=1773392843",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/luxury-mens-bathrobe-shorts-bundle-detail-closeup-duderobe-blue.png?v=1773392843",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/luxury-mens-shorts-comfortable-grey-lounge-wear-bundle.png?v=1773392843",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-active-cotton-shorts-dude-shorts-gray-rolled-up-comfortable-absorbent-towel-line.jpg?v=1773392478",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-bathrobe-and-shorts-bundle-grey-elastic-waistband-closeup.png?v=1773392843",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/dude-shorts-mens-active-shower-shorts-comfortable-cotton-shorts-premium-design-absorbent-towel-lining.jpg?v=1773392478",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-shorts-black-duderobe-comfortable-loungewear-set.png?v=1773392843",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-shorts-bundle-black-elastic-waistband-detail.png?v=1773392843",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-active-shorts-with-comfy-waistband-deep-pockets-and-absorbent-towel-lining-dudes-shorts.jpg?v=1773392478",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/dude-shorts-mens-active-cotton-shower-shorts-premium-comfort-waistband-absorbent-lining.jpg?v=1773392478",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-cotton-shorts-sizing-chart-hooded-robe-set.png?v=1773394618"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 61.0,
+   "price_min": 61.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-lounge-shorts-bathrobe-combo-set-navy.png?v=1773392843",
+   "product_id": "711295500331",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "Google Shopping Feed",
+    "igg26_for_him"
+   ],
+   "title": "The Shorts",
+   "url": "https://duderobe.com/products/shorts",
+   "variant_count": 9,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947526275153,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "S/M"
+      }
+     ],
+     "price": 61.0,
+     "sku": "SHORT1-NAVY-S/M",
+     "title": "Navy / S/M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 39363708616785,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "S/M"
+      }
+     ],
+     "price": 61.0,
+     "sku": "SHORT1-BLACK-S/M",
+     "title": "Black / S/M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 39363710058577,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "L/XL"
+      }
+     ],
+     "price": 61.0,
+     "sku": "SHORT1-BLACK-L/XL",
+     "title": "Black / L/XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 39363710353489,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "2X/3X"
+      }
+     ],
+     "price": 61.0,
+     "sku": "SHORT1-BLACK-2XL/3XL",
+     "title": "Black / 2X/3X"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947530633297,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "L/XL"
+      }
+     ],
+     "price": 61.0,
+     "sku": "SHORT1-NAVY-L/XL",
+     "title": "Navy / L/XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947533713489,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "2X/3X"
+      }
+     ],
+     "price": 61.0,
+     "sku": "SHORT1-NAVY-2XL/3XL",
+     "title": "Navy / 2X/3X"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947534139473,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "S/M"
+      }
+     ],
+     "price": 61.0,
+     "sku": "SHORT1-GRAY-S/M",
+     "title": "Grey / S/M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947535286353,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "L/XL"
+      }
+     ],
+     "price": 61.0,
+     "sku": "SHORT1-GRAY-L/XL",
+     "title": "Grey / L/XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 31947535974481,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "2X/3X"
+      }
+     ],
+     "price": 61.0,
+     "sku": "SHORT1-GRAY-2XL/3XL",
+     "title": "Grey / 2X/3X"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "",
+   "description": "",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 1
+     }
+    }
+   },
+   "family": "The Whole House",
+   "flags": [
+    "on_sale"
+   ],
+   "handle": "the-whole-house-bundle",
+   "image_count": 1,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/whole-house-bundle.png?v=1792387968"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [
+    "description"
+   ],
+   "on_sale": true,
+   "pocket_claims": "",
+   "price_max": 339.0,
+   "price_min": 339.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/whole-house-bundle.png?v=1792387968",
+   "product_id": "15979780702494",
+   "readiness": "needs_facts",
+   "status": "active",
+   "tags": [
+    "kelson-bundle"
+   ],
+   "title": "The Whole House",
+   "url": "https://duderobe.com/products/the-whole-house-bundle",
+   "variant_count": 1,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": 422.0,
+     "id": 60282221822238,
+     "options": [
+      {
+       "name": "Title",
+       "value": "Default Title"
+      }
+     ],
+     "price": 339.0,
+     "sku": null,
+     "title": "Default Title"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [
+    "sports_fans"
+   ],
+   "audience_stated": "",
+   "category": "robes_and_tops",
+   "description": "Fight night just got a lot more comfortable. As seen on Kickstarter and ABC's Shark Tank, the DudeRobe is the modern twist on the boring old bathrobe. Now in an official UFC edition for the fan who takes fight night, post-workout recovery, and couch dominance equally seriously. Whether you're a robe guy or you've never worn one in your life, you'd wear this. The UFC DudeRobe is the UFC merch you'll actually use every single day, not just on fight nights. Why It's the Ultimate UFC Merch Pick: Hoodie Fit and Style : Built like a hoodie, wears like a robe. No fluffy hotel bathrobe energy here. Premium Sweatshirt Outside : Soft, durable exterior that holds up as hard as you do. Comfy and Extra-Absorbent Inside : Towel-lined interior for post-shower, post-workout, or post-anything recovery. Never-Lost™ Belt : Permanently attached. No fumbling, no losing it in the laundry. Non-Floppy Arm Cuffs : Structured sleeves that stay out of your way whether you're watching or shadowboxing. Logo'd Drawstring : Signature detail, clean execution. Hidden Inside Pocket : Phone, remote, snacks, fight night essentials all within reach. Above-The-Knee Length : Built for movement and maximum comfort. Pairs with DudeShorts or DudePants : Full fight night kit, unlocked. Available in Black, Navy & Grey. Bold, clean, and built to rep. The perfect gift for any UFC fan, fighter, or dude who just wants to win at loungewear. ***DESIGN UPDATE*** All DudeRobe branding has been removed from the outside of the garments ( other than the drawstrings).",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 1538
+     }
+    },
+    "features": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Hoodie Fit and Style : Built like a hoodie, wears like a robe. No fluffy hotel bathrobe energy here.",
+      "Premium Sweatshirt Outside : Soft, durable exterior that holds up as hard as you do.",
+      "Comfy and Extra-Absorbent Inside : Towel-lined interior for post-shower, post-workout, or post-anything recovery.",
+      "Never-Lost™ Belt : Permanently attached. No fumbling, no losing it in the laundry.",
+      "Non-Floppy Arm Cuffs : Structured sleeves that stay out of your way whether you're watching or shadowboxing.",
+      "Logo'd Drawstring : Signature detail, clean execution.",
+      "Hidden Inside Pocket : Phone, remote, snacks, fight night essentials all within reach.",
+      "Above-The-Knee Length : Built for movement and maximum comfort.",
+      "Pairs with DudeShorts or DudePants : Full fight night kit, unlocked."
+     ]
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 16
+     }
+    }
+   },
+   "family": "UFC DudeRobe",
+   "flags": [
+    "licensed"
+   ],
+   "handle": "the-ufc-duderobe-black",
+   "image_count": 16,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/UFCBLACKROBEFRONT.png?v=1765475220",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/UFCBLACKROBEFRONT-2.png?v=1776161795",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-fight-night-modern-bathrobe-for-guys-lounging-and-chillin.jpg?v=1776161795",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/UFCBLACKROBEBACK.png?v=1776161795",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-black-fight-night-modern-loungewear-guy-bathrobe-kickstarter-shark-tank.jpg?v=1776161795",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-black-modern-bathrobe-guys-lounge-wear-kickstarter-shark-tank.jpg?v=1776161795",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-black-modern-bathrobe-guy-lounge-wear-chill-kickstarter-shark-tank.jpg?v=1776161795",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-modern-luxury-bathrobe-for-men-black-hooded-comfortable-loungewear.jpg?v=1776161795",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-modern-bathrobe-for-men-lounge-around-post-shower-comfortable-black.jpg?v=1776161795",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-modern-bathrobe-style-for-guys-lounge-around-fun-comfy.jpg?v=1776161795",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-modern-mens-bathrobe-featured-on-kickstarter-shark-tank.jpg?v=1776161795",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-modern-black-bathrobe-for-men-lifestyle-robe-comfortable-lounging.jpg?v=1776161795",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-luxury-hooded-bathrobe-modern-comfort-style-kickstarter-shark-tank.jpg?v=1776161795",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-modern-bathrobe-kickstarter-shark-tank-lounging-comfortable-style.jpg?v=1776161795",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-luxury-hooded-bathrobe-modern-comfort-relaxation-lifestyle-image.jpg?v=1776161795",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/all-american-mens-hooded-bathrobe-size-chart-patriotic-robes-for-men.png?v=1776246736"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 134.0,
+   "price_min": 134.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/UFCBLACKROBEFRONT.png?v=1765475220",
+   "product_id": "9503608013086",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "Google Shopping Feed",
+    "igg26_sports_fans",
+    "tier-eligible"
+   ],
+   "title": "UFC DudeRobe - Black",
+   "url": "https://duderobe.com/products/the-ufc-duderobe-black",
+   "variant_count": 4,
+   "variants": [
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 49183460327710,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "XS"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UFC1-BLACK-XS",
+     "title": "Black / XS"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49183460360478,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "S-M"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UFC1-BLACK-S/M",
+     "title": "Black / S-M"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 49183460393246,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "L-XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UFC1-BLACK-L/XL",
+     "title": "Black / L-XL"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 49183460426014,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Black"
+      },
+      {
+       "name": "Size",
+       "value": "2XL-3XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UFC1-BLACK-2XL/3XL",
+     "title": "Black / 2XL-3XL"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [
+    "sports_fans"
+   ],
+   "audience_stated": "",
+   "category": "robes_and_tops",
+   "description": "Fight night just got a lot more comfortable. As seen on Kickstarter and ABC's Shark Tank, the DudeRobe is the modern twist on the boring old bathrobe. Now in an official UFC edition for the fan who takes fight night, post-workout recovery, and couch dominance equally seriously. Whether you're a robe guy or you've never worn one in your life, you'd wear this. The UFC DudeRobe is the UFC merch you'll actually use every single day, not just on fight nights. Why It's the Ultimate UFC Merch Pick: Hoodie Fit and Style : Built like a hoodie, wears like a robe. No fluffy hotel bathrobe energy here. Premium Sweatshirt Outside : Soft, durable exterior that holds up as hard as you do. Comfy and Extra-Absorbent Inside : Towel-lined interior for post-shower, post-workout, or post-anything recovery. Never-Lost™ Belt : Permanently attached. No fumbling, no losing it in the laundry. Non-Floppy Arm Cuffs : Structured sleeves that stay out of your way whether you're watching or shadowboxing. Logo'd Drawstring : Signature detail, clean execution. Hidden Inside Pocket : Phone, remote, snacks, fight night essentials all within reach. Above-The-Knee Length : Built for movement and maximum comfort. Pairs with DudeShorts or DudePants : Full fight night kit, unlocked. Available in Black, Navy & Grey. Bold, clean, and built to rep. The perfect gift for any UFC fan, fighter, or dude who just wants to win at loungewear. ***DESIGN UPDATE*** All DudeRobe branding has been removed from the outside of the garments ( other than the drawstrings).",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 1538
+     }
+    },
+    "features": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Hoodie Fit and Style : Built like a hoodie, wears like a robe. No fluffy hotel bathrobe energy here.",
+      "Premium Sweatshirt Outside : Soft, durable exterior that holds up as hard as you do.",
+      "Comfy and Extra-Absorbent Inside : Towel-lined interior for post-shower, post-workout, or post-anything recovery.",
+      "Never-Lost™ Belt : Permanently attached. No fumbling, no losing it in the laundry.",
+      "Non-Floppy Arm Cuffs : Structured sleeves that stay out of your way whether you're watching or shadowboxing.",
+      "Logo'd Drawstring : Signature detail, clean execution.",
+      "Hidden Inside Pocket : Phone, remote, snacks, fight night essentials all within reach.",
+      "Above-The-Knee Length : Built for movement and maximum comfort.",
+      "Pairs with DudeShorts or DudePants : Full fight night kit, unlocked."
+     ]
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 16
+     }
+    }
+   },
+   "family": "UFC DudeRobe",
+   "flags": [
+    "licensed"
+   ],
+   "handle": "the-ufc-duderobe-grey",
+   "image_count": 16,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/UFCGREYROBEFRONT.png?v=1765475226",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/UFCGREYROBEFRONT-2.png?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-modern-bathrobe-grey-hooded-loungewear-kickstarter-shark-tank.jpg?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/UFCGREYROBEBACK.png?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-grey-modern-bathrobe-guy-lounge-around-chill.jpg?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-grey-modern-bathrobe-for-men-kickstarter-shark-tank-lounge-wear.jpg?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-grey-las-vegas-modern-bathrobe-comfortable-loungewear.jpg?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-grey-modern-bathrobe-chill-loungewear-kickstarter-shark-tank.jpg?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderope-grey-modern-bathrobe-ultimate-comfort-kickstarter-shark-tank.jpg?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-grey-modern-guy-bathrobe-lounge-gift-idea-comfortable-style.jpg?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/family-fun-time-duderobe-modern-bathrobe-bath-time-happiness-mirror-selfie.jpg?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-luxury-hooded-bathrobe-mens-fun-family-moments-lounge-chill.jpg?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-modern-bathrobe-couples-cozy-lounging-home-robe-style.jpg?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-luxury-hooded-bathrobe-modern-design-for-relaxation.jpg?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-modern-kids-bathrobe-fun-family-bonding-grey-hooded-robe.jpg?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/all-american-mens-hooded-bathrobe-size-chart-patriotic-robes-for-men.png?v=1776246736"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 134.0,
+   "price_min": 134.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/UFCGREYROBEFRONT.png?v=1765475226",
+   "product_id": "9503607030046",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "Google Shopping Feed",
+    "igg26_sports_fans",
+    "tier-eligible"
+   ],
+   "title": "UFC DudeRobe - Grey",
+   "url": "https://duderobe.com/products/the-ufc-duderobe-grey",
+   "variant_count": 4,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49183455609118,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "XS"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UFC1-GRAY-XS",
+     "title": "Grey / XS"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 49183455641886,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "S-M"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UFC1-GRAY-S/M",
+     "title": "Grey / S-M"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 49183455674654,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "L-XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UFC1-GRAY-L/XL",
+     "title": "Grey / L-XL"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 49183455707422,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey"
+      },
+      {
+       "name": "Size",
+       "value": "2XL-3XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UFC1-GRAY-2XL/3XL",
+     "title": "Grey / 2XL-3XL"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [
+    "sports_fans"
+   ],
+   "audience_stated": "",
+   "category": "robes_and_tops",
+   "description": "Fight night just got a lot more comfortable. As seen on Kickstarter and ABC's Shark Tank, the DudeRobe is the modern twist on the boring old bathrobe. Now in an official UFC edition for the fan who takes fight night, post-workout recovery, and couch dominance equally seriously. Whether you're a robe guy or you've never worn one in your life, you'd wear this. The UFC DudeRobe is the UFC merch you'll actually use every single day, not just on fight nights. Why It's the Ultimate UFC Merch Pick: Hoodie Fit and Style : Built like a hoodie, wears like a robe. No fluffy hotel bathrobe energy here. Premium Sweatshirt Outside : Soft, durable exterior that holds up as hard as you do. Comfy and Extra-Absorbent Inside : Towel-lined interior for post-shower, post-workout, or post-anything recovery. Never-Lost™ Belt : Permanently attached. No fumbling, no losing it in the laundry. Non-Floppy Arm Cuffs : Structured sleeves that stay out of your way whether you're watching or shadowboxing. Logo'd Drawstring : Signature detail, clean execution. Hidden Inside Pocket : Phone, remote, snacks, fight night essentials all within reach. Above-The-Knee Length : Built for movement and maximum comfort. Pairs with DudeShorts or DudePants : Full fight night kit, unlocked. Available in Black, Navy & Grey. Bold, clean, and built to rep. The perfect gift for any UFC fan, fighter, or dude who just wants to win at loungewear. ***DESIGN UPDATE*** All DudeRobe branding has been removed from the outside of the garments ( other than the drawstrings).",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 1538
+     }
+    },
+    "features": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Hoodie Fit and Style : Built like a hoodie, wears like a robe. No fluffy hotel bathrobe energy here.",
+      "Premium Sweatshirt Outside : Soft, durable exterior that holds up as hard as you do.",
+      "Comfy and Extra-Absorbent Inside : Towel-lined interior for post-shower, post-workout, or post-anything recovery.",
+      "Never-Lost™ Belt : Permanently attached. No fumbling, no losing it in the laundry.",
+      "Non-Floppy Arm Cuffs : Structured sleeves that stay out of your way whether you're watching or shadowboxing.",
+      "Logo'd Drawstring : Signature detail, clean execution.",
+      "Hidden Inside Pocket : Phone, remote, snacks, fight night essentials all within reach.",
+      "Above-The-Knee Length : Built for movement and maximum comfort.",
+      "Pairs with DudeShorts or DudePants : Full fight night kit, unlocked."
+     ]
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 17
+     }
+    }
+   },
+   "family": "UFC DudeRobe",
+   "flags": [
+    "licensed"
+   ],
+   "handle": "the-ufc-duderobe-navy",
+   "image_count": 17,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/UFCNAVYROBEFRONT.png?v=1765475233",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/UFCNAVYROBEFRONT-2.png?v=1776246542",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-fight-night-modern-bathrobe-for-men-loungewear-chill.jpg?v=1776246542",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/UFCNAVYROBEBACK.png?v=1776246542",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-navy-modern-bathrobe-stylish-mens-loungewear-kickstarter-shark-tank.jpg?v=1776246542",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-navy-modern-bathrobe-comfort-lounge-casual-style-men.jpg?v=1776246542",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-navy-modern-bathrobe-lounge-wear-kickstarter-shark-tank-fight-night.jpg?v=1776246542",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-navy-modern-bathrobe-for-men-lifestyle-comfortable-casual-wear.jpg?v=1776246542",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-navy-modern-loungewear-kickstarter-shark-tank.jpg?v=1776246542",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderope-navy-modern-bathrobe-kickstarter-shark-tank-comfort-lounge-wear.jpg?v=1776246542",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-navy-modern-bathrobe-lounge-wear-kickstarter-shark-tank.jpg?v=1776246542",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/family-fun-time-duderobe-modern-bathrobe-bath-time-happiness-mirror-selfie.jpg?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-luxury-hooded-bathrobe-mens-fun-family-moments-lounge-chill.jpg?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-modern-bathrobe-couples-cozy-lounging-home-robe-style.jpg?v=1776246736",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-modern-comfort-robes-for-men-loungewear-using-laptop-relaxing.jpg?v=1776246542",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/ufc-duderobe-modern-lounge-robes-for-men-back-view-bathrobe-kickstarter-shark-tank.jpg?v=1776246542",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/all-american-mens-hooded-bathrobe-size-chart-patriotic-robes-for-men.png?v=1776246736"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 134.0,
+   "price_min": 134.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/UFCNAVYROBEFRONT.png?v=1765475233",
+   "product_id": "9503606833438",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "Google Shopping Feed",
+    "igg26_sports_fans",
+    "tier-eligible"
+   ],
+   "title": "UFC DudeRobe - Navy",
+   "url": "https://duderobe.com/products/the-ufc-duderobe-navy",
+   "variant_count": 4,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49183454724382,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "XS"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UFC1-NAVY-XS",
+     "title": "Navy / XS"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 49183454757150,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "S-M"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UFC1-NAVY-S/M",
+     "title": "Navy / S-M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 49183454789918,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "L-XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UFC1-NAVY-L/XL",
+     "title": "Navy / L-XL"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 49183454822686,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy"
+      },
+      {
+       "name": "Size",
+       "value": "2XL-3XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UFC1-NAVY-2XL/3XL",
+     "title": "Navy / 2XL-3XL"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [
+    "sports_fans"
+   ],
+   "audience_stated": "",
+   "category": "",
+   "description": "Couchgate like the badass Wolverines fan you are. Can't make it to The Big House? Doesn't matter. The University of Michigan DudeRobe is the officially licensed university of michigan apparel built for the fan who bleeds Maize and Blue every single day, not just on game day. Whether you're a robe guy or you've never worn one in your life, you'd wear this. It's the most comfortable way to rep Michigan from the couch, the kitchen, or anywhere else you want to start your day like a Wolverines legend. Wolverines Edition Highlights: WeekendBlend™ Fabric : Premium hoodie-style exterior with a soft, absorbent towel lining inside. Every day feels like the weekend. Officially Licensed Michigan Print : Bold Wolverines logo on a clean, well-designed robe that looks as good as it feels. Design Options Available : Front Only or Front and Back print, in Navy or Grey. Pick your look. Never-Lost™ Belt : Permanently attached, because real fans have better things to worry about than finding their belt. Non-Floppy Sleeves : Cuffed, structured, and always in place, no matter how intense the game gets. Hidden Stash Pocket : For your phone, snacks, remote, and anything else essential to the couchgate experience. Above-The-Knee Length : Built for movement and maximum comfort, game day or not. The perfect university of michigan apparel gift for any alum, student, parent, grandparent, or fan who takes their Michigan pride seriously and their comfort even more seriously. Go Blue.",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 1478
+     }
+    },
+    "features": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "WeekendBlend™ Fabric : Premium hoodie-style exterior with a soft, absorbent towel lining inside. Every day feels like the weekend.",
+      "Officially Licensed Michigan Print : Bold Wolverines logo on a clean, well-designed robe that looks as good as it feels.",
+      "Design Options Available : Front Only or Front and Back print, in Navy or Grey. Pick your look.",
+      "Never-Lost™ Belt : Permanently attached, because real fans have better things to worry about than finding their belt.",
+      "Non-Floppy Sleeves : Cuffed, structured, and always in place, no matter how intense the game gets.",
+      "Hidden Stash Pocket : For your phone, snacks, remote, and anything else essential to the couchgate experience.",
+      "Above-The-Knee Length : Built for movement and maximum comfort, game day or not."
+     ]
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 7
+     }
+    }
+   },
+   "family": "University of Michigan DudeRobe",
+   "flags": [
+    "licensed"
+   ],
+   "handle": "u-michigan-duderobe",
+   "image_count": 7,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/university-of-michigan-duderobe-apparel-merchandise-robe.png?v=1774988631",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/university-of-michigan-duderobe-apparel-merchandise-robe-2.png?v=1776246307",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/university-of-michigan-duderobe-apparel-merchandise-robe-features.png?v=1776246307",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/university-of-michigan-duderobe-apparel-merchandise-robes-navy-blue.png?v=1776246307",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/university-of-michigan-duderobe-apparel-merchandise-robe-navy.png?v=1776246307",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/Gemini_Generated_Image_8i9v7i8i9v7i8i9v.png?v=1776246307",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/UM_DR_Grey_front_back_1.png?v=1776246307"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials"
+   ],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "",
+   "price_max": 134.0,
+   "price_min": 134.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/university-of-michigan-duderobe-apparel-merchandise-robe.png?v=1774988631",
+   "product_id": "10012139094302",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "edd-exclude",
+    "igg26_sports_fans",
+    "tier-eligible"
+   ],
+   "title": "University of Michigan DudeRobe",
+   "url": "https://duderobe.com/products/u-michigan-duderobe",
+   "variant_count": 12,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50624701301022,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy - Front Only"
+      },
+      {
+       "name": "Size",
+       "value": "S/M"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UM3-001-S/M",
+     "title": "Navy - Front Only / S/M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50624701432094,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy - Front Only"
+      },
+      {
+       "name": "Size",
+       "value": "L/XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UM3-001-L/XL",
+     "title": "Navy - Front Only / L/XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50624701563166,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy - Front Only"
+      },
+      {
+       "name": "Size",
+       "value": "2XL/3XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UM3-001-2XL/3XL",
+     "title": "Navy - Front Only / 2XL/3XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50624701333790,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey - Front Only"
+      },
+      {
+       "name": "Size",
+       "value": "S/M"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UM3-073-S/M",
+     "title": "Grey - Front Only / S/M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50624701464862,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey - Front Only"
+      },
+      {
+       "name": "Size",
+       "value": "L/XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UM3-073-L/XL",
+     "title": "Grey - Front Only / L/XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50624701595934,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey - Front Only"
+      },
+      {
+       "name": "Size",
+       "value": "2XL/3XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UM3-073-2XL/3XL",
+     "title": "Grey - Front Only / 2XL/3XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50624701366558,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy - Front & Back"
+      },
+      {
+       "name": "Size",
+       "value": "S/M"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UM1-001-S/M",
+     "title": "Navy - Front & Back / S/M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50624701497630,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy - Front & Back"
+      },
+      {
+       "name": "Size",
+       "value": "L/XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UM1-001-L/XL",
+     "title": "Navy - Front & Back / L/XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50624701628702,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Navy - Front & Back"
+      },
+      {
+       "name": "Size",
+       "value": "2XL/3XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UM1-001-2XL/3XL",
+     "title": "Navy - Front & Back / 2XL/3XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50624701399326,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey - Front & Back"
+      },
+      {
+       "name": "Size",
+       "value": "S/M"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UM2-073-S/M",
+     "title": "Grey - Front & Back / S/M"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50624701530398,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey - Front & Back"
+      },
+      {
+       "name": "Size",
+       "value": "L/XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UM2-073-L/XL",
+     "title": "Grey - Front & Back / L/XL"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 50624701661470,
+     "options": [
+      {
+       "name": "Color",
+       "value": "Grey - Front & Back"
+      },
+      {
+       "name": "Size",
+       "value": "2XL/3XL"
+      }
+     ],
+     "price": 134.0,
+     "sku": "ROBE1UM2-073-2XL/3XL",
+     "title": "Grey - Front & Back / 2XL/3XL"
+    }
+   ]
+  }
+ ],
+ "schema": 1
+}
