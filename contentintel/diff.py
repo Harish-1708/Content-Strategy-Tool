@@ -1,171 +1,161 @@
-"""What changed between two accepted snapshots.
+"""Clean, reusable exports of a brand's current catalogue.
 
-Rules that matter
-  * updated_at is never used: it changes on every product between fetches.
-  * a product that disappears is only "suspected removed"; a person confirms.
-  * a product that comes back is reported as "returned", with what changed meanwhile.
-  * stock flips (sold out / back in stock) are reported apart from content changes.
+Three files per brand, rewritten only when their content changes:
+  products.json   one entry per product, with description and facts (for tools)
+  products.csv    one row per product (for a sheet; opens straight in Google Sheets)
+  variants.csv    one row per variant: size/colour options, price, stock
+
+No timestamps are written into them, so identical data gives identical bytes and
+git shows a diff only when something real changed. The time of the last check is
+in last_checked.json.
 """
-import copy
+import csv
+import io
+import json
+
+EXPORT_NAMES = ("products.json", "products.csv", "variants.csv")
+
+PRODUCT_COLUMNS = [
+    "product_id", "handle", "title", "url", "status", "flags", "excluded", "readiness",
+    "missing_required", "category", "family", "audience_hints", "audience_stated",
+    "in_stock", "price_min", "price_max", "on_sale", "variant_count", "image_count",
+    "primary_image", "tags", "materials", "pocket_claims", "ingredients", "allergens",
+]
+VARIANT_COLUMNS = [
+    "product_id", "product_title", "variant_id", "variant_title", "options", "sku",
+    "price", "compare_at_price", "available",
+]
 
 
-def _excerpt(old, new, width=70):
-    i = 0
-    limit = min(len(old), len(new))
-    while i < limit and old[i] == new[i]:
-        i += 1
-    start = max(0, i - 20)
-    return {"old": old[start:start + width], "new": new[start:start + width]}
+def _join(items, sep="; "):
+    return sep.join(str(i) for i in items)
 
 
-def _variant_map(rec):
-    return {v["id"]: v for v in rec["variants"]}
+def _money(value):
+    return "" if value is None else f"{value:.2f}"
 
 
-def diff_records(old, new):
-    """Field-level differences between two versions of one product (or {} if none)."""
-    out = {}
-    for key in ("title", "handle", "product_type", "status"):
-        if old.get(key) != new.get(key):
-            out[key] = {"old": old.get(key), "new": new.get(key)}
-    added = sorted(set(new["tags"]) - set(old["tags"]))
-    removed = sorted(set(old["tags"]) - set(new["tags"]))
-    if added or removed:
-        out["tags"] = {"added": added, "removed": removed}
-    fa = sorted(set(new["flags"]) - set(old["flags"]))
-    fr = sorted(set(old["flags"]) - set(new["flags"]))
-    if fa or fr:
-        out["flags"] = {"added": fa, "removed": fr}
-    if old["body_text"] != new["body_text"]:
-        out["body_text"] = _excerpt(old["body_text"], new["body_text"])
-
-    ov, nv = _variant_map(old), _variant_map(new)
-    va = [nv[i]["title"] for i in nv if i not in ov]
-    vr = [ov[i]["title"] for i in ov if i not in nv]
-    if va or vr:
-        out["variants"] = {"added": va, "removed": vr}
-    prices, compare, skus = [], [], []
-    for vid in ov.keys() & nv.keys():
-        a, b = ov[vid], nv[vid]
-        if a["price"] != b["price"]:
-            prices.append({"variant": b["title"], "old": a["price"], "new": b["price"]})
-        if a["compare_at_price"] != b["compare_at_price"]:
-            compare.append({"variant": b["title"], "old": a["compare_at_price"],
-                            "new": b["compare_at_price"]})
-        if a["sku"] != b["sku"]:
-            skus.append({"variant": b["title"], "old": a["sku"], "new": b["sku"]})
-    if prices:
-        out["price"] = prices
-    if compare:
-        out["compare_at_price"] = compare
-    if skus:
-        out["sku"] = skus
-
-    oi = {i["key"]: i for i in old["images"]}
-    ni = {i["key"]: i for i in new["images"]}
-    ia, ir = sorted(set(ni) - set(oi)), sorted(set(oi) - set(ni))
-    if ia or ir:
-        out["images"] = {"added": len(ia), "removed": len(ir)}
-
-    fa = sorted(set(new["facts"]) - set(old["facts"]))
-    fr = sorted(set(old["facts"]) - set(new["facts"]))
-    fc = sorted(k for k in set(old["facts"]) & set(new["facts"])
-                if old["facts"][k]["value"] != new["facts"][k]["value"])
-    if fa or fr or fc:
-        out["facts"] = {"added": fa, "removed": fr, "changed": fc}
-
-    if not out and old["content_hash"] != new["content_hash"]:
-        out["unclassified"] = {"note": "content hash differs but no field difference was found"}
-    return out
+def _bool(value):
+    return "true" if value else "false"
 
 
-def diff_availability(old, new):
-    """Stock flips for variants present in both versions (or {} if none)."""
-    ov, nv = _variant_map(old), _variant_map(new)
-    sold_out, restocked = [], []
-    for vid in ov.keys() & nv.keys():
-        if ov[vid]["available"] and not nv[vid]["available"]:
-            sold_out.append(nv[vid]["title"])
-        elif not ov[vid]["available"] and nv[vid]["available"]:
-            restocked.append(nv[vid]["title"])
-    if not sold_out and not restocked:
-        return {}
-    product = None
-    if old["in_stock"] and not new["in_stock"]:
-        product = "sold_out"
-    elif not old["in_stock"] and new["in_stock"]:
-        product = "back_in_stock"
-    return {"product": product, "variants_sold_out": sorted(sold_out),
-            "variants_restocked": sorted(restocked)}
+def _fact_value(rec, name):
+    fact = rec["facts"].get(name)
+    return fact["value"] if fact else None
 
 
-def _event(kind, rec, details=None):
-    return {"type": kind, "product_id": rec["product_id"], "title": rec["title"],
-            "handle": rec["handle"], "details": details or {}}
+def _materials(rec):
+    value = _fact_value(rec, "materials")
+    if not value:
+        return ""
+    return _join(f"{i['material']} {i['percent']}%" for i in value["items"])
 
 
-def _entry(rec, now):
-    return {"handle": rec["handle"], "title": rec["title"], "first_seen": now,
-            "last_seen": now, "presence": "present"}
+def _pockets(rec):
+    value = _fact_value(rec, "pocket_claims")
+    if not value:
+        return ""
+    return _join(dict.fromkeys(c["count"] for c in value))
 
 
-def diff_snapshots(prev_records, cur_records, registry, now, initial=False):
-    """Return (events, new_registry). Inputs are not modified."""
-    registry = copy.deepcopy(registry or {})
-    events = []
-
-    for pid, rec in cur_records.items():
-        entry = registry.get(pid)
-        if entry is None:
-            registry[pid] = _entry(rec, now)
-            if not initial:
-                events.append(_event("new", rec))
-            continue
-        before = prev_records.get(pid) or entry.get("last_record")
-        if entry["presence"] != "present":
-            events.append(_event("returned", rec, {
-                "was": entry["presence"],
-                "changes": diff_records(before, rec) if before else {}}))
-            entry["presence"] = "present"
-            for key in ("suspected_since", "last_record", "confirmed_removed_at", "confirmed_by"):
-                entry.pop(key, None)
-        elif before is not None:
-            if before["content_hash"] != rec["content_hash"]:
-                events.append(_event("changed", rec, diff_records(before, rec)))
-            stock = diff_availability(before, rec)
-            if stock:
-                events.append(_event("availability", rec, stock))
-        entry.update({"handle": rec["handle"], "title": rec["title"], "last_seen": now})
-
-    for pid, entry in registry.items():
-        if pid in cur_records or entry["presence"] != "present":
-            continue
-        last = prev_records.get(pid)
-        entry["presence"] = "suspected_removed"
-        entry["suspected_since"] = now
-        if last is not None:
-            entry["last_record"] = last
-        events.append({"type": "suspected_removed", "product_id": pid,
-                       "title": entry["title"], "handle": entry["handle"], "details": {}})
-    return events, registry
+def _prices(rec):
+    prices = [v["price"] for v in rec["variants"] if v["price"] is not None]
+    return (min(prices), max(prices)) if prices else (None, None)
 
 
-def confirm_removed(registry, product_id, by, now):
-    """A person confirms a suspected removal. Returns the updated registry."""
-    registry = copy.deepcopy(registry)
-    entry = registry.get(str(product_id))
-    if entry is None:
-        raise KeyError(f"Unknown product id {product_id}")
-    if entry["presence"] != "suspected_removed":
-        raise ValueError(f"Product {product_id} is {entry['presence']}, not suspected_removed")
-    entry["presence"] = "confirmed_removed"
-    entry["confirmed_removed_at"] = now
-    entry["confirmed_by"] = by
-    return registry
+def _ordered(records):
+    return sorted(records.values(), key=lambda r: (r["title"].lower(), r["product_id"]))
 
 
-def pending_removals(registry):
-    return sorted(
-        ({"product_id": pid, "title": e["title"], "suspected_since": e.get("suspected_since")}
-         for pid, e in (registry or {}).items() if e["presence"] == "suspected_removed"),
-        key=lambda x: x["product_id"])
+def _product_row(rec):
+    low, high = _prices(rec)
+    audience = _fact_value(rec, "audience")
+    return {
+        "product_id": rec["product_id"], "handle": rec["handle"], "title": rec["title"],
+        "url": rec["url"], "status": rec["status"], "flags": _join(rec["flags"]),
+        "excluded": _bool(rec["excluded"]), "readiness": rec["readiness"]["state"],
+        "missing_required": _join(rec["readiness"]["missing_required"]),
+        "category": rec["category"] or "", "family": rec["family"],
+        "audience_hints": _join(rec["audience_hints"]),
+        "audience_stated": audience if isinstance(audience, str) else "",
+        "in_stock": _bool(rec["in_stock"]), "price_min": _money(low), "price_max": _money(high),
+        "on_sale": _bool("on_sale" in rec["flags"]), "variant_count": len(rec["variants"]),
+        "image_count": len(rec["images"]),
+        "primary_image": rec["images"][0]["src"] if rec["images"] else "",
+        "tags": _join(rec["tags"]), "materials": _materials(rec),
+        "pocket_claims": _pockets(rec),
+        "ingredients": _join(_fact_value(rec, "ingredients") or [], " || "),
+        "allergens": _join(_fact_value(rec, "allergens") or []),
+    }
+
+
+def _csv(columns, rows):
+    buf = io.StringIO()
+    writer = csv.DictWriter(buf, fieldnames=columns, lineterminator="\n")
+    writer.writeheader()
+    writer.writerows(rows)
+    return buf.getvalue()
+
+
+def _options(rec, variant):
+    """Size/colour options in the store's own order (kept in option_names)."""
+    names = rec.get("option_names") or list(variant["options"])
+    return [(n, variant["options"][n]) for n in names if n in variant["options"]]
+
+
+def _variant_rows(records):
+    for rec in _ordered(records):
+        for v in rec["variants"]:
+            yield {
+                "product_id": rec["product_id"], "product_title": rec["title"],
+                "variant_id": v["id"], "variant_title": v["title"],
+                "options": _join(f"{k}={val}" for k, val in _options(rec, v)),
+                "sku": v["sku"] or "", "price": _money(v["price"]),
+                "compare_at_price": _money(v["compare_at_price"]),
+                "available": _bool(v["available"]),
+            }
+
+
+def _product_json(rec):
+    row = _product_row(rec)
+    row.update({
+        "flags": list(rec["flags"]), "excluded": rec["excluded"],
+        "excluded_reason": rec["excluded_reason"],
+        "audience_hints": list(rec["audience_hints"]),
+        "missing_required": list(rec["readiness"]["missing_required"]),
+        "missing_expected": list(rec["readiness"]["missing_expected"]),
+        "in_stock": rec["in_stock"], "on_sale": "on_sale" in rec["flags"],
+        "price_min": _prices(rec)[0], "price_max": _prices(rec)[1],
+        "tags": list(rec["tags"]),
+        "description": rec["body_text"],
+        "facts": rec["facts"],
+        "fact_conflicts": rec["fact_conflicts"],
+        "images": [i["src"] for i in rec["images"]],
+        "variants": [{"id": v["id"], "title": v["title"],
+                      "options": [{"name": n, "value": val} for n, val in _options(rec, v)],
+                      "sku": v["sku"], "price": v["price"],
+                      "compare_at_price": v["compare_at_price"], "available": v["available"]}
+                     for v in rec["variants"]],
+    })
+    return row
+
+
+def build_exports(slug, records):
+    """Return {file name: text} for one brand's records."""
+    ordered = _ordered(records)
+    doc = {"schema": 1, "brand": slug, "count": len(ordered),
+           "products": [_product_json(r) for r in ordered]}
+    return {
+        "products.json": json.dumps(doc, ensure_ascii=False, indent=1, sort_keys=True) + "\n",
+        "products.csv": _csv(PRODUCT_COLUMNS, [_product_row(r) for r in ordered]),
+        "variants.csv": _csv(VARIANT_COLUMNS, _variant_rows(records)),
+    }
+
+
+def write_exports(store, slug, records):
+    """Write the exports; return the names of the files whose content changed."""
+    changed = []
+    for name, text in build_exports(slug, records).items():
+        if store.write_export(slug, name, text):
+            changed.append(name)
+    return changed
