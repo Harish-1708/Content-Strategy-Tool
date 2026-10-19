@@ -1,4 +1,5 @@
 import copy
+from dataclasses import replace
 
 from contentintel.normalize import (content_hash, image_key, normalize_all,
                                     normalize_product)
@@ -228,3 +229,40 @@ def test_hash_function_ignores_dict_ordering(swov_records):
 def test_by_handle_helper_finds_the_classic_products(swov_records):
     for handle in ("swoveralls-midnight-black", "swoveralls-navy", "swoveralls-dark-athletic-grey"):
         assert by_handle(swov_records, handle)["status"] == "active"
+
+
+def test_fingerprints_ignore_volatile_fields_and_stock_when_asked(dude):
+    from contentintel.normalize import catalogue_fingerprint
+    base = records_for(dude, "duderobe_fetch_a.json")
+    noisy = raw_products("duderobe_fetch_a.json")
+    for p in noisy:
+        p["updated_at"] = "2031-01-01T00:00:00-00:00"
+    assert catalogue_fingerprint(normalize_all(noisy, dude)[0]) == catalogue_fingerprint(base)
+
+    sold = raw_products("duderobe_fetch_a.json")
+    sold[0]["variants"][0]["available"] = not sold[0]["variants"][0]["available"]
+    sold_records = normalize_all(sold, dude)[0]
+    assert catalogue_fingerprint(sold_records, include_stock=True) != catalogue_fingerprint(base, include_stock=True)
+    assert catalogue_fingerprint(sold_records, include_stock=False) == catalogue_fingerprint(base, include_stock=False)
+
+
+def test_fingerprints_change_when_a_rules_edit_reclassifies_products(swov):
+    from contentintel.normalize import catalogue_fingerprint
+    base = records_for(swov, "swoveralls_full_72.json")
+    edited = replace(swov, catalogue={**swov.catalogue, "exclude": {
+        **swov.catalogue["exclude"],
+        "title_patterns": swov.catalogue["exclude"]["title_patterns"] + ["midnight black"]}})
+    after = normalize_all(raw_products("swoveralls_full_72.json"), edited)[0]
+    assert all(after[i]["content_hash"] == base[i]["content_hash"] for i in base)    # content untouched
+    assert catalogue_fingerprint(after, False) != catalogue_fingerprint(base, False)
+
+
+def test_a_manual_family_override_changes_the_content_hash(dude):
+    base = by_title(records_for(dude, "duderobe_fetch_a.json"), "The SheRobe")
+    edited = replace(dude, manual_facts={"the-sherobe": {"audience": "women", "family": "Robes for her"}})
+    other = by_title(normalize_all(raw_products("duderobe_fetch_a.json"), edited)[0], "The SheRobe")
+    assert other["family"] == "Robes for her" and other["content_hash"] != base["content_hash"]
+
+
+def test_option_names_are_kept_in_the_stores_order(swov_records):
+    assert by_title(swov_records, "Swoveralls - Navy")["option_names"] == ["Size", "Color"]
