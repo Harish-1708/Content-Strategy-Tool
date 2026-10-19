@@ -1,0 +1,37 @@
+# DudeRobe brand profile.
+# NOTE: confirm `domain` before the first live run.
+slug: duderobe
+name: DudeRobe
+platform: shopify
+domain: duderobe.com
+category_schema: apparel
+
+catalogue:
+  exclude:
+    product_types: [Personalization, Gift Cards]
+    title_patterns: ["^gift card$"]
+    tags: [hidden]
+  status_rules: {}
+  flags:
+    limited_edition: {title_patterns: ["limited edition"]}
+    # Licensed products usually carry licensor guidelines: flag them for review.
+    licensed: {title_patterns: ["\\bUFC\\b", "University of Michigan"]}
+  category_by_type:
+    Tops: robes_and_tops
+    Bottoms: bottoms
+    T-Shirt: merch
+  # Merchandising tags are hints only, never verified audience research.
+  audience:
+    tags:
+      igg26_for_him: him
+      igg26_for_her: her
+      igg26_for_kids: kids
+      igg26_sports_fans: sports_fans
+      igg26_for_wellness: wellness
+    title_patterns: {"^Kids\\b": kids}
+
+facts:
+  required: [description]
+  expected: [images, materials, features]
+
+gate: {}

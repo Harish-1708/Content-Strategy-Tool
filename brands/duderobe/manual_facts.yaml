@@ -1,0 +1,9 @@
+# Facts stated by the Kelson team. Manual facts outrank the website.
+# Keys are Shopify product handles. Add description, features, materials as you get them.
+products:
+  the-sherobe:
+    audience: women
+  the-brothrow:
+    audience: men
+  the-couple-bundle-1:
+    audience: couples

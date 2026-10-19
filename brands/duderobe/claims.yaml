@@ -1,0 +1,7 @@
+# Approved-claim register (Phase 1 stores it; validators enforce it in Phase 3).
+claims:
+  - id: shark-tank
+    text: "As seen on Shark Tank"
+    status: licensed
+    guidelines: pending
+    note: "License obtained. Usage guidelines not yet received."
