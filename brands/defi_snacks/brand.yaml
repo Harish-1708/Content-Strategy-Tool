@@ -1,0 +1,24 @@
+# Defi Snacks brand profile (food schema).
+# NOTE: confirm `domain` before the first live run. Sources list both
+# defi-snacks.com and defisnacks.com.
+slug: defi_snacks
+name: Defi Snacks
+platform: shopify
+domain: defi-snacks.com
+category_schema: food
+
+catalogue:
+  exclude:
+    product_types: [Shipping Protection]
+    title_patterns: ["melting insurance"]
+    tags: []
+  status_rules: {}
+  flags: {}
+  category_by_type: {}
+  audience: {}
+
+facts:
+  required: [description, ingredients]
+  expected: [allergens, nutrition_facts, images]
+
+gate: {}
