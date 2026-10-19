@@ -1,0 +1,1092 @@
+{
+ "brand": "defi_snacks",
+ "count": 7,
+ "fetched_at": "2026-10-19T16:33:17Z",
+ "gate": {
+  "reasons": [
+   {
+    "code": "needs_baseline",
+    "level": "info",
+    "message": "No confirmed baseline yet. A person must confirm the product count (7) before generation is allowed."
+   }
+  ],
+  "status": "unbaselined"
+ },
+ "products": {
+  "8742645301486": {
+   "audience_hints": [],
+   "availability": {
+    "46099204604142": true
+   },
+   "body_text": "",
+   "brand": "defi_snacks",
+   "category": null,
+   "content_hash": "9d48f5d918a89a5488c4bc56c6996ce0b512031ac6082f9c46f2e6d1b3e664e2",
+   "created_at": "2025-01-27T08:10:22-05:00",
+   "excluded": true,
+   "excluded_reason": "product type 'Shipping Protection'",
+   "fact_conflicts": [],
+   "facts": {
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 1
+     }
+    }
+   },
+   "family": "Melting Insurance",
+   "flags": [],
+   "handle": "shipping-protection",
+   "images": [
+    {
+     "height": 1200,
+     "id": 42895075311854,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/shipping-protection-image.jpg",
+     "position": 1,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/shipping-protection-image.jpg?v=1737983424",
+     "variant_ids": [],
+     "width": 1200
+    }
+   ],
+   "in_stock": true,
+   "product_id": "8742645301486",
+   "product_type": "Shipping Protection",
+   "published_at": "2025-01-27T08:10:22-05:00",
+   "readiness": {
+    "missing_expected": [
+     "allergens",
+     "nutrition_facts"
+    ],
+    "missing_required": [
+     "description",
+     "ingredients"
+    ],
+    "state": "excluded"
+   },
+   "status": "excluded",
+   "tags": [],
+   "title": "Melting Insurance",
+   "updated_at": "2026-10-19T12:33:18-04:00",
+   "url": "https://defi-snacks.com/products/shipping-protection",
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 46099204604142,
+     "options": {
+      "Tiers": "0TN"
+     },
+     "price": 4.99,
+     "sku": "0102",
+     "title": "0TN"
+    }
+   ],
+   "vendor": "DEFI Snacks Store"
+  },
+  "9330450465006": {
+   "audience_hints": [],
+   "availability": {
+    "48201601810670": true,
+    "48201601843438": true,
+    "48201601876206": true,
+    "48201601908974": true
+   },
+   "body_text": "Dark Chocolate Flavor - DEFI Chocolate Crispy Superfood Bite. INGREDIENTS: Dark Chocolate (cacao liquor, cane sugar, cacao butter, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder. Contains Milk.",
+   "brand": "defi_snacks",
+   "category": null,
+   "content_hash": "1ce57042cab2254d97acdc094dd43f5ac8ed5e93d96875f5ed40157325b2bf53",
+   "created_at": "2026-06-25T06:31:13-04:00",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "allergens": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Milk"
+     ]
+    },
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 267
+     }
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 3
+     }
+    },
+    "ingredients": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Dark Chocolate (cacao liquor, cane sugar, cacao butter, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder"
+     ]
+    }
+   },
+   "family": "Dark Chocolate Crispy Superfood Bite",
+   "flags": [],
+   "handle": "dark-chocolate-crispy-superfood-bite",
+   "images": [
+    {
+     "height": 2304,
+     "id": 47795848413422,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DC_Award_0d415c2c-4e7d-43e1-89c7-850d343f8c00.png",
+     "position": 1,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DC_Award_0d415c2c-4e7d-43e1-89c7-850d343f8c00.png?v=1786466744",
+     "variant_ids": [],
+     "width": 2016
+    },
+    {
+     "height": 2829,
+     "id": 44201761669358,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Dark_Chocolate_Pouch_Back_Mockup.png",
+     "position": 2,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Dark_Chocolate_Pouch_Back_Mockup.png?v=1749226714",
+     "variant_ids": [],
+     "width": 2476
+    },
+    {
+     "height": 1380,
+     "id": 44201753706734,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_dark_nft.png",
+     "position": 3,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_dark_nft.png?v=1749226602",
+     "variant_ids": [],
+     "width": 772
+    }
+   ],
+   "in_stock": true,
+   "product_id": "9330450465006",
+   "product_type": "",
+   "published_at": "2026-07-01T09:22:35-04:00",
+   "readiness": {
+    "missing_expected": [
+     "nutrition_facts"
+    ],
+    "missing_required": [],
+    "state": "ready"
+   },
+   "status": "active",
+   "tags": [],
+   "title": "Dark Chocolate Crispy Superfood Bite",
+   "updated_at": "2026-10-19T12:33:18-04:00",
+   "url": "https://defi-snacks.com/products/dark-chocolate-crispy-superfood-bite",
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48201601810670,
+     "options": {
+      "Packs": "3-pack"
+     },
+     "price": 59.91,
+     "sku": null,
+     "title": "3-pack"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48201601843438,
+     "options": {
+      "Packs": "6-pack"
+     },
+     "price": 76.26,
+     "sku": null,
+     "title": "6-pack"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48201601876206,
+     "options": {
+      "Packs": "9-pack"
+     },
+     "price": 97.6,
+     "sku": null,
+     "title": "9-pack"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48201601908974,
+     "options": {
+      "Packs": "12-pack"
+     },
+     "price": 111.8,
+     "sku": null,
+     "title": "12-pack"
+    }
+   ],
+   "vendor": "DEFI Snacks Store"
+  },
+  "9346472542446": {
+   "audience_hints": [],
+   "availability": {
+    "48226751480046": true,
+    "48226751512814": true,
+    "48226751545582": true,
+    "48226751578350": true
+   },
+   "body_text": "PINK HIMALAYAN SEA SALT Flavor - DEFI Chocolate Crispy Superfood Bite INGREDIENTS: Dark Chocolate (cacao liquor, cane sugar, cacao butter, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder, Pink Himalayan Sea Salt. Contains Milk.",
+   "brand": "defi_snacks",
+   "category": null,
+   "content_hash": "94142b66f54e3ceb8781d8e401f40844acd2888bce97c246f2fd09708cd0f87a",
+   "created_at": "2026-06-30T15:27:34-04:00",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "allergens": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Milk"
+     ]
+    },
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 300
+     }
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 3
+     }
+    },
+    "ingredients": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Dark Chocolate (cacao liquor, cane sugar, cacao butter, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder, Pink Himalayan Sea Salt"
+     ]
+    }
+   },
+   "family": "Dark Chocolate Pink Himalayan Salt Crispy Superfood Bite",
+   "flags": [],
+   "handle": "dark-chocolate-pink-himalayan-salt-crispy-superfood-bite",
+   "images": [
+    {
+     "height": 2304,
+     "id": 47795848380654,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DCPHS_Award.png",
+     "position": 1,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DCPHS_Award.png?v=1786466745",
+     "variant_ids": [],
+     "width": 2016
+    },
+    {
+     "height": 2829,
+     "id": 44201763406062,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Dark_Himalayan_Salt_Pouch_Back_Mockup.png",
+     "position": 2,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Dark_Himalayan_Salt_Pouch_Back_Mockup.png?v=1749226725",
+     "variant_ids": [],
+     "width": 2476
+    },
+    {
+     "height": 1380,
+     "id": 44201753772270,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_salt_nft.png",
+     "position": 3,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_salt_nft.png?v=1749226602",
+     "variant_ids": [],
+     "width": 772
+    }
+   ],
+   "in_stock": true,
+   "product_id": "9346472542446",
+   "product_type": "",
+   "published_at": "2026-06-30T15:28:37-04:00",
+   "readiness": {
+    "missing_expected": [
+     "nutrition_facts"
+    ],
+    "missing_required": [],
+    "state": "ready"
+   },
+   "status": "active",
+   "tags": [],
+   "title": "Dark Chocolate Pink Himalayan Salt Crispy Superfood Bite",
+   "updated_at": "2026-10-19T12:33:18-04:00",
+   "url": "https://defi-snacks.com/products/dark-chocolate-pink-himalayan-salt-crispy-superfood-bite",
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48226751480046,
+     "options": {
+      "Packs": "3-Pack"
+     },
+     "price": 59.91,
+     "sku": null,
+     "title": "3-Pack"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48226751512814,
+     "options": {
+      "Packs": "6-Pack"
+     },
+     "price": 76.26,
+     "sku": null,
+     "title": "6-Pack"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48226751545582,
+     "options": {
+      "Packs": "9-Pack"
+     },
+     "price": 97.6,
+     "sku": null,
+     "title": "9-Pack"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48226751578350,
+     "options": {
+      "Packs": "12-Pack"
+     },
+     "price": 111.8,
+     "sku": null,
+     "title": "12-Pack"
+    }
+   ],
+   "vendor": "DEFI Snacks Store"
+  },
+  "9346483355886": {
+   "audience_hints": [],
+   "availability": {
+    "48226771992814": true,
+    "48226772222190": true,
+    "48226772254958": true,
+    "48226772287726": true
+   },
+   "body_text": "Milk Chocolate Peanut Butter Crunch Crispy Superfood Bite INGREDIENTS: Milk Chocolate (cane sugar, cacao butter, whole milk powder, cacao liquor, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Casein Protein Powder, Whey Crisps (whey protein, tapioca starch), Dry Roasted Peanuts, Peanut Butter Powder, Pink Himalayan Sea Salt. Contains Milk and Peanuts.",
+   "brand": "defi_snacks",
+   "category": null,
+   "content_hash": "3b343d8246ee4461ff9036f9428362c14bf4f3a526fbd7fce427640636541cb0",
+   "created_at": "2026-06-30T15:33:25-04:00",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "allergens": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Milk and Peanuts"
+     ]
+    },
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 362
+     }
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 3
+     }
+    },
+    "ingredients": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Milk Chocolate (cane sugar, cacao butter, whole milk powder, cacao liquor, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Casein Protein Powder, Whey Crisps (whey protein, tapioca starch), Dry Roasted Peanuts, Peanut Butter Powder, Pink Himalayan Sea Salt"
+     ]
+    }
+   },
+   "family": "Milk Chocolate Peanut Butter Crunch Crispy Superfood Bite",
+   "flags": [],
+   "handle": "milk-chocolate-peanut-butter-crunch-crispy-superfood-bite",
+   "images": [
+    {
+     "height": 2304,
+     "id": 47795848642798,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/MCPBC_Award.png",
+     "position": 1,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/MCPBC_Award.png?v=1786466745",
+     "variant_ids": [],
+     "width": 2016
+    },
+    {
+     "height": 2829,
+     "id": 44201737879790,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Peanut_Butter_Pouch_Back_Mockup.png",
+     "position": 2,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Peanut_Butter_Pouch_Back_Mockup.png?v=1749226357",
+     "variant_ids": [],
+     "width": 2476
+    },
+    {
+     "height": 1380,
+     "id": 44201739026670,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_peanut_nft.png",
+     "position": 3,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_peanut_nft.png?v=1749226387",
+     "variant_ids": [],
+     "width": 772
+    }
+   ],
+   "in_stock": true,
+   "product_id": "9346483355886",
+   "product_type": "",
+   "published_at": "2026-06-30T15:35:56-04:00",
+   "readiness": {
+    "missing_expected": [
+     "nutrition_facts"
+    ],
+    "missing_required": [],
+    "state": "ready"
+   },
+   "status": "active",
+   "tags": [],
+   "title": "Milk Chocolate Peanut Butter Crunch Crispy Superfood Bite",
+   "updated_at": "2026-10-19T12:33:18-04:00",
+   "url": "https://defi-snacks.com/products/milk-chocolate-peanut-butter-crunch-crispy-superfood-bite",
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48226771992814,
+     "options": {
+      "Packs": "3-Pack"
+     },
+     "price": 59.91,
+     "sku": null,
+     "title": "3-Pack"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48226772222190,
+     "options": {
+      "Packs": "6-Pack"
+     },
+     "price": 76.26,
+     "sku": null,
+     "title": "6-Pack"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48226772254958,
+     "options": {
+      "Packs": "9-Pack"
+     },
+     "price": 97.6,
+     "sku": null,
+     "title": "9-Pack"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48226772287726,
+     "options": {
+      "Packs": "12-Pack"
+     },
+     "price": 111.8,
+     "sku": null,
+     "title": "12-Pack"
+    }
+   ],
+   "vendor": "DEFI Snacks Store"
+  },
+  "9346502164718": {
+   "audience_hints": [],
+   "availability": {
+    "48226796896494": true,
+    "48226797125870": true,
+    "48226797158638": true,
+    "48226797191406": true
+   },
+   "body_text": "Milk Chocolate Flavor - DEFI Chocolate Crispy Superfood Bite INGREDIENTS: Milk Chocolate (cane sugar, cacao butter, whole milk powder, cacao liquor, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder. Contains Milk.",
+   "brand": "defi_snacks",
+   "category": null,
+   "content_hash": "39508d26510eacd489e463574fb478c8f137e2c7b6bae2dc57db367b22bba625",
+   "created_at": "2026-06-30T15:42:55-04:00",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "allergens": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Milk"
+     ]
+    },
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 285
+     }
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 3
+     }
+    },
+    "ingredients": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Milk Chocolate (cane sugar, cacao butter, whole milk powder, cacao liquor, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder"
+     ]
+    }
+   },
+   "family": "Milk Chocolate Crispy Superfood Bite",
+   "flags": [],
+   "handle": "milk-chocolate-crispy-superfood-bite",
+   "images": [
+    {
+     "height": 2304,
+     "id": 47795848347886,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/MC_Award_37bc2b6f-97ed-41d7-83a4-d74e38980041.png",
+     "position": 1,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/MC_Award_37bc2b6f-97ed-41d7-83a4-d74e38980041.png?v=1786466744",
+     "variant_ids": [],
+     "width": 2016
+    },
+    {
+     "height": 2829,
+     "id": 44201764356334,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Milk_Chocolate_Pouch_Back_Mockup.png",
+     "position": 2,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Milk_Chocolate_Pouch_Back_Mockup.png?v=1749226885",
+     "variant_ids": [],
+     "width": 2476
+    },
+    {
+     "height": 1380,
+     "id": 44201753739502,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_milk_nft.png",
+     "position": 3,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_milk_nft.png?v=1749226885",
+     "variant_ids": [],
+     "width": 772
+    }
+   ],
+   "in_stock": true,
+   "product_id": "9346502164718",
+   "product_type": "",
+   "published_at": "2026-06-30T15:43:28-04:00",
+   "readiness": {
+    "missing_expected": [
+     "nutrition_facts"
+    ],
+    "missing_required": [],
+    "state": "ready"
+   },
+   "status": "active",
+   "tags": [],
+   "title": "Milk Chocolate Crispy Superfood Bite",
+   "updated_at": "2026-10-19T12:33:18-04:00",
+   "url": "https://defi-snacks.com/products/milk-chocolate-crispy-superfood-bite",
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48226796896494,
+     "options": {
+      "Packs": "3-Pack"
+     },
+     "price": 59.91,
+     "sku": null,
+     "title": "3-Pack"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48226797125870,
+     "options": {
+      "Packs": "6-Pack"
+     },
+     "price": 76.26,
+     "sku": null,
+     "title": "6-Pack"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48226797158638,
+     "options": {
+      "Packs": "9-Pack"
+     },
+     "price": 97.6,
+     "sku": null,
+     "title": "9-Pack"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48226797191406,
+     "options": {
+      "Packs": "12-Pack"
+     },
+     "price": 111.8,
+     "sku": null,
+     "title": "12-Pack"
+    }
+   ],
+   "vendor": "DEFI Snacks Store"
+  },
+  "9356070289646": {
+   "audience_hints": [],
+   "availability": {
+    "48243184435438": true
+   },
+   "body_text": "Why not have it all? You deserve it. PINK HIMALAYAN SEA SALT Flavor - DEFI Chocolate Crispy Superfood Bite INGREDIENTS: Dark Chocolate (cacao liquor, cane sugar, cacao butter, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder, Pink Himalayan Sea Salt. Contains Milk. Milk Chocolate Peanut Butter Crunch Crispy Superfood Bite INGREDIENTS: Milk Chocolate (cane sugar, cacao butter, whole milk powder, cacao liquor, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Casein Protein Powder, Whey Crisps (whey protein, tapioca starch), Dry Roasted Peanuts, Peanut Butter Powder, Pink Himalayan Sea Salt. Contains Milk and Peanuts. Dark Chocolate Flavor - DEFI Chocolate Crispy Superfood Bite. INGREDIENTS: Dark Chocolate (cacao liquor, cane sugar, cacao butter, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder. Contains Milk. Milk Chocolate Flavor - DEFI Chocolate Crispy Superfood Bite INGREDIENTS: Milk Chocolate (cane sugar, cacao butter, whole milk powder, cacao liquor, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder. Contains Milk.",
+   "brand": "defi_snacks",
+   "category": null,
+   "content_hash": "5ae855ca81000f97439c5600f974d49b3a96fb1bd2e13bf53450713587fe2888",
+   "created_at": "2026-07-03T06:51:03-04:00",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "allergens": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Milk",
+      "Milk and Peanuts"
+     ]
+    },
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 1254
+     }
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 13
+     }
+    },
+    "ingredients": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Dark Chocolate (cacao liquor, cane sugar, cacao butter, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder, Pink Himalayan Sea Salt",
+      "Milk Chocolate (cane sugar, cacao butter, whole milk powder, cacao liquor, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Casein Protein Powder, Whey Crisps (whey protein, tapioca starch), Dry Roasted Peanuts, Peanut Butter Powder, Pink Himalayan Sea Salt",
+      "Dark Chocolate (cacao liquor, cane sugar, cacao butter, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder",
+      "Milk Chocolate (cane sugar, cacao butter, whole milk powder, cacao liquor, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder"
+     ]
+    }
+   },
+   "family": "Build Your Own: Variety Pack",
+   "flags": [],
+   "handle": "build-your-own-variety-pack",
+   "images": [
+    {
+     "height": 1792,
+     "id": 47348600307950,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFIBundle4Flavors.png",
+     "position": 1,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFIBundle4Flavors.png?v=1783591914",
+     "variant_ids": [],
+     "width": 1568
+    },
+    {
+     "height": 2304,
+     "id": 47348563509486,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Dark_Himalayan_Salt_Pouch_Front_Mockup_UPDATEDNOSEA.png",
+     "position": 2,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Dark_Himalayan_Salt_Pouch_Front_Mockup_UPDATEDNOSEA.png?v=1783591797",
+     "variant_ids": [],
+     "width": 2016
+    },
+    {
+     "height": 2829,
+     "id": 44201763406062,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Dark_Himalayan_Salt_Pouch_Back_Mockup.png",
+     "position": 3,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Dark_Himalayan_Salt_Pouch_Back_Mockup.png?v=1749226725",
+     "variant_ids": [],
+     "width": 2476
+    },
+    {
+     "height": 1380,
+     "id": 44201753772270,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_salt_nft.png",
+     "position": 4,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_salt_nft.png?v=1749226602",
+     "variant_ids": [],
+     "width": 772
+    },
+    {
+     "height": 2829,
+     "id": 44201764520174,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Milk_Chocolate_Pouch_Front_Mockup.png",
+     "position": 5,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Milk_Chocolate_Pouch_Front_Mockup.png?v=1749226885",
+     "variant_ids": [],
+     "width": 2476
+    },
+    {
+     "height": 2829,
+     "id": 44201764356334,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Milk_Chocolate_Pouch_Back_Mockup.png",
+     "position": 6,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Milk_Chocolate_Pouch_Back_Mockup.png?v=1749226885",
+     "variant_ids": [],
+     "width": 2476
+    },
+    {
+     "height": 1380,
+     "id": 44201753739502,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_milk_nft.png",
+     "position": 7,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_milk_nft.png?v=1749226885",
+     "variant_ids": [],
+     "width": 772
+    },
+    {
+     "height": 2829,
+     "id": 44201762128110,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Dark_Chocolate_Pouch_Front_Mockup.png",
+     "position": 8,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Dark_Chocolate_Pouch_Front_Mockup.png?v=1749226717",
+     "variant_ids": [],
+     "width": 2476
+    },
+    {
+     "height": 2829,
+     "id": 44201761669358,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Dark_Chocolate_Pouch_Back_Mockup.png",
+     "position": 9,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Dark_Chocolate_Pouch_Back_Mockup.png?v=1749226714",
+     "variant_ids": [],
+     "width": 2476
+    },
+    {
+     "height": 1380,
+     "id": 44201753706734,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_dark_nft.png",
+     "position": 10,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_dark_nft.png?v=1749226602",
+     "variant_ids": [],
+     "width": 772
+    },
+    {
+     "height": 2829,
+     "id": 44201737945326,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Peanut_Butter_Pouch_Front_Mockup.png",
+     "position": 11,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Peanut_Butter_Pouch_Front_Mockup.png?v=1749226357",
+     "variant_ids": [],
+     "width": 2476
+    },
+    {
+     "height": 2829,
+     "id": 44201737879790,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Peanut_Butter_Pouch_Back_Mockup.png",
+     "position": 12,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Peanut_Butter_Pouch_Back_Mockup.png?v=1749226357",
+     "variant_ids": [],
+     "width": 2476
+    },
+    {
+     "height": 1380,
+     "id": 44201739026670,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_peanut_nft.png",
+     "position": 13,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_peanut_nft.png?v=1749226387",
+     "variant_ids": [],
+     "width": 772
+    }
+   ],
+   "in_stock": true,
+   "product_id": "9356070289646",
+   "product_type": "",
+   "published_at": "2026-07-03T06:52:48-04:00",
+   "readiness": {
+    "missing_expected": [
+     "nutrition_facts"
+    ],
+    "missing_required": [],
+    "state": "ready"
+   },
+   "status": "active",
+   "tags": [],
+   "title": "Build Your Own: Variety Pack",
+   "updated_at": "2026-10-19T12:33:18-04:00",
+   "url": "https://defi-snacks.com/products/build-your-own-variety-pack",
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48243184435438,
+     "options": {
+      "Title": "Default Title"
+     },
+     "price": 64.17,
+     "sku": null,
+     "title": "Default Title"
+    }
+   ],
+   "vendor": "DEFI Snacks Store"
+  },
+  "9386378559726": {
+   "audience_hints": [],
+   "availability": {
+    "48294477463790": true,
+    "48294477627630": true,
+    "48294477660398": true
+   },
+   "body_text": "Why not have it all? You deserve it. PINK HIMALAYAN SEA SALT Flavor - DEFI Chocolate Crispy Superfood Bite INGREDIENTS: Dark Chocolate (cacao liquor, cane sugar, cacao butter, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder, Pink Himalayan Sea Salt. Contains Milk. Milk Chocolate Peanut Butter Crunch Crispy Superfood Bite INGREDIENTS: Milk Chocolate (cane sugar, cacao butter, whole milk powder, cacao liquor, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Casein Protein Powder, Whey Crisps (whey protein, tapioca starch), Dry Roasted Peanuts, Peanut Butter Powder, Pink Himalayan Sea Salt. Contains Milk and Peanuts. Dark Chocolate Flavor - DEFI Chocolate Crispy Superfood Bite. INGREDIENTS: Dark Chocolate (cacao liquor, cane sugar, cacao butter, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder. Contains Milk. Milk Chocolate Flavor - DEFI Chocolate Crispy Superfood Bite INGREDIENTS: Milk Chocolate (cane sugar, cacao butter, whole milk powder, cacao liquor, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder. Contains Milk.",
+   "brand": "defi_snacks",
+   "category": null,
+   "content_hash": "1b41ebfb49f9bd75696bc6a25e3baba591999b85311d1f2041956d3b32ee166b",
+   "created_at": "2026-07-11T06:32:11-04:00",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "allergens": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Milk",
+      "Milk and Peanuts"
+     ]
+    },
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 1254
+     }
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 13
+     }
+    },
+    "ingredients": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Dark Chocolate (cacao liquor, cane sugar, cacao butter, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder, Pink Himalayan Sea Salt",
+      "Milk Chocolate (cane sugar, cacao butter, whole milk powder, cacao liquor, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Casein Protein Powder, Whey Crisps (whey protein, tapioca starch), Dry Roasted Peanuts, Peanut Butter Powder, Pink Himalayan Sea Salt",
+      "Dark Chocolate (cacao liquor, cane sugar, cacao butter, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder",
+      "Milk Chocolate (cane sugar, cacao butter, whole milk powder, cacao liquor, sunflower lecithin, vanilla bean), Sprouted Buckwheat, Whey Crisps (whey protein, tapioca starch), Casein Protein Powder"
+     ]
+    }
+   },
+   "family": "4-Flavor Variety Pack",
+   "flags": [],
+   "handle": "4-flavor-variety-pack",
+   "images": [
+    {
+     "height": 2048,
+     "id": 47411911590126,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Assets_1.png",
+     "position": 1,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Assets_1.png?v=1783959872",
+     "variant_ids": [],
+     "width": 1792
+    },
+    {
+     "height": 2048,
+     "id": 47350302146798,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DCPHSAward.png",
+     "position": 2,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DCPHSAward.png?v=1783597214",
+     "variant_ids": [],
+     "width": 1792
+    },
+    {
+     "height": 2829,
+     "id": 44201763406062,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Dark_Himalayan_Salt_Pouch_Back_Mockup.png",
+     "position": 3,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Dark_Himalayan_Salt_Pouch_Back_Mockup.png?v=1749226725",
+     "variant_ids": [],
+     "width": 2476
+    },
+    {
+     "height": 1380,
+     "id": 44201753772270,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_salt_nft.png",
+     "position": 4,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_salt_nft.png?v=1749226602",
+     "variant_ids": [],
+     "width": 772
+    },
+    {
+     "height": 2048,
+     "id": 47350302212334,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/MCPBCAward.png",
+     "position": 5,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/MCPBCAward.png?v=1783597214",
+     "variant_ids": [],
+     "width": 1792
+    },
+    {
+     "height": 2829,
+     "id": 44201737879790,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Peanut_Butter_Pouch_Back_Mockup.png",
+     "position": 6,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Peanut_Butter_Pouch_Back_Mockup.png?v=1749226357",
+     "variant_ids": [],
+     "width": 2476
+    },
+    {
+     "height": 1380,
+     "id": 44201739026670,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_peanut_nft.png",
+     "position": 7,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_peanut_nft.png?v=1749226387",
+     "variant_ids": [],
+     "width": 772
+    },
+    {
+     "height": 2048,
+     "id": 47350302114030,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DCAward.png",
+     "position": 8,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DCAward.png?v=1783597214",
+     "variant_ids": [],
+     "width": 1792
+    },
+    {
+     "height": 2829,
+     "id": 44201761669358,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Dark_Chocolate_Pouch_Back_Mockup.png",
+     "position": 9,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Dark_Chocolate_Pouch_Back_Mockup.png?v=1749226714",
+     "variant_ids": [],
+     "width": 2476
+    },
+    {
+     "height": 1380,
+     "id": 44201753706734,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_dark_nft.png",
+     "position": 10,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_dark_nft.png?v=1749226602",
+     "variant_ids": [],
+     "width": 772
+    },
+    {
+     "height": 2048,
+     "id": 47358548607214,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/MC_Award.png",
+     "position": 11,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/MC_Award.png?v=1783677887",
+     "variant_ids": [],
+     "width": 1792
+    },
+    {
+     "height": 2829,
+     "id": 44201764356334,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Milk_Chocolate_Pouch_Back_Mockup.png",
+     "position": 12,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/DEFI_Milk_Chocolate_Pouch_Back_Mockup.png?v=1749226885",
+     "variant_ids": [],
+     "width": 2476
+    },
+    {
+     "height": 1380,
+     "id": 44201753739502,
+     "key": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_milk_nft.png",
+     "position": 13,
+     "src": "https://cdn.shopify.com/s/files/1/0697/4400/1262/files/defi_nft_milk_nft.png?v=1749226885",
+     "variant_ids": [],
+     "width": 772
+    }
+   ],
+   "in_stock": true,
+   "product_id": "9386378559726",
+   "product_type": "",
+   "published_at": "2026-07-11T06:32:45-04:00",
+   "readiness": {
+    "missing_expected": [
+     "nutrition_facts"
+    ],
+    "missing_required": [],
+    "state": "ready"
+   },
+   "status": "active",
+   "tags": [],
+   "title": "4-Flavor Variety Pack",
+   "updated_at": "2026-10-19T12:33:18-04:00",
+   "url": "https://defi-snacks.com/products/4-flavor-variety-pack",
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48294477463790,
+     "options": {
+      "Pack": "4-Pack"
+     },
+     "price": 64.17,
+     "sku": null,
+     "title": "4-Pack"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48294477627630,
+     "options": {
+      "Pack": "8-Pack"
+     },
+     "price": 84.77,
+     "sku": null,
+     "title": "8-Pack"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 48294477660398,
+     "options": {
+      "Pack": "12-Pack"
+     },
+     "price": 111.8,
+     "sku": null,
+     "title": "12-Pack"
+    }
+   ],
+   "vendor": "DEFI Snacks Store"
+  }
+ },
+ "schema_version": 1,
+ "source": {
+  "domain": "defi-snacks.com",
+  "duplicate_ids": [],
+  "fetched_at": "2026-10-19T16:33:18Z",
+  "loop_detected": false,
+  "max_pages_hit": false,
+  "pages": 1,
+  "requests_made": 2,
+  "source": "live",
+  "terminal_empty_page": true
+ }
+}
