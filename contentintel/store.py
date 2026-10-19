@@ -1,12 +1,18 @@
 """Per-brand storage on disk (data/<brand>/...). Brands can never share a folder.
 
 Layout
-  snapshots/<stamp>.json   every accepted fetch
-  latest.json              the last good snapshot (what generation reads)
+  snapshots/<stamp>.json   a snapshot whenever real content changed (not for stock-only moves)
+  latest.json              the last good catalogue (what generation reads)
+  last_checked.json        tiny: when the last good sync ran, and what it found
   baseline.json            the human-confirmed product count
   pending.json             a clean snapshot waiting for baseline confirmation
   registry.json            every product ever seen, with presence state
+  changes.jsonl            one line per detected change, appended over time
   failed_runs.jsonl        one line per rejected run (no product data kept)
+  catalogue/               clean exports for reuse (products.json, products.csv, variants.csv)
+
+Files are rewritten only when their content actually changes, so a quiet day adds
+almost nothing to the repository.
 
 This sits behind a small class so the files can later move to a database
 without touching the rest of the tool.
@@ -24,17 +30,31 @@ class StoreError(Exception):
     pass
 
 
-def _atomic_write(path, obj):
+def _dump(obj, compact):
+    if compact:
+        return json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return json.dumps(obj, ensure_ascii=False, sort_keys=True, indent=1)
+
+
+def _write_text(path, text):
+    """Write text atomically, but only if it differs from what is there. True if written."""
+    if path.is_file() and path.read_text(encoding="utf-8") == text:
+        return False
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, tmp = tempfile.mkstemp(dir=str(path.parent), suffix=".tmp")
     try:
-        with os.fdopen(fd, "w", encoding="utf-8") as fh:
-            json.dump(obj, fh, ensure_ascii=False, indent=1, sort_keys=True)
+        with os.fdopen(fd, "w", encoding="utf-8", newline="") as fh:
+            fh.write(text)
         os.replace(tmp, path)
     except BaseException:
         if os.path.exists(tmp):
             os.unlink(tmp)
         raise
+    return True
+
+
+def _atomic_write(path, obj, compact=False):
+    return _write_text(path, _dump(obj, compact))
 
 
 def _read(path, default=None):
@@ -67,7 +87,7 @@ class Store:
         while path.exists():
             path = folder / f"{stamp}-{n}.json"
             n += 1
-        _atomic_write(path, snapshot)
+        _atomic_write(path, snapshot, compact=True)
         return path
 
     def load_snapshot(self, path):
@@ -81,7 +101,35 @@ class Store:
 
     def promote_latest(self, slug, snapshot):
         self._check_brand(slug, snapshot)
-        _atomic_write(self.dir(slug) / "latest.json", snapshot)
+        return _atomic_write(self.dir(slug) / "latest.json", snapshot, compact=True)
+
+    def load_last_checked(self, slug):
+        return _read(self.dir(slug) / "last_checked.json")
+
+    def save_last_checked(self, slug, info):
+        return _atomic_write(self.dir(slug) / "last_checked.json", info)
+
+    def append_changes(self, slug, run_at, events):
+        if not events:
+            return 0
+        path = self.dir(slug) / "changes.jsonl"
+        with open(path, "a", encoding="utf-8") as fh:
+            for ev in events:
+                fh.write(json.dumps({"at": run_at, **ev}, ensure_ascii=False, sort_keys=True) + "\n")
+        return len(events)
+
+    def read_changes(self, slug):
+        path = self.dir(slug) / "changes.jsonl"
+        if not path.is_file():
+            return []
+        with open(path, encoding="utf-8") as fh:
+            return [json.loads(line) for line in fh if line.strip()]
+
+    def write_export(self, slug, name, text):
+        """Write one file under catalogue/. Returns True only if the content changed."""
+        if "/" in name or "\\" in name or name.startswith("."):
+            raise StoreError(f"Unsafe export name {name!r}")
+        return _write_text(self.dir(slug) / "catalogue" / name, text)
 
     def load_baseline(self, slug):
         return _read(self.dir(slug) / "baseline.json")
@@ -109,7 +157,7 @@ class Store:
         return _read(self.dir(slug) / "registry.json", default={})
 
     def save_registry(self, slug, registry):
-        _atomic_write(self.dir(slug) / "registry.json", registry)
+        return _atomic_write(self.dir(slug) / "registry.json", registry)
 
     def log_failed(self, slug, entry):
         path = self.dir(slug) / "failed_runs.jsonl"
