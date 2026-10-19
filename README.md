@@ -1,67 +1,82 @@
 # Content strategy tool: Phase 1 (catalogue foundation)
 
-Reads each brand's Shopify catalogue, checks it is complete, keeps a history of
-every change, and records what is known (and not known) about each product.
-Nothing is generated yet: generation is blocked until a catalogue is trusted.
+Everything runs on GitHub. Nothing is installed or run on a computer of your own.
 
-## What Phase 1 does
+## What it does
 
-- Fetches `/products.json` page by page until an empty page, so a 30-product first
-  page is never mistaken for the catalogue.
-- **Completeness gate**: fails on a truncated feed, warns on suspicious changes,
-  cross-checks against the site sitemap, and requires a person to confirm the first
-  product count (the baseline).
-- Keeps every accepted snapshot; a rejected sync never replaces the last good one.
-- Detects new, changed, sold-out/restocked, suspected-removed and returned products.
-  `updated_at` is ignored (Shopify changes it on every product between fetches).
-- Classifies products from each brand's own config (excluded, active, inactive,
-  coming soon, pre-order; flags for new, limited edition, licensed, sale).
-- Extracts facts only when the description states them, records their source, and
-  marks products "needs facts" when required facts are missing.
-- Loads per-brief rules (banned characters and words, word order, approved products).
+- Every day, reads each brand's Shopify catalogue (`/products.json`, page by page until
+  an empty page), checks that it is complete, and saves the result in `data/`.
+- Detects new, changed, sold-out, restocked, suspected-removed and returned products.
+- Records what each product description states (fabric, pockets, ingredients,
+  allergens) and what is missing. Nothing is invented.
+- Keeps clean, reusable files per brand: `products.json`, `products.csv`, `variants.csv`.
+- Blocks generation (later phases) whenever a catalogue cannot be trusted.
 
-## Layout
+## One-time set-up (all in the GitHub website)
 
-    brands/<slug>/brand.yaml      brand profile (domain, lifecycle tags, required facts, gate limits)
-    brands/<slug>/manual_facts.yaml   facts a person states (outrank the website)
-    brands/<slug>/claims.yaml     approved-claim register (stored now, enforced in a later phase)
-    briefs/<brief>/rules.yaml     rules for one brief only
-    contentintel/                 the code
-    tests/                        tests; tests/fixtures/ holds saved catalogues
-    tests/sabotage/run_sabotage.py   breaks the code on purpose to prove the tests notice
-    data/                         created at run time (snapshots, baseline, registry, run log)
+1. Upload the project files to the repository, keeping the folder paths.
+2. Add the five saved catalogues to `tests/fixtures/` under these names
+   (the tests use them): `swoveralls_full_72.json`, `swoveralls_truncated_30.json`,
+   `duderobe_fetch_a.json`, `duderobe_fetch_b.json`, `defi_snacks.json`.
+3. Check `domain` in each `brands/<brand>/brand.yaml`.
+4. If a run ever fails with a permission error while saving: Settings > Actions >
+   General > Workflow permissions > Read and write.
+5. Optional alerts: add a repository secret `SLACK_WEBHOOK_URL`.
+
+The **Tests** workflow runs by itself on every push. Green means the project is sound,
+and it also validates any edit you make to a `brand.yaml` or `rules.yaml` (a typo in a
+setting name fails the run and names the setting).
 
 ## First run for a brand
 
-    pip install -r requirements.txt
-    python -m contentintel sync --brand swoveralls          # fetches live
-    python -m contentintel confirm-baseline --brand swoveralls --count 72 --by Harish
+1. Actions > **Catalogue sync** > Run workflow (brand `all`, or one brand).
+   The first run ends red on purpose: "needs baseline". Open the run page for the report.
+2. Check the product count on the store.
+3. Actions > **Catalogue admin** > Run workflow: action `confirm-baseline`, the brand,
+   and the count you checked. Your GitHub username is recorded as the confirmer.
+4. From then on the sync runs daily (05:17 UTC) and you only look at red runs.
 
-The first clean sync stops at "needs baseline". Check the product count against the
-store, then confirm it. Later syncs compare against it automatically.
-Before the first live run, check `domain` in each `brand.yaml`
-(`duderobe` and `defi_snacks` are marked as unconfirmed).
+## Decisions as buttons (Actions > Catalogue admin)
 
-## Other commands
+| Action | When |
+|---|---|
+| `confirm-baseline` | after the first sync, with the count you checked |
+| `confirm-removed` | a product was flagged "suspected removed" and really is gone |
+| `reset-baseline` | retire the baseline on purpose (the next clean sync must be confirmed again) |
+| `status` | can generation use this brand's catalogue right now? |
 
-    python -m contentintel sync --all                        # every brand
-    python -m contentintel sync --brand X --from-file f.json # use a saved products.json
-    python -m contentintel sync --brand X --sitemap          # add the sitemap cross-check
-    python -m contentintel status --brand X                  # can generation use this catalogue now?
-    python -m contentintel confirm-removed --brand X --product-id ID --by NAME
-    python -m contentintel reset-baseline --brand X --by NAME
+## Where the data lives (`data/<brand>/`)
 
-Exit codes: 0 ok or warn, 1 error, 2 sync blocked, 3 baseline needs confirming.
+| File | What it is |
+|---|---|
+| `catalogue/products.csv` | one row per product: status, flags, price range, stock, fabric, pockets, ingredients, missing facts |
+| `catalogue/variants.csv` | one row per size/colour: options, SKU, price, sale price, available |
+| `catalogue/products.json` | the same plus description, facts with their sources, variants and images |
+| `changes.jsonl` | every detected change, appended over time |
+| `last_checked.json` | when the last good sync ran |
+| `latest.json`, `snapshots/` | the full records the later phases read; a snapshot is kept only when real content changed |
+| `registry.json` | every product ever seen, including suspected and confirmed removals |
+| `failed_runs.jsonl` | every rejected run and why |
 
-## Tests
+A quiet day writes only `last_checked.json` (about 100 bytes). Files are rewritten only
+when their content changes.
 
-    pip install -r requirements-dev.txt
-    python -m pytest
-    python -m pyflakes contentintel tests
-    python tests/sabotage/run_sabotage.py
+To read the data in Google Sheets (public repository only; not tested):
+`=IMPORTDATA("https://raw.githubusercontent.com/OWNER/REPO/main/data/swoveralls/catalogue/products.csv")`
+
+## Good to know
+
+- Public repositories pause scheduled workflows after 60 days with no repository
+  activity (GitHub's rule). If the daily run stops, re-enable it under Actions.
+- A public repository makes everything in it public, including `brands/` and `briefs/`
+  (brand rules, claim status, open questions). Keep client-confidential material out of
+  a public repository.
+- Optional sabotage check: Actions > Tests > Run workflow > tick sabotage. It breaks the
+  code on purpose in about 70 ways and confirms the tests notice each one.
 
 ## Not verified from the build environment
 
-Live fetches from the stores, the sitemap cross-check against a real site, a real
-GitHub Actions run (`.github/workflows/sync.yml`), and the Slack alert. Everything
-else is tested against saved catalogues.
+Live fetches from the stores, the sitemap cross-check against a real site, and real
+GitHub runs (including Slack alerts). The workflow steps were run against a simulated
+remote repository and linted with actionlint; everything else is tested against saved
+catalogues.
