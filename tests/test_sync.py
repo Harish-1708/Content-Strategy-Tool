@@ -249,10 +249,13 @@ def test_the_store_refuses_unsafe_brand_names(store):
             store.dir(bad)
 
 
-def test_snapshots_written_in_the_same_second_do_not_overwrite_each_other(swov, store):
+def test_two_snapshots_saved_in_the_same_second_do_not_overwrite_each_other(swov, store):
     sync(swov, store, "swoveralls_full_72.json", T0)
-    sync(swov, store, "swoveralls_full_72.json", T0)
-    assert len(list((store.dir("swoveralls") / "snapshots").glob("*.json"))) == 2
+    snap = store.load_snapshot(store.load_pending("swoveralls")["snapshot"])
+    store.save_snapshot("swoveralls", snap)
+    store.save_snapshot("swoveralls", snap)
+    names = sorted(p.name for p in (store.dir("swoveralls") / "snapshots").glob("*.json"))
+    assert names == ["20261019T080000Z-1.json", "20261019T080000Z-2.json", "20261019T080000Z.json"]
 
 
 # --- command line -----------------------------------------------------------------------
