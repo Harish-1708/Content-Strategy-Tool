@@ -1,0 +1,49 @@
+# Runs the tests and the lint automatically on every push, so nothing needs to be run locally.
+# The sabotage check (breaks the code on purpose to prove the tests notice) is optional:
+# Actions > Tests > Run workflow > tick "sabotage".
+name: Tests
+
+on:
+  push:
+    paths-ignore:
+      - "data/**"
+  pull_request:
+    paths-ignore:
+      - "data/**"
+  workflow_dispatch:
+    inputs:
+      sabotage:
+        description: "Also run the sabotage check (about 2 minutes)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+
+      - name: Install
+        run: pip install -r requirements-dev.txt
+
+      - name: Lint
+        run: python -m pyflakes contentintel tests
+
+      - name: Tests
+        run: python -m pytest -q
+
+      - name: Sabotage check
+        if: ${{ inputs.sabotage }}
+        run: python tests/sabotage/run_sabotage.py

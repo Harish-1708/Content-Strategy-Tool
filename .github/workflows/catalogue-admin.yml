@@ -1,0 +1,92 @@
+# The human decisions, as buttons. Nothing here needs a computer of your own.
+#   confirm-baseline  after the first sync, confirm the product count you checked on the store
+#   confirm-removed   confirm that a product flagged "suspected removed" really is gone
+#   reset-baseline    retire the baseline on purpose (the next clean sync must be confirmed again)
+#   status            show whether generation may use this brand's catalogue right now
+# Actions > Catalogue admin > Run workflow. Your GitHub username is recorded as the confirmer.
+name: Catalogue admin
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "What to do"
+        type: choice
+        required: true
+        options:
+          - confirm-baseline
+          - confirm-removed
+          - reset-baseline
+          - status
+      brand:
+        description: "Brand folder name, for example swoveralls"
+        required: true
+      count:
+        description: "confirm-baseline only: the product count you checked on the store"
+        required: false
+      product_id:
+        description: "confirm-removed only: the product id shown in the sync report"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalogue-data
+  cancel-in-progress: false
+
+jobs:
+  admin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - run: pip install -r requirements.txt
+
+      - name: Run the action
+        shell: bash
+        env:
+          ACTION: ${{ inputs.action }}
+          BRAND: ${{ inputs.brand }}
+          COUNT: ${{ inputs.count }}
+          PRODUCT_ID: ${{ inputs.product_id }}
+          WHO: ${{ github.actor }}
+        run: |
+          set +e
+          case "$ACTION" in
+            confirm-baseline) cmd=(confirm-baseline --brand "$BRAND" --count "$COUNT" --by "$WHO") ;;
+            confirm-removed)  cmd=(confirm-removed --brand "$BRAND" --product-id "$PRODUCT_ID" --by "$WHO") ;;
+            reset-baseline)   cmd=(reset-baseline --brand "$BRAND" --by "$WHO") ;;
+            status)           cmd=(status --brand "$BRAND") ;;
+            *) echo "Unknown action: $ACTION"; exit 1 ;;
+          esac
+          { echo "### Catalogue admin: $ACTION ($BRAND)"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel "${cmd[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Save the data
+        shell: bash
+        env:
+          ACTION: ${{ inputs.action }}
+          BRAND: ${{ inputs.brand }}
+          WHO: ${{ github.actor }}
+        run: |
+          git config user.name "catalogue-admin"
+          git config user.email "catalogue-admin@users.noreply.github.com"
+          git add -f data
+          if git diff --cached --quiet; then
+            echo "No data changes to save."
+          else
+            git commit -m "Catalogue admin: $ACTION $BRAND by $WHO"
+            git pull --rebase
+            git push
+          fi
