@@ -1,0 +1,36 @@
+# Rules for the "DudeRobe: Swipe to Robe Brief (Sam)".
+# Encoded from the brief's never-list. Rules belong to this brief only.
+brief: duderobe-swipe-to-robe
+brand: duderobe
+version: 1
+source: DudeRobe_Swipe_to_Robe_Brief.pdf
+
+text_rules:
+  banned_chars:
+    - {char: "\u2014", name: "em dash"}
+    - {char: "!", name: "exclamation point (brand-voice contexts only)", severity: warn}
+  banned_phrases:
+    - {phrase: loungewear}
+    - {phrase: spa}
+    - {phrase: self-care}
+    - {phrase: wellness}
+    - {phrase: rituals}
+
+product_rules:
+  allowed_statuses: [active]
+
+judgement_rules:
+  - "No spa lighting or anything soft, even, cool or sterile."
+  - "No shirtless reveal poses on studio white."
+  - "No pastels as brand colours; no gradients across brand colours."
+  - "No cursive, script or serif italic type; no center-aligned long-form copy."
+  - "No stock-photo happy-couple hand holding; no group-of-bros poses."
+  - "No faux-bro humor ('hey bro', 'dudes' as a crutch)."
+  - "No bathroom interior as a primary setting; no floppy sleeves visible."
+  - "Never 'helps you recover'; always 'built to help with'."
+  - "Customer quotes must be verbatim from the 9 Sept 2026 Judge.me export; never invent or combine."
+  - "Use 3,200+ five-star reviews; do not use 3,700+ without confirmation."
+
+open_questions:
+  - "Shark Tank line: license obtained, usage guidelines still to come."
+  - "Concept 7 (UFC) and the held-back giveaway and press concepts need confirmation before build."
