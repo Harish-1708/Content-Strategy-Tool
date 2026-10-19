@@ -65,7 +65,7 @@ def content_hash(record):
     payload = {
         "title": record["title"], "handle": record["handle"],
         "product_type": record["product_type"], "tags": sorted(record["tags"]),
-        "body_text": record["body_text"],
+        "family": record["family"], "body_text": record["body_text"],
         "variants": sorted(
             ([v["id"], v["title"], v["sku"], v["price"], v["compare_at_price"]]
              for v in record["variants"]), key=lambda x: x[0]),
@@ -122,6 +122,7 @@ def normalize_product(raw, brand):
         "body_text": flatten(lines),
         "facts": facts,
         "fact_conflicts": conflicts,
+        "option_names": [o.get("name") for o in raw.get("options") or [] if o.get("name")],
         "variants": variants,
         "images": images,
         "in_stock": any(v["available"] for v in variants),
@@ -148,3 +149,21 @@ def normalize_all(raw_products, brand):
             continue
         records[rec["product_id"]] = rec
     return records, problems
+
+
+def record_fingerprint(rec, include_stock=True):
+    """Everything about a record that matters, including how the brand's rules classify it.
+    Volatile fields (updated_at and friends) are left out on purpose."""
+    parts = [rec["product_id"], rec["content_hash"], rec["status"], sorted(rec["flags"]),
+             rec["excluded"], rec["category"], rec["family"], sorted(rec["audience_hints"]),
+             rec["readiness"]["state"], sorted(rec["readiness"]["missing_required"]),
+             sorted(rec["readiness"]["missing_expected"])]
+    if include_stock:
+        parts.append(sorted(rec["availability"].items()))
+    return parts
+
+
+def catalogue_fingerprint(records, include_stock=True):
+    blob = json.dumps(sorted((record_fingerprint(r, include_stock) for r in records.values()),
+                             key=lambda x: x[0]), sort_keys=True, ensure_ascii=False, default=str)
+    return hashlib.sha256(blob.encode("utf-8")).hexdigest()
