@@ -252,3 +252,23 @@ def test_swoveralls_scale_run_reports_only_the_real_change(swov, swov_records):
     cur = records(swov, raw)
     events, _ = ds(swov_records, cur, registry, T1)
     assert [(e["type"], e["handle"]) for e in events] == [("changed", "swoveralls-navy")]
+
+
+def test_a_rules_edit_that_reclassifies_a_product_is_reported_as_a_change(swov, swov_records):
+    from dataclasses import replace
+    _, registry = diff_snapshots({}, swov_records, {}, T0, initial=True)
+    edited = replace(swov, catalogue={**swov.catalogue, "exclude": {
+        **swov.catalogue["exclude"],
+        "title_patterns": swov.catalogue["exclude"]["title_patterns"] + ["midnight black"]}})
+    after = records(edited, raw_products("swoveralls_full_72.json"))
+    events, _ = diff_snapshots(swov_records, after, registry, T1)
+    assert events and {e["type"] for e in events} == {"changed"}
+    assert all("Midnight Black" in e["title"] for e in events)
+    assert all(e["details"]["status"]["new"] == "excluded" and e["details"]["excluded"]["new"] is True
+               for e in events)
+
+
+def test_the_registry_does_not_change_on_a_quiet_run(base):
+    recs, registry = base
+    events, registry2 = diff_snapshots(recs, recs, registry, T3)
+    assert events == [] and registry2 == registry
