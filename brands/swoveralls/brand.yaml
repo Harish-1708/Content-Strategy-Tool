@@ -1,0 +1,41 @@
+# Swoveralls brand profile. Everything brand-specific lives here, never in code.
+slug: swoveralls
+name: Swoveralls
+platform: shopify
+domain: swoveralls.com
+category_schema: apparel
+
+catalogue:
+  exclude:
+    product_types: [Personalization, Hidden, Gift Card]
+    title_patterns: ["gift card"]
+    tags: [hidden]
+  # A product without this tag is treated as inactive (no new campaigns).
+  active_tag: Active
+  status_rules:
+    coming_soon:
+      tags: ["badge_Coming Soon"]
+      title_patterns: ["coming soon"]
+    pre_order:
+      tags: ["badge_Pre-Order"]
+  flags:
+    new: {tags: [New, badge_NEW]}
+    limited_edition: {tags: [LimitedSW], title_patterns: ["limited edition"]}
+    final_sale: {tags: ["final sale"]}
+  category_by_type:
+    Swoveralls: core
+    Comfyalls: core
+    Swovie Shorts: core
+    Youth Swoveralls: kids
+    Hat: merch
+    T-Shirt: merch
+    Sweatshirt: merch
+  audience:
+    tags: {Kids: kids, badge_KIDS: kids}
+    title_patterns: {"^Kids\\b": kids}
+
+facts:
+  required: [description]
+  expected: [images, materials, pocket_claims]
+
+gate: {}
