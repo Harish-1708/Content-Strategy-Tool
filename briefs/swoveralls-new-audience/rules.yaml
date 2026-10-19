@@ -1,0 +1,34 @@
+# Rules for the "Swoveralls: New Audience Creative Brief" (Comfort Switcher test).
+# Encoded from the brief's own text. Rules belong to this brief only.
+brief: swoveralls-new-audience
+brand: swoveralls
+version: 1
+source: Swoveralls_New_Audience_Creative_Brief.pdf
+
+text_rules:
+  banned_chars:
+    - {char: "\u2014", name: "em dash"}
+    - {char: "!", name: "exclamation point"}
+  ordered_terms:
+    # Brief: "Say 'sweatpants' before 'overalls' in every hook."
+    # Encoded loosely (order only matters when both words appear); see open_questions.
+    - {first: sweatpants, then: overalls, scopes: [hook], mode: when_both_present}
+
+product_rules:
+  # Brief: "Never ... limited-edition prints"; static concepts: "Black, Dark Grey, or Navy only".
+  block_flags: [limited_edition]
+  allowed_statuses: [active]
+  approved_products:
+    - swoveralls-midnight-black
+    - swoveralls-navy
+    - swoveralls-dark-athletic-grey
+
+judgement_rules:
+  - "Never show the classic overalls look (crossed straps, denim-style) in the first two seconds."
+  - "Never use the word 'overalls' or a denim-overalls visual in the first two seconds of video."
+  - "Concepts 1 and 2: yapper-style, single-take talking head, minimal editing, natural light."
+  - "Check with John before commissioning new footage for Concept 2."
+
+open_questions:
+  - "Concepts 1, 5 and 6 use 'overalls' in the hook without 'sweatpants' before it. Does 'sweatpants before overalls' apply to every hook, or only where both words appear?"
+  - "The Black, Dark Grey or Navy rule is written under the static concepts (3 to 7). Does it also bind the video concepts?"
