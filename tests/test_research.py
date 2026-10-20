@@ -837,17 +837,27 @@ def test_the_check_runs_one_web_and_one_news_search_on_every_provider(store, set
 def test_each_kind_of_check_uses_that_providers_news_path(store, settings):
     http, found = world()
     check(store, settings, found)
-    calls = {(("serper" if "serper" in c["url"] else "tavily" if "tavily" in c["url"] else "serpapi"), n): c
-             for n, c in enumerate(searches_only(http))}
-    serper = [c for (name, _), c in calls.items() if name == "serper"]
-    assert serper[0]["url"].endswith("/search") and serper[1]["url"].endswith("/news")
-    tav = [c for (name, _), c in calls.items() if name == "tavily"]
-    assert tav[0]["json"]["topic"] == "general" and "time_range" not in tav[0]["json"]
-    assert tav[1]["json"]["topic"] == "news" and tav[1]["json"]["time_range"] == "month"
-    api = [c for (name, _), c in calls.items() if name == "serpapi"]
-    assert "tbm" not in api[0]["params"] and api[1]["params"]["tbm"] == "nws"
-    assert all(R.CHECK_QUERY in (c["json"] or c["params"]).get("q", (c["json"] or {}).get("query", ""))
-               for c in calls.values())
+    by = {"serper": [], "tavily": [], "serpapi": []}
+    for c in searches_only(http):
+        by["serper" if "serper" in c["url"] else "tavily" if "tavily" in c["url"] else "serpapi"].append(c)
+    web, news = by["serper"]
+    assert web["url"].endswith("/search") and web["json"]["q"] == R.CHECK_QUERY and "tbs" not in web["json"]
+    assert news["url"].endswith("/news") and news["json"]["q"] == R.CHECK_NEWS_QUERY
+    assert news["json"]["tbs"] == "qdr:y"
+    web, news = by["tavily"]
+    assert web["json"]["topic"] == "general" and web["json"]["query"] == R.CHECK_QUERY
+    assert "time_range" not in web["json"]
+    assert news["json"]["topic"] == "news" and news["json"]["query"] == R.CHECK_NEWS_QUERY
+    assert news["json"]["time_range"] == "year"
+    web, news = by["serpapi"]
+    assert "tbm" not in web["params"] and web["params"]["q"] == R.CHECK_QUERY
+    assert news["params"]["tbm"] == "nws" and news["params"]["q"] == R.CHECK_NEWS_QUERY
+    assert news["params"]["tbs"] == "qdr:y"
+
+
+def test_the_news_check_uses_a_broad_search_so_an_empty_answer_means_something():
+    assert R.CHECK_NEWS_QUERY == "overalls" and R.CHECK_NEWS_RECENCY == "year"
+    assert len(R.CHECK_NEWS_QUERY.split()) == 1
 
 
 def test_the_check_saves_no_findings_and_creates_no_brand_folders(tmp_path, store, settings):
@@ -950,3 +960,41 @@ def test_research_with_nothing_chosen_explains_the_options(cli_env, capsys):
 def test_the_workflow_offers_the_check():
     text = open(".github/workflows/research.yml", encoding="utf-8").read()
     assert "provider_check" in text and "--check-providers" in text
+
+
+# --- diagnosing "answered but returned no results" ---------------------------------------------------
+
+def test_every_answer_records_what_it_contained():
+    http = FakeHttp().on("POST", "https://google.serper.dev/news",
+                         (200, {"searchParameters": {"q": "x"}, "news": [], "credits": 1}))
+    provider = P.build_providers({"SERPER_API_KEY": "KEY-123"}, http=http, sleep=lambda s: None)["serper_dev"]
+    assert provider.search("x", kind="news") == []
+    assert provider.last_note == "response contained: searchParameters, news (0), credits"
+
+
+def test_a_serpapi_no_results_answer_quotes_what_serpapi_said():
+    msg = "Google hasn't returned any results for this query."
+    http = FakeHttp().on("GET", "https://serpapi.com/search.json", (200, {"error": msg}))
+    provider = P.build_providers({"SERPAPI_API_KEY": "KEY-123"}, http=http, sleep=lambda s: None)["serpapi"]
+    assert provider.search("zzzz") == []
+    assert provider.last_note == "SerpApi said: " + msg
+
+
+def test_the_serpapi_note_never_contains_the_key():
+    http = FakeHttp().on("GET", "https://serpapi.com/search.json",
+                         (200, {"error": "Google hasn't returned any results for KEY-123"}))
+    provider = P.build_providers({"SERPAPI_API_KEY": "KEY-123"}, http=http, sleep=lambda s: None)["serpapi"]
+    provider.search("zzzz")
+    assert "KEY-123" not in provider.last_note and "***" in provider.last_note
+
+
+def test_an_empty_check_answer_shows_what_the_service_sent_back(store, settings):
+    http = FakeHttp()
+    http.on("POST", "https://google.serper.dev/search", (200, serper_web(3)))
+    http.on("POST", "https://google.serper.dev/news", (200, {"searchParameters": {}, "news": []}))
+    found = P.build_providers({"SERPER_API_KEY": "k"}, http=http, sleep=lambda s: None)
+    web, news = check(store, settings, found)
+    assert web["note"] == "response contained: organic (3)" and news["note"] == "response contained: searchParameters, news (0)"
+    text = R.format_check_report([web, news])
+    assert "answered but returned no results (1 credit) [response contained: searchParameters, news (0)]" in text
+    assert "organic (3)" not in text                    # working searches stay uncluttered
