@@ -62,9 +62,11 @@ def build_parser():
 
     p = sub.add_parser("research", help="search the web for each brand, within your credit caps")
     _common(p)
-    group = p.add_mutually_exclusive_group(required=True)
+    group = p.add_mutually_exclusive_group(required=False)
     group.add_argument("--brand")
     group.add_argument("--all", action="store_true")
+    p.add_argument("--check-providers", action="store_true",
+                   help="prove each service works with one web and one news search (a few credits)")
     p.add_argument("--providers", default="",
                    help="comma-separated subset of serper_dev, tavily, serpapi (default: all with a key)")
     p.add_argument("--dry-run", action="store_true",
@@ -144,6 +146,16 @@ def _research(args, store):
               "SERPAPI_API_KEY).")
         print("::warning::Research skipped: no search API key is set")
         return 0
+    if args.check_providers:
+        rows = research_mod.check_providers(providers, store, settings, sync_mod.utc_now())
+        print(research_mod.format_check_report(rows))
+        for r in rows:
+            if not r["ok"] and not r["problem"].startswith("skipped"):
+                print(f"::error::{r['provider']} {r['kind']} search failed: {r['problem']}")
+        return 0 if all(r["ok"] or r["problem"].startswith("skipped") for r in rows) else 1
+    if not (args.all or args.brand):
+        print("Error: choose --brand NAME, --all, or --check-providers")
+        return 1
     slugs = list_brand_slugs(args.brands_dir) if args.all else [args.brand]
     brands = [load_brand(slug, args.brands_dir) for slug in slugs]
     result = research_mod.run_research(
