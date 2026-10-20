@@ -50,6 +50,10 @@ class SheetsError(Exception):
     """A problem a person can fix (sharing, a missing key, a renamed id column)."""
 
 
+class DriveQuotaError(SheetsError):
+    """Google refused because the service account has no Drive storage of its own."""
+
+
 # ---------------------------------------------------------------------------------------
 # configuration and connection
 
@@ -81,6 +85,13 @@ def load_sheet_config(path, known_slugs):
     return out
 
 
+def parse_folder_id(text):
+    """A Drive folder id, or the folder's full URL. Blank means none."""
+    text = (text or "").strip()
+    match = re.search(r"/folders/([A-Za-z0-9_-]+)", text)
+    return (match.group(1) if match else text) or None
+
+
 def parse_emails(text):
     return [e.strip() for e in (text or "").replace(";", ",").split(",") if e.strip()]
 
@@ -96,6 +107,11 @@ def connect(key_json):
         raise SheetsError("GOOGLE_SERVICE_ACCOUNT_JSON is not a service account key "
                           "(it needs client_email and private_key).")
     return gspread.service_account_from_dict(info), info["client_email"]
+
+
+def _is_storage_quota(exc):
+    text = (str(exc) + " " + str(getattr(exc, "error", ""))).lower()
+    return getattr(exc, "code", None) == 403 and ("storage quota" in text or "storagequotaexceeded" in text)
 
 
 def _api_message(exc):
@@ -116,6 +132,10 @@ def _call(fn, *args, **kwargs):
         try:
             return fn(*args, **kwargs)
         except gspread.exceptions.APIError as exc:
+            if _is_storage_quota(exc):
+                raise DriveQuotaError(
+                    "Google says the service account has no Drive storage left, so it cannot "
+                    "create files. Use spreadsheets created in your own Drive instead.") from exc
             if getattr(exc, "code", None) not in _RETRY_CODES or attempt == 5:
                 raise SheetsError(_api_message(exc)) from exc
             _SLEEP(min(delay, 60))
@@ -226,7 +246,8 @@ def _ensure_shared(sp, store, slug, emails, info):
     return info
 
 
-def resolve_spreadsheet(client, brand, store, config, emails, report, dry_run, bot_email):
+def resolve_spreadsheet(client, brand, store, config, emails, report, dry_run, bot_email,
+                        folder_id=None):
     saved = store.load_sheet_info(brand.slug) or {}
     configured = config.get(brand.slug)
     sheet_id = configured or saved.get("spreadsheet_id")
@@ -254,7 +275,15 @@ def resolve_spreadsheet(client, brand, store, config, emails, report, dry_run, b
     report.created_spreadsheet = True
     if dry_run:
         return None
-    sp = _call(client.create, f"{brand.name} catalogue (auto-updated)")
+    try:
+        sp = _call(client.create, f"{brand.name} catalogue (auto-updated)", folder_id=folder_id)
+    except DriveQuotaError as exc:
+        raise SheetsError(
+            f"Google will not let the service account create spreadsheets (it has no Drive "
+            f"storage of its own). Create a blank spreadsheet for {brand.name} in your own "
+            f"Google Drive, share it with {bot_email} as Editor, and paste its link next to "
+            f"'{brand.slug}' in sheets.yaml. Alternatively set the SHEET_FOLDER_ID secret to a "
+            f"Shared Drive folder the service account can add files to.") from exc
     info = {"spreadsheet_id": sp.id, "url": sp.url, "created_by_tool": True, "shared_with": []}
     store.save_sheet_info(brand.slug, info)
     report.url = sp.url
@@ -458,7 +487,7 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
 
 
 def run_sheets(brands, store, *, key_json, share_emails, config, now, dry_run=False,
-               connect_fn=connect):
+               connect_fn=connect, folder_id=None):
     """Update every given brand's sheet. Returns [(slug, SheetReport | None, error text | None)].
 
     One brand failing never stops the others. Returns None when no key is configured."""
@@ -470,7 +499,7 @@ def run_sheets(brands, store, *, key_json, share_emails, config, now, dry_run=Fa
         report = SheetReport(brand=brand.slug, dry_run=dry_run)
         try:
             sp = resolve_spreadsheet(client, brand, store, config, share_emails, report,
-                                     dry_run, bot_email)
+                                     dry_run, bot_email, folder_id=folder_id)
             update_brand_sheet(brand, store, sp, now, dry_run=dry_run, report=report)
             results.append((brand.slug, report, None))
         except (SheetsError, gspread.exceptions.GSpreadException,
