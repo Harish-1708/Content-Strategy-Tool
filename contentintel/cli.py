@@ -6,6 +6,8 @@ import argparse
 import json
 import os
 
+from . import providers as providers_mod
+from . import research as research_mod
 from . import sheets as sheets_mod
 from . import sync as sync_mod
 from .brands import BrandError, list_brand_slugs, load_brand
@@ -57,6 +59,18 @@ def build_parser():
     group.add_argument("--all", action="store_true")
     p.add_argument("--dry-run", action="store_true", help="show what would change; write nothing")
     p.add_argument("--sheets-config", default="sheets.yaml")
+
+    p = sub.add_parser("research", help="search the web for each brand, within your credit caps")
+    _common(p)
+    group = p.add_mutually_exclusive_group(required=True)
+    group.add_argument("--brand")
+    group.add_argument("--all", action="store_true")
+    p.add_argument("--providers", default="",
+                   help="comma-separated subset of serper_dev, tavily, serpapi (default: all with a key)")
+    p.add_argument("--dry-run", action="store_true",
+                   help="show the plan and which provider would take each query; spend nothing")
+    p.add_argument("--max-queries", type=int, default=0, help="override the per-run limit")
+    p.add_argument("--research-config", default="research.yaml")
 
     p = sub.add_parser("status", help="can generation use this catalogue right now?")
     _common(p)
@@ -112,6 +126,41 @@ def _sheets(args, store):
     return worst
 
 
+def _research(args, store):
+    settings = research_mod.load_settings(args.research_config)
+    wanted = [n.strip() for n in args.providers.split(",") if n.strip()]
+    unknown = [n for n in wanted if n not in providers_mod.PROVIDER_NAMES]
+    if unknown:
+        print(f"Error: unknown provider {', '.join(unknown)} "
+              f"(choose from {', '.join(providers_mod.PROVIDER_NAMES)})")
+        return 1
+    available = providers_mod.build_providers(os.environ)
+    for name in wanted:
+        if name not in available:
+            print(f"::warning::{name} was asked for but its API key is not set; leaving it out")
+    providers = {n: p for n, p in available.items() if not wanted or n in wanted}
+    if not providers:
+        print("Research skipped: no search API key is set (TAVILY_API_KEY, SERPER_API_KEY, "
+              "SERPAPI_API_KEY).")
+        print("::warning::Research skipped: no search API key is set")
+        return 0
+    slugs = list_brand_slugs(args.brands_dir) if args.all else [args.brand]
+    brands = [load_brand(slug, args.brands_dir) for slug in slugs]
+    result = research_mod.run_research(
+        brands, store, providers=providers, settings=settings, now=sync_mod.utc_now(),
+        dry_run=args.dry_run, max_queries=args.max_queries or None, root=args.brands_dir)
+    print(research_mod.format_research_report(result))
+    for name in result.notes_with_problems:
+        print(f"::error::{name}: the API key was rejected. Check the repository secret.")
+    for slug, rep in result.brands.items():
+        if rep.failed:
+            print(f"::error::{slug}: {len(rep.failed)} searches failed")
+        if rep.skipped or rep.deferred:
+            print(f"::warning::{slug}: {len(rep.skipped)} searches skipped for credits, "
+                  f"{len(rep.deferred)} left for the next run")
+    return 1 if result.problems else 0
+
+
 def main(argv=None):
     args = build_parser().parse_args(argv)
     store = Store(args.data_dir)
@@ -141,12 +190,14 @@ def main(argv=None):
             return 0
         if args.cmd == "sheets":
             return _sheets(args, store)
+        if args.cmd == "research":
+            return _research(args, store)
         if args.cmd == "status":
             state = sync_mod.catalogue_state(args.brand, store)
             print(json.dumps(state, indent=1))
             return 0 if state["usable"] else 2
     except (BrandError, StoreError, sync_mod.BaselineError, FetchError, sheets_mod.SheetsError,
-            KeyError, ValueError) as exc:
+            research_mod.ResearchError, KeyError, ValueError) as exc:
         print(f"Error: {exc}")
         return 1
     return 1
