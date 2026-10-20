@@ -181,3 +181,16 @@ def test_size_and_colour_options_keep_the_stores_order(swov_exports):
     doc = json.loads(swov_exports["products.json"])
     prod = next(p for p in doc["products"] if p["handle"] == "swoveralls-navy")
     assert [o["name"] for o in prod["variants"][0]["options"]] == ["Size", "Color"]
+
+
+def test_the_missing_expected_column_shows_what_a_product_still_lacks(defi, swov_records):
+    food = build_exports("defi_snacks", records(defi, "defi_snacks.json"))
+    by_title = {r["title"]: r for r in rows(food["products.csv"])}
+    assert by_title["Dark Chocolate Crispy Superfood Bite"]["missing_expected"] == "nutrition_facts"
+    assert by_title["Melting Insurance"]["missing_expected"] == "allergens; nutrition_facts"
+    apparel = {r["handle"]: r for r in rows(build_exports("swoveralls", swov_records)["products.csv"])}
+    assert apparel["swoveralls-midnight-black"]["missing_expected"] == ""
+    assert apparel["swoveralls-nasa"]["missing_expected"] == "materials; pocket_claims"
+    doc = json.loads(build_exports("defi_snacks", records(defi, "defi_snacks.json"))["products.json"])
+    assert next(p for p in doc["products"] if p["handle"] == "shipping-protection")["missing_expected"] == [
+        "allergens", "nutrition_facts"]
