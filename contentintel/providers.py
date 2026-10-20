@@ -51,6 +51,13 @@ def default_http(method, url, *, params=None, json_body=None, headers=None, time
     return resp.status_code, body, resp.headers.get("Retry-After")
 
 
+def _shape(body):
+    """What an answer contained, for diagnosing 'no results': key names with list lengths."""
+    if not isinstance(body, dict):
+        return type(body).__name__
+    return ", ".join(f"{k} ({len(v)})" if isinstance(v, list) else k for k, v in body.items())
+
+
 class Provider:
     name = ""
     label = ""
@@ -61,6 +68,7 @@ class Provider:
         self.api_key = api_key
         self.http = http or default_http
         self.sleep = sleep or time.sleep
+        self.last_note = ""          # what the most recent answer contained (never the key)
 
     # -- shared plumbing ---------------------------------------------------------------
     def _clean(self, text):
@@ -78,6 +86,7 @@ class Provider:
                 self.sleep(2 ** attempt)
                 continue
             if status == 200:
+                self.last_note = "response contained: " + _shape(body)
                 return body
             text = body if isinstance(body, str) else json.dumps(body)
             low = text.lower()
@@ -178,6 +187,7 @@ class SerpApi(Provider):
             if "invalid api key" in low:
                 raise AuthError(f"{self.label} rejected the API key")
             if "hasn't returned any results" in low or "no results" in low:
+                self.last_note = "SerpApi said: " + self._clean(message)[:90]
                 return {}
             raise ProviderError(f"{self.label}: {self._clean(message)[:200]}")
         return data if isinstance(data, dict) else {}
