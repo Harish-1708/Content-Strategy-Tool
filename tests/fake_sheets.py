@@ -164,6 +164,7 @@ class FakeClient:
     def __init__(self, spreadsheets=()):
         self.spreadsheets = {s.id: s for s in spreadsheets}
         self.created = []
+        self.create_folders = []
 
     def open_by_key(self, key):
         if key not in self.spreadsheets:
@@ -171,6 +172,7 @@ class FakeClient:
         return self.spreadsheets[key]
 
     def create(self, title, folder_id=None):
+        self.create_folders.append(folder_id)
         sheet = FakeSpreadsheet(f"fake-{len(self.created) + 1}", title)
         self.spreadsheets[sheet.id] = sheet
         self.created.append(sheet)
