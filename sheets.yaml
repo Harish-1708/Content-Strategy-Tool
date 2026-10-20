@@ -1,9 +1,10 @@
-# Optional: which Google spreadsheet belongs to which brand.
-# Paste a sheet's id (or its whole URL) after the brand name. Share that sheet with the
-# service account as Editor: its address is the "client_email" inside the key file.
-# Leave a brand blank and the tool creates a new spreadsheet for it and shares it with the
-# address(es) in the SHEET_SHARE_EMAIL secret. Tabs and columns are created automatically.
+# Which Google spreadsheet belongs to which brand.
+# Create a blank spreadsheet per brand in your own Google Drive, share it with the service
+# account (the "client_email" inside the key) as Editor, then paste its link, or just its id,
+# after the brand name. Tabs and columns are created automatically.
+# Leave a brand blank only if you have set up a Shared Drive folder (SHEET_FOLDER_ID secret);
+# otherwise Google refuses to let a service account create spreadsheets.
 sheets:
-  swoveralls: ""
-  duderobe: ""
-  defi_snacks: ""
+  swoveralls: "1r2YK5IFnO-tAxNUNjs3cBGKSPtrhUdUy_FiG5XClEoQ"
+  duderobe: "1NfcmT457fIDgYOoG6CBx4fMYopVp6kTSmFKqoNFDXeg"
+  defi_snacks: "1QrWej2Khc4ahIK_p1SI3VoCo_37H8JgReWylpysGv7Q"
