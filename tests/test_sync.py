@@ -8,7 +8,8 @@ from contentintel.brands import BrandError
 from contentintel.shopify_fetch import FetchError, FetchResult
 from contentintel.store import Store, StoreError
 from contentintel.sync import (BaselineError, catalogue_state, confirm_baseline,
-                               confirm_removed, format_report, reset_baseline, run_sync)
+                               confirm_removed, describe_event, format_report, reset_baseline,
+                               run_sync)
 
 from conftest import FIXTURES, raw_products
 
@@ -306,3 +307,43 @@ def test_cli_reads_a_sitemap_file_for_the_cross_check(tmp_path):
     code = run_cli(tmp_path, "sync", "--brand", "swoveralls", "--from-file",
                    str(FIXTURES / "swoveralls_full_72.json"), "--sitemap-file", str(sitemap))
     assert code == 2                                                      # 30 of 102 handles missing from the feed
+
+
+def stock_event(**details):
+    base = {"product": None, "variants_sold_out": [], "variants_restocked": []}
+    return {"type": "availability", "title": "X", "details": {**base, **details}}
+
+
+def test_stock_events_name_the_variants_involved():
+    assert describe_event(stock_event(variants_sold_out=["S / Navy", "M / Navy"])) == "Sold out: M / Navy, S / Navy"
+    assert describe_event(stock_event(variants_restocked=["L / Navy"])) == "Back in stock: L / Navy"
+    assert describe_event(stock_event(variants_sold_out=["A"], variants_restocked=["B"])) == "Sold out: A; Back in stock: B"
+    assert describe_event(stock_event(product="sold_out", variants_sold_out=["A", "B"])) == "Product sold out. Sold out: A, B"
+    assert describe_event(stock_event(product="back_in_stock", variants_restocked=["A"])) == "Product back in stock. Back in stock: A"
+
+
+def test_long_variant_lists_are_shortened():
+    names = [f"V{i}" for i in range(7)]
+    assert describe_event(stock_event(variants_sold_out=names)) == "Sold out: V0, V1, V2, V3 (+3 more)"
+
+
+def test_other_event_wording_is_unchanged():
+    assert describe_event({"type": "changed", "title": "X", "details": {"price": [], "tags": {}}}) == "changed: price, tags"
+    assert describe_event({"type": "returned", "title": "X", "details": {"was": "suspected_removed"}}) == "returned (was suspected_removed)"
+    assert describe_event({"type": "suspected_removed", "title": "X", "details": {}}) == "suspected removed"
+    assert describe_event({"type": "new", "title": "X", "details": {}}) == "new"
+
+
+def test_the_sync_report_names_the_variant_that_sold_out(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json")
+
+    def sell_out(raw):
+        next(p for p in raw if p["handle"] == "swoveralls-midnight-black")["variants"][0]["available"] = False
+    result = run_sync(swov, store, raw_products=_edited("swoveralls_full_72.json", sell_out), now=T1)
+    assert "Swoveralls - Midnight Black: Sold out: XXS / Midnight Black" in format_report(result)
+
+
+def _edited(fixture, mutate):
+    raw = raw_products(fixture)
+    mutate(raw)
+    return raw
