@@ -17,7 +17,7 @@ EXPORT_NAMES = ("products.json", "products.csv", "variants.csv")
 
 PRODUCT_COLUMNS = [
     "product_id", "handle", "title", "url", "status", "flags", "excluded", "readiness",
-    "missing_required", "category", "family", "audience_hints", "audience_stated",
+    "missing_required", "missing_expected", "category", "family", "audience_hints", "audience_stated",
     "in_stock", "price_min", "price_max", "on_sale", "variant_count", "image_count",
     "primary_image", "tags", "materials", "pocket_claims", "ingredients", "allergens",
 ]
@@ -75,6 +75,7 @@ def _product_row(rec):
         "url": rec["url"], "status": rec["status"], "flags": _join(rec["flags"]),
         "excluded": _bool(rec["excluded"]), "readiness": rec["readiness"]["state"],
         "missing_required": _join(rec["readiness"]["missing_required"]),
+        "missing_expected": _join(rec["readiness"]["missing_expected"]),
         "category": rec["category"] or "", "family": rec["family"],
         "audience_hints": _join(rec["audience_hints"]),
         "audience_stated": audience if isinstance(audience, str) else "",
