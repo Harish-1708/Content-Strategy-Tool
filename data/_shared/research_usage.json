@@ -1,10 +1,14 @@
 {
  "lifetime": {
-  "serper_dev": 3
+  "serpapi": 2,
+  "serper_dev": 5,
+  "tavily": 2
  },
  "months": {
   "2026-10": {
-   "serper_dev": 3
+   "serpapi": 2,
+   "serper_dev": 5,
+   "tavily": 2
   }
  }
 }
