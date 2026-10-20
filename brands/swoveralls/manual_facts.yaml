@@ -1,0 +1,8 @@
+# Facts you state outrank the website. Keys are Shopify product handles.
+#
+# To tell the tool that a product is live even though it has no "Active" tag, give it a
+# status: active, inactive, coming_soon or pre_order. Remove the # marks to switch an example on.
+# (A status cannot bring back a product the rules exclude, such as gift cards.)
+products: {}
+#  sidekick-crew-swoveralls-olive-branch:
+#    status: active
