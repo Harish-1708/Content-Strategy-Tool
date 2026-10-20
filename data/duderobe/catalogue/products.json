@@ -4782,7 +4782,7 @@
      "title": "Black / S-M"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 49183460393246,
      "options": [
@@ -4800,7 +4800,7 @@
      "title": "Black / L-XL"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 49183460426014,
      "options": [
@@ -4928,7 +4928,7 @@
      "title": "Grey / XS"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 49183455641886,
      "options": [
@@ -4946,7 +4946,7 @@
      "title": "Grey / S-M"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 49183455674654,
      "options": [
@@ -4964,7 +4964,7 @@
      "title": "Grey / L-XL"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 49183455707422,
      "options": [
@@ -5093,7 +5093,7 @@
      "title": "Navy / XS"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 49183454757150,
      "options": [
@@ -5129,7 +5129,7 @@
      "title": "Navy / L-XL"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 49183454822686,
      "options": [
