@@ -46,9 +46,10 @@ def resync(brand, store, fixture, mutate, now=T1):
     return run_sync(brand, store, raw_products=raw, now=now)
 
 
-def run(brands, store, client, *, config=None, emails=(EMAIL,), dry_run=False, now=NOW):
+def run(brands, store, client, *, config=None, emails=(EMAIL,), dry_run=False, now=NOW,
+        folder_id=None):
     return sheets.run_sheets(brands, store, key_json="{}", share_emails=list(emails),
-                             config=config or {}, now=now, dry_run=dry_run,
+                             config=config or {}, now=now, dry_run=dry_run, folder_id=folder_id,
                              connect_fn=lambda key: (client, BOT))
 
 
@@ -693,3 +694,95 @@ def test_cli_all_covers_every_brand(tmp_path, monkeypatch, swov, dude, defi):
     assert last_row(by_name["Swoveralls"].worksheet("Products")) == 73       # header + 72 products
     assert last_row(by_name["DudeRobe"].worksheet("Products")) == 26
     assert last_row(by_name["Defi"].worksheet("Products")) == 8
+
+
+# --- a service account with no Drive storage (the real failure seen on GitHub) ---------------------
+
+QUOTA_TEXT = "The user's Drive storage quota has been exceeded."
+
+
+class FullDrive(FakeClient):
+    """Google refuses to create files for this service account."""
+
+    def __init__(self, text=QUOTA_TEXT, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.text = text
+
+    def create(self, title, folder_id=None):
+        raise api_error(403, self.text)
+
+
+@pytest.mark.parametrize("text", [QUOTA_TEXT, "storageQuotaExceeded"])
+def test_a_service_account_with_no_storage_gets_the_real_explanation(dude, store, sleeps, text):
+    baselined(dude, store, "duderobe_fetch_a.json", 25)
+    client = FullDrive(text)
+    report, error = one(dude, store, client)
+    assert report is None and sleeps == []                          # not retried
+    for part in (BOT, "your own Google Drive", "sheets.yaml", "SHEET_FOLDER_ID", "'duderobe'", "Editor"):
+        assert part in error
+    assert "Sheets API" not in error                                 # the old, misleading advice
+    assert client.created == [] and store.load_sheet_info("duderobe") is None
+
+
+def test_every_brand_gets_its_own_instruction_when_creation_is_refused(swov, dude, defi, store):
+    for brand, fixture, count in ((swov, "swoveralls_full_72.json", 72),
+                                  (dude, "duderobe_fetch_a.json", 25), (defi, "defi_snacks.json", 7)):
+        baselined(brand, store, fixture, count)
+    results = run([swov, dude, defi], store, FullDrive())
+    assert [r[0] for r in results] == ["swoveralls", "duderobe", "defi_snacks"]
+    for slug, report, error in results:
+        assert report is None and f"'{slug}'" in error
+
+
+def test_sheets_you_create_yourself_work_when_the_service_account_cannot_create_any(swov, dude, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    baselined(dude, store, "duderobe_fetch_a.json", 25)
+    mine = [FakeSpreadsheet("sw-id", "Swoveralls Catalogue"), FakeSpreadsheet("dr-id", "DudeRobe Catalogue")]
+    client = FullDrive(spreadsheets=mine)
+    config = {"swoveralls": "sw-id", "duderobe": "dr-id"}
+    results = run([swov, dude], store, client, config=config)
+    assert all(r[2] is None for r in results)
+    assert [len(read(tabs(sp)["Products"])[1]) for sp in mine] == [72, 25]
+    assert client.created == [] and all(sp.shares == [] for sp in mine)
+
+
+def test_other_permission_errors_still_give_the_sharing_advice(dude, store):
+    baselined(dude, store, "duderobe_fetch_a.json", 25)
+    report, error = one(dude, store, FullDrive("The caller does not have permission"))
+    assert "Editor" in error and "Drive API" in error and "your own Google Drive" not in error
+
+
+def test_a_shared_drive_folder_is_used_for_created_spreadsheets(dude, store):
+    baselined(dude, store, "duderobe_fetch_a.json", 25)
+    client = FakeClient()
+    report, error = one(dude, store, client, folder_id="FOLDER1")
+    assert error is None and client.create_folders == ["FOLDER1"]
+
+
+def test_without_a_folder_nothing_is_passed(dude, store):
+    baselined(dude, store, "duderobe_fetch_a.json", 25)
+    client = FakeClient()
+    one(dude, store, client)
+    assert client.create_folders == [None]
+
+
+def test_folder_ids_and_urls():
+    assert sheets.parse_folder_id("https://drive.google.com/drive/folders/F123_ab-c?usp=sharing") == "F123_ab-c"
+    assert sheets.parse_folder_id("  F123  ") == "F123"
+    assert sheets.parse_folder_id("") is None and sheets.parse_folder_id(None) is None
+
+
+def test_cli_passes_the_folder_secret_through(cli_world, monkeypatch):
+    client, go = cli_world
+    monkeypatch.setenv("GOOGLE_SERVICE_ACCOUNT_JSON", "{}")
+    monkeypatch.setenv("SHEET_FOLDER_ID", "https://drive.google.com/drive/folders/F123?usp=sharing")
+    assert go() == 0 and client.create_folders == ["F123"]
+
+
+def test_cli_shows_the_storage_explanation_and_fails_the_run(cli_world, monkeypatch, capsys):
+    client, go = cli_world
+    monkeypatch.setattr(cli.sheets_mod, "connect", lambda key: (FullDrive(), BOT))
+    monkeypatch.setenv("GOOGLE_SERVICE_ACCOUNT_JSON", "{}")
+    assert go() == 1
+    out = capsys.readouterr().out
+    assert "your own Google Drive" in out and "::error::" in out
