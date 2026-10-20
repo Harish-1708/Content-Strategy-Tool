@@ -146,10 +146,17 @@ list goes a long way.
 "Dry run" is ticked by default when you run it by hand; untick it to search for real. You can
 untick a service to leave it out of that run.
 
+**Proving each service works.** In Actions > Research > Run workflow, tick **Provider check**
+(and leave the services you want ticked). It runs one web search and one news search on each
+ticked service, shows whether each worked, and counts the credits (about two per service; Dry run
+is ignored for this). Day to day, web searches go to Serper.dev and news searches to Tavily, so
+SerpApi only steps in as a fallback or when you tick it alone; that is by design, not a fault.
+
 **Reading the results.** Each brand's sheet gets a **Research** tab: one row per page found, with
 when it was first and last seen, how often, which service and which search found it, and a
 **Review** column for your team (for example useful, irrelevant, saturated). Review marks are never
-overwritten. The raw findings are in `data/<brand>/research/searches.jsonl`.
+overwritten. Addresses are shown without tracking codes (Google adds a new one to every result),
+so the same page found next week is the same row, with "times seen" going up. The raw findings are in `data/<brand>/research/searches.jsonl`.
 
 **If a run goes red:** a service rejected its key (the log names it; check the secret), or searches
 failed on every service. Running out of credits under your caps is a yellow warning, not a failure.
