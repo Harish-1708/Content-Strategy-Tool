@@ -27,6 +27,7 @@ _CATALOGUE_KEYS = {"exclude", "active_tag", "status_rules", "flags",
                    "category_by_type", "audience", "family"}
 _EXCLUDE_KEYS = {"product_types", "title_patterns", "tags"}
 _STATUS_NAMES = {"coming_soon", "pre_order"}
+MANUAL_STATUSES = ("active", "inactive", "coming_soon", "pre_order")
 
 
 class BrandError(Exception):
@@ -153,6 +154,12 @@ def load_brand(slug, brands_dir="brands"):
     manual_path = root / "manual_facts.yaml"
     if manual_path.is_file():
         manual = (_read_yaml(manual_path).get("products") or {})
+    for handle, entry in manual.items():
+        if not isinstance(entry, dict):
+            raise BrandError(f"{slug}: manual facts for {handle!r} must be name: value pairs")
+        if "status" in entry and entry["status"] not in MANUAL_STATUSES:
+            raise BrandError(f"{slug}: manual status for {handle!r} must be one of "
+                             f"{list(MANUAL_STATUSES)}, got {entry['status']!r}")
     claims = []
     claims_path = root / "claims.yaml"
     if claims_path.is_file():
