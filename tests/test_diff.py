@@ -272,3 +272,15 @@ def test_the_registry_does_not_change_on_a_quiet_run(base):
     recs, registry = base
     events, registry2 = diff_snapshots(recs, recs, registry, T3)
     assert events == [] and registry2 == registry
+
+
+def test_a_stated_status_is_reported_as_a_change(swov, swov_records):
+    from dataclasses import replace
+    _, registry = diff_snapshots({}, swov_records, {}, T0, initial=True)
+    brand = replace(swov, manual_facts={"sidekick-crew-swoveralls-olive-branch": {"status": "active"}})
+    after = records(brand, raw_products("swoveralls_full_72.json"))
+    events, _ = diff_snapshots(swov_records, after, registry, T1)
+    (ev,) = events
+    assert ev["type"] == "changed" and ev["handle"] == "sidekick-crew-swoveralls-olive-branch"
+    assert ev["details"]["status"] == {"old": "inactive", "new": "active"}
+    assert ev["details"]["readiness"] == {"old": "inactive", "new": "ready"}
