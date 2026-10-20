@@ -56,7 +56,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 8927175672094,Kids DudeRobe,47471190147358,Navy / Youth (5-9 Year Old),Color=Navy; Size=Youth (5-9 Year Old),ROBEYOUTH-NAVY-OS,68.00,,true
 8927175672094,Kids DudeRobe,47532988760350,Navy / XS (10-15 Year Old),Color=Navy; Size=XS (10-15 Year Old),ROBE1-NAVY-XS,68.00,,false
 8927175672094,Kids DudeRobe,47471189983518,Grey / Youth (5-9 Year Old),Color=Grey; Size=Youth (5-9 Year Old),ROBEYOUTH-GRAY-OS,68.00,,true
-8927175672094,Kids DudeRobe,47532988727582,Grey / XS (10-15 Year Old),Color=Grey; Size=XS (10-15 Year Old),ROBE1-GRAY-XS,68.00,,false
+8927175672094,Kids DudeRobe,47532988727582,Grey / XS (10-15 Year Old),Color=Grey; Size=XS (10-15 Year Old),ROBE1-GRAY-XS,68.00,,true
 8927175672094,Kids DudeRobe,47471190311198,Black / Youth (5-9 Year Old),Color=Black; Size=Youth (5-9 Year Old),ROBEYOUTH-BLACK-OS,68.00,,true
 8927175672094,Kids DudeRobe,47532988793118,Black / XS (10-15 Year Old),Color=Black; Size=XS (10-15 Year Old),ROBE1-BLACK-XS,68.00,,false
 10109410443550,Mom & LittleDude,51861463105822,Default Title,Title=Default Title,,175.00,196.00,true
@@ -97,7 +97,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 9885198549278,The All-American (Dude)Robe,50216131854622,Navy / S-M,Color=Navy; Size=S-M,ROBE1AMERICA-NAVY-S/M,134.00,,true
 9885198549278,The All-American (Dude)Robe,50216131887390,Navy / L-XL,Color=Navy; Size=L-XL,ROBE1AMERICA-NAVY-L/XL,134.00,,true
 9885198549278,The All-American (Dude)Robe,50216131920158,Navy / 2XL-3XL,Color=Navy; Size=2XL-3XL,ROBE1AMERICA-NAVY-2XL/3XL,134.00,,true
-9885198549278,The All-American (Dude)Robe,50216131952926,Grey / XS,Color=Grey; Size=XS,ROBE1USAMAP-GREY-XS,134.00,,false
+9885198549278,The All-American (Dude)Robe,50216131952926,Grey / XS,Color=Grey; Size=XS,ROBE1USAMAP-GREY-XS,134.00,,true
 9885198549278,The All-American (Dude)Robe,50216131985694,Grey / S-M,Color=Grey; Size=S-M,ROBE1USAMAP-GREY-S/M,134.00,,true
 9885198549278,The All-American (Dude)Robe,50216132018462,Grey / L-XL,Color=Grey; Size=L-XL,ROBE1USAMAP-GREY-L/XL,134.00,,true
 9885198549278,The All-American (Dude)Robe,50216132051230,Grey / 2XL-3XL,Color=Grey; Size=2XL-3XL,ROBE1USAMAP-GREY-2XL/3XL,134.00,,true
@@ -108,7 +108,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 1363889356843,The DudeRobe,31947168907345,Navy / S-M,Color=Navy; Size=S-M,ROBE1-NAVY-S/M,128.00,,true
 1363889356843,The DudeRobe,31947175198801,Navy / L-XL,Color=Navy; Size=L-XL,ROBE1-NAVY-L/XL,128.00,,true
 1363889356843,The DudeRobe,31947197907025,Navy / 2XL-3XL,Color=Navy; Size=2XL-3XL,ROBE1-NAVY-2XL/3XL,128.00,,true
-1363889356843,The DudeRobe,47315794952478,Grey / XS,Color=Grey; Size=XS,ROBE1-GRAY-XS,128.00,,false
+1363889356843,The DudeRobe,47315794952478,Grey / XS,Color=Grey; Size=XS,ROBE1-GRAY-XS,128.00,,true
 1363889356843,The DudeRobe,31947185848401,Grey / S-M,Color=Grey; Size=S-M,ROBE1-Gray-S/M,128.00,,true
 1363889356843,The DudeRobe,31947194073169,Grey / L-XL,Color=Grey; Size=L-XL,ROBE1-Gray-L/XL,128.00,,true
 1363889356843,The DudeRobe,31947194761297,Grey / 2XL-3XL,Color=Grey; Size=2XL-3XL,ROBE1-GRAY-2XL/3XL,128.00,,true
