@@ -1,4 +1,4 @@
-# Content strategy tool: Phase 1 (catalogue foundation)
+# Content strategy tool: catalogue foundation and research
 
 Everything runs on GitHub. Nothing is installed or run on a computer of your own.
 
@@ -12,6 +12,9 @@ Everything runs on GitHub. Nothing is installed or run on a computer of your own
 - Keeps each brand's own Google Sheet up to date automatically (see below), and clean files
   in `data/<brand>/catalogue/` for other tools.
 - Blocks generation (later phases) whenever a catalogue cannot be trusted.
+- Every Monday, searches the web for each brand through three search services (Serper.dev,
+  Tavily and SerpApi), inside credit caps you set, and shows the findings in a Research tab in
+  each brand's sheet (see "Research" below).
 
 ## One-time set-up (GitHub website, plus the Google Cloud console for the sheets)
 
@@ -103,6 +106,55 @@ Rules that protect your work:
 | `reset-baseline` | retire the baseline on purpose (the next clean sync must be confirmed again) |
 | `status` | can generation use this brand's catalogue right now? |
 
+## Research (Actions > Research)
+
+Three search services, one rule: never spend more credits than you allow.
+
+**Set-up, once.** In GitHub, Settings > Secrets and variables > Actions, add a secret for each
+service you have a key for. Any one is enough; each extra gives the tool more room.
+
+| Secret name | Service | Get a key at |
+|---|---|---|
+| `SERPER_API_KEY` | Serper.dev (Google results) | serper.dev |
+| `TAVILY_API_KEY` | Tavily (rich results, news with dates) | app.tavily.com |
+| `SERPAPI_API_KEY` | SerpApi (Google results, and its own balance check) | serpapi.com |
+
+Mind the names: `SERPER_API_KEY` is Serper.dev. SerpApi is spelt differently and has its own secret.
+
+**What each free plan gives** (checked October 2026; plans change, so re-check): Serper.dev gives
+2,500 free searches once, when you sign up. Tavily gives 1,000 credits every month. SerpApi gives a
+small monthly free plan (its changelog says 250; some pages still say 100).
+
+**How credits are protected.** All of this is set in `research.yaml`, which you can edit in GitHub.
+- **Caps:** a monthly cap per service (and a lifetime cap for Serper.dev's one-time pool). Defaults
+  keep Serper.dev lasting about ten months and leave most of Tavily and SerpApi untouched.
+- **A shared count:** every search is counted (`data/_shared/research_usage.json`), across all
+  brands. For Tavily and SerpApi the tool also asks the service how many credits are really left.
+- **Routing:** web searches go to Serper.dev first, news searches to Tavily first. When one
+  service is at its cap or out of credits, the next one takes the search. A search that nobody can
+  afford is skipped, never forced.
+- **Reuse:** a search made in the last 7 days is reused, not paid for again.
+- **A safety limit** on searches per run, and a **dry run** that shows the plan and which service
+  would take each search without spending anything.
+
+**What it searches.** Out of the box, only the brand's own name (three searches a week: reviews,
+competitors, TikTok). Add competitors, topics and exact searches in `brands/<brand>/research.yaml`.
+Each competitor or topic becomes a few searches (a web search and a recent-news search), so a short
+list goes a long way.
+
+**Running it.** It runs by itself every Monday. To run it now: Actions > Research > Run workflow.
+"Dry run" is ticked by default when you run it by hand; untick it to search for real. You can
+untick a service to leave it out of that run.
+
+**Reading the results.** Each brand's sheet gets a **Research** tab: one row per page found, with
+when it was first and last seen, how often, which service and which search found it, and a
+**Review** column for your team (for example useful, irrelevant, saturated). Review marks are never
+overwritten. The raw findings are in `data/<brand>/research/searches.jsonl`.
+
+**If a run goes red:** a service rejected its key (the log names it; check the secret), or searches
+failed on every service. Running out of credits under your caps is a yellow warning, not a failure.
+Findings are facts about what the web returned: nothing is judged or summarised yet.
+
 ## Telling the tool what it cannot know (`brands/<brand>/manual_facts.yaml`)
 
 Facts you state outrank the website. Edit the file in GitHub; keys are product handles
@@ -128,6 +180,11 @@ are live, add each handle with `status: active` (the template is `brands/swovera
 | `latest.json`, `snapshots/` | the full records later phases read; a snapshot is kept only when real content changed |
 | `registry.json` | every product ever seen, including suspected and confirmed removals |
 | `failed_runs.jsonl` | every rejected run and why |
+| `research/searches.jsonl` | every search made for this brand, with the results as returned |
+| `research/runs.jsonl` | one line per research run: what was planned, reused, searched, skipped |
+
+`data/_shared/research_usage.json` counts the credits spent on each search service, across all
+brands.
 
 A quiet run writes only `last_checked.json` (about 100 bytes). Files are rewritten only when
 their content changes.
@@ -140,11 +197,13 @@ their content changes.
 - If the Google Sheets step fails, the run turns red and the run page says what to fix
   (usually sharing, or an API not enabled). The catalogue data is still saved.
 - Optional sabotage check: Actions > Tests > Run workflow > tick sabotage. It breaks the code on
-  purpose in about 100 ways and confirms the tests notice each one (several minutes).
+  purpose in about 170 ways and confirms the tests notice each one (several minutes).
 
 ## Not verified from the build environment
 
-Live fetches from the stores, the sitemap cross-check against a real site, real GitHub runs,
+Every call to Tavily, Serper.dev and SerpApi (the tests use a scripted stand-in built from each
+service's documentation, so the first real run with your keys is the real test; start with a dry
+run, then a real run on one brand), live fetches from the stores, the sitemap cross-check against a real site, real GitHub runs,
 and every call to Google. The sheet logic was tested against a strict stand-in that rejects
 anything the real library would reject, and the "no Drive storage" error was reproduced from
 a real run's log; the first real run with your own spreadsheets is the real test. The Shared
