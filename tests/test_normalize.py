@@ -266,3 +266,44 @@ def test_a_manual_family_override_changes_the_content_hash(dude):
 
 def test_option_names_are_kept_in_the_stores_order(swov_records):
     assert by_title(swov_records, "Swoveralls - Navy")["option_names"] == ["Size", "Color"]
+
+
+def with_status(brand, handle, status):
+    manual = {**brand.manual_facts, handle: {**brand.manual_facts.get(handle, {}), "status": status}}
+    return replace(brand, manual_facts=manual)
+
+
+CREW = "sidekick-crew-swoveralls-olive-branch"
+
+
+def test_a_person_can_state_that_an_untagged_product_is_active(swov, swov_records):
+    before = by_handle(swov_records, CREW)
+    assert before["status"] == "inactive" and before["readiness"]["state"] == "inactive"
+    after = by_handle(records_for(with_status(swov, CREW, "active"), "swoveralls_full_72.json"), CREW)
+    assert after["status"] == "active" and after["readiness"]["state"] == "ready"
+    assert "status" not in after["facts"] and after["family"] == before["family"]
+
+
+def test_a_stated_status_changes_only_that_product(swov, swov_records):
+    others = records_for(with_status(swov, CREW, "active"), "swoveralls_full_72.json")
+    changed = [i for i in swov_records if swov_records[i]["status"] != others[i]["status"]]
+    assert [swov_records[i]["handle"] for i in changed] == [CREW]
+
+
+def test_a_stated_status_cannot_revive_an_excluded_product(swov):
+    rec = by_handle(records_for(with_status(swov, "swoveralls-gift-card", "active"),
+                                "swoveralls_full_72.json"), "swoveralls-gift-card")
+    assert rec["excluded"] is True and rec["status"] == "excluded" and rec["readiness"]["state"] == "excluded"
+
+
+def test_a_stated_status_can_also_retire_or_hold_a_product(swov):
+    recs = records_for(with_status(swov, "swoveralls-midnight-black", "inactive"), "swoveralls_full_72.json")
+    assert by_handle(recs, "swoveralls-midnight-black")["readiness"]["state"] == "inactive"
+    recs = records_for(with_status(swov, "swoveralls-navy", "coming_soon"), "swoveralls_full_72.json")
+    assert by_handle(recs, "swoveralls-navy")["status"] == "coming_soon"
+
+
+def test_a_stated_status_changes_the_catalogue_fingerprint(swov, swov_records):
+    from contentintel.normalize import catalogue_fingerprint
+    other = records_for(with_status(swov, CREW, "active"), "swoveralls_full_72.json")
+    assert catalogue_fingerprint(other, False) != catalogue_fingerprint(swov_records, False)
