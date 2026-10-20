@@ -151,6 +151,9 @@ untick a service to leave it out of that run.
 ticked service, shows whether each worked, and counts the credits (about two per service; Dry run
 is ignored for this). Day to day, web searches go to Serper.dev and news searches to Tavily, so
 SerpApi only steps in as a fallback or when you tick it alone; that is by design, not a fault.
+If a check says "answered but returned no results", the bracket after it shows what the service
+actually sent back, which tells a genuinely empty answer from a misread one. The news check uses
+the broad word "overalls" over the last year, so an empty answer there deserves a closer look.
 
 **Reading the results.** Each brand's sheet gets a **Research** tab: one row per page found, with
 when it was first and last seen, how often, which service and which search found it, and a
