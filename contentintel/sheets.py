@@ -30,15 +30,19 @@ import yaml
 from gspread.utils import ValueInputOption, ValueRenderOption
 
 from .export import PRODUCT_COLUMNS, VARIANT_COLUMNS, product_rows, variant_rows
+from .research import research_sources
 from .sync import catalogue_state, describe_event
 
 PRODUCTS, VARIANTS, CHANGES, STATUS = "Products", "Variants", "Changes", "Status"
+RESEARCH = "Research"
 CHANGE_COLUMNS = ["event_id", "at", "type", "product_id", "title", "handle", "summary"]
-STARTER_MANUAL = {PRODUCTS: ["Notes"]}          # added only when a tab is brand new
+RESEARCH_COLUMNS = ["source_id", "title", "url", "domain", "published", "first_seen", "last_seen",
+                    "times_seen", "providers", "purposes", "queries", "best_rank", "snippet"]
+STARTER_MANUAL = {PRODUCTS: ["Notes"], RESEARCH: ["Review"]}   # added only when a tab is brand new
 STAMP = "last_updated"                          # when the tool last changed that row
 
 NUMERIC = {"price_min", "price_max", "price", "compare_at_price"}
-INTEGER = {"variant_count", "image_count"}
+INTEGER = {"variant_count", "image_count", "times_seen", "best_rank"}
 BOOLEAN = {"excluded", "in_stock", "on_sale", "available"}
 
 _BLANK_TABS = ("Sheet1", "Sheet 1")
@@ -505,6 +509,15 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
                 report=report, dry_run=dry_run)
     report.events_added = report.rows_added - before
     report.rows_added = before
+
+    sources = research_sources(store.read_searches(brand.slug))
+    if sources:                                  # the tab appears once there is something to show
+        ws = _ensure_tab(spreadsheet, RESEARCH, report, dry_run, created)
+        rows = {sid: {c: _typed(c, row[c]) for c in RESEARCH_COLUMNS}
+                for sid, row in sources.items()}
+        _sync_table(ws, tab=RESEARCH, columns=RESEARCH_COLUMNS, rows_by_key=rows,
+                    key_col="source_id", report=report, dry_run=dry_run,
+                    starter_manual=STARTER_MANUAL[RESEARCH])
 
     ws = _ensure_tab(spreadsheet, STATUS, report, dry_run, created)
     if ws is not None and not dry_run:
