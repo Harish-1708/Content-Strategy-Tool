@@ -15,9 +15,10 @@ Everything runs on GitHub. Nothing is installed or run on a computer of your own
 ## One-time set-up (all in the GitHub website)
 
 1. Upload the project files to the repository, keeping the folder paths.
-2. Add the five saved catalogues to `tests/fixtures/` under these names
-   (the tests use them): `swoveralls_full_72.json`, `swoveralls_truncated_30.json`,
-   `duderobe_fetch_a.json`, `duderobe_fetch_b.json`, `defi_snacks.json`.
+2. Upload the five saved catalogues to `tests/fixtures/`. They are supplied already named,
+   so no renaming is needed: `swoveralls_full_72.json`, `swoveralls_truncated_30.json`,
+   `duderobe_fetch_a.json`, `duderobe_fetch_b.json`, `defi_snacks.json`. Without them the
+   Tests workflow stops with one message listing what is missing.
 3. Check `domain` in each `brands/<brand>/brand.yaml`.
 4. If a run ever fails with a permission error while saving: Settings > Actions >
    General > Workflow permissions > Read and write.
@@ -61,16 +62,19 @@ setting name fails the run and names the setting).
 A quiet day writes only `last_checked.json` (about 100 bytes). Files are rewritten only
 when their content changes.
 
-To read the data in Google Sheets (public repository only; not tested):
-`=IMPORTDATA("https://raw.githubusercontent.com/OWNER/REPO/main/data/swoveralls/catalogue/products.csv")`
+To use the data in Google Sheets: open the file in GitHub (for example
+`data/swoveralls/catalogue/products.csv`) and choose Download raw file, then File > Import
+in the sheet. In a private repository the raw-URL `IMPORTDATA` trick does not work. An
+automatic Google Sheet sync can be added; it needs a Google service account key stored as a
+repository secret.
 
 ## Good to know
 
-- Public repositories pause scheduled workflows after 60 days with no repository
-  activity (GitHub's rule). If the daily run stops, re-enable it under Actions.
-- A public repository makes everything in it public, including `brands/` and `briefs/`
-  (brand rules, claim status, open questions). Keep client-confidential material out of
-  a public repository.
+- In a private repository, workflow runs use your monthly GitHub Actions minutes. The daily
+  sync takes about a minute; the Tests workflow runs only when code or settings change.
+- Public repositories pause scheduled workflows after 60 days with no repository activity
+  (GitHub's rule), and a public repository makes everything in it public, including
+  `brands/` and `briefs/`. Keep this repository private.
 - Optional sabotage check: Actions > Tests > Run workflow > tick sabotage. It breaks the
   code on purpose in about 70 ways and confirms the tests notice each one.
 
