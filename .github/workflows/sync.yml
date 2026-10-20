@@ -1,11 +1,12 @@
-# Fetches each brand's catalogue, checks it, and saves the results in the data/ folder.
-# Runs daily by itself. To run it now: Actions > Catalogue sync > Run workflow.
+# Fetches each brand's catalogue, checks it, saves the results in the data/ folder, then
+# updates each brand's Google Sheet. Runs every 6 hours by itself (about 4 Actions minutes
+# a day). To run it now: Actions > Catalogue sync > Run workflow.
 # A red run means a person should look (the run page shows a plain-English report).
 name: Catalogue sync
 
 on:
   schedule:
-    - cron: "17 5 * * *"        # daily, 05:17 UTC
+    - cron: "17 */6 * * *"      # every 6 hours: 00:17, 06:17, 12:17, 18:17 UTC
   workflow_dispatch:
     inputs:
       brand:
@@ -52,6 +53,24 @@ jobs:
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           exit "$code"
 
+      - name: Update Google Sheets
+        id: sheets
+        continue-on-error: true
+        shell: bash
+        env:
+          BRAND: ${{ inputs.brand }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          SHEET_SHARE_EMAIL: ${{ secrets.SHEET_SHARE_EMAIL }}
+        run: |
+          set +e
+          args=(--all)
+          if [ -n "$BRAND" ] && [ "$BRAND" != "all" ]; then args=(--brand "$BRAND"); fi
+          { echo "### Google Sheets"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel sheets "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
       - name: Save the data
         shell: bash
         run: |
@@ -67,7 +86,7 @@ jobs:
           fi
 
       - name: Alert if a catalogue needs attention
-        if: steps.sync.outcome == 'failure'
+        if: steps.sync.outcome == 'failure' || steps.sheets.outcome == 'failure'
         shell: bash
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -79,5 +98,5 @@ jobs:
           fi
 
       - name: Show the run as red when attention is needed
-        if: steps.sync.outcome == 'failure'
+        if: steps.sync.outcome == 'failure' || steps.sheets.outcome == 'failure'
         run: exit 1
