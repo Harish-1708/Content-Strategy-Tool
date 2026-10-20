@@ -96,3 +96,42 @@ def test_listing_ignores_folders_without_a_profile(tmp_path):
     assert list_brand_slugs(tmp_path) == ["real"]
     assert list(load_all(tmp_path)) == ["real"]
     assert list_brand_slugs(tmp_path / "missing") == []
+
+
+def write_manual(tmp_path, slug, products):
+    root = write_brand(tmp_path, slug)
+    (root / slug / "manual_facts.yaml").write_text(yaml.safe_dump({"products": products}), encoding="utf-8")
+    return root
+
+
+@pytest.mark.parametrize("status", ["active", "inactive", "coming_soon", "pre_order"])
+def test_valid_manual_statuses_are_accepted(tmp_path, status):
+    root = write_manual(tmp_path, "okay", {"a-product": {"status": status, "audience": "all"}})
+    assert load_brand("okay", root).manual_facts["a-product"]["status"] == status
+
+
+@pytest.mark.parametrize("bad", ["live", "Active", "", None, 3])
+def test_unknown_manual_statuses_are_rejected(tmp_path, bad):
+    root = write_manual(tmp_path, "bad", {"a-product": {"status": bad}})
+    with pytest.raises(BrandError, match="status"):
+        load_brand("bad", root)
+
+
+def test_manual_facts_must_be_name_value_pairs(tmp_path):
+    root = write_manual(tmp_path, "bad", {"a-product": "active"})
+    with pytest.raises(BrandError, match="name: value"):
+        load_brand("bad", root)
+
+
+def test_loading_a_brand_with_manual_facts_keeps_its_required_facts(tmp_path):
+    root = write_manual(tmp_path, "okay", {"a-product": {"audience": "all"}})
+    brand = write_and_load_with_facts(root)
+    assert brand.required_facts == ["description"] and brand.expected_facts == ["images"]
+
+
+def write_and_load_with_facts(root):
+    path = root / "okay" / "brand.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    data["facts"] = {"required": ["description"], "expected": ["images"]}
+    path.write_text(yaml.safe_dump(data), encoding="utf-8")
+    return load_brand("okay", root)
