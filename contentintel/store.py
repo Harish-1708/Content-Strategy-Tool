@@ -7,6 +7,7 @@ Layout
   baseline.json            the human-confirmed product count
   pending.json             a clean snapshot waiting for baseline confirmation
   registry.json            every product ever seen, with presence state
+  sheet.json               which Google spreadsheet belongs to this brand
   changes.jsonl            one line per detected change, appended over time
   failed_runs.jsonl        one line per rejected run (no product data kept)
   catalogue/               clean exports for reuse (products.json, products.csv, variants.csv)
@@ -102,6 +103,12 @@ class Store:
     def promote_latest(self, slug, snapshot):
         self._check_brand(slug, snapshot)
         return _atomic_write(self.dir(slug) / "latest.json", snapshot, compact=True)
+
+    def load_sheet_info(self, slug):
+        return _read(self.dir(slug) / "sheet.json")
+
+    def save_sheet_info(self, slug, info):
+        return _atomic_write(self.dir(slug) / "sheet.json", info)
 
     def load_last_checked(self, slug):
         return _read(self.dir(slug) / "last_checked.json")
