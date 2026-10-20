@@ -1,0 +1,479 @@
+"""Keeps one Google spreadsheet per brand in step with the catalogue data.
+
+One service account serves every brand. For each brand the tool makes sure these tabs
+exist, creating any that are missing:
+  Products   one row per product (matched by product_id)
+  Variants   one row per size/colour (matched by variant_id)
+  Changes    every detected change, appended once
+  Status     whether the catalogue can be trusted right now, and when it last synced
+
+Rules that protect people's work
+  * The tool owns only the columns it knows by name. Any column you add (Notes, Owner,
+    anything) is never read, overwritten or reordered. Columns may sit anywhere.
+  * Rows are matched by id, never by position, so sorting or filtering is safe.
+  * Existing rows are updated in place; new products go to the bottom.
+  * A product that leaves the catalogue keeps its row and is marked, never deleted.
+  * Only cells whose value actually changed are written, so a quiet day writes almost
+    nothing (just the Status tab).
+Missing auto columns are added to the right of the existing ones.
+"""
+import hashlib
+import json
+import re
+import time
+from dataclasses import dataclass, field
+from pathlib import Path
+
+import gspread
+import requests
+import yaml
+from gspread.utils import ValueInputOption, ValueRenderOption
+
+from .export import PRODUCT_COLUMNS, VARIANT_COLUMNS, product_rows, variant_rows
+from .sync import catalogue_state, describe_event
+
+PRODUCTS, VARIANTS, CHANGES, STATUS = "Products", "Variants", "Changes", "Status"
+CHANGE_COLUMNS = ["event_id", "at", "type", "product_id", "title", "handle", "summary"]
+STARTER_MANUAL = {PRODUCTS: ["Notes"]}          # added only when a tab is brand new
+
+NUMERIC = {"price_min", "price_max", "price", "compare_at_price"}
+INTEGER = {"variant_count", "image_count"}
+BOOLEAN = {"excluded", "in_stock", "on_sale", "available"}
+
+_BLANK_TABS = ("Sheet1", "Sheet 1")
+_RETRY_CODES = {429, 500, 502, 503}
+_CHUNK = 400
+_SLEEP = time.sleep
+
+
+class SheetsError(Exception):
+    """A problem a person can fix (sharing, a missing key, a renamed id column)."""
+
+
+# ---------------------------------------------------------------------------------------
+# configuration and connection
+
+def _extract_id(value):
+    value = (value or "").strip()
+    match = re.search(r"/spreadsheets/d/([A-Za-z0-9_-]+)", value)
+    return match.group(1) if match else value
+
+
+def load_sheet_config(path, known_slugs):
+    """sheets.yaml maps a brand to an existing spreadsheet id (or its full URL). Optional."""
+    path = Path(path)
+    if not path.is_file():
+        return {}
+    raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    extra = set(raw) - {"sheets"}
+    if extra:
+        raise SheetsError(f"{path}: unknown keys {sorted(extra)}")
+    sheets = raw.get("sheets") or {}
+    if not isinstance(sheets, dict):
+        raise SheetsError(f"{path}: 'sheets' must be a list of brand: id pairs")
+    out = {}
+    for slug, value in sheets.items():
+        if slug not in known_slugs:
+            raise SheetsError(f"{path}: unknown brand {slug!r}. Known: {sorted(known_slugs)}")
+        if value is not None and not isinstance(value, str):
+            raise SheetsError(f"{path}: the id for {slug!r} must be text")
+        out[slug] = _extract_id(value) or None
+    return out
+
+
+def parse_emails(text):
+    return [e.strip() for e in (text or "").replace(";", ",").split(",") if e.strip()]
+
+
+def connect(key_json):
+    """Return (client, service_account_email). Never echoes the key."""
+    try:
+        info = json.loads(key_json)
+    except (TypeError, ValueError) as exc:
+        raise SheetsError("GOOGLE_SERVICE_ACCOUNT_JSON is not valid JSON. "
+                          "Paste the whole key file into the secret.") from exc
+    if not isinstance(info, dict) or not info.get("client_email") or not info.get("private_key"):
+        raise SheetsError("GOOGLE_SERVICE_ACCOUNT_JSON is not a service account key "
+                          "(it needs client_email and private_key).")
+    return gspread.service_account_from_dict(info), info["client_email"]
+
+
+def _api_message(exc):
+    code = getattr(exc, "code", None)
+    text = str(exc)
+    hint = ""
+    if code in (403, 404):
+        hint = (" Check the spreadsheet is shared with the service account as Editor, and that "
+                "the Google Sheets API (and the Google Drive API, for auto-created sheets) is "
+                "enabled for its Google Cloud project.")
+    return f"Google said: {text}.{hint}"
+
+
+def _call(fn, *args, **kwargs):
+    """Call the Google API, retrying rate limits and temporary errors."""
+    delay = 2
+    for attempt in range(6):
+        try:
+            return fn(*args, **kwargs)
+        except gspread.exceptions.APIError as exc:
+            if getattr(exc, "code", None) not in _RETRY_CODES or attempt == 5:
+                raise SheetsError(_api_message(exc)) from exc
+            _SLEEP(min(delay, 60))
+            delay *= 2
+
+
+# ---------------------------------------------------------------------------------------
+# values
+
+def _typed(column, text):
+    """The export rows are text. Sheets gets numbers and true/false where they belong."""
+    if text is None or text == "":
+        return ""
+    text = str(text)
+    if column in NUMERIC:
+        try:
+            return float(text)
+        except ValueError:
+            return text
+    if column in INTEGER:
+        try:
+            return int(text)
+        except ValueError:
+            return text
+    if column in BOOLEAN:
+        return text == "true"
+    return text
+
+
+def _canon(value):
+    if value is None or value == "":
+        return ("s", "")
+    if isinstance(value, bool):
+        return ("b", value)
+    if isinstance(value, (int, float)):
+        return ("n", float(value))
+    return ("s", str(value))
+
+
+def _same(a, b):
+    return _canon(a) == _canon(b)
+
+
+def _col_letter(n):
+    letters = ""
+    while n:
+        n, rem = divmod(n - 1, 26)
+        letters = chr(65 + rem) + letters
+    return letters
+
+
+def _a1(row, col):
+    return f"{_col_letter(col)}{row}"
+
+
+def event_id(event):
+    blob = json.dumps({k: event.get(k) for k in ("at", "type", "product_id", "details")},
+                      sort_keys=True, ensure_ascii=False)
+    return hashlib.sha1(blob.encode("utf-8")).hexdigest()[:16]
+
+
+# ---------------------------------------------------------------------------------------
+# report
+
+@dataclass
+class SheetReport:
+    brand: str
+    url: str = ""
+    created_spreadsheet: bool = False
+    tabs_created: list = field(default_factory=list)
+    columns_added: dict = field(default_factory=dict)
+    rows_updated: int = 0
+    cells_updated: int = 0
+    rows_added: int = 0
+    rows_marked_removed: int = 0
+    events_added: int = 0
+    notes: list = field(default_factory=list)
+    dry_run: bool = False
+
+    def lines(self):
+        verb = "would " if self.dry_run else ""
+        out = [f"{self.brand}: {self.url or '(no spreadsheet yet)'}"]
+        if self.created_spreadsheet:
+            out.append(f"  {verb}created a new spreadsheet")
+        if self.tabs_created:
+            out.append(f"  {verb}created tabs: {', '.join(self.tabs_created)}")
+        for tab, cols in self.columns_added.items():
+            out.append(f"  {verb}added columns to {tab}: {', '.join(cols)}")
+        out.append(f"  rows {verb}updated: {self.rows_updated} ({self.cells_updated} cells), "
+                   f"added: {self.rows_added}, marked removed: {self.rows_marked_removed}, "
+                   f"new change entries: {self.events_added}")
+        out.extend(f"  note: {n}" for n in self.notes)
+        return out
+
+
+# ---------------------------------------------------------------------------------------
+# spreadsheet and tabs
+
+def _ensure_shared(sp, store, slug, emails, info):
+    """Spreadsheets the tool created are shared with the configured people; retried if needed."""
+    done = set(info.get("shared_with", []))
+    for email in emails:
+        if email not in done:
+            _call(sp.share, email, perm_type="user", role="writer", notify=False)
+            done.add(email)
+            info = {**info, "shared_with": sorted(done)}
+            store.save_sheet_info(slug, info)
+    return info
+
+
+def resolve_spreadsheet(client, brand, store, config, emails, report, dry_run, bot_email):
+    saved = store.load_sheet_info(brand.slug) or {}
+    configured = config.get(brand.slug)
+    sheet_id = configured or saved.get("spreadsheet_id")
+    if sheet_id:
+        try:
+            sp = _call(client.open_by_key, sheet_id)
+        except gspread.exceptions.SpreadsheetNotFound as exc:
+            raise SheetsError(
+                f"Spreadsheet {sheet_id} was not found. Share it with {bot_email} as Editor "
+                f"(or remove the id from sheets.yaml to have a new one created).") from exc
+        info = dict(saved)
+        if info.get("spreadsheet_id") != sheet_id:
+            info = {"spreadsheet_id": sheet_id, "url": sp.url, "created_by_tool": False}
+            if not dry_run:
+                store.save_sheet_info(brand.slug, info)
+        report.url = sp.url
+        if info.get("created_by_tool") and not dry_run:
+            _ensure_shared(sp, store, brand.slug, emails, info)
+        return sp
+    if not emails:
+        raise SheetsError(
+            f"No spreadsheet is set up for {brand.slug}. Either paste its id into sheets.yaml "
+            f"(and share it with {bot_email}), or add the SHEET_SHARE_EMAIL secret so a new "
+            f"one can be created and shared with you.")
+    report.created_spreadsheet = True
+    if dry_run:
+        return None
+    sp = _call(client.create, f"{brand.name} catalogue (auto-updated)")
+    info = {"spreadsheet_id": sp.id, "url": sp.url, "created_by_tool": True, "shared_with": []}
+    store.save_sheet_info(brand.slug, info)
+    report.url = sp.url
+    _ensure_shared(sp, store, brand.slug, emails, info)
+    return sp
+
+
+def _is_blank(ws):
+    values = _call(ws.get_all_values)
+    return not any(str(c).strip() for row in values for c in row)
+
+
+def _ensure_tab(sp, title, report, dry_run, created):
+    """Return the worksheet called `title`, creating it if it is missing."""
+    if sp is None:                                    # dry run, spreadsheet does not exist yet
+        report.tabs_created.append(title)
+        return None
+    sheets = _call(sp.worksheets)
+    for ws in sheets:
+        if ws.title == title:
+            return ws
+    report.tabs_created.append(title)
+    if (title == PRODUCTS and len(sheets) == 1 and sheets[0].title in _BLANK_TABS
+            and _is_blank(sheets[0])):                # reuse the empty starter tab
+        if dry_run:
+            return None
+        _call(sheets[0].update_title, title)
+        created[title] = sheets[0]
+        return sheets[0]
+    if dry_run:
+        return None
+    ws = _call(sp.add_worksheet, title=title, rows=1000, cols=30)
+    created[title] = ws
+    return ws
+
+
+def _style_header(ws):
+    _call(ws.freeze, rows=1)
+    _call(ws.format, "1:1", {"textFormat": {"bold": True}})
+
+
+def _sync_table(ws, *, tab, columns, rows_by_key, key_col, report, dry_run,
+                starter_manual=(), update_existing=True, removed=None):
+    """Bring one tab in line with `rows_by_key` without touching columns the tool doesn't own."""
+    values = _call(ws.get_all_values, value_render_option=ValueRenderOption.unformatted) \
+        if ws is not None else []
+    header = [str(h) if h is not None else "" for h in (values[0] if values else [])]
+    while header and header[-1] == "":
+        header.pop()
+    has_data = any(str(c).strip() for row in values for c in row)
+    if has_data and key_col not in header:
+        raise SheetsError(f"The {tab} tab has content but no '{key_col}' column, so rows cannot "
+                          f"be matched. Nothing was written to it. Restore the header or "
+                          f"delete the tab and run again.")
+    new_header = list(header)
+    added = []
+    for col in columns:
+        if col not in new_header:
+            new_header.append(col)
+            added.append(col)
+    if not has_data:
+        for col in starter_manual:
+            if col not in new_header:
+                new_header.append(col)
+                added.append(col)
+    if added and header:
+        report.columns_added[tab] = added
+    index = {}
+    for i, name in enumerate(new_header):
+        index.setdefault(name, i)
+    key_idx = index[key_col]
+
+    existing = {}
+    for row_no, row in enumerate(values[1:], start=2):
+        if key_idx < len(row):
+            key = "" if row[key_idx] is None else str(row[key_idx])
+            if key and key not in existing:
+                existing[key] = (row_no, row)
+
+    cell_updates = []
+    touched_rows = set()
+    to_append = []
+    for key, desired in rows_by_key.items():
+        if key in existing:
+            if not update_existing:
+                continue
+            row_no, row = existing[key]
+            for col in columns:
+                ci = index[col]
+                old = row[ci] if ci < len(row) else ""
+                if not _same(old, desired[col]):
+                    cell_updates.append((row_no, ci + 1, desired[col]))
+                    touched_rows.add(row_no)
+        else:
+            to_append.append([desired[n] if n in columns else "" for n in new_header])
+
+    marked = 0
+    if removed and update_existing:
+        col_name, label_for = removed
+        ci = index[col_name]
+        for key, (row_no, row) in existing.items():
+            if key not in rows_by_key:
+                label = label_for(key)
+                old = row[ci] if ci < len(row) else ""
+                if not _same(old, label):
+                    cell_updates.append((row_no, ci + 1, label))
+                    marked += 1
+
+    report.rows_updated += len(touched_rows)
+    report.cells_updated += len(cell_updates) - marked
+    report.rows_added += len(to_append)
+    report.rows_marked_removed += marked
+    if dry_run or ws is None:
+        return
+
+    need_rows = len(values) + len(to_append) + 1
+    need_cols = len(new_header)
+    if ws.row_count < need_rows or ws.col_count < need_cols:
+        _call(ws.resize, rows=max(ws.row_count, need_rows + 200),
+              cols=max(ws.col_count, need_cols + 2))
+    if new_header != header:
+        _call(ws.update, values=[new_header], range_name=f"A1:{_a1(1, len(new_header))}")
+    for i in range(0, len(cell_updates), _CHUNK):
+        chunk = [{"range": _a1(r, c), "values": [[v]]} for r, c, v in cell_updates[i:i + _CHUNK]]
+        _call(ws.batch_update, chunk)
+    for i in range(0, len(to_append), _CHUNK):
+        _call(ws.append_rows, to_append[i:i + _CHUNK],
+              value_input_option=ValueInputOption.raw, table_range="A1")
+
+
+def _status_rows(brand, store, latest, registry, now):
+    state = catalogue_state(brand.slug, store, now)
+    records = (latest or {}).get("products", {})
+    needs = sorted(r["title"] for r in records.values() if r["readiness"]["state"] == "needs_facts")
+    gone = sorted(e["title"] for e in registry.values() if e["presence"] == "suspected_removed")
+    notes = "; ".join(state["reasons"]) or "None"
+    return [
+        ["Brand", brand.name],
+        ["Catalogue usable for generation", "Yes" if state["usable"] else "NO"],
+        ["Notes", notes],
+        ["Last good sync (UTC)", state.get("last_good_run_at") or "never"],
+        ["Products in catalogue", len(records) if latest else ""],
+        ["Products needing facts", f"{len(needs)}: {', '.join(needs)}" if needs else 0],
+        ["Suspected removals", f"{len(gone)}: {', '.join(gone)}" if gone else 0],
+        ["This sheet updated (UTC)", now],
+        ["Source of truth", "The data folder in the GitHub repository. This sheet is a copy: "
+                            "use only the extra columns you added."],
+    ]
+
+
+def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=None):
+    """Sync one brand's spreadsheet. Returns a SheetReport."""
+    report = report or SheetReport(brand=brand.slug, dry_run=dry_run)
+    report.dry_run = dry_run
+    if spreadsheet is not None and not report.url:
+        report.url = spreadsheet.url
+    latest = store.load_latest(brand.slug)
+    registry = store.load_registry(brand.slug)
+    records = (latest or {}).get("products", {})
+    created = {}
+
+    ws = _ensure_tab(spreadsheet, PRODUCTS, report, dry_run, created)
+    rows = {r["product_id"]: {c: _typed(c, r[c]) for c in PRODUCT_COLUMNS}
+            for r in product_rows(records)}
+
+    def product_label(key):
+        presence = (registry.get(key) or {}).get("presence")
+        return presence if presence in ("suspected_removed", "confirmed_removed") else "not_in_feed"
+    _sync_table(ws, tab=PRODUCTS, columns=PRODUCT_COLUMNS, rows_by_key=rows, key_col="product_id",
+                report=report, dry_run=dry_run, starter_manual=STARTER_MANUAL[PRODUCTS],
+                removed=("status", product_label))
+
+    ws = _ensure_tab(spreadsheet, VARIANTS, report, dry_run, created)
+    rows = {str(r["variant_id"]): {c: _typed(c, r[c]) for c in VARIANT_COLUMNS}
+            for r in variant_rows(records)}
+    _sync_table(ws, tab=VARIANTS, columns=VARIANT_COLUMNS, rows_by_key=rows, key_col="variant_id",
+                report=report, dry_run=dry_run, removed=("available", lambda key: "removed"))
+
+    ws = _ensure_tab(spreadsheet, CHANGES, report, dry_run, created)
+    events = {}
+    for ev in store.read_changes(brand.slug):
+        row = {"event_id": event_id(ev), "at": ev["at"], "type": ev["type"],
+               "product_id": ev["product_id"], "title": ev["title"], "handle": ev["handle"],
+               "summary": describe_event(ev)}
+        events[row["event_id"]] = row
+    before = report.rows_added
+    _sync_table(ws, tab=CHANGES, columns=CHANGE_COLUMNS, rows_by_key=events, key_col="event_id",
+                report=report, dry_run=dry_run, update_existing=False)
+    report.events_added = report.rows_added - before
+    report.rows_added = before
+
+    ws = _ensure_tab(spreadsheet, STATUS, report, dry_run, created)
+    if ws is not None and not dry_run:
+        _call(ws.clear)
+        _call(ws.update, values=_status_rows(brand, store, latest, registry, now), range_name="A1")
+    if not dry_run:
+        for title, new_ws in created.items():
+            if title != STATUS:
+                _style_header(new_ws)
+    return report
+
+
+def run_sheets(brands, store, *, key_json, share_emails, config, now, dry_run=False,
+               connect_fn=connect):
+    """Update every given brand's sheet. Returns [(slug, SheetReport | None, error text | None)].
+
+    One brand failing never stops the others. Returns None when no key is configured."""
+    if not key_json:
+        return None
+    client, bot_email = connect_fn(key_json)
+    results = []
+    for brand in brands:
+        report = SheetReport(brand=brand.slug, dry_run=dry_run)
+        try:
+            sp = resolve_spreadsheet(client, brand, store, config, share_emails, report,
+                                     dry_run, bot_email)
+            update_brand_sheet(brand, store, sp, now, dry_run=dry_run, report=report)
+            results.append((brand.slug, report, None))
+        except (SheetsError, gspread.exceptions.GSpreadException,
+                requests.exceptions.RequestException) as exc:
+            results.append((brand.slug, None, str(exc) or exc.__class__.__name__))
+    return results
