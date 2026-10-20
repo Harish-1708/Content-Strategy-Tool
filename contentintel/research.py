@@ -473,6 +473,8 @@ def run_research(brands, store, *, providers, settings, now, configs=None, dry_r
 
 
 CHECK_QUERY = "sweatpants overalls"
+CHECK_NEWS_QUERY = "overalls"      # broad, so an empty answer means something is wrong
+CHECK_NEWS_RECENCY = "year"
 
 
 def check_providers(providers, store, settings, now):
@@ -488,7 +490,7 @@ def check_providers(providers, store, settings, now):
         dead = None
         for kind in KINDS:
             row = {"provider": name, "kind": kind, "ok": False, "credits": 0, "count": 0,
-                   "sample": "", "problem": ""}
+                   "sample": "", "problem": "", "note": ""}
             rows.append(row)
             if dead:
                 row["problem"] = dead
@@ -498,8 +500,10 @@ def check_providers(providers, store, settings, now):
                 row["problem"] = "skipped: no credits left under your caps"
                 continue
             try:
-                results = provider.search(CHECK_QUERY, kind=kind, num=3, country=settings.country,
-                                          recency="month" if kind == "news" else None)
+                results = provider.search(
+                    CHECK_NEWS_QUERY if kind == "news" else CHECK_QUERY, kind=kind, num=3,
+                    country=settings.country,
+                    recency=CHECK_NEWS_RECENCY if kind == "news" else None)
             except AuthError as exc:
                 dead = row["problem"] = str(exc)
                 continue
@@ -511,7 +515,7 @@ def check_providers(providers, store, settings, now):
                 continue
             ledger.charge(name, cost)
             store.save_usage(ledger.usage)
-            row.update(ok=True, credits=cost, count=len(results),
+            row.update(ok=True, credits=cost, count=len(results), note=provider.last_note,
                        sample=results[0].title if results else "")
     return rows
 
@@ -523,6 +527,8 @@ def format_check_report(rows):
             note = f"OK, {r['count']} results ({r['credits']:g} credit{'s' if r['credits'] != 1 else ''})"
             if r["count"] == 0:
                 note = f"answered but returned no results ({r['credits']:g} credit)"
+                if r["note"]:
+                    note += f" [{r['note']}]"
             lines.append(f"  {r['provider']:<11} {r['kind']:<5} {note}"
                          + (f": {r['sample'][:60]}" if r["sample"] else ""))
         else:
