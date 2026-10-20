@@ -1,0 +1,9 @@
+# Optional: which Google spreadsheet belongs to which brand.
+# Paste a sheet's id (or its whole URL) after the brand name. Share that sheet with the
+# service account as Editor: its address is the "client_email" inside the key file.
+# Leave a brand blank and the tool creates a new spreadsheet for it and shares it with the
+# address(es) in the SHEET_SHARE_EMAIL secret. Tabs and columns are created automatically.
+sheets:
+  swoveralls: ""
+  duderobe: ""
+  defi_snacks: ""
