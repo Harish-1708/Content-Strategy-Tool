@@ -88,14 +88,16 @@ def test_first_run_creates_the_spreadsheet_tabs_headers_and_rows(swov, store):
                     "shared_with": [EMAIL]}
 
     header, rows = read(tabs(sp)["Products"])
-    assert header == PRODUCT_COLUMNS + ["Notes"] and len(rows) == 72
+    assert header == PRODUCT_COLUMNS + ["last_updated", "Notes"] and len(rows) == 72
+    assert {r["last_updated"] for r in rows} == {NOW}
     row = next(r for r in rows if r["handle"] == "swoveralls-midnight-black")
     assert row["price_min"] == 99.0 and row["in_stock"] is True and row["variant_count"] == 9
     assert row["product_id"] == "3223478698084" and row["pocket_claims"] == "6"
     assert row["Notes"] == ""
 
     header, rows = read(tabs(sp)["Variants"])
-    assert header == VARIANT_COLUMNS and len(rows) == 462
+    assert header == VARIANT_COLUMNS + ["last_updated"] and len(rows) == 462
+    assert {r["last_updated"] for r in rows} == {NOW}
     assert isinstance(rows[0]["variant_id"], str) and isinstance(rows[0]["price"], float)
     assert isinstance(rows[0]["available"], bool)
 
@@ -786,3 +788,131 @@ def test_cli_shows_the_storage_explanation_and_fails_the_run(cli_world, monkeypa
     assert go() == 1
     out = capsys.readouterr().out
     assert "your own Google Drive" in out and "::error::" in out
+
+
+# --- last_updated stamps, missing_expected, refreshed wording ------------------------------------
+
+LATER = "2026-10-19T12:00:00Z"
+LATEST = "2026-10-19T15:00:00Z"
+
+
+def stamps(ws, key_col):
+    return {r[key_col]: r["last_updated"] for r in read(ws)[1]}
+
+
+def test_rows_carry_the_time_they_were_last_changed(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    client = FakeClient()
+    one(swov, store, client)
+    sp = client.created[0]
+    navy = pid(store, "swoveralls", "swoveralls-navy")
+    resync(swov, store, "swoveralls_full_72.json", navy_price)
+    one(swov, store, client, now=LATER)
+    product_stamps = stamps(tabs(sp)["Products"], "product_id")
+    assert product_stamps[navy] == LATER
+    assert {v for k, v in product_stamps.items() if k != navy} == {NOW}
+    variant_rows = read(tabs(sp)["Variants"])[1]
+    changed = [r for r in variant_rows if r["last_updated"] == LATER]
+    assert len(changed) == 1 and changed[0]["product_title"] == "Swoveralls - Navy" and changed[0]["price"] == 89.0
+    assert {r["last_updated"] for r in variant_rows if r not in changed} == {NOW}
+
+
+def test_a_run_with_nothing_new_leaves_every_stamp_alone(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    client = FakeClient()
+    one(swov, store, client)
+    sp = client.created[0]
+    one(swov, store, client, now=LATER)
+    one(swov, store, client, now=LATEST)
+    assert set(stamps(tabs(sp)["Products"], "product_id").values()) == {NOW}
+    assert {r["last_updated"] for r in read(tabs(sp)["Variants"])[1]} == {NOW}
+
+
+def test_a_product_marked_removed_is_stamped_when_it_is_marked(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    client = FakeClient()
+    one(swov, store, client)
+    sp = client.created[0]
+    navy = pid(store, "swoveralls", "swoveralls-navy")
+    resync(swov, store, "swoveralls_full_72.json",
+           lambda raw: raw.__setitem__(slice(None), [p for p in raw if p["handle"] != "swoveralls-navy"]))
+    one(swov, store, client, now=LATER)
+    product_stamps = stamps(tabs(sp)["Products"], "product_id")
+    assert product_stamps[navy] == LATER and {v for k, v in product_stamps.items() if k != navy} == {NOW}
+    one(swov, store, client, now=LATEST)                      # still missing: no new stamp
+    assert stamps(tabs(sp)["Products"], "product_id")[navy] == LATER
+
+
+def test_an_older_sheet_without_the_new_columns_is_upgraded_in_place(defi, store):
+    baselined(defi, store, "defi_snacks.json", 7)
+    client = FakeClient()
+    one(defi, store, client)
+    sp = client.created[0]
+    products, variants = tabs(sp)["Products"], tabs(sp)["Variants"]
+    products.cells[(row_of(products, "product_id", pid(store, "defi_snacks", "4-flavor-variety-pack")),
+                    col_of(products, "Notes"))] = "check allergens"
+    delete_column(products, "missing_expected")
+    delete_column(products, "last_updated")
+    delete_column(variants, "last_updated")
+    report, error = one(defi, store, client, now=LATER)
+    assert error is None
+    assert report.columns_added == {"Products": ["missing_expected", "last_updated"],
+                                    "Variants": ["last_updated"]}
+    header, rows = read(products)
+    assert header[-2:] == ["missing_expected", "last_updated"]
+    by = {r["handle"]: r for r in rows}
+    assert by["dark-chocolate-crispy-superfood-bite"]["missing_expected"] == "nutrition_facts"
+    assert by["shipping-protection"]["missing_expected"] == "allergens; nutrition_facts"
+    assert by["4-flavor-variety-pack"]["Notes"] == "check allergens"
+    assert {r["last_updated"] for r in rows} == {LATER}
+    assert {r["last_updated"] for r in read(variants)[1]} == {LATER}
+
+
+def test_a_cleared_stamp_is_refilled_without_touching_other_rows(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    client = FakeClient()
+    one(swov, store, client)
+    products = tabs(client.created[0])["Products"]
+    navy = pid(store, "swoveralls", "swoveralls-navy")
+    products.cells[(row_of(products, "product_id", navy), col_of(products, "last_updated"))] = ""
+    one(swov, store, client, now=LATER)
+    got = stamps(products, "product_id")
+    assert got[navy] == LATER and {v for k, v in got.items() if k != navy} == {NOW}
+
+
+def test_the_changes_tab_has_no_stamp_column(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    client = FakeClient()
+    one(swov, store, client)
+    assert "last_updated" not in read(tabs(client.created[0])["Changes"])[0]
+
+
+def test_change_entries_name_the_variants_and_old_wording_is_refreshed(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    client = FakeClient()
+    one(swov, store, client)
+    changes = tabs(client.created[0])["Changes"]
+
+    def sell_out(raw):
+        next(p for p in raw if p["handle"] == "swoveralls-midnight-black")["variants"][0]["available"] = False
+    resync(swov, store, "swoveralls_full_72.json", sell_out)
+    one(swov, store, client, now=LATER)
+    (row,) = read(changes)[1]
+    assert row["summary"] == "Sold out: XXS / Midnight Black"
+    summary_cell = (row_of(changes, "event_id", row["event_id"]), col_of(changes, "summary"))
+    changes.cells[summary_cell] = "1 variant(s) sold out, 0 restocked"          # the old wording
+    report, _ = one(swov, store, client, now=LATEST)
+    assert read(changes)[1][0]["summary"] == "Sold out: XXS / Midnight Black"
+    assert report.cells_updated == 1 and report.events_added == 0
+
+
+def test_dry_run_wording_reads_as_plain_english(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    report, _ = one(swov, store, FakeClient(), dry_run=True)
+    text = "\n".join(report.lines())
+    assert "would create tabs: Products, Variants, Changes, Status" in text
+    assert "would update 0 rows (0 cells), add 534 rows" in text and "would updated" not in text
+    client = FakeClient()
+    done, _ = one(swov, store, client)
+    done_text = "\n".join(done.lines())
+    assert "created tabs:" in done_text and "added 534 rows" in done_text and "would" not in done_text
