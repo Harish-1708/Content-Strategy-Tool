@@ -95,10 +95,13 @@ def normalize_product(raw, brand):
 
     lines = html_to_lines(raw.get("body_html"))
     facts = extract_facts(raw.get("body_html"), brand.category_schema, len(images))
-    facts, conflicts, family_override = merge_manual_facts(
-        facts, brand.manual_facts.get(raw["handle"]))
+    manual = dict(brand.manual_facts.get(raw["handle"]) or {})
+    status_override = manual.pop("status", None)
+    facts, conflicts, family_override = merge_manual_facts(facts, manual)
     if family_override:
         info["family"] = family_override
+    if status_override and not info["excluded"]:
+        info["status"] = status_override        # a person's statement outranks the tag rules
 
     record = {
         "brand": brand.slug,
