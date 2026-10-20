@@ -19,6 +19,8 @@ class FakeHttp:
         for route_method, prefix, responses in self.routes:
             if route_method == method and url.startswith(prefix):
                 response = responses.pop(0) if len(responses) > 1 else responses[0]
+                if callable(response):               # an answer that depends on the request
+                    response = response(params=params, json_body=json_body)
                 return response[0], response[1], (response[2] if len(response) > 2 else None)
         raise AssertionError(f"unexpected request: {method} {url}")
 
@@ -63,7 +65,8 @@ def standard_routes(http, *, tavily_used=0, tavily_limit=1000, serpapi_left=250)
     http.on("POST", "https://api.tavily.com/search", (200, tavily_resp(3)))
     http.on("GET", "https://api.tavily.com/usage",
             (200, {"key": {"usage": tavily_used, "limit": tavily_limit}}))
-    http.on("GET", "https://serpapi.com/search.json", (200, serpapi_web(3)))
+    http.on("GET", "https://serpapi.com/search.json",
+            lambda params, json_body: (200, serpapi_news(3) if params.get("tbm") == "nws" else serpapi_web(3)))
     http.on("GET", "https://serpapi.com/account", (200, {"total_searches_left": serpapi_left}))
     return http
 
