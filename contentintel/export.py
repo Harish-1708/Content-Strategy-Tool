@@ -140,6 +140,16 @@ def _product_json(rec):
     return row
 
 
+def product_rows(records):
+    """One dict of text values per product, in export order."""
+    return [_product_row(r) for r in _ordered(records)]
+
+
+def variant_rows(records):
+    """One dict of text values per variant, in export order."""
+    return list(_variant_rows(records))
+
+
 def build_exports(slug, records):
     """Return {file name: text} for one brand's records."""
     ordered = _ordered(records)
