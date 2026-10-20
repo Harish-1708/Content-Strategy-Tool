@@ -35,6 +35,7 @@ from .sync import catalogue_state, describe_event
 PRODUCTS, VARIANTS, CHANGES, STATUS = "Products", "Variants", "Changes", "Status"
 CHANGE_COLUMNS = ["event_id", "at", "type", "product_id", "title", "handle", "summary"]
 STARTER_MANUAL = {PRODUCTS: ["Notes"]}          # added only when a tab is brand new
+STAMP = "last_updated"                          # when the tool last changed that row
 
 NUMERIC = {"price_min", "price_max", "price", "compare_at_price"}
 INTEGER = {"variant_count", "image_count"}
@@ -216,17 +217,27 @@ class SheetReport:
     dry_run: bool = False
 
     def lines(self):
-        verb = "would " if self.dry_run else ""
         out = [f"{self.brand}: {self.url or '(no spreadsheet yet)'}"]
-        if self.created_spreadsheet:
-            out.append(f"  {verb}created a new spreadsheet")
-        if self.tabs_created:
-            out.append(f"  {verb}created tabs: {', '.join(self.tabs_created)}")
-        for tab, cols in self.columns_added.items():
-            out.append(f"  {verb}added columns to {tab}: {', '.join(cols)}")
-        out.append(f"  rows {verb}updated: {self.rows_updated} ({self.cells_updated} cells), "
-                   f"added: {self.rows_added}, marked removed: {self.rows_marked_removed}, "
-                   f"new change entries: {self.events_added}")
+        if self.dry_run:
+            if self.created_spreadsheet:
+                out.append("  would create a new spreadsheet")
+            if self.tabs_created:
+                out.append(f"  would create tabs: {', '.join(self.tabs_created)}")
+            for tab, cols in self.columns_added.items():
+                out.append(f"  would add columns to {tab}: {', '.join(cols)}")
+            out.append(f"  would update {self.rows_updated} rows ({self.cells_updated} cells), "
+                       f"add {self.rows_added} rows, mark {self.rows_marked_removed} as removed, "
+                       f"add {self.events_added} change entries")
+        else:
+            if self.created_spreadsheet:
+                out.append("  created a new spreadsheet")
+            if self.tabs_created:
+                out.append(f"  created tabs: {', '.join(self.tabs_created)}")
+            for tab, cols in self.columns_added.items():
+                out.append(f"  added columns to {tab}: {', '.join(cols)}")
+            out.append(f"  updated {self.rows_updated} rows ({self.cells_updated} cells), "
+                       f"added {self.rows_added} rows, marked {self.rows_marked_removed} as removed, "
+                       f"new change entries: {self.events_added}")
         out.extend(f"  note: {n}" for n in self.notes)
         return out
 
@@ -326,7 +337,7 @@ def _style_header(ws):
 
 
 def _sync_table(ws, *, tab, columns, rows_by_key, key_col, report, dry_run,
-                starter_manual=(), update_existing=True, removed=None):
+                starter_manual=(), update_existing=True, removed=None, stamp=None):
     """Bring one tab in line with `rows_by_key` without touching columns the tool doesn't own."""
     values = _call(ws.get_all_values, value_render_option=ValueRenderOption.unformatted) \
         if ws is not None else []
@@ -344,6 +355,10 @@ def _sync_table(ws, *, tab, columns, rows_by_key, key_col, report, dry_run,
         if col not in new_header:
             new_header.append(col)
             added.append(col)
+    stamp_name, stamp_value = stamp if stamp else (None, None)
+    if stamp_name and stamp_name not in new_header:
+        new_header.append(stamp_name)
+        added.append(stamp_name)
     if not has_data:
         for col in starter_manual:
             if col not in new_header:
@@ -378,9 +393,12 @@ def _sync_table(ws, *, tab, columns, rows_by_key, key_col, report, dry_run,
                     cell_updates.append((row_no, ci + 1, desired[col]))
                     touched_rows.add(row_no)
         else:
-            to_append.append([desired[n] if n in columns else "" for n in new_header])
+            to_append.append([desired[n] if n in columns
+                              else (stamp_value if n == stamp_name else "")
+                              for n in new_header])
 
     marked = 0
+    marked_rows = set()
     if removed and update_existing:
         col_name, label_for = removed
         ci = index[col_name]
@@ -390,7 +408,18 @@ def _sync_table(ws, *, tab, columns, rows_by_key, key_col, report, dry_run,
                 old = row[ci] if ci < len(row) else ""
                 if not _same(old, label):
                     cell_updates.append((row_no, ci + 1, label))
+                    marked_rows.add(row_no)
                     marked += 1
+
+    # Stamp every row the tool changed, and any row whose stamp is blank (older rows get the
+    # time of the first run after the column appeared).
+    stamp_cells = []
+    if stamp_name and update_existing:
+        si = index[stamp_name]
+        for key, (row_no, row) in existing.items():
+            old = row[si] if si < len(row) else ""
+            if row_no in touched_rows or row_no in marked_rows or str(old).strip() == "":
+                stamp_cells.append((row_no, si + 1, stamp_value))
 
     report.rows_updated += len(touched_rows)
     report.cells_updated += len(cell_updates) - marked
@@ -406,8 +435,9 @@ def _sync_table(ws, *, tab, columns, rows_by_key, key_col, report, dry_run,
               cols=max(ws.col_count, need_cols + 2))
     if new_header != header:
         _call(ws.update, values=[new_header], range_name=f"A1:{_a1(1, len(new_header))}")
-    for i in range(0, len(cell_updates), _CHUNK):
-        chunk = [{"range": _a1(r, c), "values": [[v]]} for r, c, v in cell_updates[i:i + _CHUNK]]
+    writes = cell_updates + stamp_cells
+    for i in range(0, len(writes), _CHUNK):
+        chunk = [{"range": _a1(r, c), "values": [[v]]} for r, c, v in writes[i:i + _CHUNK]]
         _call(ws.batch_update, chunk)
     for i in range(0, len(to_append), _CHUNK):
         _call(ws.append_rows, to_append[i:i + _CHUNK],
@@ -454,13 +484,14 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
         return presence if presence in ("suspected_removed", "confirmed_removed") else "not_in_feed"
     _sync_table(ws, tab=PRODUCTS, columns=PRODUCT_COLUMNS, rows_by_key=rows, key_col="product_id",
                 report=report, dry_run=dry_run, starter_manual=STARTER_MANUAL[PRODUCTS],
-                removed=("status", product_label))
+                removed=("status", product_label), stamp=(STAMP, now))
 
     ws = _ensure_tab(spreadsheet, VARIANTS, report, dry_run, created)
     rows = {str(r["variant_id"]): {c: _typed(c, r[c]) for c in VARIANT_COLUMNS}
             for r in variant_rows(records)}
     _sync_table(ws, tab=VARIANTS, columns=VARIANT_COLUMNS, rows_by_key=rows, key_col="variant_id",
-                report=report, dry_run=dry_run, removed=("available", lambda key: "removed"))
+                report=report, dry_run=dry_run, removed=("available", lambda key: "removed"),
+                stamp=(STAMP, now))
 
     ws = _ensure_tab(spreadsheet, CHANGES, report, dry_run, created)
     events = {}
@@ -471,7 +502,7 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
         events[row["event_id"]] = row
     before = report.rows_added
     _sync_table(ws, tab=CHANGES, columns=CHANGE_COLUMNS, rows_by_key=events, key_col="event_id",
-                report=report, dry_run=dry_run, update_existing=False)
+                report=report, dry_run=dry_run)
     report.events_added = report.rows_added - before
     report.rows_added = before
 
