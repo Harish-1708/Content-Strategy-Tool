@@ -1,0 +1,33 @@
+# How research credits may be spent. Edit this file in GitHub; every research run reads it.
+# Numbers are credits (one ordinary search = 1 credit), not dollars.
+#
+# What each provider's free plan gives (checked October 2026; plans change, so re-check):
+#   Serper.dev  2,500 free searches when you sign up. A one-time pool, not monthly.
+#   Tavily      1,000 free credits every month. Basic search 1 credit, advanced search 2.
+#   SerpApi     a small free monthly plan (its changelog says 250; some pages still say 100).
+#
+# The tool counts every credit it spends (data/_shared/research_usage.json), and for Tavily and
+# SerpApi it also asks the provider how many are really left, so it never overspends.
+providers:
+  serper_dev:
+    monthly_cap: 250        # at this pace the free pool lasts about ten months
+    lifetime_cap: 2400      # keeps a little back
+  tavily:
+    monthly_cap: 600
+    keep_free: 50           # never go below 50 left on Tavily's own count
+  serpapi:
+    monthly_cap: 100
+    keep_free: 20
+
+# The first provider in each list that still has credits takes the search; the next one is the
+# fallback. News searches go to Tavily first because it renews monthly and dates its results.
+routing:
+  web: [serper_dev, tavily, serpapi]
+  news: [tavily, serper_dev, serpapi]
+
+defaults:
+  results_per_query: 10     # 1 to 10; more results never cost more credits here
+  cache_days: 7             # a search made in the last 7 days is reused, not paid for again
+  max_queries_per_run: 30   # a safety limit for one run
+  country: us               # two-letter code
+  recency:                  # day, week, month or year; blank means any time
