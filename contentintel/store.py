@@ -132,6 +132,50 @@ class Store:
         with open(path, encoding="utf-8") as fh:
             return [json.loads(line) for line in fh if line.strip()]
 
+    # --- research: what the search providers returned, per brand -------------------------
+    def append_searches(self, slug, records):
+        """Add search records (one JSON line each) to research/searches.jsonl."""
+        if not records:
+            return 0
+        path = self.dir(slug) / "research" / "searches.jsonl"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, "a", encoding="utf-8") as fh:
+            for rec in records:
+                fh.write(json.dumps(rec, ensure_ascii=False, sort_keys=True) + "\n")
+        return len(records)
+
+    def _research_file(self, slug, name):
+        """A research file's path. Reading must not create folders, so this never mkdirs."""
+        return brand_data_dir(self.data_dir, slug) / "research" / name
+
+    def read_searches(self, slug):
+        path = self._research_file(slug, "searches.jsonl")
+        if not path.is_file():
+            return []
+        with open(path, encoding="utf-8") as fh:
+            return [json.loads(line) for line in fh if line.strip()]
+
+    def append_research_run(self, slug, record):
+        path = self.dir(slug) / "research" / "runs.jsonl"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
+
+    def read_research_runs(self, slug):
+        path = self._research_file(slug, "runs.jsonl")
+        if not path.is_file():
+            return []
+        with open(path, encoding="utf-8") as fh:
+            return [json.loads(line) for line in fh if line.strip()]
+
+    # --- research credits are shared by every brand (one key, one budget) ----------------
+    def load_usage(self):
+        return _read(self.data_dir / "_shared" / "research_usage.json",
+                     {"months": {}, "lifetime": {}})
+
+    def save_usage(self, usage):
+        return _atomic_write(self.data_dir / "_shared" / "research_usage.json", usage)
+
     def write_export(self, slug, name, text):
         """Write one file under catalogue/. Returns True only if the content changed."""
         if "/" in name or "\\" in name or name.startswith("."):
