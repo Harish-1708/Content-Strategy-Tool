@@ -245,15 +245,27 @@ def catalogue_state(slug, store, now=None, stale_after_hours=STALE_AFTER_HOURS):
             "age_hours": round(age, 1), "product_count": last["count"]}
 
 
+def _names(titles, limit=4):
+    titles = sorted(titles)
+    shown = ", ".join(titles[:limit])
+    extra = len(titles) - limit
+    return f"{shown} (+{extra} more)" if extra > 0 else shown
+
+
 def describe_event(ev):
     detail = ev["details"]
     if ev["type"] == "changed":
         return f"changed: {', '.join(sorted(detail))}"
     if ev["type"] == "availability":
-        if detail.get("product"):
-            return detail["product"].replace("_", " ")
-        return (f"{len(detail['variants_sold_out'])} variant(s) sold out, "
-                f"{len(detail['variants_restocked'])} restocked")
+        parts = []
+        if detail["variants_sold_out"]:
+            parts.append("Sold out: " + _names(detail["variants_sold_out"]))
+        if detail["variants_restocked"]:
+            parts.append("Back in stock: " + _names(detail["variants_restocked"]))
+        text = "; ".join(parts)
+        head = {"sold_out": "Product sold out", "back_in_stock": "Product back in stock"}.get(
+            detail.get("product"))
+        return f"{head}. {text}" if head else text
     if ev["type"] == "returned":
         return f"returned (was {detail['was']})"
     return ev["type"].replace("_", " ")
