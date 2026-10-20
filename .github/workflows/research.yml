@@ -2,7 +2,8 @@
 # research.yaml, then adds what it found to each brand's Google Sheet (Research tab).
 # Runs every Monday by itself. To run it now: Actions > Research > Run workflow.
 # "Dry run" (ticked by default when you run it by hand) shows the plan and which provider
-# would take each search, and spends nothing.
+# would take each search, and spends nothing. "Provider check" instead proves each ticked
+# service works with a real web search and a real news search (a few credits in total).
 name: Research
 
 on:
@@ -30,6 +31,10 @@ on:
         description: "Most searches to run now (blank uses the limit in research.yaml)"
         required: false
         default: ""
+      provider_check:
+        description: "Prove each ticked service works: one web and one news search each, a few credits. Ignores Dry run"
+        type: boolean
+        default: false
       dry_run:
         description: "Show the plan and spend nothing"
         type: boolean
@@ -68,6 +73,7 @@ jobs:
           USE_SERPAPI: ${{ inputs.use_serpapi }}
           MAX_QUERIES: ${{ inputs.max_queries }}
           DRY_RUN: ${{ inputs.dry_run }}
+          PROVIDER_CHECK: ${{ inputs.provider_check }}
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
           SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
@@ -81,8 +87,12 @@ jobs:
           if [ "$USE_SERPAPI" != "false" ]; then providers="$providers,serpapi"; fi
           if [ -z "$providers" ]; then echo "No search provider was ticked; nothing to do."; exit 0; fi
           args+=(--providers "${providers#,}")
-          if [ -n "$MAX_QUERIES" ]; then args+=(--max-queries "$MAX_QUERIES"); fi
-          if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+          if [ "$PROVIDER_CHECK" = "true" ]; then
+            args=(--check-providers --providers "${providers#,}")
+          else
+            if [ -n "$MAX_QUERIES" ]; then args+=(--max-queries "$MAX_QUERIES"); fi
+            if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+          fi
           { echo "### Research"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           python -m contentintel research "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           code=${PIPESTATUS[0]}
