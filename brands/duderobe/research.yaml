@@ -1,0 +1,23 @@
+# What to research for Swoveralls. Edit this file in GitHub; every research run reads it.
+#
+# Out of the box the tool only searches for the brand name itself (three searches a week,
+# reused for 7 days). Add competitors and topics below to widen it. Each competitor and topic
+# becomes a few searches, so a short list goes a long way on free credits.
+
+competitors: []
+#  - name: Example Brand
+#    domain: example.com
+
+topics: []
+#  - overalls outfit ideas
+
+# Searches you want exactly as written. kind is web or news; recency is day, week, month or year.
+queries: []
+#  - q: "sweatpants overalls trend"
+#    kind: news
+#    recency: month
+
+auto:
+  brand: true
+  competitors: true
+  topics: true
