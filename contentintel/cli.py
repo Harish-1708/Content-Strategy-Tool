@@ -99,6 +99,7 @@ def _sheets(args, store):
     results = sheets_mod.run_sheets(
         brands, store, key_json=key, config=config, now=sync_mod.utc_now(),
         share_emails=sheets_mod.parse_emails(os.environ.get("SHEET_SHARE_EMAIL", "")),
+        folder_id=sheets_mod.parse_folder_id(os.environ.get("SHEET_FOLDER_ID", "")),
         dry_run=args.dry_run, connect_fn=sheets_mod.connect)
     worst = 0
     for slug, report, error in results:
