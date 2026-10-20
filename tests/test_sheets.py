@@ -8,6 +8,7 @@ import yaml
 from gspread.utils import ValueRenderOption
 
 from contentintel import cli, sheets
+from contentintel.research import source_id
 from contentintel.export import PRODUCT_COLUMNS, VARIANT_COLUMNS
 from contentintel.store import Store
 from contentintel.sync import confirm_baseline, confirm_removed, run_sync
@@ -916,3 +917,110 @@ def test_dry_run_wording_reads_as_plain_english(swov, store):
     done, _ = one(swov, store, client)
     done_text = "\n".join(done.lines())
     assert "created tabs:" in done_text and "added 534 rows" in done_text and "would" not in done_text
+
+
+# --- the Research tab -------------------------------------------------------------------------
+
+A, B, C = "https://a.example.com/one", "https://b.example.com/two", "https://c.example.com/three"
+
+
+def finding(query, urls, at, provider="serper_dev", tag="brand", titles=None, snippet="a snippet"):
+    return {"at": at, "run": "r1", "key": query, "query": query, "kind": "web", "recency": None,
+            "country": "us", "depth": "basic", "tag": tag, "provider": provider, "credits": 1,
+            "results": [{"rank": i, "title": (titles or {}).get(u, f"Title {i}"), "url": u,
+                         "snippet": snippet, "date": None} for i, u in enumerate(urls, start=1)]}
+
+
+def titles_of(sp):
+    return [w.title for w in sp.worksheets()]
+
+
+def test_there_is_no_research_tab_until_there_are_findings(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    client = FakeClient()
+    one(swov, store, client)
+    assert titles_of(client.created[0]) == ["Products", "Variants", "Changes", "Status"]
+
+
+def test_findings_get_a_research_tab_placed_before_status(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    store.append_searches("swoveralls", [finding("q1", [A, B], T0), finding("q2", [B], T1, provider="tavily", tag="topic:x")])
+    client = FakeClient()
+    report, error = one(swov, store, client)
+    assert error is None and titles_of(client.created[0]) == [
+        "Products", "Variants", "Changes", "Research", "Status"]
+    header, rows = read(tabs(client.created[0])["Research"])
+    assert header == sheets.RESEARCH_COLUMNS + ["Review"] and len(rows) == 2
+    by = {r["url"]: r for r in rows}
+    assert by[B]["source_id"] == source_id(B) and by[B]["times_seen"] == 2 and by[B]["best_rank"] == 1
+    assert isinstance(by[B]["times_seen"], int) and isinstance(by[B]["best_rank"], int)
+    assert by[B]["providers"] == "serper_dev; tavily" and by[B]["domain"] == "b.example.com"
+    assert (by[A]["first_seen"], by[A]["last_seen"], by[A]["Review"]) == (T0, T0, "")
+
+
+def test_review_marks_survive_and_new_findings_are_added_as_rows(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    store.append_searches("swoveralls", [finding("q1", [A, B], T0)])
+    client = FakeClient()
+    one(swov, store, client)
+    ws = tabs(client.created[0])["Research"]
+    ws.cells[(row_of(ws, "url", A), col_of(ws, "Review"))] = "useful"
+    store.append_searches("swoveralls", [finding("q2", [A, C], T2)])
+    report, _ = one(swov, store, client, now=LATER)
+    rows = {r["url"]: r for r in read(ws)[1]}
+    assert set(rows) == {A, B, C} and report.rows_added == 1
+    assert rows[A]["Review"] == "useful" and rows[A]["times_seen"] == 2 and rows[A]["last_seen"] == T2
+    assert rows[C]["Review"] == "" and rows[B]["times_seen"] == 1
+
+
+def test_a_changed_title_updates_the_row_and_keeps_the_review_mark(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    store.append_searches("swoveralls", [finding("q1", [A], T0, titles={A: "Old title"})])
+    client = FakeClient()
+    one(swov, store, client)
+    ws = tabs(client.created[0])["Research"]
+    ws.cells[(row_of(ws, "url", A), col_of(ws, "Review"))] = "saturated"
+    store.append_searches("swoveralls", [finding("q1", [A], T2, titles={A: "New title"})])
+    one(swov, store, client, now=LATER)
+    (row,) = read(ws)[1]
+    assert row["title"] == "New title" and row["Review"] == "saturated"
+
+
+def test_an_unchanged_research_tab_is_not_rewritten(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    store.append_searches("swoveralls", [finding("q1", [A, B], T0)])
+    client = FakeClient()
+    one(swov, store, client)
+    report, _ = one(swov, store, client, now=LATER)
+    assert (report.rows_updated, report.cells_updated, report.rows_added) == (0, 0, 0)
+
+
+def test_an_older_sheet_gains_the_research_tab_when_findings_arrive(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    client = FakeClient()
+    one(swov, store, client)
+    store.append_searches("swoveralls", [finding("q1", [A], T0)])
+    report, _ = one(swov, store, client, now=LATER)
+    assert report.tabs_created == ["Research"] and len(read(tabs(client.created[0])["Research"])[1]) == 1
+    assert len(read(tabs(client.created[0])["Products"])[1]) == 72
+
+
+def test_a_dry_run_describes_the_research_tab_without_creating_it(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    store.append_searches("swoveralls", [finding("q1", [A, B], T0)])
+    client = FakeClient()
+    one(swov, store, client)
+    store.append_searches("swoveralls", [finding("q2", [C], T2)])
+    report, _ = one(swov, store, client, dry_run=True, now=LATER)
+    assert report.rows_added == 1 and len(read(tabs(client.created[0])["Research"])[1]) == 2
+
+
+def test_a_brands_sheet_shows_only_its_own_findings(swov, dude, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    baselined(dude, store, "duderobe_fetch_a.json", 25)
+    store.append_searches("swoveralls", [finding("q1", [A], T0)])
+    client = FakeClient()
+    run([swov, dude], store, client)
+    by_title = {sp.title: sp for sp in client.created}
+    assert "Research" in titles_of(by_title["Swoveralls catalogue (auto-updated)"])
+    assert "Research" not in titles_of(by_title["DudeRobe catalogue (auto-updated)"])
