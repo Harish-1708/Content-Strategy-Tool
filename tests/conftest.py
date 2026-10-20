@@ -17,6 +17,23 @@ BRIEFS_DIR = ROOT / "briefs"
 
 _CACHE = {}
 
+# Saved catalogues and brief hooks the tests read. They must be uploaded to tests/fixtures/.
+REQUIRED_FIXTURES = (
+    "swoveralls_full_72.json", "swoveralls_truncated_30.json",
+    "duderobe_fetch_a.json", "duderobe_fetch_b.json", "defi_snacks.json",
+    "swoveralls_brief_hooks.json", "duderobe_brief_hooks.json",
+)
+
+
+def pytest_collection_modifyitems(config, items):
+    """One clear message instead of a hundred file-not-found failures."""
+    missing = [n for n in REQUIRED_FIXTURES if not (FIXTURES / n).is_file()]
+    if missing:
+        pytest.exit(
+            "Test data is missing from tests/fixtures/: " + ", ".join(missing) + ". "
+            "Upload those files to the tests/fixtures/ folder (README, one-time set-up, step 2).",
+            returncode=4)
+
 
 def load_json(name):
     if name not in _CACHE:
