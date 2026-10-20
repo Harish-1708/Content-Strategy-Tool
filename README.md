@@ -74,6 +74,11 @@ shares it with you. This route has not been tried against a live account.
 | Changes | every detected change, appended once |
 | Status | whether the catalogue can be trusted now, when it last synced, what needs facts |
 
+Two columns are the tool's own: **`last_updated`** (the UTC time the tool last changed that
+row; on a sheet that existed before the column appeared, every row shows the time of the first
+run after it did) and **`missing_expected`** (the facts a product is still missing, for example
+`nutrition_facts`). Change entries name the variants that sold out or came back.
+
 Rules that protect your work:
 - The tool owns only the columns it created. **Any column you add is never read, overwritten
   or moved**, wherever you put it. Do not rename the tool's own headers (it would add them
@@ -97,6 +102,20 @@ Rules that protect your work:
 | `confirm-removed` | a product was flagged "suspected removed" and really is gone |
 | `reset-baseline` | retire the baseline on purpose (the next clean sync must be confirmed again) |
 | `status` | can generation use this brand's catalogue right now? |
+
+## Telling the tool what it cannot know (`brands/<brand>/manual_facts.yaml`)
+
+Facts you state outrank the website. Edit the file in GitHub; keys are product handles
+(the last part of a product's web address). You can add `audience`, `description`, `family`, and a
+lifecycle **`status`** (`active`, `inactive`, `coming_soon` or `pre_order`).
+
+Status example: a product with no `Active` tag counts as inactive, which keeps it out of concept
+drafts. The seven Sidekick Crew sweatshirts currently show as inactive for that reason. If they
+are live, add each handle with `status: active` (the template is `brands/swoveralls/manual_facts.yaml`):
+`sidekick-crew-dancing-skeletons-fog-grey`, `sidekick-crew-dancing-skeletons-salt-navy`,
+`sidekick-crew-free-the-waistband-fog-grey`, `sidekick-crew-swoveralls-cloud-cream`,
+`sidekick-crew-swoveralls-olive-branch`, `sidekick-crew-trash-panda-fog-grey`,
+`sidekick-crew-trash-panda-salt-navy`.
 
 ## Where the data lives (`data/<brand>/`)
 
