@@ -41,22 +41,29 @@ it also validates any edit you make to a `brand.yaml` or `rules.yaml`.
 One Google service account serves every brand. Each brand gets its own spreadsheet; tabs and
 columns are created automatically, and any that go missing are recreated on the next run.
 
-1. In the Google Cloud console, create **one new service account** for this tool (do not
-   reuse the outreach one), enable the **Google Sheets API** and the **Google Drive API** for
-   its project, and create a JSON key for it.
-2. In GitHub, Settings > Secrets and variables > Actions, add two repository secrets:
-   - `GOOGLE_SERVICE_ACCOUNT_JSON`: the whole key file, pasted in. Never paste it anywhere else.
-   - `SHEET_SHARE_EMAIL`: your Google address (several allowed, separated by commas), so you
-     can open the sheets the tool creates.
-3. Actions > **Google Sheets** > Run workflow with **dry run** ticked. The run page lists what
-   it would create. Then run it again with dry run unticked.
+Create the three spreadsheets yourself. A service account usually cannot create files:
+Google gives it no Drive storage, and the error is "The user's Drive storage quota has been
+exceeded". Spreadsheets in your own Drive have no such limit, and the service account only
+edits them.
+
+1. In the Google Cloud console, create **one new service account** for this tool (do not reuse
+   the outreach one), enable the **Google Sheets API** for its project, and create a JSON key.
+2. In GitHub, Settings > Secrets and variables > Actions, add a repository secret
+   `GOOGLE_SERVICE_ACCOUNT_JSON` containing the whole key file. Never paste it anywhere else.
+3. In Google Sheets, create three blank spreadsheets, for example "Swoveralls Catalogue",
+   "DudeRobe Catalogue" and "Defi Snacks Catalogue". Share each one with the service account's
+   address (the `client_email` inside the key) as **Editor**.
+4. In GitHub, open `sheets.yaml`, paste each spreadsheet's link after its brand name, and commit.
+5. Actions > **Google Sheets** > Run workflow with **dry run** ticked. The run page lists what it
+   would create. Then run it again with dry run unticked.
 
 After that, every Catalogue sync updates the sheets by itself.
 
-If you would rather own the spreadsheets: create a blank one per brand in your own Drive,
-share it with the service account's address (the `client_email` inside the key) as Editor, and
-paste each sheet's id or URL next to its brand in `sheets.yaml`. Sheets the tool creates are
-owned by the service account, so deleting that account deletes them.
+Optional, to skip steps 3 and 4: if your company has Google Workspace Shared Drives, make a
+folder in a Shared Drive, add the service account to that Shared Drive as a member who can add
+files, and set two more secrets: `SHEET_FOLDER_ID` (the folder's link or id) and
+`SHEET_SHARE_EMAIL` (your Google address). The tool then creates each sheet in that folder and
+shares it with you. This route has not been tried against a live account.
 
 ### What is in each sheet
 
@@ -119,7 +126,7 @@ their content changes.
 ## Not verified from the build environment
 
 Live fetches from the stores, the sitemap cross-check against a real site, real GitHub runs,
-and every call to Google (the sheet logic was tested against a strict stand-in that rejects
-anything the real library would reject; the first real run is the real test). Creating a
-spreadsheet needs the Google Drive API enabled; I have not been able to confirm that
-requirement against a live account.
+and every call to Google. The sheet logic was tested against a strict stand-in that rejects
+anything the real library would reject, and the "no Drive storage" error was reproduced from
+a real run's log; the first real run with your own spreadsheets is the real test. The Shared
+Drive option is untested.
