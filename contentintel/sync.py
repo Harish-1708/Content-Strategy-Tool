@@ -245,7 +245,7 @@ def catalogue_state(slug, store, now=None, stale_after_hours=STALE_AFTER_HOURS):
             "age_hours": round(age, 1), "product_count": last["count"]}
 
 
-def _list_event(ev):
+def describe_event(ev):
     detail = ev["details"]
     if ev["type"] == "changed":
         return f"changed: {', '.join(sorted(detail))}"
@@ -278,7 +278,7 @@ def format_report(result):
         by_type = collections.Counter(e["type"] for e in result.events)
         lines.append("  " + ", ".join(f"{n} {t.replace('_', ' ')}" for t, n in sorted(by_type.items())))
         for ev in result.events[:25]:
-            lines.append(f"  - {ev['title']}: {_list_event(ev)}")
+            lines.append(f"  - {ev['title']}: {describe_event(ev)}")
         if len(result.events) > 25:
             lines.append(f"  ... and {len(result.events) - 25} more")
     if result.pending_removals:
