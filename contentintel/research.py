@@ -21,7 +21,9 @@ from .providers import PROVIDER_NAMES, RECENCY, AuthError, ProviderError, QuotaE
 KINDS = ("web", "news")
 DEPTHS = ("basic", "advanced")
 _TS = "%Y-%m-%dT%H:%M:%SZ"
-_TRACKING = ("utm_", "gclid", "fbclid", "mc_", "ref_", "igshid")
+_TRACKING_PREFIXES = ("utm_", "mc_", "ref_", "gad_")
+_TRACKING_EXACT = {"gclid", "fbclid", "igshid", "srsltid", "msclkid", "yclid", "_ga", "_gl",
+                   "mkt_tok", "si", "is_from_webapp", "sender_device", "web_id"}
 
 
 class ResearchError(Exception):
@@ -470,6 +472,64 @@ def run_research(brands, store, *, providers, settings, now, configs=None, dry_r
     return result
 
 
+CHECK_QUERY = "sweatpants overalls"
+
+
+def check_providers(providers, store, settings, now):
+    """Prove each key and each kind of search works: one web and one news search per provider.
+
+    Costs the provider's normal price for each (1 credit, usually). The credits are counted in
+    the shared ledger; the results are shown but not saved as findings.
+    """
+    ledger = Ledger(store.load_usage(), now[:7])
+    rows = []
+    for name in sorted(providers):
+        provider = providers[name]
+        dead = None
+        for kind in KINDS:
+            row = {"provider": name, "kind": kind, "ok": False, "credits": 0, "count": 0,
+                   "sample": "", "problem": ""}
+            rows.append(row)
+            if dead:
+                row["problem"] = dead
+                continue
+            cost = provider.cost(kind)
+            if _allowance(name, settings.caps, ledger, {}) < cost:
+                row["problem"] = "skipped: no credits left under your caps"
+                continue
+            try:
+                results = provider.search(CHECK_QUERY, kind=kind, num=3, country=settings.country,
+                                          recency="month" if kind == "news" else None)
+            except AuthError as exc:
+                dead = row["problem"] = str(exc)
+                continue
+            except QuotaError as exc:
+                dead = row["problem"] = str(exc)
+                continue
+            except ProviderError as exc:
+                row["problem"] = str(exc)
+                continue
+            ledger.charge(name, cost)
+            store.save_usage(ledger.usage)
+            row.update(ok=True, credits=cost, count=len(results),
+                       sample=results[0].title if results else "")
+    return rows
+
+
+def format_check_report(rows):
+    lines = ["Provider check: one web search and one news search per service"]
+    for r in rows:
+        if r["ok"]:
+            note = f"OK, {r['count']} results ({r['credits']:g} credit{'s' if r['credits'] != 1 else ''})"
+            if r["count"] == 0:
+                note = f"answered but returned no results ({r['credits']:g} credit)"
+            lines.append(f"  {r['provider']:<11} {r['kind']:<5} {note}"
+                         + (f": {r['sample'][:60]}" if r["sample"] else ""))
+        else:
+            lines.append(f"  {r['provider']:<11} {r['kind']:<5} FAILED: {r['problem']}")
+    return "\n".join(lines)
+
+
 def format_research_report(result):
     s = result.settings
     lines = [f"Research run {result.now}" + ("  [dry run: nothing was searched or saved]" if result.dry_run else ""),
@@ -508,10 +568,22 @@ def format_research_report(result):
 # sources: what the sheet shows (one row per distinct page)
 # ---------------------------------------------------------------------------------------
 
-def canonical_url(url):
+def _is_tracking(key):
+    key = key.lower()
+    return key in _TRACKING_EXACT or key.startswith(_TRACKING_PREFIXES)
+
+
+def clean_url(url):
+    """The page's address without tracking codes or a #fragment (what the sheet shows)."""
     parts = urlsplit(url.strip())
-    query = sorted((k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True)
-                   if not k.lower().startswith(_TRACKING))
+    query = [(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True)
+             if not _is_tracking(k)]
+    return urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(query), ""))
+
+
+def canonical_url(url):
+    parts = urlsplit(clean_url(url))
+    query = sorted(parse_qsl(parts.query, keep_blank_values=True))
     path = parts.path.rstrip("/") or "/"
     return urlunsplit((parts.scheme.lower(), parts.netloc.lower(), path, urlencode(query), ""))
 
@@ -532,7 +604,7 @@ def research_sources(records):
                 continue
             sid = source_id(item["url"])
             row = rows.setdefault(sid, {
-                "source_id": sid, "title": "", "url": item["url"], "domain": "", "published": "",
+                "source_id": sid, "title": "", "url": clean_url(item["url"]), "domain": "", "published": "",
                 "first_seen": rec["at"], "last_seen": rec["at"], "times_seen": 0,
                 "providers": set(), "purposes": set(), "queries": [], "best_rank": item["rank"],
                 "snippet": ""})
