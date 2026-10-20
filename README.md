@@ -4,38 +4,83 @@ Everything runs on GitHub. Nothing is installed or run on a computer of your own
 
 ## What it does
 
-- Every day, reads each brand's Shopify catalogue (`/products.json`, page by page until
+- Every 6 hours, reads each brand's Shopify catalogue (`/products.json`, page by page until
   an empty page), checks that it is complete, and saves the result in `data/`.
 - Detects new, changed, sold-out, restocked, suspected-removed and returned products.
-- Records what each product description states (fabric, pockets, ingredients,
-  allergens) and what is missing. Nothing is invented.
-- Keeps clean, reusable files per brand: `products.json`, `products.csv`, `variants.csv`.
+- Records what each product description states (fabric, pockets, ingredients, allergens)
+  and what is missing. Nothing is invented.
+- Keeps each brand's own Google Sheet up to date automatically (see below), and clean files
+  in `data/<brand>/catalogue/` for other tools.
 - Blocks generation (later phases) whenever a catalogue cannot be trusted.
 
-## One-time set-up (all in the GitHub website)
+## One-time set-up (GitHub website, plus the Google Cloud console for the sheets)
 
 1. Upload the project files to the repository, keeping the folder paths.
-2. Upload the five saved catalogues to `tests/fixtures/`. They are supplied already named,
-   so no renaming is needed: `swoveralls_full_72.json`, `swoveralls_truncated_30.json`,
-   `duderobe_fetch_a.json`, `duderobe_fetch_b.json`, `defi_snacks.json`. Without them the
-   Tests workflow stops with one message listing what is missing.
+2. Upload the five saved catalogues to `tests/fixtures/` (they are supplied already named):
+   `swoveralls_full_72.json`, `swoveralls_truncated_30.json`, `duderobe_fetch_a.json`,
+   `duderobe_fetch_b.json`, `defi_snacks.json`.
 3. Check `domain` in each `brands/<brand>/brand.yaml`.
-4. If a run ever fails with a permission error while saving: Settings > Actions >
-   General > Workflow permissions > Read and write.
+4. If a run fails with a permission error while saving: Settings > Actions > General >
+   Workflow permissions > Read and write.
 5. Optional alerts: add a repository secret `SLACK_WEBHOOK_URL`.
 
-The **Tests** workflow runs by itself on every push. Green means the project is sound,
-and it also validates any edit you make to a `brand.yaml` or `rules.yaml` (a typo in a
-setting name fails the run and names the setting).
+The **Tests** workflow runs by itself on every push. Green means the project is sound, and
+it also validates any edit you make to a `brand.yaml` or `rules.yaml`.
 
 ## First run for a brand
 
-1. Actions > **Catalogue sync** > Run workflow (brand `all`, or one brand).
-   The first run ends red on purpose: "needs baseline". Open the run page for the report.
+1. Actions > **Catalogue sync** > Run workflow (brand `all`, or one brand). The first run
+   ends red on purpose: "needs baseline". Open the run page for the report.
 2. Check the product count on the store.
-3. Actions > **Catalogue admin** > Run workflow: action `confirm-baseline`, the brand,
-   and the count you checked. Your GitHub username is recorded as the confirmer.
-4. From then on the sync runs daily (05:17 UTC) and you only look at red runs.
+3. Actions > **Catalogue admin** > Run workflow: action `confirm-baseline`, the brand, and the
+   count you checked. Your GitHub username is recorded as the confirmer.
+4. From then on the sync runs every 6 hours and you only look at red runs.
+
+## Google Sheets (one-time set-up)
+
+One Google service account serves every brand. Each brand gets its own spreadsheet; tabs and
+columns are created automatically, and any that go missing are recreated on the next run.
+
+1. In the Google Cloud console, create **one new service account** for this tool (do not
+   reuse the outreach one), enable the **Google Sheets API** and the **Google Drive API** for
+   its project, and create a JSON key for it.
+2. In GitHub, Settings > Secrets and variables > Actions, add two repository secrets:
+   - `GOOGLE_SERVICE_ACCOUNT_JSON`: the whole key file, pasted in. Never paste it anywhere else.
+   - `SHEET_SHARE_EMAIL`: your Google address (several allowed, separated by commas), so you
+     can open the sheets the tool creates.
+3. Actions > **Google Sheets** > Run workflow with **dry run** ticked. The run page lists what
+   it would create. Then run it again with dry run unticked.
+
+After that, every Catalogue sync updates the sheets by itself.
+
+If you would rather own the spreadsheets: create a blank one per brand in your own Drive,
+share it with the service account's address (the `client_email` inside the key) as Editor, and
+paste each sheet's id or URL next to its brand in `sheets.yaml`. Sheets the tool creates are
+owned by the service account, so deleting that account deletes them.
+
+### What is in each sheet
+
+| Tab | Contents |
+|---|---|
+| Products | one row per product; added columns on the right start with **Notes** |
+| Variants | one row per size/colour: options, SKU, price, sale price, available |
+| Changes | every detected change, appended once |
+| Status | whether the catalogue can be trusted now, when it last synced, what needs facts |
+
+Rules that protect your work:
+- The tool owns only the columns it created. **Any column you add is never read, overwritten
+  or moved**, wherever you put it. Do not rename the tool's own headers (it would add them
+  again).
+- Rows are matched by `product_id` / `variant_id`, never by position, so sorting and
+  filtering are safe.
+- New products are added at the bottom. A product that leaves the catalogue keeps its row and
+  its status changes to `suspected_removed` or `confirmed_removed`; its variants show
+  `removed`.
+- Only cells whose value changed are written. A run with nothing new writes only the Status tab.
+- The Changes tab is a log: rows you delete there are added back on the next run. Hide or
+  filter them instead, or add your own column to mark them as dealt with.
+- If the tool finds a tab with content but no `product_id` column, it writes nothing there
+  and says so.
 
 ## Decisions as buttons (Actions > Catalogue admin)
 
@@ -50,37 +95,31 @@ setting name fails the run and names the setting).
 
 | File | What it is |
 |---|---|
-| `catalogue/products.csv` | one row per product: status, flags, price range, stock, fabric, pockets, ingredients, missing facts |
-| `catalogue/variants.csv` | one row per size/colour: options, SKU, price, sale price, available |
-| `catalogue/products.json` | the same plus description, facts with their sources, variants and images |
+| `catalogue/products.csv`, `variants.csv`, `products.json` | clean exports for other tools |
 | `changes.jsonl` | every detected change, appended over time |
 | `last_checked.json` | when the last good sync ran |
-| `latest.json`, `snapshots/` | the full records the later phases read; a snapshot is kept only when real content changed |
+| `sheet.json` | which Google spreadsheet belongs to this brand |
+| `latest.json`, `snapshots/` | the full records later phases read; a snapshot is kept only when real content changed |
 | `registry.json` | every product ever seen, including suspected and confirmed removals |
 | `failed_runs.jsonl` | every rejected run and why |
 
-A quiet day writes only `last_checked.json` (about 100 bytes). Files are rewritten only
-when their content changes.
-
-To use the data in Google Sheets: open the file in GitHub (for example
-`data/swoveralls/catalogue/products.csv`) and choose Download raw file, then File > Import
-in the sheet. In a private repository the raw-URL `IMPORTDATA` trick does not work. An
-automatic Google Sheet sync can be added; it needs a Google service account key stored as a
-repository secret.
+A quiet run writes only `last_checked.json` (about 100 bytes). Files are rewritten only when
+their content changes.
 
 ## Good to know
 
-- In a private repository, workflow runs use your monthly GitHub Actions minutes. The daily
-  sync takes about a minute; the Tests workflow runs only when code or settings change.
-- Public repositories pause scheduled workflows after 60 days with no repository activity
-  (GitHub's rule), and a public repository makes everything in it public, including
-  `brands/` and `briefs/`. Keep this repository private.
-- Optional sabotage check: Actions > Tests > Run workflow > tick sabotage. It breaks the
-  code on purpose in about 70 ways and confirms the tests notice each one.
+- Because the repository is private, runs use your monthly GitHub Actions minutes. Syncing every
+  6 hours takes about 4 minutes a day. To run less often, change the `cron` line in
+  `.github/workflows/sync.yml` (for example `17 5 * * *` for once a day).
+- If the Google Sheets step fails, the run turns red and the run page says what to fix
+  (usually sharing, or an API not enabled). The catalogue data is still saved.
+- Optional sabotage check: Actions > Tests > Run workflow > tick sabotage. It breaks the code on
+  purpose in about 100 ways and confirms the tests notice each one (several minutes).
 
 ## Not verified from the build environment
 
-Live fetches from the stores, the sitemap cross-check against a real site, and real
-GitHub runs (including Slack alerts). The workflow steps were run against a simulated
-remote repository and linted with actionlint; everything else is tested against saved
-catalogues.
+Live fetches from the stores, the sitemap cross-check against a real site, real GitHub runs,
+and every call to Google (the sheet logic was tested against a strict stand-in that rejects
+anything the real library would reject; the first real run is the real test). Creating a
+spreadsheet needs the Google Drive API enabled; I have not been able to confirm that
+requirement against a live account.
