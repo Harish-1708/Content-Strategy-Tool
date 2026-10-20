@@ -1,3 +1,4 @@
+import time
 from dataclasses import replace
 
 import pytest
@@ -776,3 +777,176 @@ def test_the_workflow_uses_the_secret_names_and_options_the_command_understands(
         "research", "--all", "--providers", "serper_dev,tavily,serpapi", "--max-queries", "5", "--dry-run"])
     assert args.dry_run and args.max_queries == 5 and args.providers == "serper_dev,tavily,serpapi"
     assert "cron:" in text and "workflow_dispatch" in text
+
+
+# --- tracking codes in addresses (Google adds a new srsltid to every result) ---------------------
+
+SW = "https://swoveralls.com/products/swoveralls-midnight-black"
+
+
+def test_google_tracking_codes_never_split_one_page_into_two_sources():
+    a, b = f"{SW}?srsltid=AU7gw4UkeUUJ", f"{SW}?srsltid=SOMETHING-ELSE-NEXT-WEEK"
+    assert R.source_id(a) == R.source_id(b) == R.source_id(SW)
+    rows = R.research_sources([rec("q", [a], "2026-10-01T00:00:00Z"), rec("q", [b], "2026-10-08T00:00:00Z")])
+    (row,) = rows.values()
+    assert row["times_seen"] == 2 and row["url"] == SW
+
+
+def test_the_sheet_shows_the_address_without_tracking_but_the_saved_record_is_untouched():
+    dirty = f"{SW}?srsltid=AU7gw&utm_source=x#top"
+    record = rec("q", [dirty], "2026-10-01T00:00:00Z")
+    (row,) = R.research_sources([record]).values()
+    assert row["url"] == SW and record["results"][0]["url"] == dirty
+
+
+@pytest.mark.parametrize("dirty", [
+    "?msclkid=1", "?yclid=1", "?_ga=2.1", "?mkt_tok=abc", "?gad_source=1&gad_campaignid=5",
+    "?si=abc", "?is_from_webapp=1&sender_device=pc&web_id=123", "?utm_medium=a&fbclid=b&gclid=c"])
+def test_known_tracking_codes_are_removed(dirty):
+    assert R.clean_url("https://x.example.com/p" + dirty) == "https://x.example.com/p"
+
+
+def test_real_parameters_are_kept_and_make_different_pages():
+    assert R.clean_url("https://x.example.com/p?variant=123&size=m") == "https://x.example.com/p?variant=123&size=m"
+    assert R.source_id("https://x.example.com/p?variant=1") != R.source_id("https://x.example.com/p?variant=2")
+    assert R.clean_url("https://x.example.com/p?size=m&si=zzz") == "https://x.example.com/p?size=m"
+
+
+def test_cleaning_an_address_keeps_its_case_and_path_but_drops_the_fragment():
+    assert R.clean_url("https://Example.com/Some/Path/?Q=1#frag") == "https://Example.com/Some/Path/?Q=1"
+    assert R.source_id("https://Example.com/a/") == R.source_id("https://example.com/a")
+
+
+# --- the provider check ----------------------------------------------------------------------------
+
+def check(store, settings, found, now=NOW):
+    return R.check_providers(found, store, settings, now)
+
+
+def test_the_check_runs_one_web_and_one_news_search_on_every_provider(store, settings):
+    http, found = world()
+    rows = check(store, settings, found)
+    assert [(r["provider"], r["kind"], r["ok"], r["count"], r["credits"]) for r in rows] == [
+        ("serpapi", "web", True, 3, 1), ("serpapi", "news", True, 3, 1),
+        ("serper_dev", "web", True, 3, 1), ("serper_dev", "news", True, 3, 1),
+        ("tavily", "web", True, 3, 1), ("tavily", "news", True, 3, 1)]
+    assert len(searches_only(http)) == 6
+    assert store.load_usage()["months"]["2026-10"] == {"serpapi": 2, "serper_dev": 2, "tavily": 2}
+
+
+def test_each_kind_of_check_uses_that_providers_news_path(store, settings):
+    http, found = world()
+    check(store, settings, found)
+    calls = {(("serper" if "serper" in c["url"] else "tavily" if "tavily" in c["url"] else "serpapi"), n): c
+             for n, c in enumerate(searches_only(http))}
+    serper = [c for (name, _), c in calls.items() if name == "serper"]
+    assert serper[0]["url"].endswith("/search") and serper[1]["url"].endswith("/news")
+    tav = [c for (name, _), c in calls.items() if name == "tavily"]
+    assert tav[0]["json"]["topic"] == "general" and "time_range" not in tav[0]["json"]
+    assert tav[1]["json"]["topic"] == "news" and tav[1]["json"]["time_range"] == "month"
+    api = [c for (name, _), c in calls.items() if name == "serpapi"]
+    assert "tbm" not in api[0]["params"] and api[1]["params"]["tbm"] == "nws"
+    assert all(R.CHECK_QUERY in (c["json"] or c["params"]).get("q", (c["json"] or {}).get("query", ""))
+               for c in calls.values())
+
+
+def test_the_check_saves_no_findings_and_creates_no_brand_folders(tmp_path, store, settings):
+    http, found = world()
+    check(store, settings, found)
+    assert [p.name for p in (tmp_path / "data").iterdir()] == ["_shared"]
+
+
+def test_a_failing_search_is_reported_and_the_other_kind_is_still_tried(store, settings):
+    http, found = world(only=["serper_dev"])
+    http.routes = [r for r in http.routes if "serper.dev/search" not in r[1]]
+    http.on("POST", "https://google.serper.dev/search", (503, "down"))
+    rows = check(store, settings, found)
+    web, news = rows
+    assert not web["ok"] and "gave up after retries" in web["problem"] and news["ok"]
+    assert store.load_usage()["months"]["2026-10"] == {"serper_dev": 1}
+
+
+def test_a_rejected_key_stops_further_checks_on_that_provider(store, settings):
+    http, found = world(only=["serper_dev"])
+    http.routes = [r for r in http.routes if "serper.dev" not in r[1]]
+    http.on("POST", "https://google.serper.dev/search", (403, {"message": "Unauthorized."}))
+    rows = check(store, settings, found)
+    assert [r["ok"] for r in rows] == [False, False] and "rejected the API key" in rows[1]["problem"]
+    assert len(searches_only(http)) == 1
+
+
+def test_a_provider_out_of_credits_is_reported_not_retried(store, settings):
+    http, found = world(only=["serper_dev"])
+    http.routes = [r for r in http.routes if "serper.dev" not in r[1]]
+    http.on("POST", "https://google.serper.dev/search", (400, {"message": "Not enough credits"}))
+    rows = check(store, settings, found)
+    assert not rows[0]["ok"] and "out of credits" in rows[0]["problem"] and len(searches_only(http)) == 1
+
+
+def test_the_check_respects_the_caps(store, settings):
+    http, found = world(only=["serper_dev"])
+    rows = check(store, with_caps(settings, serper_dev=(1, None, 0)), found)
+    assert [r["ok"] for r in rows] == [True, False] and rows[1]["problem"].startswith("skipped")
+    assert len(searches_only(http)) == 1
+
+
+def test_an_answer_with_no_results_is_ok_but_says_so(store, settings):
+    http = FakeHttp()
+    http.on("POST", "https://google.serper.dev/search", (200, {"organic": []}))
+    http.on("POST", "https://google.serper.dev/news", (200, {"news": []}))
+    found = P.build_providers({"SERPER_API_KEY": "k"}, http=http, sleep=lambda s: None)
+    rows = check(store, settings, found)
+    text = R.format_check_report(rows)
+    assert all(r["ok"] and r["count"] == 0 for r in rows) and "answered but returned no results" in text
+
+
+def test_the_check_report_is_plain_english(store, settings):
+    http, found = world(only=["tavily"])
+    text = R.format_check_report(check(store, settings, found))
+    assert "tavily      web   OK, 3 results (1 credit): t page 1" in text
+    assert "tavily      news  OK, 3 results (1 credit)" in text
+
+
+def test_the_command_line_check_needs_no_brand_and_prints_the_report(cli_env, capsys, tmp_path):
+    http, run = cli_env
+    assert run("--check-providers") == 0
+    out = capsys.readouterr().out
+    assert "Provider check" in out and out.count("OK, 3 results") == 6
+    assert len(searches_only(http)) == 6 and not (tmp_path / "data" / "swoveralls").exists()
+
+
+def test_the_command_line_check_honours_the_provider_choice(cli_env, capsys):
+    http, run = cli_env
+    assert run("--check-providers", "--providers", "tavily") == 0
+    assert used_providers(http) == ["tavily", "tavily"]
+
+
+def test_the_command_line_check_fails_loudly_on_a_rejected_key_without_printing_it(cli_env, capsys):
+    http, run = cli_env
+    http.routes = [r for r in http.routes if "serper.dev" not in r[1]]
+    http.on("POST", "https://google.serper.dev/search", (403, {"message": "Unauthorized."}))
+    http.on("POST", "https://google.serper.dev/news", (403, {"message": "Unauthorized."}))
+    assert run("--check-providers") == 1
+    out = capsys.readouterr().out
+    assert "::error::serper_dev web search failed" in out and "k-serper" not in out
+
+
+def test_a_skipped_check_for_credits_is_not_a_failure(cli_env, capsys, tmp_path):
+    http, run = cli_env
+    (tmp_path / "data" / "_shared").mkdir(parents=True)
+    month = time.strftime("%Y-%m", time.gmtime())
+    (tmp_path / "data" / "_shared" / "research_usage.json").write_text(
+        '{"months": {"%s": {"serper_dev": 250}}, "lifetime": {"serper_dev": 250}}' % month)
+    assert run("--check-providers", "--providers", "serper_dev") == 0
+    assert "skipped: no credits left under your caps" in capsys.readouterr().out and searches_only(http) == []
+
+
+def test_research_with_nothing_chosen_explains_the_options(cli_env, capsys):
+    http, run = cli_env
+    assert run() == 1
+    assert "choose --brand NAME, --all, or --check-providers" in capsys.readouterr().out and http.calls == []
+
+
+def test_the_workflow_offers_the_check():
+    text = open(".github/workflows/research.yml", encoding="utf-8").read()
+    assert "provider_check" in text and "--check-providers" in text
