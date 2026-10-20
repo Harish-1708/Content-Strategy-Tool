@@ -61,6 +61,7 @@ jobs:
           BRAND: ${{ inputs.brand }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           SHEET_SHARE_EMAIL: ${{ secrets.SHEET_SHARE_EMAIL }}
+          SHEET_FOLDER_ID: ${{ secrets.SHEET_FOLDER_ID }}
         run: |
           set +e
           args=(--all)
