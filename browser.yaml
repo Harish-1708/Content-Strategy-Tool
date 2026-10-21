@@ -1,0 +1,88 @@
+# How the tool drives a real (headless) browser to read Meta Ad Library, Instagram, TikTok and
+# Gemini Deep Research. Every address, button name and check below is a FIRST GUESS written without
+# being able to see the live sites. When a site changes, or a run says it cannot find something,
+# edit it here: no code change is needed. Actions > Collect > "Recon" saves screenshots and the
+# data each site sends, which shows exactly what to change.
+#
+# Logging in: Instagram, TikTok and Google often stop automated logins from GitHub's servers with
+# a code or a puzzle. The reliable way is to log in ONCE as the dummy account in an ordinary
+# browser, export its cookies (for example with the Cookie-Editor extension, "Export as JSON"), and
+# paste the JSON into the repository secret named below. The username/password route is only a
+# best-effort fallback. Google blocks automated sign-in, so Gemini uses cookies only.
+pacing:
+  min_delay_seconds: 3          # a random pause before opening each page
+  max_delay_seconds: 8
+  scroll_pause_seconds: 3       # a random pause after each scroll
+limits:
+  max_scrolls_per_page: 8       # how far down a results page it will scroll
+
+sites:
+  meta_ads:                     # public pages: no login needed
+    needs_login: false
+    json_url_hints: [graphql]
+    settle_seconds: 4
+    consent_any: ['button:has-text("Allow all cookies")', 'button:has-text("Accept all")', 'button:has-text("Only allow essential cookies")']
+
+  instagram:
+    needs_login: true
+    secrets: {cookies: INSTAGRAM_COOKIES, username: INSTAGRAM_USERNAME, password: INSTAGRAM_PASSWORD}
+    home: https://www.instagram.com/
+    hashtag_url: https://www.instagram.com/explore/tags/{tag}/
+    json_url_hints: [graphql, /api/v1/]
+    link_contains: ['/p/', '/reel/']
+    logged_in_any: ['a[href="/direct/inbox/"]', 'svg[aria-label="Home"]', 'a[href="/explore/"]']
+    login_wall_any: ['input[name="username"]', 'a[href="/accounts/login/"]']
+    challenge_any: ['text=Suspicious Login Attempt', 'text=We detected an unusual login attempt', 'input[name="verificationCode"]', 'text=Confirm it']
+    login_steps:
+      - {goto: 'https://www.instagram.com/accounts/login/'}
+      - {wait: 3}
+      - {click_optional: ['button:has-text("Allow all cookies")', 'button:has-text("Accept")']}
+      - {fill: ['input[name="username"]'], with: username}
+      - {fill: ['input[name="password"]'], with: password}
+      - {click: ['button[type="submit"]']}
+      - {wait: 8}
+      - {click_optional: ['button:has-text("Not now")', 'div[role="button"]:has-text("Not now")']}
+      - {wait: 2}
+
+  tiktok:
+    needs_login: true
+    secrets: {cookies: TIKTOK_COOKIES, username: TIKTOK_USERNAME, password: TIKTOK_PASSWORD}
+    home: https://www.tiktok.com/
+    hashtag_url: https://www.tiktok.com/tag/{tag}
+    profile_url: https://www.tiktok.com/@{name}
+    search_url: https://www.tiktok.com/search?q={q}
+    json_url_hints: [/api/]
+    link_contains: ['/video/']
+    logged_in_any: ['[data-e2e="profile-icon"]', '[data-e2e="inbox-icon"]', 'a[href*="/upload"]']
+    login_wall_any: ['[data-e2e="top-login-button"]', 'button:has-text("Log in")']
+    challenge_any: ['text=Verify to continue', 'text=Drag the slider', '#captcha-verify-image', 'text=Select 2 objects']
+    login_steps:
+      - {goto: 'https://www.tiktok.com/login/phone-or-email/email'}
+      - {wait: 4}
+      - {click_optional: ['button:has-text("Accept all")', 'button:has-text("Allow all")']}
+      - {fill: ['input[name="username"]', 'input[placeholder*="Email"]'], with: username}
+      - {fill: ['input[type="password"]'], with: password}
+      - {click: ['button[type="submit"]', 'button[data-e2e="login-button"]']}
+      - {wait: 10}
+
+  gemini:                       # Deep Research through the Gemini web app, waiting for the report
+    needs_login: true
+    secrets: {cookies: GEMINI_COOKIES}
+    app_url: https://gemini.google.com/app
+    logged_in_any: ['rich-textarea', 'div[contenteditable="true"]']
+    login_wall_any: ['a[href*="accounts.google.com/ServiceLogin"]', 'a:has-text("Sign in")']
+    prompt_box: ['rich-textarea div[contenteditable="true"]', 'div.ql-editor[contenteditable="true"]', 'div[role="textbox"]', 'textarea']
+    deep_research_clicks:       # buttons to press, in order, to switch the chat to Deep Research
+      - ['button:has-text("Tools")', 'button:has-text("Deep Research")']
+      - ['button:has-text("Deep Research")', 'text=Deep Research']
+    send: ['button[aria-label*="Send"]', 'button:has-text("Send")']
+    start_research: ['button:has-text("Start research")', 'text=Start research']
+    still_working_any: ['button[aria-label*="Stop"]', 'text=Researching', 'text=Working on it']
+    done_any: ['button:has-text("Export")', 'text=Export to Docs', 'button:has-text("Create")']
+    response: ['message-content', 'model-response', 'div.markdown']
+    wait:
+      max_minutes: 25           # the whole run, including the 10+ minutes a report usually takes
+      plan_wait_seconds: 120    # how long to wait for the plan and its "Start research" button
+      poll_seconds: 15
+      settle_seconds: 90        # the report counts as finished once the text stops changing this long
+      min_chars: 1500
