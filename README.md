@@ -155,6 +155,15 @@ If a check says "answered but returned no results", the bracket after it shows w
 actually sent back, which tells a genuinely empty answer from a misread one. The news check uses
 the broad word "overalls" over the last year, so an empty answer there deserves a closer look.
 
+**Comparing the three services.** Normally each search goes to one service. With **Compare** ticked
+(it is ticked by default when you run Research by hand), each of the first few searches (5 by
+default, `compare_queries` in `research.yaml`) is run on every ticked service, so you can see how
+they differ. The report shows, per search, how many results each service gave and how many only it
+found, then an overall summary of how much each pair of services agrees. That costs one credit per
+service per compared search (about 15 credits for the default), still inside every cap. Answers
+from the last 7 days are reused, so repeating a comparison is free. The weekly automatic run never
+compares.
+
 **Reading the results.** Each brand's sheet gets a **Research** tab: one row per page found, with
 when it was first and last seen, how often, which service and which search found it, and a
 **Review** column for your team (for example useful, irrelevant, saturated). Review marks are never
@@ -164,6 +173,55 @@ so the same page found next week is the same row, with "times seen" going up. Th
 **If a run goes red:** a service rejected its key (the log names it; check the secret), or searches
 failed on every service. Running out of credits under your caps is a yellow warning, not a failure.
 Findings are facts about what the web returned: nothing is judged or summarised yet.
+
+## Ads, social posts and deep research (Actions > Collect)
+
+Four more sources, each optional, each capped. They drive a real browser, the way a person would:
+
+| Source | How | Login |
+|---|---|---|
+| Competitor ads (Meta Ad Library) | the public Ad Library pages | none |
+| Instagram posts | a dummy Instagram account | `INSTAGRAM_COOKIES` (or `INSTAGRAM_USERNAME` + `INSTAGRAM_PASSWORD`) |
+| TikTok posts | a dummy TikTok account | `TIKTOK_COOKIES` (or `TIKTOK_USERNAME` + `TIKTOK_PASSWORD`) |
+| Gemini Deep Research | the Gemini web app, as a dummy Google account; it waits for the report (10+ minutes, up to 25) | `GEMINI_COOKIES` only (Google blocks automated sign-in) |
+
+**Setting up a dummy account's login (once per account).** Log in as the dummy account in an
+ordinary browser. With a cookie extension (for example Cookie-Editor) choose Export, then JSON. In the
+repository go to Settings > Secrets and variables > Actions, create the secret named in the table, and
+paste the JSON. Cookies, not passwords, are the reliable way: logins from GitHub's servers are often
+stopped with a code or a puzzle, and the username/password route is only a best-effort fallback. Cookies
+expire after days or weeks; when they do, **Check** says "not logged in" and names the secret to refresh.
+
+**Running it.** Every Wednesday by itself (ads and social only; Deep Research never runs on the schedule).
+By hand: Actions > Collect > Run workflow, with three useful boxes:
+- **Dry run** (ticked by default): shows the plan and opens no browser.
+- **Check**: opens each ticked site, confirms the login, and collects a handful of items. It only *opens*
+  Gemini; it never starts a report.
+- **Recon**: saves pictures, each page's HTML and samples of the data each site sends. Download them from
+  the run's **debug** artifact. They show exactly what to change in `browser.yaml`.
+
+**Set up by trial, the first time.** The page addresses, button names and login checks in `browser.yaml`
+are first guesses, written without being able to open the live sites. Do **Recon** and **Check** first;
+expect a round or two of small edits to `browser.yaml` (it is plain text, no code) before everything reads.
+When something cannot be found, the run says what, and saves a picture.
+
+**What is read.** Ads and posts are read from the data each site sends to its own page (found by shape, so
+a renamed wrapper does not break it), with the page's links as a fallback. The report says how many
+items came from each.
+
+**Keeping it gentle.** Random pauses of a few seconds before each page and after each scroll, small runs
+(`items_per_run` 30), `monthly_items` 150 across all brands, Deep Research `monthly_tasks` 2 and
+`tasks_per_run` 1, and the same seeds are not collected again for 3 days (14 for Deep Research). Dummy
+accounts can still be limited or banned by the sites; small, paced runs reduce that risk but cannot remove it.
+
+**Seeds.** Nothing is collected until you add seeds to `brands/<brand>/research.yaml` (the `ads`, `social`
+and `deep_research` examples are there, switched off). For ads, the best seed is an Ad Library link for
+the advertiser (copy it from your browser); a plain Facebook page address is searched by the page's name.
+
+**Reading the results.** A **Collected** tab in each brand's sheet: one row per ad, post or report, with
+handle, text, link, date, likes, comments, shares, views, first and last seen, and a **Review** column for
+your team. Numbers update in place as posts grow; Review marks are never overwritten. Deep Research reports
+are saved in full in `data/<brand>/research/deep/`; the sheet shows an excerpt.
 
 ## Telling the tool what it cannot know (`brands/<brand>/manual_facts.yaml`)
 
@@ -192,6 +250,8 @@ are live, add each handle with `status: active` (the template is `brands/swovera
 | `failed_runs.jsonl` | every rejected run and why |
 | `research/searches.jsonl` | every search made for this brand, with the results as returned |
 | `research/runs.jsonl` | one line per research run: what was planned, reused, searched, skipped |
+| `research/collected.jsonl` | every ad, post and report collected for this brand, as flattened rows |
+| `research/deep/*.md` | the full text of each Deep Research report |
 
 `data/_shared/research_usage.json` counts the credits spent on each search service, across all
 brands.
@@ -207,11 +267,11 @@ their content changes.
 - If the Google Sheets step fails, the run turns red and the run page says what to fix
   (usually sharing, or an API not enabled). The catalogue data is still saved.
 - Optional sabotage check: Actions > Tests > Run workflow > tick sabotage. It breaks the code on
-  purpose in about 170 ways and confirms the tests notice each one (several minutes).
+  purpose in about 240 ways and confirms the tests notice each one (several minutes).
 
 ## Not verified from the build environment
 
-Every call to Tavily, Serper.dev and SerpApi (the tests use a scripted stand-in built from each
+Everything that drives a real website (Meta Ad Library, Instagram, TikTok and the Gemini web app: the page names, buttons and login checks in `browser.yaml` are first guesses, tested only against a stand-in browser), every call to Tavily, Serper.dev and SerpApi (the tests use a scripted stand-in built from each
 service's documentation, so the first real run with your keys is the real test; start with a dry
 run, then a real run on one brand), live fetches from the stores, the sitemap cross-check against a real site, real GitHub runs,
 and every call to Google. The sheet logic was tested against a strict stand-in that rejects
