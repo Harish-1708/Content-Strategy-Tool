@@ -203,7 +203,7 @@ def load_brand_research(brand, root="brands"):
         data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     where = f"{brand.slug}/research.yaml"
     _only_keys(data, ("competitors", "topics", "queries", "templates", "auto", "country",
-                      "ads", "social", "deep_research", "auto_seeds"), where)
+                      "ads", "social", "deep_research", "auto_seeds", "track_own_brand"), where)
     try:
         collect = parse_collect_config(data, where)
     except CollectError as exc:
