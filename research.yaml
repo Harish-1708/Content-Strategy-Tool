@@ -31,3 +31,23 @@ defaults:
   max_queries_per_run: 30   # a safety limit for one run
   country: us               # two-letter code
   recency:                  # day, week, month or year; blank means any time
+  compare_queries: 5        # compare mode runs this many searches on EVERY ticked service
+
+# ---- collectors: competitor ads, TikTok, Instagram and Gemini Deep Research -----------------------
+# These drive a real browser (see browser.yaml): Meta Ad Library's public pages with no login,
+# Instagram and TikTok as a dummy account, and Gemini Deep Research in the Gemini web app as a dummy
+# Google account (a report takes 10+ minutes). The caps keep every run small and gentle:
+#   monthly_items   most ads/posts collected per calendar month, across all brands
+#   items_per_run   most ads/posts collected in one run
+#   monthly_tasks   most Deep Research reports per month (each uses the account's own daily quota)
+#   tasks_per_run   most Deep Research reports in one run
+#   cache_days      the same seeds are not collected again inside this many days
+collectors:
+  browser:
+    monthly_items: 150
+    items_per_run: 30
+    cache_days: 3
+  gemini:
+    monthly_tasks: 2
+    tasks_per_run: 1
+    cache_days: 14
