@@ -7,6 +7,7 @@ import json
 import secrets
 import os
 
+from . import autoseeds as autoseeds_mod
 from . import browser as browser_mod
 from .apify import Apify
 from .claude_client import Claude
@@ -96,6 +97,8 @@ def build_parser():
                    help="open each site, confirm the login, and collect a handful of items")
     p.add_argument("--recon", action="store_true",
                    help="save pictures, page HTML and data samples from each site, for tuning browser.yaml")
+    p.add_argument("--seeds", action="store_true",
+                   help="write (or refresh) each brand's auto seeds with Claude and print them, without collecting")
     p.add_argument("--test-deep-research", action="store_true",
                    help="run ONE real, short Deep Research report to prove the whole path (takes 10+ minutes)")
     p.add_argument("--backend", choices=collectors_mod.BACKENDS, default="auto",
@@ -261,6 +264,14 @@ def _collect(args, store):
     make = _BROWSER_FACTORY or _real_factory
     factory = make(browser_cfg, creds, args.debug_dir)
     now = sync_mod.utc_now()
+    if args.seeds:
+        ledger = research_mod.Ledger(store.load_usage(), now[:7])
+        slugs = [args.brand] if args.brand else list_brand_slugs(args.brands_dir)
+        for slug in slugs:
+            brand = load_brand(slug, args.brands_dir)
+            result = autoseeds_mod.ensure_auto_seeds(brand, store, claude, settings, ledger, now, False, force=True)
+            print(autoseeds_mod.format_seeds(slug, result) + "\n")
+        return 0
     if args.test_deep_research:
         outcome = collectors_mod.run_deep_research_test(factory, creds, browser_cfg, settings, store, research_mod.Ledger,
                                                         now, claude, args.debug_dir)
@@ -293,7 +304,7 @@ def _collect(args, store):
         print("::warning::Collection skipped: no login or key is set")
         return 0
     if not (args.all or args.brand):
-        print("Error: choose --brand NAME, --all, --check, --recon or --test-deep-research")
+        print("Error: choose --brand NAME, --all, --check, --recon, --seeds or --test-deep-research")
         return 1
     slugs = list_brand_slugs(args.brands_dir) if args.all else [args.brand]
     brands = [load_brand(slug, args.brands_dir) for slug in slugs]
