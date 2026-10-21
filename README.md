@@ -252,6 +252,19 @@ placeholders). The tool never solves a puzzle. It presses the puzzle's own X but
 Collect with **backend** set to `fallback`: TikTok is then read through Apify (it uses your Apify credit) whenever
 the browser is blocked.
 
+**Gemini's Deep Research menu.** Gemini moves its buttons from time to time. The path the tool presses is in
+`deep_research_clicks` in `browser.yaml`: the **+** at the left of the prompt box (labelled "Upload & tools"),
+then **More tools**, then **Deep research**. Check presses it for real, so a change shows up as a failed Check
+with the step number and a picture (`gemini-no-deep-research-button`), not as a failed report. After the last
+press the tool looks for the prompt box asking "What do you want to research?" (`deep_research_active_any`); if it
+does not see it, Check fails and a real run carries on, saves a picture and says so.
+
+**TikTok hashtag pages that say "Something went wrong".** In the automated browser a tag page can show this error
+while the same search works by hand. When that happens the tool searches TikTok for `#tag` instead (the way a
+person would; `hashtag_via_search_on_error` in `browser.yaml`) and the run and Check say which tags were read that
+way. If the search page shows the error too, the report says how many pages still failed; that means TikTok is
+blocking the automated browser, and Collect with **backend** `fallback` reads TikTok through Apify instead.
+
 **Running it.** Every Wednesday by itself (ads and social only; Deep Research never runs on the schedule).
 By hand: Actions > Collect > Run workflow, then pick a **mode**:
 
@@ -259,7 +272,7 @@ By hand: Actions > Collect > Run workflow, then pick a **mode**:
 |---|---|
 | `plan` (the default) | shows what would be collected; opens no browser and spends nothing |
 | `seeds` | has Claude write (or refresh) each brand's research seeds from its catalogue, and shows them; no browser |
-| `check` | opens each ticked site, confirms the login, and collects a handful of items. With Deep Research ticked it also opens the Gemini page and tests Claude's key, but starts no report |
+| `check` | opens each ticked site, confirms the login, and collects a handful of items. With Deep Research ticked it also opens Gemini, presses the buttons that switch the chat to Deep Research (the + menu, More tools, Deep research; nothing is typed or sent), and tests Claude's key, but starts no report |
 | `recon` | saves pictures, each page's HTML and samples of the data each site sends; download them from the run's **debug** artifact |
 | `test_deep_research` | runs ONE real, short Deep Research report, including Claude's prompt and answers; the report is saved in the debug artifact, not as collected data |
 | `collect` | the real run: saves the data and updates the Google Sheets |
