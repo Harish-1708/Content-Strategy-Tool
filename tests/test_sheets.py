@@ -1091,3 +1091,97 @@ def test_a_dry_run_describes_the_collected_tab_without_creating_it(swov, store):
     store.append_collected("swoveralls", collected(T0, post(1)))
     report, _ = one(swov, store, client, dry_run=True, now=LATER)
     assert report.rows_added == 1 and "Collected" not in titles_of(client.created[0])
+
+
+# --- the Benchmarks tab and the signal column -------------------------------------------------------
+
+def benchmark_state(*pairs):
+    from contentintel import benchmarks as bench
+    state = bench.empty_state()
+    for name, res in pairs:
+        state = bench.record(state, name, "benchmark", res, T0)
+    return state
+
+
+RESOLVED = {"status": "resolved", "page_id": "100000000000001", "page_name": "Gymshark", "page_likes": 6_000_000, "reason": "the only advertiser page named exactly this", "candidates": []}
+AMBIGUOUS = {"status": "ambiguous", "page_id": "", "page_name": "", "page_likes": 0, "reason": "2 pages have this name and none is clearly the main one",
+             "candidates": [{"page_id": "100000000000011", "name": "Oodie", "likes": 1_200_000, "ads": 4}]}
+
+
+def test_there_is_no_benchmarks_tab_until_a_brand_has_been_looked_up(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    client = FakeClient()
+    one(swov, store, client)
+    assert "Benchmarks" not in titles_of(client.created[0])
+
+
+def test_benchmark_decisions_get_a_tab_before_status_with_the_candidates_to_choose_from(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    store.write_benchmarks("swoveralls", benchmark_state(("Gymshark", RESOLVED), ("Oodie", AMBIGUOUS)))
+    client = FakeClient()
+    report, error = one(swov, store, client)
+    assert error is None and titles_of(client.created[0]) == ["Products", "Variants", "Changes", "Benchmarks", "Status"]
+    header, rows = read(tabs(client.created[0])["Benchmarks"])
+    assert header == sheets.BENCHMARK_COLUMNS + ["Review"]
+    by = {r["name"]: r for r in rows}
+    assert by["Gymshark"]["status"] == "resolved" and by["Gymshark"]["page_id"] == "100000000000001" and by["Gymshark"]["page_followers"] == 6_000_000
+    assert by["Oodie"]["status"] == "ambiguous" and by["Oodie"]["page_id"] == "" and by["Oodie"]["page_followers"] == ""
+    assert by["Oodie"]["candidates"] == '"Oodie" (id 100000000000011, 1.2M followers, 4 ads seen)'
+
+
+def test_a_decision_changes_in_place_and_a_persons_review_note_survives(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    store.write_benchmarks("swoveralls", benchmark_state(("Oodie", AMBIGUOUS)))
+    client = FakeClient()
+    one(swov, store, client)
+    ws = tabs(client.created[0])["Benchmarks"]
+    ws.cells[(row_of(ws, "name", "Oodie"), col_of(ws, "Review"))] = "asked Paula which page is real"
+    store.write_benchmarks("swoveralls", benchmark_state(("Oodie", {**RESOLVED, "page_id": "100000000000011", "page_name": "Oodie"})))
+    one(swov, store, client, now=LATER)
+    (row,) = read(ws)[1]
+    assert row["status"] == "resolved" and row["page_id"] == "100000000000011" and row["Review"] == "asked Paula which page is real"
+    assert row["candidates"] == ""
+
+
+def test_an_unchanged_benchmarks_tab_is_not_rewritten_and_a_dry_run_creates_nothing(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    client = FakeClient()
+    one(swov, store, client)
+    store.write_benchmarks("swoveralls", benchmark_state(("Gymshark", RESOLVED)))
+    report, _ = one(swov, store, client, dry_run=True, now=LATER)
+    assert report.rows_added == 1 and "Benchmarks" not in titles_of(client.created[0])
+    one(swov, store, client, now=LATER)
+    again, _ = one(swov, store, client, now=LATER)
+    assert (again.rows_updated, again.cells_updated, again.rows_added) == (0, 0, 0)
+
+
+def meta_item(n, **over):
+    return coll._row("meta_ads", n, handle="Madepants", title="Overalls", text=f"ad {n}", url=f"https://www.facebook.com/ads/library/?id={n}",
+                     posted_at="2025-08-08T07:00:00Z", **over)
+
+
+def test_the_signal_column_says_worth_studying_only_for_long_running_or_widely_copied_ads(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    store.append_collected("swoveralls", {**collected(T0, meta_item(1, days_running=440, variants=4), meta_item(2, days_running=12),
+                                                      meta_item(3), meta_item(4, variants=3), meta_item(5, days_running=60)),
+                                          "source": "meta_ads"})
+    client = FakeClient()
+    one(swov, store, client)
+    header, rows = read(tabs(client.created[0])["Collected"])
+    assert "signal" in header
+    by = {r["item_id"]: r["signal"] for r in rows}
+    assert by == {"meta_ads:1": "worth studying: ran 440 days, 4 copies", "meta_ads:2": "", "meta_ads:3": "",
+                  "meta_ads:4": "worth studying: 3 copies", "meta_ads:5": "worth studying: ran 60 days"}
+
+
+def test_an_old_row_with_a_template_token_is_repaired_when_it_is_next_written(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    old = meta_item(9, details="active | landing: https://rhoback.com/products/x")
+    old["handle"], old["text"] = "Rhoback", "{{product.brand}}"
+    stranger = meta_item(10, details="active | landing: https://amzlink.to/abc")
+    stranger["handle"], stranger["text"] = "Sarah Randall", "{{product.brand}}"
+    store.append_collected("swoveralls", {**collected(T0, old, stranger), "source": "meta_ads"})
+    client = FakeClient()
+    one(swov, store, client)
+    by = {r["item_id"]: r for r in read(tabs(client.created[0])["Collected"])[1]}
+    assert by["meta_ads:9"]["text"] == "Rhoback" and by["meta_ads:10"]["text"] == ""
