@@ -22,25 +22,29 @@ auto:
   competitors: true
   topics: true
 
-# ---- ads, social and deep research (collected by Actions > Collect, using a real browser) -------------------------
-# Nothing is collected until you add seeds below. Remove the # marks to switch an example on.
-# ads:
-#   country: us            # two-letter code
-#   status: active         # all, active or inactive
-#   pages:                 # best: an Ad Library link for the advertiser (copy it from the browser);
-#                          # a plain Facebook page address is searched for by the page's name
-#     - https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=US&view_all_page_id=1234567890
-#   keywords:              # words to search the Ad Library for
-#     - sweatpant overalls
-# social:
-#   tiktok:
-#     hashtags: [overalls]
-#     profiles: []
-#     searches: []
-#   instagram:
-#     hashtags: [overalls]
-# deep_research:           # each question is one Gemini Deep Research report (10+ minutes)
-#   context: >             # optional: what Claude may tell Gemini if it asks (product, audience, goal)
-#     Swoveralls makes sweatpant overalls for young adults. We want ad angles that are not yet saturated.
-#   questions:
-#     - Who are the main competitors in comfortable loungewear overalls, and what angles do their ads use?
+# ---- ads, social and deep research (collected by Actions > Collect, using a real browser) ---------
+# Nothing here runs unless you tick it in Collect. Each run is capped (see research.yaml).
+ads:                         # Meta Ad Library, public pages, no login
+  country: us
+  status: active
+  keywords:                  # each word is searched in the Ad Library; ads from rivals AND copycats show up
+    - sweatpant overalls
+    - swoveralls
+    - jogger overalls
+    - fleece overalls
+    - overall sweatpants
+  # pages:                   # once Collect shows you the rival advertisers, paste their Ad Library links here
+  #   - https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=US&view_all_page_id=PAGE_ID_HERE
+social:
+  tiktok:                    # needs TIKTOK_COOKIES; run mode recon first to prove the page can be read
+    hashtags: [swoveralls, sweatpantoveralls]
+    profiles: [swoveralls]
+  instagram:                 # needs INSTAGRAM_COOKIES; run mode recon first
+    hashtags: [swoveralls, sweatpantoveralls]
+deep_research:               # only runs when you tick Gemini Deep Research; each report takes 10+ minutes
+  context: >
+    Swoveralls sells sweatpant overalls (fleece, cotton/polyester/spandex) with 6-7 pockets. Core solid colours
+    are $99, limited-edition prints $120, Comfyalls $149-159, kids $44-49, shorts $89. Collaborations include
+    Yo Gabba Gabba and NASA. Audience: adults who want comfortable, funny, giftable loungewear; a kids line exists.
+  questions:
+    - Who are the main competitors to Swoveralls in comfortable overalls and loungewear in the US, and which ad angles and hooks do their Meta and TikTok ads use? Give examples with links.
