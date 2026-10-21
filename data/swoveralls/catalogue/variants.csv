@@ -205,7 +205,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15023021490287,Swoveralls - Campfire Rust,53165462880367,3XL / Campfire,Size=3XL; Color=Campfire,SWPANTS-199-3XL,120.00,,true
 15023021490287,Swoveralls - Campfire Rust,53165462913135,4XL / Campfire,Size=4XL; Color=Campfire,SWPANTS-199-4XL,120.00,,true
 15345983324271,Swoveralls - Cosmic,53753225412719,S / Cosmic,Size=S; Color=Cosmic,SWPANTS-BPR-S,120.00,,false
-15345983324271,Swoveralls - Cosmic,53753225445487,M / Cosmic,Size=M; Color=Cosmic,SWPANTS-BPR-M,120.00,,true
+15345983324271,Swoveralls - Cosmic,53753225445487,M / Cosmic,Size=M; Color=Cosmic,SWPANTS-BPR-M,120.00,,false
 15345983324271,Swoveralls - Cosmic,53753225478255,L / Cosmic,Size=L; Color=Cosmic,SWPANTS-BPR-L,120.00,,false
 15345983324271,Swoveralls - Cosmic,53753225511023,XL / Cosmic,Size=XL; Color=Cosmic,SWPANTS-BPR-XL,120.00,,false
 15345983324271,Swoveralls - Cosmic,53753225543791,2XL / Cosmic,Size=2XL; Color=Cosmic,SWPANTS-BPR-2XL,120.00,,false
@@ -328,7 +328,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15346083430511,Swoveralls - Otter Romp,53753483853935,S / Otter Romp,Size=S; Color=Otter Romp,SWPANTS-DHG-S,120.00,,true
 15346083430511,Swoveralls - Otter Romp,53753483886703,M / Otter Romp,Size=M; Color=Otter Romp,SWPANTS-DHG-M,120.00,,true
 15346083430511,Swoveralls - Otter Romp,53753483919471,L / Otter Romp,Size=L; Color=Otter Romp,SWPANTS-DHG-L,120.00,,true
-15346083430511,Swoveralls - Otter Romp,53753483952239,XL / Otter Romp,Size=XL; Color=Otter Romp,SWPANTS-DHG-XL,120.00,,true
+15346083430511,Swoveralls - Otter Romp,53753483952239,XL / Otter Romp,Size=XL; Color=Otter Romp,SWPANTS-DHG-XL,120.00,,false
 15346083430511,Swoveralls - Otter Romp,53753483985007,2XL / Otter Romp,Size=2XL; Color=Otter Romp,SWPANTS-DHG-2XL,120.00,,true
 15346083430511,Swoveralls - Otter Romp,53753484017775,3XL / Otter Romp,Size=3XL; Color=Otter Romp,SWPANTS-DHG-3XL,120.00,,true
 15346083430511,Swoveralls - Otter Romp,53753484050543,4XL / Otter Romp,Size=4XL; Color=Otter Romp,SWPANTS-DHG-4XL,120.00,,true
