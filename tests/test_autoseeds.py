@@ -23,7 +23,8 @@ from test_collectors import BROWSER_YAML, NOW, world, write_research
 T0 = "2026-10-20T07:00:00Z"
 SEEDS = {"context": "Swoveralls sells sweatpant overalls at $99-$159.",
          "keywords": {"direct": ["sweatpant overalls", "jogger overalls"], "adjacent": ["fleece loungewear", "comfy jumpsuit"],
-                      "cross_industry": ["Oodie", "Gymshark"]},
+                      "cross_industry": ["unboxing hook", "founder story"]},
+         "benchmarks": ["Oodie", "Gymshark"],
          "tiktok_hashtags": ["#swoveralls", "sweatpantoveralls"], "instagram_hashtags": ["swoveralls"],
          "questions": ["Which ad hooks, formats and angles are performing best right now across the best consumer brands in any industry, "
                        "and how could Swoveralls adapt them?", "Who are the main competitors to Swoveralls and what angles do they use?"]}
@@ -70,7 +71,8 @@ def profile_of(tmp_path, brand, fixture="swoveralls_full_72.json"):
 def test_the_profile_describes_what_the_real_swoveralls_catalogue_sells_today(tmp_path, swov):
     p = profile_of(tmp_path, swov)
     assert p["name"] == "Swoveralls" and p["live_products"] == 61 and sorted(p["categories"]) == ["core", "kids", "merch"]
-    assert (p["categories"]["kids"]["price_low"], p["categories"]["merch"]["price_low"], p["categories"]["merch"]["price_high"]) == (49, 25, 36)
+    assert (p["categories"]["kids"]["price_low"], p["categories"]["merch"]["price_low"], p["categories"]["merch"]["price_high"]) == (43.99, 25, 36)
+    assert p["categories"]["kids"]["products"] == 6 and p["categories"]["core"]["price_low"] == 89    # the two kids products no longer sit in core
     assert p["pocket_claims"] == ["5", "6", "7"] and "polyester" in p["materials"] and "poly" not in p["materials"]
     assert "Swovie Shorts" in p["categories"]["core"]["families"] and p["categories"]["core"]["limited_edition"] > 10
 
@@ -87,7 +89,7 @@ def test_the_profile_text_is_plain_stable_and_changes_when_the_catalogue_does(tm
     two = A.profile_text(A.brand_profile(swov, store.load_latest("swoveralls")))
     assert one == two and A.profile_hash(one) == A.profile_hash(two) and len(A.profile_hash(one)) == 16
     assert one.splitlines()[0] == "Brand: Swoveralls (swoveralls.com), a shopify store with 61 products on sale or coming soon."
-    assert "kids: 4 products, $49." in one and "Pocket claims: 5, 6, 7." in one and "Materials seen:" in one
+    assert "kids: 6 products, $43.99-$49." in one and "core: 41 products, $89-$159." in one and "Pocket claims: 5, 6, 7." in one and "Materials seen:" in one
     raw = raw_products("swoveralls_full_72.json")
     raw[0]["variants"][0]["price"] = "999.00"
     run_sync(swov, store, raw_products=raw, now="2026-10-21T07:00:00Z")
@@ -150,7 +152,7 @@ def test_an_answer_that_cannot_be_used_is_refused(settings, bad):
 def test_with_no_claude_the_fallback_is_the_brand_s_own_name(swov):
     f = A.fallback_seeds(swov, "profile text")
     assert f == {"context": "profile text", "keywords": {"direct": ["Swoveralls"], "adjacent": [], "cross_industry": []},
-                 "tiktok_hashtags": ["swoveralls"], "instagram_hashtags": ["swoveralls"], "questions": []}
+                 "benchmarks": [], "tiktok_hashtags": ["swoveralls"], "instagram_hashtags": ["swoveralls"], "questions": []}
     assert A.fallback_seeds(replace(swov, name="Defi Snacks!"), "t")["tiktok_hashtags"] == ["defisnacks"]
 
 
@@ -163,7 +165,7 @@ def test_the_first_run_asks_claude_once_with_the_profile_and_saves_what_it_says(
     assert (result.source, result.note) == ("claude", "regenerated (none existed yet)") and result.seeds["keywords"]["direct"][0] == "sweatpant overalls"
     (system, user, max_tokens), = claude.complete_calls
     assert system == A.SEED_SYSTEM and max_tokens == 1600
-    assert result.profile in user and "Brand: Swoveralls" in user and "at most 8 keywords in total, 5 hashtags per platform and 2 questions" in user
+    assert result.profile in user and "Brand: Swoveralls" in user and "at most 8 keywords in total, 8 benchmarks, 5 hashtags per platform and 2 questions" in user
     saved = store.read_auto_seeds("swoveralls")
     assert saved["generated_at"] == NOW and saved["profile_hash"] == A.profile_hash(result.profile) and saved["model"] == "claude-test-model"
     assert saved["seeds"] == result.seeds and store.load_usage()["months"]["2026-10"] == {"claude_calls": 1}
@@ -261,7 +263,8 @@ def test_the_printout_shows_the_profile_the_seeds_and_where_they_came_from(tmp_p
     store = seeded(tmp_path, swov)
     text = A.format_seeds("swoveralls", ensure(swov, store, claude_with(SEEDS), settings))
     assert "=== swoveralls ===" in text and "Auto seeds regenerated (none existed yet)" in text and "Brand profile (built from the catalogue" in text
-    assert "Meta ad keywords, direct: sweatpant overalls; jogger overalls" in text and "Meta ad keywords, cross industry: Oodie; Gymshark" in text
+    assert "Meta ad keywords, direct: sweatpant overalls; jogger overalls" in text and "Meta ad keywords, cross industry: unboxing hook; founder story" in text
+    assert "Benchmark brands (followed by advertiser page): Oodie; Gymshark" in text
     assert "TikTok hashtags: #swoveralls, #sweatpantoveralls" in text and "Instagram hashtags: #swoveralls" in text
     assert "Context for Deep Research: Swoveralls sells" in text and "Deep Research question: Which ad hooks" in text
     assert "No catalogue yet" in A.format_seeds("x", A.SeedResult(None, "", "", "none"))
@@ -282,7 +285,8 @@ def test_a_brands_own_seeds_come_first_and_auto_seeds_add_without_repeating(tmp_
     auto = {**CLEAN, "keywords": {**CLEAN["keywords"], "direct": ["SWOVERALLS", "sweatpant overalls"]}}
     merged = C.merge_auto_seeds(cfg, auto, settings)
     assert merged["ads"]["keywords"][:2] == ["My Keyword", "swoveralls"] and "SWOVERALLS" not in merged["ads"]["keywords"]
-    assert merged["ads"]["keywords"][2:] == ["sweatpant overalls", "fleece loungewear", "comfy jumpsuit", "Oodie", "Gymshark"]
+    assert merged["ads"]["keywords"][2:] == ["sweatpant overalls", "fleece loungewear", "comfy jumpsuit", "unboxing hook", "founder story"]
+    assert "Oodie" not in merged["ads"]["keywords"] and "Gymshark" not in merged["ads"]["keywords"]   # brands are followed by page
     assert merged["tiktok"]["hashtags"] == ["mine", "swoveralls", "sweatpantoveralls"] and merged["instagram"]["hashtags"] == ["swoveralls"]
     assert merged["deep_research"]["context"] == "Hand written." and merged["deep_research"]["questions"][0] == "My own question about the market?"
     assert len(merged["deep_research"]["questions"]) == 3 and cfg["ads"]["keywords"] == ["My Keyword", "swoveralls"]      # the original is untouched
@@ -297,7 +301,7 @@ def test_auto_seeds_supply_the_context_and_questions_a_brand_has_not_written(tmp
 
 def test_only_the_chosen_kinds_of_keyword_are_used(tmp_path, swov, settings):
     only = C.merge_auto_seeds(collect_cfg(tmp_path, swov, {}), CLEAN, replace(settings, auto_scopes=("direct", "cross_industry")))
-    assert only["ads"]["keywords"] == ["sweatpant overalls", "jogger overalls", "Oodie", "Gymshark"]
+    assert only["ads"]["keywords"] == ["sweatpant overalls", "jogger overalls", "unboxing hook", "founder story"]
 
 
 def test_a_brand_can_switch_auto_seeds_off_and_nothing_changes(tmp_path, swov, settings):
@@ -369,7 +373,9 @@ def run(store, tmp_path, brand, cfg, settings, factory, claude, data=None, **kw)
 def test_a_brand_with_no_hand_written_seeds_is_still_researched_from_its_catalogue(tmp_path, swov, cfg, settings):
     store, claude, f = seeded(tmp_path, swov), claude_with(SEEDS), world(cfg)
     result = run(store, tmp_path, swov, cfg, settings, f, claude)
-    assert [r.status for r in result.brands["swoveralls"]] == ["ran"] and "swoveralls: auto seeds regenerated (none existed yet)" in result.notes
+    # two Meta tasks: the keyword searches, and the look-up of the brand's own advertiser page (always tracked)
+    assert [(r.source, r.status) for r in result.brands["swoveralls"]] == [("meta_ads", "ran"), ("meta_ads", "ran")]
+    assert "swoveralls: auto seeds regenerated (none existed yet)" in result.notes
     opened = " ".join(f.browsers["meta_ads"].opened)
     assert "q=sweatpant+overalls" in opened and "q=Oodie" in opened and store.load_usage()["months"]["2026-10"]["claude_calls"] == 1
 
@@ -393,10 +399,20 @@ def test_a_dry_run_plans_from_the_saved_seeds_and_spends_nothing(tmp_path, swov,
 
 def test_a_brand_that_opts_out_or_a_global_off_switch_calls_no_claude(tmp_path, swov, cfg, settings):
     store, claude = seeded(tmp_path, swov), claude_with(SEEDS)
-    out = run(store, tmp_path, swov, cfg, settings, world(cfg), claude, data={"auto_seeds": False})
+    quiet = {"auto_seeds": False, "track_own_brand": False}
+    out = run(store, tmp_path, swov, cfg, settings, world(cfg), claude, data=quiet)
     assert out.brands["swoveralls"] == [] and claude.complete_calls == []
-    off = run(seeded(tmp_path / "x", swov), tmp_path / "x2", swov, cfg, replace(settings, auto_enabled=False), world(cfg), claude)
+    off = run(seeded(tmp_path / "x", swov), tmp_path / "x2", swov, cfg, replace(settings, auto_enabled=False), world(cfg), claude,
+              data={"track_own_brand": False})
     assert off.brands["swoveralls"] == [] and claude.complete_calls == []
+
+
+def test_opting_out_of_auto_seeds_still_tracks_the_brands_own_name_without_calling_claude(tmp_path, swov, cfg, settings):
+    store, claude, f = seeded(tmp_path, swov), claude_with(SEEDS), world(cfg)
+    out = run(store, tmp_path, swov, cfg, settings, f, claude, data={"auto_seeds": False})
+    assert [r.seeds for r in out.brands["swoveralls"]][0] == "1 keywords" and claude.complete_calls == []
+    opened = " ".join(f.browsers["meta_ads"].opened)
+    assert "q=Swoveralls" in opened and "Oodie" not in opened
 
 
 def test_a_brand_with_hand_written_seeds_keeps_them_even_when_claude_is_unavailable(tmp_path, swov, cfg, settings):
@@ -472,3 +488,79 @@ def test_reading_from_the_store_never_creates_folders_but_writing_still_does(tmp
     assert not (tmp_path / "data").exists()
     store.append_collected("swoveralls", {"at": T0, "items": []})
     assert (tmp_path / "data" / "swoveralls" / "research" / "collected.jsonl").is_file()
+
+
+# --- benchmark brands in the seeds ---------------------------------------------------------------------------------------------------------
+
+def parse_with(extra, **kw):
+    return A.parse_seeds(json.dumps({**SEEDS, **extra}), replace(C.load_collector_settings("does-not-exist.yaml"), **kw))
+
+
+def test_benchmark_brands_are_kept_in_order_without_repeats_symbols_or_junk():
+    got = parse_with({"benchmarks": ["Oodie", "oodie", " Gymshark ", "#Rhoback", "@Madepants", "", 5, None, ["x"], "Rebel   Babe"]})
+    assert got["benchmarks"] == ["Oodie", "Gymshark", "Rhoback", "Madepants", "Rebel Babe"]
+
+
+def test_the_number_of_benchmark_brands_is_limited_by_the_setting():
+    assert parse_with({"benchmarks": [f"Brand{i}" for i in range(20)]}, auto_max_benchmarks=3)["benchmarks"] == ["Brand0", "Brand1", "Brand2"]
+    assert parse_with({"benchmarks": ["A1", "B2"]}, auto_max_benchmarks=0)["benchmarks"] == []
+
+
+@pytest.mark.parametrize("value", [None, "Gymshark", 5, {"a": 1}, []])
+def test_a_missing_or_malformed_benchmark_list_means_no_benchmarks_not_a_failure(value):
+    assert parse_with({"benchmarks": value})["benchmarks"] == []
+    without = {k: v for k, v in SEEDS.items() if k != "benchmarks"}
+    assert A.parse_seeds(json.dumps(without), C.load_collector_settings("does-not-exist.yaml"))["benchmarks"] == []
+
+
+def test_the_prompt_tells_claude_to_put_brands_in_benchmarks_and_never_in_keywords(settings):
+    assert '"benchmarks"' in A.SEED_SYSTEM and "NEVER a brand name" in A.SEED_SYSTEM and "never put a brand in keywords" in A.SEED_SYSTEM
+    assert "written exactly as the brand's Facebook page is named" in A.SEED_SYSTEM
+
+
+def test_the_saved_seeds_carry_the_format_version_and_the_benchmarks(tmp_path, swov, settings):
+    store, claude = seeded(tmp_path, swov), claude_with(SEEDS)
+    ensure(swov, store, claude, settings)
+    saved = store.read_auto_seeds("swoveralls")
+    assert saved["version"] == A.SEEDS_VERSION == 2 and saved["seeds"]["benchmarks"] == ["Oodie", "Gymshark"]
+
+
+def test_seeds_saved_in_the_old_format_are_rewritten_once_even_though_the_catalogue_is_unchanged(tmp_path, swov, settings):
+    store, claude = seeded(tmp_path, swov), claude_with(SEEDS, SEEDS)
+    first = ensure(swov, store, claude, settings)
+    legacy = store.read_auto_seeds("swoveralls")
+    del legacy["version"]
+    del legacy["seeds"]["benchmarks"]
+    legacy["seeds"]["keywords"]["cross_industry"] = ["Oodie", "Gymshark"]                  # how version 1 mixed brands into keywords
+    store.write_auto_seeds("swoveralls", legacy)
+    again = ensure(swov, store, claude, settings)
+    assert first.source == "claude" and again.source == "claude" and "regenerated (the seed format changed)" in again.note
+    assert len(claude.complete_calls) == 2
+    assert store.read_auto_seeds("swoveralls")["seeds"]["keywords"]["cross_industry"] == ["unboxing hook", "founder story"]
+    third = ensure(swov, store, claude, settings)
+    assert third.source == "cache" and len(claude.complete_calls) == 2                      # and then reused as before
+
+
+def test_old_format_seeds_are_still_used_when_they_cannot_be_rewritten(tmp_path, swov, settings):
+    store = seeded(tmp_path, swov)
+    ensure(swov, store, claude_with(SEEDS), settings)
+    legacy = store.read_auto_seeds("swoveralls")
+    del legacy["version"]
+    del legacy["seeds"]["benchmarks"]
+    store.write_auto_seeds("swoveralls", legacy)
+    result = ensure(swov, store, None, settings)
+    assert result.source == "cache" and "the seed format changed" in result.note and "ANTHROPIC_API_KEY is not set" in result.note
+    assert "benchmarks" not in result.seeds                                                  # nothing invented
+
+
+def test_a_collection_run_with_old_format_seeds_and_no_claude_still_runs_without_benchmarks(tmp_path, swov, cfg, settings):
+    store = seeded(tmp_path, swov)
+    ensure(swov, store, claude_with(SEEDS), settings)
+    legacy = store.read_auto_seeds("swoveralls")
+    del legacy["version"]
+    del legacy["seeds"]["benchmarks"]
+    store.write_auto_seeds("swoveralls", legacy)
+    f = world(cfg)
+    result = run(store, tmp_path, swov, cfg, settings, f, None)
+    assert [r.status for r in result.brands["swoveralls"]] == ["ran", "ran"]            # keywords, and the own brand's page look-up
+    assert any("the seed format changed" in n for n in result.notes)
