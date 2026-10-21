@@ -28,10 +28,10 @@ class Claude(Provider):
         super().__init__(api_key, http=http, sleep=sleep)
         self.model, self.max_tokens = model, max_tokens
 
-    def complete(self, system, user):
+    def complete(self, system, user, max_tokens=None):
         body = self._call("POST", self.url, headers={"x-api-key": self.api_key, "anthropic-version": "2023-06-01",
                                                       "content-type": "application/json"},
-                          json_body={"model": self.model, "max_tokens": self.max_tokens, "system": system,
+                          json_body={"model": self.model, "max_tokens": max_tokens or self.max_tokens, "system": system,
                                      "messages": [{"role": "user", "content": user}]})
         parts = body.get("content") if isinstance(body, dict) else None
         text = "".join(p.get("text", "") for p in (parts or []) if isinstance(p, dict) and p.get("type") == "text").strip()
