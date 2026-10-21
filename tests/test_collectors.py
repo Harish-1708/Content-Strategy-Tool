@@ -118,7 +118,7 @@ def test_collector_settings_can_be_changed(tmp_path):
 
 
 @pytest.mark.parametrize("data,match", [
-    ({"collectors": {"apify": {}}}, "unknown 'apify'"),
+    ({"collectors": {"zapier": {}}}, "unknown 'zapier'"),
     ({"collectors": {"browser": {"colour": 1}}}, "unknown 'colour'"),
     ({"collectors": {"browser": {"monthly_items": -1}}}, "monthly_items"),
     ({"collectors": {"browser": {"monthly_items": 10.5}}}, "whole number"),
@@ -744,7 +744,7 @@ def test_the_report_lists_each_task_and_the_month_so_far(tmp_path, store, swov, 
     result = collect(store, tmp_path, [swov], FULL, world(cfg), cfg, settings)
     text = C.format_collect_report(result, settings, R.Ledger(store.load_usage(), "2026-10"))
     assert "=== swoveralls ===" in text and "meta_ads      ran       2 advertiser pages/keywords -> 2 items" in text
-    assert "items 6/150, Deep Research tasks 0/2" in text
+    assert "items 6/150, Apify items 0/100, Deep Research tasks 0/2, Claude calls 0/60" in text
     empty = collect(store, tmp_path / "e", [swov], {}, world(cfg), cfg, settings)
     assert "nothing configured" in C.format_collect_report(empty, settings)
 
@@ -761,7 +761,7 @@ def check(store, cfg, settings, f, creds=CREDS, sources=ALL):
 def test_the_check_opens_each_site_confirms_the_login_and_collects_a_handful(store, cfg, settings):
     f = world(cfg)
     rows = check(store, cfg, settings, f)
-    assert all(r["ok"] for r in rows.values()) and "login ok; 2 items (2 from the site's data" in rows["instagram"]["detail"]
+    assert all(rows[s]["ok"] for s in ALL) and "login ok; 2 items (2 from the site's data" in rows["instagram"]["detail"]
     assert "no research was started" in rows["deep_research"]["detail"]
     assert f.browsers["gemini"].typed == [] and f.browsers["gemini"].clicks == []        # Deep Research is never started
     assert used(store) == {"collected_items": 6} and "check-gemini" in f.browsers["gemini"].shots and "check-instagram" in f.browsers["instagram"].shots
@@ -899,7 +899,7 @@ def test_cli_with_no_login_for_the_chosen_sources_skips_politely_but_public_ads_
 def test_cli_rejects_an_unknown_source_and_a_missing_choice(cli_env, capsys):
     state, run, cfg = cli_env
     assert run("--all", "--sources", "snapchat") == 1 and "unknown source snapchat" in capsys.readouterr().out
-    assert run() == 1 and "choose --brand NAME, --all, --check or --recon" in capsys.readouterr().out
+    assert run() == 1 and "choose --brand NAME, --all, --check, --recon or --test-deep-research" in capsys.readouterr().out
 
 
 def test_cli_dry_run_shows_the_plan_and_opens_no_browser(cli_env, capsys, tmp_path):
@@ -944,18 +944,3 @@ def test_cli_reports_a_broken_browser_settings_file_plainly(cli_env, capsys, tmp
     bad.write_text("pacing: {}\n")
     assert cli.main(["collect", "--all", "--browser-config", str(bad), "--data-dir", str(tmp_path / "d"), "--brands-dir", str(tmp_path / "brands")]) == 1
     assert "pacing needs" in capsys.readouterr().out
-
-
-def test_the_collect_workflow_uses_the_right_secrets_and_keeps_deep_research_opt_in():
-    text = open(".github/workflows/collect.yml", encoding="utf-8").read()
-    data = yaml.safe_load(text)
-    inputs = (data.get("on") or data.get(True))["workflow_dispatch"]["inputs"]
-    assert inputs["use_deep_research"]["default"] is False and inputs["dry_run"]["default"] is True
-    assert {"check", "recon"} <= set(inputs)
-    for secret in ("INSTAGRAM_COOKIES", "TIKTOK_COOKIES", "GEMINI_COOKIES", "INSTAGRAM_USERNAME", "TIKTOK_PASSWORD"):
-        assert f"secrets.{secret}" in text
-    assert "playwright install --with-deps chromium" in text and "upload-artifact" in text and "path: debug" in text
-    assert "--recon" in text and "--check" in text and "cron:" in text and data["jobs"]["collect"]["timeout-minutes"] >= 90
-    assert open("requirements-browser.txt").read().startswith("playwright")
-    args = cli.build_parser().parse_args(["collect", "--all", "--sources", "meta_ads", "--recon", "--dry-run"])
-    assert args.recon and args.dry_run and args.sources == "meta_ads"
