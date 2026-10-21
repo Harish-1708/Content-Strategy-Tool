@@ -6,6 +6,7 @@ Nothing here is ever printed or saved that contains a cookie value or a password
 """
 import json
 import random
+import re
 import time
 from contextlib import contextmanager
 from pathlib import Path
@@ -207,6 +208,27 @@ def parse_json_text(text):
 # the browser itself
 # ---------------------------------------------------------------------------------------
 
+_SCRIPT_JSON = re.compile(r"<script\b[^>]*\btype=[\"']application/json[\"'][^>]*>(.*?)</script>", re.S | re.I)
+
+
+def parse_embedded_json(html):
+    """The JSON blocks a page carries inside itself (<script type="application/json">).
+
+    Meta, Instagram and TikTok put their first batch of ads and posts there instead of fetching it
+    separately, so it never shows up among the data requests.
+    """
+    found = []
+    for match in _SCRIPT_JSON.finditer(html or ""):
+        body = match.group(1).strip()
+        if not body or len(body) > 8_000_000:
+            continue
+        try:
+            found.append(json.loads(body))
+        except ValueError:
+            continue
+    return found
+
+
 _LINKS_JS = ("els => els.map(e => ({href: e.href, text: (e.innerText || e.getAttribute('aria-label') || "
              "(e.querySelector('img') && e.querySelector('img').alt) || '').slice(0, 300)}))")
 
@@ -263,6 +285,9 @@ class PlaywrightBrowser:
 
     def json_responses(self):
         return list(self._json)
+
+    def embedded_json(self):
+        return parse_embedded_json(self.html())
 
     def response_urls(self):
         return list(self._urls)
