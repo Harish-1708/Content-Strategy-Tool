@@ -164,3 +164,70 @@ class Factory:
             raise BrowserError(self.fail[site])
         self.opened.append(site)
         yield self.browsers[site]
+
+
+class AskingGemini(GeminiFake):
+    """A Gemini that asks clarifying questions before it offers a plan (`linger`: how long the old
+    question stays on screen after a reply, as a slow Gemini would)."""
+
+    def __init__(self, cfg, questions, linger=0, **kw):
+        super().__init__(cfg, **kw)
+        self.questions, self.linger, self.sends = list(questions), linger, 0
+
+    def on_click(self, selector):
+        if selector in self.cfg["send"]:
+            self.sends += 1
+            self.sent_at = self.clock
+        if selector in self.cfg["start_research"]:
+            self.started_at = self.clock
+
+    def _asking(self):
+        return 1 <= self.sends <= len(self.questions)
+
+    def dynamic_present(self):
+        out = set()
+        if self.started_at is None:
+            if self.sends > len(self.questions) and self.sent_at is not None and self.clock - self.sent_at >= self.start_after:
+                out.add(self.cfg["start_research"][0])
+            return out
+        if self.clock - self.started_at < self.done_after:
+            out.add(self.cfg["still_working_any"][0])
+        elif self.done_button:
+            out.add(self.cfg["done_any"][0])
+        return out
+
+    def dynamic_text(self):
+        if self.started_at is None:
+            if self._asking():
+                return self.questions[self.sends - 1]
+            if self.sends > len(self.questions):
+                if self.questions and self.clock - self.sent_at < self.linger:
+                    return self.questions[-1]
+                return "Here is my research plan: step one, step two."
+            return ""
+        return super().dynamic_text()
+
+
+class FakeClaude:
+    """Claude, scripted: what it prepares, and what it answers to each of Gemini's messages."""
+    model = "claude-sonnet-5-5"
+
+    def __init__(self, prepared="PREPARED PROMPT", answers=None, fail_prepare=None, fail_answer=None):
+        self.prepared, self.answers = prepared, list(answers or [])
+        self.fail_prepare, self.fail_answer = fail_prepare, fail_answer
+        self.prepare_calls, self.answer_calls = [], []
+
+    def prepare_prompt(self, question, context):
+        self.prepare_calls.append((question, context))
+        if self.fail_prepare:
+            raise self.fail_prepare
+        return self.prepared
+
+    def answer(self, original_prompt, context, gemini_message):
+        self.answer_calls.append((original_prompt, context, gemini_message))
+        if self.fail_answer:
+            raise self.fail_answer
+        return self.answers.pop(0) if self.answers else ""
+
+    def check(self):
+        return True
