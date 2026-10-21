@@ -145,7 +145,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 10055698743582,The SheRobe,50751974244638,Rose / XXL/3XL,Color=Rose; Size=XXL/3XL,SHEROBE-816-2XL/3XL,128.00,,true
 10055698743582,The SheRobe,50751974277406,Mauve / Extra Small,Color=Mauve; Size=Extra Small,SHEROBE-MVE-XS,128.00,,true
 10055698743582,The SheRobe,50751974310174,Mauve / Small/Medium,Color=Mauve; Size=Small/Medium,SHEROBE-MVE-S/M,128.00,,false
-10055698743582,The SheRobe,50751974342942,Mauve / Large/Extra Large,Color=Mauve; Size=Large/Extra Large,SHEROBE-MVE-L/XL,128.00,,true
+10055698743582,The SheRobe,50751974342942,Mauve / Large/Extra Large,Color=Mauve; Size=Large/Extra Large,SHEROBE-MVE-L/XL,128.00,,false
 10055698743582,The SheRobe,50751974375710,Mauve / XXL/3XL,Color=Mauve; Size=XXL/3XL,SHEROBE-MVE-2XL/3XL,128.00,,false
 711295500331,The Shorts,31947526275153,Navy / S/M,Color=Navy; Size=S/M,SHORT1-NAVY-S/M,61.00,,true
 711295500331,The Shorts,39363708616785,Black / S/M,Color=Black; Size=S/M,SHORT1-BLACK-S/M,61.00,,true
