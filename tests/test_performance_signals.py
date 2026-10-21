@@ -124,7 +124,8 @@ def test_the_collected_rows_carry_the_signals_latest_values_and_the_engagement_r
 @pytest.mark.parametrize("url,label", [
     (C.ad_library_url("sweatpant overalls", "us", "active"), "sweatpant overalls"),
     (C.ad_library_url("café au lait", "us", "all"), "café au lait"),
-    ("https://www.facebook.com/ads/library/?active_status=all&view_all_page_id=123", "https://www.facebook.com/ads/library/?active_status=all&view_all_page_id=123"),
+    ("https://www.facebook.com/ads/library/?active_status=all&view_all_page_id=123", "page:123"),       # a followed advertiser page
+    ("https://www.facebook.com/ads/library/?active_status=all&ad_type=all", "https://www.facebook.com/ads/library/?active_status=all&ad_type=all"),
     ("https://www.tiktok.com/tag/caf%C3%A9", "#café"), ("https://www.instagram.com/explore/tags/overalls/", "#overalls"),
     ("https://www.tiktok.com/@acme", "@acme"), ("https://www.tiktok.com/search?q=lounge+wear", "lounge wear"),
     ("https://example.com/somewhere", "https://example.com/somewhere")])
