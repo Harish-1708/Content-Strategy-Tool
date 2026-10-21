@@ -270,7 +270,10 @@ def _collect(args, store):
         for slug in slugs:
             brand = load_brand(slug, args.brands_dir)
             result = autoseeds_mod.ensure_auto_seeds(brand, store, claude, settings, ledger, now, False, force=True)
-            print(autoseeds_mod.format_seeds(slug, result) + "\n")
+            print(autoseeds_mod.format_seeds(slug, result))
+            if result.seeds is not None:
+                print(collectors_mod.format_benchmark_status(brand, store, result.seeds, settings, now, args.brands_dir))
+            print()
         return 0
     if args.test_deep_research:
         outcome = collectors_mod.run_deep_research_test(factory, creds, browser_cfg, settings, store, research_mod.Ledger,
