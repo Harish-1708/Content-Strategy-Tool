@@ -39,7 +39,8 @@ defaults:
 # Google account (a report takes 10+ minutes). The caps keep every run small and gentle.
 collectors:
   browser:
-    monthly_items: 150      # most ads/posts collected per calendar month, across all brands
+    monthly_items: 400      # most ads/posts collected per calendar month, across all brands (it was 150 before
+                            # benchmark brands were followed by page; lower it here if you want a tighter ceiling)
     items_per_run: 30       # most ads/posts collected in one run
     cache_days: 3           # the same seeds are not collected again inside this many days
   gemini:
@@ -72,13 +73,26 @@ collectors:
     max_tokens: 700
   # Auto seeds: instead of hand-writing what to search for each brand, the tool builds a factual profile of
   # the brand from its catalogue every run, and Claude turns it into Meta Ad Library keywords (direct rivals,
-  # neighbouring categories, and benchmark brands from ANY industry), hashtags and Deep Research questions.
-  # They are saved and refreshed only when the catalogue changes or they get old. Seeds you write in a brand's
-  # research.yaml always come first; add `auto_seeds: false` there to switch this off for that brand.
+  # neighbouring categories and ad angles from ANY industry), benchmark BRANDS, hashtags and Deep Research
+  # questions. They are saved and refreshed only when the catalogue changes or they get old. Seeds you write in a
+  # brand's research.yaml always come first; add `auto_seeds: false` there to switch this off for that brand.
+  # The brand's own name is always searched too (`track_own_brand: false` in its research.yaml switches that off).
   auto_seeds:
     enabled: true
     refresh_days: 30
     max_keywords: 8
     max_hashtags: 5               # per platform
     max_questions: 2
+    max_benchmarks: 8             # benchmark brands Claude may suggest
     scopes: [direct, adjacent, cross_industry]
+  # Benchmark brands (suggested by Claude, for example Gymshark or Oodie) are not searched by name, because that
+  # returns every ad that merely mentions them. The tool looks up each brand's own Meta advertiser page once, then
+  # follows that page. A match it is not sure of is never guessed: it is listed for you to choose in the run report
+  # (brands/<brand>/research.yaml -> ads: benchmark_pages: { Name: PAGE_ID } or  Name: skip ).
+  benchmarks:
+    enabled: true
+    max_pages: 6                  # benchmark pages followed per brand (pages you choose yourself are always followed)
+    discovery_per_run: 3          # brand names looked up per run
+    items_per_name: 10            # ads read while looking one brand up
+    items_per_page: 8             # ads read from each followed page
+    retry_days: 30                # a brand with no match is tried again after this many days
