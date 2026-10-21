@@ -16,6 +16,7 @@ from typing import NamedTuple
 from .export import product_rows
 from .providers import AuthError, ProviderError, QuotaError
 
+SEEDS_VERSION = 2            # bumped when the saved seeds change shape, so older ones are rewritten once
 SCOPES = ("direct", "adjacent", "cross_industry")
 LIVE = ("active", "coming_soon", "pre_order")
 _TS = "%Y-%m-%dT%H:%M:%SZ"
@@ -122,11 +123,14 @@ SEED_SYSTEM = (
     "object, no prose, with these keys:\n"
     '  "context": 2-4 factual sentences a researcher needs about the brand (what it sells, price points, audience, '
     "what is distinctive). Use only facts in the profile.\n"
-    '  "keywords": {"direct": [...], "adjacent": [...], "cross_industry": [...]} - short search phrases (1-4 words, '
-    "no hashtags) for the Meta Ad Library. direct = rival products or brands selling the same thing; adjacent = "
-    "neighbouring categories the same customer buys; cross_industry = brands or ad angles from OTHER industries "
-    "whose ad creative is worth studying for craft (hooks, formats, storytelling), chosen for the quality of their "
-    "advertising and not for product similarity.\n"
+    '  "keywords": {"direct": [...], "adjacent": [...], "cross_industry": [...]} - short generic search phrases '
+    "(1-4 words, no hashtags, NEVER a brand name) for the Meta Ad Library. direct = rival products selling the same "
+    "thing; adjacent = neighbouring categories the same customer buys; cross_industry = ad angles or themes from "
+    "OTHER industries whose creative is worth studying for craft (hooks, formats, storytelling).\n"
+    '  "benchmarks": [...] - brand names, written exactly as the brand\'s Facebook page is named, whose advertising '
+    "is worth following: direct rivals (the strongest first) and brands from ANY industry chosen for the quality of "
+    "their advertising and not for product similarity. Names only; the tool finds each brand's own advertiser page, "
+    "so never put a brand in keywords.\n"
     '  "tiktok_hashtags": [...] and "instagram_hashtags": [...] - hashtags without the # sign.\n'
     '  "questions": [...] - self-contained research questions for Gemini Deep Research. At least one must ask '
     "which ad hooks, formats and angles are performing best right now across the best consumer brands in any "
@@ -137,12 +141,14 @@ SEED_SYSTEM = (
 def _user_message(text, advertisers, settings):
     seen = "\n".join(f"- {n} ({c} ads found, longest running {d} days)" for n, c, d in advertisers) or "(none yet)"
     return (f"Brand profile:\n{text}\n\nAdvertisers already seen in Meta ad searches:\n{seen}\n\n"
-            f"Limits: at most {settings.auto_max_keywords} keywords in total, {settings.auto_max_hashtags} hashtags per "
-            f"platform and {settings.auto_max_questions} questions.")
+            f"Limits: at most {settings.auto_max_keywords} keywords in total, {settings.auto_max_benchmarks} benchmarks, "
+            f"{settings.auto_max_hashtags} hashtags per platform and {settings.auto_max_questions} questions.")
 
 
 def _clean(values, limit, maxlen, strip=""):
     out, seen = [], set()
+    if limit <= 0:
+        return out
     for value in values if isinstance(values, list) else []:
         if not isinstance(value, str):
             continue
@@ -177,6 +183,7 @@ def parse_seeds(text, settings):
         raise AutoSeedError("Claude's answer had no usable keywords")
     questions = [q for q in _clean(data.get("questions"), 50, 500) if len(q) >= 20][:settings.auto_max_questions]
     return {"context": " ".join(str(data.get("context") or "").split())[:600], "keywords": keywords,
+            "benchmarks": _clean(data.get("benchmarks"), settings.auto_max_benchmarks, 60, "#@"),
             "tiktok_hashtags": _clean(data.get("tiktok_hashtags"), settings.auto_max_hashtags, 40, "#@"),
             "instagram_hashtags": _clean(data.get("instagram_hashtags"), settings.auto_max_hashtags, 40, "#@"),
             "questions": questions}
@@ -185,7 +192,7 @@ def parse_seeds(text, settings):
 def fallback_seeds(brand, text):
     """With no Claude: the brand's own name and a fresh profile, so nothing is ever stale or empty."""
     tag = re.sub(r"[^a-z0-9]", "", brand.name.lower())
-    return {"context": text, "keywords": {"direct": [brand.name], "adjacent": [], "cross_industry": []},
+    return {"context": text, "keywords": {"direct": [brand.name], "adjacent": [], "cross_industry": []}, "benchmarks": [],
             "tiktok_hashtags": [tag] if tag else [], "instagram_hashtags": [tag] if tag else [], "questions": []}
 
 
@@ -204,10 +211,11 @@ def ensure_auto_seeds(brand, store, claude, settings, ledger, now, dry_run=False
     text = profile_text(brand_profile(brand, snapshot))
     digest, cached = profile_hash(text), store.read_auto_seeds(brand.slug)
     if cached and cached.get("seeds") and not force and cached.get("profile_hash") == digest \
-            and _age_days(cached.get("generated_at"), now) < settings.auto_refresh_days:
+            and cached.get("version") == SEEDS_VERSION and _age_days(cached.get("generated_at"), now) < settings.auto_refresh_days:
         return SeedResult(cached["seeds"], f"reused (written {cached['generated_at'][:10]})", text, "cache")
     keep = (cached["seeds"], "cache") if cached and cached.get("seeds") else (fallback_seeds(brand, text), "profile-only")
     why = ("the catalogue changed" if cached and cached.get("profile_hash") != digest
+           else "the seed format changed" if cached and cached.get("version") != SEEDS_VERSION
            else "they are old" if cached else "none existed yet")
     if dry_run:
         return SeedResult(keep[0], f"would be regenerated ({why}); a dry run does not call Claude", text, keep[1])
@@ -223,7 +231,8 @@ def ensure_auto_seeds(brand, store, claude, settings, ledger, now, dry_run=False
         return SeedResult(keep[0], f"could not be regenerated ({exc}); using {keep[1]} seeds", text, keep[1])
     ledger.charge("claude_calls", 1)
     store.save_usage(ledger.usage)
-    store.write_auto_seeds(brand.slug, {"generated_at": now, "profile_hash": digest, "model": getattr(claude, "model", ""),
+    store.write_auto_seeds(brand.slug, {"generated_at": now, "version": SEEDS_VERSION, "profile_hash": digest,
+                                        "model": getattr(claude, "model", ""),
                                         "profile": text, "seeds": seeds})
     return SeedResult(seeds, f"regenerated ({why})", text, "claude")
 
@@ -238,6 +247,8 @@ def format_seeds(slug, result):
     for scope in SCOPES:
         if s["keywords"].get(scope):
             lines.append(f"  Meta ad keywords, {scope.replace('_', ' ')}: " + "; ".join(s["keywords"][scope]))
+    if s.get("benchmarks"):
+        lines.append("  Benchmark brands (followed by advertiser page): " + "; ".join(s["benchmarks"]))
     if s["tiktok_hashtags"]:
         lines.append("  TikTok hashtags: " + ", ".join("#" + h for h in s["tiktok_hashtags"]))
     if s["instagram_hashtags"]:
