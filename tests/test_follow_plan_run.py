@@ -70,10 +70,11 @@ def settings():
     return C.load_collector_settings("does-not-exist.yaml")
 
 
-def run(store, tmp_path, swov, cfg, settings, factory, claude=None, data=None, dry_run=False, now=NOW, run_id="run1"):
+def run(store, tmp_path, swov, cfg, settings, factory, claude=None, data=None, dry_run=False, now=NOW, run_id="run1",
+        sources=("meta_ads",)):
     write_research(tmp_path, swov, data or {})
     return C.run_collect([swov], store, browser_factory=factory, creds=CREDS, settings=settings, browser_cfg=cfg, ledger_cls=R.Ledger,
-                         sources=["meta_ads"], now=now, run_id=run_id, root=str(tmp_path / "brands"), claude=claude, dry_run=dry_run)
+                         sources=list(sources), now=now, run_id=run_id, root=str(tmp_path / "brands"), claude=claude, dry_run=dry_run)
 
 
 def tasks(result):
@@ -401,3 +402,14 @@ def test_a_page_already_planned_is_not_planned_again_when_a_later_look_up_finds_
     assert tasks(third) == ["1 followed advertiser pages", "7 keywords", "look up the advertiser page of 1 brand(s): Gymshark",
                             "1 followed advertiser pages"]
     assert opened.count(page_url(P_SWOV)) == 1 and opened.count(page_url(P_GYM)) == 1
+
+
+def test_a_run_of_other_sources_does_not_print_or_look_up_meta_benchmarks(tmp_path, swov, cfg, settings):
+    store = seeded(tmp_path, swov)
+    f = meta_world(cfg)
+    result = run(store, tmp_path, swov, cfg, settings, f, claude_with(SEEDS), sources=("instagram",))
+    assert [(r.source, r.status) for r in result.brands["swoveralls"]] == [("instagram", "ran")]
+    assert result.follow == {} and "benchmark" not in C.format_collect_report(result, settings).lower()
+    assert f.browsers["meta_ads"].opened == [] and store.read_benchmarks("swoveralls") is None
+    with_meta = run(store, tmp_path / "m", swov, cfg, settings, meta_world(cfg), claude_with(SEEDS), run_id="run2")
+    assert "swoveralls" in with_meta.follow and "benchmark brands" in C.format_collect_report(with_meta, settings)
