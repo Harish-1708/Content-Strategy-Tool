@@ -1,0 +1,80 @@
+{
+ "items": {
+  "madepants": {
+   "candidates": [
+    {
+     "ads": 10,
+     "likes": 63231,
+     "name": "Madepants",
+     "page_id": "108271304233408"
+    }
+   ],
+   "checked_at": "2026-10-21T13:21:43Z",
+   "kind": "benchmark",
+   "name": "Madepants",
+   "page_id": "108271304233408",
+   "page_likes": 63231,
+   "page_name": "Madepants",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
+  "oodie": {
+   "candidates": [
+    {
+     "ads": 3,
+     "likes": 360803,
+     "name": "The Oodie",
+     "page_id": "601495866852901"
+    },
+    {
+     "ads": 4,
+     "likes": 150084,
+     "name": "Davie Fogarty",
+     "page_id": "107229193328534"
+    },
+    {
+     "ads": 2,
+     "likes": 100385,
+     "name": "Rhoback",
+     "page_id": "1769836419918430"
+    },
+    {
+     "ads": 1,
+     "likes": 29799,
+     "name": "Markable Creators",
+     "page_id": "461930330346999"
+    }
+   ],
+   "checked_at": "2026-10-21T13:21:43Z",
+   "kind": "benchmark",
+   "name": "The Oodie",
+   "page_id": "601495866852901",
+   "page_likes": 360803,
+   "page_name": "The Oodie",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
+  "swoveralls": {
+   "candidates": [
+    {
+     "ads": 10,
+     "likes": 462036,
+     "name": "Swoveralls",
+     "page_id": "427103324323897"
+    }
+   ],
+   "checked_at": "2026-10-21T13:21:43Z",
+   "kind": "own",
+   "name": "Swoveralls",
+   "page_id": "427103324323897",
+   "page_likes": 462036,
+   "page_name": "Swoveralls",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  }
+ },
+ "version": 1
+}
