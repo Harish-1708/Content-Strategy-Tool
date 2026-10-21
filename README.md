@@ -75,6 +75,7 @@ shares it with you. This route has not been tried against a live account.
 | Products | one row per product; added columns on the right start with **Notes** |
 | Variants | one row per size/colour: options, SKU, price, sale price, available |
 | Changes | every detected change, appended once |
+| Benchmarks | appears once benchmark brands have been looked up: which Meta advertiser page each one means, how it was decided, and the candidate pages for any brand that needs your decision |
 | Status | whether the catalogue can be trusted now, when it last synced, what needs facts |
 
 Two columns are the tool's own: **`last_updated`** (the UTC time the tool last changed that
@@ -274,7 +275,7 @@ a renamed wrapper does not break it), with the page's links as a fallback. The r
 items came from each.
 
 **Keeping it gentle.** Random pauses of a few seconds before each page and after each scroll, small runs
-(`items_per_run` 30), `monthly_items` 150 across all brands, Deep Research `monthly_tasks` 2 and
+(`items_per_run` 30), `monthly_items` 400 across all brands (it was 150 before benchmark brands were followed by page; lower it in `research.yaml` for a tighter ceiling), Deep Research `monthly_tasks` 2 and
 `tasks_per_run` 1, and the same seeds are not collected again for 3 days (14 for Deep Research). Dummy
 accounts can still be limited or banned by the sites; small, paced runs reduce that risk but cannot remove it.
 
@@ -282,18 +283,37 @@ accounts can still be limited or banned by the sites; small, paced runs reduce t
 Every run builds a factual profile of the brand from its catalogue (products, price bands, materials, claims),
 so it can never go stale. Claude then turns that profile, plus the advertisers already seen, into Meta Ad
 Library keywords for three kinds of study: **direct** rivals, **adjacent** categories, and **cross-industry**
-benchmark brands chosen for the craft of their advertising rather than their product. It also writes the
+ad angles. It also suggests **benchmark brands**: rivals and brands from any industry chosen for the craft of
+their advertising rather than their product. It also writes the
 hashtags and the Deep Research questions, including one that asks what hooks and angles work best across any
 industry and how this brand could adapt them. The seeds are saved in `data/<brand>/research/auto_seeds.json` and
 refreshed only when the catalogue changes or after 30 days. Run Collect with mode `seeds` to see them (it
 also refreshes them). Whatever you write by hand in a brand's `research.yaml` is used first, and the automatic
 ones are added after it. For ads, the best hand-written seed is an Ad Library link for an advertiser you want to
 follow; a plain Facebook page address is searched by the page's name. Add `auto_seeds: false` to a brand to
-turn the automatic seeds off for it. Without `ANTHROPIC_API_KEY` the tool still works: it uses the brand's own
+turn the automatic seeds off for it. The brand's own name is always searched (Meta ads, TikTok and Instagram
+hashtags) and its own advertiser page is followed, whatever Claude suggests; `track_own_brand: false` turns that off. Without `ANTHROPIC_API_KEY` the tool still works: it uses the brand's own
 name and the fresh profile, and keeps any seeds written earlier.
 
+**Benchmark brands are followed by page, never by name.** Searching the Ad Library for a brand's name returns
+every ad that merely mentions it (a gym opening that hashtags Gymshark), so the tool looks up each suggested
+brand's own advertiser page once, using the page id, name and follower count that every ad carries, and then
+follows that page. It never guesses: exactly one page with that exact name is accepted; several pages with the
+name are accepted only when one has at least five times the followers of the next; anything else (several
+similar pages, only similar names, nothing) is listed for you. A run report and the **Benchmarks** tab show
+three kinds of line: *following* (decided), *NEEDS YOU* (ambiguous, with the candidate pages and their ids) and
+*not found* (tried again after 30 days). To decide, add to the brand's `research.yaml` under `ads:`
+
+    benchmark_pages:
+      Gymshark: 123456789012345            # a page id, or an Ad Library link containing view_all_page_id=...
+      Some Brand: skip                      # never follow it
+
+Your choice always wins and is never overwritten. A page chosen this way is followed even if Claude stops
+suggesting the brand. Pages in `ads: pages:` are followed too. Limits (`collectors.benchmarks` in `research.yaml`):
+6 benchmark pages followed per brand, 3 brands looked up per run, 8 ads read per followed page.
+
 **Reading the results.** A **Collected** tab in each brand's sheet: one row per ad, post or report, with
-handle, text, link, date, the performance numbers below, first and last seen, **queries** (which search or
+handle, text, link, date, the performance numbers below, a cautious **signal**, first and last seen, **queries** (which search or
 hashtag found it), and a **Review** column for your team. Numbers update in place as posts grow; Review marks are
 never overwritten. Deep Research reports are saved in full in `data/<brand>/research/deep/`; the sheet shows an excerpt.
 
@@ -310,9 +330,17 @@ it can:
 | **variants** | yes: copies of the same creative | n/a | n/a |
 | **engagement_pct** | n/a | likes + comments + shares + saves as a % of views | same, where views show |
 
-For ads, **days_running is the strongest public signal**: nobody keeps paying for an ad that does not work, so
-the ads that have run longest, and exist in several copies, are the likely winners. The ad picture and video
-links Meta provides stop working after about a day, so open them soon, or ask for winners' images to be kept.
+For ads, **days_running is the strongest public signal**, but it is a pointer and not proof: an ad that ran
+for months is a long-running creative worth studying, not a confirmed money-maker. The **signal** column says
+"worth studying" for an ad that ran 60 days or more, or exists in 3 or more copies, and is blank otherwise;
+a blank number means Meta did not show it, never zero, and a later blank never erases a number already known.
+Blank cells on older rows fill in when the ad is seen again. The ad picture and video
+links Meta provides stop working after about a day, so open them soon, or ask for the images to be kept.
+
+**Catalogue ads with a template.** Meta's dynamic product ads can carry a template token such as
+`{{product.brand}}` in place of text. It is filled in only when the ad's own landing site confirms the
+advertiser is that brand (a page named Rhoback selling on rhoback.com); otherwise it is dropped, so the text
+is left blank rather than showing a token or a wrong brand.
 
 ## Telling the tool what it cannot know (`brands/<brand>/manual_facts.yaml`)
 
@@ -342,6 +370,8 @@ are live, add each handle with `status: active` (the template is `brands/swovera
 | `research/searches.jsonl` | every search made for this brand, with the results as returned |
 | `research/runs.jsonl` | one line per research run: what was planned, reused, searched, skipped |
 | `research/collected.jsonl` | every ad, post and report collected for this brand, as flattened rows |
+| `research/auto_seeds.json` | the brand's automatic seeds (rewritten when the catalogue changes, after 30 days, or when the seed format changes) |
+| `research/benchmarks.json` | which advertiser page each benchmark brand was decided to mean, and the evidence |
 | `research/deep/*.md` | the full text of each Deep Research report |
 
 `data/_shared/research_usage.json` counts the credits spent on each search service, across all
@@ -358,11 +388,11 @@ their content changes.
 - If the Google Sheets step fails, the run turns red and the run page says what to fix
   (usually sharing, or an API not enabled). The catalogue data is still saved.
 - Optional sabotage check: Actions > Tests > Run workflow > tick sabotage. It breaks the code on
-  purpose in about 240 ways and confirms the tests notice each one (several minutes).
+  purpose in over 500 ways and confirms the tests notice each one (several minutes).
 
 ## Not verified from the build environment
 
-Everything that drives a real website (Meta Ad Library, Instagram, TikTok and the Gemini web app: the page names, buttons and login checks in `browser.yaml` are first guesses, tested only against a stand-in browser), every call to Tavily, Serper.dev and SerpApi (the tests use a scripted stand-in built from each
+The whole benchmark look-up on real Meta results (the Ad Library link format for one advertiser's page, and whether a brand's name search returns that brand's own ads often enough to find its page; a brand with few active ads can come back "not found"), and everything else that drives a real website (Meta Ad Library, Instagram, TikTok and the Gemini web app: the page names, buttons and login checks in `browser.yaml` are first guesses, tested only against a stand-in browser), every call to Tavily, Serper.dev and SerpApi (the tests use a scripted stand-in built from each
 service's documentation, so the first real run with your keys is the real test; start with a dry
 run, then a real run on one brand), live fetches from the stores, the sitemap cross-check against a real site, real GitHub runs,
 and every call to Google. The sheet logic was tested against a strict stand-in that rejects
