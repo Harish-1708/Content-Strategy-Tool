@@ -270,7 +270,11 @@ def _collect(args, store):
             return 1
         return 0
     if args.recon:
-        print("\n".join(collectors_mod.recon(factory, creds, browser_cfg, wanted, args.debug_dir)))
+        lines = collectors_mod.recon(factory, creds, browser_cfg, wanted, args.debug_dir)
+        print("\n".join(lines))
+        for line in lines:
+            if "nothing readable" in line:
+                print(f"::warning::Recon read nothing from {line.split(':')[0].strip()}: open the debug artifact")
         return 0
     if args.check:
         rows = collectors_mod.check_collectors(factory, creds, settings, browser_cfg, store, research_mod.Ledger, now,
