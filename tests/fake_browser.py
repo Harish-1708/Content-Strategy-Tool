@@ -55,6 +55,9 @@ class FakeBrowser:
     def json_responses(self):
         return list(self._json)
 
+    def embedded_json(self):
+        return list(self.spec.get("embedded", []))
+
     def links(self, contains):
         return [l for l in self.spec.get("links", []) if any(c in l["href"] for c in contains)]
 
