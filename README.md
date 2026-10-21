@@ -206,7 +206,7 @@ names marked set or not set, so you can see what the run can see (the values are
 | `TIKTOK_COOKIES` | TikTok posts, logged in as the dummy account | for TikTok | cookies exported as a JSON list |
 | `TIKTOK_USERNAME` and `TIKTOK_PASSWORD` | a backup way to log in | optional; both or neither | the dummy account's login |
 | `GEMINI_COOKIES` | Gemini Deep Research, logged in as the dummy Google account | for Deep Research | cookies exported as a JSON list (Google blocks automated sign-in, so there is no password option) |
-| `ANTHROPIC_API_KEY` | Claude writing the Deep Research prompt and answering Gemini's questions | optional, recommended for Deep Research | the key from console.anthropic.com |
+| `ANTHROPIC_API_KEY` | Claude writing each brand's research seeds, the Deep Research prompt, and answering Gemini's questions | optional, recommended | the key from console.anthropic.com |
 | `APIFY_TOKEN` | the optional Apify extra | only if you switch Apify on | the API token from your Apify account |
 
 **Needs no secret:** Meta Ad Library (public pages), the catalogue sync (public store data), and
@@ -240,6 +240,7 @@ By hand: Actions > Collect > Run workflow, then pick a **mode**:
 | Mode | What it does |
 |---|---|
 | `plan` (the default) | shows what would be collected; opens no browser and spends nothing |
+| `seeds` | has Claude write (or refresh) each brand's research seeds from its catalogue, and shows them; no browser |
 | `check` | opens each ticked site, confirms the login, and collects a handful of items. With Deep Research ticked it also opens the Gemini page and tests Claude's key, but starts no report |
 | `recon` | saves pictures, each page's HTML and samples of the data each site sends; download them from the run's **debug** artifact |
 | `test_deep_research` | runs ONE real, short Deep Research report, including Claude's prompt and answers; the report is saved in the debug artifact, not as collected data |
@@ -277,14 +278,41 @@ items came from each.
 `tasks_per_run` 1, and the same seeds are not collected again for 3 days (14 for Deep Research). Dummy
 accounts can still be limited or banned by the sites; small, paced runs reduce that risk but cannot remove it.
 
-**Seeds.** Nothing is collected until you add seeds to `brands/<brand>/research.yaml` (the `ads`, `social`
-and `deep_research` examples are there, switched off). For ads, the best seed is an Ad Library link for
-the advertiser (copy it from your browser); a plain Facebook page address is searched by the page's name.
+**Seeds write themselves.** You do not need to type what to search for, and nothing is hard-coded per brand.
+Every run builds a factual profile of the brand from its catalogue (products, price bands, materials, claims),
+so it can never go stale. Claude then turns that profile, plus the advertisers already seen, into Meta Ad
+Library keywords for three kinds of study: **direct** rivals, **adjacent** categories, and **cross-industry**
+benchmark brands chosen for the craft of their advertising rather than their product. It also writes the
+hashtags and the Deep Research questions, including one that asks what hooks and angles work best across any
+industry and how this brand could adapt them. The seeds are saved in `data/<brand>/research/auto_seeds.json` and
+refreshed only when the catalogue changes or after 30 days. Run Collect with mode `seeds` to see them (it
+also refreshes them). Whatever you write by hand in a brand's `research.yaml` is used first, and the automatic
+ones are added after it. For ads, the best hand-written seed is an Ad Library link for an advertiser you want to
+follow; a plain Facebook page address is searched by the page's name. Add `auto_seeds: false` to a brand to
+turn the automatic seeds off for it. Without `ANTHROPIC_API_KEY` the tool still works: it uses the brand's own
+name and the fresh profile, and keeps any seeds written earlier.
 
 **Reading the results.** A **Collected** tab in each brand's sheet: one row per ad, post or report, with
-handle, text, link, date, likes, comments, shares, views, first and last seen, and a **Review** column for
-your team. Numbers update in place as posts grow; Review marks are never overwritten. Deep Research reports
-are saved in full in `data/<brand>/research/deep/`; the sheet shows an excerpt.
+handle, text, link, date, the performance numbers below, first and last seen, **queries** (which search or
+hashtag found it), and a **Review** column for your team. Numbers update in place as posts grow; Review marks are
+never overwritten. Deep Research reports are saved in full in `data/<brand>/research/deep/`; the sheet shows an excerpt.
+
+**What performance data exists, honestly.** Competitor ad performance is not published, so each source gives what
+it can:
+
+| Number | Meta Ad Library (ads) | TikTok posts | Instagram posts |
+|---|---|---|---|
+| views | not published | yes | yes (video plays) |
+| likes, comments | not published | yes | yes |
+| shares, saves | not published | yes | not public |
+| reach | not published for US ads (EU ads may show a range) | not public | not public |
+| **days_running** | yes: first day to last day the ad was seen | n/a | n/a |
+| **variants** | yes: copies of the same creative | n/a | n/a |
+| **engagement_pct** | n/a | likes + comments + shares + saves as a % of views | same, where views show |
+
+For ads, **days_running is the strongest public signal**: nobody keeps paying for an ad that does not work, so
+the ads that have run longest, and exist in several copies, are the likely winners. The ad picture and video
+links Meta provides stop working after about a day, so open them soon, or ask for winners' images to be kept.
 
 ## Telling the tool what it cannot know (`brands/<brand>/manual_facts.yaml`)
 
