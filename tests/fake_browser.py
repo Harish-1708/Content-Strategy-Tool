@@ -219,6 +219,13 @@ class FakeClaude:
         self.prepared, self.answers = prepared, list(answers or [])
         self.fail_prepare, self.fail_answer = fail_prepare, fail_answer
         self.prepare_calls, self.answer_calls = [], []
+        self.completions, self.complete_calls, self.fail_complete = [], [], None
+
+    def complete(self, system, user, max_tokens=None):
+        self.complete_calls.append((system, user, max_tokens))
+        if self.fail_complete:
+            raise self.fail_complete
+        return self.completions.pop(0) if self.completions else "{}"
 
     def prepare_prompt(self, question, context):
         self.prepare_calls.append((question, context))
