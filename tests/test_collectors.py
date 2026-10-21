@@ -207,20 +207,11 @@ def test_bad_seeds_are_rejected_with_a_clear_message(tmp_path, swov, data, match
         R.load_brand_research(swov, root)
 
 
-def test_every_shipped_brand_file_loads_and_only_swoveralls_has_seeds_so_far(brands):
-    planned = {slug: C.plan_collections(R.load_brand_research(b, "brands")["collect"]) for slug, b in brands.items()}
-    assert [t.source for t in planned["swoveralls"]] == ["meta_ads", "tiktok", "instagram", "deep_research"]
-    assert all(tasks == [] for slug, tasks in planned.items() if slug != "swoveralls")
-
-
-def test_the_swoveralls_seeds_search_the_category_and_the_brand_and_keep_deep_research_for_when_ticked(brands):
-    ads, tiktok, instagram, deep = C.plan_collections(R.load_brand_research(brands["swoveralls"], "brands")["collect"])
-    searched = " ".join(ads.payload["urls"])
-    assert all(q in searched for q in ("q=sweatpant+overalls", "q=swoveralls", "q=jogger+overalls", "country=us", "active_status=active"))
-    assert tiktok.payload == {"hashtags": ["swoveralls", "sweatpantoveralls"], "profiles": ["swoveralls"]}
-    assert instagram.payload == {"hashtags": ["swoveralls", "sweatpantoveralls"]}
-    assert "Swoveralls sells sweatpant overalls" in deep.payload["context"] and "competitors" in deep.payload["question"]
-    assert deep.source not in C.BROWSER_SOURCES        # the default sources never include the 10-minute report
+def test_every_shipped_brand_file_loads_and_plans_nothing_by_hand_because_the_seeds_are_automatic(brands):
+    for slug, brand in brands.items():
+        cfg = R.load_brand_research(brand, "brands")["collect"]
+        assert C.plan_collections(cfg) == [] and cfg["auto_seeds"] is True, slug
+        assert cfg["deep_research"] == {"questions": [], "context": ""}, slug            # nothing is hard-coded per brand
 
 
 # --- reading what the sites send ---------------------------------------------------------------------------------
@@ -757,7 +748,7 @@ def test_the_report_lists_each_task_and_the_month_so_far(tmp_path, store, swov, 
     assert "=== swoveralls ===" in text and "meta_ads      ran       2 advertiser pages/keywords -> 2 items" in text
     assert "items 6/150, Apify items 0/100, Deep Research tasks 0/2, Claude calls 0/60" in text
     empty = collect(store, tmp_path / "e", [swov], {}, world(cfg), cfg, settings)
-    assert "nothing configured" in C.format_collect_report(empty, settings)
+    assert "nothing to collect" in C.format_collect_report(empty, settings)
 
 
 # --- check and recon ------------------------------------------------------------------------------------------------------
@@ -910,7 +901,7 @@ def test_cli_with_no_login_for_the_chosen_sources_skips_politely_but_public_ads_
 def test_cli_rejects_an_unknown_source_and_a_missing_choice(cli_env, capsys):
     state, run, cfg = cli_env
     assert run("--all", "--sources", "snapchat") == 1 and "unknown source snapchat" in capsys.readouterr().out
-    assert run() == 1 and "choose --brand NAME, --all, --check, --recon or --test-deep-research" in capsys.readouterr().out
+    assert run() == 1 and "choose --brand NAME, --all, --check, --recon, --seeds or --test-deep-research" in capsys.readouterr().out
 
 
 def test_cli_dry_run_shows_the_plan_and_opens_no_browser(cli_env, capsys, tmp_path):
