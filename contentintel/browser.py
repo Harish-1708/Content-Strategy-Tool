@@ -50,7 +50,8 @@ _REQUIRED = {
     "gemini": ["needs_login", "secrets", "app_url", "logged_in_any", "login_wall_any", "prompt_box",
                "deep_research_clicks", "send", "start_research", "done_any", "response", "wait"],
 }
-_WAIT_KEYS = ("max_minutes", "plan_wait_seconds", "poll_seconds", "settle_seconds", "min_chars")
+_WAIT_KEYS = ("max_minutes", "plan_wait_seconds", "poll_seconds", "settle_seconds", "min_chars",
+              "question_settle_seconds")
 _STEP_ACTIONS = ("goto", "fill", "click", "click_optional", "wait")
 
 
