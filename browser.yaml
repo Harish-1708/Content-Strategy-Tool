@@ -57,6 +57,10 @@ sites:
     login_wall_any: ['[data-e2e="top-login-button"]', 'button:has-text("Log in")']
     challenge_any: ['text=Verify to continue', 'text=Drag the slider', '#captcha-verify-image', 'text=Select 2 objects']
     challenge_dismiss: ['#captcha_close_button']      # the puzzle's own X: pressed once, the puzzle itself is never solved
+    # In the automated browser a hashtag page can say "Something went wrong" while the same search works by hand
+    # (seen on 2026-10-21). When that happens the tag is searched instead, as "#tag", the way a person would.
+    error_any: ['text=Something went wrong']
+    hashtag_via_search_on_error: true
     login_steps:
       - {goto: 'https://www.tiktok.com/login/phone-or-email/email'}
       - {wait: 4}
@@ -77,8 +81,14 @@ sites:
     signed_out_any: ['a[href*="accounts.google.com/ServiceLogin"]', 'a[aria-label="Sign in"]']
     prompt_box: ['rich-textarea div[contenteditable="true"]', 'div.ql-editor[contenteditable="true"]', 'div[role="textbox"]', 'textarea']
     deep_research_clicks:       # buttons to press, in order, to switch the chat to Deep Research
-      - ['button:has-text("Tools")', 'button:has-text("Deep Research")']
-      - ['button:has-text("Deep Research")', 'text=Deep Research']
+      # Gemini's menu, read from the real page and a screenshot on 2026-10-21: the + at the left of the prompt box
+      # (its label is "Upload & tools"), then "More tools", then "Deep research".
+      - ['button[aria-label="Upload & tools"]', 'button[aria-label*="Upload"][aria-haspopup="menu"]', 'button[aria-label*="tools" i]']
+      - ['[role="menuitem"]:has-text("More tools")', 'button:has-text("More tools")', 'text=More tools']
+      - ['[role="menuitem"]:has-text("Deep research")', 'button:has-text("Deep research")', 'text=Deep research']
+    # Shown once Deep Research is switched on: the prompt box then asks "What do you want to research?".
+    # If none of these is seen the run carries on and says so (it never stops a good run over this).
+    deep_research_active_any: ['[data-placeholder*="research" i]', 'text=What do you want to research?']
     send: ['button[aria-label*="Send"]', 'button:has-text("Send")']
     start_research: ['button:has-text("Start research")', 'text=Start research']
     still_working_any: ['button[aria-label*="Stop"]', 'text=Researching', 'text=Working on it']
