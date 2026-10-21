@@ -298,8 +298,9 @@ def _clip(text):
 def _row(source, ident, **fields):
     row = {"item_id": f"{source}:{ident}", "source": source, "handle": "", "title": "", "text": "",
            "url": "", "posted_at": "", "likes": None, "comments": None, "shares": None, "views": None,
-           "media_url": ""}
+           "media_url": "", "details": ""}
     row.update(fields)
+    row["details"] = _clip(row["details"])[:400]
     row["text"] = _clip(row["text"])
     row["title"] = _clip(row["title"])[:200]
     return row
@@ -311,6 +312,24 @@ def _first_number(*values):
         if n is not None:
             return n
     return None
+
+
+def _meta_details(d, snap, first):
+    """Platforms, call to action, format, status, end date and landing page, as one readable line."""
+    platforms = _get(d, "publisher_platform", "publisherPlatform") or []
+    platforms = [platforms] if isinstance(platforms, str) else platforms
+    link = _get(snap, "link_url", "linkUrl") or ""
+    if "{{" in link:                                   # dynamic product ads carry a template here
+        link = _get(first, "link_url", "linkUrl") or ""
+    active = d.get("is_active", d.get("isActive"))
+    end = _iso(_get(d, "end_date", "endDate"))
+    parts = ["/".join(str(p).title() for p in platforms) if platforms else "",
+             f"CTA: {_get(snap, 'cta_text', 'ctaText') or _get(first, 'cta_text', 'ctaText')}"
+             if (_get(snap, "cta_text", "ctaText") or _get(first, "cta_text", "ctaText")) else "",
+             f"format: {_get(snap, 'display_format', 'displayFormat')}" if _get(snap, "display_format", "displayFormat") else "",
+             "active" if active is True else ("inactive" if active is False else ""),
+             f"ends {end[:10]}" if end else "", f"landing: {link}" if link else ""]
+    return " | ".join(p for p in parts if p)
 
 
 def normalize_meta_ad(d):
@@ -329,10 +348,14 @@ def normalize_meta_ad(d):
                          "original_image_url", "resizedImageUrl", "resized_image_url") or ""
             if media:
                 break
+    title = snap.get("title") or ""
+    if not title or "{{" in title:                     # dynamic product ads have a placeholder, the card has the real name
+        title = first.get("title") or ""
     return _row("meta_ads", ident, handle=_get(d, "pageName", "page_name") or _get(snap, "pageName", "page_name") or "",
-                title=snap.get("title") or first.get("title") or "", text=text or first.get("body") or "",
+                title=title, text=text or first.get("body") or "",
                 url=f"https://www.facebook.com/ads/library/?id={ident}",
-                posted_at=_iso(_get(d, "startDate", "start_date")), media_url=media)
+                posted_at=_iso(_get(d, "startDate", "start_date")), media_url=media,
+                details=_meta_details(d, snap, first))
 
 
 def normalize_tiktok(d):
@@ -547,23 +570,42 @@ def ensure_session(browser, site, site_cfg, creds):
     return state
 
 
+def _page_data(browser):
+    """Everything readable the page gave us: separate data requests, and the data inside the page itself."""
+    embedded = browser.embedded_json() if hasattr(browser, "embedded_json") else []
+    return browser.json_responses() + embedded
+
+
+def rate_limited(responses):
+    """True when the site answered a data request with 'rate limit exceeded' (Meta does this when scrolling)."""
+    for response in responses:
+        if isinstance(response, dict):
+            for error in response.get("errors") or []:
+                if isinstance(error, dict) and ("rate limit" in str(error.get("message", "")).lower()
+                                                or error.get("code") == 1675004):
+                    return True
+    return False
+
+
 def _gather(browser, source, site_cfg, scrolls, pause, max_items):
-    """Scroll a results page until there are enough items. Returns (rows, ids found in the site's data)."""
-    rows = {}
+    """Read a results page, scrolling only while more is needed and the site allows.
+    Returns (rows, ids found in the site's data, whether the site rate-limited us)."""
+    rows, limited = {}, False
     for round_no in range(scrolls + 1):
-        for row in extract_json_items(source, browser.json_responses()).values():
+        for row in extract_json_items(source, _page_data(browser)).values():
             _merge(rows, row)
-        if len(rows) >= max_items or round_no == scrolls:
+        limited = rate_limited(browser.json_responses())
+        if len(rows) >= max_items or round_no == scrolls or limited:
             break
         browser.scroll(1, pause)
     links = browser.links(site_cfg.get("link_contains", [])) if source in _LINK_PATTERNS else []
-    from_data = extract_json_items(source, browser.json_responses())
+    from_data = extract_json_items(source, _page_data(browser))
     for row in from_data.values():
         _merge(rows, row)
     for key, row in extract_link_items(source, links).items():
         if key not in rows:
             rows[key] = row
-    return list(rows.values())[:max_items], set(from_data)
+    return list(rows.values())[:max_items], set(from_data), limited
 
 
 def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
@@ -577,7 +619,7 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
     if source != "meta_ads":
         state = ensure_session(browser, source, site_cfg, creds)
     urls = seed_urls(task, site_cfg)
-    found, from_data = {}, set()
+    found, from_data, limited = {}, set(), False
     for number, url in enumerate(urls):
         browser.open(url)
         browser.wait(site_cfg.get("settle_seconds", 3))
@@ -593,9 +635,10 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
                 browser.screenshot(f"login-wall-{source}")
                 raise LoginWall(f"{source}: the page asked for a login; the cookies may have expired")
         share = max(1, (n - len(found)) // (len(urls) - number))
-        rows, data_ids = _gather(browser, source, site_cfg, limits["max_scrolls_per_page"],
-                                 pacing["scroll_pause_seconds"], share)
+        rows, data_ids, hit_limit = _gather(browser, source, site_cfg, limits["max_scrolls_per_page"],
+                                            pacing["scroll_pause_seconds"], share)
         from_data |= data_ids
+        limited = limited or hit_limit
         for row in rows:
             _merge(found, row)
         if len(found) >= n:
@@ -604,7 +647,7 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
     if not kept:
         browser.screenshot(f"empty-{source}")
     in_data = sum(1 for r in kept if r["item_id"] in from_data)
-    return kept, {"json": in_data, "links": len(kept) - in_data, "state": state}
+    return kept, {"json": in_data, "links": len(kept) - in_data, "state": state, "rate_limited": limited and len(kept) < n}
 
 
 def _snip(text):
@@ -966,7 +1009,9 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                 report.status, report.items = "ran", len(rows)
                 report.detail = (f"{len(rows)} items via Apify" + (f" (the browser failed: {errors[0][:100]})" if errors else "")
                                  if via == "apify" else
-                                 f"{len(rows)} items ({stats['json']} from the site's data, {stats['links']} only from page links)")
+                                 f"{len(rows)} items ({stats['json']} from the site's data, {stats['links']} only from page links)"
+                                 + (" - the site rate-limited further scrolling, so this is the first page of results only"
+                                    if stats.get("rate_limited") else ""))
     return result
 
 
@@ -1068,6 +1113,7 @@ def check_collectors(browser_factory, creds, settings, browser_cfg, store, ledge
         row["ok"] = bool(found)
         row["detail"] = (f"login {stats['state']}; {len(found)} items ({stats['json']} from the site's data, "
                          f"{stats['links']} only from page links)"
+                         + (" - rate-limited, first page only" if stats.get("rate_limited") else "")
                          + (f": {found[0]['handle']} {found[0]['text'][:50]}" if found else
                             "; nothing could be read (run Recon to see what the site sends)"))
     if "deep_research" in sources:
@@ -1155,7 +1201,7 @@ def recon(browser_factory, creds, browser_cfg, sources, debug_dir):
                 browser.wait(site_cfg.get("settle_seconds", 5))
                 browser.scroll(2, browser_cfg["pacing"]["scroll_pause_seconds"])
                 browser.screenshot(f"recon-{site}")
-                responses = browser.json_responses()
+                responses, embedded = browser.json_responses(), (browser.embedded_json() if hasattr(browser, "embedded_json") else [])
                 samples = []
                 for obj in responses[:60]:
                     text = json.dumps(obj)[:1500]
@@ -1163,10 +1209,25 @@ def recon(browser_factory, creds, browser_cfg, sources, debug_dir):
                                     "keys": sorted(obj)[:25] if isinstance(obj, dict) else len(obj),
                                     "bytes": len(json.dumps(obj)), "sample": text})
                 (out / f"recon-{site}-network.json").write_text(json.dumps(samples, indent=1), encoding="utf-8")
-                matches = (len(extract_json_items(source, responses)) if source in PREDICATES else 0)
+                blocks = [{"type": type(obj).__name__, "keys": sorted(obj)[:25] if isinstance(obj, dict) else len(obj),
+                           "bytes": len(json.dumps(obj)),
+                           "readable_items": len(extract_json_items(source, [obj])) if source in PREDICATES else 0,
+                           "sample": json.dumps(obj)[:800]} for obj in embedded[:60]]
+                (out / f"recon-{site}-page-data.json").write_text(json.dumps(blocks, indent=1), encoding="utf-8")
+                in_net = len(extract_json_items(source, responses)) if source in PREDICATES else 0
+                in_page = len(extract_json_items(source, embedded)) if source in PREDICATES else 0
+                total = len(extract_json_items(source, responses + embedded)) if source in PREDICATES else 0
                 links = (browser.links(site_cfg.get("link_contains", [])) if source in _LINK_PATTERNS else [])
-                lines.append(f"  {source}: {len(responses)} data responses saved; readable items found in them: {matches}"
-                             + (f"; {len(links)} post links on the page" if links else ""))
+                line = (f"  {source}: {len(responses)} data responses and {len(embedded)} data blocks inside the page saved")
+                if source in PREDICATES:
+                    line += f"; readable items: {total} ({in_net} in the responses, {in_page} in the page)"
+                    if rate_limited(responses):
+                        line += "; the site rate-limited a data request"
+                    if total == 0 and not links:
+                        line += "  <-- nothing readable: open the saved screenshot and HTML"
+                if links:
+                    line += f"; {len(links)} post links on the page"
+                lines.append(line)
         except BrowserError as exc:
             lines.append(f"  {source}: {exc}")
     return lines
@@ -1183,12 +1244,12 @@ def collected_rows(records):
         for item in rec.get("items", []):
             row = rows.setdefault(item["item_id"], {
                 **{k: item.get(k) for k in ("item_id", "source", "handle", "title", "text", "url",
-                                            "posted_at", "likes", "comments", "shares", "views", "media_url")},
+                                            "posted_at", "likes", "comments", "shares", "views", "media_url", "details")},
                 "first_seen": rec["at"], "last_seen": rec["at"], "times_seen": 0, "queries": []})
             row["last_seen"] = max(row["last_seen"], rec["at"])
             row["first_seen"] = min(row["first_seen"], rec["at"])
             row["times_seen"] += 1
-            for k in ("handle", "title", "text", "likes", "comments", "shares", "views", "media_url"):
+            for k in ("handle", "title", "text", "likes", "comments", "shares", "views", "media_url", "details"):
                 if item.get(k) not in (None, ""):
                     row[k] = item[k]
             if rec["seeds"] not in row["queries"]:
