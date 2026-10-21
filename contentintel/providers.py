@@ -75,12 +75,13 @@ class Provider:
         text = str(text)
         return text.replace(self.api_key, "***") if self.api_key else text
 
-    def _call(self, method, url, *, params=None, json_body=None, headers=None):
+    def _call(self, method, url, *, params=None, json_body=None, headers=None, timeout=30):
         last = "no response"
         for attempt in range(3):
             try:
                 status, body, retry_after = self.http(
-                    method, url, params=params, json_body=json_body, headers=headers)
+                    method, url, params=params, json_body=json_body, headers=headers,
+                    timeout=timeout)
             except Exception as exc:                      # network problem
                 last = f"network error ({exc.__class__.__name__})"
                 self.sleep(2 ** attempt)
