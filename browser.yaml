@@ -85,4 +85,5 @@ sites:
       plan_wait_seconds: 120    # how long to wait for the plan and its "Start research" button
       poll_seconds: 15
       settle_seconds: 90        # the report counts as finished once the text stops changing this long
+      question_settle_seconds: 20  # Gemini has stopped and is not offering to start: it is probably asking a question
       min_chars: 1500
