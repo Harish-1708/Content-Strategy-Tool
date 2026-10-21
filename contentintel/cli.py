@@ -8,6 +8,8 @@ import secrets
 import os
 
 from . import browser as browser_mod
+from .apify import Apify
+from .claude_client import Claude
 from . import collectors as collectors_mod
 from . import providers as providers_mod
 from . import research as research_mod
@@ -94,6 +96,10 @@ def build_parser():
                    help="open each site, confirm the login, and collect a handful of items")
     p.add_argument("--recon", action="store_true",
                    help="save pictures, page HTML and data samples from each site, for tuning browser.yaml")
+    p.add_argument("--test-deep-research", action="store_true",
+                   help="run ONE real, short Deep Research report to prove the whole path (takes 10+ minutes)")
+    p.add_argument("--backend", choices=collectors_mod.BACKENDS, default="auto",
+                   help="browser, apify, fallback (browser first, Apify if it fails), or auto (as research.yaml says)")
     p.add_argument("--research-config", default="research.yaml")
     p.add_argument("--browser-config", default="browser.yaml")
     p.add_argument("--debug-dir", default="debug")
@@ -216,6 +222,15 @@ def _real_factory(browser_cfg, creds, debug_dir):
     return factory
 
 
+EXTRA_SECRETS = ("ANTHROPIC_API_KEY", "APIFY_TOKEN")
+
+
+def _secrets_status(browser_cfg, env):
+    """(name, set or not set) for every secret the collectors can use. Never the values."""
+    names = [n for cfg in browser_cfg["sites"].values() for n in cfg.get("secrets", {}).values()] + list(EXTRA_SECRETS)
+    return [(n, "set" if (env.get(n) or "").strip() else "not set") for n in names]
+
+
 def _collect(args, store):
     settings = collectors_mod.load_collector_settings(args.research_config)
     browser_cfg = browser_mod.load_browser_settings(args.browser_config)
@@ -225,41 +240,68 @@ def _collect(args, store):
         print(f"Error: unknown source {', '.join(unknown)} (choose from {', '.join(collectors_mod.SOURCES)})")
         return 1
     creds = _site_creds(browser_cfg, os.environ)
-    usable = [s for s in wanted if collectors_mod.has_access(
-        browser_cfg["sites"][collectors_mod.SITE_OF[s]], creds[collectors_mod.SITE_OF[s]])]
-    if not usable:
-        print("Collection skipped: no login is set for any chosen source.")
-        for s in wanted:
-            print(f"  {s}: {collectors_mod.missing_access_message(browser_cfg['sites'][collectors_mod.SITE_OF[s]])}")
-        print("::warning::Collection skipped: no login is set")
-        return 0
+    apify_token, claude_key = (os.environ.get("APIFY_TOKEN") or "").strip(), (os.environ.get("ANTHROPIC_API_KEY") or "").strip()
+    apify = Apify(apify_token) if apify_token else None
+    claude = Claude(claude_key, model=settings.claude_model, max_tokens=settings.claude_max_tokens) if claude_key else None
+    backend = collectors_mod.effective_backend(args.backend, settings)
+    print("Secrets this run can see (names only; values are never shown):")
+    for name, state in _secrets_status(browser_cfg, os.environ):
+        print(f"  {name:<22} {state}")
+    print(f"Backend for ads and social: {backend}\n")
+
+    def usable(source):
+        site = collectors_mod.SITE_OF[source]
+        browser_ok = collectors_mod.has_access(browser_cfg["sites"][site], creds[site])
+        if source in collectors_mod.BROWSER_SOURCES and backend == "apify":
+            return apify is not None
+        if source in collectors_mod.BROWSER_SOURCES and backend == "fallback":
+            return browser_ok or apify is not None
+        return browser_ok
+
     make = _BROWSER_FACTORY or _real_factory
     factory = make(browser_cfg, creds, args.debug_dir)
     now = sync_mod.utc_now()
+    if args.test_deep_research:
+        outcome = collectors_mod.run_deep_research_test(factory, creds, browser_cfg, settings, store, research_mod.Ledger,
+                                                        now, claude, args.debug_dir)
+        print(f"Deep Research test: {'OK' if outcome['ok'] else 'FAILED'}: {outcome['detail']}")
+        if not outcome["ok"] and not outcome["detail"].startswith("no login"):
+            print(f"::error::Deep Research test failed: {outcome['detail']}")
+            return 1
+        return 0
     if args.recon:
         print("\n".join(collectors_mod.recon(factory, creds, browser_cfg, wanted, args.debug_dir)))
         return 0
     if args.check:
-        rows = collectors_mod.check_collectors(factory, creds, settings, browser_cfg, store, research_mod.Ledger,
-                                               now, wanted)
+        rows = collectors_mod.check_collectors(factory, creds, settings, browser_cfg, store, research_mod.Ledger, now,
+                                               wanted, apify=apify, claude=claude, backend=backend)
         print(collectors_mod.format_check_collectors(rows))
-        bad = [r for r in rows if not r["ok"] and not r["detail"].startswith(("skipped", "no login"))]
+        bad = [r for r in rows if not r["ok"] and not r["detail"].startswith(("skipped", "no login", "no key"))]
         for r in bad:
             print(f"::error::{r['source']} check failed: {r['detail']}")
         return 1 if bad else 0
+    if not [s for s in wanted if usable(s)]:
+        print("Collection skipped: no login or key is set for any chosen source.")
+        for s in wanted:
+            site = collectors_mod.SITE_OF[s]
+            print(f"  {s}: " + ("no key: set APIFY_TOKEN" if backend == "apify" and s in collectors_mod.BROWSER_SOURCES
+                                else collectors_mod.missing_access_message(browser_cfg["sites"][site])))
+        print("::warning::Collection skipped: no login or key is set")
+        return 0
     if not (args.all or args.brand):
-        print("Error: choose --brand NAME, --all, --check or --recon")
+        print("Error: choose --brand NAME, --all, --check, --recon or --test-deep-research")
         return 1
     slugs = list_brand_slugs(args.brands_dir) if args.all else [args.brand]
     brands = [load_brand(slug, args.brands_dir) for slug in slugs]
     result = collectors_mod.run_collect(
         brands, store, browser_factory=factory, creds=creds, settings=settings, browser_cfg=browser_cfg,
         ledger_cls=research_mod.Ledger, sources=wanted, now=now, run_id=secrets.token_hex(4),
-        dry_run=args.dry_run, root=args.brands_dir)
+        dry_run=args.dry_run, root=args.brands_dir, apify=apify, claude=claude, backend=backend)
     ledger = None if args.dry_run else research_mod.Ledger(store.load_usage(), now[:7])
     print(collectors_mod.format_collect_report(result, settings, ledger))
     for name in result.problems_for:
-        print(f"::error::{name}: the login did not work. Re-export the dummy account's cookies (see browser.yaml).")
+        print(f"::error::{name}: the login did not work. Re-export the dummy account's cookies (see browser.yaml)."
+              if name != "apify" else "::error::apify: the token was rejected. Check the APIFY_TOKEN secret.")
     for slug, reports in result.brands.items():
         failed = [r for r in reports if r.status == "failed"]
         if failed:
