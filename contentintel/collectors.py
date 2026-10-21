@@ -22,6 +22,7 @@ from urllib.parse import parse_qs, quote, quote_plus, unquote, urlsplit
 
 import yaml
 
+from . import benchmarks as bench
 from .browser import BrowserError, Challenge, LoginWall
 from .providers import AuthError, ProviderError, QuotaError
 
@@ -44,14 +45,16 @@ class CollectError(Exception):
 DEFAULT_APIFY_ACTORS = {"meta_ads": "apify/facebook-ads-scraper", "tiktok": "clockworks/tiktok-scraper",
                         "instagram": "apify/instagram-hashtag-scraper"}
 DEFAULT_COLLECTORS = {
-    "browser": {"monthly_items": 150, "items_per_run": 30, "cache_days": 3},
+    "browser": {"monthly_items": 400, "items_per_run": 30, "cache_days": 3},
     "gemini": {"monthly_tasks": 2, "tasks_per_run": 1, "cache_days": 14},
     "apify": {"mode": "off", "monthly_items": 100, "items_per_run": 30, "max_cost_per_run_usd": 1.0,
               "actors": DEFAULT_APIFY_ACTORS},
     "claude": {"model": "claude-sonnet-5-5", "monthly_calls": 60, "max_rounds": 3, "max_tokens": 700,
                "prepare_prompt": True},
     "auto_seeds": {"enabled": True, "refresh_days": 30, "max_keywords": 8, "max_hashtags": 5, "max_questions": 2,
-                   "scopes": ["direct", "adjacent", "cross_industry"]},
+                   "max_benchmarks": 8, "scopes": ["direct", "adjacent", "cross_industry"]},
+    "benchmarks": {"enabled": True, "max_pages": 6, "discovery_per_run": 3, "items_per_name": 10,
+                   "items_per_page": 8, "retry_days": 30},
 }
 AUTO_SCOPES = ("direct", "adjacent", "cross_industry")
 APIFY_MODES = ("off", "fallback", "always")
@@ -82,6 +85,13 @@ class CollectorSettings:
     auto_max_hashtags: int
     auto_max_questions: int
     auto_scopes: tuple
+    auto_max_benchmarks: int = 8
+    benchmarks_enabled: bool = True
+    benchmark_max_pages: int = 6
+    benchmark_discovery_per_run: int = 3
+    benchmark_items_per_name: int = 10
+    benchmark_items_per_page: int = 8
+    benchmark_retry_days: int = 30
 
 
 def _count(value, where, minimum=0, whole=True):
@@ -112,7 +122,9 @@ def load_collector_settings(path="research.yaml"):
     for name, section in part.items():
         _keys(section, DEFAULT_COLLECTORS[name], f"collectors.{name}")
     browser, gemini, apify, claude = part["browser"], part["gemini"], part["apify"], part["claude"]
-    auto = part["auto_seeds"]
+    auto, bm = part["auto_seeds"], part["benchmarks"]
+    if not isinstance(bm["enabled"], bool):
+        raise CollectError("collectors.benchmarks.enabled must be true or false")
     if not isinstance(auto["enabled"], bool):
         raise CollectError("collectors.auto_seeds.enabled must be true or false")
     scopes = auto["scopes"]
@@ -154,7 +166,14 @@ def load_collector_settings(path="research.yaml"):
         auto_max_keywords=_count(auto["max_keywords"], "collectors.auto_seeds.max_keywords", 1),
         auto_max_hashtags=_count(auto["max_hashtags"], "collectors.auto_seeds.max_hashtags", 1),
         auto_max_questions=_count(auto["max_questions"], "collectors.auto_seeds.max_questions"),
-        auto_scopes=tuple(scopes))
+        auto_scopes=tuple(scopes),
+        auto_max_benchmarks=_count(auto["max_benchmarks"], "collectors.auto_seeds.max_benchmarks"),
+        benchmarks_enabled=bm["enabled"],
+        benchmark_max_pages=_count(bm["max_pages"], "collectors.benchmarks.max_pages"),
+        benchmark_discovery_per_run=_count(bm["discovery_per_run"], "collectors.benchmarks.discovery_per_run"),
+        benchmark_items_per_name=_count(bm["items_per_name"], "collectors.benchmarks.items_per_name", 1),
+        benchmark_items_per_page=_count(bm["items_per_page"], "collectors.benchmarks.items_per_page", 1),
+        benchmark_retry_days=_count(bm["retry_days"], "collectors.benchmarks.retry_days", 1))
 
 
 def effective_backend(requested, settings):
@@ -180,7 +199,7 @@ def _strings(value, where):
 def parse_collect_config(data, where):
     """Validate the ads / social / deep_research sections; returns a normalised dict."""
     ads = data.get("ads") or {}
-    _keys(ads, ("country", "status", "pages", "keywords"), f"{where} ads")
+    _keys(ads, ("country", "status", "pages", "keywords", "benchmark_pages"), f"{where} ads")
     country = ads.get("country", "us")
     if not isinstance(country, str) or len(country) != 2 or not country.isalpha():
         raise CollectError(f"{where} ads.country must be a two-letter code, got {country!r}")
@@ -204,15 +223,23 @@ def parse_collect_config(data, where):
     auto_seeds = data.get("auto_seeds", True)
     if not isinstance(auto_seeds, bool):
         raise CollectError(f"{where} auto_seeds must be true or false")
+    track_own = data.get("track_own_brand", True)
+    if not isinstance(track_own, bool):
+        raise CollectError(f"{where} track_own_brand must be true or false")
+    try:
+        benchmark_pages = bench.parse_manual(ads.get("benchmark_pages"), f"{where} ads.benchmark_pages")
+    except bench.BenchmarkError as exc:
+        raise CollectError(str(exc)) from exc
     deep = data.get("deep_research") or {}
     _keys(deep, ("questions", "context"), f"{where} deep_research")
     context = deep.get("context") or ""
     if not isinstance(context, str):
         raise CollectError(f"{where} deep_research.context must be text")
     return {
-        "auto_seeds": auto_seeds,
+        "auto_seeds": auto_seeds, "track_own_brand": track_own,
         "ads": {"country": country.upper(), "status": status, "pages": pages,
-                "keywords": _strings(ads.get("keywords"), f"{where} ads.keywords")},
+                "keywords": _strings(ads.get("keywords"), f"{where} ads.keywords"),
+                "benchmark_pages": benchmark_pages},
         "tiktok": {"hashtags": _strings(tiktok.get("hashtags"), f"{where} social.tiktok.hashtags"),
                    "profiles": _strings(tiktok.get("profiles"), f"{where} social.tiktok.profiles"),
                    "searches": _strings(tiktok.get("searches"), f"{where} social.tiktok.searches")},
@@ -226,6 +253,12 @@ def ad_library_url(keyword, country, status):
             + "&q=" + quote_plus(keyword) + "&search_type=keyword_unordered&media_type=all")
 
 
+def ad_library_page_url(page_id, country, status):
+    """Every ad one advertiser page runs: the Ad Library's own link for a page."""
+    return (AD_LIBRARY + "/?active_status=" + status + "&ad_type=all&country=" + country
+            + "&view_all_page_id=" + str(page_id) + "&media_type=all")
+
+
 @dataclass
 class Task:
     source: str
@@ -233,15 +266,16 @@ class Task:
     payload: dict
     key: str                   # same seeds -> same key, for reuse
     seed_count: int = 1
+    item_cap: int = 0          # most items this task may collect (0: only the run and month caps apply)
 
 
 def _key(source, seeds):
     return hashlib.sha1((source + "|" + json.dumps(seeds, sort_keys=True)).encode()).hexdigest()[:16]
 
 
-def ad_start_urls(ads):
-    """Ad Library pages to read. An Ad Library link is used as written; a plain Facebook page
-    address becomes a search for the page's name."""
+def ad_page_urls(ads):
+    """Ad Library pages written in research.yaml. An Ad Library link is used as written; a plain Facebook
+    page address becomes a search for the page's name."""
     urls = []
     for page in ads["pages"]:
         if page.startswith(AD_LIBRARY):
@@ -249,8 +283,15 @@ def ad_start_urls(ads):
         else:
             slug = page.split("?")[0].rstrip("/").rsplit("/", 1)[-1]
             urls.append(ad_library_url(slug, ads["country"].lower(), ads["status"]))
-    urls += [ad_library_url(k, ads["country"].lower(), ads["status"]) for k in ads["keywords"]]
     return urls
+
+
+def ad_keyword_urls(ads):
+    return [ad_library_url(k, ads["country"].lower(), ads["status"]) for k in ads["keywords"]]
+
+
+def ad_start_urls(ads):
+    return ad_page_urls(ads) + ad_keyword_urls(ads)
 
 
 def _extend(manual, extra, limit=None):
@@ -278,14 +319,61 @@ def merge_auto_seeds(cfg, auto, settings):
     return out
 
 
-def plan_collections(cfg, auto=None, settings=None):
+def with_own_brand(cfg, brand):
+    """The brand's own name is always searched (Meta ads, TikTok and Instagram hashtags), first, whatever
+    Claude suggests; `track_own_brand: false` in the brand's research.yaml switches it off."""
+    if not cfg.get("track_own_brand", True):
+        return cfg
+    out = copy.deepcopy(cfg)
+    tag = re.sub(r"[^a-z0-9]", "", brand.name.lower())
+    out["ads"]["keywords"] = _extend([brand.name], out["ads"]["keywords"])
+    if tag:
+        out["tiktok"]["hashtags"] = _extend([tag], out["tiktok"]["hashtags"])
+        out["instagram"]["hashtags"] = _extend([tag], out["instagram"]["hashtags"])
+    return out
+
+
+def _meta_tasks(cfg, follow, settings):
+    """Meta Ad Library tasks. Without a follow plan: one task of pages and keywords (the original shape). With one:
+    followed advertiser pages, keyword searches, and the look-ups that find a benchmark brand's page, each
+    with its own share of items so that none starves the others."""
+    ads, tasks = cfg["ads"], []
+    country, status = ads["country"].lower(), ads["status"]
+    if follow is None:
+        urls = ad_start_urls(ads)
+        return [Task("meta_ads", f"{len(urls)} advertiser pages/keywords", {"urls": urls}, _key("meta_ads", urls),
+                     len(urls))] if urls else []
+    labels, pages = {}, []
+    urls = ad_page_urls(ads)
+    for page in follow.pages:
+        url = ad_library_page_url(page["page_id"], country, status)
+        if url not in urls:
+            urls.append(url)
+            pages.append(page)
+            labels[url] = f"{page['name']} (page)"
+    per_page = settings.benchmark_items_per_page if settings else 8
+    if urls:
+        tasks.append(Task("meta_ads", f"{len(urls)} followed advertiser pages",
+                          {"urls": urls, "labels": labels, "pages": pages}, _key("meta_ads", ["pages"] + urls),
+                          len(urls), item_cap=per_page * len(urls)))
+    keywords = ad_keyword_urls(ads)
+    if keywords:
+        tasks.append(Task("meta_ads", f"{len(keywords)} keywords", {"urls": keywords}, _key("meta_ads", keywords),
+                          len(keywords)))
+    if follow.discover:
+        per_name = settings.benchmark_items_per_name if settings else 10
+        names = [d["name"] for d in follow.discover]
+        look = [ad_library_url(n, country, status) for n in names]
+        tasks.append(Task("meta_ads", f"look up the advertiser page of {len(names)} brand(s): {', '.join(names)}",
+                          {"urls": look, "discover": follow.discover}, _key("meta_ads", ["discover"] + names),
+                          len(names), item_cap=per_name * len(names)))
+    return tasks
+
+
+def plan_collections(cfg, auto=None, settings=None, follow=None):
     """The tasks a brand's seeds produce (its own, plus auto seeds when given). Nothing configured means nothing planned."""
     cfg = merge_auto_seeds(cfg, auto, settings) if auto else cfg
-    tasks = []
-    urls = ad_start_urls(cfg["ads"])
-    if urls:
-        tasks.append(Task("meta_ads", f"{len(urls)} advertiser pages/keywords", {"urls": urls},
-                          _key("meta_ads", urls), len(urls)))
+    tasks = _meta_tasks(cfg, follow, settings)
     tt = cfg["tiktok"]
     seeds = {k: v for k, v in tt.items() if v}
     if seeds:
@@ -351,7 +439,7 @@ def _row(source, ident, **fields):
     row = {"item_id": f"{source}:{ident}", "source": source, "handle": "", "title": "", "text": "",
            "url": "", "posted_at": "", "likes": None, "comments": None, "shares": None, "views": None,
            "media_url": "", "details": "", "saves": None, "reach": None, "days_running": None,
-           "variants": None, "found_via": ""}
+           "variants": None, "found_via": "", "page_id": "", "page_likes": None}
     row.update(fields)
     row["details"] = _clip(row["details"])[:400]
     row["text"] = _clip(row["text"])
@@ -367,13 +455,68 @@ def _first_number(*values):
     return None
 
 
-def _meta_details(d, snap, first):
-    """Platforms, call to action, format, status, end date and landing page, as one readable line."""
-    platforms = _get(d, "publisher_platform", "publisherPlatform") or []
-    platforms = [platforms] if isinstance(platforms, str) else platforms
+_TEMPLATE = re.compile(r"\{\{\s*([\w.]+)\s*\}\}")
+_SHARED_HOSTS = {"amzn", "amazon", "markable", "walmart", "shopify", "myshopify", "etsy", "ebay", "facebook", "instagram",
+                 "linktr", "tiktok", "google", "youtube", "bitly", "shop", "store"}
+
+
+def _site_label(url):
+    """The name part of a web address: rhoback.com -> rhoback, shop.chicme.co.uk -> chicme."""
+    parts = [p for p in (urlsplit(url or "").hostname or "").lower().split(".") if p and p != "www"]
+    if len(parts) >= 3 and len(parts[-1]) == 2 and parts[-2] in ("co", "com", "org", "net"):
+        return parts[-3]
+    return parts[-2] if len(parts) >= 2 else (parts[0] if parts else "")
+
+
+def verified_brand(page_name, landing):
+    """The advertiser's name, but only when the ad's own landing site agrees that it is the brand
+    (page "Rhoback" selling on rhoback.com). A catalogue ad's {{product.brand}} is the PRODUCT's brand, which is
+    the advertiser's name only for a brand selling its own products, so an unverified name is never filled in."""
+    name, label = bench.norm_name(page_name), _site_label(landing)
+    if len(label) < 4 or label in _SHARED_HOSTS or len(name) < 3:
+        return ""
+    return page_name.strip() if (label in name or name in label) else ""
+
+
+def clean_template_text(text, page_name="", landing="", title=""):
+    """Catalogue ads carry template tokens such as {{product.brand}}. Fill a token only with something verified
+    (the brand when the landing site confirms it, the card's real product name); drop the rest. Text without
+    tokens is returned exactly as it came."""
+    if not text or "{{" not in text:
+        return text
+    brand = verified_brand(page_name, landing)
+
+    def fill(match):
+        token = match.group(1).lower()
+        if token == "product.brand":
+            return brand
+        if token == "product.name":
+            return title if title and "{{" not in title else ""
+        return ""
+    out = re.sub(r"\{\{[^}]*\}?\}?", "", _TEMPLATE.sub(fill, text))
+    return " ".join(out.split()).strip(" -|,:;")
+
+
+def _meta_link(snap, first):
     link = _get(snap, "link_url", "linkUrl") or ""
     if "{{" in link:                                   # dynamic product ads carry a template here
         link = _get(first, "link_url", "linkUrl") or ""
+    return link
+
+
+def _meta_page(d, snap):
+    """The advertiser page behind an ad: (page id as text, follower count or None)."""
+    page_id = _get(d, "page_id", "pageID", "pageId") or _get(snap, "page_id", "pageID", "pageId")
+    page_id = str(page_id) if page_id not in (None, "") and re.fullmatch(r"\d{5,20}", str(page_id)) else ""
+    return page_id, _int(_get(snap, "page_like_count", "pageLikeCount") or _get(d, "page_like_count", "pageLikeCount"))
+
+
+def _meta_details(d, snap, first):
+    """Platforms, call to action, format, status, end date, advertiser page and landing page, as one readable line."""
+    platforms = _get(d, "publisher_platform", "publisherPlatform") or []
+    platforms = [platforms] if isinstance(platforms, str) else platforms
+    link = _meta_link(snap, first)
+    page_id = _meta_page(d, snap)[0]
     active = d.get("is_active", d.get("isActive"))
     end = _iso(_get(d, "end_date", "endDate"))
     parts = ["/".join(str(p).title() for p in platforms) if platforms else "",
@@ -381,7 +524,8 @@ def _meta_details(d, snap, first):
              if (_get(snap, "cta_text", "ctaText") or _get(first, "cta_text", "ctaText")) else "",
              f"format: {_get(snap, 'display_format', 'displayFormat')}" if _get(snap, "display_format", "displayFormat") else "",
              "active" if active is True else ("inactive" if active is False else ""),
-             f"ends {end[:10]}" if end else "", f"landing: {link}" if link else ""]
+             f"ends {end[:10]}" if end else "", f"page: {page_id}" if page_id else "",
+             f"landing: {link}" if link else ""]
     return " | ".join(p for p in parts if p)
 
 
@@ -420,8 +564,11 @@ def normalize_meta_ad(d):
     title = snap.get("title") or ""
     if not title or "{{" in title:                     # dynamic product ads have a placeholder, the card has the real name
         title = first.get("title") or ""
-    return _row("meta_ads", ident, handle=_get(d, "pageName", "page_name") or _get(snap, "pageName", "page_name") or "",
-                title=title, text=text or first.get("body") or "",
+    handle = _get(d, "pageName", "page_name") or _get(snap, "pageName", "page_name") or ""
+    page_id, page_likes = _meta_page(d, snap)
+    text = clean_template_text(text or first.get("body") or "", handle, _meta_link(snap, first), title)
+    return _row("meta_ads", ident, handle=handle, page_id=page_id, page_likes=page_likes,
+                title=title, text=text,
                 url=f"https://www.facebook.com/ads/library/?id={ident}",
                 posted_at=_iso(_get(d, "startDate", "start_date")), media_url=media,
                 details=_meta_details(d, snap, first), **_meta_signals(d))
@@ -682,6 +829,8 @@ def seed_label(url):
     """A short name for the seed behind a page address: the search words, #hashtag, @profile."""
     parts = urlsplit(url)
     query = parse_qs(parts.query)
+    if query.get("view_all_page_id"):
+        return "page:" + query["view_all_page_id"][0]
     if query.get("q"):
         return query["q"][0]
     match = re.search(r"/tags?/([^/?]+)", parts.path)
@@ -739,7 +888,7 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
                                             pacing["scroll_pause_seconds"], share)
         from_data |= data_ids
         limited = limited or hit_limit
-        label = seed_label(url)
+        label = (task.payload.get("labels") or {}).get(url) or seed_label(url)
         for row in rows:
             labels = via.setdefault(row["item_id"], [])
             if label not in labels:
@@ -883,6 +1032,11 @@ class CollectResult:
     brands: dict = field(default_factory=dict)
     notes: list = field(default_factory=list)
     problems_for: list = field(default_factory=list)
+    follow: dict = field(default_factory=dict)        # brand slug -> bench.FollowPlan, as it stands at the end of the run
+
+    @property
+    def needs_review(self):
+        return sum(1 for plan in self.follow.values() for r in plan.review if r["status"] == "ambiguous")
 
     @property
     def problems(self):
@@ -946,6 +1100,47 @@ def _context(brand, task):
     return f"Brand: {brand.name}. Website: {brand.domain}. {task.payload.get('context', '')}".strip()
 
 
+def apply_discovery(state, task, rows, stats, now):
+    """File a decision for each brand a look-up task searched for. Returns (new state, lines for the report).
+
+    A brand is left undecided (and looked up again next run) when the site rate-limited the search and nothing
+    for it came back: a failure to read is not the same as 'this brand has no page'."""
+    lines = []
+    for item in task.payload["discover"]:
+        candidates = bench.candidates_from_items(rows, item["name"])
+        if not candidates and stats.get("rate_limited"):
+            lines.append(f"{item['name']}: the site rate-limited the search; it will be looked up again")
+            continue
+        resolution = bench.resolve(item["name"], candidates)
+        state = bench.record(state, item["name"], item["kind"], resolution, now)
+        lines.append(f"{item['name']}: {resolution['status']} - {resolution['reason']}"
+                     + (f" -> {resolution['page_name']} (id {resolution['page_id']})" if resolution["status"] == "resolved" else ""))
+    return state, lines
+
+
+def check_followed(task, rows):
+    """Followed pages that gave back no ads from that page: a wrong id, or a page with nothing running."""
+    got = collections.Counter(str(r.get("page_id") or "") for r in rows)
+    return [f"{p['name']} (page {p['page_id']}) returned no ads from that page; check the id, or it may have nothing running"
+            for p in task.payload.get("pages", []) if not got.get(str(p["page_id"]))]
+
+
+def _follow_plan(brand, cfg, auto, state, settings, now):
+    names = (auto or {}).get("benchmarks", []) if cfg.get("auto_seeds", True) else []
+    own = brand.name if cfg.get("track_own_brand", True) else ""        # not tracking the brand means no page look-up either
+    return bench.plan_follow(own, names, cfg["ads"]["benchmark_pages"], state, now,
+                             max_pages=settings.benchmark_max_pages, discovery_per_run=settings.benchmark_discovery_per_run,
+                             retry_days=settings.benchmark_retry_days)
+
+
+def format_benchmark_status(brand, store, auto, settings, now, root="brands"):
+    """The benchmark review list as it stands, without collecting anything."""
+    from .research import load_brand_research         # local import: research imports this module
+    cfg = load_brand_research(brand, root)["collect"]
+    state = bench.clean_state(store.read_benchmarks(brand.slug))
+    return "\n" + bench.format_follow_plan(_follow_plan(brand, cfg, auto, state, settings, now), brand.slug, brand.name)
+
+
 def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg, ledger_cls, sources, now,
                 run_id, configs=None, dry_run=False, root="brands", apify=None, claude=None, backend="browser"):
     """Plan and run collection tasks for each brand, within the caps in `settings`.
@@ -983,7 +1178,12 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                 auto = seeded.seeds
                 if seeded.note:
                     result.notes.append(f"{brand.slug}: auto seeds {seeded.note}")
-            for task in plan_collections(cfg, auto, settings):
+            cfg = with_own_brand(cfg, brand)
+            state = bench.clean_state(store.read_benchmarks(brand.slug))
+            follow = _follow_plan(brand, cfg, auto, state, settings, now) if settings.benchmarks_enabled else None
+            tasks = plan_collections(cfg, auto, settings, follow)
+            planned_pages = {str(p["page_id"]) for t in tasks for p in t.payload.get("pages", [])}
+            for task in tasks:              # the list can grow: a brand found by a look-up is followed in the same run
                 if task.source not in sources:
                     continue
                 site = SITE_OF[task.source]
@@ -1053,7 +1253,10 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                                      + (f"; {len(out['exchanges'])} question(s) from Gemini answered by Claude" if out["exchanges"] else "")
                                      + "".join(f"; {n}" for n in out["notes"]))
                     continue
-                viable = [(r, items_left(r)) for r in routes if items_left(r) >= 1]
+                def allowed(route, task=task):
+                    left = items_left(route)
+                    return min(left, task.item_cap) if task.item_cap else left
+                viable = [(r, allowed(r)) for r in routes if allowed(r) >= 1]
                 if not viable:
                     report.detail = "out of items under your monthly cap"
                     continue
@@ -1121,12 +1324,27 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                     report.detail = " | ".join(errors)[:400]
                     continue
                 save(brand, task, rows, stats, via)
+                extra = []
+                if task.payload.get("discover"):
+                    state, lines = apply_discovery(state, task, rows, stats, now)
+                    store.write_benchmarks(brand.slug, state)
+                    extra += lines
+                    fresh = [p for p in _follow_plan(brand, cfg, auto, state, settings, now).pages
+                             if str(p["page_id"]) not in planned_pages]
+                    if fresh:
+                        planned_pages |= {str(p["page_id"]) for p in fresh}
+                        tasks.extend(_meta_tasks({"ads": {**cfg["ads"], "pages": [], "keywords": []}},
+                                                 bench.FollowPlan(pages=fresh), settings))
+                extra += check_followed(task, rows)
+                result.notes.extend(f"{brand.slug}: {line}" for line in extra)
                 report.status, report.items = "ran", len(rows)
                 report.detail = (f"{len(rows)} items via Apify" + (f" (the browser failed: {errors[0][:100]})" if errors else "")
                                  if via == "apify" else
                                  f"{len(rows)} items ({stats['json']} from the site's data, {stats['links']} only from page links)"
                                  + (" - the site rate-limited further scrolling, so this is the first page of results only"
                                     if stats.get("rate_limited") else ""))
+            if follow is not None:
+                result.follow[brand.slug] = _follow_plan(brand, cfg, auto, state, settings, now)
     return result
 
 
@@ -1139,6 +1357,11 @@ def format_collect_report(result, settings, ledger=None):
             lines.append("  nothing to collect: no seeds written in research.yaml, and no catalogue yet to build them from (run Sync first)")
         for r in reports:
             lines.append(f"  {r.source:<13} {r.status:<9} {r.seeds}" + (f" -> {r.detail}" if r.detail else ""))
+    for slug, plan in result.follow.items():
+        lines += ["", f"--- {slug}: benchmark brands ---", bench.format_follow_plan(plan, slug, slug)]
+    if result.needs_review:
+        lines += ["", f"ACTION: {result.needs_review} benchmark brand(s) are ambiguous and are not being followed until you "
+                      "choose a page (see NEEDS YOU above)."]
     if ledger is not None:
         lines.append("")
         lines.append(f"Used this month ({ledger.month}), against your caps: items {ledger.month_used('collected_items'):g}/"
@@ -1283,6 +1506,10 @@ def run_deep_research_test(browser_factory, creds, browser_cfg, settings, store,
                                     f"saved as {path}" + "".join(f"; {n}" for n in out["notes"]))}
 
 
+# Meta's own page search, saved by Recon so a later update can look advertiser pages up officially instead of
+# reading them from ad results. Nothing reads these yet; they exist to show what the site sends.
+RECON_EXTRA = {"meta_ads": [("page-search", lambda cfg: AD_LIBRARY + "/?active_status=active&ad_type=all&country=US"
+                                                       "&q=Gymshark&search_type=page&media_type=all")]}
 RECON_PAGES = {
     "meta_ads": lambda cfg: ad_library_url("overalls", "us", "active"),
     "instagram": lambda cfg: cfg["hashtag_url"].format(tag="overalls"),
@@ -1343,6 +1570,17 @@ def recon(browser_factory, creds, browser_cfg, sources, debug_dir):
                 if links:
                     line += f"; {len(links)} post links on the page"
                 lines.append(line)
+                for name, make_url in RECON_EXTRA.get(source, []):
+                    browser.open(make_url(site_cfg))
+                    browser.wait(site_cfg.get("settle_seconds", 5))
+                    browser.screenshot(f"recon-{site}-{name}")
+                    extra_net, extra_page = browser.json_responses(), (browser.embedded_json() if hasattr(browser, "embedded_json") else [])
+                    for suffix, objs in (("network", extra_net), ("page-data", extra_page)):
+                        (out / f"recon-{site}-{name}-{suffix}.json").write_text(json.dumps(
+                            [{"type": type(o).__name__, "keys": sorted(o)[:25] if isinstance(o, dict) else len(o),
+                              "bytes": len(json.dumps(o)), "sample": json.dumps(o)[:1500]} for o in objs[:60]], indent=1),
+                            encoding="utf-8")
+                    lines.append(f"  {source} ({name}): {len(extra_net)} data responses and {len(extra_page)} data blocks saved")
         except BrowserError as exc:
             lines.append(f"  {source}: {exc}")
     return lines
@@ -1359,6 +1597,29 @@ def _engagement(row):
     if not isinstance(views, (int, float)) or views <= 0 or not known:
         return None
     return round(100 * sum(known) / views, 2)
+
+
+LONG_RUNNING_DAYS = 60       # an ad that ran this long, or one with MANY_COPIES variants, is worth a look
+MANY_COPIES = 3
+
+
+def ad_signal(row):
+    """A cautious pointer, never a verdict: how long an ad ran and how many copies exist say it is worth studying,
+    not that it earns money. Blank when there is nothing to say; a missing number is never treated as zero."""
+    if row.get("source") != "meta_ads":
+        return ""
+    days, copies = row.get("days_running"), row.get("variants")
+    parts = []
+    if isinstance(days, int) and not isinstance(days, bool) and days >= LONG_RUNNING_DAYS:
+        parts.append(f"ran {days} days")
+    if isinstance(copies, int) and not isinstance(copies, bool) and copies >= MANY_COPIES:
+        parts.append(f"{copies} copies")
+    return "worth studying: " + ", ".join(parts) if parts else ""
+
+
+def _landing(details):
+    found = re.search(r"landing: (\S+)", details or "")
+    return found.group(1) if found else ""
 
 
 _ROW_FIELDS = ("item_id", "source", "handle", "title", "text", "url", "posted_at", "likes", "comments", "shares",
@@ -1382,4 +1643,9 @@ def collected_rows(records):
             for label in str(item.get("found_via") or rec["seeds"]).split(" | "):
                 if label.strip() and label.strip() not in row["queries"]:
                     row["queries"].append(label.strip())
-    return {k: {**v, "engagement_pct": _engagement(v), "queries": " | ".join(v["queries"][:5])} for k, v in rows.items()}
+    for row in rows.values():            # rows saved before template tokens were handled are repaired as they are written
+        landing = _landing(row.get("details"))
+        row["text"] = clean_template_text(row.get("text"), row.get("handle") or "", landing, row.get("title") or "")
+        row["title"] = clean_template_text(row.get("title"), row.get("handle") or "", landing)
+    return {k: {**v, "engagement_pct": _engagement(v), "signal": ad_signal(v), "queries": " | ".join(v["queries"][:5])}
+            for k, v in rows.items()}
