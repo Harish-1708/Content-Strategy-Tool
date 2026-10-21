@@ -111,11 +111,13 @@ class GeminiFake(FakeBrowser):
     """Gemini's web app: a plan appears, 'Start research' is pressed, a report grows, then finishes."""
 
     def __init__(self, cfg, *, start_after=30, done_after=700, report=REPORT_TEXT, done_button=True,
-                 logged_in=True, deep_button=True, stay_busy=False):
+                 logged_in=True, deep_button=True, stay_busy=False, mode_confirmed=True):
         flat = [s for group in cfg["deep_research_clicks"] for s in group] if deep_button else []
         super().__init__(clickable=set(flat) | set(cfg["send"]) | set(cfg["start_research"]),
                          typeable=set(cfg["prompt_box"]),
-                         present_always={cfg["logged_in_any"][0], cfg["prompt_box"][0]} if logged_in else set(cfg["login_wall_any"][:1]))
+                         present_always=({cfg["logged_in_any"][0], cfg["prompt_box"][0]}
+                                         | ({cfg["deep_research_active_any"][0]} if mode_confirmed else set()))   # "What do you want to research?"
+                         if logged_in else set(cfg["login_wall_any"][:1]))
         self.cfg, self.start_after, self.done_after = cfg, start_after, done_after
         self.report, self.done_button, self.stay_busy = report, done_button, stay_busy
         self.sent_at = self.started_at = None
