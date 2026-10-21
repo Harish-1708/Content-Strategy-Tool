@@ -894,9 +894,17 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
         state = ensure_session(browser, source, site_cfg, creds)
     urls = seed_urls(task, site_cfg)
     found, from_data, limited, via = {}, set(), False, {}
+    fallbacks, page_errors = [], 0
     for number, url in enumerate(urls):
         browser.open(url)
         browser.wait(site_cfg.get("settle_seconds", 3))
+        if site_cfg.get("hashtag_via_search_on_error") and "/tag/" in url and browser.exists(site_cfg.get("error_any", [])):
+            tag = unquote(url.split("/tag/", 1)[1].split("?")[0])      # the tag page says "Something went wrong"
+            fallbacks.append("#" + tag)                                # in the automated browser: ask search for it
+            browser.open(site_cfg["search_url"].format(q=quote_plus("#" + tag)))
+            browser.wait(site_cfg.get("settle_seconds", 3))
+        if site_cfg.get("error_any") and browser.exists(site_cfg["error_any"]):
+            page_errors += 1
         if source == "meta_ads":
             browser.click(site_cfg.get("consent_any", []))
         else:
@@ -931,11 +939,32 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
     if not kept:
         browser.screenshot(f"empty-{source}")
     in_data = sum(1 for r in kept if r["item_id"] in from_data)
-    return kept, {"json": in_data, "links": len(kept) - in_data, "state": state, "rate_limited": limited and len(kept) < n}
+    return kept, {"json": in_data, "links": len(kept) - in_data, "state": state, "rate_limited": limited and len(kept) < n,
+                  "fallbacks": fallbacks, "page_errors": page_errors}
 
 
 def _snip(text):
     return " ".join(str(text or "").split())[:300]
+
+
+def switch_to_deep_research(browser, site_cfg):
+    """Press the buttons that switch the Gemini chat to Deep Research (the menu next to the prompt box, then
+    More tools, then Deep research). Raises BrowserError naming the step that could not be found. Returns a
+    note when the page did not confirm the switch (the prompt box should then say what to research), else ''."""
+    for number, selectors in enumerate(site_cfg["deep_research_clicks"], start=1):
+        if not browser.click(selectors):
+            browser.screenshot("gemini-no-deep-research-button")
+            raise BrowserError(f"gemini: could not find the button to switch to Deep Research (step {number}); "
+                               "the page may have changed, or the account may not have Deep Research. "
+                               "See the screenshot and update deep_research_clicks in browser.yaml")
+        browser.wait(1)
+    browser.wait(1)
+    active = site_cfg.get("deep_research_active_any", [])
+    if active and not browser.exists(active):
+        browser.screenshot("gemini-deep-research-unconfirmed")
+        return ("the buttons were pressed but the page did not show Deep Research as switched on "
+                "(see gemini-deep-research-unconfirmed; check deep_research_active_any in browser.yaml)")
+    return ""
 
 
 def collect_deep_research(browser, question, site_cfg, *, claude=None, context="", claude_budget=0,
@@ -962,13 +991,9 @@ def collect_deep_research(browser, question, site_cfg, *, claude=None, context="
         browser.screenshot("login-wall-gemini")
         raise LoginWall("gemini: not logged in. The cookies in GEMINI_COOKIES may have expired; "
                         "export fresh ones from the dummy Google account")
-    for number, selectors in enumerate(site_cfg["deep_research_clicks"], start=1):
-        if not browser.click(selectors):
-            browser.screenshot("gemini-no-deep-research-button")
-            raise BrowserError(f"gemini: could not find the button to switch to Deep Research (step {number}); "
-                               "the page may have changed, or the account may not have Deep Research. "
-                               "See the screenshot and update deep_research_clicks in browser.yaml")
-        browser.wait(1)
+    mode_note = switch_to_deep_research(browser, site_cfg)
+    if mode_note:
+        notes.append(mode_note)
     if not browser.type_text(site_cfg["prompt_box"], prompt):
         browser.screenshot("gemini-no-prompt-box")
         raise BrowserError("gemini: could not find the prompt box (update prompt_box in browser.yaml)")
@@ -1125,6 +1150,17 @@ def _routes(deep, backend, apify, apify_state, site_cfg, creds, down):
 
 def _context(brand, task):
     return f"Brand: {brand.name}. Website: {brand.domain}. {task.payload.get('context', '')}".strip()
+
+
+def _page_notes(stats):
+    """What happened to tag pages that errored, for run and check reports."""
+    text = ""
+    if stats.get("fallbacks"):
+        text += (f" - the page for {', '.join(stats['fallbacks'])} said 'Something went wrong', "
+                 "so TikTok's search results were read instead")
+    if stats.get("page_errors"):
+        text += f" - {stats['page_errors']} page(s) still showed 'Something went wrong' (a block on the automated browser, or try again later)"
+    return text
 
 
 def apply_discovery(state, task, rows, stats, now):
@@ -1371,7 +1407,8 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                                  if via == "apify" else
                                  f"{len(rows)} items ({stats['json']} from the site's data, {stats['links']} only from page links)"
                                  + (" - the site rate-limited further scrolling, so this is the first page of results only"
-                                    if stats.get("rate_limited") else ""))
+                                    if stats.get("rate_limited") else "")
+                                 + _page_notes(stats))
             if follow is not None and "meta_ads" in sources:
                 result.follow[brand.slug] = _follow_plan(brand, cfg, auto, state, settings, now)
     return result
@@ -1466,10 +1503,15 @@ def check_collectors(browser_factory, creds, settings, browser_cfg, store, ledge
                         raise LoginWall("gemini: not logged in (Gemini shows its Sign in button, so the cookies were not "
                                         f"accepted); export fresh cookies into GEMINI_COOKIES.{cookie_facts('gemini', site_creds)}")
                     has_box = browser.exists(site_cfg["prompt_box"])
-                    row["ok"] = has_box
-                    row["detail"] = (f"Gemini opened (login looks {state}) and the prompt box is there; "
-                                     "no research was started" if has_box else
-                                     "Gemini opened but the prompt box was not found (update prompt_box in browser.yaml)")
+                    if not has_box:
+                        row["detail"] = "Gemini opened but the prompt box was not found (update prompt_box in browser.yaml)"
+                        continue
+                    unconfirmed = switch_to_deep_research(browser, site_cfg)
+                    browser.screenshot("check-gemini-deep-research")
+                    row["ok"] = not unconfirmed
+                    row["detail"] = (f"Gemini opened (login looks {state}), the prompt box is there and the Deep Research "
+                                     "button was found and pressed; no research was started"
+                                     if not unconfirmed else f"Gemini opened (login looks {state}) but {unconfirmed}")
                     continue
                 found, stats = run_browser_task(browser, CHECK_SEEDS[source](), items, site_cfg, browser_cfg, site_creds)
                 browser.screenshot(f"check-{source}")
@@ -1482,6 +1524,7 @@ def check_collectors(browser_factory, creds, settings, browser_cfg, store, ledge
         row["detail"] = (f"login {stats['state']}; {len(found)} items ({stats['json']} from the site's data, "
                          f"{stats['links']} only from page links)"
                          + (" - rate-limited, first page only" if stats.get("rate_limited") else "")
+                         + _page_notes(stats)
                          + (f": {found[0]['handle']} {found[0]['text'][:50]}" if found else
                             "; nothing could be read (run Recon to see what the site sends)"))
     if "deep_research" in sources:
