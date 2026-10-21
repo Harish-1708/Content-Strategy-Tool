@@ -21,7 +21,7 @@ COOKIE_MARKER = "MARKERVALUE123"
 COOKIES = '[{"name": "sessionid", "value": "%s", "domain": ".example.com"}]' % COOKIE_MARKER
 CREDS = {"meta_ads": {}, "instagram": {"cookies": COOKIES, "username": None, "password": None},
          "tiktok": {"cookies": COOKIES, "username": None, "password": None}, "gemini": {"cookies": COOKIES}}
-FULL = {"ads": {"keywords": ["sweatpant overalls"],
+FULL = {"track_own_brand": False, "ads": {"keywords": ["sweatpant overalls"],
                 "pages": ["https://www.facebook.com/ads/library/?active_status=all&view_all_page_id=123"]},
         "social": {"tiktok": {"hashtags": ["#overalls"]}, "instagram": {"hashtags": ["overalls"]}},
         "deep_research": {"questions": ["Who are the competitors?"]}}
@@ -39,7 +39,9 @@ def store(tmp_path):
 
 @pytest.fixture
 def settings():
-    return C.load_collector_settings("does-not-exist.yaml")
+    # These tests are about caps, caching and failures for the seeds they write. The benchmark follow-up and the
+    # always-on own-brand search have their own tests (test_benchmarks.py, test_follow_plan_run.py).
+    return replace(C.load_collector_settings("does-not-exist.yaml"), benchmarks_enabled=False)
 
 
 def site(cfg, name):
@@ -84,6 +86,7 @@ def write_research(tmp_path, brand, data):
 
 def collect(store, tmp_path, brands, data, factory, cfg, settings, *, creds=CREDS, sources=("meta_ads", "tiktok", "instagram"),
             now=NOW, dry_run=False, run_id="run1"):
+    data = {"track_own_brand": False, **data}
     for b in brands:
         write_research(tmp_path, b, data)
     return C.run_collect(brands, store, browser_factory=factory, creds=creds, settings=settings, browser_cfg=cfg,
@@ -102,12 +105,12 @@ def used(store, month="2026-10"):
 # --- settings ----------------------------------------------------------------------------------------
 
 def test_collector_settings_default_when_there_is_no_file(settings):
-    assert (settings.monthly_items, settings.items_per_run, settings.browser_cache_days) == (150, 30, 3)
+    assert (settings.monthly_items, settings.items_per_run, settings.browser_cache_days) == (400, 30, 3)
     assert (settings.monthly_tasks, settings.tasks_per_run, settings.gemini_cache_days) == (2, 1, 14)
 
 
-def test_the_shipped_collector_settings_match_the_built_in_defaults(settings):
-    assert C.load_collector_settings("research.yaml") == settings
+def test_the_shipped_collector_settings_match_the_built_in_defaults():
+    assert C.load_collector_settings("research.yaml") == C.load_collector_settings("does-not-exist.yaml")
 
 
 def test_collector_settings_can_be_changed(tmp_path):
@@ -207,11 +210,15 @@ def test_bad_seeds_are_rejected_with_a_clear_message(tmp_path, swov, data, match
         R.load_brand_research(swov, root)
 
 
-def test_every_shipped_brand_file_loads_and_plans_nothing_by_hand_because_the_seeds_are_automatic(brands):
+def test_every_shipped_brand_file_loads_and_hand_writes_only_what_it_must(brands):
     for slug, brand in brands.items():
         cfg = R.load_brand_research(brand, "brands")["collect"]
-        assert C.plan_collections(cfg) == [] and cfg["auto_seeds"] is True, slug
+        assert cfg["auto_seeds"] is True and cfg["track_own_brand"] is True, slug
         assert cfg["deep_research"] == {"questions": [], "context": ""}, slug            # nothing is hard-coded per brand
+        assert cfg["ads"]["pages"] == [] and cfg["ads"]["benchmark_pages"] == {}, slug  # no advertiser is chosen for you
+        assert cfg["tiktok"] == {"hashtags": [], "profiles": [], "searches": []} and cfg["instagram"] == {"hashtags": []}, slug
+    plans = {slug: [t.seeds for t in C.plan_collections(R.load_brand_research(b, "brands")["collect"])] for slug, b in brands.items()}
+    assert plans == {"swoveralls": ["1 advertiser pages/keywords"], "duderobe": [], "defi_snacks": []}   # Swoveralls: its product term
 
 
 # --- reading what the sites send ---------------------------------------------------------------------------------
@@ -746,7 +753,7 @@ def test_the_report_lists_each_task_and_the_month_so_far(tmp_path, store, swov, 
     result = collect(store, tmp_path, [swov], FULL, world(cfg), cfg, settings)
     text = C.format_collect_report(result, settings, R.Ledger(store.load_usage(), "2026-10"))
     assert "=== swoveralls ===" in text and "meta_ads      ran       2 advertiser pages/keywords -> 2 items" in text
-    assert "items 6/150, Apify items 0/100, Deep Research tasks 0/2, Claude calls 0/60" in text
+    assert "items 6/400, Apify items 0/100, Deep Research tasks 0/2, Claude calls 0/60" in text
     empty = collect(store, tmp_path / "e", [swov], {}, world(cfg), cfg, settings)
     assert "nothing to collect" in C.format_collect_report(empty, settings)
 
@@ -907,14 +914,14 @@ def test_cli_rejects_an_unknown_source_and_a_missing_choice(cli_env, capsys):
 def test_cli_dry_run_shows_the_plan_and_opens_no_browser(cli_env, capsys, tmp_path):
     state, run, cfg = cli_env
     assert run("--brand", "swoveralls", "--dry-run") == 0
-    assert capsys.readouterr().out.count("would_run") == 3 and state["factory"].opened == [] and not (tmp_path / "data").exists()
+    assert capsys.readouterr().out.count("would_run") == 4 and state["factory"].opened == [] and not (tmp_path / "data").exists()
 
 
 def test_cli_real_run_collects_saves_and_never_prints_a_cookie(cli_env, capsys, tmp_path):
     state, run, cfg = cli_env
     assert run("--brand", "swoveralls") == 0
     out = capsys.readouterr().out
-    assert out.count(" ran ") == 3 and "items 6/150" in out and "gemini" not in state["factory"].opened
+    assert out.count(" ran ") == 4 and "items 8/400" in out and "followed advertiser pages" in out and "1 keywords" in out and "gemini" not in state["factory"].opened
     saved = "".join(p.read_text(encoding="utf-8") for p in (tmp_path / "data").rglob("*") if p.is_file())
     assert (tmp_path / "data" / "swoveralls" / "research" / "collected.jsonl").is_file() and COOKIE_MARKER not in saved + out
 
