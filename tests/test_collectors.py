@@ -413,7 +413,7 @@ def test_meta_ads_need_no_login_and_dismiss_a_cookie_banner(cfg):
     b = FakeBrowser({"https://www.facebook.com/ads/library": {"json": [META_JSON]}}, clickable=set(site(cfg, "meta_ads")["consent_any"]))
     task = C.Task("meta_ads", "t", {"urls": [C.ad_library_url("overalls", "us", "active")]}, "k")
     rows, stats = run_task(cfg, b, task, 10)
-    assert [r["item_id"] for r in rows] == ["meta_ads:111", "meta_ads:112"] and stats == {"json": 2, "links": 0, "state": "ok", "rate_limited": False}
+    assert [r["item_id"] for r in rows] == ["meta_ads:111", "meta_ads:112"] and stats == {"json": 2, "links": 0, "state": "ok", "rate_limited": False, "fallbacks": [], "page_errors": 0}
     assert len(b.opened) == 1 and b.clicks == [site(cfg, "meta_ads")["consent_any"][0]] and b.waits == [4]
 
 
@@ -503,8 +503,9 @@ def test_deep_research_is_asked_in_the_web_app_and_the_report_is_waited_for(cfg)
     out = ask(cfg, gem)
     g = site(cfg, "gemini")
     assert out["text"] == REPORT_TEXT and gem.opened == [g["app_url"]] and gem.typed == ["Who are the competitors?"]
-    assert gem.clicks[:2] == ['button:has-text("Tools")', 'button:has-text("Deep Research")']       # in the configured order
-    assert gem.clicks[2] == g["send"][0] and gem.clicks[3] == g["start_research"][0]
+    assert gem.clicks[:3] == ['button[aria-label="Upload & tools"]', '[role="menuitem"]:has-text("More tools")',
+                              '[role="menuitem"]:has-text("Deep research")']       # the menu path, in the configured order
+    assert gem.clicks[3] == g["send"][0] and gem.clicks[4] == g["start_research"][0]          # after the three menu steps
     assert 700 <= out["waited_seconds"] < 760 and out["sources"] == [
         "https://c.example.com/z", "https://a.example.com/x", "https://b.example.com/y"]
     assert gem.shots == []
@@ -772,7 +773,9 @@ def test_the_check_opens_each_site_confirms_the_login_and_collects_a_handful(sto
     rows = check(store, cfg, settings, f)
     assert all(rows[s]["ok"] for s in ALL) and "login ok; 2 items (2 from the site's data" in rows["instagram"]["detail"]
     assert "no research was started" in rows["deep_research"]["detail"]
-    assert f.browsers["gemini"].typed == [] and f.browsers["gemini"].clicks == []        # Deep Research is never started
+    assert f.browsers["gemini"].typed == []                                              # nothing is typed,
+    assert f.browsers["gemini"].clicks == ['button[aria-label="Upload & tools"]', '[role="menuitem"]:has-text("More tools")',
+                                           '[role="menuitem"]:has-text("Deep research")']   # only the menu is opened: never Send or Start research
     assert used(store) == {"collected_items": 6} and "check-gemini" in f.browsers["gemini"].shots and "check-instagram" in f.browsers["instagram"].shots
 
 
