@@ -174,6 +174,48 @@ so the same page found next week is the same row, with "times seen" going up. Th
 failed on every service. Running out of credits under your caps is a yellow warning, not a failure.
 Findings are facts about what the web returned: nothing is judged or summarised yet.
 
+## Secrets
+
+Add each one in GitHub: the repository's **Settings > Secrets and variables > Actions > New repository
+secret**. Type the name exactly as shown, paste the value, save. Every Collect run starts with a list of these
+names marked set or not set, so you can see what the run can see (the values are never shown).
+
+**Google Sheets and alerts** (used by Sync, Sheets, Research and Collect)
+
+| Secret | What it is for | Needed? | What to paste |
+|---|---|---|---|
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | writing to the brands' Google Sheets | yes, for the sheets | the whole key file of the Google service account |
+| `SHEET_SHARE_EMAIL` | who the sheets are shared with when the tool creates them | optional | an email address |
+| `SHEET_FOLDER_ID` | a Shared Drive folder for new sheets | optional | the folder's ID |
+| `SLACK_WEBHOOK_URL` | a Slack message when a run needs attention | optional | a Slack incoming-webhook address |
+
+**Searching the web** (Actions > Research)
+
+| Secret | What it is for | Needed? | What to paste |
+|---|---|---|---|
+| `SERPER_API_KEY` | Serper.dev searches | at least one of the three; all three for Compare mode | the key from serper.dev |
+| `TAVILY_API_KEY` | Tavily searches | as above | the key from tavily.com |
+| `SERPAPI_API_KEY` | SerpApi searches | as above | the key from serpapi.com |
+
+**Ads, social posts and deep research** (Actions > Collect)
+
+| Secret | What it is for | Needed? | What to paste |
+|---|---|---|---|
+| `INSTAGRAM_COOKIES` | Instagram posts, logged in as the dummy account | for Instagram | the dummy account's cookies, exported as a JSON list |
+| `INSTAGRAM_USERNAME` and `INSTAGRAM_PASSWORD` | a backup way to log in when there are no cookies | optional; both or neither | the dummy account's login |
+| `TIKTOK_COOKIES` | TikTok posts, logged in as the dummy account | for TikTok | cookies exported as a JSON list |
+| `TIKTOK_USERNAME` and `TIKTOK_PASSWORD` | a backup way to log in | optional; both or neither | the dummy account's login |
+| `GEMINI_COOKIES` | Gemini Deep Research, logged in as the dummy Google account | for Deep Research | cookies exported as a JSON list (Google blocks automated sign-in, so there is no password option) |
+| `ANTHROPIC_API_KEY` | Claude writing the Deep Research prompt and answering Gemini's questions | optional, recommended for Deep Research | the key from console.anthropic.com |
+| `APIFY_TOKEN` | the optional Apify extra | only if you switch Apify on | the API token from your Apify account |
+
+**Needs no secret:** Meta Ad Library (public pages), the catalogue sync (public store data), and
+`GITHUB_TOKEN` (GitHub provides it automatically).
+
+**Adding them in a sensible order.** Meta Ad Library needs nothing, so start there: run Collect with mode
+`check` and only Meta ads ticked. Then add `INSTAGRAM_COOKIES` and `TIKTOK_COOKIES` and check again. Last, add
+`GEMINI_COOKIES` and `ANTHROPIC_API_KEY`, run `check` with Deep Research ticked, and finally `test_deep_research`.
+
 ## Ads, social posts and deep research (Actions > Collect)
 
 Four more sources, each optional, each capped. They drive a real browser, the way a person would:
@@ -193,12 +235,33 @@ stopped with a code or a puzzle, and the username/password route is only a best-
 expire after days or weeks; when they do, **Check** says "not logged in" and names the secret to refresh.
 
 **Running it.** Every Wednesday by itself (ads and social only; Deep Research never runs on the schedule).
-By hand: Actions > Collect > Run workflow, with three useful boxes:
-- **Dry run** (ticked by default): shows the plan and opens no browser.
-- **Check**: opens each ticked site, confirms the login, and collects a handful of items. It only *opens*
-  Gemini; it never starts a report.
-- **Recon**: saves pictures, each page's HTML and samples of the data each site sends. Download them from
-  the run's **debug** artifact. They show exactly what to change in `browser.yaml`.
+By hand: Actions > Collect > Run workflow, then pick a **mode**:
+
+| Mode | What it does |
+|---|---|
+| `plan` (the default) | shows what would be collected; opens no browser and spends nothing |
+| `check` | opens each ticked site, confirms the login, and collects a handful of items. With Deep Research ticked it also opens the Gemini page and tests Claude's key, but starts no report |
+| `recon` | saves pictures, each page's HTML and samples of the data each site sends; download them from the run's **debug** artifact |
+| `test_deep_research` | runs ONE real, short Deep Research report, including Claude's prompt and answers; the report is saved in the debug artifact, not as collected data |
+| `collect` | the real run: saves the data and updates the Google Sheets |
+
+Tick which of Meta ads, TikTok, Instagram and Deep Research to include (Deep Research is off by default).
+Every run starts with a list of the secrets it can see, marked set or not set (never the values).
+
+**Claude and Deep Research.** With `ANTHROPIC_API_KEY` set, Claude does two jobs. Before the report is
+requested it turns your question, plus what it knows of the brand, into one complete prompt, so Gemini has
+little reason to ask anything. If Gemini asks a clarifying question anyway, Claude answers it from the
+brand context and Gemini carries on. It answers at most `max_rounds` (3) questions per report and makes at
+most `monthly_calls` (60) calls a month; the conversation is saved with the report's record. You can tell
+Claude about the brand with an optional `context:` line under `deep_research:` in the brand's `research.yaml`.
+Without the key the question is sent as written, and a Gemini question ends the report with Gemini's words in the message.
+
+**Apify (an optional extra, off).** Apify runs ready-made scrapers on its own servers and has a free monthly
+credit. It is not used unless you switch it on, either for one run (the Collect workflow's **backend** box:
+`apify` for Apify only, `fallback` for the browser first and Apify only if the browser fails) or for good
+(`collectors.apify.mode` in `research.yaml`: `off`, `fallback` or `always`). It needs `APIFY_TOKEN` and has its own
+caps (100 items a month, 30 a run, and a dollar ceiling per run). When Apify rescues a failed browser run, the run
+still shows red, so you remember the cookies need refreshing. Use mode `check` with backend `apify` to test it.
 
 **Set up by trial, the first time.** The page addresses, button names and login checks in `browser.yaml`
 are first guesses, written without being able to open the live sites. Do **Recon** and **Check** first;
