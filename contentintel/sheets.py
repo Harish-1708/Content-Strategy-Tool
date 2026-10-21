@@ -41,14 +41,14 @@ CHANGE_COLUMNS = ["event_id", "at", "type", "product_id", "title", "handle", "su
 RESEARCH_COLUMNS = ["source_id", "title", "url", "domain", "published", "first_seen", "last_seen",
                     "times_seen", "providers", "purposes", "queries", "best_rank", "snippet"]
 COLLECTED_COLUMNS = ["item_id", "source", "handle", "title", "text", "url", "posted_at", "likes",
-                     "comments", "shares", "views", "media_url", "details", "first_seen", "last_seen", "times_seen",
-                     "queries"]
+                     "comments", "shares", "views", "saves", "reach", "days_running", "variants",
+                     "engagement_pct", "media_url", "details", "first_seen", "last_seen", "times_seen", "queries"]
 STARTER_MANUAL = {PRODUCTS: ["Notes"], RESEARCH: ["Review"], COLLECTED: ["Review"]}   # added only when a tab is brand new
 STAMP = "last_updated"                          # when the tool last changed that row
 
-NUMERIC = {"price_min", "price_max", "price", "compare_at_price"}
+NUMERIC = {"price_min", "price_max", "price", "compare_at_price", "engagement_pct"}
 INTEGER = {"variant_count", "image_count", "times_seen", "best_rank", "likes", "comments", "shares",
-           "views"}
+           "views", "saves", "reach", "days_running", "variants"}
 BOOLEAN = {"excluded", "in_stock", "on_sale", "available"}
 
 _BLANK_TABS = ("Sheet1", "Sheet 1")
