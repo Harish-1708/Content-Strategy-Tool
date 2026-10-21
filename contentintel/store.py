@@ -168,6 +168,27 @@ class Store:
         with open(path, encoding="utf-8") as fh:
             return [json.loads(line) for line in fh if line.strip()]
 
+    def append_collected(self, slug, record):
+        path = self._research_file(slug, "collected.jsonl")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
+
+    def read_collected(self, slug):
+        path = self._research_file(slug, "collected.jsonl")
+        if not path.is_file():
+            return []
+        with open(path, encoding="utf-8") as fh:
+            return [json.loads(line) for line in fh if line.strip()]
+
+    def write_deep_report(self, slug, name, text):
+        if not re.fullmatch(r"[A-Za-z0-9_.-]+\.md", name):
+            raise StoreError(f"unsafe report name {name!r}")
+        path = brand_data_dir(self.data_dir, slug) / "research" / "deep" / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding="utf-8")
+        return path
+
     # --- research credits are shared by every brand (one key, one budget) ----------------
     def load_usage(self):
         return _read(self.data_dir / "_shared" / "research_usage.json",
