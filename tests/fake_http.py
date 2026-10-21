@@ -15,7 +15,7 @@ class FakeHttp:
 
     def __call__(self, method, url, *, params=None, json_body=None, headers=None, timeout=30):
         self.calls.append({"method": method, "url": url, "params": params,
-                           "json": json_body, "headers": headers})
+                           "json": json_body, "headers": headers, "timeout": timeout})
         for route_method, prefix, responses in self.routes:
             if route_method == method and url.startswith(prefix):
                 response = responses.pop(0) if len(responses) > 1 else responses[0]
