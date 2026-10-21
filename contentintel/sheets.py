@@ -30,19 +30,25 @@ import yaml
 from gspread.utils import ValueInputOption, ValueRenderOption
 
 from .export import PRODUCT_COLUMNS, VARIANT_COLUMNS, product_rows, variant_rows
+from .collectors import collected_rows
 from .research import research_sources
 from .sync import catalogue_state, describe_event
 
 PRODUCTS, VARIANTS, CHANGES, STATUS = "Products", "Variants", "Changes", "Status"
 RESEARCH = "Research"
+COLLECTED = "Collected"
 CHANGE_COLUMNS = ["event_id", "at", "type", "product_id", "title", "handle", "summary"]
 RESEARCH_COLUMNS = ["source_id", "title", "url", "domain", "published", "first_seen", "last_seen",
                     "times_seen", "providers", "purposes", "queries", "best_rank", "snippet"]
-STARTER_MANUAL = {PRODUCTS: ["Notes"], RESEARCH: ["Review"]}   # added only when a tab is brand new
+COLLECTED_COLUMNS = ["item_id", "source", "handle", "title", "text", "url", "posted_at", "likes",
+                     "comments", "shares", "views", "media_url", "first_seen", "last_seen", "times_seen",
+                     "queries"]
+STARTER_MANUAL = {PRODUCTS: ["Notes"], RESEARCH: ["Review"], COLLECTED: ["Review"]}   # added only when a tab is brand new
 STAMP = "last_updated"                          # when the tool last changed that row
 
 NUMERIC = {"price_min", "price_max", "price", "compare_at_price"}
-INTEGER = {"variant_count", "image_count", "times_seen", "best_rank"}
+INTEGER = {"variant_count", "image_count", "times_seen", "best_rank", "likes", "comments", "shares",
+           "views"}
 BOOLEAN = {"excluded", "in_stock", "on_sale", "available"}
 
 _BLANK_TABS = ("Sheet1", "Sheet 1")
@@ -518,6 +524,15 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
         _sync_table(ws, tab=RESEARCH, columns=RESEARCH_COLUMNS, rows_by_key=rows,
                     key_col="source_id", report=report, dry_run=dry_run,
                     starter_manual=STARTER_MANUAL[RESEARCH])
+
+    items = collected_rows(store.read_collected(brand.slug))
+    if items:                                    # ads, social posts and deep research reports
+        ws = _ensure_tab(spreadsheet, COLLECTED, report, dry_run, created)
+        rows = {iid: {c: _typed(c, "" if row[c] is None else row[c]) for c in COLLECTED_COLUMNS}
+                for iid, row in items.items()}
+        _sync_table(ws, tab=COLLECTED, columns=COLLECTED_COLUMNS, rows_by_key=rows,
+                    key_col="item_id", report=report, dry_run=dry_run,
+                    starter_manual=STARTER_MANUAL[COLLECTED])
 
     ws = _ensure_tab(spreadsheet, STATUS, report, dry_run, created)
     if ws is not None and not dry_run:
