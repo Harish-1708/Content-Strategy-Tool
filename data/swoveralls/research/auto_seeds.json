@@ -1,0 +1,43 @@
+{
+ "generated_at": "2026-10-21T09:05:22Z",
+ "model": "claude-sonnet-5-5",
+ "profile": "Brand: Swoveralls (swoveralls.com), a shopify store with 61 products on sale or coming soon.\ncore: 43 products, $43.99-$159. Families: Swoveralls, Swovie Shorts, Comfyalls, Corduroy Swoveralls, Grid Fleece Swoveralls, Kids Swoveralls. 28 limited edition, 26 new, 7 on sale.\nkids: 4 products, $49. Families: Kids Swoveralls. 4 new.\nmerch: 14 products, $25-$36. Families: Sidekick Tee - Dancing Skeletons, Sidekick Tee - Swoveralls, The Free Your Waistband Beanie, The Sidekick Tee, Sidekick Tee - Good at Naps, Sidekick Tee - Jimothy, Sidekick Tee - Trash Panda, The Free Your Waistband Hat, The Good At Naps Hat, The Sidekick Tee in Marble Heather. 3 new.\nMaterials seen: cotton, spandex, polyester.\nPocket claims: 5, 6, 7.\nAudiences hinted: kids (6 products).",
+ "profile_hash": "87dc055c1953e222",
+ "seeds": {
+  "context": "Swoveralls sells sweatshirt-style overalls and related loungewear on Shopify, with 61 products on sale or coming soon. The core range runs $43.99-$159 and includes Swoveralls, Swovie Shorts, Comfyalls, Corduroy Swoveralls and Grid Fleece Swoveralls, with many limited edition and new releases. Kids Swoveralls are $49, and graphic merch (Sidekick Tees, hats, beanies) is $25-$36. Materials seen are cotton, spandex and polyester, and the 'Free Your Waistband' messaging points to a comfort-first, playful brand voice.",
+  "instagram_hashtags": [
+   "swoveralls",
+   "overallsoutfit",
+   "loungewearstyle",
+   "comfyfashion",
+   "cozyvibes"
+  ],
+  "keywords": {
+   "adjacent": [
+    "matching loungewear",
+    "comfy jumpsuit"
+   ],
+   "cross_industry": [
+    "Gymshark",
+    "Oodie"
+   ],
+   "direct": [
+    "sweatshirt overalls",
+    "fleece overalls",
+    "corduroy overalls",
+    "womens overalls"
+   ]
+  },
+  "questions": [
+   "Which ad hooks, formats and angles are performing best right now on Meta and TikTok across the best consumer brands in any industry (apparel, DTC, lifestyle, food, tech), and how could Swoveralls adapt them to its own comfort-first, playful product and voice, including limited edition drops, the 'Free Your Waistband' message and graphic merch?",
+   "How do leading overalls, loungewear and comfort-clothing brands such as Oodie and similar wearable-blanket or relaxed-fit labels advertise on Meta and TikTok (hooks, UGC styles, offers, limited-drop urgency, kids and family angles), and what gaps could Swoveralls exploit?"
+  ],
+  "tiktok_hashtags": [
+   "swoveralls",
+   "overalls",
+   "comfyoutfit",
+   "loungewear",
+   "cozyfashion"
+  ]
+ }
+}
