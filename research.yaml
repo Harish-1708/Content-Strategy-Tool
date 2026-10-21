@@ -36,18 +36,37 @@ defaults:
 # ---- collectors: competitor ads, TikTok, Instagram and Gemini Deep Research -----------------------
 # These drive a real browser (see browser.yaml): Meta Ad Library's public pages with no login,
 # Instagram and TikTok as a dummy account, and Gemini Deep Research in the Gemini web app as a dummy
-# Google account (a report takes 10+ minutes). The caps keep every run small and gentle:
-#   monthly_items   most ads/posts collected per calendar month, across all brands
-#   items_per_run   most ads/posts collected in one run
-#   monthly_tasks   most Deep Research reports per month (each uses the account's own daily quota)
-#   tasks_per_run   most Deep Research reports in one run
-#   cache_days      the same seeds are not collected again inside this many days
+# Google account (a report takes 10+ minutes). The caps keep every run small and gentle.
 collectors:
   browser:
-    monthly_items: 150
-    items_per_run: 30
-    cache_days: 3
+    monthly_items: 150      # most ads/posts collected per calendar month, across all brands
+    items_per_run: 30       # most ads/posts collected in one run
+    cache_days: 3           # the same seeds are not collected again inside this many days
   gemini:
-    monthly_tasks: 2
-    tasks_per_run: 1
+    monthly_tasks: 2        # most Deep Research reports per month (each uses the account's own daily quota)
+    tasks_per_run: 1        # most Deep Research reports in one run
     cache_days: 14
+  # Apify: ready-made scrapers on Apify's servers, an OPTIONAL extra for ads, TikTok and Instagram.
+  # It is off. Its free plan includes a small monthly credit; every result is charged.
+  #   mode: off       never used (the default)
+  #   mode: fallback  used only when the browser route fails (expired cookies, a security check, nothing readable)
+  #   mode: always    used instead of the browser
+  # The Collect workflow's "backend" box can also switch it on for one run. Needs the APIFY_TOKEN secret.
+  apify:
+    mode: off
+    monthly_items: 100
+    items_per_run: 30
+    max_cost_per_run_usd: 1.0     # a hard dollar ceiling Apify enforces for a single run
+    actors:                       # swap a scraper for another here without touching any code
+      meta_ads: apify/facebook-ads-scraper
+      tiktok: clockworks/tiktok-scraper
+      instagram: apify/instagram-hashtag-scraper
+  # Claude helps Gemini Deep Research: it turns your question into a complete prompt, and answers any
+  # clarifying question Gemini asks before it starts. Needs the ANTHROPIC_API_KEY secret; without it the
+  # question is sent as written and Gemini's questions go unanswered.
+  claude:
+    model: claude-sonnet-5-5
+    prepare_prompt: true          # false sends your question exactly as written
+    max_rounds: 3                 # most questions from Gemini answered per report
+    monthly_calls: 60             # most Claude calls per month
+    max_tokens: 700
