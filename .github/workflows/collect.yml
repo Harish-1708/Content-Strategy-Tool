@@ -2,12 +2,17 @@
 # dummy accounts) and, when ticked, Gemini Deep Research reports (the Gemini web app, logged in as a
 # dummy Google account, waiting the 10+ minutes a report takes), for the seeds in each brand's
 # research.yaml, then adds them to each brand's Google Sheet (Collected tab).
-# Runs every Wednesday by itself (ads and social only). To run it now: Actions > Collect > Run workflow.
-#   Dry run (ticked by default): shows the plan, opens no browser.
-#   Check: opens each ticked site, confirms the login, and collects a handful of items.
-#   Recon: saves pictures, page HTML and data samples from each site. Download them from the run's
-#          "debug" artifact; they show exactly what to change in browser.yaml.
-# Logins come from repository secrets holding the dummy accounts' cookies; see browser.yaml.
+# Runs every Wednesday by itself (ads and social only). To run it by hand: Actions > Collect > Run workflow.
+# Pick a MODE:
+#   plan                 shows what would be collected; opens no browser, spends nothing (the default)
+#   check                opens each ticked site, confirms the login, collects a handful of items; with
+#                        Deep Research ticked it also checks the Gemini page and Claude's key (no report started)
+#   recon                saves pictures, page HTML and data samples (download the "debug" artifact)
+#   test_deep_research   runs ONE real short Deep Research report, including Claude's prompt and answers
+#   collect              the real run: saves data and updates the Google Sheets
+# Pick a BACKEND for ads and social: auto follows research.yaml (browser unless you switched Apify on),
+# browser, apify (Apify only; needs APIFY_TOKEN), or fallback (browser first, Apify if it fails).
+# Logins and keys come from repository secrets; the README lists every one.
 name: Collect
 
 on:
@@ -19,6 +24,11 @@ on:
         description: "Brand folder name (for example swoveralls) or all"
         required: true
         default: "all"
+      mode:
+        description: "What to do"
+        type: choice
+        options: [plan, check, recon, test_deep_research, collect]
+        default: plan
       use_meta_ads:
         description: "Meta Ad Library ads (public pages, no login)"
         type: boolean
@@ -32,21 +42,14 @@ on:
         type: boolean
         default: true
       use_deep_research:
-        description: "Gemini Deep Research (dummy Google account; takes 10+ minutes per report)"
+        description: "Gemini Deep Research (dummy Google account; 10+ minutes per report)"
         type: boolean
         default: false
-      check:
-        description: "Open each ticked site, confirm the login, collect a handful (ignores Dry run)"
-        type: boolean
-        default: false
-      recon:
-        description: "Save pictures, page HTML and data samples for tuning (ignores Dry run)"
-        type: boolean
-        default: false
-      dry_run:
-        description: "Show the plan and open no browser"
-        type: boolean
-        default: true
+      backend:
+        description: "How to collect ads and social posts"
+        type: choice
+        options: [auto, browser, apify, fallback]
+        default: auto
 
 permissions:
   contents: write
@@ -73,7 +76,7 @@ jobs:
       - run: pip install -r requirements.txt
 
       - name: Install the browser
-        if: inputs.dry_run != true || inputs.check == true || inputs.recon == true
+        if: inputs.mode != 'plan'
         run: |
           pip install -r requirements-browser.txt
           playwright install --with-deps chromium
@@ -88,9 +91,8 @@ jobs:
           USE_TIKTOK: ${{ inputs.use_tiktok }}
           USE_INSTAGRAM: ${{ inputs.use_instagram }}
           USE_DEEP_RESEARCH: ${{ inputs.use_deep_research }}
-          CHECK: ${{ inputs.check }}
-          RECON: ${{ inputs.recon }}
-          DRY_RUN: ${{ inputs.dry_run }}
+          MODE: ${{ inputs.mode }}
+          BACKEND: ${{ inputs.backend }}
           INSTAGRAM_COOKIES: ${{ secrets.INSTAGRAM_COOKIES }}
           INSTAGRAM_USERNAME: ${{ secrets.INSTAGRAM_USERNAME }}
           INSTAGRAM_PASSWORD: ${{ secrets.INSTAGRAM_PASSWORD }}
@@ -98,6 +100,8 @@ jobs:
           TIKTOK_USERNAME: ${{ secrets.TIKTOK_USERNAME }}
           TIKTOK_PASSWORD: ${{ secrets.TIKTOK_PASSWORD }}
           GEMINI_COOKIES: ${{ secrets.GEMINI_COOKIES }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
         run: |
           set +e
           args=(--all)
@@ -107,15 +111,17 @@ jobs:
           if [ "$USE_TIKTOK" != "false" ]; then sources="$sources,tiktok"; fi
           if [ "$USE_INSTAGRAM" != "false" ]; then sources="$sources,instagram"; fi
           if [ "$USE_DEEP_RESEARCH" = "true" ]; then sources="$sources,deep_research"; fi
-          if [ -z "$sources" ]; then echo "No collector was ticked; nothing to do."; exit 0; fi
-          if [ "$RECON" = "true" ]; then
-            args=(--recon --sources "${sources#,}")
-          elif [ "$CHECK" = "true" ]; then
-            args=(--check --sources "${sources#,}")
-          else
-            args+=(--sources "${sources#,}")
-            if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
-          fi
+          MODE="${MODE:-collect}"              # the weekly schedule has no inputs: it is a real run
+          if [ "$MODE" != "test_deep_research" ] && [ -z "$sources" ]; then echo "No collector was ticked; nothing to do."; exit 0; fi
+          case "$MODE" in
+            plan)               args+=(--sources "${sources#,}" --dry-run) ;;
+            check)              args=(--check --sources "${sources#,}") ;;
+            recon)              args=(--recon --sources "${sources#,}") ;;
+            test_deep_research) args=(--test-deep-research) ;;
+            collect)            args+=(--sources "${sources#,}") ;;
+            *) echo "Unknown mode: $MODE"; exit 1 ;;
+          esac
+          args+=(--backend "${BACKEND:-auto}")
           { echo "### Collect"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           python -m contentintel collect "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           code=${PIPESTATUS[0]}
@@ -133,7 +139,7 @@ jobs:
 
       - name: Update Google Sheets
         id: sheets
-        if: inputs.dry_run != true && inputs.check != true && inputs.recon != true
+        if: inputs.mode == 'collect' || inputs.mode == ''
         continue-on-error: true
         shell: bash
         env:
