@@ -30,7 +30,7 @@ AP_TT = {"id": "8001", "text": "apify tiktok", "webVideoUrl": "https://www.tikto
          "videoMeta": {"coverUrl": "https://img.example/c.jpg"}}
 AP_IG = {"id": "9001", "shortCode": "abc", "url": "https://www.instagram.com/p/abc/?utm=x", "caption": "Weekend overalls", "ownerUsername": "acme",
          "likesCount": 50, "commentsCount": 3, "videoPlayCount": 99, "timestamp": "2026-10-01T10:00:00.000Z", "displayUrl": "https://img.example/i.jpg"}
-ONE = {"ads": {"keywords": ["a"]}, "social": {"tiktok": {"hashtags": ["a"]}, "instagram": {"hashtags": ["a"]}}}
+ONE = {"track_own_brand": False, "ads": {"keywords": ["a"]}, "social": {"tiktok": {"hashtags": ["a"]}, "instagram": {"hashtags": ["a"]}}}
 SOURCES = ("meta_ads", "tiktok", "instagram")
 
 
@@ -46,7 +46,7 @@ def store(tmp_path):
 
 @pytest.fixture
 def settings():
-    return C.load_collector_settings("does-not-exist.yaml")
+    return replace(C.load_collector_settings("does-not-exist.yaml"), benchmarks_enabled=False)
 
 
 def apify_world(ads=None, tt=None, ig=None):
@@ -58,7 +58,7 @@ def apify_world(ads=None, tt=None, ig=None):
 
 
 def run(store, tmp_path, brand, cfg, settings, factory, *, apify, backend, data=ONE, sources=SOURCES, creds=CREDS, dry_run=False):
-    write_research(tmp_path, brand, data)
+    write_research(tmp_path, brand, {"track_own_brand": False, **data})
     return C.run_collect([brand], store, browser_factory=factory, creds=creds, settings=settings, browser_cfg=cfg, ledger_cls=R.Ledger,
                          sources=list(sources), now=NOW, run_id="run1", root=str(tmp_path / "brands"), dry_run=dry_run, apify=apify,
                          backend=backend)
