@@ -30,6 +30,9 @@ catalogue:
     Hat: merch
     T-Shirt: merch
     Sweatshirt: merch
+  # Who a product is for beats its Shopify product type: two Kids Swoveralls are filed under "Swoveralls".
+  category_by_audience:
+    kids: kids
   audience:
     tags: {Kids: kids, badge_KIDS: kids}
     title_patterns: {"^Kids\\b": kids}
