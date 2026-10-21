@@ -404,7 +404,7 @@ def test_meta_ads_need_no_login_and_dismiss_a_cookie_banner(cfg):
     b = FakeBrowser({"https://www.facebook.com/ads/library": {"json": [META_JSON]}}, clickable=set(site(cfg, "meta_ads")["consent_any"]))
     task = C.Task("meta_ads", "t", {"urls": [C.ad_library_url("overalls", "us", "active")]}, "k")
     rows, stats = run_task(cfg, b, task, 10)
-    assert [r["item_id"] for r in rows] == ["meta_ads:111", "meta_ads:112"] and stats == {"json": 2, "links": 0, "state": "ok"}
+    assert [r["item_id"] for r in rows] == ["meta_ads:111", "meta_ads:112"] and stats == {"json": 2, "links": 0, "state": "ok", "rate_limited": False}
     assert len(b.opened) == 1 and b.clicks == [site(cfg, "meta_ads")["consent_any"][0]] and b.waits == [4]
 
 
@@ -792,7 +792,7 @@ def test_recon_saves_samples_of_what_each_site_sends(tmp_path, cfg):
     import json
     samples = json.loads((tmp_path / "debug" / "recon-instagram-network.json").read_text())
     assert samples[0]["type"] == "dict" and samples[0]["keys"] == ["media"] and len(samples[0]["sample"]) <= 1500 and samples[0]["bytes"] > 0
-    assert any("instagram: login looks ok" in l for l in lines) and any("readable items found in them: 2" in l for l in lines)
+    assert any("instagram: login looks ok" in l for l in lines) and any("readable items: 2 (2 in the responses, 0 in the page)" in l for l in lines)
     assert "recon-instagram" in f.browsers["instagram"].shots and (tmp_path / "debug" / "recon-meta_ads-network.json").is_file()
     assert COOKIE_MARKER not in "\n".join(lines)
 
