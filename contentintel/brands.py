@@ -24,7 +24,7 @@ DEFAULT_GATE = {
 _TOP_KEYS = {"slug", "name", "platform", "domain", "category_schema",
              "catalogue", "facts", "gate"}
 _CATALOGUE_KEYS = {"exclude", "active_tag", "status_rules", "flags",
-                   "category_by_type", "audience", "family"}
+                   "category_by_type", "category_by_audience", "audience", "family"}
 _EXCLUDE_KEYS = {"product_types", "title_patterns", "tags"}
 _STATUS_NAMES = {"coming_soon", "pre_order"}
 MANUAL_STATUSES = ("active", "inactive", "coming_soon", "pre_order")
@@ -109,6 +109,7 @@ def _normalise_catalogue(cat, slug):
             for name, rule in (cat.get("flags") or {}).items()
         },
         "category_by_type": dict(cat.get("category_by_type") or {}),
+        "category_by_audience": dict(cat.get("category_by_audience") or {}),
         "audience": {
             "tags": dict((cat.get("audience") or {}).get("tags") or {}),
             "title_patterns": dict((cat.get("audience") or {}).get("title_patterns") or {}),
@@ -119,6 +120,15 @@ def _normalise_catalogue(cat, slug):
     for name, rule in list(out["status_rules"].items()) + list(out["flags"].items()):
         _check_patterns(rule["title_patterns"], f"{slug} {name}.title_patterns")
     _check_patterns(list(out["audience"]["title_patterns"]), f"{slug} audience.title_patterns")
+    for audience, category in out["category_by_audience"].items():
+        if not isinstance(audience, str) or not isinstance(category, str) or not audience.strip() or not category.strip():
+            raise BrandError(f"{slug}: category_by_audience must map an audience name to a category name, "
+                             f"got {audience!r}: {category!r}")
+    known = set(out["audience"]["tags"].values()) | set(out["audience"]["title_patterns"].values())
+    unknown = sorted(set(out["category_by_audience"]) - known)
+    if unknown:
+        raise BrandError(f"{slug}: category_by_audience names {unknown}, but no audience rule produces that audience "
+                         f"(rules produce: {sorted(known) or 'none'})")
     return out
 
 
