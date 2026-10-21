@@ -99,6 +99,8 @@ def test_a_settings_file_changes_only_what_it_names(tmp_path):
     ({"defaults": {"results_per_query": 11}}, "results_per_query"),
     ({"defaults": {"results_per_query": 2.5}}, "results_per_query"),
     ({"defaults": {"max_queries_per_run": 0}}, "max_queries_per_run"),
+    ({"defaults": {"max_queries_per_run": 12.5}}, "max_queries_per_run"),
+    ({"defaults": {"cache_days": 1.5}}, "cache_days"),
     ({"defaults": {"country": "usa"}}, "country"),
     ({"defaults": {"recency": "decade"}}, "recency"),
 ])
@@ -998,3 +1000,194 @@ def test_an_empty_check_answer_shows_what_the_service_sent_back(store, settings)
     text = R.format_check_report([web, news])
     assert "answered but returned no results (1 credit) [response contained: searchParameters, news (0)]" in text
     assert "organic (3)" not in text                    # working searches stay uncluttered
+
+
+# --- compare mode: one search, every ticked service, within a cap -----------------------------------
+
+def _hosts(names):
+    return [f"https://{h}.example.com/p" for h in names]
+
+
+def overlap_world():
+    """Three services that partly agree: x3 is found by all; x2 by two; the rest by one each."""
+    http = FakeHttp()
+    http.on("POST", "https://google.serper.dev/search", (200, {"organic": [
+        {"title": u, "link": u, "snippet": "s", "position": i}
+        for i, u in enumerate(_hosts(["x1", "x2", "x3", "x4"]), 1)]}))
+    http.on("POST", "https://api.tavily.com/search", (200, {"results": [
+        {"title": u, "url": u, "content": "c"} for u in _hosts(["x2", "x3", "x5"])]}))
+    http.on("GET", "https://api.tavily.com/usage", (200, {"key": {"usage": 0, "limit": 1000}}))
+    http.on("GET", "https://serpapi.com/search.json", (200, {"organic_results": [
+        {"position": i, "title": u, "link": u, "snippet": "s"} for i, u in enumerate(_hosts(["x3", "x6"]), 1)]}))
+    http.on("GET", "https://serpapi.com/account", (200, {"total_searches_left": 250}))
+    return http, P.build_providers(KEYS, http=http, sleep=lambda s: None)
+
+
+def queries(tmp_path, swov, *names):
+    return write_research(tmp_path, swov, {"queries": explicit(*names), "auto": {"brand": False}})
+
+
+def test_compare_mode_runs_each_search_on_every_service(tmp_path, store, swov, settings):
+    root = queries(tmp_path, swov, "q1", "q2")
+    http, found = overlap_world()
+    result = go(store, [swov], found, settings, root=root, compare=True)
+    assert used_providers(http) == ["serpapi", "serper_dev", "tavily"] * 2
+    assert store.load_usage()["months"]["2026-10"] == {"serpapi": 2, "serper_dev": 2, "tavily": 2}
+    records = store.read_searches("swoveralls")
+    assert len(records) == 6 and {r["mode"] for r in records} == {"compare"}
+    assert {r["provider"] for r in records} == {"serpapi", "serper_dev", "tavily"}
+    assert len(result.compare) == 2 and not result.problems
+    (q, label, credits, _), *_ = result.brands["swoveralls"].searched
+    assert label == "serpapi+serper_dev+tavily" and credits == 3
+
+
+def test_compare_mode_only_compares_the_first_few_searches(tmp_path, store, swov, settings):
+    root = queries(tmp_path, swov, "q1", "q2", "q3", "q4")
+    http, found = overlap_world()
+    result = go(store, [swov], found, settings, root=root, compare=True, compare_limit=2)
+    assert used_providers(http) == ["serpapi", "serper_dev", "tavily"] * 2 + ["serper_dev", "serper_dev"]
+    assert len(result.compare) == 2 and len(result.brands["swoveralls"].searched) == 4
+
+
+def test_compare_mode_defaults_to_the_limit_in_the_settings_file(tmp_path, store, swov, settings):
+    root = queries(tmp_path, swov, *[f"q{i}" for i in range(7)])
+    http, found = overlap_world()
+    result = go(store, [swov], found, settings, root=root, compare=True)
+    assert len(result.compare) == 5 and len(searches_only(http)) == 5 * 3 + 2
+
+
+def test_compare_mode_respects_each_services_cap(tmp_path, store, swov, settings):
+    root = queries(tmp_path, swov, "q1", "q2")
+    http, found = overlap_world()
+    result = go(store, [swov], found, with_caps(settings, serper_dev=(1, None, 0)), root=root, compare=True)
+    assert len(searches_only(http)) == 3 + 2
+    assert "no credits left" in result.compare[1]["failures"]["serper_dev"]
+    assert store.load_usage()["months"]["2026-10"]["serper_dev"] == 1
+
+
+def test_compare_mode_reuses_fresh_answers_instead_of_paying_again(tmp_path, store, swov, settings):
+    root = queries(tmp_path, swov, "q1", "q2")
+    http, found = overlap_world()
+    go(store, [swov], found, settings, root=root, compare=True)
+    again = go(store, [swov], found, settings, root=root, compare=True, now="2026-10-22T07:00:00Z")
+    assert len(searches_only(http)) == 6
+    assert [e["reused"] for e in again.compare] == [True, True] and len(again.brands["swoveralls"].cached) == 2
+
+
+def test_compare_mode_only_pays_for_services_that_lack_a_fresh_answer(tmp_path, store, swov, settings):
+    root = queries(tmp_path, swov, "q1")
+    http, found = overlap_world()
+    two = {k: v for k, v in found.items() if k != "serpapi"}
+    go(store, [swov], two, settings, root=root, compare=True)
+    result = go(store, [swov], found, settings, root=root, compare=True, now="2026-10-21T07:00:00Z")
+    assert used_providers(http) == ["serper_dev", "tavily", "serpapi"]
+    (entry,) = result.compare
+    assert entry["reused"] is False and sorted(entry["answers"]) == ["serpapi", "serper_dev", "tavily"]
+    assert all(entry["answers"][n] for n in entry["answers"])
+
+
+def test_compare_mode_needs_at_least_two_services(tmp_path, store, swov, settings):
+    root = queries(tmp_path, swov, "q1", "q2")
+    http, found = overlap_world()
+    result = go(store, [swov], {"serper_dev": found["serper_dev"]}, settings, root=root, compare=True)
+    assert result.compare == [] and used_providers(http) == ["serper_dev", "serper_dev"]
+
+
+def test_compare_mode_carries_on_when_one_service_fails(tmp_path, store, swov, settings):
+    root = queries(tmp_path, swov, "q1")
+    http, found = overlap_world()
+    http.routes = [r for r in http.routes if "tavily.com/search" not in r[1]]
+    http.on("POST", "https://api.tavily.com/search", (503, "down"))
+    result = go(store, [swov], found, settings, root=root, compare=True)
+    (entry,) = result.compare
+    assert sorted(entry["answers"]) == ["serpapi", "serper_dev"]
+    assert "gave up after retries" in entry["failures"]["tavily"] and not result.problems
+    assert store.load_usage()["months"]["2026-10"] == {"serpapi": 1, "serper_dev": 1}
+
+
+def test_compare_mode_switches_a_rejected_service_off_for_the_rest_of_the_run(tmp_path, store, swov, settings):
+    root = queries(tmp_path, swov, "q1", "q2")
+    http, found = overlap_world()
+    http.routes = [r for r in http.routes if "serper.dev" not in r[1]]
+    http.on("POST", "https://google.serper.dev/search", (403, {"message": "Unauthorized."}))
+    result = go(store, [swov], found, settings, root=root, compare=True)
+    assert result.notes_with_problems == ["serper_dev"] and result.problems
+    assert used_providers(http).count("serper_dev") == 1
+    assert all("serper_dev" not in e["answers"] for e in result.compare)
+
+
+def test_compare_summary_counts_what_each_service_found_alone_and_together(tmp_path, store, swov, settings):
+    root = queries(tmp_path, swov, "q1")
+    http, found = overlap_world()
+    result = go(store, [swov], found, settings, root=root, compare=True)
+    totals, pairs = R.compare_summary(result.compare)
+    assert totals == {"serpapi": {"searches": 1, "results": 2, "only_here": 1},
+                      "serper_dev": {"searches": 1, "results": 4, "only_here": 2},
+                      "tavily": {"searches": 1, "results": 3, "only_here": 1}}
+    assert pairs == {("serpapi", "serper_dev"): {"shared": 1, "union": 5},
+                     ("serpapi", "tavily"): {"shared": 1, "union": 4},
+                     ("serper_dev", "tavily"): {"shared": 2, "union": 5}}
+
+
+def test_compare_report_reads_in_plain_english(tmp_path, store, swov, settings):
+    root = queries(tmp_path, swov, "q1")
+    http, found = overlap_world()
+    text = R.format_research_report(go(store, [swov], found, settings, root=root, compare=True))
+    assert "Comparison of services" in text and '[web] "q1"' in text
+    assert "serper_dev: 4 results, 2 only this service found" in text
+    assert "tavily: 3 results, 1 only this service found" in text
+    assert "found by every service: 1" in text
+    assert "serpapi vs serper_dev: 1 pages in common (20% of everything either found)" in text
+    assert "serper_dev: 4 results over 1 searches, 2 found by no other service" in text
+
+
+def test_compare_mode_in_a_dry_run_spends_nothing_and_says_so(tmp_path, store, swov, settings):
+    root = queries(tmp_path, swov, "q1")
+    http, found = overlap_world()
+    result = go(store, [swov], found, settings, root=root, compare=True, dry_run=True)
+    assert searches_only(http) == [] and not (tmp_path / "data").exists()
+    assert all(v is None for v in result.compare[0]["answers"].values())
+    assert "serpapi: would be searched" in R.format_research_report(result)
+
+
+@pytest.mark.parametrize("bad", [0, -1, 2.5, True, "five"])
+def test_compare_queries_must_be_a_positive_whole_number(tmp_path, bad):
+    path = tmp_path / "research.yaml"
+    path.write_text(yaml.safe_dump({"defaults": {"compare_queries": bad}}))
+    with pytest.raises(R.ResearchError, match="compare_queries"):
+        R.load_settings(path)
+
+
+def test_compare_queries_can_be_changed_in_the_settings_file(tmp_path):
+    path = tmp_path / "research.yaml"
+    path.write_text(yaml.safe_dump({"defaults": {"compare_queries": 2}}))
+    assert R.load_settings(path).compare_queries == 2
+
+
+def test_cli_compare_runs_the_searches_on_every_service(cli_env, capsys):
+    http, run = cli_env
+    assert run("--brand", "swoveralls", "--compare") == 0
+    out = capsys.readouterr().out
+    assert len(searches_only(http)) == 9 and "Comparison of services" in out
+
+
+def test_cli_compare_queries_limits_how_many_are_compared(cli_env, capsys):
+    http, run = cli_env
+    assert run("--brand", "swoveralls", "--compare", "--compare-queries", "1") == 0
+    assert len(searches_only(http)) == 3 + 2
+
+
+def test_cli_compare_with_one_service_warns_and_runs_normally(cli_env, capsys):
+    http, run = cli_env
+    assert run("--brand", "swoveralls", "--compare", "--providers", "tavily") == 0
+    out = capsys.readouterr().out
+    assert "::warning::Compare mode needs at least two services" in out
+    assert len(searches_only(http)) == 3 and "Comparison of services" not in out
+
+
+def test_the_research_workflow_offers_compare_and_it_is_on_by_default():
+    text = open(".github/workflows/research.yml", encoding="utf-8").read()
+    data = yaml.safe_load(text)
+    inputs = (data.get("on") or data.get(True))["workflow_dispatch"]["inputs"]
+    assert inputs["compare"]["default"] is True and "compare_queries" in inputs
+    assert "--compare" in text and "--compare-queries" in text
