@@ -9,6 +9,8 @@ Posts and ads are read from the data each site sends to its own page (found by s
 renamed wrapper does not break it), with the page's links as a fallback. Every run is capped
 and paced. Nothing here knows about Playwright: that lives in browser.py.
 """
+import copy
+import collections
 import hashlib
 import json
 import re
@@ -16,7 +18,7 @@ from contextlib import ExitStack
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import quote, quote_plus
+from urllib.parse import parse_qs, quote, quote_plus, unquote, urlsplit
 
 import yaml
 
@@ -48,7 +50,10 @@ DEFAULT_COLLECTORS = {
               "actors": DEFAULT_APIFY_ACTORS},
     "claude": {"model": "claude-sonnet-5-5", "monthly_calls": 60, "max_rounds": 3, "max_tokens": 700,
                "prepare_prompt": True},
+    "auto_seeds": {"enabled": True, "refresh_days": 30, "max_keywords": 8, "max_hashtags": 5, "max_questions": 2,
+                   "scopes": ["direct", "adjacent", "cross_industry"]},
 }
+AUTO_SCOPES = ("direct", "adjacent", "cross_industry")
 APIFY_MODES = ("off", "fallback", "always")
 BACKENDS = ("auto", "browser", "apify", "fallback")
 
@@ -71,6 +76,12 @@ class CollectorSettings:
     claude_max_rounds: int
     claude_max_tokens: int
     claude_prepare_prompt: bool
+    auto_enabled: bool
+    auto_refresh_days: int
+    auto_max_keywords: int
+    auto_max_hashtags: int
+    auto_max_questions: int
+    auto_scopes: tuple
 
 
 def _count(value, where, minimum=0, whole=True):
@@ -101,6 +112,12 @@ def load_collector_settings(path="research.yaml"):
     for name, section in part.items():
         _keys(section, DEFAULT_COLLECTORS[name], f"collectors.{name}")
     browser, gemini, apify, claude = part["browser"], part["gemini"], part["apify"], part["claude"]
+    auto = part["auto_seeds"]
+    if not isinstance(auto["enabled"], bool):
+        raise CollectError("collectors.auto_seeds.enabled must be true or false")
+    scopes = auto["scopes"]
+    if not isinstance(scopes, list) or not scopes or any(s not in AUTO_SCOPES for s in scopes):
+        raise CollectError(f"collectors.auto_seeds.scopes must be a list of: {', '.join(AUTO_SCOPES)}")
     actors = {**DEFAULT_APIFY_ACTORS, **((given.get("apify") or {}).get("actors") or {})}
     _keys(actors, DEFAULT_APIFY_ACTORS, "collectors.apify.actors")
     for name, actor in actors.items():
@@ -132,7 +149,12 @@ def load_collector_settings(path="research.yaml"):
         claude_monthly_calls=_count(claude["monthly_calls"], "collectors.claude.monthly_calls"),
         claude_max_rounds=_count(claude["max_rounds"], "collectors.claude.max_rounds"),
         claude_max_tokens=_count(claude["max_tokens"], "collectors.claude.max_tokens", 50),
-        claude_prepare_prompt=claude["prepare_prompt"])
+        claude_prepare_prompt=claude["prepare_prompt"], auto_enabled=auto["enabled"],
+        auto_refresh_days=_count(auto["refresh_days"], "collectors.auto_seeds.refresh_days", 1),
+        auto_max_keywords=_count(auto["max_keywords"], "collectors.auto_seeds.max_keywords", 1),
+        auto_max_hashtags=_count(auto["max_hashtags"], "collectors.auto_seeds.max_hashtags", 1),
+        auto_max_questions=_count(auto["max_questions"], "collectors.auto_seeds.max_questions"),
+        auto_scopes=tuple(scopes))
 
 
 def effective_backend(requested, settings):
@@ -179,12 +201,16 @@ def parse_collect_config(data, where):
     _keys(tiktok, ("hashtags", "profiles", "searches"), f"{where} social.tiktok")
     instagram = social.get("instagram") or {}
     _keys(instagram, ("hashtags",), f"{where} social.instagram")
+    auto_seeds = data.get("auto_seeds", True)
+    if not isinstance(auto_seeds, bool):
+        raise CollectError(f"{where} auto_seeds must be true or false")
     deep = data.get("deep_research") or {}
     _keys(deep, ("questions", "context"), f"{where} deep_research")
     context = deep.get("context") or ""
     if not isinstance(context, str):
         raise CollectError(f"{where} deep_research.context must be text")
     return {
+        "auto_seeds": auto_seeds,
         "ads": {"country": country.upper(), "status": status, "pages": pages,
                 "keywords": _strings(ads.get("keywords"), f"{where} ads.keywords")},
         "tiktok": {"hashtags": _strings(tiktok.get("hashtags"), f"{where} social.tiktok.hashtags"),
@@ -227,8 +253,34 @@ def ad_start_urls(ads):
     return urls
 
 
-def plan_collections(cfg):
-    """The tasks a brand's seeds produce. Nothing configured means nothing planned."""
+def _extend(manual, extra, limit=None):
+    """The brand's own entries first, then new ones from `extra`, without repeats (ignoring case)."""
+    out, seen = list(manual), {m.lower() for m in manual}
+    for item in extra[:limit] if limit else extra:
+        if item.lower() not in seen:
+            seen.add(item.lower())
+            out.append(item)
+    return out
+
+
+def merge_auto_seeds(cfg, auto, settings):
+    """A brand's own seeds first, then what its catalogue and Claude suggest. Nothing is written twice."""
+    if not auto or not cfg.get("auto_seeds", True):
+        return cfg
+    out = copy.deepcopy(cfg)
+    keywords = [k for scope in settings.auto_scopes for k in auto.get("keywords", {}).get(scope, [])]
+    out["ads"]["keywords"] = _extend(out["ads"]["keywords"], keywords)
+    out["tiktok"]["hashtags"] = _extend(out["tiktok"]["hashtags"], auto.get("tiktok_hashtags", []))
+    out["instagram"]["hashtags"] = _extend(out["instagram"]["hashtags"], auto.get("instagram_hashtags", []))
+    out["deep_research"]["questions"] = _extend(out["deep_research"]["questions"], auto.get("questions", []),
+                                                settings.auto_max_questions)
+    out["deep_research"]["context"] = out["deep_research"]["context"] or auto.get("context", "")
+    return out
+
+
+def plan_collections(cfg, auto=None, settings=None):
+    """The tasks a brand's seeds produce (its own, plus auto seeds when given). Nothing configured means nothing planned."""
+    cfg = merge_auto_seeds(cfg, auto, settings) if auto else cfg
     tasks = []
     urls = ad_start_urls(cfg["ads"])
     if urls:
@@ -298,7 +350,8 @@ def _clip(text):
 def _row(source, ident, **fields):
     row = {"item_id": f"{source}:{ident}", "source": source, "handle": "", "title": "", "text": "",
            "url": "", "posted_at": "", "likes": None, "comments": None, "shares": None, "views": None,
-           "media_url": "", "details": ""}
+           "media_url": "", "details": "", "saves": None, "reach": None, "days_running": None,
+           "variants": None, "found_via": ""}
     row.update(fields)
     row["details"] = _clip(row["details"])[:400]
     row["text"] = _clip(row["text"])
@@ -332,6 +385,22 @@ def _meta_details(d, snap, first):
     return " | ".join(p for p in parts if p)
 
 
+def _meta_signals(d):
+    """What Meta publishes about how an ad is doing: how long it has run, how many copies, and reach where shown."""
+    start, end = _get(d, "startDate", "start_date"), _get(d, "endDate", "end_date")
+    active = _int(_get(d, "totalActiveTime", "total_active_time"))
+    days = None
+    if active and active > 0:
+        days = max(1, round(active / 86400))
+    elif all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in (start, end)) and end >= start > 0:
+        days = int((end - start) // 86400) + 1
+    count = _int(_get(d, "collationCount", "collation_count"))
+    impressions = d.get("impressions_with_index")
+    reach = _get(d, "reachEstimate", "reach_estimate") or (
+        impressions.get("impressions_text") if isinstance(impressions, dict) else None)
+    return {"days_running": days, "variants": count if count and count > 1 else None, "reach": reach}
+
+
 def normalize_meta_ad(d):
     ident = _get(d, "adArchiveID", "adArchiveId", "ad_archive_id")
     if not ident:
@@ -355,7 +424,7 @@ def normalize_meta_ad(d):
                 title=title, text=text or first.get("body") or "",
                 url=f"https://www.facebook.com/ads/library/?id={ident}",
                 posted_at=_iso(_get(d, "startDate", "start_date")), media_url=media,
-                details=_meta_details(d, snap, first))
+                details=_meta_details(d, snap, first), **_meta_signals(d))
 
 
 def normalize_tiktok(d):
@@ -374,6 +443,7 @@ def normalize_tiktok(d):
                 likes=_first_number(stats.get("diggCount"), d.get("diggCount")),
                 comments=_first_number(stats.get("commentCount"), d.get("commentCount")),
                 shares=_first_number(stats.get("shareCount"), d.get("shareCount")),
+                saves=_first_number(stats.get("collectCount"), d.get("collectCount")),
                 views=_first_number(stats.get("playCount"), d.get("playCount")),
                 media_url=_get(video, "cover", "originCover", "dynamicCover")
                 or _get(d.get("videoMeta") if isinstance(d.get("videoMeta"), dict) else {}, "coverUrl") or "")
@@ -608,6 +678,36 @@ def _gather(browser, source, site_cfg, scrolls, pause, max_items):
     return list(rows.values())[:max_items], set(from_data), limited
 
 
+def seed_label(url):
+    """A short name for the seed behind a page address: the search words, #hashtag, @profile."""
+    parts = urlsplit(url)
+    query = parse_qs(parts.query)
+    if query.get("q"):
+        return query["q"][0]
+    match = re.search(r"/tags?/([^/?]+)", parts.path)
+    if match:
+        return "#" + unquote(match.group(1))
+    match = re.search(r"/(@[^/?]+)", parts.path)
+    return unquote(match.group(1)) if match else url
+
+
+def add_variant_counts(rows):
+    """Several ads with the same advertiser, title and text are copies of one creative: say how many.
+
+    Every copy shows the same number: the larger of how many we found and what the site itself reports.
+    """
+    groups = collections.defaultdict(list)
+    for row in rows:
+        if row["text"] or row["title"]:
+            groups[(row["handle"], row["title"], row["text"])].append(row)
+    for members in groups.values():
+        count = max(len(members), *(r.get("variants") or 1 for r in members))
+        if count > 1:
+            for row in members:
+                row["variants"] = count
+    return rows
+
+
 def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
     """Collect up to n ads or posts for one task. Returns (rows, stats).
 
@@ -619,7 +719,7 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
     if source != "meta_ads":
         state = ensure_session(browser, source, site_cfg, creds)
     urls = seed_urls(task, site_cfg)
-    found, from_data, limited = {}, set(), False
+    found, from_data, limited, via = {}, set(), False, {}
     for number, url in enumerate(urls):
         browser.open(url)
         browser.wait(site_cfg.get("settle_seconds", 3))
@@ -639,11 +739,19 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
                                             pacing["scroll_pause_seconds"], share)
         from_data |= data_ids
         limited = limited or hit_limit
+        label = seed_label(url)
         for row in rows:
+            labels = via.setdefault(row["item_id"], [])
+            if label not in labels:
+                labels.append(label)
             _merge(found, row)
         if len(found) >= n:
             break
     kept = list(found.values())[:n]
+    for row in kept:
+        row["found_via"] = " | ".join(via.get(row["item_id"], []))
+    if source == "meta_ads":
+        add_variant_counts(kept)
     if not kept:
         browser.screenshot(f"empty-{source}")
     in_data = sum(1 for r in kept if r["item_id"] in from_data)
@@ -868,7 +976,14 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
             reports = result.brands.setdefault(brand.slug, [])
             cfg = (configs or {}).get(brand.slug) or load_brand_research(brand, root)["collect"]
             records = store.read_collected(brand.slug)
-            for task in plan_collections(cfg):
+            auto = None
+            if settings.auto_enabled and cfg.get("auto_seeds", True):
+                from .autoseeds import ensure_auto_seeds        # local import: autoseeds does not depend on this module
+                seeded = ensure_auto_seeds(brand, store, claude, settings, ledger, now, dry_run)
+                auto = seeded.seeds
+                if seeded.note:
+                    result.notes.append(f"{brand.slug}: auto seeds {seeded.note}")
+            for task in plan_collections(cfg, auto, settings):
                 if task.source not in sources:
                     continue
                 site = SITE_OF[task.source]
@@ -1021,7 +1136,7 @@ def format_collect_report(result, settings, ledger=None):
         lines.append("")
         lines.append(f"=== {slug} ===")
         if not reports:
-            lines.append("  nothing configured (add ads, social or deep_research seeds in research.yaml)")
+            lines.append("  nothing to collect: no seeds written in research.yaml, and no catalogue yet to build them from (run Sync first)")
         for r in reports:
             lines.append(f"  {r.source:<13} {r.status:<9} {r.seeds}" + (f" -> {r.detail}" if r.detail else ""))
     if ledger is not None:
@@ -1237,21 +1352,34 @@ def recon(browser_factory, creds, browser_cfg, sources, debug_dir):
 # rows for the sheet
 # ---------------------------------------------------------------------------------------
 
+def _engagement(row):
+    """Likes, comments, shares and saves as a share of views, for posts that show views."""
+    views = row.get("views")
+    known = [row[k] for k in ("likes", "comments", "shares", "saves") if isinstance(row.get(k), (int, float))]
+    if not isinstance(views, (int, float)) or views <= 0 or not known:
+        return None
+    return round(100 * sum(known) / views, 2)
+
+
+_ROW_FIELDS = ("item_id", "source", "handle", "title", "text", "url", "posted_at", "likes", "comments", "shares",
+               "views", "saves", "reach", "days_running", "variants", "media_url", "details")
+
+
 def collected_rows(records):
-    """One row per distinct ad, post or report, oldest collection first."""
+    """One row per distinct ad, post or report, oldest collection first, with the latest numbers."""
     rows = {}
     for rec in records:
         for item in rec.get("items", []):
             row = rows.setdefault(item["item_id"], {
-                **{k: item.get(k) for k in ("item_id", "source", "handle", "title", "text", "url",
-                                            "posted_at", "likes", "comments", "shares", "views", "media_url", "details")},
+                **{k: item.get(k) for k in _ROW_FIELDS},
                 "first_seen": rec["at"], "last_seen": rec["at"], "times_seen": 0, "queries": []})
             row["last_seen"] = max(row["last_seen"], rec["at"])
             row["first_seen"] = min(row["first_seen"], rec["at"])
             row["times_seen"] += 1
-            for k in ("handle", "title", "text", "likes", "comments", "shares", "views", "media_url", "details"):
+            for k in _ROW_FIELDS[2:5] + _ROW_FIELDS[7:15] + ("media_url", "details"):
                 if item.get(k) not in (None, ""):
                     row[k] = item[k]
-            if rec["seeds"] not in row["queries"]:
-                row["queries"].append(rec["seeds"])
-    return {k: {**v, "queries": " | ".join(v["queries"][:3])} for k, v in rows.items()}
+            for label in str(item.get("found_via") or rec["seeds"]).split(" | "):
+                if label.strip() and label.strip() not in row["queries"]:
+                    row["queries"].append(label.strip())
+    return {k: {**v, "engagement_pct": _engagement(v), "queries": " | ".join(v["queries"][:5])} for k, v in rows.items()}
