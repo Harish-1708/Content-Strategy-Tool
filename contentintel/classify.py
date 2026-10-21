@@ -80,15 +80,27 @@ def family_key(title, cfg):
     return clean
 
 
+def product_category(product_type, hints, cfg):
+    """The category: from the brand's own audience rules when they say who the product is for, otherwise from the
+    Shopify product type. The audience wins because product_type is unreliable (Swoveralls files two kids
+    products under 'Swoveralls'), while a tag or a title that says "Kids" is the brand telling us directly."""
+    by_audience = cfg.get("category_by_audience") or {}
+    for hint in hints:                                  # hints are in the order the brand's rules produced them
+        if hint in by_audience:
+            return by_audience[hint]
+    return cfg["category_by_type"].get(product_type) if product_type else None
+
+
 def classify(title, product_type, tags, variants, cfg):
     reason = is_excluded(title, product_type, tags, cfg)
     status = "excluded" if reason else lifecycle_status(title, tags, cfg)
+    hints = audience_hints(title, tags, cfg)
     return {
         "excluded": reason is not None,
         "excluded_reason": reason,
         "status": status,
         "flags": product_flags(title, tags, variants, cfg),
-        "category": cfg["category_by_type"].get(product_type) if product_type else None,
-        "audience_hints": audience_hints(title, tags, cfg),
+        "category": product_category(product_type, hints, cfg),
+        "audience_hints": hints,
         "family": family_key(title, cfg),
     }
