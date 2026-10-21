@@ -207,9 +207,20 @@ def test_bad_seeds_are_rejected_with_a_clear_message(tmp_path, swov, data, match
         R.load_brand_research(swov, root)
 
 
-def test_every_shipped_brand_file_still_loads_and_plans_nothing_until_you_add_seeds(brands):
-    for slug, brand in brands.items():
-        assert C.plan_collections(R.load_brand_research(brand, "brands")["collect"]) == [], slug
+def test_every_shipped_brand_file_loads_and_only_swoveralls_has_seeds_so_far(brands):
+    planned = {slug: C.plan_collections(R.load_brand_research(b, "brands")["collect"]) for slug, b in brands.items()}
+    assert [t.source for t in planned["swoveralls"]] == ["meta_ads", "tiktok", "instagram", "deep_research"]
+    assert all(tasks == [] for slug, tasks in planned.items() if slug != "swoveralls")
+
+
+def test_the_swoveralls_seeds_search_the_category_and_the_brand_and_keep_deep_research_for_when_ticked(brands):
+    ads, tiktok, instagram, deep = C.plan_collections(R.load_brand_research(brands["swoveralls"], "brands")["collect"])
+    searched = " ".join(ads.payload["urls"])
+    assert all(q in searched for q in ("q=sweatpant+overalls", "q=swoveralls", "q=jogger+overalls", "country=us", "active_status=active"))
+    assert tiktok.payload == {"hashtags": ["swoveralls", "sweatpantoveralls"], "profiles": ["swoveralls"]}
+    assert instagram.payload == {"hashtags": ["swoveralls", "sweatpantoveralls"]}
+    assert "Swoveralls sells sweatpant overalls" in deep.payload["context"] and "competitors" in deep.payload["question"]
+    assert deep.source not in C.BROWSER_SOURCES        # the default sources never include the 10-minute report
 
 
 # --- reading what the sites send ---------------------------------------------------------------------------------
