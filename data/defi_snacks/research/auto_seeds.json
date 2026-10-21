@@ -1,0 +1,54 @@
+{
+ "generated_at": "2026-10-21T13:13:17Z",
+ "model": "claude-sonnet-5-5",
+ "profile": "Brand: Defi Snacks (defi-snacks.com), a shopify store with 6 products on sale or coming soon.\nother: 6 products, $59.91-$111.8. Families: 4-Flavor Variety Pack, Build Your Own: Variety Pack, Dark Chocolate Crispy Superfood Bite, Dark Chocolate Pink Himalayan Salt Crispy Superfood Bite, Milk Chocolate Crispy Superfood Bite, Milk Chocolate Peanut Butter Crunch Crispy Superfood Bite.\nAllergens mentioned: Milk, Milk and Peanuts.",
+ "profile_hash": "9fdbe707a0f28ed6",
+ "seeds": {
+  "benchmarks": [
+   "Magic Spoon",
+   "Lily's Sweets",
+   "Hu Kitchen",
+   "RXBAR",
+   "Graza",
+   "Liquid Death",
+   "Olipop",
+   "Chobani"
+  ],
+  "context": "Defi Snacks is a Shopify store selling chocolate-coated 'Crispy Superfood Bite' snacks in four flavors: Dark Chocolate, Dark Chocolate Pink Himalayan Salt, Milk Chocolate and Milk Chocolate Peanut Butter Crunch. It also sells a 4-Flavor Variety Pack and a Build Your Own Variety Pack. The 6 products are priced from $59.91 to $111.80, so purchases look like bulk or multi-pack orders. Listed allergens are milk and peanuts.",
+  "instagram_hashtags": [
+   "healthysnacks",
+   "chocolatesnacks",
+   "superfoodsnacks",
+   "snackideas",
+   "guiltfreesnacks"
+  ],
+  "keywords": {
+   "adjacent": [
+    "protein snack bars",
+    "healthy candy"
+   ],
+   "cross_industry": [
+    "snack subscription box",
+    "taste test reaction"
+   ],
+   "direct": [
+    "chocolate snack bites",
+    "healthy chocolate snack",
+    "superfood snacks",
+    "crispy chocolate bites"
+   ]
+  },
+  "questions": [
+   "Which ad hooks, formats and creative angles are performing best right now on Meta, TikTok and Instagram across the best consumer brands in any industry (food and beverage, DTC, wellness, and others), and how could a premium chocolate-coated superfood snack brand like Defi Snacks adapt them to its own product and voice?",
+   "How do leading better-for-you chocolate and snack brands position their ads, covering health claims, indulgence versus function, multipack and variety-pack offers, and bundle or subscription incentives for higher-priced orders, and what messaging gaps could Defi Snacks use with its Dark Chocolate, Pink Himalayan Salt and Peanut Butter Crunch flavors?"
+  ],
+  "tiktok_hashtags": [
+   "healthysnacks",
+   "snacktok",
+   "chocolatelover",
+   "snackreview",
+   "superfoods"
+  ]
+ },
+ "version": 2
+}

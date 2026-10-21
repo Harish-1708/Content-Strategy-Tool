@@ -1,0 +1,116 @@
+{
+ "items": {
+  "defisnacks": {
+   "candidates": [
+    {
+     "ads": 1,
+     "likes": 7591,
+     "name": "Kinective Fitness Club",
+     "page_id": "106236430817711"
+    },
+    {
+     "ads": 2,
+     "likes": 248,
+     "name": "Enthuse Foundation",
+     "page_id": "1974900629477224"
+    }
+   ],
+   "checked_at": "2026-10-21T13:13:17Z",
+   "kind": "own",
+   "name": "Defi Snacks",
+   "page_id": "",
+   "page_likes": 0,
+   "page_name": "",
+   "reason": "other advertisers turned up, but none has a name like this one",
+   "source": "auto",
+   "status": "unresolved"
+  },
+  "lilyssweets": {
+   "candidates": [
+    {
+     "ads": 1,
+     "likes": 520982,
+     "name": "The Big Dill",
+     "page_id": "1139703819542901"
+    },
+    {
+     "ads": 1,
+     "likes": 213241,
+     "name": "Power of the Almond",
+     "page_id": "102283105023225"
+    },
+    {
+     "ads": 1,
+     "likes": 139636,
+     "name": "ऐसे शो जिन्हें आप छोड़ नहीं पाएंगे",
+     "page_id": "1069298389596894"
+    },
+    {
+     "ads": 1,
+     "likes": 98914,
+     "name": "Zona de Dramas Curtos",
+     "page_id": "834646206408419"
+    },
+    {
+     "ads": 1,
+     "likes": 35098,
+     "name": "Candy In Bulk",
+     "page_id": "638454072694732"
+    }
+   ],
+   "checked_at": "2026-10-21T13:13:17Z",
+   "kind": "benchmark",
+   "name": "Lily's Sweets",
+   "page_id": "",
+   "page_likes": 0,
+   "page_name": "",
+   "reason": "other advertisers turned up, but none has a name like this one",
+   "source": "auto",
+   "status": "unresolved"
+  },
+  "magicspoon": {
+   "candidates": [
+    {
+     "ads": 1,
+     "likes": 2979429,
+     "name": "Shoptemu",
+     "page_id": "103219685846470"
+    },
+    {
+     "ads": 2,
+     "likes": 732048,
+     "name": "The Detox Dudes",
+     "page_id": "1027147340710624"
+    },
+    {
+     "ads": 4,
+     "likes": 217081,
+     "name": "ReciMe",
+     "page_id": "129214221876606"
+    },
+    {
+     "ads": 2,
+     "likes": 156788,
+     "name": "True Sea Moss Health",
+     "page_id": "101371852670671"
+    },
+    {
+     "ads": 1,
+     "likes": 20332,
+     "name": "American Spoon",
+     "page_id": "297218149185"
+    }
+   ],
+   "checked_at": "2026-10-21T13:13:17Z",
+   "kind": "benchmark",
+   "name": "Magic Spoon",
+   "page_id": "",
+   "page_likes": 0,
+   "page_name": "",
+   "reason": "other advertisers turned up, but none has a name like this one",
+   "source": "auto",
+   "status": "unresolved"
+  }
+ },
+ "version": 1
+}
