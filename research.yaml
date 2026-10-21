@@ -70,3 +70,15 @@ collectors:
     max_rounds: 3                 # most questions from Gemini answered per report
     monthly_calls: 60             # most Claude calls per month
     max_tokens: 700
+  # Auto seeds: instead of hand-writing what to search for each brand, the tool builds a factual profile of
+  # the brand from its catalogue every run, and Claude turns it into Meta Ad Library keywords (direct rivals,
+  # neighbouring categories, and benchmark brands from ANY industry), hashtags and Deep Research questions.
+  # They are saved and refreshed only when the catalogue changes or they get old. Seeds you write in a brand's
+  # research.yaml always come first; add `auto_seeds: false` there to switch this off for that brand.
+  auto_seeds:
+    enabled: true
+    refresh_days: 30
+    max_keywords: 8
+    max_hashtags: 5               # per platform
+    max_questions: 2
+    scopes: [direct, adjacent, cross_industry]
