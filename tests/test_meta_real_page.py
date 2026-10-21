@@ -81,8 +81,12 @@ def test_all_four_real_ads_are_read_with_nothing_blank():
     assert [(r["handle"], r["item_id"].startswith("meta_ads:")) for r in rows] == [
         ("SHEIN", True), ("SHEIN CURVE", True), ("Madepants", True), ("Sarah Randall", True)]
     for r in rows:
-        assert r["text"] and r["title"] and r["media_url"].startswith("https://") and re.match(r"20\d\d-\d\d-\d\dT", r["posted_at"])
+        assert r["title"] and r["media_url"].startswith("https://") and re.match(r"20\d\d-\d\d-\d\dT", r["posted_at"])
         assert r["url"] == f"https://www.facebook.com/ads/library/?id={r['item_id'].split(':')[1]}"
+    # The fourth ad's whole text is the template token {{product.brand}}; that is not real text, and "Sarah Randall"
+    # selling through an Amazon link cannot be verified as the product's brand, so the text is left blank.
+    assert [bool(r["text"]) for r in rows] == [True, True, True, False]
+    assert not any("{{" in r["text"] for r in rows)
 
 
 def test_placeholder_titles_from_dynamic_product_ads_are_replaced_by_the_product_name():
@@ -146,7 +150,7 @@ def test_a_rate_limited_page_is_not_scrolled_again_and_the_report_says_so(cfg, t
     assert len(rows) == 4 and b.scrolls == 0 and stats["rate_limited"] is True
     f = world(cfg)
     f.browsers["meta_ads"] = meta_browser(cfg, **page)
-    write_research(tmp_path, swov, {"ads": {"keywords": ["overalls"]}})
+    write_research(tmp_path, swov, {"track_own_brand": False, "ads": {"keywords": ["overalls"]}})
     result = C.run_collect([swov], store, browser_factory=f, creds=CREDS, settings=settings, browser_cfg=cfg, ledger_cls=R.Ledger,
                            sources=["meta_ads"], now=NOW, run_id="run1", root=str(tmp_path / "brands"))
     assert statuses(result) == [("meta_ads", "ran")] and "rate-limited further scrolling, so this is the first page of results only" in result.brands["swoveralls"][0].detail
@@ -179,8 +183,18 @@ def test_recon_says_where_the_ads_were_found_and_saves_what_is_inside_the_page(t
 def test_recon_flags_a_page_it_could_read_nothing_from(tmp_path, cfg):
     f = world(cfg)
     f.browsers["meta_ads"] = meta_browser(cfg, json=[RATE_LIMIT])
-    (line,) = [l for l in C.recon(f, CREDS, cfg, ["meta_ads"], tmp_path / "debug") if l.startswith("  meta_ads")]
+    (line,) = [l for l in C.recon(f, CREDS, cfg, ["meta_ads"], tmp_path / "debug") if l.startswith("  meta_ads:")]
     assert "readable items: 0" in line and line.endswith("<-- nothing readable: open the saved screenshot and HTML")
+
+
+def test_recon_also_saves_what_metas_own_page_search_sends(tmp_path, cfg):
+    f = world(cfg)
+    f.browsers["meta_ads"] = meta_browser(cfg, embedded=B.parse_embedded_json(HTML))
+    lines = C.recon(f, CREDS, cfg, ["meta_ads"], tmp_path / "debug")
+    assert any(l.startswith("  meta_ads (page-search):") for l in lines)
+    assert "search_type=page" in f.browsers["meta_ads"].opened[-1] and "q=Gymshark" in f.browsers["meta_ads"].opened[-1]
+    for name in ("recon-meta_ads-page-search-network.json", "recon-meta_ads-page-search-page-data.json"):
+        assert (tmp_path / "debug" / name).is_file(), name
 
 
 def test_the_check_reads_the_real_ads_from_the_page(store, cfg, settings):
