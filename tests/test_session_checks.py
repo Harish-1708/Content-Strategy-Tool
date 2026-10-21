@@ -42,14 +42,16 @@ def matches(selector, html):
     """tag, tag[attr="v"], tag[attr*="v"], [attr...] and #id: the only forms the Gemini and TikTok settings use."""
     parser = _Elements()
     parser.feed(html)
-    m = re.fullmatch(r'(?P<tag>[a-z][\w-]*)?(?:#(?P<id>[\w-]+))?(?:\[(?P<attr>[\w-]+)(?P<op>\*?=)"(?P<val>[^"]*)"\])?', selector)
+    m = re.fullmatch(r'(?P<tag>[a-z][\w-]*)?(?:#(?P<id>[\w-]+))?(?:\[(?P<attr>[\w-]+)(?P<op>\*?=)"(?P<val>[^"]*)"(?P<ci>\s+i)?\])?', selector)
     assert m, f"selector form not supported by this test: {selector}"
     for tag, attrs in parser.found:
         if m["tag"] and tag != m["tag"] or m["id"] and attrs.get("id") != m["id"]:
             continue
         if m["attr"]:
-            have = attrs.get(m["attr"])
-            if have is None or (m["op"] == "=" and have != m["val"]) or (m["op"] == "*=" and m["val"] not in have):
+            have, want = attrs.get(m["attr"]), m["val"]
+            if have is not None and m["ci"]:
+                have, want = have.lower(), want.lower()
+            if have is None or (m["op"] == "=" and have != want) or (m["op"] == "*=" and want not in have):
                 continue
         return True
     return False
@@ -81,12 +83,13 @@ def gemini_browser(cfg, *, prompt_box=True, sign_in=False, challenge=False):
     g = cfg["sites"]["gemini"]
     here = set()
     if prompt_box:
-        here |= {g["logged_in_any"][0], g["prompt_box"][0]}
+        here |= {g["logged_in_any"][0], g["prompt_box"][0], g["deep_research_active_any"][0]}
     if sign_in:
         here.add(g["signed_out_any"][0])
     if challenge:
         here.add(g["challenge_any"][0] if g.get("challenge_any") else "x")
-    return FakeBrowser(present_always=here)
+    flat = {s for group in g["deep_research_clicks"] for s in group}
+    return FakeBrowser(present_always=here, clickable=flat)
 
 
 def test_a_signed_out_gemini_page_is_a_login_wall_even_though_the_prompt_box_is_showing(cfg):
