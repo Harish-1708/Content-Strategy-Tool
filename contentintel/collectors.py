@@ -23,7 +23,7 @@ from urllib.parse import parse_qs, quote, quote_plus, unquote, urlsplit
 import yaml
 
 from . import benchmarks as bench
-from .browser import BrowserError, Challenge, LoginWall
+from .browser import BrowserError, Challenge, LoginWall, describe_cookies
 from .providers import AuthError, ProviderError, QuotaError
 
 BROWSER_SOURCES = ("meta_ads", "tiktok", "instagram")
@@ -732,11 +732,33 @@ def session_state(browser, site_cfg):
     """ok, login_wall, challenge or unknown, judged from what the page shows."""
     if browser.exists(site_cfg.get("challenge_any", [])):
         return "challenge"
+    if browser.exists(site_cfg.get("signed_out_any", [])):      # a signed-out page can look just like a signed-in one
+        return "login_wall"                                     # (Gemini shows its prompt box either way), so this wins
     if browser.exists(site_cfg["logged_in_any"]):
         return "ok"
     if browser.exists(site_cfg["login_wall_any"]):
         return "login_wall"
     return "unknown"
+
+
+def cookie_facts(site, creds):
+    """A sentence about the cookies that were loaded (names and counts, never values), or nothing without cookies."""
+    text = (creds or {}).get("cookies")
+    return f" Cookie facts (no values shown): {describe_cookies(text, site)}." if text else ""
+
+
+def clear_challenge(browser, site_cfg):
+    """Press a security check's own Close button once, if the site's settings name one. A puzzle is never solved.
+    True when the check is gone afterwards."""
+    selectors = site_cfg.get("challenge_dismiss", [])
+    if not selectors or not browser.click(selectors):
+        return False
+    browser.wait(3)
+    return not browser.exists(site_cfg.get("challenge_any", []))
+
+
+def _closed_note(site_cfg):
+    return " (closing it with its X button did not clear it)" if site_cfg.get("challenge_dismiss") else ""
 
 
 def _secret_names(site_cfg):
@@ -767,9 +789,12 @@ def ensure_session(browser, site, site_cfg, creds):
     browser.open(site_cfg["home"])
     browser.wait(3)
     state = session_state(browser, site_cfg)
+    if state == "challenge" and clear_challenge(browser, site_cfg):
+        state = session_state(browser, site_cfg)
     if state == "challenge":
         browser.screenshot(f"challenge-{site}")
-        raise Challenge(f"{site}: the site asked for a security check (a code, a puzzle or 'confirm it's you'). "
+        raise Challenge(f"{site}: the site asked for a security check (a code, a puzzle or 'confirm it's you')"
+                        f"{_closed_note(site_cfg)}. "
                         f"Log in once as the dummy account in a normal browser, then export its cookies into {cookies_name}")
     if state != "ok" and creds.get("username") and creds.get("password") and site_cfg.get("login_steps"):
         run_steps(browser, site_cfg["login_steps"], creds)
@@ -781,7 +806,7 @@ def ensure_session(browser, site, site_cfg, creds):
     if state == "login_wall":
         browser.screenshot(f"login-wall-{site}")
         raise LoginWall(f"{site}: not logged in. The cookies in {cookies_name} may have expired; "
-                        "export fresh ones from the dummy account")
+                        f"export fresh ones from the dummy account.{cookie_facts(site, creds)}")
     if state == "unknown":
         browser.screenshot(f"unknown-state-{site}")
     return state
@@ -876,10 +901,12 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
             browser.click(site_cfg.get("consent_any", []))
         else:
             after = session_state(browser, site_cfg)
+            if after == "challenge" and clear_challenge(browser, site_cfg):
+                after = session_state(browser, site_cfg)
             if after == "challenge":
                 browser.screenshot(f"challenge-{source}")
-                raise Challenge(f"{source}: a security check appeared while collecting; clear it once in a normal "
-                                "browser as the dummy account and export fresh cookies")
+                raise Challenge(f"{source}: a security check appeared while collecting{_closed_note(site_cfg)}; clear it "
+                                "once in a normal browser as the dummy account and export fresh cookies")
             if after == "login_wall":
                 browser.screenshot(f"login-wall-{source}")
                 raise LoginWall(f"{source}: the page asked for a login; the cookies may have expired")
@@ -1234,10 +1261,12 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                                     url=f"data/{brand.slug}/research/deep/{name}")
                         item["extra_sources"] = out["sources"]
                     except (LoginWall, Challenge) as exc:
-                        disabled[site] = str(exc)
+                        message = str(exc) + (cookie_facts(site, site_creds)
+                                              if isinstance(exc, LoginWall) and "Cookie facts" not in str(exc) else "")
+                        disabled[site] = message
                         result.problems_for.append(site)
-                        result.notes.append(str(exc))
-                        report.status, report.detail = "failed", str(exc)
+                        result.notes.append(message)
+                        report.status, report.detail = "failed", message
                         continue
                     except BrowserError as exc:
                         report.status, report.detail = "failed", str(exc)
@@ -1343,7 +1372,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                                  f"{len(rows)} items ({stats['json']} from the site's data, {stats['links']} only from page links)"
                                  + (" - the site rate-limited further scrolling, so this is the first page of results only"
                                     if stats.get("rate_limited") else ""))
-            if follow is not None:
+            if follow is not None and "meta_ads" in sources:
                 result.follow[brand.slug] = _follow_plan(brand, cfg, auto, state, settings, now)
     return result
 
@@ -1434,7 +1463,8 @@ def check_collectors(browser_factory, creds, settings, browser_cfg, store, ledge
                     state = session_state(browser, site_cfg)
                     browser.screenshot("check-gemini")
                     if state == "login_wall":
-                        raise LoginWall("gemini: not logged in; export fresh cookies into GEMINI_COOKIES")
+                        raise LoginWall("gemini: not logged in (Gemini shows its Sign in button, so the cookies were not "
+                                        f"accepted); export fresh cookies into GEMINI_COOKIES.{cookie_facts('gemini', site_creds)}")
                     has_box = browser.exists(site_cfg["prompt_box"])
                     row["ok"] = has_box
                     row["detail"] = (f"Gemini opened (login looks {state}) and the prompt box is there; "
@@ -1491,7 +1521,8 @@ def run_deep_research_test(browser_factory, creds, browser_cfg, settings, store,
                                         claude_budget=budget, max_rounds=settings.claude_max_rounds,
                                         prepare_prompt=settings.claude_prepare_prompt)
     except (LoginWall, Challenge, BrowserError) as exc:
-        return {"ok": False, "detail": str(exc)}
+        return {"ok": False, "detail": str(exc) + (cookie_facts("gemini", creds.get("gemini", {}))
+                                                   if isinstance(exc, LoginWall) and "Cookie facts" not in str(exc) else "")}
     if out["claude_calls"]:
         ledger.charge("claude_calls", out["claude_calls"])
         store.save_usage(ledger.usage)
