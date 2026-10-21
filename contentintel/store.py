@@ -192,6 +192,18 @@ class Store:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(data, ensure_ascii=False, indent=1, sort_keys=True), encoding="utf-8")
 
+    def read_benchmarks(self, slug):
+        path = self._research_file(slug, "benchmarks.json")
+        try:
+            return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else None
+        except ValueError:
+            return None                 # a damaged file is treated as "nothing decided yet", never as a crash
+
+    def write_benchmarks(self, slug, data):
+        path = self._research_file(slug, "benchmarks.json")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        _write_text(path, json.dumps(data, ensure_ascii=False, indent=1, sort_keys=True))
+
     def write_deep_report(self, slug, name, text):
         if not re.fullmatch(r"[A-Za-z0-9_.-]+\.md", name):
             raise StoreError(f"unsafe report name {name!r}")
