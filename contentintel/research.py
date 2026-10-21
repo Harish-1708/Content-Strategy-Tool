@@ -16,6 +16,7 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import yaml
 
+from .collectors import CollectError, parse_collect_config
 from .providers import PROVIDER_NAMES, RECENCY, AuthError, ProviderError, QuotaError
 
 KINDS = ("web", "news")
@@ -48,7 +49,7 @@ DEFAULTS = {
         "news": ["tavily", "serper_dev", "serpapi"],
     },
     "defaults": {"results_per_query": 10, "cache_days": 7, "max_queries_per_run": 30,
-                 "country": "us", "recency": None},
+                 "country": "us", "recency": None, "compare_queries": 5},
 }
 
 
@@ -68,6 +69,7 @@ class Settings:
     max_queries_per_run: int
     country: object
     recency: object
+    compare_queries: int = 5
 
 
 def _number(value, where, *, minimum=0, allow_none=False):
@@ -76,6 +78,14 @@ def _number(value, where, *, minimum=0, allow_none=False):
     if isinstance(value, bool) or not isinstance(value, (int, float)) or value < minimum:
         raise ResearchError(f"{where} must be a number of at least {minimum}, got {value!r}")
     return value
+
+
+def _whole(value, where, minimum=0):
+    """A whole number (7 or 7.0, never 7.5), so nothing is silently rounded."""
+    number = _number(value, where, minimum=minimum)
+    if number != int(number):
+        raise ResearchError(f"{where} must be a whole number, got {value!r}")
+    return int(number)
 
 
 def _only_keys(data, allowed, where):
@@ -106,7 +116,7 @@ def load_settings(path="research.yaml"):
     path = Path(path)
     if path.is_file():
         data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    _only_keys(data, ("providers", "routing", "defaults"), "research.yaml")
+    _only_keys(data, ("providers", "routing", "defaults", "collectors"), "research.yaml")
 
     caps = {}
     given = data.get("providers") or {}
@@ -137,11 +147,11 @@ def load_settings(path="research.yaml"):
         raise ResearchError("defaults.results_per_query must be a whole number from 1 to 10")
     return Settings(
         caps=caps, routing=routing, results_per_query=int(per_query),
-        cache_days=int(_number(base["cache_days"], "defaults.cache_days")),
-        max_queries_per_run=int(_number(base["max_queries_per_run"],
-                                        "defaults.max_queries_per_run", minimum=1)),
+        cache_days=_whole(base["cache_days"], "defaults.cache_days"),
+        max_queries_per_run=_whole(base["max_queries_per_run"], "defaults.max_queries_per_run", minimum=1),
         country=_country(base["country"], "defaults.country"),
-        recency=_recency(base["recency"], "defaults.recency"))
+        recency=_recency(base["recency"], "defaults.recency"),
+        compare_queries=_whole(base["compare_queries"], "defaults.compare_queries", minimum=1))
 
 
 # ---------------------------------------------------------------------------------------
@@ -192,7 +202,12 @@ def load_brand_research(brand, root="brands"):
     if path.is_file():
         data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     where = f"{brand.slug}/research.yaml"
-    _only_keys(data, ("competitors", "topics", "queries", "templates", "auto", "country"), where)
+    _only_keys(data, ("competitors", "topics", "queries", "templates", "auto", "country",
+                      "ads", "social", "deep_research"), where)
+    try:
+        collect = parse_collect_config(data, where)
+    except CollectError as exc:
+        raise ResearchError(str(exc)) from exc
 
     competitors = []
     for n, item in enumerate(data.get("competitors") or [], start=1):
@@ -231,7 +246,7 @@ def load_brand_research(brand, root="brands"):
             raise ResearchError(f"{where} auto.{key} must be true or false")
         auto[key] = value
     return {"competitors": competitors, "topics": [t.strip() for t in topics],
-            "queries": explicit, "templates": templates, "auto": auto,
+            "queries": explicit, "templates": templates, "auto": auto, "collect": collect,
             "country": _country(data.get("country"), f"{where} country")}
 
 
@@ -321,12 +336,12 @@ def _parse(ts):
     return datetime.strptime(ts, _TS)
 
 
-def _find_cached(records, key, now, days):
+def _find_cached(records, key, now, days, provider=None):
     if days <= 0:
         return None
     newest = None
     for rec in records:
-        if rec.get("key") == key and rec.get("provider"):
+        if rec.get("key") == key and rec.get("provider") and provider in (None, rec["provider"]):
             newest = rec
     if newest and _parse(now) - _parse(newest["at"]) < timedelta(days=days):
         return newest
@@ -361,14 +376,19 @@ class ResearchResult:
     reported: dict = field(default_factory=dict)
     ledger: object = None
     settings: object = None
+    compare: list = field(default_factory=list)      # one entry per search run on several services
 
     @property
     def problems(self):
         return bool(self.notes_with_problems or any(b.failed for b in self.brands.values()))
 
 
+def _urls(results):
+    return [canonical_url(r["url"]) for r in results if r.get("url")]
+
+
 def run_research(brands, store, *, providers, settings, now, configs=None, dry_run=False,
-                 max_queries=None, root="brands"):
+                 max_queries=None, root="brands", compare=False, compare_limit=None):
     """Plan, route and run searches for `brands`. `providers` maps name -> Provider."""
     result = ResearchResult(run_id=secrets.token_hex(4), now=now, dry_run=dry_run,
                             enabled=sorted(providers), settings=settings)
@@ -376,6 +396,8 @@ def run_research(brands, store, *, providers, settings, now, configs=None, dry_r
     ledger = Ledger(copy.deepcopy(usage) if dry_run else usage, now[:7])
     result.ledger = ledger
     limit = max_queries or settings.max_queries_per_run
+    compare_cap = (compare_limit or settings.compare_queries) if compare and len(providers) > 1 else 0
+    compared = 0
     disabled, exhausted = {}, set()
 
     reported = {}
@@ -403,6 +425,18 @@ def run_research(brands, store, *, providers, settings, now, configs=None, dry_r
 
         for q in plan:
             key = cache_key(q)
+            if compared < compare_cap and attempted < limit:
+                outcome = _compare_one(q, key, providers, disabled, exhausted, settings, ledger,
+                                       reported, past, now, store, brand, result, dry_run, spent)
+                if outcome == "reused":
+                    report.cached.append(q)
+                    continue
+                if outcome:
+                    compared += 1
+                    attempted += 1
+                    report.searched.append((q, "+".join(outcome["used"]) or "(all reused)",
+                                            outcome["credits"], None))
+                    continue
             if _find_cached(past, key, now, settings.cache_days):
                 report.cached.append(q)
                 continue
@@ -470,6 +504,121 @@ def run_research(brands, store, *, providers, settings, now, configs=None, dry_r
                 "failed": len(report.failed), "credits": spent})
     result.reported = {k: v for k, v in reported.items() if v is not None}   # after this run
     return result
+
+
+def _compare_one(q, key, providers, disabled, exhausted, settings, ledger, reported, past, now,
+                 store, brand, result, dry_run, spent):
+    """Run one search on every usable provider so their answers can be compared.
+
+    Returns "reused" when every provider already has a fresh answer and nothing needs paying
+    for, a dict describing what happened, or None when no provider could be used at all.
+    """
+    answers, used, credits, failures = {}, [], 0, {}
+    for name in sorted(providers):
+        if name in disabled or name in exhausted:
+            continue
+        hit = _find_cached(past, key, now, settings.cache_days, provider=name)
+        if hit:
+            answers[name] = _urls(hit["results"])
+            continue
+        provider = providers[name]
+        cost = provider.cost(q.kind, q.depth)
+        if _allowance(name, settings.caps, ledger, reported) < cost:
+            failures[name] = "no credits left under the cap"
+            continue
+        if dry_run:
+            results = None
+        else:
+            try:
+                results = provider.search(q.text, kind=q.kind, num=settings.results_per_query,
+                                          country=q.country, recency=q.recency, depth=q.depth)
+            except AuthError as exc:
+                disabled[name] = str(exc)
+                result.notes.append(f"{name} switched off for this run: {exc}")
+                result.notes_with_problems.append(name)
+                continue
+            except QuotaError as exc:
+                exhausted.add(name)
+                result.notes.append(f"{name} is out of credits: {exc}")
+                continue
+            except ProviderError as exc:
+                failures[name] = str(exc)
+                continue
+        ledger.charge(name, cost)
+        if reported.get(name) is not None:
+            reported[name] -= cost
+        spent[name] = spent.get(name, 0) + cost
+        used.append(name)
+        credits += cost
+        answers[name] = None if results is None else _urls([r.to_dict() for r in results])
+        if not dry_run:
+            store.append_searches(brand.slug, [{
+                "at": now, "run": result.run_id, "key": key, "query": q.text, "kind": q.kind,
+                "recency": q.recency, "country": q.country, "depth": q.depth, "tag": q.tag,
+                "provider": name, "credits": cost, "mode": "compare",
+                "results": [r.to_dict() for r in results]}])
+            store.save_usage(ledger.usage)
+    if not used and answers and not failures:
+        result.compare.append({"brand": brand.slug, "query": q.text, "kind": q.kind,
+                               "answers": answers, "failures": failures, "reused": True})
+        return "reused"
+    if not answers and not failures:
+        return None
+    result.compare.append({"brand": brand.slug, "query": q.text, "kind": q.kind,
+                           "answers": answers, "failures": failures, "reused": False})
+    return {"used": used, "credits": credits}
+
+
+def compare_summary(entries):
+    """Overlap between providers across every compared search (needs real answers)."""
+    names = sorted({n for e in entries for n, urls in e["answers"].items() if urls is not None})
+    totals = {n: {"searches": 0, "results": 0, "only_here": 0} for n in names}
+    pairs = {}
+    for e in entries:
+        live = {n: set(u) for n, u in e["answers"].items() if u is not None}
+        for n, urls in live.items():
+            totals[n]["searches"] += 1
+            totals[n]["results"] += len(urls)
+            others = set().union(*[v for k, v in live.items() if k != n]) if len(live) > 1 else set()
+            totals[n]["only_here"] += len(urls - others)
+        for a in sorted(live):
+            for b in sorted(live):
+                if a < b:
+                    slot = pairs.setdefault((a, b), {"shared": 0, "union": 0})
+                    slot["shared"] += len(live[a] & live[b])
+                    slot["union"] += len(live[a] | live[b])
+    return totals, pairs
+
+
+def format_compare_report(result):
+    entries = result.compare
+    if not entries:
+        return ""
+    lines = ["", "Comparison of services (each search was run on every ticked service):"]
+    for e in entries:
+        lines.append(f'  [{e["kind"]}] "{e["query"]}"' + ("  (answers reused from the last run)" if e["reused"] else ""))
+        live = {n: u for n, u in e["answers"].items() if u is not None}
+        for name in sorted(e["answers"]):
+            urls = e["answers"][name]
+            others = set().union(*[set(v) for k, v in live.items() if k != name]) if len(live) > 1 else set()
+            if urls is None:
+                lines.append(f"      {name}: would be searched")
+            else:
+                lines.append(f"      {name}: {len(urls)} results, {len(set(urls) - others)} only this service found")
+        for name, why in sorted(e["failures"].items()):
+            lines.append(f"      {name}: not used ({why})")
+        if len(live) > 1:
+            shared = set.intersection(*[set(v) for v in live.values()])
+            lines.append(f"      found by every service: {len(shared)}")
+    totals, pairs = compare_summary(entries)
+    if totals:
+        lines.append("  Overall:")
+        for name, t in sorted(totals.items()):
+            lines.append(f"    {name}: {t['results']} results over {t['searches']} searches, {t['only_here']} found by no other service")
+        for (a, b), p in sorted(pairs.items()):
+            pct = round(100 * p["shared"] / p["union"]) if p["union"] else 0
+            lines.append(f"    {a} vs {b}: {p['shared']} pages in common ({pct}% of everything either found)")
+    return "\n".join(lines)
 
 
 CHECK_QUERY = "sweatpants overalls"
@@ -567,7 +716,8 @@ def format_research_report(result):
         lines.append("Provider-reported credits left: " + ", ".join(
             f"{k} {v:g}" for k, v in sorted(result.reported.items())))
     lines.extend(f"note: {n}" for n in result.notes)
-    return "\n".join(lines)
+    comparison = format_compare_report(result)
+    return "\n".join(lines) + (("\n" + comparison) if comparison else "")
 
 
 # ---------------------------------------------------------------------------------------
