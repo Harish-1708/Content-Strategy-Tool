@@ -235,6 +235,23 @@ paste the JSON. Cookies, not passwords, are the reliable way: logins from GitHub
 stopped with a code or a puzzle, and the username/password route is only a best-effort fallback. Cookies
 expire after days or weeks; when they do, **Check** says "not logged in" and names the secret to refresh.
 
+**Google (Gemini) cookies need extra care.** The check used to report a signed-out Gemini as logged in, because
+Gemini shows its prompt box to anyone; it now treats a visible Sign in link as "not logged in", and says so with
+facts about the cookies it was given (how many, for which sites, how many already expired, and which Google
+sign-in cookies are missing; names and counts only, never values). The commonly reported cause of Google cookies
+dying within minutes is that Google rotates them while the original browser stays open, so export them like this:
+open a private (incognito) window, log in as the dummy Google account, open gemini.google.com/app, export all
+cookies as JSON including hidden (HttpOnly) ones, then close the window without clicking Sign out or browsing
+further. Paste the result into `GEMINI_COOKIES` and run Check straight away. This is the commonly reported
+behaviour, not something the tool can confirm. A password cannot replace cookies for Google: Google blocks
+automated password sign-ins from servers, so the Gemini username and password are never used.
+
+**TikTok's security puzzle.** When TikTok shows its slider puzzle, no posts are loaded behind it (the page is empty
+placeholders). The tool never solves a puzzle. It presses the puzzle's own X button once (`challenge_dismiss` in
+`browser.yaml`) and, if the puzzle is still there, stops and says so. If TikTok keeps blocking the browser, run
+Collect with **backend** set to `fallback`: TikTok is then read through Apify (it uses your Apify credit) whenever
+the browser is blocked.
+
 **Running it.** Every Wednesday by itself (ads and social only; Deep Research never runs on the schedule).
 By hand: Actions > Collect > Run workflow, then pick a **mode**:
 
