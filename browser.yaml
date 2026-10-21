@@ -56,6 +56,7 @@ sites:
     logged_in_any: ['[data-e2e="profile-icon"]', '[data-e2e="inbox-icon"]', 'a[href*="/upload"]']
     login_wall_any: ['[data-e2e="top-login-button"]', 'button:has-text("Log in")']
     challenge_any: ['text=Verify to continue', 'text=Drag the slider', '#captcha-verify-image', 'text=Select 2 objects']
+    challenge_dismiss: ['#captcha_close_button']      # the puzzle's own X: pressed once, the puzzle itself is never solved
     login_steps:
       - {goto: 'https://www.tiktok.com/login/phone-or-email/email'}
       - {wait: 4}
@@ -71,6 +72,9 @@ sites:
     app_url: https://gemini.google.com/app
     logged_in_any: ['rich-textarea', 'div[contenteditable="true"]']
     login_wall_any: ['a[href*="accounts.google.com/ServiceLogin"]', 'a:has-text("Sign in")']
+    # Gemini shows its prompt box to signed-out visitors too, so a visible Sign in link must win over the prompt box
+    # (found when a signed-out page was reported as logged in).
+    signed_out_any: ['a[href*="accounts.google.com/ServiceLogin"]', 'a[aria-label="Sign in"]']
     prompt_box: ['rich-textarea div[contenteditable="true"]', 'div.ql-editor[contenteditable="true"]', 'div[role="textbox"]', 'textarea']
     deep_research_clicks:       # buttons to press, in order, to switch the chat to Deep Research
       - ['button:has-text("Tools")', 'button:has-text("Deep Research")']
