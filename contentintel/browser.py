@@ -4,6 +4,7 @@ The collectors never touch Playwright directly. They use the small interface bel
 collection logic can be tested without a browser, and only this file knows about Playwright.
 Nothing here is ever printed or saved that contains a cookie value or a password.
 """
+import collections
 import json
 import random
 import re
@@ -39,7 +40,7 @@ _TYPES = {
     "needs_login": "bool", "secrets": "secrets", "home": "str", "hashtag_url": "str",
     "profile_url": "str", "search_url": "str", "app_url": "str", "settle_seconds": "num",
     "json_url_hints": "strs", "consent_any": "strs", "logged_in_any": "strs", "login_wall_any": "strs",
-    "challenge_any": "strs", "link_contains": "strs", "prompt_box": "strs", "send": "strs",
+    "challenge_any": "strs", "challenge_dismiss": "strs", "signed_out_any": "strs", "link_contains": "strs", "prompt_box": "strs", "send": "strs",
     "start_research": "strs", "still_working_any": "strs", "done_any": "strs", "response": "strs",
     "deep_research_clicks": "strs_list", "login_steps": "steps", "wait": "wait",
 }
@@ -182,6 +183,33 @@ def parse_cookies(text):
     if not out:
         raise BrowserError("no usable cookies were found in the cookies secret")
     return out
+
+
+GOOGLE_SIGNIN_COOKIES = ("SID", "__Secure-1PSID", "__Secure-3PSID", "SAPISID")
+
+
+def describe_cookies(text, site="", now=None):
+    """What a cookies secret holds, as names and counts only (never a value), so a failed login can be understood:
+    how many cookies loaded, for which sites, how many are already expired and, for Google, which of the cookies
+    that prove a sign-in are absent."""
+    try:
+        cookies = parse_cookies(text)
+    except BrowserError as exc:
+        return f"the cookies secret could not be read ({exc})"
+    if not cookies:
+        return "no cookies secret is set"
+    now = time.time() if now is None else now
+    domains = collections.Counter(c["domain"] for c in cookies)
+    parts = [f"{len(cookies)} cookies loaded ({', '.join(f'{d} x{n}' for d, n in domains.most_common(4))})"]
+    expired = sum(1 for c in cookies if c.get("expires") and c["expires"] < now)
+    if expired:
+        parts.append(f"{expired} already expired")
+    if site == "gemini":
+        missing = [n for n in GOOGLE_SIGNIN_COOKIES if n not in {c["name"] for c in cookies}]
+        if missing:
+            parts.append("Google sign-in cookies missing: " + ", ".join(missing)
+                         + " (export again and include hidden/HttpOnly cookies)")
+    return "; ".join(parts)
 
 
 def parse_json_text(text):
