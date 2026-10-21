@@ -69,9 +69,11 @@ class Store:
     def __init__(self, data_dir="data"):
         self.data_dir = Path(data_dir)
 
-    def dir(self, slug):
+    def dir(self, slug, create=True):
+        """A brand's data folder. Reading must never create it, so readers pass create=False."""
         path = brand_data_dir(self.data_dir, slug)
-        path.mkdir(parents=True, exist_ok=True)
+        if create:
+            path.mkdir(parents=True, exist_ok=True)
         return path
 
     def _check_brand(self, slug, snapshot):
@@ -95,7 +97,7 @@ class Store:
         return _read(Path(path))
 
     def load_latest(self, slug):
-        snap = _read(self.dir(slug) / "latest.json")
+        snap = _read(self.dir(slug, create=False) / "latest.json")
         if snap is not None:
             self._check_brand(slug, snap)
         return snap
@@ -105,13 +107,13 @@ class Store:
         return _atomic_write(self.dir(slug) / "latest.json", snapshot, compact=True)
 
     def load_sheet_info(self, slug):
-        return _read(self.dir(slug) / "sheet.json")
+        return _read(self.dir(slug, create=False) / "sheet.json")
 
     def save_sheet_info(self, slug, info):
         return _atomic_write(self.dir(slug) / "sheet.json", info)
 
     def load_last_checked(self, slug):
-        return _read(self.dir(slug) / "last_checked.json")
+        return _read(self.dir(slug, create=False) / "last_checked.json")
 
     def save_last_checked(self, slug, info):
         return _atomic_write(self.dir(slug) / "last_checked.json", info)
@@ -126,7 +128,7 @@ class Store:
         return len(events)
 
     def read_changes(self, slug):
-        path = self.dir(slug) / "changes.jsonl"
+        path = self.dir(slug, create=False) / "changes.jsonl"
         if not path.is_file():
             return []
         with open(path, encoding="utf-8") as fh:
@@ -181,6 +183,15 @@ class Store:
         with open(path, encoding="utf-8") as fh:
             return [json.loads(line) for line in fh if line.strip()]
 
+    def read_auto_seeds(self, slug):
+        path = self._research_file(slug, "auto_seeds.json")
+        return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else None
+
+    def write_auto_seeds(self, slug, data):
+        path = self._research_file(slug, "auto_seeds.json")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(data, ensure_ascii=False, indent=1, sort_keys=True), encoding="utf-8")
+
     def write_deep_report(self, slug, name, text):
         if not re.fullmatch(r"[A-Za-z0-9_.-]+\.md", name):
             raise StoreError(f"unsafe report name {name!r}")
@@ -204,7 +215,7 @@ class Store:
         return _write_text(self.dir(slug) / "catalogue" / name, text)
 
     def load_baseline(self, slug):
-        return _read(self.dir(slug) / "baseline.json")
+        return _read(self.dir(slug, create=False) / "baseline.json")
 
     def save_baseline(self, slug, baseline):
         _atomic_write(self.dir(slug) / "baseline.json", baseline)
@@ -215,7 +226,7 @@ class Store:
             path.unlink()
 
     def load_pending(self, slug):
-        return _read(self.dir(slug) / "pending.json")
+        return _read(self.dir(slug, create=False) / "pending.json")
 
     def save_pending(self, slug, pending):
         _atomic_write(self.dir(slug) / "pending.json", pending)
@@ -226,7 +237,7 @@ class Store:
             path.unlink()
 
     def load_registry(self, slug):
-        return _read(self.dir(slug) / "registry.json", default={})
+        return _read(self.dir(slug, create=False) / "registry.json", default={})
 
     def save_registry(self, slug, registry):
         return _atomic_write(self.dir(slug) / "registry.json", registry)
@@ -237,7 +248,7 @@ class Store:
             fh.write(json.dumps(entry, ensure_ascii=False, sort_keys=True) + "\n")
 
     def read_failed(self, slug):
-        path = self.dir(slug) / "failed_runs.jsonl"
+        path = self.dir(slug, create=False) / "failed_runs.jsonl"
         if not path.is_file():
             return []
         with open(path, encoding="utf-8") as fh:
