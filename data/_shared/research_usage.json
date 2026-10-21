@@ -1,13 +1,13 @@
 {
  "lifetime": {
-  "collected_items": 3,
+  "collected_items": 33,
   "serpapi": 4,
   "serper_dev": 7,
   "tavily": 4
  },
  "months": {
   "2026-10": {
-   "collected_items": 3,
+   "collected_items": 33,
    "serpapi": 4,
    "serper_dev": 7,
    "tavily": 4
