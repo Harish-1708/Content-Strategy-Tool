@@ -4,8 +4,11 @@ Exit codes: 0 ok or warn, 1 error, 2 sync blocked, 3 baseline needs confirmation
 """
 import argparse
 import json
+import secrets
 import os
 
+from . import browser as browser_mod
+from . import collectors as collectors_mod
 from . import providers as providers_mod
 from . import research as research_mod
 from . import sheets as sheets_mod
@@ -72,7 +75,28 @@ def build_parser():
     p.add_argument("--dry-run", action="store_true",
                    help="show the plan and which provider would take each query; spend nothing")
     p.add_argument("--max-queries", type=int, default=0, help="override the per-run limit")
+    p.add_argument("--compare", action="store_true",
+                   help="run each of the first few searches on EVERY chosen service and compare")
+    p.add_argument("--compare-queries", type=int, default=0,
+                   help="how many searches compare mode may run on every service (default 5)")
     p.add_argument("--research-config", default="research.yaml")
+
+    p = sub.add_parser("collect", help="collect competitor ads, social posts and deep research with a browser")
+    _common(p)
+    group = p.add_mutually_exclusive_group(required=False)
+    group.add_argument("--brand")
+    group.add_argument("--all", action="store_true")
+    p.add_argument("--sources", default="",
+                   help="comma-separated: meta_ads, tiktok, instagram, deep_research "
+                        "(default: the first three; Deep Research takes 10+ minutes and uses the account's quota, so name it)")
+    p.add_argument("--dry-run", action="store_true", help="show the plan; open no browser")
+    p.add_argument("--check", action="store_true",
+                   help="open each site, confirm the login, and collect a handful of items")
+    p.add_argument("--recon", action="store_true",
+                   help="save pictures, page HTML and data samples from each site, for tuning browser.yaml")
+    p.add_argument("--research-config", default="research.yaml")
+    p.add_argument("--browser-config", default="browser.yaml")
+    p.add_argument("--debug-dir", default="debug")
 
     p = sub.add_parser("status", help="can generation use this catalogue right now?")
     _common(p)
@@ -160,7 +184,10 @@ def _research(args, store):
     brands = [load_brand(slug, args.brands_dir) for slug in slugs]
     result = research_mod.run_research(
         brands, store, providers=providers, settings=settings, now=sync_mod.utc_now(),
-        dry_run=args.dry_run, max_queries=args.max_queries or None, root=args.brands_dir)
+        dry_run=args.dry_run, max_queries=args.max_queries or None, root=args.brands_dir,
+        compare=args.compare, compare_limit=args.compare_queries or None)
+    if args.compare and len(providers) < 2:
+        print("::warning::Compare mode needs at least two services; running normally")
     print(research_mod.format_research_report(result))
     for name in result.notes_with_problems:
         print(f"::error::{name}: the API key was rejected. Check the repository secret.")
@@ -170,6 +197,73 @@ def _research(args, store):
         if rep.skipped or rep.deferred:
             print(f"::warning::{slug}: {len(rep.skipped)} searches skipped for credits, "
                   f"{len(rep.deferred)} left for the next run")
+    return 1 if result.problems else 0
+
+
+_BROWSER_FACTORY = None       # tests replace this; None means a real Chromium through Playwright
+
+
+def _site_creds(browser_cfg, env):
+    """Each site's cookies / username / password, read from the secrets named in browser.yaml."""
+    return {site: {k: ((env.get(name) or "").strip() or None) for k, name in cfg.get("secrets", {}).items()}
+            for site, cfg in browser_cfg["sites"].items()}
+
+
+def _real_factory(browser_cfg, creds, debug_dir):
+    def factory(site):
+        return browser_mod.open_browser(site, browser_cfg["sites"][site], browser_cfg["pacing"],
+                                        creds[site].get("cookies") or "", debug_dir)
+    return factory
+
+
+def _collect(args, store):
+    settings = collectors_mod.load_collector_settings(args.research_config)
+    browser_cfg = browser_mod.load_browser_settings(args.browser_config)
+    wanted = [n.strip() for n in args.sources.split(",") if n.strip()] or list(collectors_mod.BROWSER_SOURCES)
+    unknown = [n for n in wanted if n not in collectors_mod.SOURCES]
+    if unknown:
+        print(f"Error: unknown source {', '.join(unknown)} (choose from {', '.join(collectors_mod.SOURCES)})")
+        return 1
+    creds = _site_creds(browser_cfg, os.environ)
+    usable = [s for s in wanted if collectors_mod.has_access(
+        browser_cfg["sites"][collectors_mod.SITE_OF[s]], creds[collectors_mod.SITE_OF[s]])]
+    if not usable:
+        print("Collection skipped: no login is set for any chosen source.")
+        for s in wanted:
+            print(f"  {s}: {collectors_mod.missing_access_message(browser_cfg['sites'][collectors_mod.SITE_OF[s]])}")
+        print("::warning::Collection skipped: no login is set")
+        return 0
+    make = _BROWSER_FACTORY or _real_factory
+    factory = make(browser_cfg, creds, args.debug_dir)
+    now = sync_mod.utc_now()
+    if args.recon:
+        print("\n".join(collectors_mod.recon(factory, creds, browser_cfg, wanted, args.debug_dir)))
+        return 0
+    if args.check:
+        rows = collectors_mod.check_collectors(factory, creds, settings, browser_cfg, store, research_mod.Ledger,
+                                               now, wanted)
+        print(collectors_mod.format_check_collectors(rows))
+        bad = [r for r in rows if not r["ok"] and not r["detail"].startswith(("skipped", "no login"))]
+        for r in bad:
+            print(f"::error::{r['source']} check failed: {r['detail']}")
+        return 1 if bad else 0
+    if not (args.all or args.brand):
+        print("Error: choose --brand NAME, --all, --check or --recon")
+        return 1
+    slugs = list_brand_slugs(args.brands_dir) if args.all else [args.brand]
+    brands = [load_brand(slug, args.brands_dir) for slug in slugs]
+    result = collectors_mod.run_collect(
+        brands, store, browser_factory=factory, creds=creds, settings=settings, browser_cfg=browser_cfg,
+        ledger_cls=research_mod.Ledger, sources=wanted, now=now, run_id=secrets.token_hex(4),
+        dry_run=args.dry_run, root=args.brands_dir)
+    ledger = None if args.dry_run else research_mod.Ledger(store.load_usage(), now[:7])
+    print(collectors_mod.format_collect_report(result, settings, ledger))
+    for name in result.problems_for:
+        print(f"::error::{name}: the login did not work. Re-export the dummy account's cookies (see browser.yaml).")
+    for slug, reports in result.brands.items():
+        failed = [r for r in reports if r.status == "failed"]
+        if failed:
+            print(f"::error::{slug}: {len(failed)} collection tasks failed")
     return 1 if result.problems else 0
 
 
@@ -204,12 +298,14 @@ def main(argv=None):
             return _sheets(args, store)
         if args.cmd == "research":
             return _research(args, store)
+        if args.cmd == "collect":
+            return _collect(args, store)
         if args.cmd == "status":
             state = sync_mod.catalogue_state(args.brand, store)
             print(json.dumps(state, indent=1))
             return 0 if state["usable"] else 2
     except (BrandError, StoreError, sync_mod.BaselineError, FetchError, sheets_mod.SheetsError,
-            research_mod.ResearchError, KeyError, ValueError) as exc:
+            research_mod.ResearchError, collectors_mod.CollectError, browser_mod.BrowserError, KeyError, ValueError) as exc:
         print(f"Error: {exc}")
         return 1
     return 1
