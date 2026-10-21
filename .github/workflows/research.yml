@@ -31,6 +31,14 @@ on:
         description: "Most searches to run now (blank uses the limit in research.yaml)"
         required: false
         default: ""
+      compare:
+        description: "Run each of the first few searches on EVERY ticked service and compare their results"
+        type: boolean
+        default: true
+      compare_queries:
+        description: "How many searches may be compared (blank uses research.yaml; each costs one credit per service)"
+        required: false
+        default: ""
       provider_check:
         description: "Prove each ticked service works: one web and one news search each, a few credits. Ignores Dry run"
         type: boolean
@@ -74,6 +82,8 @@ jobs:
           MAX_QUERIES: ${{ inputs.max_queries }}
           DRY_RUN: ${{ inputs.dry_run }}
           PROVIDER_CHECK: ${{ inputs.provider_check }}
+          COMPARE: ${{ inputs.compare }}
+          COMPARE_QUERIES: ${{ inputs.compare_queries }}
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
           SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
@@ -92,6 +102,10 @@ jobs:
           else
             if [ -n "$MAX_QUERIES" ]; then args+=(--max-queries "$MAX_QUERIES"); fi
             if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+            if [ "$COMPARE" = "true" ]; then
+              args+=(--compare)
+              if [ -n "$COMPARE_QUERIES" ]; then args+=(--compare-queries "$COMPARE_QUERIES"); fi
+            fi
           fi
           { echo "### Research"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           python -m contentintel research "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
