@@ -21,3 +21,24 @@ auto:
   brand: true
   competitors: true
   topics: true
+
+# ---- ads, social and deep research (collected by Actions > Collect, using a real browser) -------------------------
+# Nothing is collected until you add seeds below. Remove the # marks to switch an example on.
+# ads:
+#   country: us            # two-letter code
+#   status: active         # all, active or inactive
+#   pages:                 # best: an Ad Library link for the advertiser (copy it from the browser);
+#                          # a plain Facebook page address is searched for by the page's name
+#     - https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=US&view_all_page_id=1234567890
+#   keywords:              # words to search the Ad Library for
+#     - sweatpant overalls
+# social:
+#   tiktok:
+#     hashtags: [overalls]
+#     profiles: []
+#     searches: []
+#   instagram:
+#     hashtags: [overalls]
+# deep_research:           # each question is one paid Gemini Deep Research task
+#   questions:
+#     - Who are the main competitors in comfortable loungewear overalls, and what angles do their ads use?
