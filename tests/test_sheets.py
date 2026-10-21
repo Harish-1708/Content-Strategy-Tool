@@ -9,6 +9,7 @@ from gspread.utils import ValueRenderOption
 
 from contentintel import cli, sheets
 from contentintel.research import source_id
+from contentintel import collectors as coll
 from contentintel.export import PRODUCT_COLUMNS, VARIANT_COLUMNS
 from contentintel.store import Store
 from contentintel.sync import confirm_baseline, confirm_removed, run_sync
@@ -1024,3 +1025,69 @@ def test_a_brands_sheet_shows_only_its_own_findings(swov, dude, store):
     by_title = {sp.title: sp for sp in client.created}
     assert "Research" in titles_of(by_title["Swoveralls catalogue (auto-updated)"])
     assert "Research" not in titles_of(by_title["DudeRobe catalogue (auto-updated)"])
+
+
+# --- the Collected tab (ads, social posts, deep research) ------------------------------------------
+
+def collected(at, *rows, seeds="1 hashtags"):
+    return {"at": at, "run": "r", "source": "tiktok", "key": "k", "seeds": seeds, "actor": "a",
+            "raw_count": len(rows), "unreadable": 0, "items": list(rows)}
+
+
+def post(n, likes=10, **over):
+    return coll._row("tiktok", n, handle="acme", text=f"post {n}", url=f"https://www.tiktok.com/@acme/video/{n}",
+                  posted_at="2026-10-01T10:00:00.000Z", likes=likes, comments=2, shares=None, views=100, **over)
+
+
+def test_there_is_no_collected_tab_until_something_is_collected(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    client = FakeClient()
+    one(swov, store, client)
+    assert "Collected" not in titles_of(client.created[0])
+
+
+def test_collected_items_get_their_own_tab_before_status(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    store.append_collected("swoveralls", collected(T0, post(1), post(2, likes=None)))
+    client = FakeClient()
+    report, error = one(swov, store, client)
+    assert error is None and titles_of(client.created[0]) == ["Products", "Variants", "Changes", "Collected", "Status"]
+    header, rows = read(tabs(client.created[0])["Collected"])
+    assert header == sheets.COLLECTED_COLUMNS + ["Review"] and len(rows) == 2
+    by = {r["item_id"]: r for r in rows}
+    assert by["tiktok:1"]["likes"] == 10 and isinstance(by["tiktok:1"]["likes"], int)
+    assert by["tiktok:2"]["likes"] == "" and by["tiktok:1"]["shares"] == "" and by["tiktok:1"]["views"] == 100
+    assert by["tiktok:1"]["source"] == "tiktok" and by["tiktok:1"]["Review"] == ""
+
+
+def test_numbers_update_in_place_and_review_marks_survive(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    store.append_collected("swoveralls", collected(T0, post(1)))
+    client = FakeClient()
+    one(swov, store, client)
+    ws = tabs(client.created[0])["Collected"]
+    ws.cells[(row_of(ws, "item_id", "tiktok:1"), col_of(ws, "Review"))] = "steal this hook"
+    store.append_collected("swoveralls", collected(T2, post(1, likes=900), post(3)))
+    report, _ = one(swov, store, client, now=LATER)
+    rows = {r["item_id"]: r for r in read(ws)[1]}
+    assert set(rows) == {"tiktok:1", "tiktok:3"} and report.rows_added == 1
+    assert rows["tiktok:1"]["likes"] == 900 and rows["tiktok:1"]["Review"] == "steal this hook"
+    assert rows["tiktok:1"]["times_seen"] == 2 and rows["tiktok:1"]["last_seen"] == T2
+
+
+def test_an_unchanged_collected_tab_is_not_rewritten(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    store.append_collected("swoveralls", collected(T0, post(1), post(2)))
+    client = FakeClient()
+    one(swov, store, client)
+    report, _ = one(swov, store, client, now=LATER)
+    assert (report.rows_updated, report.cells_updated, report.rows_added) == (0, 0, 0)
+
+
+def test_a_dry_run_describes_the_collected_tab_without_creating_it(swov, store):
+    baselined(swov, store, "swoveralls_full_72.json", 72)
+    client = FakeClient()
+    one(swov, store, client)
+    store.append_collected("swoveralls", collected(T0, post(1)))
+    report, _ = one(swov, store, client, dry_run=True, now=LATER)
+    assert report.rows_added == 1 and "Collected" not in titles_of(client.created[0])
