@@ -1,6 +1,6 @@
 {
  "lifetime": {
-  "claude_calls": 3,
+  "claude_calls": 4,
   "collected_items": 237,
   "serpapi": 4,
   "serper_dev": 7,
@@ -8,7 +8,7 @@
  },
  "months": {
   "2026-10": {
-   "claude_calls": 3,
+   "claude_calls": 4,
    "collected_items": 237,
    "serpapi": 4,
    "serper_dev": 7,
