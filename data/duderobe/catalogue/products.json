@@ -4290,7 +4290,7 @@
      "title": "Mauve / Extra Small"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 50751974310174,
      "options": [
@@ -4308,7 +4308,7 @@
      "title": "Mauve / Small/Medium"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 50751974342942,
      "options": [
@@ -4326,7 +4326,7 @@
      "title": "Mauve / Large/Extra Large"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 50751974375710,
      "options": [
