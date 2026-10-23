@@ -4218,7 +4218,7 @@
      "title": "Rose / Extra Small"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 50751974179102,
      "options": [
@@ -4236,7 +4236,7 @@
      "title": "Rose / Small/Medium"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 50751974211870,
      "options": [

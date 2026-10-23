@@ -140,8 +140,8 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 10055698743582,The SheRobe,50751974080798,Grey / Large/Extra Large,Color=Grey; Size=Large/Extra Large,SHEROBE-073-L/XL,128.00,,true
 10055698743582,The SheRobe,50751974113566,Grey / XXL/3XL,Color=Grey; Size=XXL/3XL,SHEROBE-073-2XL/3XL,128.00,,true
 10055698743582,The SheRobe,50751974146334,Rose / Extra Small,Color=Rose; Size=Extra Small,SHEROBE-816-XS,128.00,,true
-10055698743582,The SheRobe,50751974179102,Rose / Small/Medium,Color=Rose; Size=Small/Medium,SHEROBE-816-S/M,128.00,,false
-10055698743582,The SheRobe,50751974211870,Rose / Large/Extra Large,Color=Rose; Size=Large/Extra Large,SHEROBE-816-L/XL,128.00,,false
+10055698743582,The SheRobe,50751974179102,Rose / Small/Medium,Color=Rose; Size=Small/Medium,SHEROBE-816-S/M,128.00,,true
+10055698743582,The SheRobe,50751974211870,Rose / Large/Extra Large,Color=Rose; Size=Large/Extra Large,SHEROBE-816-L/XL,128.00,,true
 10055698743582,The SheRobe,50751974244638,Rose / XXL/3XL,Color=Rose; Size=XXL/3XL,SHEROBE-816-2XL/3XL,128.00,,true
 10055698743582,The SheRobe,50751974277406,Mauve / Extra Small,Color=Mauve; Size=Extra Small,SHEROBE-MVE-XS,128.00,,true
 10055698743582,The SheRobe,50751974310174,Mauve / Small/Medium,Color=Mauve; Size=Small/Medium,SHEROBE-MVE-S/M,128.00,,false
