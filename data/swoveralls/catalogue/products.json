@@ -6691,7 +6691,7 @@
      "title": "XL / Buffalo Plaid"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753142050927,
      "options": [
@@ -12313,7 +12313,7 @@
      "title": "XL / Trash Pandas"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753488048239,
      "options": [
