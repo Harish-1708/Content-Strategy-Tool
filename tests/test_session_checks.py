@@ -250,34 +250,7 @@ def test_clearing_reports_false_when_there_is_nothing_to_press(cfg):
     assert C.clear_challenge(FakeBrowser(clickable={"#captcha_close_button"}), {k: v for k, v in t.items() if k != "challenge_dismiss"}) is False
 
 
-def test_a_puzzle_that_appears_while_collecting_is_closed_once_and_collection_goes_on(cfg):
-    t = {**cfg["sites"]["tiktok"], "settle_seconds": 0}
-
-    class WhileCollecting(PuzzleBrowser):
-        def __init__(self, cfg, closable):
-            super().__init__(cfg, closable=closable)
-            self.puzzle = False
-            self.pages = {"https://www.tiktok.com/tag/": {"json": []}}
-
-        def open(self, url):
-            super().open(url)
-            self.puzzle = "/tag/" in url and not getattr(self, "closed_already", False)
-
-        def on_click(self, selector):
-            super().on_click(selector)
-            if self.closable:
-                self.closed_already = True
-
-    b = WhileCollecting(cfg, closable=True)
-    task = C.Task("tiktok", "1 hashtags", {"hashtags": ["overalls"]}, "k")
-    found, stats = C.run_browser_task(b, task, 5, t, cfg, {})
-    assert b.clicks == ["#captcha_close_button"] and found == [] and stats["state"] == "ok"      # no crash: nothing to read yet
-    assert any("/tag/overalls" in u for u in b.opened)                                           # and it really did open the tag page
-
-    bad = WhileCollecting(cfg, closable=False)
-    with pytest.raises(Challenge, match="closing it with its X button did not clear it"):
-        C.run_browser_task(bad, task, 5, t, cfg, {})
-    assert bad.clicks == ["#captcha_close_button"]
+# (a puzzle or an error appearing while collecting is covered in test_tiktok_puzzle_and_search.py)
 
 
 # ---- the same facts wherever a login wall is reported -----------------------------------------------------------------
