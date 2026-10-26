@@ -40,7 +40,7 @@ _TYPES = {
     "needs_login": "bool", "secrets": "secrets", "home": "str", "hashtag_url": "str",
     "profile_url": "str", "search_url": "str", "app_url": "str", "settle_seconds": "num",
     "json_url_hints": "strs", "consent_any": "strs", "logged_in_any": "strs", "login_wall_any": "strs",
-    "challenge_any": "strs", "challenge_dismiss": "strs", "error_any": "strs", "hashtag_via_search_on_error": "bool",
+    "challenge_any": "strs", "challenge_dismiss": "strs", "error_any": "strs", "hashtag_via_search_on_error": "bool", "search_box": "strs",
     "deep_research_active_any": "strs", "signed_out_any": "strs", "link_contains": "strs", "prompt_box": "strs", "send": "strs",
     "start_research": "strs", "still_working_any": "strs", "done_any": "strs", "response": "strs",
     "deep_research_clicks": "strs_list", "login_steps": "steps", "wait": "wait",
