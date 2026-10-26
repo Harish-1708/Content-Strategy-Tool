@@ -7,10 +7,12 @@
 #   plan                 shows what would be collected; opens no browser, spends nothing (the default)
 #   seeds                has Claude write (or refresh) each brand's research seeds from its catalogue and shows them
 #   check                opens each ticked site, confirms the login, collects a handful of items; with
-#                        Deep Research ticked it also checks the Gemini page and Claude's key (no report started)
+#                        Deep Research ticked it also checks the Gemini page and Claude's key (no report started);
+#                        it also proves the Google Doc for Deep Research reports can be written (DEEP_RESEARCH_DOC_ID)
 #   recon                saves pictures, page HTML and data samples (download the "debug" artifact)
 #   test_deep_research   runs ONE real short Deep Research report, including Claude's prompt and answers
-#   collect              the real run: saves data and updates the Google Sheets
+#   collect              the real run: saves data, updates the Google Sheets and adds each new Deep Research
+#                        report to the Google Doc as a new tab
 # Pick a BACKEND for ads and social: auto follows research.yaml (browser unless you switched Apify on),
 # browser, apify (Apify only; needs APIFY_TOKEN), or fallback (browser first, Apify if it fails).
 # Logins and keys come from repository secrets; the README lists every one.
@@ -173,6 +175,41 @@ jobs:
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           exit "$code"
 
+      - name: Add Deep Research reports to the Google Doc
+        id: docs
+        if: inputs.mode == 'collect' || inputs.mode == ''
+        continue-on-error: true
+        shell: bash
+        env:
+          BRAND: ${{ inputs.brand }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          DEEP_RESEARCH_DOC_ID: ${{ secrets.DEEP_RESEARCH_DOC_ID }}
+        run: |
+          set +e
+          args=(--all)
+          if [ -n "$BRAND" ] && [ "$BRAND" != "all" ]; then args=(--brand "$BRAND"); fi
+          { echo "### Google Doc (Deep Research reports)"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel docs "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Check the Google Doc for Deep Research reports
+        id: docscheck
+        if: inputs.mode == 'check'
+        continue-on-error: true
+        shell: bash
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          DEEP_RESEARCH_DOC_ID: ${{ secrets.DEEP_RESEARCH_DOC_ID }}
+        run: |
+          set +e
+          { echo "### Google Doc check"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel docs --all --check 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
       - name: Save the data
         shell: bash
         run: |
@@ -188,7 +225,7 @@ jobs:
           fi
 
       - name: Alert if collection needs attention
-        if: steps.collect.outcome == 'failure' || steps.sheets.outcome == 'failure'
+        if: steps.collect.outcome == 'failure' || steps.sheets.outcome == 'failure' || steps.docs.outcome == 'failure' || steps.docscheck.outcome == 'failure'
         shell: bash
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -200,5 +237,5 @@ jobs:
           fi
 
       - name: Show the run as red when attention is needed
-        if: steps.collect.outcome == 'failure' || steps.sheets.outcome == 'failure'
+        if: steps.collect.outcome == 'failure' || steps.sheets.outcome == 'failure' || steps.docs.outcome == 'failure' || steps.docscheck.outcome == 'failure'
         run: exit 1
