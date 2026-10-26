@@ -1,8 +1,26 @@
 """Claude, used to help Gemini Deep Research: it writes the research prompt, and answers any
 clarifying question Gemini asks before it starts. Needs ANTHROPIC_API_KEY."""
+import json
+import re
+
 from .providers import Provider, ProviderError
 
 NO_QUESTION = "NO_QUESTION"
+
+
+def parse_json(text):
+    """The JSON in a model's answer: plain, in a code fence, or with a sentence around it. Raises ProviderError otherwise."""
+    body = (text or "").strip()
+    fenced = re.match(r"^```(?:json)?\s*(.*?)\s*```$", body, re.S)
+    if fenced:
+        body = fenced.group(1)
+    for candidate in (body, body[body.find("{"):body.rfind("}") + 1], body[body.find("["):body.rfind("]") + 1]):
+        if candidate:
+            try:
+                return json.loads(candidate)
+            except ValueError:
+                continue
+    raise ProviderError("Claude did not return valid JSON")
 
 
 class TruncatedError(ProviderError):
@@ -63,6 +81,16 @@ class Claude(Provider):
             return self.complete(system, user, max_tokens=first_limit)
         except TruncatedError:
             return self.complete(system, user, max_tokens=first_limit * 2)
+
+    def json_task(self, system, user, max_tokens=None):
+        """An answer that must be JSON: asked again once, plainly, if the first one is not."""
+        limit = max_tokens or self.prompt_max_tokens
+        try:
+            return parse_json(self._complete_whole(system, user, limit))
+        except ProviderError as first:
+            if isinstance(first, TruncatedError):
+                raise
+            return parse_json(self._complete_whole(system, user + "\n\nReply with valid JSON only: no text before or after it.", limit))
 
     def check(self):
         """A tiny real call that proves the key and the model name are accepted."""
