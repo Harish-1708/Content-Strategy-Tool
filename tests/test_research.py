@@ -71,7 +71,7 @@ def test_settings_default_when_there_is_no_file(settings):
     assert settings.routing == {"web": ["serper_dev", "tavily", "serpapi"],
                                 "news": ["tavily", "serper_dev", "serpapi"]}
     assert (settings.results_per_query, settings.cache_days, settings.max_queries_per_run,
-            settings.country, settings.recency) == (10, 7, 30, "us", None)
+            settings.country, settings.recency) == (10, 7, 30, "worldwide", None)
 
 
 def test_a_settings_file_changes_only_what_it_names(tmp_path):
@@ -125,7 +125,7 @@ def test_with_no_file_a_brand_only_searches_for_its_own_name(swov, settings):
     assert [q.text for q in plan] == ['"Swoveralls" reviews', '"Swoveralls" competitors',
                                       '"Swoveralls" TikTok']
     assert {q.kind for q in plan} == {"web"} and {q.tag for q in plan} == {"brand"}
-    assert {q.brand for q in plan} == {"swoveralls"} and {q.country for q in plan} == {"us"}
+    assert {q.brand for q in plan} == {"swoveralls"} and {q.country for q in plan} == {"worldwide"}
 
 
 def test_competitors_topics_and_explicit_queries_are_planned_in_order(tmp_path, swov, settings):
@@ -506,7 +506,7 @@ def test_each_search_is_saved_with_what_is_needed_to_reuse_and_audit_it(tmp_path
     (rec,) = store.read_searches("swoveralls")
     assert rec["at"] == NOW and rec["run"] == result.run_id and rec["query"] == "robes"
     assert (rec["kind"], rec["recency"], rec["country"], rec["depth"], rec["tag"]) == (
-        "news", "week", "us", "basic", "config")
+        "news", "week", "worldwide", "basic", "config")
     assert rec["provider"] == "tavily" and rec["credits"] == 1 and len(rec["key"]) == 16
     assert rec["results"][0] == {"rank": 1, "title": "t page 1", "url": "https://t1.example.com/page",
                                  "snippet": "t content 1", "date": "2026-10-18"}
@@ -606,7 +606,7 @@ def test_the_report_lists_skips_failures_and_deferrals(tmp_path, store, swov, se
 
 def rec(query, urls, at, provider="serper_dev", tag="brand", titles=None, snippets=None):
     return {"at": at, "run": "r", "key": query, "query": query, "kind": "web", "recency": None,
-            "country": "us", "depth": "basic", "tag": tag, "provider": provider, "credits": 1,
+            "country": "worldwide", "depth": "basic", "tag": tag, "provider": provider, "credits": 1,
             "results": [{"rank": i, "title": (titles or {}).get(u, f"title of {u}"), "url": u,
                          "snippet": (snippets or {}).get(u, "snip"), "date": None}
                         for i, u in enumerate(urls, start=1)]}
@@ -1191,3 +1191,51 @@ def test_the_research_workflow_offers_compare_and_it_is_on_by_default():
     inputs = (data.get("on") or data.get(True))["workflow_dispatch"]["inputs"]
     assert inputs["compare"]["default"] is True and "compare_queries" in inputs
     assert "--compare" in text and "--compare-queries" in text
+
+
+# --- the region -----------------------------------------------------------------------------------------------------------
+
+def serper_calls(http):
+    return [c for c in searches_only(http) if "serper.dev" in c["url"]]
+
+
+def test_cli_searches_worldwide_by_default_sending_no_country(cli_env):
+    http, run = cli_env
+    assert run("--brand", "swoveralls", "--providers", "serper_dev") == 0
+    calls = serper_calls(http)
+    assert calls and all("gl" not in c["json"] for c in calls)
+
+
+def test_cli_region_sends_that_country_to_the_search_for_this_run(cli_env):
+    http, run = cli_env
+    assert run("--brand", "swoveralls", "--providers", "serper_dev", "--region", "GB") == 0
+    calls = serper_calls(http)
+    assert calls and all(c["json"]["gl"] == "gb" for c in calls)
+
+
+def test_cli_region_worldwide_overrides_a_country_set_in_research_yaml(cli_env, tmp_path):
+    http, run = cli_env
+    path = tmp_path / "research.yaml"
+    path.write_text("defaults:\n  country: gb\n", encoding="utf-8")
+    assert run("--brand", "swoveralls", "--providers", "serper_dev") == 0
+    assert all(c["json"]["gl"] == "gb" for c in serper_calls(http))
+    http.calls.clear()
+    assert run("--brand", "swoveralls", "--providers", "serper_dev", "--region", "worldwide") == 0
+    assert serper_calls(http) and all("gl" not in c["json"] for c in serper_calls(http))
+
+
+def test_cli_a_bad_region_is_an_error_naming_the_fix(cli_env, capsys):
+    http, run = cli_env
+    assert run("--brand", "swoveralls", "--region", "usa") == 1
+    assert "Error: --region must be a two-letter country code such as us, or worldwide" in capsys.readouterr().out
+    assert http.calls == []
+
+
+def test_cli_the_provider_check_also_uses_the_run_region(cli_env):
+    http, run = cli_env
+    assert run("--check-providers", "--providers", "serper_dev", "--region", "gb") == 0
+    calls = serper_calls(http)
+    assert calls and all(c["json"]["gl"] == "gb" for c in calls)
+    http.calls.clear()
+    assert run("--check-providers", "--providers", "serper_dev") == 0
+    assert serper_calls(http) and all("gl" not in c["json"] for c in serper_calls(http))
