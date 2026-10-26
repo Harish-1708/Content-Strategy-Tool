@@ -30,7 +30,7 @@ on:
       mode:
         description: "What to do"
         type: choice
-        options: [plan, seeds, check, recon, test_deep_research, collect]
+        options: [plan, seeds, check, recon, test_deep_research, collect, rest]
         default: plan
       use_meta_ads:
         description: "Meta Ad Library ads (public pages, no login)"
@@ -50,6 +50,14 @@ on:
         default: false
       region:
         description: "Where to look for competitor ads: worldwide, or a two-letter country code such as us (blank uses research.yaml, which says worldwide)"
+        required: false
+        default: ""
+      rest_account:
+        description: "Only for mode rest: which account to rest now, without opening it (instagram, tiktok, or instagram,tiktok)"
+        required: false
+        default: "instagram"
+      rest_days:
+        description: "Only for mode rest: how many days (blank uses the number in research.yaml)"
         required: false
         default: ""
       ignore_cooldown:
@@ -120,6 +128,8 @@ jobs:
           BACKEND: ${{ inputs.backend }}
           REGION: ${{ inputs.region }}
           IGNORE_COOLDOWN: ${{ inputs.ignore_cooldown }}
+          REST_ACCOUNT: ${{ inputs.rest_account }}
+          REST_DAYS: ${{ inputs.rest_days }}
           INSTAGRAM_COOKIES: ${{ secrets.INSTAGRAM_COOKIES }}
           INSTAGRAM_USERNAME: ${{ secrets.INSTAGRAM_USERNAME }}
           INSTAGRAM_PASSWORD: ${{ secrets.INSTAGRAM_PASSWORD }}
@@ -139,7 +149,7 @@ jobs:
           if [ "$USE_INSTAGRAM" != "false" ]; then sources="$sources,instagram"; fi
           if [ "$USE_DEEP_RESEARCH" = "true" ]; then sources="$sources,deep_research"; fi
           MODE="${MODE:-collect}"              # the weekly schedule has no inputs: it is a real run
-          if [ "$MODE" != "test_deep_research" ] && [ "$MODE" != "seeds" ] && [ -z "$sources" ]; then echo "No collector was ticked; nothing to do."; exit 0; fi
+          if [ "$MODE" != "test_deep_research" ] && [ "$MODE" != "seeds" ] && [ "$MODE" != "rest" ] && [ -z "$sources" ]; then echo "No collector was ticked; nothing to do."; exit 0; fi
           case "$MODE" in
             plan)               args+=(--sources "${sources#,}" --dry-run) ;;
             seeds)              args+=(--seeds) ;;
@@ -147,6 +157,7 @@ jobs:
             recon)              args=(--recon --sources "${sources#,}") ;;
             test_deep_research) args=(--test-deep-research) ;;
             collect)            args+=(--sources "${sources#,}") ;;
+            rest)               args=(--rest "${REST_ACCOUNT:-instagram}"); if [ -n "$REST_DAYS" ]; then args+=(--rest-days "$REST_DAYS"); fi ;;
             *) echo "Unknown mode: $MODE"; exit 1 ;;
           esac
           args+=(--backend "${BACKEND:-auto}")
