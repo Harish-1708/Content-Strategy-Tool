@@ -35,10 +35,16 @@ sites:
     challenge_any: ['text=Suspicious Login Attempt', 'text=We detected an unusual login attempt', 'input[name="verificationCode"]', 'text=Confirm it']
     # An ACCOUNT warning (as opposed to a login check): the tool stops using the account at once and rests it
     # (collectors.safety.cooldown_days in research.yaml). The phrases are deliberately strict so an ordinary caption cannot
-    # match; they are the wording Instagram is known to use, NOT yet checked against your own warning. Send the warning's
-    # screenshot (or page) and they will be matched to it exactly. An address containing one of the parts below counts too.
-    warning_any: ['text=We suspect automated behavior', 'text=Action Blocked', 'text=We restrict certain activity', 'text=Your account has been temporarily locked']
+    # match. The first two are Instagram's own wording from a real warning ("We've detected automated behavior on your
+    # account ... ensure that no other users or tools have access to your account"); the rest are wording it is known to
+    # use. An address containing one of the parts below counts too.
+    warning_any: ['text=detected automated behavior', 'text=no other users or tools have access to your account', 'text=We suspect automated behavior', 'text=Action Blocked', 'text=We restrict certain activity', 'text=Your account has been temporarily locked']
     warning_url_any: ['/accounts/suspended', '/accounts/disabled', '/challenge/']
+    # CAREFUL MODE for this account: slower, smaller, and spread over several runs. Raise these only if the account stays quiet.
+    pacing: {min_delay_seconds: 20, max_delay_seconds: 60, scroll_pause_seconds: 8}   # a long pause before each page and each scroll
+    max_scrolls_per_page: 3          # scroll a little, not to the bottom
+    max_pages_per_run: 2             # hashtag pages opened in one run; the next run carries on from where this one stopped
+    max_pages_per_day: 4             # and never more than this many in a day, however often it is run
     login_steps:
       - {goto: 'https://www.instagram.com/accounts/login/'}
       - {wait: 3}
