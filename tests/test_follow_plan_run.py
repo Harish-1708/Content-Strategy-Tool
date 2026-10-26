@@ -16,7 +16,7 @@ from test_autoseeds import SEEDS, claude_with, seeded
 from test_collectors import CREDS, NOW, site, world, write_research
 from test_meta_real_page import RATE_LIMIT
 
-STATUS, COUNTRY = "active", "us"
+STATUS, COUNTRY = "active", "all"
 P_SWOV, P_RESELLER, P_GYM, P_FITNESS = "100000000000500", "100000000000600", "100000000000001", "100000000000002"
 P_OODIE_A, P_OODIE_B, P_RANDOM, P_MADE, P_OTHER = "100000000000011", "100000000000012", "100000000000900", "100000000000777", "100000000000999"
 P_SHEIN = "100000000000009"
