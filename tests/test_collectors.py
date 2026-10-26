@@ -413,7 +413,8 @@ def test_meta_ads_need_no_login_and_dismiss_a_cookie_banner(cfg):
     b = FakeBrowser({"https://www.facebook.com/ads/library": {"json": [META_JSON]}}, clickable=set(site(cfg, "meta_ads")["consent_any"]))
     task = C.Task("meta_ads", "t", {"urls": [C.ad_library_url("overalls", "us", "active")]}, "k")
     rows, stats = run_task(cfg, b, task, 10)
-    assert [r["item_id"] for r in rows] == ["meta_ads:111", "meta_ads:112"] and stats == {"json": 2, "links": 0, "state": "ok", "rate_limited": False, "fallbacks": [], "fallback_how": [], "page_errors": 0}
+    assert [r["item_id"] for r in rows] == ["meta_ads:111", "meta_ads:112"] and stats == {"json": 2, "links": 0, "state": "ok", "rate_limited": False, "fallbacks": [], "fallback_how": [], "page_errors": 0,
+                                                                                             "pages": 1, "pages_planned": 1, "pages_total": 1}
     assert len(b.opened) == 1 and b.clicks == [site(cfg, "meta_ads")["consent_any"][0]] and b.waits == [4]
 
 
@@ -432,7 +433,7 @@ def test_it_scrolls_only_until_it_has_enough_and_never_more_than_the_limit(cfg):
     assert len(run_task(cfg, more, ig_task("a"), 3)[0]) == 3 and 1 <= more.scrolls <= 3
     never = FakeBrowser({"https://www.instagram.com/explore/tags/": {"json": [many("ig", 1)]}}, present_always=logged_in(cfg, "instagram"))
     run_task(cfg, never, ig_task("a"), 50)
-    assert never.scrolls == cfg["limits"]["max_scrolls_per_page"]
+    assert never.scrolls == site(cfg, "instagram")["max_scrolls_per_page"] == 3        # Instagram is in careful mode: its own, smaller limit
 
 
 def test_the_limit_is_shared_between_seeds_and_a_full_task_stops_opening_pages(cfg):
