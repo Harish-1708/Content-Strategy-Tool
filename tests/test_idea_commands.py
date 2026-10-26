@@ -23,8 +23,10 @@ from test_planner import raw_plan
 from test_sheets import BOT, baselined, one
 
 REPO = Path(BRANDS_DIR).parent
-RESEARCH_YAML = str(REPO / "research.yaml")
-SHEETS_YAML = str(REPO / "sheets.yaml")
+# The tests own their configuration, so they never depend on the settings in your real research.yaml or the spreadsheet ids in your real
+# sheets.yaml. A research file that does not exist means "the built-in defaults", which the shipped file is tested to match.
+RESEARCH_YAML = str(REPO / "tests" / "fixtures" / "use_the_defaults.yaml")
+SHEETS_YAML = str(REPO / "tests" / "fixtures" / "sheets_blank.yaml")
 GOOD = {"verdict": "ok"}
 
 
@@ -582,3 +584,8 @@ def test_the_new_secret_and_every_new_command_are_documented():
 def test_the_request_workflow_caches_and_installs_the_browser_only_for_a_run():
     wf = load("request")
     assert step(wf, "request", "Remember the downloaded browser")["if"] == "inputs.action == 'run'" == step(wf, "request", "Install the browser")["if"]
+
+
+def test_these_tests_never_read_the_real_sheets_or_research_files():
+    assert not Path(RESEARCH_YAML).exists() and Path(SHEETS_YAML).is_file() and SHEETS_YAML.endswith("tests/fixtures/sheets_blank.yaml")
+    assert yaml.safe_load(open(SHEETS_YAML, encoding="utf-8"))["sheets"] == {"swoveralls": "", "duderobe": "", "defi_snacks": ""}
