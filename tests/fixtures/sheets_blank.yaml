@@ -1,0 +1,6 @@
+# Used by the brief command tests: the tests own this file, so they never depend on your real sheets.yaml
+# (which names your real spreadsheets and is not something a test should read).
+sheets:
+  swoveralls: ""
+  duderobe: ""
+  defi_snacks: ""
