@@ -3,6 +3,7 @@
 Exit codes: 0 ok or warn, 1 error, 2 sync blocked, 3 baseline needs confirmation.
 """
 import argparse
+import dataclasses
 import json
 import secrets
 import os
@@ -87,6 +88,7 @@ def build_parser():
     p.add_argument("--dry-run", action="store_true",
                    help="show the plan and which provider would take each query; spend nothing")
     p.add_argument("--max-queries", type=int, default=0, help="override the per-run limit")
+    p.add_argument("--region", default="", help="worldwide or a two-letter country code, for this run only")
     p.add_argument("--compare", action="store_true",
                    help="run each of the first few searches on EVERY chosen service and compare")
     p.add_argument("--compare-queries", type=int, default=0,
@@ -110,8 +112,11 @@ def build_parser():
                    help="write (or refresh) each brand's auto seeds with Claude and print them, without collecting")
     p.add_argument("--test-deep-research", action="store_true",
                    help="run ONE real, short Deep Research report to prove the whole path (takes 10+ minutes)")
+    p.add_argument("--region", default="", help="worldwide or a two-letter country code for the ad searches, for this run only")
+    p.add_argument("--ignore-cooldown", action="store_true",
+                   help="use accounts that are resting after a warning (do this only once you have dealt with the warning)")
     p.add_argument("--backend", choices=collectors_mod.BACKENDS, default="auto",
-                   help="browser, apify, fallback (browser first, Apify if it fails), or auto (as research.yaml says)")
+                   help="browser, apify, fallback (browser first, Apify if it fails), extra (both, merged), or auto (as research.yaml says)")
     p.add_argument("--research-config", default="research.yaml")
     p.add_argument("--browser-config", default="browser.yaml")
     p.add_argument("--debug-dir", default="debug")
@@ -199,6 +204,8 @@ def _docs(args, store):
 
 def _research(args, store):
     settings = research_mod.load_settings(args.research_config)
+    if args.region.strip():
+        settings = dataclasses.replace(settings, region_override=research_mod._country(args.region, "--region"))
     wanted = [n.strip() for n in args.providers.split(",") if n.strip()]
     unknown = [n for n in wanted if n not in providers_mod.PROVIDER_NAMES]
     if unknown:
@@ -270,6 +277,17 @@ def _secrets_status(browser_cfg, env):
     return [(n, "set" if (env.get(n) or "").strip() else "not set") for n in names]
 
 
+def _without_resting(wanted, store, now):
+    """Check and Recon touch the account, so a resting one is left alone and the report says so."""
+    resting = collectors_mod.active_cooldowns(store.read_cooldowns(), now)
+    for source in wanted:
+        entry = resting.get(collectors_mod.SITE_OF[source])
+        if entry:
+            print(f"  {source}: skipped: resting until {entry['until'][:10]} after an account warning "
+                  f"({str(entry.get('reason', ''))[:100]}); add --ignore-cooldown once you have dealt with it")
+    return [s for s in wanted if collectors_mod.SITE_OF[s] not in resting]
+
+
 def _collect(args, store):
     settings = collectors_mod.load_collector_settings(args.research_config)
     browser_cfg = browser_mod.load_browser_settings(args.browser_config)
@@ -294,7 +312,7 @@ def _collect(args, store):
         browser_ok = collectors_mod.has_access(browser_cfg["sites"][site], creds[site])
         if source in collectors_mod.BROWSER_SOURCES and backend == "apify":
             return apify is not None
-        if source in collectors_mod.BROWSER_SOURCES and backend == "fallback":
+        if source in collectors_mod.BROWSER_SOURCES and backend in ("fallback", "extra"):
             return browser_ok or apify is not None
         return browser_ok
 
@@ -320,6 +338,11 @@ def _collect(args, store):
             print(f"::error::Deep Research test failed: {outcome['detail']}")
             return 1
         return 0
+    if args.ignore_cooldown and not args.dry_run:
+        freed = collectors_mod.clear_cooldowns(store, now)
+        print(f"{freed} resting account(s) will be used again: you said the warning has been dealt with.")
+    if args.recon or args.check:
+        wanted = _without_resting(wanted, store, now)
     if args.recon:
         lines = collectors_mod.recon(factory, creds, browser_cfg, wanted, args.debug_dir)
         print("\n".join(lines))
@@ -351,7 +374,8 @@ def _collect(args, store):
     result = collectors_mod.run_collect(
         brands, store, browser_factory=factory, creds=creds, settings=settings, browser_cfg=browser_cfg,
         ledger_cls=research_mod.Ledger, sources=wanted, now=now, run_id=secrets.token_hex(4),
-        dry_run=args.dry_run, root=args.brands_dir, apify=apify, claude=claude, backend=backend)
+        dry_run=args.dry_run, root=args.brands_dir, apify=apify, claude=claude, backend=backend,
+        region=args.region.strip() or None)
     ledger = None if args.dry_run else research_mod.Ledger(store.load_usage(), now[:7])
     print(collectors_mod.format_collect_report(result, settings, ledger))
     for name in result.problems_for:
