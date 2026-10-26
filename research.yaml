@@ -70,7 +70,8 @@ collectors:
     prepare_prompt: true          # false sends your question exactly as written
     max_rounds: 3                 # most questions from Gemini answered per report
     monthly_calls: 60             # most Claude calls per month
-    max_tokens: 700
+    max_tokens: 700               # room for an answer to one of Gemini's questions
+    prompt_max_tokens: 2000       # room for the research prompt itself (it was cut off mid-sentence at 700)
   # Auto seeds: instead of hand-writing what to search for each brand, the tool builds a factual profile of
   # the brand from its catalogue every run, and Claude turns it into Meta Ad Library keywords (direct rivals,
   # neighbouring categories and ad angles from ANY industry), benchmark BRANDS, hashtags and Deep Research
