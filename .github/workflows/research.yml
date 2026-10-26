@@ -27,6 +27,10 @@ on:
         description: "Use SerpApi"
         type: boolean
         default: true
+      region:
+        description: "Where to search: worldwide, or a two-letter country code such as us (blank uses research.yaml, which says worldwide)"
+        required: false
+        default: ""
       max_queries:
         description: "Most searches to run now (blank uses the limit in research.yaml)"
         required: false
@@ -80,6 +84,7 @@ jobs:
           USE_TAVILY: ${{ inputs.use_tavily }}
           USE_SERPAPI: ${{ inputs.use_serpapi }}
           MAX_QUERIES: ${{ inputs.max_queries }}
+          REGION: ${{ inputs.region }}
           DRY_RUN: ${{ inputs.dry_run }}
           PROVIDER_CHECK: ${{ inputs.provider_check }}
           COMPARE: ${{ inputs.compare }}
@@ -101,6 +106,7 @@ jobs:
             args=(--check-providers --providers "${providers#,}")
           else
             if [ -n "$MAX_QUERIES" ]; then args+=(--max-queries "$MAX_QUERIES"); fi
+            if [ -n "$REGION" ]; then args+=(--region "$REGION"); fi
             if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
             if [ "$COMPARE" = "true" ]; then
               args+=(--compare)
