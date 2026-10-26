@@ -49,7 +49,7 @@ DEFAULTS = {
         "news": ["tavily", "serper_dev", "serpapi"],
     },
     "defaults": {"results_per_query": 10, "cache_days": 7, "max_queries_per_run": 30,
-                 "country": "us", "recency": None, "compare_queries": 5},
+                 "country": "worldwide", "recency": None, "compare_queries": 5},
 }
 
 
@@ -70,6 +70,7 @@ class Settings:
     country: object
     recency: object
     compare_queries: int = 5
+    region_override: object = None          # --region for one run: beats a brand's own country and the default
 
 
 def _number(value, where, *, minimum=0, allow_none=False):
@@ -98,10 +99,13 @@ def _only_keys(data, allowed, where):
 
 
 def _country(value, where):
+    """A two-letter country code, or 'worldwide' (no country is sent to the search services)."""
     if value is None:
         return None
+    if isinstance(value, str) and value.strip().lower() in ("worldwide", "all", "any", "global"):
+        return "worldwide"
     if not isinstance(value, str) or len(value) != 2 or not value.isalpha():
-        raise ResearchError(f"{where} must be a two-letter country code such as us, got {value!r}")
+        raise ResearchError(f"{where} must be a two-letter country code such as us, or worldwide, got {value!r}")
     return value.lower()
 
 
@@ -253,7 +257,7 @@ def load_brand_research(brand, root="brands"):
 def plan_queries(brand, config, settings):
     """Every query to run for a brand, in a stable order, without duplicates."""
     out, seen = [], set()
-    country = config.get("country") or settings.country
+    country = settings.region_override or config.get("country") or settings.country
 
     def add(text, kind, recency, tag, depth):
         text = " ".join(text.split())
@@ -651,7 +655,7 @@ def check_providers(providers, store, settings, now):
             try:
                 results = provider.search(
                     CHECK_NEWS_QUERY if kind == "news" else CHECK_QUERY, kind=kind, num=3,
-                    country=settings.country,
+                    country=settings.region_override or settings.country,
                     recency=CHECK_NEWS_RECENCY if kind == "news" else None)
             except AuthError as exc:
                 dead = row["problem"] = str(exc)
