@@ -23,7 +23,7 @@ from urllib.parse import parse_qs, quote, quote_plus, unquote, urlsplit
 import yaml
 
 from . import benchmarks as bench
-from .browser import AccountWarning, BrowserError, Challenge, LoginWall, describe_cookies
+from .browser import AccountWarning, BrowserError, Challenge, LoginWall, describe_cookies, site_pacing, site_scrolls
 from .providers import AuthError, ProviderError, QuotaError
 
 BROWSER_SOURCES = ("meta_ads", "tiktok", "instagram")
@@ -798,6 +798,26 @@ def rest_until(now, days):
     return (_parse(now) + timedelta(days=days)).strftime(_TS)
 
 
+def rest_by_hand(store, sites, now, days, settings):
+    """Start a rest straight away, without opening the account: for when a warning was seen on the site itself.
+    `days` of 0 means each site's own setting. Returns lines for the log."""
+    names = [n.strip().lower() for n in str(sites).split(",") if n.strip()]
+    unknown = [n for n in names if n not in COOLDOWN_SITES]
+    if not names or unknown:
+        raise CollectError(f"--rest needs one or more of {', '.join(COOLDOWN_SITES)}"
+                           + (f"; {', '.join(unknown)} is not one" if unknown else ""))
+    if days < 0:
+        raise CollectError("--rest-days must be 0 (each site's own setting) or more")
+    data, lines = store.read_cooldowns(), []
+    for site in names:
+        length = days or settings.cooldown_days.get(site) or 3
+        entry = {"until": rest_until(now, length), "at": now, "reason": "rested by hand"}
+        data[site] = entry
+        lines.append(f"{site}: resting until {entry['until'][:10]} ({length} days), as you asked; nothing was opened")
+    store.write_cooldowns(data)
+    return lines
+
+
 def clear_cooldowns(store, now):
     """Let every resting account be used again (a person has dealt with the warning). Returns how many were resting."""
     data = store.read_cooldowns()
@@ -960,17 +980,26 @@ def search_for_tag(browser, site_cfg, tag):
     return "address"
 
 
-def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
+def take_pages(urls, budget, cursor):
+    """The pages to open in careful mode: at most `budget` of them, starting where the last run stopped, so over
+    several runs every page gets its turn. Returns (urls to open, how many there were in all)."""
+    if budget is None or len(urls) <= budget:
+        return list(urls), len(urls)
+    start = cursor % len(urls)
+    return (list(urls[start:]) + list(urls[:start]))[:max(budget, 0)], len(urls)
+
+
+def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds, page_budget=None, cursor=0):
     """Collect up to n ads or posts for one task. Returns (rows, stats).
 
     Each page gets an equal share of what is still needed, so a page that gives less than its
     share leaves more for the pages after it.
     """
     source, state = task.source, "ok"
-    limits, pacing = browser_cfg["limits"], browser_cfg["pacing"]
+    scrolls, pause = site_scrolls(browser_cfg, source), site_pacing(browser_cfg, source)["scroll_pause_seconds"]
     if source != "meta_ads":
         state = ensure_session(browser, source, site_cfg, creds)
-    urls = seed_urls(task, site_cfg)
+    urls, pages_total = take_pages(seed_urls(task, site_cfg), page_budget, cursor)
     found, from_data, limited, via = {}, set(), False, {}
     fallbacks, page_errors, how = [], 0, []
     errors, challenges, settle = site_cfg.get("error_any", []), site_cfg.get("challenge_any", []), site_cfg.get("settle_seconds", 3)
@@ -1009,12 +1038,10 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
                 browser.screenshot(f"login-wall-{source}")
                 raise LoginWall(f"{source}: the page asked for a login; the cookies may have expired")
         share = max(1, (n - len(found)) // (len(urls) - number))
-        rows, data_ids, hit_limit = _gather(browser, source, site_cfg, limits["max_scrolls_per_page"],
-                                            pacing["scroll_pause_seconds"], share)
+        rows, data_ids, hit_limit = _gather(browser, source, site_cfg, scrolls, pause, share)
         if tag is not None and not searched and not rows and browser.exists(errors):        # the error came after the first wait
             search_instead(tag)
-            rows, data_ids, hit_limit = _gather(browser, source, site_cfg, limits["max_scrolls_per_page"],
-                                                pacing["scroll_pause_seconds"], share)
+            rows, data_ids, hit_limit = _gather(browser, source, site_cfg, scrolls, pause, share)
         if errors and browser.exists(errors):
             page_errors += 1
         if source != "meta_ads":
@@ -1038,7 +1065,8 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
         browser.screenshot(f"empty-{source}")
     in_data = sum(1 for r in kept if r["item_id"] in from_data)
     return kept, {"json": in_data, "links": len(kept) - in_data, "state": state, "rate_limited": limited and len(kept) < n,
-                  "fallbacks": fallbacks, "fallback_how": how, "page_errors": page_errors}
+                  "fallbacks": fallbacks, "fallback_how": how, "page_errors": page_errors,
+                  "pages": len(urls) + len(how), "pages_planned": len(urls), "pages_total": pages_total}
 
 
 def _snip(text):
@@ -1242,6 +1270,8 @@ def _fresh(records, source, key, now, days):
     for rec in records:
         if rec.get("source") == source and rec.get("key") == key:
             newest = rec
+    if newest and newest.get("partial"):
+        return None                                  # a run that covered only some pages is not a finished collection
     if newest and (_parse(now) - _parse(newest["at"])).total_seconds() < days * 86400:
         return newest
     return None
@@ -1313,7 +1343,7 @@ def merge_routes(parts):
              "routes": {route: len(rows) for route, rows, _ in parts},
              "common": sum(len(rows) for _, rows, _ in parts) - len(merged),
              "rate_limited": any(p[2].get("rate_limited") for p in parts)}
-    for key in ("fallbacks", "fallback_how", "page_errors"):
+    for key in ("fallbacks", "fallback_how", "page_errors", "pages", "pages_planned", "pages_total"):
         if key in first:
             stats[key] = first[key]
     return merged, stats
@@ -1331,6 +1361,9 @@ def _page_notes(stats):
             .replace("address", "the search address")
         text += (f" - the page for {', '.join(stats['fallbacks'])} would not load (an error or a security check), "
                  f"so TikTok's search results were read instead ({way or 'searched'})")
+    if stats.get("pages_planned", 0) < stats.get("pages_total", 0):
+        text += (f" - careful mode: opened {stats['pages_planned']} of {stats['pages_total']} pages this run (the page caps in browser.yaml); "
+                 "the rest are taken on the next runs")
     if stats.get("page_errors"):
         text += f" - {stats['page_errors']} page(s) still showed 'Something went wrong' (a block on the automated browser, or try again later)"
     return text
@@ -1393,6 +1426,33 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
     result.resting = dict(active_cooldowns(cooldowns, now))
     for site, entry in result.resting.items():            # an account that was warned rests: skipped, not failed
         disabled[site] = f"resting until {entry['until'][:10]} after an account warning ({str(entry.get('reason', ''))[:100]})"
+
+    page_log = store.read_page_log()
+    today, run_pages = now[:10], {}
+
+    def page_budget(site, site_cfg):
+        """Pages a careful site may still open: under its per-run cap and its per-day cap. None means no caps."""
+        left = []
+        if site_cfg.get("max_pages_per_run"):
+            left.append(site_cfg["max_pages_per_run"] - run_pages.get(site, 0))
+        if site_cfg.get("max_pages_per_day"):
+            left.append(site_cfg["max_pages_per_day"] - page_log["days"].get(today, {}).get(site, 0))
+        return max(0, min(left)) if left else None
+
+    def cap_message(site, site_cfg):
+        per_run = site_cfg.get("max_pages_per_run")
+        if per_run and run_pages.get(site, 0) >= per_run:
+            return f"careful mode: {site} has opened its {per_run} pages for this run; the next run continues"
+        return (f"careful mode: {site} has opened its {site_cfg.get('max_pages_per_day')} pages for today ({today}); "
+                "it continues tomorrow")
+
+    def note_pages(site, stats):
+        opened = stats.get("pages", 0)
+        run_pages[site] = run_pages.get(site, 0) + opened
+        day = page_log["days"].setdefault(today, {})
+        day[site] = day.get(site, 0) + opened
+        page_log["cursor"][site] = page_log["cursor"].get(site, 0) + stats.get("pages_planned", opened)
+        store.write_page_log(page_log)
 
     def rest_after(exc, site):
         """After an account warning: stop using the account for its rest period, and say so in the report."""
@@ -1531,6 +1591,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                     for pick_route, pick_n in picks:
                         ledger.charge("apify_items" if pick_route == "apify" else "collected_items", pick_n)
                     route, n = picks[0]
+                    careful = page_budget(site, site_cfg) if any(r == "browser" for r, _ in picks) else None
                     report.status = "would_run"
                     if len(picks) > 1:
                         report.detail = (f"up to {picks[0][1]} items from {site} and up to {picks[1][1]} via Apify "
@@ -1539,6 +1600,8 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                         report.detail = (f"up to {n} items via Apify ({settings.actors[task.source]})" if route == "apify"
                                          else f"up to {n} items from {site}" + (" (Apify if the browser fails)" if "apify" in routes and backend != "extra" else
                                                                                 " (Apify is an extra, but has no key or credit)" if backend == "extra" else ""))
+                    if careful is not None:
+                        report.detail += f" (careful mode: opens at most {careful} pages)"
                     continue
                 errors, rows, stats, via, hard, parts = [], None, None, None, False, []
                 for route, n in viable:
@@ -1551,10 +1614,16 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                             rows, bad = normalize_items(task.source, raw)
                             stats = {"json": len(rows), "links": 0, "unreadable": bad}
                         else:
+                            budget = page_budget(site, site_cfg)
+                            if budget is not None and budget <= 0:
+                                errors.append(cap_message(site, site_cfg))
+                                continue
                             if site not in opened:
                                 opened[site] = stack.enter_context(browser_factory(site))
-                            rows, stats = run_browser_task(opened[site], task, n, site_cfg, browser_cfg, site_creds)
+                            rows, stats = run_browser_task(opened[site], task, n, site_cfg, browser_cfg, site_creds,
+                                                           page_budget=budget, cursor=page_log["cursor"].get(site, 0))
                             ledger.charge("collected_items", len(rows))
+                            note_pages(site, stats)
                     except (LoginWall, Challenge) as exc:
                         message = str(exc) + rest_after(exc, site)
                         disabled[site] = message
@@ -1605,7 +1674,9 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                     report.status = "failed" if hard else "skipped"
                     report.detail = " | ".join(errors)[:400]
                     continue
-                save(brand, task, rows, stats, via)
+                partial = stats.get("pages_planned", 0) < stats.get("pages_total", 0)
+                save(brand, task, rows, stats, via, {"partial": True, "pages_done": stats["pages_planned"],
+                                                     "pages_total": stats["pages_total"]} if partial else None)
                 extra = []
                 if task.payload.get("discover"):
                     state, lines = apply_discovery(state, task, rows, stats, now)
