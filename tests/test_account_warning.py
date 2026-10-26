@@ -75,7 +75,8 @@ def go(store, tmp_path, swov, cfg, settings, f, *, now=NOW, backend="browser", a
 
 def test_the_warning_phrases_are_strict_and_the_addresses_are_listed(cfg):
     ig, tt = site(cfg, "instagram"), site(cfg, "tiktok")
-    assert ig["warning_any"] == ["text=We suspect automated behavior", "text=Action Blocked", "text=We restrict certain activity",
+    assert ig["warning_any"] == ["text=detected automated behavior", "text=no other users or tools have access to your account",
+                                 "text=We suspect automated behavior", "text=Action Blocked", "text=We restrict certain activity",
                                  "text=Your account has been temporarily locked"]
     assert ig["warning_url_any"] == ["/accounts/suspended", "/accounts/disabled", "/challenge/"]
     assert tt["warning_any"] and "warning_any" not in site(cfg, "meta_ads") and "warning_any" not in site(cfg, "gemini")
