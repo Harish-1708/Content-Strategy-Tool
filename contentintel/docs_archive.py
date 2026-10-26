@@ -289,8 +289,9 @@ def report_key(item):
     return url.rsplit("/", 1)[-1] if url.endswith(".md") else ""
 
 
-def entries_to_archive(slug, records, state):
-    """Reports in the collected data that have no tab yet, oldest first, as entries for build_blocks."""
+def entries_to_archive(slug, records, state, read_report=None):
+    """Reports in the collected data that have no tab yet, oldest first, as entries for build_blocks.
+    A collected row keeps only the start of a long text, so the whole report is read from its saved file when there is one."""
     done = (state or {}).get("items", {})
     out = []
     for rec in records:
@@ -298,14 +299,16 @@ def entries_to_archive(slug, records, state):
             continue
         for item in rec.get("items") or []:
             key = report_key(item)
-            if not key or key in done or not (item.get("text") or "").strip():
+            saved = read_report(key) if read_report else ""
+            full = saved if saved.strip() else item.get("text") or ""
+            if not key or key in done or not full.strip():
                 continue
             deep = rec.get("deep") or {}
             out.append({"key": key, "brand": slug, "at": rec.get("at", ""), "run": rec.get("run", ""),
                         "question": item.get("title", ""), "prompt": deep.get("prompt", ""),
                         "exchanges": deep.get("exchanges") or [], "notes": deep.get("notes") or [],
                         "diagnostics": deep.get("diagnostics") or {}, "claude_calls": deep.get("claude_calls", 0),
-                        "text": item["text"], "sources": item.get("extra_sources") or []})
+                        "text": full, "sources": item.get("extra_sources") or []})
     return out
 
 
@@ -315,7 +318,7 @@ def archive_reports(store, slugs, client, now, dry_run=False):
     lines, added, failed = [], 0, 0
     for slug in slugs:
         state = store.read_deep_archive(slug) or {"items": {}}
-        todo = entries_to_archive(slug, store.read_collected(slug), state)
+        todo = entries_to_archive(slug, store.read_collected(slug), state, lambda name, slug=slug: store.read_deep_report(slug, name))
         if not todo:
             lines.append(f"{slug}: no new Deep Research reports to add")
             continue
