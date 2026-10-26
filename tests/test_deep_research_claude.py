@@ -1,3 +1,5 @@
+from dataclasses import replace
+
 import pytest
 
 from contentintel import browser as B
@@ -26,7 +28,8 @@ def store(tmp_path):
 
 @pytest.fixture
 def settings():
-    return C.load_collector_settings("does-not-exist.yaml")
+    """The built-in settings with the report check off: these tests are about the prompt and the questions (the check has its own tests)."""
+    return replace(C.load_collector_settings("does-not-exist.yaml"), claude_review_rounds=0)
 
 
 def ask(cfg, gem, claude=None, **kw):
