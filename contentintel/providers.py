@@ -16,6 +16,18 @@ _QUOTA_WORDS = ("not enough credits", "run out of searches", "out of searches", 
                 "quota", "exceeds your plan", "out of credits", "plan's set")
 
 
+WORLDWIDE = ("worldwide", "all", "any", "global")
+
+
+def search_country(country):
+    """The two-letter code to send to a search service, or None for worldwide (no country is sent). Google itself has
+    no 'worldwide' market: without a code its results lean towards its default market, so a truly wide search
+    names several countries (one search each)."""
+    if not country or str(country).strip().lower() in WORLDWIDE:
+        return None
+    return str(country).strip().lower()
+
+
 class ProviderError(Exception):
     """A search failed; another provider may still answer."""
 
@@ -123,8 +135,8 @@ class SerperDev(Provider):
 
     def search(self, query, *, kind="web", num=10, country=None, recency=None, depth="basic"):
         body = {"q": query, "num": min(num, 10)}
-        if country:
-            body["gl"] = country.lower()
+        if search_country(country):
+            body["gl"] = search_country(country)
         if recency:
             body["tbs"] = _TBS[recency]
         path = "/news" if kind == "news" else "/search"
@@ -197,8 +209,8 @@ class SerpApi(Provider):
         params = {"engine": "google", "q": query, "num": min(num, 10), "api_key": self.api_key}
         if kind == "news":
             params["tbm"] = "nws"
-        if country:
-            params["gl"] = country.lower()
+        if search_country(country):
+            params["gl"] = search_country(country)
         if recency:
             params["tbs"] = _TBS[recency]
         data = self._interpret(self._call("GET", self.base + "/search.json", params=params))
