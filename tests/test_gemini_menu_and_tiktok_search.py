@@ -188,7 +188,7 @@ def test_when_search_errors_too_the_error_is_counted_and_nothing_is_invented(cfg
     rows, stats = read(cfg, b)
     assert rows == [] and stats["fallbacks"] == ["#overalls"] and stats["page_errors"] == 1
     text = C._page_notes(stats)
-    assert "said 'Something went wrong'" in text and "1 page(s) still showed 'Something went wrong'" in text
+    assert "would not load (an error or a security check)" in text and "1 page(s) still showed 'Something went wrong'" in text
 
 
 def test_only_the_tag_that_errored_is_searched(cfg):
@@ -244,7 +244,8 @@ def test_the_check_tells_a_person_the_search_was_used(cfg, tmp_path):
     rows = {r["source"]: r for r in C.check_collectors(erroring_tiktok_world(cfg), CREDS, settings, cfg, Store(tmp_path / "data"),
                                                        R.Ledger, NOW, ["tiktok"])}
     assert rows["tiktok"]["ok"] is True
-    assert "the page for #overalls said 'Something went wrong', so TikTok's search results were read instead" in rows["tiktok"]["detail"]
+    assert ("the page for #overalls would not load (an error or a security check), so TikTok's search results were read instead "
+            "(the search address)") in rows["tiktok"]["detail"]
 
 
 def test_the_run_report_tells_a_person_the_search_was_used(cfg, tmp_path, swov):
@@ -255,4 +256,4 @@ def test_the_run_report_tells_a_person_the_search_was_used(cfg, tmp_path, swov):
                      erroring_tiktok_world(cfg), cfg, settings, sources=("tiktok",))
     (task,) = result.brands["swoveralls"]
     assert task.status == "ran" and task.items == 2
-    assert "the page for #overalls said 'Something went wrong', so TikTok's search results were read instead" in task.detail
+    assert "the page for #overalls would not load (an error or a security check), so TikTok's search results were read instead" in task.detail
