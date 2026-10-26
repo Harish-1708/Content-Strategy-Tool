@@ -29,7 +29,7 @@ defaults:
   results_per_query: 10     # 1 to 10; more results never cost more credits here
   cache_days: 7             # a search made in the last 7 days is reused, not paid for again
   max_queries_per_run: 30   # a safety limit for one run
-  country: us               # two-letter code
+  country: worldwide        # worldwide, or a two-letter code such as us (see the note on regions below)
   recency:                  # day, week, month or year; blank means any time
   compare_queries: 5        # compare mode runs this many searches on EVERY ticked service
 
@@ -52,6 +52,8 @@ collectors:
   #   mode: off       never used (the default)
   #   mode: fallback  used only when the browser route fails (expired cookies, a security check, nothing readable)
   #   mode: always    used instead of the browser
+  #   mode: extra     used IN ADDITION to the browser on every task: both run and what they find is merged (an ad or post
+  #                   both find is kept once, each filling the other's blanks); it costs Apify credit on every task
   # The Collect workflow's "backend" box can also switch it on for one run. Needs the APIFY_TOKEN secret.
   apify:
     mode: off
@@ -65,6 +67,14 @@ collectors:
   # Claude helps Gemini Deep Research: it turns your question into a complete prompt, and answers any
   # clarifying question Gemini asks before it starts. Needs the ANTHROPIC_API_KEY secret; without it the
   # question is sent as written and Gemini's questions go unanswered.
+  # If a site WARNS an account (suspected automation, an action blocked, a lock), the run stops using that account at once
+  # and rests it for this many days; its browser tasks are then skipped (not failed) and Apify, if switched on, still runs.
+  # 0 means: stop for the rest of that run only. Use the Collect workflow's "ignore_cooldown" box once you have dealt
+  # with a warning to use the account again earlier.
+  safety:
+    cooldown_days:
+      instagram: 3
+      tiktok: 3
   claude:
     model: claude-sonnet-5-5
     prepare_prompt: true          # false sends your question exactly as written
