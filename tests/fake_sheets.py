@@ -53,6 +53,7 @@ class FakeWorksheet:
         self.frozen_rows = 0
         self.formats = []
         self.write_calls = []           # names of mutating calls, in order
+        self.id = abs(hash(title)) % 100000
 
     # -- helpers ---------------------------------------------------------------------
     def _put(self, row, col, value):
@@ -139,6 +140,7 @@ class FakeSpreadsheet:
         self.url = f"https://docs.google.com/spreadsheets/d/{sheet_id}"
         self._sheets = [FakeWorksheet(self, "Sheet1")] if blank_tab else []
         self.shares = []
+        self.batches = []               # the bodies of batch_update calls (drop-down lists and the like)
 
     def worksheets(self, exclude_hidden=False):
         return list(self._sheets)
@@ -158,6 +160,10 @@ class FakeSpreadsheet:
 
     def share(self, email_address, perm_type, role, notify=True, email_message=None, with_link=False):
         self.shares.append((email_address, perm_type, role, notify))
+
+    def batch_update(self, body):
+        self.batches.append(body)
+        return {}
 
 
 class FakeClient:
