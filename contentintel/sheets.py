@@ -31,6 +31,7 @@ from gspread.utils import ValueInputOption, ValueRenderOption
 
 from .export import PRODUCT_COLUMNS, VARIANT_COLUMNS, product_rows, variant_rows
 from . import benchmarks as bench
+from . import ideabank as ib
 from .collectors import collected_rows
 from .research import research_sources
 from .sync import catalogue_state, describe_event
@@ -39,6 +40,10 @@ PRODUCTS, VARIANTS, CHANGES, STATUS = "Products", "Variants", "Changes", "Status
 RESEARCH = "Research"
 COLLECTED = "Collected"
 BENCHMARKS = "Benchmarks"
+IDEABANK, REQUESTS, BRIEFS = "Idea Bank", "Requests", "Briefs"
+REQUEST_COLUMNS = ["request_id", "created", "status", "text", "region", "tools", "plan", "items_added", "run_notes"]
+BRIEF_COLUMNS = ["brief_id", "created", "brief", "ask", "status", "items", "violations", "models", "drive_link"]
+DECISIONS = ("Use", "Maybe", "Skip")
 BENCHMARK_COLUMNS = ["name", "kind", "status", "page_id", "page_name", "page_followers", "reason", "candidates",
                      "checked_at", "source"]
 CHANGE_COLUMNS = ["event_id", "at", "type", "product_id", "title", "handle", "summary"]
@@ -47,12 +52,13 @@ RESEARCH_COLUMNS = ["source_id", "title", "url", "domain", "published", "first_s
 COLLECTED_COLUMNS = ["item_id", "source", "handle", "title", "text", "url", "posted_at", "likes",
                      "comments", "shares", "views", "saves", "reach", "days_running", "variants",
                      "engagement_pct", "signal", "media_url", "details", "first_seen", "last_seen", "times_seen", "queries"]
-STARTER_MANUAL = {PRODUCTS: ["Notes"], RESEARCH: ["Review"], COLLECTED: ["Review"], BENCHMARKS: ["Review"]}   # added only when a tab is brand new
+STARTER_MANUAL = {PRODUCTS: ["Notes"], RESEARCH: ["Review"], COLLECTED: ["Review"], BENCHMARKS: ["Review"],
+                  IDEABANK: ["Decision", "Notes"], REQUESTS: ["Changes"], BRIEFS: ["Feedback"]}   # added only when a tab is brand new
 STAMP = "last_updated"                          # when the tool last changed that row
 
 NUMERIC = {"price_min", "price_max", "price", "compare_at_price", "engagement_pct"}
 INTEGER = {"variant_count", "image_count", "times_seen", "best_rank", "likes", "comments", "shares",
-           "views", "saves", "reach", "days_running", "variants", "page_followers"}
+           "views", "saves", "reach", "days_running", "variants", "page_followers", "score", "assets", "violations", "items_added"}
 BOOLEAN = {"excluded", "in_stock", "on_sale", "available"}
 
 _BLANK_TABS = ("Sheet1", "Sheet 1")
@@ -345,6 +351,39 @@ def _ensure_tab(sp, title, report, dry_run, created):
     return ws
 
 
+def _decision_dropdown(sp, ws):
+    """A Use / Maybe / Skip list on the Decision column, so a decision is picked, not typed. Only when the tab is new."""
+    header = _call(ws.get_all_values)[0]
+    if "Decision" not in header:
+        return
+    col = header.index("Decision")
+    rule = {"condition": {"type": "ONE_OF_LIST", "values": [{"userEnteredValue": d} for d in DECISIONS]}, "showCustomUi": True, "strict": False}
+    _call(sp.batch_update, {"requests": [{"setDataValidation": {
+        "range": {"sheetId": ws.id, "startRowIndex": 1, "endRowIndex": 5000, "startColumnIndex": col, "endColumnIndex": col + 1},
+        "rule": rule}}]})
+
+
+def request_sheet_rows(requests):
+    """The Requests tab: one row per request, with a one-line account of its plan."""
+    from .planner import plan_summary
+    rows = {}
+    for r in requests:
+        run = r.get("run") or {}
+        rows[r["id"]] = {"request_id": r["id"], "created": r.get("created", ""), "status": r.get("status", ""), "text": r.get("text", ""),
+                         "region": r.get("region", ""), "tools": ", ".join(r.get("allowed") or []), "plan": plan_summary(r.get("plan") or {}),
+                         "items_added": len(run.get("items_added") or []), "run_notes": " | ".join((run.get("notes") or [])[:4])}
+    return rows
+
+
+def brief_sheet_rows(briefs):
+    rows = {}
+    for b in briefs:
+        rows[b["id"]] = {"brief_id": b["id"], "created": b.get("created", ""), "brief": b.get("brief", ""), "ask": b.get("ask", ""),
+                         "status": b.get("status", ""), "items": ", ".join(b.get("items") or []), "violations": len(b.get("violations") or []),
+                         "models": ", ".join(b.get("models") or []), "drive_link": b.get("drive_link", "")}
+    return rows
+
+
 def _style_header(ws):
     _call(ws.freeze, rows=1)
     _call(ws.format, "1:1", {"textFormat": {"bold": True}})
@@ -546,6 +585,29 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
         _sync_table(ws, tab=BENCHMARKS, columns=BENCHMARK_COLUMNS, rows_by_key=rows, key_col="name",
                     report=report, dry_run=dry_run, starter_manual=STARTER_MANUAL[BENCHMARKS])
 
+    bank = store.read_ideabank(brand.slug)
+    if bank["items"]:                            # sourced items waiting for a human decision
+        ws = _ensure_tab(spreadsheet, IDEABANK, report, dry_run, created)
+        rows = {iid: {c: _typed(c, row[c]) for c in ib.IDEABANK_COLUMNS} for iid, row in ib.sheet_rows(bank).items()}
+        _sync_table(ws, tab=IDEABANK, columns=ib.IDEABANK_COLUMNS, rows_by_key=rows, key_col="idea_id", report=report,
+                    dry_run=dry_run, starter_manual=STARTER_MANUAL[IDEABANK])
+        if ws is not None and not dry_run and IDEABANK in created:
+            _decision_dropdown(spreadsheet, ws)
+
+    requests_made = store.list_requests(brand.slug)
+    if requests_made:
+        ws = _ensure_tab(spreadsheet, REQUESTS, report, dry_run, created)
+        rows = {rid: {c: _typed(c, row[c]) for c in REQUEST_COLUMNS} for rid, row in request_sheet_rows(requests_made).items()}
+        _sync_table(ws, tab=REQUESTS, columns=REQUEST_COLUMNS, rows_by_key=rows, key_col="request_id", report=report,
+                    dry_run=dry_run, starter_manual=STARTER_MANUAL[REQUESTS])
+
+    briefs_made = store.list_briefs(brand.slug)
+    if briefs_made:
+        ws = _ensure_tab(spreadsheet, BRIEFS, report, dry_run, created)
+        rows = {bid: {c: _typed(c, row[c]) for c in BRIEF_COLUMNS} for bid, row in brief_sheet_rows(briefs_made).items()}
+        _sync_table(ws, tab=BRIEFS, columns=BRIEF_COLUMNS, rows_by_key=rows, key_col="brief_id", report=report,
+                    dry_run=dry_run, starter_manual=STARTER_MANUAL[BRIEFS])
+
     ws = _ensure_tab(spreadsheet, STATUS, report, dry_run, created)
     if ws is not None and not dry_run:
         _call(ws.clear)
@@ -555,6 +617,21 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
             if title != STATUS:
                 _style_header(new_ws)
     return report
+
+
+def fetch_decisions(brand, store, *, key_json, share_emails, config, folder_id=None, connect_fn=connect):
+    """{idea id: {decision, notes}} as a person filled them in on the brand's Idea Bank tab."""
+    client, bot_email = connect_fn(key_json)
+    report = SheetReport(brand=brand.slug, dry_run=False)
+    sp = resolve_spreadsheet(client, brand, store, config, share_emails, report, False, bot_email, folder_id=folder_id)
+    try:
+        ws = _call(sp.worksheet, IDEABANK)
+    except gspread.exceptions.WorksheetNotFound as exc:
+        raise SheetsError("the brand's sheet has no Idea Bank tab yet: run the Sheets update first") from exc
+    try:
+        return ib.read_decisions(ws)
+    except ib.IdeaBankError as exc:
+        raise SheetsError(str(exc)) from exc
 
 
 def run_sheets(brands, store, *, key_json, share_emails, config, now, dry_run=False,
