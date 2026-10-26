@@ -16,14 +16,14 @@ import json
 import re
 from contextlib import ExitStack
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import parse_qs, quote, quote_plus, unquote, urlsplit
 
 import yaml
 
 from . import benchmarks as bench
-from .browser import BrowserError, Challenge, LoginWall, describe_cookies
+from .browser import AccountWarning, BrowserError, Challenge, LoginWall, describe_cookies
 from .providers import AuthError, ProviderError, QuotaError
 
 BROWSER_SOURCES = ("meta_ads", "tiktok", "instagram")
@@ -55,10 +55,13 @@ DEFAULT_COLLECTORS = {
                    "max_benchmarks": 8, "scopes": ["direct", "adjacent", "cross_industry"]},
     "benchmarks": {"enabled": True, "max_pages": 6, "discovery_per_run": 3, "items_per_name": 10,
                    "items_per_page": 8, "retry_days": 30},
+    # days an account rests after a warning (0: only the rest of that run). Other settings keep the defaults.
+    "safety": {"cooldown_days": {"instagram": 3, "tiktok": 3}},
 }
+COOLDOWN_SITES = ("instagram", "tiktok", "gemini")
 AUTO_SCOPES = ("direct", "adjacent", "cross_industry")
-APIFY_MODES = ("off", "fallback", "always")
-BACKENDS = ("auto", "browser", "apify", "fallback")
+APIFY_MODES = ("off", "fallback", "always", "extra")
+BACKENDS = ("auto", "browser", "apify", "fallback", "extra")
 
 
 @dataclass(frozen=True)
@@ -93,6 +96,7 @@ class CollectorSettings:
     benchmark_items_per_page: int = 8
     benchmark_retry_days: int = 30
     claude_prompt_max_tokens: int = 2000
+    cooldown_days: dict = field(default_factory=dict)
 
 
 def _count(value, where, minimum=0, whole=True):
@@ -122,6 +126,12 @@ def load_collector_settings(path="research.yaml"):
     part = {k: {**DEFAULT_COLLECTORS[k], **(given.get(k) or {})} for k in DEFAULT_COLLECTORS}
     for name, section in part.items():
         _keys(section, DEFAULT_COLLECTORS[name], f"collectors.{name}")
+    cooldown_given = (given.get("safety") or {}).get("cooldown_days") or {}
+    if not isinstance(cooldown_given, dict):
+        raise CollectError("collectors.safety.cooldown_days must be a list of site: days pairs")
+    _keys(cooldown_given, COOLDOWN_SITES, "collectors.safety.cooldown_days")
+    cooldown_days = {site: _count(days, f"collectors.safety.cooldown_days.{site}")
+                     for site, days in {**DEFAULT_COLLECTORS["safety"]["cooldown_days"], **cooldown_given}.items()}
     browser, gemini, apify, claude = part["browser"], part["gemini"], part["apify"], part["claude"]
     auto, bm = part["auto_seeds"], part["benchmarks"]
     if not isinstance(bm["enabled"], bool):
@@ -175,13 +185,14 @@ def load_collector_settings(path="research.yaml"):
         benchmark_discovery_per_run=_count(bm["discovery_per_run"], "collectors.benchmarks.discovery_per_run"),
         benchmark_items_per_name=_count(bm["items_per_name"], "collectors.benchmarks.items_per_name", 1),
         benchmark_items_per_page=_count(bm["items_per_page"], "collectors.benchmarks.items_per_page", 1),
-        benchmark_retry_days=_count(bm["retry_days"], "collectors.benchmarks.retry_days", 1))
+        benchmark_retry_days=_count(bm["retry_days"], "collectors.benchmarks.retry_days", 1),
+        cooldown_days=cooldown_days)
 
 
 def effective_backend(requested, settings):
     """browser, apify or fallback: what --backend asks for, or what research.yaml says when it is auto."""
     if requested == "auto":
-        return {"off": "browser", "fallback": "fallback", "always": "apify"}[settings.apify_mode]
+        return {"off": "browser", "fallback": "fallback", "always": "apify", "extra": "extra"}[settings.apify_mode]
     return requested
 
 
@@ -202,9 +213,7 @@ def parse_collect_config(data, where):
     """Validate the ads / social / deep_research sections; returns a normalised dict."""
     ads = data.get("ads") or {}
     _keys(ads, ("country", "status", "pages", "keywords", "benchmark_pages"), f"{where} ads")
-    country = ads.get("country", "us")
-    if not isinstance(country, str) or len(country) != 2 or not country.isalpha():
-        raise CollectError(f"{where} ads.country must be a two-letter code, got {country!r}")
+    country = ads_country(ads.get("country", "worldwide"), f"{where} ads.country")
     status = ads.get("status", "active")
     if status not in ("all", "active", "inactive"):
         raise CollectError(f"{where} ads.status must be all, active or inactive, got {status!r}")
@@ -239,7 +248,7 @@ def parse_collect_config(data, where):
         raise CollectError(f"{where} deep_research.context must be text")
     return {
         "auto_seeds": auto_seeds, "track_own_brand": track_own,
-        "ads": {"country": country.upper(), "status": status, "pages": pages,
+        "ads": {"country": country, "status": status, "pages": pages,
                 "keywords": _strings(ads.get("keywords"), f"{where} ads.keywords"),
                 "benchmark_pages": benchmark_pages},
         "tiktok": {"hashtags": _strings(tiktok.get("hashtags"), f"{where} social.tiktok.hashtags"),
@@ -250,14 +259,23 @@ def parse_collect_config(data, where):
                           "context": " ".join(context.split())[:2000]}}
 
 
+def ads_country(value, where):
+    """The Ad Library's country: a two-letter code (upper case) or ALL for worldwide."""
+    if isinstance(value, str) and value.strip().lower() in ("worldwide", "all", "any", "global"):
+        return "ALL"
+    if not isinstance(value, str) or len(value.strip()) != 2 or not value.strip().isalpha():
+        raise CollectError(f"{where} must be a two-letter code such as us, or worldwide, got {value!r}")
+    return value.strip().upper()
+
+
 def ad_library_url(keyword, country, status):
-    return (AD_LIBRARY + "/?active_status=" + status + "&ad_type=all&country=" + country
+    return (AD_LIBRARY + "/?active_status=" + status + "&ad_type=all&country=" + country.upper()
             + "&q=" + quote_plus(keyword) + "&search_type=keyword_unordered&media_type=all")
 
 
 def ad_library_page_url(page_id, country, status):
     """Every ad one advertiser page runs: the Ad Library's own link for a page."""
-    return (AD_LIBRARY + "/?active_status=" + status + "&ad_type=all&country=" + country
+    return (AD_LIBRARY + "/?active_status=" + status + "&ad_type=all&country=" + country.upper()
             + "&view_all_page_id=" + str(page_id) + "&media_type=all")
 
 
@@ -743,6 +761,52 @@ def session_state(browser, site_cfg):
     return "unknown"
 
 
+def warning_seen(browser, site_cfg):
+    """What a site's own warning says, or '' when none is showing. Phrases are matched on the page itself, and an
+    address such as /accounts/suspended counts too; both are set per site in browser.yaml."""
+    selectors = site_cfg.get("warning_any", [])
+    if selectors and browser.exists(selectors):
+        return " ".join((browser.text(selectors) or "").split())[:160] or "a warning message appeared"
+    url = getattr(browser, "url", "") or ""
+    for part in site_cfg.get("warning_url_any", []):
+        if part in url:
+            return f"the page address contains {part}"
+    return ""
+
+
+def check_warning(browser, site, site_cfg):
+    """Stop at once, with a picture, when the site is warning the account."""
+    reason = warning_seen(browser, site_cfg)
+    if reason:
+        browser.screenshot(f"warning-{site}")
+        raise AccountWarning(site, reason)
+
+
+def active_cooldowns(data, now):
+    """site -> entry for the accounts still resting at `now`."""
+    out = {}
+    for site, entry in (data if isinstance(data, dict) else {}).items():
+        try:
+            if isinstance(entry, dict) and _parse(entry["until"]) > _parse(now):
+                out[site] = entry
+        except (KeyError, ValueError, TypeError):
+            continue
+    return out
+
+
+def rest_until(now, days):
+    return (_parse(now) + timedelta(days=days)).strftime(_TS)
+
+
+def clear_cooldowns(store, now):
+    """Let every resting account be used again (a person has dealt with the warning). Returns how many were resting."""
+    data = store.read_cooldowns()
+    resting = active_cooldowns(data, now)
+    if resting:
+        store.write_cooldowns({k: v for k, v in data.items() if k not in resting})
+    return len(resting)
+
+
 def cookie_facts(site, creds):
     """A sentence about the cookies that were loaded (names and counts, never values), or nothing without cookies."""
     text = (creds or {}).get("cookies")
@@ -790,6 +854,7 @@ def ensure_session(browser, site, site_cfg, creds):
     cookies_name = _secret_names(site_cfg).get("cookies", "the cookies secret")
     browser.open(site_cfg["home"])
     browser.wait(3)
+    check_warning(browser, site, site_cfg)
     state = session_state(browser, site_cfg)
     if state == "challenge" and clear_challenge(browser, site_cfg):
         state = session_state(browser, site_cfg)
@@ -800,6 +865,7 @@ def ensure_session(browser, site, site_cfg, creds):
                         f"Log in once as the dummy account in a normal browser, then export its cookies into {cookies_name}")
     if state != "ok" and creds.get("username") and creds.get("password") and site_cfg.get("login_steps"):
         run_steps(browser, site_cfg["login_steps"], creds)
+        check_warning(browser, site, site_cfg)
         state = session_state(browser, site_cfg)
         if state == "challenge":
             browser.screenshot(f"challenge-{site}")
@@ -917,6 +983,8 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
     for number, url in enumerate(urls):
         browser.open(url)
         browser.wait(settle)
+        if source != "meta_ads":
+            check_warning(browser, source, site_cfg)                  # a warning on any page stops the run at once
         # In the automated browser a tag page can fail (an error, or a puzzle) while the same search works by hand.
         tag = unquote(url.split("/tag/", 1)[1].split("?")[0]) if site_cfg.get("hashtag_via_search_on_error") and "/tag/" in url else None
         searched = pressed_x = False
@@ -949,6 +1017,8 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
                                                 pacing["scroll_pause_seconds"], share)
         if errors and browser.exists(errors):
             page_errors += 1
+        if source != "meta_ads":
+            check_warning(browser, source, site_cfg)                  # ... and so does one that appeared while reading
         from_data |= data_ids
         limited = limited or hit_limit
         label = (task.payload.get("labels") or {}).get(url) or seed_label(url)
@@ -1150,6 +1220,7 @@ class CollectResult:
     notes: list = field(default_factory=list)
     problems_for: list = field(default_factory=list)
     follow: dict = field(default_factory=dict)        # brand slug -> bench.FollowPlan, as it stands at the end of the run
+    resting: dict = field(default_factory=dict)       # site -> {until, at, reason}: accounts resting after a warning
 
     @property
     def needs_review(self):
@@ -1201,7 +1272,7 @@ def _routes(deep, backend, apify, apify_state, site_cfg, creds, down):
             why = down
         else:
             routes.append("browser")
-    if not deep and backend in ("apify", "fallback"):
+    if not deep and backend in ("apify", "fallback", "extra"):
         if apify is None:
             why = why or "no key: set APIFY_TOKEN"
         elif apify_state["disabled"]:
@@ -1211,6 +1282,41 @@ def _routes(deep, backend, apify, apify_state, site_cfg, creds, down):
         else:
             routes.append("apify")
     return routes, why
+
+
+def _fill(base, other):
+    """`base` with every blank field filled from `other`, and where each one was found from both."""
+    out = dict(base)
+    for key, value in other.items():
+        if out.get(key) in (None, "", [], {}) and value not in (None, "", [], {}):
+            out[key] = value
+    seen = [v for v in f"{base.get('found_via', '')} | {other.get('found_via', '')}".split(" | ") if v]
+    out["found_via"] = " | ".join(dict.fromkeys(seen))
+    return out
+
+
+def merge_routes(parts):
+    """Combine what the browser and Apify each found for one task. An ad or post both found is kept once, with
+    the richer copy filling the other's blanks. Returns (rows, stats) where stats counts each route."""
+    found = {}
+    for _, rows, _ in parts:
+        for row in rows:
+            old = found.get(row["item_id"])
+            if old is None:
+                found[row["item_id"]] = dict(row)
+            else:
+                base, other = (row, old) if _richness(row) > _richness(old) else (old, row)
+                found[row["item_id"]] = _fill(base, other)
+    merged = list(found.values())
+    first = parts[0][2]
+    stats = {"json": sum(p[2].get("json", 0) for p in parts), "links": sum(p[2].get("links", 0) for p in parts),
+             "routes": {route: len(rows) for route, rows, _ in parts},
+             "common": sum(len(rows) for _, rows, _ in parts) - len(merged),
+             "rate_limited": any(p[2].get("rate_limited") for p in parts)}
+    for key in ("fallbacks", "fallback_how", "page_errors"):
+        if key in first:
+            stats[key] = first[key]
+    return merged, stats
 
 
 def _context(brand, task):
@@ -1272,7 +1378,7 @@ def format_benchmark_status(brand, store, auto, settings, now, root="brands"):
 
 
 def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg, ledger_cls, sources, now,
-                run_id, configs=None, dry_run=False, root="brands", apify=None, claude=None, backend="browser"):
+                run_id, configs=None, dry_run=False, root="brands", apify=None, claude=None, backend="browser", region=None):
     """Plan and run collection tasks for each brand, within the caps in `settings`.
 
     backend: browser (the default), apify (Apify only) or fallback (the browser first, Apify when
@@ -1283,6 +1389,24 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
     result = CollectResult(run_id=run_id, now=now, dry_run=dry_run)
     disabled, opened, deep_runs = {}, {}, 0
     apify_state = {"disabled": None, "exhausted": False}
+    cooldowns = store.read_cooldowns()
+    result.resting = dict(active_cooldowns(cooldowns, now))
+    for site, entry in result.resting.items():            # an account that was warned rests: skipped, not failed
+        disabled[site] = f"resting until {entry['until'][:10]} after an account warning ({str(entry.get('reason', ''))[:100]})"
+
+    def rest_after(exc, site):
+        """After an account warning: stop using the account for its rest period, and say so in the report."""
+        if not isinstance(exc, AccountWarning):
+            return ""
+        days = settings.cooldown_days.get(site, 0)
+        if days <= 0 or dry_run:
+            return " It will not be used again in this run."
+        entry = {"until": rest_until(now, days), "at": now, "reason": exc.reason[:200]}
+        cooldowns[site] = entry
+        store.write_cooldowns(cooldowns)
+        result.resting[site] = entry
+        return (f" The account will rest until {entry['until'][:10]} ({days} days); change this under "
+                "collectors.safety.cooldown_days in research.yaml.")
 
     def items_left(route):
         if route == "apify":
@@ -1300,6 +1424,9 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
         for brand in brands:
             reports = result.brands.setdefault(brand.slug, [])
             cfg = (configs or {}).get(brand.slug) or load_brand_research(brand, root)["collect"]
+            if region:                                          # --region: this run only, over the brand's own country
+                cfg = copy.deepcopy(cfg)
+                cfg["ads"]["country"] = ads_country(region, "--region")
             records = store.read_collected(brand.slug)
             auto = None
             if settings.auto_enabled and cfg.get("auto_seeds", True):
@@ -1372,7 +1499,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                         item["extra_sources"] = out["sources"]
                     except (LoginWall, Challenge) as exc:
                         message = str(exc) + (cookie_facts(site, site_creds)
-                                              if isinstance(exc, LoginWall) and "Cookie facts" not in str(exc) else "")
+                                              if isinstance(exc, LoginWall) and "Cookie facts" not in str(exc) else "") + rest_after(exc, site)
                         disabled[site] = message
                         result.problems_for.append(site)
                         result.notes.append(message)
@@ -1400,13 +1527,20 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                     report.detail = "out of items under your monthly cap"
                     continue
                 if dry_run:
-                    route, n = viable[0]
-                    ledger.charge("apify_items" if route == "apify" else "collected_items", n)
+                    picks = viable if backend == "extra" else viable[:1]
+                    for pick_route, pick_n in picks:
+                        ledger.charge("apify_items" if pick_route == "apify" else "collected_items", pick_n)
+                    route, n = picks[0]
                     report.status = "would_run"
-                    report.detail = (f"up to {n} items via Apify ({settings.actors[task.source]})" if route == "apify"
-                                     else f"up to {n} items from {site}" + (" (Apify if the browser fails)" if "apify" in routes else ""))
+                    if len(picks) > 1:
+                        report.detail = (f"up to {picks[0][1]} items from {site} and up to {picks[1][1]} via Apify "
+                                         f"({settings.actors[task.source]}), merged")
+                    else:
+                        report.detail = (f"up to {n} items via Apify ({settings.actors[task.source]})" if route == "apify"
+                                         else f"up to {n} items from {site}" + (" (Apify if the browser fails)" if "apify" in routes and backend != "extra" else
+                                                                                " (Apify is an extra, but has no key or credit)" if backend == "extra" else ""))
                     continue
-                errors, rows, stats, via, hard = [], None, None, None, False
+                errors, rows, stats, via, hard, parts = [], None, None, None, False, []
                 for route, n in viable:
                     try:
                         if route == "apify":
@@ -1422,10 +1556,11 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                             rows, stats = run_browser_task(opened[site], task, n, site_cfg, browser_cfg, site_creds)
                             ledger.charge("collected_items", len(rows))
                     except (LoginWall, Challenge) as exc:
-                        disabled[site] = str(exc)
+                        message = str(exc) + rest_after(exc, site)
+                        disabled[site] = message
                         result.problems_for.append(site)
-                        result.notes.append(str(exc))
-                        errors.append(str(exc))
+                        result.notes.append(message)
+                        errors.append(message)
                         hard = True
                         continue
                     except BrowserError as exc:
@@ -1452,12 +1587,20 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                         hard = True
                         continue
                     if rows:
-                        via = route
-                        break
+                        parts.append((route, rows, stats))
+                        if backend != "extra":
+                            break
+                        continue                                     # as an extra, the other route runs too
                     hard = True
                     errors.append("the page opened but no ads or posts could be read "
                                   "(a screenshot was saved; run Recon to see what the site sends)"
                                   if route == "browser" else "Apify returned no readable items")
+                if parts:
+                    route, rows, stats = parts[0]
+                    via = route
+                    if len(parts) > 1:
+                        rows, stats = merge_routes(parts)
+                        via = "+".join(r for r, _, _ in parts)
                 if via is None:
                     report.status = "failed" if hard else "skipped"
                     report.detail = " | ".join(errors)[:400]
@@ -1477,7 +1620,11 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                 extra += check_followed(task, rows)
                 result.notes.extend(f"{brand.slug}: {line}" for line in extra)
                 report.status, report.items = "ran", len(rows)
-                report.detail = (f"{len(rows)} items via Apify" + (f" (the browser failed: {errors[0][:100]})" if errors else "")
+                report.detail = (f"{len(rows)} items: {stats['routes'].get('browser', 0)} from the browser, "
+                                 f"{stats['routes'].get('apify', 0)} via Apify, {stats['common']} found by both"
+                                 + (f" ({errors[0][:100]})" if errors else "")
+                                 if "+" in via else
+                                 f"{len(rows)} items via Apify" + (f" (the browser failed: {errors[0][:100]})" if errors else "")
                                  if via == "apify" else
                                  f"{len(rows)} items ({stats['json']} from the site's data, {stats['links']} only from page links)"
                                  + (" - the site rate-limited further scrolling, so this is the first page of results only"
@@ -1490,6 +1637,9 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
 
 def format_collect_report(result, settings, ledger=None):
     lines = [f"Collection run {result.now}" + ("  [dry run: nothing was collected or saved]" if result.dry_run else "")]
+    for site, entry in sorted(result.resting.items()):
+        lines.append(f"Resting: {site} until {entry['until'][:10]} after an account warning ({str(entry.get('reason', ''))[:100]}); "
+                     "its browser tasks are skipped, and Apify still runs if it is switched on")
     for slug, reports in result.brands.items():
         lines.append("")
         lines.append(f"=== {slug} ===")
