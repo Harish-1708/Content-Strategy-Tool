@@ -120,7 +120,7 @@ def load_settings(path="research.yaml"):
     path = Path(path)
     if path.is_file():
         data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    _only_keys(data, ("providers", "routing", "defaults", "collectors"), "research.yaml")
+    _only_keys(data, ("providers", "routing", "defaults", "collectors", "ideabank", "planner", "brief"), "research.yaml")
 
     caps = {}
     given = data.get("providers") or {}
