@@ -33,6 +33,12 @@ sites:
     logged_in_any: ['a[href="/direct/inbox/"]', 'svg[aria-label="Home"]', 'a[href="/explore/"]']
     login_wall_any: ['input[name="username"]', 'a[href="/accounts/login/"]']
     challenge_any: ['text=Suspicious Login Attempt', 'text=We detected an unusual login attempt', 'input[name="verificationCode"]', 'text=Confirm it']
+    # An ACCOUNT warning (as opposed to a login check): the tool stops using the account at once and rests it
+    # (collectors.safety.cooldown_days in research.yaml). The phrases are deliberately strict so an ordinary caption cannot
+    # match; they are the wording Instagram is known to use, NOT yet checked against your own warning. Send the warning's
+    # screenshot (or page) and they will be matched to it exactly. An address containing one of the parts below counts too.
+    warning_any: ['text=We suspect automated behavior', 'text=Action Blocked', 'text=We restrict certain activity', 'text=Your account has been temporarily locked']
+    warning_url_any: ['/accounts/suspended', '/accounts/disabled', '/challenge/']
     login_steps:
       - {goto: 'https://www.instagram.com/accounts/login/'}
       - {wait: 3}
@@ -56,6 +62,8 @@ sites:
     logged_in_any: ['[data-e2e="profile-icon"]', '[data-e2e="inbox-icon"]', 'a[href*="/upload"]']
     login_wall_any: ['[data-e2e="top-login-button"]', 'button:has-text("Log in")']
     challenge_any: ['text=Verify to continue', 'text=Drag the slider', '#captcha-verify-image', 'text=Select 2 objects']
+    # An ACCOUNT warning: the tool stops using the account at once and rests it. Strict phrases, not yet checked against a real one.
+    warning_any: ['text=Maximum number of attempts reached', 'text=Your account has been suspended', 'text=Your account is temporarily restricted']
     challenge_dismiss: ['#captcha_close_button']      # the puzzle's own X: pressed once, the puzzle itself is never solved
     # In the automated browser a hashtag page can say "Something went wrong" while the same search works by hand
     # (seen on 2026-10-21). When that happens, or a puzzle covers the page, the tag is searched instead, as "#tag",
