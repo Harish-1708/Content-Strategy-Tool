@@ -141,7 +141,7 @@ def test_a_clarifying_question_from_gemini_is_answered_by_claude(cfg):
     assert gem.typed == ["PROMPT", "US women aged 18-34."] and out["text"] == REPORT_TEXT
     assert out["exchanges"] == [{"gemini": "Which audience should I focus on?", "reply": "US women aged 18-34."}]
     assert claude.answer_calls == [("PROMPT", "ctx", "Which audience should I focus on?")] and out["claude_calls"] == 2
-    assert gem.clicks.count(gem.cfg["send"][0]) == 2 and gem.shots == []
+    assert gem.clicks.count(gem.cfg["send"][0]) == 2 and gem.shots == ["gemini-report"]
 
 
 def test_several_questions_are_answered_in_turn_up_to_the_round_limit(cfg):
