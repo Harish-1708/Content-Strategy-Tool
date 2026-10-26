@@ -428,11 +428,36 @@ Claude about the brand with an optional `context:` line under `deep_research:` i
 Without the key the question is sent as written, and a Gemini question ends the report with Gemini's words in the message.
 
 **Apify (an optional extra, off).** Apify runs ready-made scrapers on its own servers and has a free monthly
-credit. It is not used unless you switch it on, either for one run (the Collect workflow's **backend** box:
-`apify` for Apify only, `fallback` for the browser first and Apify only if the browser fails) or for good
-(`collectors.apify.mode` in `research.yaml`: `off`, `fallback` or `always`). It needs `APIFY_TOKEN` and has its own
-caps (100 items a month, 30 a run, and a dollar ceiling per run). When Apify rescues a failed browser run, the run
-still shows red, so you remember the cookies need refreshing. Use mode `check` with backend `apify` to test it.
+credit. It is not used unless you switch it on, either for one run (the Collect workflow's **backend** box) or for good
+(`collectors.apify.mode` in `research.yaml`). The choices:
+
+- `apify`: Apify only. `fallback`: the browser first, and Apify only if the browser fails.
+- **`extra`: both run on every task, and what they find is merged.** An ad or post both find is kept once, each filling
+  the other's blanks (a picture link, a reach figure), and the report says how many came from each and how many both found.
+  If one route fails the other's results are still kept and the failure is reported. It costs Apify credit on every task.
+
+It needs `APIFY_TOKEN` and has its own caps (100 items a month, 30 a run, and a dollar ceiling per run). When Apify
+rescues a failed browser run, the run still shows red, so you remember the cookies need refreshing. Use mode `check`
+with backend `apify` to test it.
+
+**Where to look: worldwide, or one country.** The default is worldwide (`defaults.country` in `research.yaml`, and a
+brand's `ads: country:` for ads). A run can override it: the Collect and Research workflows have a **region** box
+(blank, `worldwide`, or a two-letter code such as `gb`). Worldwide asks the Meta Ad Library for ALL countries and sends
+no country to Serper.dev or SerpApi. Be aware: Google has no real "worldwide" market, so without a country its results
+lean towards its default market; a truly wide search names several countries, one search (one credit) each. Tavily is
+sent no country by this tool at all. Instagram and TikTok have no country setting here (what they show depends on the
+account and where the run is). The Ad Library with ALL countries is not yet checked against the live site.
+
+**When a site warns an account.** If Instagram or TikTok shows an account warning (suspected automated behaviour, an
+action blocked, a lock), the tool stops using that account immediately, saves a picture (`warning-instagram`), and rests
+the account: its browser tasks are skipped (not failed) for `collectors.safety.cooldown_days` (3 days by default; 0 means
+only the rest of that run). The report lists resting accounts, and Apify still runs if it is switched on. Instagram stays
+switched on and in the schedule; the rest is there because using a warned account again straight away is what turns a
+warning into a ban. Once you have dealt with a warning by hand, tick **ignore_cooldown** in the Collect workflow to use
+the account again early. The phrases that count as a warning are in `browser.yaml` (`warning_any`, `warning_url_any`):
+they are strict on purpose, so an ordinary caption cannot match, and they are the wording these sites are known to use,
+not yet checked against your own warning; send the warning's screenshot and they can be matched exactly. The tool does
+not try to disguise itself as a person: it keeps its small caps and random pauses, and stops when it is warned.
 
 **Set up by trial, the first time.** The page addresses, button names and login checks in `browser.yaml`
 are first guesses, written without being able to open the live sites. Do **Recon** and **Check** first;
