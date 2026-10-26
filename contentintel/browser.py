@@ -32,6 +32,16 @@ class Challenge(BrowserError):
     """The site asked for a code, puzzle or 'confirm it's you'; a person must clear it."""
 
 
+class AccountWarning(Challenge):
+    """The site warned the account (suspected automation, an action blocked, a lock). Using it again straight away
+    is what turns a warning into a ban, so the run stops using it and the account is rested."""
+
+    def __init__(self, site, reason):
+        self.site, self.reason = site, reason
+        super().__init__(f"{site}: {site} showed an account warning ({reason}). The tool stopped using the account "
+                         "straight away. Open the account by hand and follow what the warning says")
+
+
 # ---------------------------------------------------------------------------------------
 # settings (browser.yaml)
 # ---------------------------------------------------------------------------------------
@@ -41,6 +51,7 @@ _TYPES = {
     "profile_url": "str", "search_url": "str", "app_url": "str", "settle_seconds": "num",
     "json_url_hints": "strs", "consent_any": "strs", "logged_in_any": "strs", "login_wall_any": "strs",
     "challenge_any": "strs", "challenge_dismiss": "strs", "error_any": "strs", "hashtag_via_search_on_error": "bool", "search_box": "strs",
+    "warning_any": "strs", "warning_url_any": "strs",
     "deep_research_active_any": "strs", "signed_out_any": "strs", "link_contains": "strs", "prompt_box": "strs", "send": "strs",
     "start_research": "strs", "still_working_any": "strs", "done_any": "strs", "response": "strs",
     "deep_research_clicks": "strs_list", "login_steps": "steps", "wait": "wait",
