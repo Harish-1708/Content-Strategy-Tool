@@ -82,6 +82,9 @@ collectors:
     monthly_calls: 60             # most Claude calls per month
     max_tokens: 700               # room for an answer to one of Gemini's questions
     prompt_max_tokens: 2000       # room for the research prompt itself (it was cut off mid-sentence at 700)
+    review_rounds: 1              # after a Deep Research report, Claude checks it against the question and may send ONE follow-up to
+                                  # Gemini (0 switches the check off; each round is one Claude call and a follow-up may use some
+                                  # of Gemini's own Deep Research allowance)
   # Auto seeds: instead of hand-writing what to search for each brand, the tool builds a factual profile of
   # the brand from its catalogue every run, and Claude turns it into Meta Ad Library keywords (direct rivals,
   # neighbouring categories and ad angles from ANY industry), benchmark BRANDS, hashtags and Deep Research
@@ -107,3 +110,31 @@ collectors:
     items_per_name: 10            # ads read while looking one brand up
     items_per_page: 8             # ads read from each followed page
     retry_days: 30                # a brand with no match is tried again after this many days
+
+# The Idea Bank: everything sourced, scored by Claude, with its files saved in Drive, waiting for your decision.
+ideabank:
+  enabled: true
+  sources: [meta_ads, instagram, tiktok]   # which collected sources feed it
+  max_new_per_run: 60                      # new items taken in per run
+  score_batch: 8                           # items scored in one Claude call
+  max_scoring_calls: 6                     # scoring calls per run (what is left is scored next run)
+  save_assets: true                        # save pictures and videos in the Shared Drive
+  save_videos: true
+  image_max_mb: 15
+  video_max_mb: 80
+  claude_monthly_calls: 300                # all Claude calls by the Idea Bank, request mode and briefs, per month
+
+# Request mode: how much a plan may ask for. Code trims Claude's plan to these.
+planner:
+  max_keywords: 6                          # Meta ad searches
+  max_hashtags: 6                          # per platform
+  max_queries: 8                           # web searches
+  max_questions: 2                         # Deep Research questions
+  max_pages: 4                             # Ad Library pages
+
+# Briefs. More than one model means each writes the brief and the best is kept (it costs more Claude calls).
+brief:
+  models: [claude-sonnet-5-5]
+  max_concepts: 8
+  max_calls: 8                             # Claude calls for one brief (writing, one repair, judging)
+  images_per_item: 1                       # reference pictures per idea in the Word file
