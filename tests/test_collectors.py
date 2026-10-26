@@ -163,8 +163,8 @@ def test_an_ad_library_link_is_used_as_written_and_a_page_address_becomes_a_name
     assert task.source == "meta_ads" and task.seed_count == 3
     assert task.payload["urls"] == [
         link,
-        "https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=gb&q=Bamboo.Ave&search_type=keyword_unordered&media_type=all",
-        "https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=gb&q=sweatpant+overalls&search_type=keyword_unordered&media_type=all"]
+        "https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=GB&q=Bamboo.Ave&search_type=keyword_unordered&media_type=all",
+        "https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=GB&q=sweatpant+overalls&search_type=keyword_unordered&media_type=all"]
 
 
 def test_social_seeds_are_tidied_and_become_one_task_per_platform(tmp_path, swov):
