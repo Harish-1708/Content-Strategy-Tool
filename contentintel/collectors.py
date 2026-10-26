@@ -49,7 +49,7 @@ DEFAULT_COLLECTORS = {
     "gemini": {"monthly_tasks": 2, "tasks_per_run": 1, "cache_days": 14},
     "apify": {"mode": "off", "monthly_items": 100, "items_per_run": 30, "max_cost_per_run_usd": 1.0,
               "actors": DEFAULT_APIFY_ACTORS},
-    "claude": {"model": "claude-sonnet-5-5", "monthly_calls": 60, "max_rounds": 3, "max_tokens": 700,
+    "claude": {"model": "claude-sonnet-5-5", "monthly_calls": 60, "max_rounds": 3, "max_tokens": 700, "prompt_max_tokens": 2000,
                "prepare_prompt": True},
     "auto_seeds": {"enabled": True, "refresh_days": 30, "max_keywords": 8, "max_hashtags": 5, "max_questions": 2,
                    "max_benchmarks": 8, "scopes": ["direct", "adjacent", "cross_industry"]},
@@ -92,6 +92,7 @@ class CollectorSettings:
     benchmark_items_per_name: int = 10
     benchmark_items_per_page: int = 8
     benchmark_retry_days: int = 30
+    claude_prompt_max_tokens: int = 2000
 
 
 def _count(value, where, minimum=0, whole=True):
@@ -161,6 +162,7 @@ def load_collector_settings(path="research.yaml"):
         claude_monthly_calls=_count(claude["monthly_calls"], "collectors.claude.monthly_calls"),
         claude_max_rounds=_count(claude["max_rounds"], "collectors.claude.max_rounds"),
         claude_max_tokens=_count(claude["max_tokens"], "collectors.claude.max_tokens", 50),
+        claude_prompt_max_tokens=_count(claude["prompt_max_tokens"], "collectors.claude.prompt_max_tokens", 200),
         claude_prepare_prompt=claude["prepare_prompt"], auto_enabled=auto["enabled"],
         auto_refresh_days=_count(auto["refresh_days"], "collectors.auto_seeds.refresh_days", 1),
         auto_max_keywords=_count(auto["max_keywords"], "collectors.auto_seeds.max_keywords", 1),
@@ -882,6 +884,16 @@ def add_variant_counts(rows):
     return rows
 
 
+def search_for_tag(browser, site_cfg, tag):
+    """Search the site for #tag the way a person does: click the search box, type the tag, press Enter. If the box
+    cannot be found or typed into, the search address is opened instead. Returns how it was done."""
+    box = site_cfg.get("search_box", [])
+    if box and browser.type_text(box, "#" + tag, submit=True):
+        return "typed"
+    browser.open(site_cfg["search_url"].format(q=quote_plus("#" + tag)))
+    return "address"
+
+
 def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
     """Collect up to n ads or posts for one task. Returns (rows, stats).
 
@@ -894,22 +906,32 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
         state = ensure_session(browser, source, site_cfg, creds)
     urls = seed_urls(task, site_cfg)
     found, from_data, limited, via = {}, set(), False, {}
-    fallbacks, page_errors = [], 0
+    fallbacks, page_errors, how = [], 0, []
+    errors, challenges, settle = site_cfg.get("error_any", []), site_cfg.get("challenge_any", []), site_cfg.get("settle_seconds", 3)
+
+    def search_instead(tag):
+        fallbacks.append("#" + tag)
+        how.append(search_for_tag(browser, site_cfg, tag))
+        browser.wait(settle)
+
     for number, url in enumerate(urls):
         browser.open(url)
-        browser.wait(site_cfg.get("settle_seconds", 3))
-        if site_cfg.get("hashtag_via_search_on_error") and "/tag/" in url and browser.exists(site_cfg.get("error_any", [])):
-            tag = unquote(url.split("/tag/", 1)[1].split("?")[0])      # the tag page says "Something went wrong"
-            fallbacks.append("#" + tag)                                # in the automated browser: ask search for it
-            browser.open(site_cfg["search_url"].format(q=quote_plus("#" + tag)))
-            browser.wait(site_cfg.get("settle_seconds", 3))
-        if site_cfg.get("error_any") and browser.exists(site_cfg["error_any"]):
-            page_errors += 1
+        browser.wait(settle)
+        # In the automated browser a tag page can fail (an error, or a puzzle) while the same search works by hand.
+        tag = unquote(url.split("/tag/", 1)[1].split("?")[0]) if site_cfg.get("hashtag_via_search_on_error") and "/tag/" in url else None
+        searched = pressed_x = False
+        if tag is not None and (browser.exists(errors) or browser.exists(challenges)):
+            if browser.exists(challenges):
+                clear_challenge(browser, site_cfg)
+                pressed_x = True                                      # once per page: never retried on this one
+            if browser.exists(errors) or browser.exists(challenges):
+                search_instead(tag)
+                searched, pressed_x = True, False                     # the search page is a new page, with its own puzzle
         if source == "meta_ads":
             browser.click(site_cfg.get("consent_any", []))
         else:
             after = session_state(browser, site_cfg)
-            if after == "challenge" and clear_challenge(browser, site_cfg):
+            if after == "challenge" and not pressed_x and clear_challenge(browser, site_cfg):
                 after = session_state(browser, site_cfg)
             if after == "challenge":
                 browser.screenshot(f"challenge-{source}")
@@ -921,6 +943,12 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
         share = max(1, (n - len(found)) // (len(urls) - number))
         rows, data_ids, hit_limit = _gather(browser, source, site_cfg, limits["max_scrolls_per_page"],
                                             pacing["scroll_pause_seconds"], share)
+        if tag is not None and not searched and not rows and browser.exists(errors):        # the error came after the first wait
+            search_instead(tag)
+            rows, data_ids, hit_limit = _gather(browser, source, site_cfg, limits["max_scrolls_per_page"],
+                                                pacing["scroll_pause_seconds"], share)
+        if errors and browser.exists(errors):
+            page_errors += 1
         from_data |= data_ids
         limited = limited or hit_limit
         label = (task.payload.get("labels") or {}).get(url) or seed_label(url)
@@ -940,7 +968,7 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds):
         browser.screenshot(f"empty-{source}")
     in_data = sum(1 for r in kept if r["item_id"] in from_data)
     return kept, {"json": in_data, "links": len(kept) - in_data, "state": state, "rate_limited": limited and len(kept) < n,
-                  "fallbacks": fallbacks, "page_errors": page_errors}
+                  "fallbacks": fallbacks, "fallback_how": how, "page_errors": page_errors}
 
 
 def _snip(text):
@@ -965,6 +993,29 @@ def switch_to_deep_research(browser, site_cfg):
         return ("the buttons were pressed but the page did not show Deep Research as switched on "
                 "(see gemini-deep-research-unconfirmed; check deep_research_active_any in browser.yaml)")
     return ""
+
+
+_RESTART = re.compile(r"(?<!#)# (?=[A-Z])")          # "# Title" starting a second document, even glued to the end of the first
+
+
+def _distinct_words(text):
+    return {w for w in re.findall(r"[a-z]{5,}", text.lower())}
+
+
+def single_copy(text):
+    """Gemini's page can hand back the report twice: a first copy that stops in the middle, then a complete one
+    starting with its own "# Title". Returns (text, doubled). The second part is only taken for a repeat of the first
+    when it restarts with a top-level heading AND shares most of its distinctive words (about 70% in a real doubled
+    report, about 40% between two sections of one genuine report, so the bar is 60%); the longer copy is kept."""
+    n = len(text)
+    for m in _RESTART.finditer(text):
+        first, second = text[:m.start()], text[m.start():]
+        if len(first) < 0.25 * n or len(second) < 0.5 * len(first):
+            continue
+        a, b = _distinct_words(first), _distinct_words(second)
+        if a and b and len(a & b) / len(a) >= 0.6 and len(a & b) / len(a | b) >= 0.3:
+            return (second if len(second) >= 0.9 * len(first) else first).strip(), True
+    return text, False
 
 
 def collect_deep_research(browser, question, site_cfg, *, claude=None, context="", claude_budget=0,
@@ -1035,7 +1086,7 @@ def collect_deep_research(browser, question, site_cfg, *, claude=None, context="
                                "(update prompt_box and send in browser.yaml)")
         exchanges.append({"gemini": text[:1500], "reply": reply})
         plan_waited, seen = 0, ""
-    browser.click(site_cfg["start_research"])         # absent when Gemini started on its own
+    start_clicked = browser.click(site_cfg["start_research"])         # absent when Gemini started on its own
     limit = wait["max_minutes"] * 60
     last_text, stable = "", 0
     while True:
@@ -1045,22 +1096,36 @@ def collect_deep_research(browser, question, site_cfg, *, claude=None, context="
         stable = stable + poll if text and text == last_text else 0
         last_text = text
         working = browser.exists(site_cfg.get("still_working_any", []))
-        if len(text) >= wait["min_chars"] and not working and (
-                browser.exists(site_cfg["done_any"]) or stable >= wait["settle_seconds"]):
+        done_seen = browser.exists(site_cfg["done_any"])
+        if len(text) >= wait["min_chars"] and not working and (done_seen or stable >= wait["settle_seconds"]):
             break
         if waited >= limit:
             browser.screenshot("gemini-timeout")
             raise BrowserError(f"gemini: the report was not finished after {wait['max_minutes']} minutes "
                                "(see the screenshot; raise wait.max_minutes in browser.yaml if it was still working)"
                                + (f". Last thing Gemini showed: {_snip(last_text)}" if last_text else ""))
+    browser.screenshot("gemini-report")                 # the finished page, so the report's own element can be pinned down
     links = browser.response_links(site_cfg["response"])
     found = []
     for url in links + re.findall(r"https?://[^\s)\]>\"'<]+", text):
         url = url.rstrip(".,;")
         if url not in found:
             found.append(url)
-    return {"text": text, "sources": found[:30], "waited_seconds": waited, "prompt": prompt,
-            "exchanges": exchanges, "claude_calls": calls, "notes": notes}
+    raw_text = text
+    text, doubled = single_copy(text)
+    if doubled:
+        notes.append("the page returned the report twice; the complete copy was kept (the raw text is saved beside it)")
+    if not start_clicked and not done_seen:
+        notes.append("no Start research button was pressed and no finished-report button appeared: this may be an ordinary "
+                     "chat answer and not a Deep Research report (see the saved gemini-report picture)")
+    elif not start_clicked:
+        notes.append("Gemini started the research on its own (no Start research button was shown)")
+    if not found:
+        notes.append("no source links were found in the report")
+    return {"text": text, "raw_text": raw_text, "doubled": doubled, "sources": found[:30], "waited_seconds": waited,
+            "prompt": prompt, "exchanges": exchanges, "claude_calls": calls, "notes": notes,
+            "diagnostics": {"mode_confirmed": not mode_note, "start_clicked": bool(start_clicked), "done_button_seen": bool(done_seen),
+                            "plan_seconds": plan_waited, "waited_seconds": waited}}
 
 
 # ---------------------------------------------------------------------------------------
@@ -1156,8 +1221,10 @@ def _page_notes(stats):
     """What happened to tag pages that errored, for run and check reports."""
     text = ""
     if stats.get("fallbacks"):
-        text += (f" - the page for {', '.join(stats['fallbacks'])} said 'Something went wrong', "
-                 "so TikTok's search results were read instead")
+        way = " and ".join(sorted(set(stats.get("fallback_how") or []))).replace("typed", "typed into the search box, as a person would") \
+            .replace("address", "the search address")
+        text += (f" - the page for {', '.join(stats['fallbacks'])} would not load (an error or a security check), "
+                 f"so TikTok's search results were read instead ({way or 'searched'})")
     if stats.get("page_errors"):
         text += f" - {stats['page_errors']} page(s) still showed 'Something went wrong' (a block on the automated browser, or try again later)"
     return text
@@ -1292,9 +1359,16 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                             ledger.charge("claude_calls", out["claude_calls"])
                         name = f"{run_id}-{task.key}.md"
                         store.write_deep_report(brand.slug, name, out["text"])
+                        if out["doubled"]:
+                            store.write_deep_report(brand.slug, name[:-3] + "-raw.md", out["raw_text"])
+                        d = out["diagnostics"]
                         item = _row("deep_research", f"{task.key}-{now[:10]}", handle="Gemini Deep Research",
                                     title=task.payload["question"], text=out["text"],
-                                    url=f"data/{brand.slug}/research/deep/{name}")
+                                    url=f"data/{brand.slug}/research/deep/{name}",
+                                    details=(f"Deep Research confirmed on: {'yes' if d['mode_confirmed'] else 'NOT CONFIRMED'} | "
+                                             f"Start research pressed: {'yes' if d['start_clicked'] else 'no'} | "
+                                             f"finished-report button seen: {'yes' if d['done_button_seen'] else 'no'} | "
+                                             f"waited {d['waited_seconds']} s"))
                         item["extra_sources"] = out["sources"]
                     except (LoginWall, Challenge) as exc:
                         message = str(exc) + (cookie_facts(site, site_creds)
@@ -1312,7 +1386,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                         continue
                     save(brand, task, [item], {}, "browser", {"deep": {
                         "prompt": out["prompt"], "exchanges": out["exchanges"], "claude_calls": out["claude_calls"],
-                        "notes": out["notes"]}})
+                        "notes": out["notes"], "diagnostics": out["diagnostics"]}})
                     report.status, report.items = "ran", 1
                     report.detail = (f"report received after {out['waited_seconds'] // 60} min"
                                      + (f"; {len(out['exchanges'])} question(s) from Gemini answered by Claude" if out["exchanges"] else "")
@@ -1549,6 +1623,24 @@ def format_check_collectors(rows):
     return "\n".join(lines)
 
 
+def format_test_file(out):
+    """Everything about one report in one readable file: what was asked, what happened, what came back."""
+    d = out["diagnostics"]
+    lines = ["# Deep Research test", "", "## Prompt sent to Gemini", out["prompt"], "",
+             "## Questions from Gemini and Claude's answers"]
+    lines += [f"- Gemini: {e['gemini']}\n  Claude: {e['reply']}" for e in out["exchanges"]] or ["(Gemini asked nothing)"]
+    lines += ["", "## What happened",
+              f"- Deep Research switched on (the prompt box asked what to research): {'yes' if d['mode_confirmed'] else 'NOT CONFIRMED'}",
+              f"- Start research button pressed: {'yes' if d['start_clicked'] else 'no'}",
+              f"- finished-report button seen: {'yes' if d['done_button_seen'] else 'no'}",
+              f"- waited {d['waited_seconds']} seconds in all, {d['plan_seconds']} of them for the plan",
+              f"- report length: {len(out['text'])} characters; claude calls: {out['claude_calls']}"]
+    lines += [f"- NOTE: {n}" for n in out["notes"]]
+    lines += ["", "## Report", out["text"], "", "## Sources found"]
+    lines += [f"- {u}" for u in out["sources"]] or ["(none found)"]
+    return "\n".join(lines)
+
+
 def run_deep_research_test(browser_factory, creds, browser_cfg, settings, store, ledger_cls, now, claude, debug_dir):
     """Run ONE real, short Deep Research report to prove the whole path (Claude's prompt, Gemini's
     questions, the wait, the report). Nothing is saved as collected data; the report goes in the debug folder."""
@@ -1571,10 +1663,9 @@ def run_deep_research_test(browser_factory, creds, browser_cfg, settings, store,
         store.save_usage(ledger.usage)
     path = Path(debug_dir) / "test-deep-research.md"
     path.parent.mkdir(parents=True, exist_ok=True)
-    lines = ["# Deep Research test", "", "## Prompt sent to Gemini", out["prompt"], "", "## Questions from Gemini and Claude's answers"]
-    lines += [f"- Gemini: {e['gemini']}\n  Claude: {e['reply']}" for e in out["exchanges"]] or ["(Gemini asked nothing)"]
-    lines += ["", "## Report", out["text"]]
-    path.write_text("\n".join(lines), encoding="utf-8")
+    path.write_text(format_test_file(out), encoding="utf-8")
+    if out["doubled"]:
+        (Path(debug_dir) / "test-deep-research-raw.txt").write_text(out["raw_text"], encoding="utf-8")
     return {"ok": True, "detail": (f"a report of {len(out['text'])} characters arrived after {out['waited_seconds'] // 60} minutes; "
                                     f"Claude made {out['claude_calls']} call(s); {len(out['exchanges'])} Gemini question(s) answered; "
                                     f"saved as {path}" + "".join(f"; {n}" for n in out["notes"]))}
@@ -1582,8 +1673,12 @@ def run_deep_research_test(browser_factory, creds, browser_cfg, settings, store,
 
 # Meta's own page search, saved by Recon so a later update can look advertiser pages up officially instead of
 # reading them from ad results. Nothing reads these yet; they exist to show what the site sends.
-RECON_EXTRA = {"meta_ads": [("page-search", lambda cfg: AD_LIBRARY + "/?active_status=active&ad_type=all&country=US"
-                                                       "&q=Gymshark&search_type=page&media_type=all")]}
+RECON_EXTRA = {
+    "meta_ads": [("page-search", lambda browser, cfg: browser.open(AD_LIBRARY + "/?active_status=active&ad_type=all&country=US"
+                                                                   "&q=Gymshark&search_type=page&media_type=all"))],
+    # the way a person searches: type #overalls into the box and press Enter (what a real run does when a tag page fails)
+    "tiktok": [("search", lambda browser, cfg: search_for_tag(browser, cfg, "overalls"))],
+}
 RECON_PAGES = {
     "meta_ads": lambda cfg: ad_library_url("overalls", "us", "active"),
     "instagram": lambda cfg: cfg["hashtag_url"].format(tag="overalls"),
@@ -1644,8 +1739,8 @@ def recon(browser_factory, creds, browser_cfg, sources, debug_dir):
                 if links:
                     line += f"; {len(links)} post links on the page"
                 lines.append(line)
-                for name, make_url in RECON_EXTRA.get(source, []):
-                    browser.open(make_url(site_cfg))
+                for name, action in RECON_EXTRA.get(source, []):
+                    action(browser, site_cfg)
                     browser.wait(site_cfg.get("settle_seconds", 5))
                     browser.screenshot(f"recon-{site}-{name}")
                     extra_net, extra_page = browser.json_responses(), (browser.embedded_json() if hasattr(browser, "embedded_json") else [])
