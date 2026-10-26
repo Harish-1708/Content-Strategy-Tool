@@ -413,7 +413,7 @@ def test_meta_ads_need_no_login_and_dismiss_a_cookie_banner(cfg):
     b = FakeBrowser({"https://www.facebook.com/ads/library": {"json": [META_JSON]}}, clickable=set(site(cfg, "meta_ads")["consent_any"]))
     task = C.Task("meta_ads", "t", {"urls": [C.ad_library_url("overalls", "us", "active")]}, "k")
     rows, stats = run_task(cfg, b, task, 10)
-    assert [r["item_id"] for r in rows] == ["meta_ads:111", "meta_ads:112"] and stats == {"json": 2, "links": 0, "state": "ok", "rate_limited": False, "fallbacks": [], "page_errors": 0}
+    assert [r["item_id"] for r in rows] == ["meta_ads:111", "meta_ads:112"] and stats == {"json": 2, "links": 0, "state": "ok", "rate_limited": False, "fallbacks": [], "fallback_how": [], "page_errors": 0}
     assert len(b.opened) == 1 and b.clicks == [site(cfg, "meta_ads")["consent_any"][0]] and b.waits == [4]
 
 
@@ -508,7 +508,7 @@ def test_deep_research_is_asked_in_the_web_app_and_the_report_is_waited_for(cfg)
     assert gem.clicks[3] == g["send"][0] and gem.clicks[4] == g["start_research"][0]          # after the three menu steps
     assert 700 <= out["waited_seconds"] < 760 and out["sources"] == [
         "https://c.example.com/z", "https://a.example.com/x", "https://b.example.com/y"]
-    assert gem.shots == []
+    assert gem.shots == ["gemini-report"]                                  # only the finished-report picture, no failure pictures
 
 
 def test_a_report_with_no_done_button_counts_as_finished_once_it_stops_changing(cfg):
