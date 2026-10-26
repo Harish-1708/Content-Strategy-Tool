@@ -207,7 +207,7 @@ def test_a_brand_file_with_the_new_keys_loads_through_the_real_loader(tmp_path, 
 
 def test_a_followed_page_address_is_the_ad_librarys_own_page_link():
     url = C.ad_library_page_url("108271304233408", "us", "active")
-    assert url == ("https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=us&view_all_page_id=108271304233408"
+    assert url == ("https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&view_all_page_id=108271304233408"
                    "&media_type=all")
     from contentintel.benchmarks import page_id_from
     assert page_id_from(url) == "108271304233408" and C.seed_label(url) == "page:108271304233408"
