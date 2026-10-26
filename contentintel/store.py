@@ -204,6 +204,19 @@ class Store:
         path.parent.mkdir(parents=True, exist_ok=True)
         _write_text(path, json.dumps(data, ensure_ascii=False, indent=1, sort_keys=True))
 
+    def read_deep_archive(self, slug):
+        path = self._research_file(slug, "deep_archive.json")
+        try:
+            data = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else None
+        except ValueError:
+            return None                 # damaged: treated as "nothing archived yet" (a tab may then be added twice, never lost)
+        return data if isinstance(data, dict) and isinstance(data.get("items"), dict) else None
+
+    def write_deep_archive(self, slug, data):
+        path = self._research_file(slug, "deep_archive.json")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        _write_text(path, json.dumps(data, ensure_ascii=False, indent=1, sort_keys=True))
+
     def write_deep_report(self, slug, name, text):
         if not re.fullmatch(r"[A-Za-z0-9_.-]+\.md", name):
             raise StoreError(f"unsafe report name {name!r}")
