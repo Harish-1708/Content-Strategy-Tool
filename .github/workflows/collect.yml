@@ -12,7 +12,8 @@
 #   recon                saves pictures, page HTML and data samples (download the "debug" artifact)
 #   test_deep_research   runs ONE real short Deep Research report, including Claude's prompt and answers
 #   collect              the real run: saves data, updates the Google Sheets and adds each new Deep Research
-#                        report to the Google Doc as a new tab
+#                        report to the Google Doc as a new tab, and puts each new ad or post in the brand's Idea Bank
+#                        (scored by Claude, with its pictures and videos saved in the Shared Drive folder)
 # Pick a BACKEND for ads and social: auto follows research.yaml (browser unless you switched Apify on),
 # browser, apify (Apify only; needs APIFY_TOKEN), or fallback (browser first, Apify if it fails).
 # Logins and keys come from repository secrets; the README lists every one.
@@ -178,6 +179,42 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+      - name: Add new items to the Idea Bank
+        id: ideabank
+        if: inputs.mode == 'collect' || inputs.mode == ''
+        continue-on-error: true
+        shell: bash
+        env:
+          BRAND: ${{ inputs.brand }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          IDEA_BANK_FOLDER_ID: ${{ secrets.IDEA_BANK_FOLDER_ID }}
+        run: |
+          set +e
+          args=(--all)
+          if [ -n "$BRAND" ] && [ "$BRAND" != "all" ]; then args=(--brand "$BRAND"); fi
+          { echo "### Idea Bank"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel ideabank "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Check the Idea Bank Drive folder
+        id: ideabankcheck
+        if: inputs.mode == 'check'
+        continue-on-error: true
+        shell: bash
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          IDEA_BANK_FOLDER_ID: ${{ secrets.IDEA_BANK_FOLDER_ID }}
+        run: |
+          set +e
+          { echo "### Idea Bank Drive check"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel ideabank --check 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
       - name: Update Google Sheets
         id: sheets
         if: inputs.mode == 'collect' || inputs.mode == ''
@@ -248,7 +285,7 @@ jobs:
           fi
 
       - name: Alert if collection needs attention
-        if: steps.collect.outcome == 'failure' || steps.sheets.outcome == 'failure' || steps.docs.outcome == 'failure' || steps.docscheck.outcome == 'failure'
+        if: steps.collect.outcome == 'failure' || steps.sheets.outcome == 'failure' || steps.docs.outcome == 'failure' || steps.docscheck.outcome == 'failure' || steps.ideabank.outcome == 'failure' || steps.ideabankcheck.outcome == 'failure'
         shell: bash
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -260,5 +297,5 @@ jobs:
           fi
 
       - name: Show the run as red when attention is needed
-        if: steps.collect.outcome == 'failure' || steps.sheets.outcome == 'failure' || steps.docs.outcome == 'failure' || steps.docscheck.outcome == 'failure'
+        if: steps.collect.outcome == 'failure' || steps.sheets.outcome == 'failure' || steps.docs.outcome == 'failure' || steps.docscheck.outcome == 'failure' || steps.ideabank.outcome == 'failure' || steps.ideabankcheck.outcome == 'failure'
         run: exit 1
