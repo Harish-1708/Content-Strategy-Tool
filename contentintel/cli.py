@@ -12,6 +12,7 @@ from . import browser as browser_mod
 from .apify import Apify
 from .claude_client import Claude
 from . import collectors as collectors_mod
+from . import docs_archive as docs_mod
 from . import providers as providers_mod
 from . import research as research_mod
 from . import sheets as sheets_mod
@@ -65,6 +66,14 @@ def build_parser():
     group.add_argument("--all", action="store_true")
     p.add_argument("--dry-run", action="store_true", help="show what would change; write nothing")
     p.add_argument("--sheets-config", default="sheets.yaml")
+
+    p = sub.add_parser("docs", help="add each new Deep Research report to the Google Doc, one tab per report")
+    _common(p)
+    group = p.add_mutually_exclusive_group(required=True)
+    group.add_argument("--brand")
+    group.add_argument("--all", action="store_true")
+    p.add_argument("--check", action="store_true", help="prove the Doc can be written (adds a test tab and removes it)")
+    p.add_argument("--dry-run", action="store_true", help="show which tabs would be added; write nothing")
 
     p = sub.add_parser("research", help="search the web for each brand, within your credit caps")
     _common(p)
@@ -161,6 +170,33 @@ def _sheets(args, store):
     return worst
 
 
+_DOCS_CONNECT = None            # tests replace this; None means a real connection to Google
+
+
+def _docs(args, store):
+    key, raw_id = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", ""), os.environ.get("DEEP_RESEARCH_DOC_ID", "")
+    doc_id = docs_mod.parse_doc_id(raw_id)
+    if not doc_id or not key.strip():
+        missing = "DEEP_RESEARCH_DOC_ID" if not doc_id else "GOOGLE_SERVICE_ACCOUNT_JSON"
+        print(f"Google Doc archive skipped: the {missing} secret is not set.")
+        print(f"::notice::Google Doc archive skipped: {missing} is not set")
+        return 0
+    session, email = (_DOCS_CONNECT or docs_mod.connect)(key)
+    client = docs_mod.DocClient(session, doc_id, email)
+    if args.check:
+        facts = client.check()
+        print(f"Google Doc archive works: '{facts['title']}' has {facts['tabs']} tab(s); a test tab was added and removed. "
+              f"Shared with {email}.")
+        return 0
+    slugs = list_brand_slugs(args.brands_dir) if args.all else [args.brand]
+    lines, added, failed = docs_mod.archive_reports(store, slugs, client, sync_mod.utc_now(), dry_run=args.dry_run)
+    print("\n".join(lines))
+    if failed:
+        print(f"::error::{failed} Deep Research report(s) could not be added to the Google Doc; they will be tried again next run")
+        return 1
+    return 0
+
+
 def _research(args, store):
     settings = research_mod.load_settings(args.research_config)
     wanted = [n.strip() for n in args.providers.split(",") if n.strip()]
@@ -245,7 +281,8 @@ def _collect(args, store):
     creds = _site_creds(browser_cfg, os.environ)
     apify_token, claude_key = (os.environ.get("APIFY_TOKEN") or "").strip(), (os.environ.get("ANTHROPIC_API_KEY") or "").strip()
     apify = Apify(apify_token) if apify_token else None
-    claude = Claude(claude_key, model=settings.claude_model, max_tokens=settings.claude_max_tokens) if claude_key else None
+    claude = Claude(claude_key, model=settings.claude_model, max_tokens=settings.claude_max_tokens,
+                    prompt_max_tokens=settings.claude_prompt_max_tokens) if claude_key else None
     backend = collectors_mod.effective_backend(args.backend, settings)
     print("Secrets this run can see (names only; values are never shown):")
     for name, state in _secrets_status(browser_cfg, os.environ):
@@ -356,6 +393,8 @@ def main(argv=None):
             return 0
         if args.cmd == "sheets":
             return _sheets(args, store)
+        if args.cmd == "docs":
+            return _docs(args, store)
         if args.cmd == "research":
             return _research(args, store)
         if args.cmd == "collect":
@@ -365,7 +404,7 @@ def main(argv=None):
             print(json.dumps(state, indent=1))
             return 0 if state["usable"] else 2
     except (BrandError, StoreError, sync_mod.BaselineError, FetchError, sheets_mod.SheetsError,
-            research_mod.ResearchError, collectors_mod.CollectError, browser_mod.BrowserError, KeyError, ValueError) as exc:
+            docs_mod.DocsError, research_mod.ResearchError, collectors_mod.CollectError, browser_mod.BrowserError, KeyError, ValueError) as exc:
         print(f"Error: {exc}")
         return 1
     return 1
