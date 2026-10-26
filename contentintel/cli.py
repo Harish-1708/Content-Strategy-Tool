@@ -3,16 +3,23 @@
 Exit codes: 0 ok or warn, 1 error, 2 sync blocked, 3 baseline needs confirmation.
 """
 import argparse
+import copy
 import dataclasses
 import json
 import secrets
+from pathlib import Path
 import os
 
 from . import autoseeds as autoseeds_mod
 from . import browser as browser_mod
 from .apify import Apify
 from .claude_client import Claude
+from . import brief as brief_mod
 from . import collectors as collectors_mod
+from . import drive as drive_mod
+from . import ideabank as ib_mod
+from . import planner as planner_mod
+from . import rules as rules_mod
 from . import docs_archive as docs_mod
 from . import providers as providers_mod
 from . import research as research_mod
@@ -75,6 +82,41 @@ def build_parser():
     group.add_argument("--all", action="store_true")
     p.add_argument("--check", action="store_true", help="prove the Doc can be written (adds a test tab and removes it)")
     p.add_argument("--dry-run", action="store_true", help="show which tabs would be added; write nothing")
+
+    p = sub.add_parser("ideabank", help="take new sourced items into each brand's Idea Bank: score them and save their files in Drive")
+    _common(p)
+    p.add_argument("--research-config", default="research.yaml")
+    group = p.add_mutually_exclusive_group()
+    group.add_argument("--brand")
+    group.add_argument("--all", action="store_true")
+    p.add_argument("--check", action="store_true", help="prove the Drive folder can be written (makes a test folder and removes it)")
+    p.add_argument("--dry-run", action="store_true", help="say how many items would be added; change nothing")
+
+    p = sub.add_parser("request", help="advanced mode: plan a request in your own words, then run it")
+    _common(p)
+    p.add_argument("action", choices=["plan", "run"])
+    p.add_argument("--brand", required=True)
+    p.add_argument("--research-config", default="research.yaml")
+    p.add_argument("--browser-config", default="browser.yaml")
+    p.add_argument("--debug-dir", default="debug")
+    p.add_argument("--text", default="", help="plan: what you want, in your own words")
+    p.add_argument("--tools", choices=["auto", "manual"], default="auto", help="plan: let Claude choose the tools, or choose them yourself")
+    p.add_argument("--allow", default="", help="plan, with --tools manual: the tools allowed, comma separated (" + ", ".join(planner_mod.TOOLS) + ")")
+    p.add_argument("--region", default="", help="plan: worldwide (the default) or a two-letter country code")
+    p.add_argument("--apify-extra", action="store_true", help="plan: run Apify beside the browser for this request")
+    p.add_argument("--request", default="", help="run: the request id, for example RQ-0001")
+    p.add_argument("--changes", default="", help="run: changes to make to the plan before it runs")
+
+    p = sub.add_parser("brief", help="write a creative brief from the Idea Bank rows marked Use")
+    _common(p)
+    p.add_argument("--brand", required=True)
+    p.add_argument("--brief", required=True, help="the rules folder name under briefs/, for example swoveralls-new-audience")
+    p.add_argument("--ask", default="", help="what the brief is for, in your own words")
+    p.add_argument("--request", default="", help="only use items found by this request")
+    p.add_argument("--include-maybe", action="store_true", help="also use rows marked Maybe")
+    p.add_argument("--research-config", default="research.yaml")
+    p.add_argument("--sheets-config", default="sheets.yaml")
+    p.add_argument("--briefs-dir", default="briefs")
 
     p = sub.add_parser("research", help="search the web for each brand, within your credit caps")
     _common(p)
@@ -179,6 +221,188 @@ def _sheets(args, store):
 
 
 _DOCS_CONNECT = None            # tests replace this; None means a real connection to Google
+_DRIVE_CONNECT = None           # likewise for Google Drive
+_HTTP_GET = None                # likewise for downloading pictures and videos; None means requests.get
+_SHEETS_CONNECT = None          # likewise for reading the Idea Bank decisions
+
+
+def _claude(settings, model=None):
+    key = (os.environ.get("ANTHROPIC_API_KEY") or "").strip()
+    return Claude(key, model=model or settings.claude_model, max_tokens=settings.claude_max_tokens,
+                  prompt_max_tokens=settings.claude_prompt_max_tokens) if key else None
+
+
+def _drive():
+    """A Drive client for the Idea Bank folder, or None (with the reason) when the secrets are not set."""
+    key, raw = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", ""), os.environ.get("IDEA_BANK_FOLDER_ID", "")
+    folder = drive_mod.parse_folder_id(raw)
+    if not folder or not key.strip():
+        return None, "IDEA_BANK_FOLDER_ID" if not folder else "GOOGLE_SERVICE_ACCOUNT_JSON"
+    session, email = (_DRIVE_CONNECT or drive_mod.connect)(key)
+    return drive_mod.DriveClient(session, folder, email), ""
+
+
+def _get():
+    if _HTTP_GET is not None:
+        return _HTTP_GET
+    import requests
+    return requests.get
+
+
+def _ideabank(args, store):
+    settings = ib_mod.load_settings(args.research_config)
+    csettings = collectors_mod.load_collector_settings(args.research_config)
+    drive, missing = _drive()
+    if args.check:
+        if drive is None:
+            print(f"Idea Bank Drive check skipped: the {missing} secret is not set.")
+            return 0
+        facts = drive.check()
+        print(f"Idea Bank Drive works: the folder '{facts['name']}' is in a Shared Drive, and a test folder was made and removed. "
+              f"Shared with {drive.email}.")
+        return 0
+    if not settings.enabled:
+        print("The Idea Bank is switched off (ideabank.enabled in research.yaml).")
+        return 0
+    if not (args.all or args.brand):
+        print("Error: choose --brand NAME, --all or --check")
+        return 1
+    if drive is None:
+        print(f"Files will not be saved in Drive: the {missing} secret is not set.")
+    now = sync_mod.utc_now()
+    claude = _claude(csettings)
+    budget = ib_mod.ClaudeBudget(store, now, settings.claude_monthly_calls) if claude else None
+    for slug in list_brand_slugs(args.brands_dir) if args.all else [args.brand]:
+        brand = load_brand(slug, args.brands_dir)
+        _, lines = ib_mod.run_ideabank(brand, store, settings=settings, now=now, claude=claude, drive=drive, get=_get(),
+                                       dry_run=args.dry_run, budget=budget)
+        print("\n".join(lines))
+    return 0
+
+
+def _request(args, store):
+    brand = load_brand(args.brand, args.brands_dir)
+    settings = ib_mod.load_settings(args.research_config)
+    csettings = collectors_mod.load_collector_settings(args.research_config)
+    now = sync_mod.utc_now()
+    claude = _claude(csettings)
+    budget = ib_mod.ClaudeBudget(store, now, settings.claude_monthly_calls)
+    context = ib_mod.brand_context(brand, store)
+    try:
+        if args.action == "plan":
+            region = collectors_mod.ads_country(args.region, "--region") if args.region.strip() else "ALL"
+            region = "worldwide" if region == "ALL" else region.lower()
+            ticked = [t.strip() for t in args.allow.split(",") if t.strip()]
+            request = planner_mod.plan_request(store, brand, claude, budget, settings, text=args.text, mode=args.tools, ticked=ticked,
+                                               region=region, now=now, apify_extra=args.apify_extra, context=context)
+            print("\n".join(planner_mod.render_plan(request, planner_mod.estimate(request["plan"], settings))))
+            print(f"\nNothing has been searched yet. To run it as it is: run mode of the Request workflow with request id {request['id']}. "
+                  "To change it first, put what you want changed in the changes box.")
+            return 0
+        request = store.read_request(brand.slug, args.request)
+        if request is None:
+            print(f"Error: there is no request {args.request or '(none given)'} for {brand.slug}")
+            return 1
+        request = planner_mod.revise_request(store, brand, request, claude, budget, settings, changes=args.changes, now=now, context=context)
+        if args.changes.strip():
+            print("The plan after your changes:")
+            print("\n".join(planner_mod.render_plan(request, planner_mod.estimate(request["plan"], settings))))
+        return _run_request(args, store, brand, request, settings, csettings, claude, budget, now)
+    except (planner_mod.PlanError, drive_mod.DriveError) as exc:
+        print(f"Error: {exc}")
+        return 1
+
+
+def _run_request(args, store, brand, request, settings, csettings, claude, budget, now):
+    rsettings = dataclasses.replace(research_mod.load_settings(args.research_config), region_override=research_mod._country(request["region"], "region"))
+    browser_cfg = browser_mod.load_browser_settings(args.browser_config)
+    creds = _site_creds(browser_cfg, os.environ)
+    apify_token = (os.environ.get("APIFY_TOKEN") or "").strip()
+    apify = Apify(apify_token) if apify_token else None
+    factory = (_BROWSER_FACTORY or _real_factory)(browser_cfg, creds, args.debug_dir)
+    drive, missing = _drive()
+    started = now
+
+    def collect_runner(cfg_raw, sources):
+        cfg = collectors_mod.parse_collect_config(cfg_raw, f"{brand.slug} request {request['id']}")
+        backend = "extra" if request["apify_extra"] and apify else collectors_mod.effective_backend("auto", csettings)
+        result = collectors_mod.run_collect(
+            [brand], store, browser_factory=factory, creds=creds, settings=dataclasses.replace(csettings, benchmarks_enabled=False, auto_enabled=False),
+            browser_cfg=browser_cfg, ledger_cls=research_mod.Ledger, sources=sources, now=now, run_id=secrets.token_hex(4),
+            configs={brand.slug: cfg}, root=args.brands_dir, apify=apify, claude=claude, backend=backend)
+        return [f"{r.source} {r.status}: {r.detail}"[:160] for r in result.brands.get(brand.slug, [])]
+
+    def research_runner(queries):
+        providers = providers_mod.build_providers(os.environ)
+        if not providers:
+            raise RuntimeError("no search API key is set (TAVILY_API_KEY, SERPER_API_KEY, SERPAPI_API_KEY)")
+        base = copy.deepcopy(research_mod.load_brand_research(brand, args.brands_dir))
+        base["queries"] = [{"q": q} for q in queries]
+        base["auto"] = {"brand": False, "competitors": False, "topics": False}
+        result = research_mod.run_research([brand], store, providers=providers, settings=rsettings, now=now, configs={brand.slug: base},
+                                           root=args.brands_dir)
+        rep = result.brands[brand.slug]
+        return [f"{len(queries)} searches planned, {len(rep.failed)} failed"]
+
+    def ideabank_runner(req, queries):
+        web = planner_mod.web_sources_for(research_mod.research_sources(store.read_searches(brand.slug)), queries) if queries else None
+        return ib_mod.run_ideabank(brand, store, settings=settings, now=now, claude=claude, drive=drive, get=_get(),
+                                   request={"id": req["id"], "region": req["region"], "occasion": req.get("occasion", ""), "text": req["text"]},
+                                   web_sources=web, budget=budget if claude else None, since=started)
+
+    done = planner_mod.execute_request(store, brand, request, now=now, collect_runner=collect_runner, research_runner=research_runner,
+                                       ideabank_runner=ideabank_runner)
+    print(f"Request {done['id']} finished: {done['status']}")
+    print("\n".join(done["run"]["notes"]))
+    print(f"{len(done['run']['items_added'])} item(s) are now in the Idea Bank. Run the Sheets update, review the Idea Bank tab, "
+          "mark the rows you want as Use, then run the Brief workflow.")
+    return 0 if done["status"] in ("done", "partial") else 1
+
+
+def _brief(args, store):
+    brand = load_brand(args.brand, args.brands_dir)
+    path = Path(args.briefs_dir) / args.brief / "rules.yaml"
+    if not path.is_file():
+        print(f"Error: there is no rules file {path}")
+        return 1
+    ruleset = rules_mod.load_ruleset(path)
+    if ruleset.brand != brand.slug:
+        print(f"Error: the brief '{args.brief}' belongs to {ruleset.brand}, not {brand.slug}")
+        return 1
+    settings = ib_mod.load_settings(args.research_config)
+    csettings = collectors_mod.load_collector_settings(args.research_config)
+    key = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "")
+    if not (os.environ.get("ANTHROPIC_API_KEY") or "").strip():
+        print("Error: writing a brief needs the ANTHROPIC_API_KEY secret")
+        return 1
+    if not key.strip():
+        print("Error: the approved rows are read from the Google Sheet, so the GOOGLE_SERVICE_ACCOUNT_JSON secret is needed")
+        return 1
+    now = sync_mod.utc_now()
+    config = sheets_mod.load_sheet_config(args.sheets_config, set(list_brand_slugs(args.brands_dir)))
+    try:
+        decisions = sheets_mod.fetch_decisions(
+            brand, store, key_json=key, config=config, share_emails=sheets_mod.parse_emails(os.environ.get("SHEET_SHARE_EMAIL", "")),
+            folder_id=sheets_mod.parse_folder_id(os.environ.get("SHEET_FOLDER_ID", "")), connect_fn=_SHEETS_CONNECT or sheets_mod.connect)
+        drive, missing = _drive()
+        if drive is None:
+            print(f"Pictures will not be placed in the brief and the file will not be saved in Drive: the {missing} secret is not set.")
+        record = brief_mod.make_brief(
+            brand, store, brief_name=args.brief, ask=args.ask, ruleset=ruleset, decisions=decisions,
+            claude_for=lambda model: _claude(csettings, model), settings=settings,
+            budget=ib_mod.ClaudeBudget(store, now, settings.claude_monthly_calls), now=now, drive=drive,
+            include_maybe=args.include_maybe, request_id=args.request.strip())
+    except (brief_mod.BriefError, drive_mod.DriveError, sheets_mod.SheetsError) as exc:
+        print(f"Error: {exc}")
+        return 1
+    print(f"Brief {record['id']} ({record['status']}): {record['title']}")
+    print(f"  built from {len(record['items'])} approved item(s); {len(record['violations'])} rule problem(s) left; model: {record['models'][0]}")
+    print(f"  saved in the repository as data/{brand.slug}/briefs/{record['id']}.docx" + (f" and in Drive: {record['drive_link']}" if record["drive_link"] else ""))
+    for note in record["notes"]:
+        print(f"  note: {note}")
+    for v in record["violations"]:
+        print(f"  {v['severity']}: {v['where']}: {v['message']}")
+    return 0
 
 
 def _docs(args, store):
@@ -425,6 +649,12 @@ def main(argv=None):
             return _sheets(args, store)
         if args.cmd == "docs":
             return _docs(args, store)
+        if args.cmd == "ideabank":
+            return _ideabank(args, store)
+        if args.cmd == "request":
+            return _request(args, store)
+        if args.cmd == "brief":
+            return _brief(args, store)
         if args.cmd == "research":
             return _research(args, store)
         if args.cmd == "collect":
@@ -434,7 +664,7 @@ def main(argv=None):
             print(json.dumps(state, indent=1))
             return 0 if state["usable"] else 2
     except (BrandError, StoreError, sync_mod.BaselineError, FetchError, sheets_mod.SheetsError,
-            docs_mod.DocsError, research_mod.ResearchError, collectors_mod.CollectError, browser_mod.BrowserError, KeyError, ValueError) as exc:
+            docs_mod.DocsError, ib_mod.IdeaBankError, rules_mod.RuleError, drive_mod.DriveError, planner_mod.PlanError, brief_mod.BriefError, research_mod.ResearchError, collectors_mod.CollectError, browser_mod.BrowserError, KeyError, ValueError) as exc:
         print(f"Error: {exc}")
         return 1
     return 1
