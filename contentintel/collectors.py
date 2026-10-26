@@ -23,6 +23,7 @@ from urllib.parse import parse_qs, quote, quote_plus, unquote, urlsplit
 import yaml
 
 from . import benchmarks as bench
+from . import deepcheck
 from .browser import AccountWarning, BrowserError, Challenge, LoginWall, describe_cookies, site_pacing, site_scrolls
 from .providers import AuthError, ProviderError, QuotaError
 
@@ -49,7 +50,7 @@ DEFAULT_COLLECTORS = {
     "gemini": {"monthly_tasks": 2, "tasks_per_run": 1, "cache_days": 14},
     "apify": {"mode": "off", "monthly_items": 100, "items_per_run": 30, "max_cost_per_run_usd": 1.0,
               "actors": DEFAULT_APIFY_ACTORS},
-    "claude": {"model": "claude-sonnet-5-5", "monthly_calls": 60, "max_rounds": 3, "max_tokens": 700, "prompt_max_tokens": 2000,
+    "claude": {"model": "claude-sonnet-5-5", "monthly_calls": 60, "max_rounds": 3, "max_tokens": 700, "prompt_max_tokens": 2000, "review_rounds": 1,
                "prepare_prompt": True},
     "auto_seeds": {"enabled": True, "refresh_days": 30, "max_keywords": 8, "max_hashtags": 5, "max_questions": 2,
                    "max_benchmarks": 8, "scopes": ["direct", "adjacent", "cross_industry"]},
@@ -96,6 +97,7 @@ class CollectorSettings:
     benchmark_items_per_page: int = 8
     benchmark_retry_days: int = 30
     claude_prompt_max_tokens: int = 2000
+    claude_review_rounds: int = 1
     cooldown_days: dict = field(default_factory=dict)
 
 
@@ -173,6 +175,7 @@ def load_collector_settings(path="research.yaml"):
         claude_max_rounds=_count(claude["max_rounds"], "collectors.claude.max_rounds"),
         claude_max_tokens=_count(claude["max_tokens"], "collectors.claude.max_tokens", 50),
         claude_prompt_max_tokens=_count(claude["prompt_max_tokens"], "collectors.claude.prompt_max_tokens", 200),
+        claude_review_rounds=_count(claude["review_rounds"], "collectors.claude.review_rounds", 0),
         claude_prepare_prompt=claude["prepare_prompt"], auto_enabled=auto["enabled"],
         auto_refresh_days=_count(auto["refresh_days"], "collectors.auto_seeds.refresh_days", 1),
         auto_max_keywords=_count(auto["max_keywords"], "collectors.auto_seeds.max_keywords", 1),
@@ -1117,7 +1120,7 @@ def single_copy(text):
 
 
 def collect_deep_research(browser, question, site_cfg, *, claude=None, context="", claude_budget=0,
-                          max_rounds=3, prepare_prompt=True):
+                          max_rounds=3, prepare_prompt=True, review_rounds=0):
     """Ask Gemini Deep Research in its web app and wait for the report.
 
     With Claude available it first turns the question into a complete prompt, and answers any
@@ -1218,12 +1221,51 @@ def collect_deep_research(browser, question, site_cfg, *, claude=None, context="
                      "chat answer and not a Deep Research report (see the saved gemini-report picture)")
     elif not start_clicked:
         notes.append("Gemini started the research on its own (no Start research button was shown)")
+    reviews, followups, shown = [], [], last_text
+    if review_rounds > 0 and claude is not None:
+        for round_no in range(1, review_rounds + 1):
+            if claude_budget - calls < 1:
+                notes.append("the check of the report was skipped: Claude's call limit is reached")
+                break
+            try:
+                verdict = deepcheck.review_report(claude, question, prompt, deepcheck.join_report(text, followups), found, round_no)
+                calls += 1
+            except (AuthError, QuotaError, ProviderError) as exc:
+                notes.append(f"Claude could not check the report ({exc}); it stands as it is")
+                break
+            reviews.append({"round": round_no, **verdict})
+            if verdict["verdict"] == "ok":
+                break
+            if not deepcheck.send_followup(browser, site_cfg, verdict["follow_up"]):
+                browser.screenshot("gemini-followup-not-sent")
+                notes.append("Claude asked for a follow-up but it could not be sent (prompt box or send button not found); "
+                             "the report stands as it is")
+                break
+            answer, seconds, finished = deepcheck.wait_for_followup(browser, site_cfg, shown, max(0, limit - waited))
+            waited += seconds
+            if not finished:
+                browser.screenshot("gemini-followup-timeout")
+                notes.append(f"the answer to follow-up {round_no} was not finished in time"
+                             + ("; what had arrived is included" if answer else "; nothing arrived"))
+            if answer:
+                shown = answer
+                answer = single_copy(answer)[0].strip()
+                for url in browser.response_links(site_cfg["response"]) + re.findall(r"https?://[^\s)\]>\"'<]+", answer):
+                    url = url.rstrip(".,;")
+                    if url not in found:
+                        found.append(url)
+            followups.append({"message": verdict["follow_up"], "answer": answer, "finished": finished})
+            if not answer:
+                break
+        if reviews:
+            notes.append("Claude checked the report for completeness and checkable examples; it cannot confirm that the facts are true")
+    text = deepcheck.join_report(text, followups)
     if not found:
         notes.append("no source links were found in the report")
     return {"text": text, "raw_text": raw_text, "doubled": doubled, "sources": found[:30], "waited_seconds": waited,
-            "prompt": prompt, "exchanges": exchanges, "claude_calls": calls, "notes": notes,
+            "prompt": prompt, "exchanges": exchanges, "claude_calls": calls, "notes": notes, "reviews": reviews, "followups": followups,
             "diagnostics": {"mode_confirmed": not mode_note, "start_clicked": bool(start_clicked), "done_button_seen": bool(done_seen),
-                            "plan_seconds": plan_waited, "waited_seconds": waited}}
+                            "plan_seconds": plan_waited, "waited_seconds": waited, "review_rounds_used": len(reviews)}}
 
 
 # ---------------------------------------------------------------------------------------
@@ -1540,7 +1582,8 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                         out = collect_deep_research(opened[site], task.payload["question"], site_cfg, claude=claude,
                                                     context=_context(brand, task), claude_budget=budget,
                                                     max_rounds=settings.claude_max_rounds,
-                                                    prepare_prompt=settings.claude_prepare_prompt)
+                                                    prepare_prompt=settings.claude_prepare_prompt,
+                                                    review_rounds=settings.claude_review_rounds)
                         ledger.charge("deep_research_tasks", 1)
                         if out["claude_calls"]:
                             ledger.charge("claude_calls", out["claude_calls"])
@@ -1573,7 +1616,8 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                         continue
                     save(brand, task, [item], {}, "browser", {"deep": {
                         "prompt": out["prompt"], "exchanges": out["exchanges"], "claude_calls": out["claude_calls"],
-                        "notes": out["notes"], "diagnostics": out["diagnostics"]}})
+                        "notes": out["notes"], "diagnostics": out["diagnostics"], "reviews": out["reviews"],
+                        "followups": [{"message": f["message"], "finished": f["finished"]} for f in out["followups"]]}})
                     report.status, report.items = "ran", 1
                     report.detail = (f"report received after {out['waited_seconds'] // 60} min"
                                      + (f"; {len(out['exchanges'])} question(s) from Gemini answered by Claude" if out["exchanges"] else "")
