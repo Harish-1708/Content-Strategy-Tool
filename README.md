@@ -455,9 +455,28 @@ only the rest of that run). The report lists resting accounts, and Apify still r
 switched on and in the schedule; the rest is there because using a warned account again straight away is what turns a
 warning into a ban. Once you have dealt with a warning by hand, tick **ignore_cooldown** in the Collect workflow to use
 the account again early. The phrases that count as a warning are in `browser.yaml` (`warning_any`, `warning_url_any`):
-they are strict on purpose, so an ordinary caption cannot match, and they are the wording these sites are known to use,
-not yet checked against your own warning; send the warning's screenshot and they can be matched exactly. The tool does
-not try to disguise itself as a person: it keeps its small caps and random pauses, and stops when it is warned.
+they are strict on purpose, so an ordinary caption cannot match. The first two are Instagram's own words from the real
+warning the dummy account received on 2026-10-26 ("We've detected automated behavior on your account ... ensure that no
+other users or tools have access to your account"); the rest are wording these sites are known to use. If a warning
+appears on the site and you have not run the tool since, **rest the account by hand**: Collect with mode `rest` (box
+`rest_account`: `instagram`, `tiktok` or both; box `rest_days`: blank uses research.yaml) writes the rest without
+opening the account at all.
+
+**Careful mode (slower, smaller, spread out).** An account that has been warned is better used gently, so Instagram now
+ships in careful mode (the settings sit under `sites.instagram` in `browser.yaml`, and any site can have them):
+`pacing` (20 to 60 seconds before each page, 8 seconds after each scroll, against 3 to 8 and 3 for the other sites),
+`max_scrolls_per_page: 3`, `max_pages_per_run: 2` and `max_pages_per_day: 4`. A run that has more hashtags than it
+may open takes its turn: it opens the next ones after where the last run stopped and goes back to the first after the
+last, so every hashtag is covered over several runs (`data/_shared/page_log.json` remembers where it is and what each
+day has used). A run that covered only some of the pages is not counted as finished, so the next run carries on instead
+of saying "already collected". The report says how many pages were opened out of how many. This makes the tool gentler
+and smaller; it cannot promise an account will not be warned again. Logging in (one visit to the home page) is not
+counted in the page caps. Raise the numbers only if the account stays quiet.
+
+**What the browser does not do.** It does not hide that it is automated. An earlier build started Chromium with an
+option that hides the automation marker; that option has been removed. It does use an ordinary window size, language,
+time zone and browser name (settings of the browser, not a disguise), random pauses between pages, and it stops when
+a site warns the account.
 
 **Set up by trial, the first time.** The page addresses, button names and login checks in `browser.yaml`
 are first guesses, written without being able to open the live sites. Do **Recon** and **Check** first;
