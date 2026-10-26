@@ -244,6 +244,21 @@ class Store:
     def write_cooldowns(self, data):
         return _atomic_write(self.data_dir / "_shared" / "cooldowns.json", data)
 
+    def read_page_log(self):
+        """{"days": {date: {site: pages opened}}, "cursor": {site: where the next run starts}}. Reading creates nothing."""
+        try:
+            data = _read(self.data_dir / "_shared" / "page_log.json", {})
+        except ValueError:
+            data = {}
+        data = data if isinstance(data, dict) else {}
+        days, cursor = data.get("days"), data.get("cursor")
+        return {"days": days if isinstance(days, dict) else {}, "cursor": cursor if isinstance(cursor, dict) else {}}
+
+    def write_page_log(self, data):
+        keep = sorted(data.get("days", {}))[-14:]                       # two weeks is plenty
+        return _atomic_write(self.data_dir / "_shared" / "page_log.json",
+                             {"days": {d: data["days"][d] for d in keep}, "cursor": data.get("cursor", {})})
+
     def write_export(self, slug, name, text):
         """Write one file under catalogue/. Returns True only if the content changed."""
         if "/" in name or "\\" in name or name.startswith("."):
