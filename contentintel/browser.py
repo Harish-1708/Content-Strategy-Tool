@@ -52,6 +52,7 @@ _TYPES = {
     "json_url_hints": "strs", "consent_any": "strs", "logged_in_any": "strs", "login_wall_any": "strs",
     "challenge_any": "strs", "challenge_dismiss": "strs", "error_any": "strs", "hashtag_via_search_on_error": "bool", "search_box": "strs",
     "warning_any": "strs", "warning_url_any": "strs",
+    "pacing": "pace", "max_scrolls_per_page": "whole", "max_pages_per_run": "whole", "max_pages_per_day": "whole",
     "deep_research_active_any": "strs", "signed_out_any": "strs", "link_contains": "strs", "prompt_box": "strs", "send": "strs",
     "start_research": "strs", "still_working_any": "strs", "done_any": "strs", "response": "strs",
     "deep_research_clicks": "strs_list", "login_steps": "steps", "wait": "wait",
@@ -66,6 +67,7 @@ _REQUIRED = {
 }
 _WAIT_KEYS = ("max_minutes", "plan_wait_seconds", "poll_seconds", "settle_seconds", "min_chars",
               "question_settle_seconds")
+_PACE_KEYS = {"min_delay_seconds", "max_delay_seconds", "scroll_pause_seconds"}
 _STEP_ACTIONS = ("goto", "fill", "click", "click_optional", "wait")
 
 
@@ -90,6 +92,15 @@ def _check_value(kind, value, where):
             raise BrowserError(f"{where} must be a https:// address, got {value!r}")
     elif kind == "num":
         _num(value, where)
+    elif kind == "whole":
+        _num(value, where, minimum=1)
+        if value != int(value):
+            raise BrowserError(f"{where} must be a whole number, got {value!r}")
+    elif kind == "pace":
+        if not isinstance(value, dict) or not value or set(value) - _PACE_KEYS:
+            raise BrowserError(f"{where} must be some of: {', '.join(sorted(_PACE_KEYS))}")
+        for k, v in value.items():
+            _num(v, f"{where}.{k}")
     elif kind == "strs":
         _strs(value, where)
     elif kind == "strs_list":
@@ -161,7 +172,21 @@ def load_browser_settings(path="browser.yaml"):
             raise BrowserError(f"{where} is missing {missing}")
         for key, value in cfg.items():
             _check_value(_TYPES[key], value, f"{where}.{key}")
+        if "pacing" in cfg:
+            merged = {**pacing, **cfg["pacing"]}
+            if merged["min_delay_seconds"] > merged["max_delay_seconds"]:
+                raise BrowserError(f"{where}.pacing: min_delay_seconds cannot be more than max_delay_seconds")
     return {"pacing": pacing, "limits": limits, "sites": sites}
+
+
+def site_pacing(cfg, site):
+    """The pauses for one site: its own `pacing` over the general ones."""
+    return {**cfg["pacing"], **cfg["sites"][site].get("pacing", {})}
+
+
+def site_scrolls(cfg, site):
+    """How far down a results page to scroll for one site: its own setting, else the general one."""
+    return cfg["sites"][site].get("max_scrolls_per_page") or cfg["limits"]["max_scrolls_per_page"]
 
 
 # ---------------------------------------------------------------------------------------
@@ -424,7 +449,7 @@ def open_browser(site, cfg, pacing, cookies_text, debug_dir, headless=True):
     try:
         try:
             browser = pw.chromium.launch(headless=headless,
-                                         args=["--disable-blink-features=AutomationControlled", "--no-sandbox"])
+                                         args=["--no-sandbox"])
             context = browser.new_context(viewport={"width": 1366, "height": 900}, locale="en-US",
                                           user_agent=_UA, timezone_id="America/New_York")
             if cookies:
