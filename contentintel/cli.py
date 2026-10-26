@@ -113,6 +113,9 @@ def build_parser():
     p.add_argument("--test-deep-research", action="store_true",
                    help="run ONE real, short Deep Research report to prove the whole path (takes 10+ minutes)")
     p.add_argument("--region", default="", help="worldwide or a two-letter country code for the ad searches, for this run only")
+    p.add_argument("--rest", default="",
+                   help="rest these accounts now (instagram, tiktok, gemini), without opening them: use it when a warning was seen on the site")
+    p.add_argument("--rest-days", type=int, default=0, help="how many days --rest lasts (0: the setting for each site)")
     p.add_argument("--ignore-cooldown", action="store_true",
                    help="use accounts that are resting after a warning (do this only once you have dealt with the warning)")
     p.add_argument("--backend", choices=collectors_mod.BACKENDS, default="auto",
@@ -263,7 +266,7 @@ def _site_creds(browser_cfg, env):
 
 def _real_factory(browser_cfg, creds, debug_dir):
     def factory(site):
-        return browser_mod.open_browser(site, browser_cfg["sites"][site], browser_cfg["pacing"],
+        return browser_mod.open_browser(site, browser_cfg["sites"][site], browser_mod.site_pacing(browser_cfg, site),
                                         creds[site].get("cookies") or "", debug_dir)
     return factory
 
@@ -290,6 +293,9 @@ def _without_resting(wanted, store, now):
 
 def _collect(args, store):
     settings = collectors_mod.load_collector_settings(args.research_config)
+    if args.rest.strip():                                   # nothing is opened: only the memory of the rest is written
+        print("\n".join(collectors_mod.rest_by_hand(store, args.rest, sync_mod.utc_now(), args.rest_days, settings)))
+        return 0
     browser_cfg = browser_mod.load_browser_settings(args.browser_config)
     wanted = [n.strip() for n in args.sources.split(",") if n.strip()] or list(collectors_mod.BROWSER_SOURCES)
     unknown = [n for n in wanted if n not in collectors_mod.SOURCES]
