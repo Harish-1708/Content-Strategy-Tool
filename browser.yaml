@@ -58,9 +58,13 @@ sites:
     challenge_any: ['text=Verify to continue', 'text=Drag the slider', '#captcha-verify-image', 'text=Select 2 objects']
     challenge_dismiss: ['#captcha_close_button']      # the puzzle's own X: pressed once, the puzzle itself is never solved
     # In the automated browser a hashtag page can say "Something went wrong" while the same search works by hand
-    # (seen on 2026-10-21). When that happens the tag is searched instead, as "#tag", the way a person would.
+    # (seen on 2026-10-21). When that happens, or a puzzle covers the page, the tag is searched instead, as "#tag",
+    # the way a person would.
     error_any: ['text=Something went wrong']
     hashtag_via_search_on_error: true
+    # The search box, as it is on the real page: <input data-e2e="search-user-input" name="q" type="search">.
+    # A real run types "#tag" here and presses Enter, exactly as a person does.
+    search_box: ['input[data-e2e="search-user-input"]', 'input[type="search"][name="q"]']
     login_steps:
       - {goto: 'https://www.tiktok.com/login/phone-or-email/email'}
       - {wait: 4}
