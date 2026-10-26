@@ -58,6 +58,11 @@ def _pockets(rec):
     return _join(dict.fromkeys(c["count"] for c in value))
 
 
+def price_range(rec):
+    """(lowest, highest) variant price of a stored product, or (None, None)."""
+    return _prices(rec)
+
+
 def _prices(rec):
     prices = [v["price"] for v in rec["variants"] if v["price"] is not None]
     return (min(prices), max(prices)) if prices else (None, None)
