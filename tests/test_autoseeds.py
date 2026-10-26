@@ -156,6 +156,15 @@ def test_with_no_claude_the_fallback_is_the_brand_s_own_name(swov):
     assert A.fallback_seeds(replace(swov, name="Defi Snacks!"), "t")["tiktok_hashtags"] == ["defisnacks"]
 
 
+def test_each_limit_is_told_to_claude_in_its_own_place(tmp_path, swov, settings):
+    """With every limit different, a swapped pair cannot hide behind equal numbers."""
+    store, claude = seeded(tmp_path, swov), claude_with(SEEDS)
+    odd = replace(settings, auto_max_keywords=7, auto_max_benchmarks=3, auto_max_hashtags=4, auto_max_questions=1)
+    ensure(swov, store, claude, odd)
+    (_, user, _), = claude.complete_calls
+    assert "Limits: at most 7 keywords in total, 3 benchmarks, 4 hashtags per platform and 1 questions." in user
+
+
 # --- when seeds are written, reused and refreshed -----------------------------------------------------------------------------
 
 def test_the_first_run_asks_claude_once_with_the_profile_and_saves_what_it_says(tmp_path, swov, settings):
