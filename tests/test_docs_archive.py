@@ -633,3 +633,37 @@ def test_a_dry_run_through_the_command_writes_nothing(cmd, capsys, tmp_path):
     assert run("--brand", "swoveralls", "--dry-run") == 0
     assert "would add a tab" in capsys.readouterr().out and google.calls == []
     assert not (tmp_path / "data" / "swoveralls" / "research" / "deep_archive.json").exists()
+
+
+# ---- a long report is archived whole, not as the start the collected row keeps ----------------------------------------------------
+
+def test_the_whole_report_is_read_from_its_saved_file_not_from_the_clipped_row(tmp_path):
+    store = Store(tmp_path / "data")
+    whole = "A long paragraph about the market. " * 400                                  # 14,000 characters
+    store.write_deep_report("swoveralls", "run1-a.md", whole)
+    store.append_collected("swoveralls", record("run1-a.md", text=whole[:1000]))
+    (entry_,) = D.entries_to_archive("swoveralls", store.read_collected("swoveralls"), None, lambda name: store.read_deep_report("swoveralls", name))
+    assert entry_["text"] == whole and len(entry_["text"]) > 13000
+
+
+def test_the_row_text_is_the_fallback_when_the_file_is_missing_or_blank(tmp_path):
+    store = Store(tmp_path / "data")
+    store.append_collected("swoveralls", record("run1-a.md", text="the start of the report"))
+    read = lambda name: store.read_deep_report("swoveralls", name)                      # noqa: E731
+    assert D.entries_to_archive("swoveralls", store.read_collected("swoveralls"), None, read)[0]["text"] == "the start of the report"
+    store.write_deep_report("swoveralls", "run1-a.md", "   ")
+    assert D.entries_to_archive("swoveralls", store.read_collected("swoveralls"), None, read)[0]["text"] == "the start of the report"
+
+
+def test_archiving_sends_the_whole_report_to_the_doc(tmp_path, client, google):
+    store = Store(tmp_path / "data")
+    whole = "A long paragraph about the market. " * 400
+    store.write_deep_report("swoveralls", "run1-a.md", whole)
+    store.append_collected("swoveralls", record("run1-a.md", text=whole[:1000]))
+    D.archive_reports(store, ["swoveralls"], client, NOW)
+    assert google.text["t.new1"].count("A long paragraph about the market.") == 400
+
+
+def test_reading_a_report_creates_nothing_and_unsafe_names_read_as_nothing(tmp_path):
+    store = Store(tmp_path / "data")
+    assert store.read_deep_report("swoveralls", "run1-a.md") == "" and store.read_deep_report("swoveralls", "../x.md") == "" and not (tmp_path / "data").exists()
