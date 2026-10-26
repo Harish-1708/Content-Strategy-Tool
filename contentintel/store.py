@@ -233,6 +233,17 @@ class Store:
     def save_usage(self, usage):
         return _atomic_write(self.data_dir / "_shared" / "research_usage.json", usage)
 
+    def read_cooldowns(self):
+        """site -> {until, at, reason}: accounts resting after a warning. Reading creates nothing."""
+        try:
+            data = _read(self.data_dir / "_shared" / "cooldowns.json", {})
+        except ValueError:
+            return {}                   # a damaged file means "nothing is resting", never a crash
+        return data if isinstance(data, dict) else {}
+
+    def write_cooldowns(self, data):
+        return _atomic_write(self.data_dir / "_shared" / "cooldowns.json", data)
+
     def write_export(self, slug, name, text):
         """Write one file under catalogue/. Returns True only if the content changed."""
         if "/" in name or "\\" in name or name.startswith("."):
