@@ -209,6 +209,7 @@ names marked set or not set, so you can see what the run can see (the values are
 | `GEMINI_COOKIES` | Gemini Deep Research, logged in as the dummy Google account | for Deep Research | cookies exported as a JSON list (Google blocks automated sign-in, so there is no password option) |
 | `ANTHROPIC_API_KEY` | Claude writing each brand's research seeds, the Deep Research prompt, and answering Gemini's questions | optional, recommended | the key from console.anthropic.com |
 | `APIFY_TOKEN` | the optional Apify extra | only if you switch Apify on | the API token from your Apify account |
+| `IDEA_BANK_FOLDER_ID` | the Shared Drive folder where each Idea Bank item's pictures and videos are saved | optional (without it the files are skipped; everything else works) | the id of a folder inside a Shared Drive (the part after `/folders/` in its address) |
 | `DEEP_RESEARCH_DOC_ID` | the Google Doc where every Deep Research report is added as a new tab | optional (reports are always saved in the repository too) | the Doc's address, or just the long id between `/d/` and `/edit` |
 
 **Needs no secret:** Meta Ad Library (public pages), the catalogue sync (public store data), and
@@ -333,6 +334,7 @@ names marked set or not set, so you can see what the run can see (the values are
 | `GEMINI_COOKIES` | Gemini Deep Research, logged in as the dummy Google account | for Deep Research | cookies exported as a JSON list (Google blocks automated sign-in, so there is no password option) |
 | `ANTHROPIC_API_KEY` | Claude writing each brand's research seeds, the Deep Research prompt, and answering Gemini's questions | optional, recommended | the key from console.anthropic.com |
 | `APIFY_TOKEN` | the optional Apify extra | only if you switch Apify on | the API token from your Apify account |
+| `IDEA_BANK_FOLDER_ID` | the Shared Drive folder where each Idea Bank item's pictures and videos are saved | optional (without it the files are skipped; everything else works) | the id of a folder inside a Shared Drive (the part after `/folders/` in its address) |
 | `DEEP_RESEARCH_DOC_ID` | the Google Doc where every Deep Research report is added as a new tab | optional (reports are always saved in the repository too) | the Doc's address, or just the long id between `/d/` and `/edit` |
 
 **Needs no secret:** Meta Ad Library (public pages), the catalogue sync (public store data), and
@@ -390,6 +392,54 @@ the same project, switch on the **Google Docs API** (the Check names the exact l
 address as the `DEEP_RESEARCH_DOC_ID` secret; (5) run Collect with mode `check`: it adds a test tab and removes it
 again, and says what is wrong if it cannot. Gemini's page gives the tool plain text, not formatted text, so headings
 are recognised by their shape and tables arrive as lines with `|` between the columns.
+
+**The Idea Bank (everything sourced, waiting for a human decision).** Every ad, social post and web result a run finds can
+become a row in the brand sheet's **Idea Bank** tab with an id (`IB-0001`, `IB-0002`, ...). The tool fills in what it owns:
+what it is, its numbers and performance signal, a **score** (0 to 100: how useful it is for this brand and this request),
+a **summary**, **how the brand could use it**, any **risk** (a claim, copyright or brand-fit concern), a topic, the region
+and the request it came from. **You** fill in the two columns the tool never touches: **Decision** (a Use / Maybe / Skip list
+on a new tab) and **Notes**. Nothing is ever deleted by the tool, and a source item never gets two rows. Claude scores items in
+batches (`ideabank.score_batch`), most interesting first, within `ideabank.max_scoring_calls` per run and
+`ideabank.claude_monthly_calls` a month; what is left over is scored on the next run. Without a Claude key the rows are still
+added, unscored.
+
+**Pictures and videos in the Shared Drive.** At the moment an item is added, its picture or video is downloaded (these links
+expire within about a day, so it cannot wait) and saved in the Shared Drive folder named by `IDEA_BANK_FOLDER_ID`, laid out as
+`<root> / <Brand name> / IB-0001 - topic / the files`, with each brand's finished briefs in `<Brand name> / Briefs`. Only the
+files live in Drive; links, text, scores and summaries stay in the sheet, and the row's **drive_folder** column holds the link to
+its folder. An item with no downloadable file gets no folder. Pictures are limited to `ideabank.image_max_mb` and videos to
+`ideabank.video_max_mb` (switch videos off with `ideabank.save_videos: false`). Meta video ads are saved as videos; for Instagram
+and TikTok the collectors read only the cover picture, so those items get a picture, not the video. A service account has no
+storage of its own in a normal My Drive, which is why the folder must be inside a **Shared Drive** that the service account has been
+added to as a Content manager (or have the folder shared with it as an Editor); Collect with mode `check` proves it.
+
+**Request mode: type an idea.** The **Request** workflow turns your own words into a researched Idea Bank in two steps. Run it with
+**action `plan`**, write what you want ("Father's Day gifting ideas for Swoveralls"), and either leave **tools** on `auto` (Claude
+chooses) or set it to `manual` and tick the tools you allow: Meta ads, Instagram, TikTok, web search, Deep Research. Claude
+proposes a plan (ad keywords, hashtags, web searches, Deep Research questions, and the **creator and influencer angles**, which become
+searches such as `what I bought my dad haul site:tiktok.com`, so the results are not only competitors) and what it will use. The web
+searches (Serper.dev, Tavily and SerpApi) always run as an extra beside the collectors. **Nothing is searched at this point.** The plan is
+saved as `RQ-0001` and shown in the **Requests** tab. Then run it with **action `run`** and the request id. To change the plan, write the
+changes in the **changes** box (for example "drop TikTok, add a gift guide angle") and Claude revises it before anything runs. The region is
+blank (worldwide) or a country code, and **apify_extra** runs Apify beside the browser for this request. Claude only plans: code trims the
+plan to the allowed tools and to the limits in the `planner` section of `research.yaml`, and the tools themselves are the ones used everywhere
+else, so the Instagram careful mode and warning rests apply here too. A step that fails is recorded and the others still run.
+
+**Deep Research check.** After a Deep Research report arrives, Claude reads it against the question and says whether it answers every part,
+and whether its examples are concrete (named, dated, linked). If something important is missing it sends ONE follow-up to Gemini in the same chat,
+asking for exactly that, and adds the answer under its own heading (`collectors.claude.review_rounds`: 1 by default, 0 switches the check off;
+each round is one Claude call, and a follow-up may use part of Gemini's own allowance). Claude cannot confirm that the facts are true, and the
+report says so. Whether Gemini keeps Deep Research mode on for a follow-up has not been seen on the live site.
+
+**Briefs from approved items only.** Run the Sheets update, mark the Idea Bank rows you want as **Use** (Maybe rows are used only if you ask),
+then run the **Brief** workflow with the brief's rules folder (`briefs/<name>/rules.yaml`) and what the brief is for. The catalogue gate must
+pass; only Use rows are used, and the saved pictures are read from Drive, so nothing is searched again. Claude writes the brief as concepts (hook,
+script, visuals, call to action, product, which ideas inspired it); the exact rules (banned characters and words, word order, product
+eligibility) are then **checked by code** on every hook and line, problems go back to Claude for one repair pass, and whatever is still wrong is
+listed under **Needs review** in the file, never hidden. Tone and visual rules are given to Claude as guidance and listed for a person, because code
+cannot enforce them. With more than one model in `brief.models` each writes the brief, a judge scores them, and the best is kept
+(rule problems count against a version). The result is a Word file (with the reference pictures and links) in `data/<brand>/briefs/`, in the brand's Briefs folder in Drive,
+and a row in the **Briefs** tab.
 
 **Gemini's Deep Research menu.** Gemini moves its buttons from time to time. The path the tool presses is in
 `deep_research_clicks` in `browser.yaml`: the **+** at the left of the prompt box (labelled "Upload & tools"),
