@@ -483,7 +483,7 @@ def test_the_seeds_command_without_a_key_shows_the_profile_alone(seeds_cli, caps
 
 def test_the_workflow_has_a_seeds_mode_that_needs_no_browser_and_no_ticked_source():
     text = open(".github/workflows/collect.yml", encoding="utf-8").read()
-    assert "seeds)              args+=(--seeds) ;;" in text and '[ "$MODE" != "seeds" ] && [ -z "$sources" ]' in text
+    assert "seeds)              args+=(--seeds) ;;" in text and '[ "$MODE" != "seeds" ] && [ "$MODE" != "rest" ] && [ -z "$sources" ]' in text
     assert text.count("inputs.mode != 'plan' && inputs.mode != 'seeds'") == 2
 
 
