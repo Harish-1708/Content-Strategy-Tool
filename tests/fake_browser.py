@@ -31,7 +31,7 @@ class FakeBrowser:
         self.pages = pages or {}
         self.spec, self._json, self._batches = {}, [], []
         self.opened, self.waits, self.clicks, self.typed, self.shots = [], [], [], [], []
-        self.scrolls, self.clock, self.url = 0, 0, ""
+        self.scrolls, self.clock, self.url, self.pauses = 0, 0, "", []
         self.clickable, self.typeable, self.present_always = set(clickable), set(typeable), set(present_always)
 
     def open(self, url):
@@ -47,6 +47,7 @@ class FakeBrowser:
         self.clock += seconds
 
     def scroll(self, times=1, pause=3):
+        self.pauses.append(pause)
         for _ in range(times):
             self.scrolls += 1
             if self._batches:
