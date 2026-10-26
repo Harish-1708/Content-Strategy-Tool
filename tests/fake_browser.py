@@ -223,12 +223,22 @@ class FakeClaude:
         self.fail_prepare, self.fail_answer = fail_prepare, fail_answer
         self.prepare_calls, self.answer_calls = [], []
         self.completions, self.complete_calls, self.fail_complete = [], [], None
+        self.json_answers, self.json_calls = [], []
 
     def complete(self, system, user, max_tokens=None):
         self.complete_calls.append((system, user, max_tokens))
         if self.fail_complete:
             raise self.fail_complete
         return self.completions.pop(0) if self.completions else "{}"
+
+    def json_task(self, system, user, max_tokens=None):
+        self.json_calls.append((system, user, max_tokens))
+        if not self.json_answers:
+            raise AssertionError("a JSON answer was asked for but none was scripted")
+        answer = self.json_answers.pop(0)
+        if isinstance(answer, Exception):
+            raise answer
+        return answer
 
     def prepare_prompt(self, question, context):
         self.prepare_calls.append((question, context))
