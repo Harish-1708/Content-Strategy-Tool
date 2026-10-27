@@ -2,17 +2,17 @@
  "lifetime": {
   "claude_calls": 4,
   "collected_items": 252,
-  "serpapi": 4,
-  "serper_dev": 16,
-  "tavily": 4
+  "serpapi": 6,
+  "serper_dev": 18,
+  "tavily": 6
  },
  "months": {
   "2026-10": {
    "claude_calls": 4,
    "collected_items": 252,
-   "serpapi": 4,
-   "serper_dev": 16,
-   "tavily": 4
+   "serpapi": 6,
+   "serper_dev": 18,
+   "tavily": 6
   }
  }
 }
