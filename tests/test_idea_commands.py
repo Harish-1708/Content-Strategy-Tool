@@ -230,6 +230,17 @@ def test_the_drive_check_proves_the_folder_and_names_who_it_is_shared_with(env, 
     assert state["drive"].children(ROOT) == []
 
 
+def test_a_service_account_that_cannot_delete_still_passes_the_check_and_is_told_what_to_tidy(env, capsys):
+    state, run, secrets, store, _ = env
+    secrets("GOOGLE_SERVICE_ACCOUNT_JSON", "IDEA_BANK_FOLDER_ID")
+    state["drive"] = FakeDrive(delete_error=(404, {"error": {"message": "File not found: abc"}}))
+    assert run("ideabank", "--check") == 0
+    out = capsys.readouterr().out
+    assert "Idea Bank Drive works: the folder 'Idea Bank' is in a Shared Drive and a test folder could be made in it, but the test folder could not be removed " in out
+    assert "(Google Drive answered 404: File not found: abc.) Delete the folder called 'connection test (safe to delete)' by hand." in out
+    assert "Saving files is not affected, because the tool never deletes anything." in out and f"Shared with {ROBOT}." in out
+
+
 def test_a_folder_in_a_personal_drive_fails_the_check_with_the_fix(env, capsys):
     state, run, secrets, store, _ = env
     secrets("GOOGLE_SERVICE_ACCOUNT_JSON", "IDEA_BANK_FOLDER_ID")
