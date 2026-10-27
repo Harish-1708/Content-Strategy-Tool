@@ -436,16 +436,54 @@ class PlaywrightBrowser:
             return ""
 
 
-@contextmanager
-def open_browser(site, cfg, pacing, cookies_text, debug_dir, headless=True):
-    """Start Chromium (logged in with the exported cookies, if there are any) for one site."""
+def _start_playwright():
+    """Start Playwright's synchronous driver. This must happen once per process, not once per site: see _SharedPlaywright."""
     try:
         from playwright.sync_api import sync_playwright
     except ImportError as exc:
         raise BrowserError("Playwright is not installed (pip install playwright, then "
                            "playwright install --with-deps chromium)") from exc
+    return sync_playwright().start()
+
+
+class _SharedPlaywright:
+    """One Playwright for every browser a run opens.
+
+    Playwright's synchronous API runs its own event loop inside the process, and only one such instance may be running at a time: starting a
+    second one while the first is still running fails with "It looks like you are using Playwright Sync API inside the asyncio loop".
+    A collection run keeps one browser open per site (Meta, TikTok, Instagram, Gemini) for the whole run, so each site gets its own Chromium
+    from the SAME Playwright. It is started by the first browser that opens and stopped when the last one has closed."""
+
+    def __init__(self):
+        self.pw, self.users = None, 0
+
+    def acquire(self, start):
+        if self.users == 0:
+            self.pw = start()                     # if this fails nothing is counted, so nothing is left to stop
+        self.users += 1
+        return self.pw
+
+    def release(self):
+        self.users -= 1
+        if self.users == 0:
+            pw, self.pw = self.pw, None
+            pw.stop()
+
+
+_SHARED = _SharedPlaywright()
+
+
+@contextmanager
+def open_browser(site, cfg, pacing, cookies_text, debug_dir, headless=True):
+    """Start Chromium (logged in with the exported cookies, if there are any) for one site."""
     cookies = parse_cookies(cookies_text)
-    pw, browser = sync_playwright().start(), None
+    try:
+        pw = _SHARED.acquire(_start_playwright)
+    except BrowserError:
+        raise
+    except Exception as exc:                      # the real reason is kept in the message, never replaced
+        raise BrowserError(f"could not start Playwright for {site}: {_short(exc)}") from exc
+    browser = None
     try:
         try:
             browser = pw.chromium.launch(headless=headless,
@@ -464,4 +502,4 @@ def open_browser(site, cfg, pacing, cookies_text, debug_dir, headless=True):
             if browser:
                 browser.close()
         finally:
-            pw.stop()
+            _SHARED.release()
