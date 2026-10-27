@@ -19,6 +19,56 @@
    "source": "auto",
    "status": "ambiguous"
   },
+  "cotopaxi": {
+   "candidates": [
+    {
+     "ads": 9,
+     "likes": 2438648,
+     "name": "Cotopaxi",
+     "page_id": "507703575971618"
+    },
+    {
+     "ads": 1,
+     "likes": 72524,
+     "name": "Agro Orgánico",
+     "page_id": "100662149177883"
+    }
+   ],
+   "checked_at": "2026-10-27T14:11:57Z",
+   "kind": "benchmark",
+   "name": "Cotopaxi",
+   "page_id": "507703575971618",
+   "page_likes": 2438648,
+   "page_name": "Cotopaxi",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
+  "dollarshaveclub": {
+   "candidates": [
+    {
+     "ads": 9,
+     "likes": 3293157,
+     "name": "Dollar Shave Club",
+     "page_id": "214066708638063"
+    },
+    {
+     "ads": 1,
+     "likes": 3293157,
+     "name": "Dollar Shave Club Australia",
+     "page_id": "107598449408004"
+    }
+   ],
+   "checked_at": "2026-10-27T14:11:57Z",
+   "kind": "benchmark",
+   "name": "Dollar Shave Club",
+   "page_id": "214066708638063",
+   "page_likes": 3293157,
+   "page_name": "Dollar Shave Club",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
   "gymshark": {
    "candidates": [
     {
@@ -40,6 +90,49 @@
    "page_id": "129669023798560",
    "page_likes": 2231049,
    "page_name": "Gymshark",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
+  "liquiddeath": {
+   "candidates": [
+    {
+     "ads": 3,
+     "likes": 399647,
+     "name": "Pocket FM Stories",
+     "page_id": "191352894054471"
+    },
+    {
+     "ads": 4,
+     "likes": 341913,
+     "name": "Liquid Death",
+     "page_id": "2012750189007245"
+    },
+    {
+     "ads": 1,
+     "likes": 341913,
+     "name": "Sixt",
+     "page_id": "74381249666"
+    },
+    {
+     "ads": 1,
+     "likes": 2407,
+     "name": "Nicole Carter",
+     "page_id": "304489473615893"
+    },
+    {
+     "ads": 1,
+     "likes": 917,
+     "name": "David Miller",
+     "page_id": "1069464769584242"
+    }
+   ],
+   "checked_at": "2026-10-27T14:11:57Z",
+   "kind": "benchmark",
+   "name": "Liquid Death",
+   "page_id": "2012750189007245",
+   "page_likes": 341913,
+   "page_name": "Liquid Death",
    "reason": "the only advertiser page named exactly this",
    "source": "auto",
    "status": "resolved"
