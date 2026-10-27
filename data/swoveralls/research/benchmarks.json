@@ -1,5 +1,49 @@
 {
  "items": {
+  "allbirds": {
+   "candidates": [
+    {
+     "ads": 6,
+     "likes": 1021,
+     "name": "Allbirds ME",
+     "page_id": "315953034940028"
+    }
+   ],
+   "checked_at": "2026-10-27T13:01:52Z",
+   "kind": "benchmark",
+   "name": "Allbirds",
+   "page_id": "",
+   "page_likes": 0,
+   "page_name": "",
+   "reason": "no page is named exactly this; the closest names are listed",
+   "source": "auto",
+   "status": "ambiguous"
+  },
+  "gymshark": {
+   "candidates": [
+    {
+     "ads": 9,
+     "likes": 2231049,
+     "name": "Gymshark",
+     "page_id": "129669023798560"
+    },
+    {
+     "ads": 1,
+     "likes": 27,
+     "name": "Shopify1Percent",
+     "page_id": "876773895519508"
+    }
+   ],
+   "checked_at": "2026-10-27T13:01:52Z",
+   "kind": "benchmark",
+   "name": "Gymshark",
+   "page_id": "129669023798560",
+   "page_likes": 2231049,
+   "page_name": "Gymshark",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
   "madepants": {
    "candidates": [
     {
@@ -52,6 +96,37 @@
    "page_id": "601495866852901",
    "page_likes": 360803,
    "page_name": "The Oodie",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
+  "skims": {
+   "candidates": [
+    {
+     "ads": 6,
+     "likes": 3756095,
+     "name": "lululemon",
+     "page_id": "33693527731"
+    },
+    {
+     "ads": 3,
+     "likes": 594644,
+     "name": "SKIMS",
+     "page_id": "2054164264892387"
+    },
+    {
+     "ads": 1,
+     "likes": 163217,
+     "name": "Markable Creators",
+     "page_id": "461930330346999"
+    }
+   ],
+   "checked_at": "2026-10-27T13:01:52Z",
+   "kind": "benchmark",
+   "name": "Skims",
+   "page_id": "2054164264892387",
+   "page_likes": 594644,
+   "page_name": "SKIMS",
    "reason": "the only advertiser page named exactly this",
    "source": "auto",
    "status": "resolved"
