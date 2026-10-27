@@ -258,8 +258,13 @@ def _ideabank(args, store):
             print(f"Idea Bank Drive check skipped: the {missing} secret is not set.")
             return 0
         facts = drive.check()
-        print(f"Idea Bank Drive works: the folder '{facts['name']}' is in a Shared Drive, and a test folder was made and removed. "
-              f"Shared with {drive.email}.")
+        if facts["left_behind"]:
+            print(f"Idea Bank Drive works: the folder '{facts['name']}' is in a Shared Drive and a test folder could be made in it, but the "
+                  f"test folder could not be removed ({facts['left_behind']}) Delete the folder called '{drive_mod.TEST_FOLDER}' by hand. "
+                  f"Saving files is not affected, because the tool never deletes anything. Shared with {drive.email}.")
+        else:
+            print(f"Idea Bank Drive works: the folder '{facts['name']}' is in a Shared Drive, and a test folder was made and removed. "
+                  f"Shared with {drive.email}.")
         return 0
     if not settings.enabled:
         print("The Idea Bank is switched off (ideabank.enabled in research.yaml).")
