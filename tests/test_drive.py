@@ -191,7 +191,7 @@ def test_a_file_can_be_removed(client, fake):
 # ---- the check ---------------------------------------------------------------------------------------------------------------
 
 def test_the_check_proves_the_folder_and_leaves_nothing_behind(client, fake):
-    assert client.check() == {"name": "Idea Bank"}
+    assert client.check() == {"name": "Idea Bank", "left_behind": ""}
     assert fake.children(ROOT) == []
     kinds = [(c["method"], bool(c["json"])) for c in fake.calls if c["method"] in ("POST", "DELETE")]
     assert kinds == [("POST", True), ("DELETE", False)]
@@ -210,13 +210,29 @@ def test_a_folder_in_a_personal_drive_is_refused_with_the_reason():
     assert len(fake.calls) == 1                                          # nothing was created
 
 
-def test_a_test_folder_that_cannot_be_removed_is_named(fake):
-    c = D.DriveClient(fake, ROOT, EMAIL, sleep=lambda s: None)
-    original = c.delete
-    c.delete = lambda fid: (_ for _ in ()).throw(D.DriveError("no"))
-    with pytest.raises(D.DriveError, match="delete the folder called 'connection test' by hand"):
-        c.check()
-    c.delete = original
+@pytest.mark.parametrize("status,body,said", [
+    (404, {"error": {"message": "File not found: abc"}}, "Google Drive answered 404: File not found: abc."),
+    (403, {"error": {"message": "The user does not have sufficient permissions for this file."}}, "Google Drive answered 403: The user does not have sufficient permissions for this file."),
+    (500, None, "Google Drive answered 500.")])
+def test_a_service_account_that_cannot_remove_the_test_folder_still_passes_with_googles_own_reason(status, body, said):
+    fake = FakeDrive(delete_error=(status, body))
+    out = D.DriveClient(fake, ROOT, EMAIL, sleep=lambda s: None).check()
+    assert out == {"name": "Idea Bank", "left_behind": said} and fake.children(ROOT) == [D.TEST_FOLDER]
+
+
+def test_the_leftover_test_folder_is_reused_by_the_next_check_so_none_pile_up():
+    fake = FakeDrive(delete_error=(404, {}))
+    client = D.DriveClient(fake, ROOT, EMAIL, sleep=lambda s: None)
+    client.check()
+    client.check()
+    assert fake.children(ROOT) == [D.TEST_FOLDER]
+
+
+def test_a_failed_delete_is_never_blamed_on_the_folder_id():
+    fake = FakeDrive()
+    with pytest.raises(D.DriveError) as err:
+        D.DriveClient(fake, ROOT, EMAIL).delete("missing")
+    assert str(err.value) == "Google Drive answered 404: File not found." or str(err.value).startswith("Google Drive answered 404") and "IDEA_BANK_FOLDER_ID" not in str(err.value)
 
 
 # ---- Google's complaints, as fixes -----------------------------------------------------------------------------------------
@@ -284,3 +300,8 @@ def test_real_errors_are_not_retried():
     with pytest.raises(D.DriveError):
         D.DriveClient(fake, ROOT, EMAIL, sleep=lambda s: pytest.fail("slept")).find_folder(ROOT, "x")
     assert len(fake.calls) == 1
+
+
+@pytest.mark.parametrize("message", ["Bad query.", "Bad query", "Bad query..."])
+def test_googles_full_stop_is_never_doubled(message):
+    assert fail(400, {"error": {"message": message}}).endswith("Google Drive answered 400: Bad query.")
