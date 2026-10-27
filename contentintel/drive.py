@@ -22,6 +22,7 @@ API = "https://www.googleapis.com/drive/v3/files"
 UPLOAD = "https://www.googleapis.com/upload/drive/v3/files"
 FOLDER = "application/vnd.google-apps.folder"
 DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+TEST_FOLDER = "connection test (safe to delete)"
 SMALL_UPLOAD = 4 * 1024 * 1024          # bigger files are sent in the resumable way
 NAME_LIMIT = 80
 _RETRY = (429, 500, 502, 503, 504)
@@ -105,6 +106,14 @@ def _explain(code, payload, email):
                 f"{email} can see it.")
     if code == 401:
         return "Google did not accept the service account key. Create a new key and paste it into GOOGLE_SERVICE_ACCOUNT_JSON."
+    return f"Google Drive answered {code}" + (f": {message.rstrip('.')}" if message else "") + "."
+
+
+def _plain(code, payload):
+    """Google's own words for a failure, with no guess about the cause."""
+    error = payload.get("error") if isinstance(payload, dict) else None
+    message = str((error or {}).get("message") or "").strip() if isinstance(error, dict) else ""
+    message = message.rstrip(".")                              # Google's messages often end with a full stop already
     return f"Google Drive answered {code}" + (f": {message}" if message else "") + "."
 
 
@@ -113,7 +122,7 @@ class DriveClient:
         self.session, self.root_id, self.email = session, root_id, email
         self.sleep = sleep or _SLEEP
 
-    def _send(self, method, url, **kw):
+    def _send(self, method, url, plain=False, **kw):
         for attempt in range(3):
             resp = self.session.request(method, url, timeout=120, **kw)
             if resp.status_code in _RETRY and attempt < 2:
@@ -124,7 +133,7 @@ class DriveClient:
                     payload = resp.json()
                 except ValueError:
                     payload = {}
-                raise DriveError(_explain(resp.status_code, payload, self.email))
+                raise DriveError(_plain(resp.status_code, payload) if plain else _explain(resp.status_code, payload, self.email))
             return resp
         raise DriveError("Google Drive kept answering with errors; try again later.")      # pragma: no cover
 
@@ -197,19 +206,21 @@ class DriveClient:
         return self._send("GET", f"{API}/{file_id}", params={"alt": "media", "supportsAllDrives": "true"}).content
 
     def delete(self, file_id):
-        self._send("DELETE", f"{API}/{file_id}", params={"supportsAllDrives": "true"})
+        self._send("DELETE", f"{API}/{file_id}", plain=True, params={"supportsAllDrives": "true"})
 
     def check(self):
-        """Prove the whole path without leaving anything behind: read the root folder, make a folder in it, remove it."""
+        """Prove the path the tool really uses: read the root folder and make a folder in it. Then try to tidy up. The tool never deletes
+        anything itself, so a service account that may add files but not remove them is fine: that is only reported, with Google's own reason."""
         root = self._json("GET", f"{API}/{self.root_id}", params={"fields": "id,name,mimeType,driveId", "supportsAllDrives": "true"})
         if root.get("mimeType") != FOLDER:
             raise DriveError("IDEA_BANK_FOLDER_ID is a file, not a folder. Use the id of the folder in your Shared Drive.")
         if not root.get("driveId"):
             raise DriveError("The folder is in a personal My Drive, where a service account has no storage to put files in. Use a "
                              "folder inside a Shared Drive that the service account is a member of.")
-        test = self.ensure_folder(self.root_id, "connection test (safe to delete)")
+        test = self.ensure_folder(self.root_id, TEST_FOLDER)
+        left_behind = ""
         try:
             self.delete(test)
         except DriveError as exc:
-            raise DriveError(f"A test folder could be made but not removed ({exc}); delete the folder called 'connection test' by hand.") from exc
-        return {"name": root.get("name", "")}
+            left_behind = str(exc)
+        return {"name": root.get("name", ""), "left_behind": left_behind}
