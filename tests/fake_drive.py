@@ -23,12 +23,13 @@ def unescape(text):
 
 
 class FakeDrive:
-    def __init__(self, *, shared=True, root_is_folder=True, script=None):
+    def __init__(self, *, shared=True, root_is_folder=True, script=None, delete_error=None):
         self.files = {ROOT: {"id": ROOT, "name": "Idea Bank", "parents": [], "mime": "application/vnd.google-apps.folder",
                              "data": b"", "driveId": "SHAREDDRIVE1" if shared else None}}
         if not root_is_folder:
             self.files[ROOT]["mime"] = "text/plain"
         self.script, self.calls, self.counter, self.resumable = list(script or []), [], 0, {}
+        self.delete_error = delete_error                                       # (status, body) to answer every DELETE with
 
     # ---- the API -----------------------------------------------------------------------------------------------------
     def request(self, method, url, json=None, params=None, data=None, headers=None, timeout=None):
@@ -51,6 +52,8 @@ class FakeDrive:
         if method == "GET":
             return self._get(tail, params)
         if method == "DELETE":
+            if self.delete_error:
+                return Resp(*self.delete_error)
             if tail not in self.files:
                 return Resp(404, {"error": {"message": "File not found"}})
             del self.files[tail]
