@@ -1,0 +1,54 @@
+{
+ "generated_at": "2026-10-28T14:29:45Z",
+ "model": "claude-sonnet-5-5",
+ "profile": "Brand: DudeRobe (duderobe.com), a shopify store with 29 products on sale or coming soon.\nbottoms: 2 products, $61-$72. Families: The Pants, The Shorts.\nmerch: 7 products, $25. Families: DudeRobe Tee - Best Seat In The House, DudeRobe Tee - Just Chillin', DudeRobe Tee - Welcome Home.\nother: 11 products, $98-$339. Families: Dad & LittleDude, Mom & LittleDude, The 1-Second Flannel, The BroThrow, The Couch Setup, The Couple Bundle, The Family Bundle, The Full Kit, The SheRobe, The Whole House, University of Michigan DudeRobe. 7 on sale.\nrobes_and_tops: 9 products, $68-$134. Families: UFC DudeRobe, IndoorCamo™ Limited Edition DudeRobe, Kids DudeRobe, Reversible DudeHoodie, The All-American (Dude)Robe, The DudeRobe, The Hef — A “Smoking Jacket” Robe. 1 limited edition.\nMaterials seen: polyester, rayon, spandex.\nPocket claims: 2.\nAudiences hinted: her (1 products), him (8 products), kids (1 products), sports_fans (4 products), wellness (1 products).",
+ "profile_hash": "125093b4f3e0911f",
+ "seeds": {
+  "benchmarks": [
+   "Snuggie",
+   "Oodie",
+   "Comfrt",
+   "Cuts Clothing",
+   "Skims",
+   "Brooklinen",
+   "Ugmonk",
+   "Liquid Death"
+  ],
+  "context": "DudeRobe is a Shopify store selling casual loungewear built around its signature robe, with 29 products on sale or coming soon. Robes and tops cost $68-$134, bottoms (pants and shorts) $61-$72, tees $25, and bundles and sets $98-$339. The range includes licensed and themed robes (UFC, University of Michigan, IndoorCamo, All-American), a Reversible DudeHoodie, a 'smoking jacket' robe (The Hef), a flannel, a throw blanket and matching family, couple, kids, mom and SheRobe options. Materials seen are polyester, rayon and spandex, and the audience skews toward men and sports fans.",
+  "instagram_hashtags": [
+   "duderobe",
+   "loungewear",
+   "mensfashion",
+   "gamedayoutfit",
+   "matchingfamilyoutfits"
+  ],
+  "keywords": {
+   "adjacent": [
+    "men's loungewear",
+    "matching family pajamas"
+   ],
+   "cross_industry": [
+    "game day outfit",
+    "gift for dad"
+   ],
+   "direct": [
+    "men's robe",
+    "hooded robe",
+    "lounge robe men",
+    "wearable blanket adult"
+   ]
+  },
+  "questions": [
+   "Which ad hooks, formats and angles are performing best right now on Meta, TikTok and Instagram across the best consumer brands in any industry (apparel, DTC, food and drink, sports and lifestyle), and how could DudeRobe, a casual loungewear brand known for its signature robe, adapt them to its own product, humorous 'dude' voice and sports-fan and family audiences?",
+   "How do leading men's loungewear, robe and wearable-blanket brands position and advertise their products, including hooks, offers, bundle and gift messaging, licensed or sports-team collaborations, and seasonal campaigns such as game day, Father's Day and the holidays, and what creative gaps could DudeRobe exploit?"
+  ],
+  "tiktok_hashtags": [
+   "duderobe",
+   "menslounge",
+   "gamedayfit",
+   "giftsforhim",
+   "cozyvibes"
+  ]
+ },
+ "version": 2
+}

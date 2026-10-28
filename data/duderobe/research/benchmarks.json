@@ -1,0 +1,86 @@
+{
+ "items": {
+  "duderobe": {
+   "candidates": [
+    {
+     "ads": 1,
+     "likes": 418070,
+     "name": "Melolo Freedrama-PH",
+     "page_id": "508233365703598"
+    },
+    {
+     "ads": 9,
+     "likes": 400249,
+     "name": "Pocket FM Stories",
+     "page_id": "191352894054471"
+    }
+   ],
+   "checked_at": "2026-10-28T14:29:45Z",
+   "kind": "own",
+   "name": "DudeRobe",
+   "page_id": "",
+   "page_likes": 0,
+   "page_name": "",
+   "reason": "other advertisers turned up, but none has a name like this one",
+   "source": "auto",
+   "status": "unresolved"
+  },
+  "oodie": {
+   "candidates": [
+    {
+     "ads": 10,
+     "likes": 361620,
+     "name": "The Oodie",
+     "page_id": "601495866852901"
+    }
+   ],
+   "checked_at": "2026-10-28T14:29:45Z",
+   "kind": "benchmark",
+   "name": "Oodie",
+   "page_id": "601495866852901",
+   "page_likes": 361620,
+   "page_name": "The Oodie",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
+  "snuggie": {
+   "candidates": [
+    {
+     "ads": 3,
+     "likes": 1016049,
+     "name": "Hobbii",
+     "page_id": "1850489121669070"
+    },
+    {
+     "ads": 2,
+     "likes": 31678,
+     "name": "Sara Larsson",
+     "page_id": "102160321595985"
+    },
+    {
+     "ads": 1,
+     "likes": 18103,
+     "name": "Original Snuggle Puppy",
+     "page_id": "100402202168088"
+    },
+    {
+     "ads": 4,
+     "likes": 3977,
+     "name": "021 Originals",
+     "page_id": "106871044118109"
+    }
+   ],
+   "checked_at": "2026-10-28T14:29:45Z",
+   "kind": "benchmark",
+   "name": "Snuggie",
+   "page_id": "",
+   "page_likes": 0,
+   "page_name": "",
+   "reason": "other advertisers turned up, but none has a name like this one",
+   "source": "auto",
+   "status": "unresolved"
+  }
+ },
+ "version": 1
+}

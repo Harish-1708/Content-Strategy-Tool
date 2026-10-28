@@ -25,6 +25,74 @@
    "source": "auto",
    "status": "unresolved"
   },
+  "graza": {
+   "candidates": [
+    {
+     "ads": 1,
+     "likes": 307861,
+     "name": "Grocery Outlet",
+     "page_id": "53156722540"
+    },
+    {
+     "ads": 9,
+     "likes": 16836,
+     "name": "Graza",
+     "page_id": "102637398978655"
+    }
+   ],
+   "checked_at": "2026-10-28T14:29:45Z",
+   "kind": "benchmark",
+   "name": "Graza",
+   "page_id": "102637398978655",
+   "page_likes": 16836,
+   "page_name": "Graza",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
+  "hukitchen": {
+   "candidates": [
+    {
+     "ads": 1,
+     "likes": 12373335,
+     "name": "Temu",
+     "page_id": "101886952638461"
+    },
+    {
+     "ads": 1,
+     "likes": 2990847,
+     "name": "Shoptemu",
+     "page_id": "103219685846470"
+    },
+    {
+     "ads": 1,
+     "likes": 2591156,
+     "name": "Discover Nanjing, China",
+     "page_id": "1515909005308067"
+    },
+    {
+     "ads": 1,
+     "likes": 1029386,
+     "name": "Popeyes",
+     "page_id": "36385509036"
+    },
+    {
+     "ads": 1,
+     "likes": 577502,
+     "name": "cozycozy.com",
+     "page_id": "293534674361657"
+    }
+   ],
+   "checked_at": "2026-10-28T14:29:45Z",
+   "kind": "benchmark",
+   "name": "Hu Kitchen",
+   "page_id": "",
+   "page_likes": 0,
+   "page_name": "",
+   "reason": "other advertisers turned up, but none has a name like this one",
+   "source": "auto",
+   "status": "unresolved"
+  },
   "lilyssweets": {
    "candidates": [
     {
@@ -104,6 +172,49 @@
    "checked_at": "2026-10-21T13:13:17Z",
    "kind": "benchmark",
    "name": "Magic Spoon",
+   "page_id": "",
+   "page_likes": 0,
+   "page_name": "",
+   "reason": "other advertisers turned up, but none has a name like this one",
+   "source": "auto",
+   "status": "unresolved"
+  },
+  "rxbar": {
+   "candidates": [
+    {
+     "ads": 1,
+     "likes": 18687,
+     "name": "Stars + Honey",
+     "page_id": "104932575863053"
+    },
+    {
+     "ads": 1,
+     "likes": 853,
+     "name": "Walmart Neighborhood Market Crestview",
+     "page_id": "1050541388153396"
+    },
+    {
+     "ads": 4,
+     "likes": 202,
+     "name": "Bitsmith Agency, LLC",
+     "page_id": "163041559185764"
+    },
+    {
+     "ads": 2,
+     "likes": 201,
+     "name": "VendSpace, Inc",
+     "page_id": "836895269503129"
+    },
+    {
+     "ads": 2,
+     "likes": 0,
+     "name": "Spatial Commercial",
+     "page_id": "1171282436074569"
+    }
+   ],
+   "checked_at": "2026-10-28T14:29:45Z",
+   "kind": "benchmark",
+   "name": "RXBAR",
    "page_id": "",
    "page_likes": 0,
    "page_name": "",
