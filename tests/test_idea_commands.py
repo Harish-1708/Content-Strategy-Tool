@@ -42,7 +42,8 @@ def seed_bank(store, ids=("A", "B"), scored=True):
     IB.intake_collected(bank, store.read_collected("swoveralls"), IB.IdeaBankSettings(), COLLECT_NOW)
     if scored:
         for item in bank["items"].values():
-            item.update({"state": "kept", "score": 80, "relevance": 80, "summary": "s", "how_to_use": "h", "risk": "none", "topic": "t", "scored_at": COLLECT_NOW})
+            item.update({"state": "kept", "score": 80, "relevance": 80, "summary": "s", "how_to_use": "h", "risk": "none", "topic": "t", "scored_at": COLLECT_NOW,
+                         "scoring_version": IB.SCORING_VERSION})
     store.write_ideabank("swoveralls", bank)
     return bank
 
@@ -130,8 +131,8 @@ def test_the_requests_tab_shows_each_request_with_its_plan_and_leaves_a_changes_
     client = FakeClient()
     one(swov, store, client)
     _, header, rows = cells(client.created[0], "Requests")
-    assert header == sheets.REQUEST_COLUMNS + ["Changes"]
-    assert rows[0] == {"request_id": "RQ-0001", "created": COLLECT_NOW, "status": "done", "text": "Father's Day gifting", "region": "gb", "tools": "meta_ads, tiktok",
+    assert header == sheets.REQUEST_COLUMNS + ["Changes"] and "formats" in header
+    assert rows[0] == {"request_id": "RQ-0001", "created": COLLECT_NOW, "status": "done", "text": "Father's Day gifting", "region": "gb", "formats": "", "tools": "meta_ads, tiktok",
                        "plan": "ads: gift | tiktok: #dad", "items_added": "1", "run_notes": "collect: ok | idea bank: 1", "Changes": ""}
 
 
@@ -520,7 +521,7 @@ def step(wf, job, name_part):
 def test_the_request_workflow_has_the_inputs_a_person_needs():
     inputs = load("request")[True]["workflow_dispatch"]["inputs"]
     assert set(inputs) == {"brand", "action", "idea", "request_id", "changes", "tools", "use_meta_ads", "use_instagram", "use_tiktok", "use_web_search",
-                           "use_deep_research", "apify_extra", "region"}
+                           "use_deep_research", "apify_extra", "region", "formats"}
     assert inputs["action"]["options"] == ["plan", "run"] and inputs["action"]["default"] == "plan" and inputs["tools"]["options"] == ["auto", "manual"]
     assert inputs["use_deep_research"]["default"] is False and inputs["use_web_search"]["default"] is True and inputs["region"]["default"] == ""
 
@@ -603,3 +604,71 @@ def test_the_request_workflow_caches_and_installs_the_browser_only_for_a_run():
 def test_these_tests_never_read_the_real_sheets_or_research_files():
     assert not Path(RESEARCH_YAML).exists() and Path(SHEETS_YAML).is_file() and SHEETS_YAML.endswith("tests/fixtures/sheets_blank.yaml")
     assert yaml.safe_load(open(SHEETS_YAML, encoding="utf-8"))["sheets"] == {"swoveralls": "", "duderobe": "", "defi_snacks": ""}
+
+
+def test_the_ideabank_command_removes_items_from_skipped_brands(env, capsys):
+    state, run, secrets, store, tmp_path = env
+    secrets("GOOGLE_SERVICE_ACCOUNT_JSON", "IDEA_BANK_FOLDER_ID")
+    seed_bank(store, ("A", "B"))
+    bank = store.read_ideabank("swoveralls")
+    bank["items"]["IB-0001"]["handle"] = "Cotopaxi"
+    store.write_ideabank("swoveralls", bank)
+    assert run("ideabank", "--brand", "swoveralls") == 0
+    assert "1 from brands you skip" in capsys.readouterr().out
+    assert store.read_ideabank("swoveralls")["items"]["IB-0001"]["state"] == "removed"
+
+
+def test_a_request_run_passes_the_skipped_brands_to_the_idea_bank(env, monkeypatch):
+    state, run, secrets, store, _ = env
+    seen = {}
+    real = cli.ib_mod.run_ideabank
+
+    def spy(*args, **kwargs):
+        seen.update(kwargs)
+        return real(*args, **kwargs)
+    monkeypatch.setattr(cli.ib_mod, "run_ideabank", spy)
+    planned_and_run(env)
+    assert sorted(seen["skip_brands"]) == ["Allbirds", "Cotopaxi", "Dollar Shave Club", "Liquid Death"]
+
+
+def test_planning_with_formats_stores_them_shows_them_and_tells_claude(env, capsys):
+    state, run, secrets, store, _ = env
+    secrets("ANTHROPIC_API_KEY")
+    assert plan(run, state, "--formats", "UGC, AI content and posts") == 0
+    out = capsys.readouterr().out
+    assert "  Formats wanted: ugc, ai, static" in out
+    assert store.read_request("swoveralls", "RQ-0001")["formats"] == ["ugc", "ai", "static"]
+    assert "Formats wanted: ugc = UGC: real customers" in state["claude"].json_calls[0][1]
+
+
+def test_an_unknown_format_is_an_error_with_the_list_and_nothing_is_saved(env, capsys):
+    state, run, secrets, store, _ = env
+    secrets("ANTHROPIC_API_KEY")
+    assert plan(run, state, "--formats", "ugc, blogs") == 1
+    out = capsys.readouterr().out
+    assert "Error: 'blogs' is not a content format I know. Use any of: ugc (" in out and store.list_requests("swoveralls") == []
+
+
+def test_a_request_without_formats_has_none(env, capsys):
+    state, run, secrets, store, _ = env
+    secrets("ANTHROPIC_API_KEY")
+    assert plan(run, state) == 0
+    assert store.read_request("swoveralls", "RQ-0001")["formats"] == [] and "Formats wanted" not in capsys.readouterr().out
+
+
+def test_a_request_run_searches_for_its_formats_and_scores_with_them(env, monkeypatch):
+    state, run, secrets, store, _ = env
+    secrets("ANTHROPIC_API_KEY", "GOOGLE_SERVICE_ACCOUNT_JSON", "IDEA_BANK_FOLDER_ID", "INSTAGRAM_COOKIES", "TIKTOK_COOKIES")
+    plan(run, state, *MANUAL, "--formats", "ugc, ai")
+    state["claude"].json_answers = [{"items": []}] * 3
+    seen = {}
+    real = cli.ib_mod.run_ideabank
+
+    def spy(*args, **kwargs):
+        seen.update(kwargs)
+        return real(*args, **kwargs)
+    monkeypatch.setattr(cli.ib_mod, "run_ideabank", spy)
+    assert run("request", "run", "--brand", "swoveralls", "--request", "RQ-0001", "--browser-config", BROWSER_YAML) == 0
+    assert seen["request"]["formats"] == ["ugc", "ai"]
+    asked = [c["json"]["q"] for c in state["http"].calls]
+    assert any("UGC ad examples apparel brand" in q for q in asked) and any("AI generated ad examples fashion brand" in q for q in asked)
