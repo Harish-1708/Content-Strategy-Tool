@@ -351,6 +351,28 @@ def _ensure_tab(sp, title, report, dry_run, created):
     return ws
 
 
+def _prune_rows(ws, key_col, remove_keys, protect=("Decision", "Notes")):
+    """Delete the rows of removed items, bottom first so the row numbers stay right. A row where a person wrote a Decision or Notes is
+    never deleted. Returns (rows deleted, rows kept because a person had written on them)."""
+    values = _call(ws.get_all_values)
+    header = [str(h) for h in (values[0] if values else [])]
+    if key_col not in header:
+        return 0, 0
+    key_at = header.index(key_col)
+    written = [header.index(c) for c in protect if c in header]
+    doomed, kept = [], 0
+    for row_no, row in enumerate(values[1:], start=2):
+        key = str(row[key_at]).strip() if key_at < len(row) else ""
+        if key in remove_keys:
+            if any(i < len(row) and str(row[i]).strip() for i in written):
+                kept += 1
+            else:
+                doomed.append(row_no)
+    for row_no in sorted(doomed, reverse=True):
+        _call(ws.delete_rows, row_no)
+    return len(doomed), kept
+
+
 def _decision_dropdown(sp, ws):
     """A Use / Maybe / Skip list on the Decision column, so a decision is picked, not typed. Only when the tab is new."""
     header = _call(ws.get_all_values)[0]
@@ -585,14 +607,27 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
         _sync_table(ws, tab=BENCHMARKS, columns=BENCHMARK_COLUMNS, rows_by_key=rows, key_col="name",
                     report=report, dry_run=dry_run, starter_manual=STARTER_MANUAL[BENCHMARKS])
 
-    bank = store.read_ideabank(brand.slug)
-    if bank["items"]:                            # sourced items waiting for a human decision
+    bank = ib.normalise_bank(store.read_ideabank(brand.slug))
+    shown = ib.sheet_rows(bank)
+    gone = {i for i, it in bank["items"].items() if ib.state_of(it) != "kept"}      # copies, the brand's own, not relevant, or not scored yet
+    ws = None
+    if shown:                                    # items judged useful, waiting for a human decision
         ws = _ensure_tab(spreadsheet, IDEABANK, report, dry_run, created)
-        rows = {iid: {c: _typed(c, row[c]) for c in ib.IDEABANK_COLUMNS} for iid, row in ib.sheet_rows(bank).items()}
+        rows = {iid: {c: _typed(c, row[c]) for c in ib.IDEABANK_COLUMNS} for iid, row in shown.items()}
         _sync_table(ws, tab=IDEABANK, columns=ib.IDEABANK_COLUMNS, rows_by_key=rows, key_col="idea_id", report=report,
                     dry_run=dry_run, starter_manual=STARTER_MANUAL[IDEABANK])
         if ws is not None and not dry_run and IDEABANK in created:
             _decision_dropdown(spreadsheet, ws)
+    elif gone:
+        try:
+            ws = _call(spreadsheet.worksheet, IDEABANK)
+        except gspread.exceptions.WorksheetNotFound:
+            ws = None
+    if ws is not None and gone and not dry_run:
+        deleted, kept_rows = _prune_rows(ws, "idea_id", gone)
+        if deleted or kept_rows:
+            report.notes.append(f"Idea Bank: removed {deleted} row(s) of items that were copies, the brand's own content or not relevant enough"
+                                + (f"; kept {kept_rows} row(s) you had written a Decision or Notes on" if kept_rows else ""))
 
     requests_made = store.list_requests(brand.slug)
     if requests_made:
