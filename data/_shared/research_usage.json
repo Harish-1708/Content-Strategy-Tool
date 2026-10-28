@@ -3,7 +3,7 @@
   "claude_calls": 4,
   "collected_items": 400,
   "serpapi": 6,
-  "serper_dev": 18,
+  "serper_dev": 26,
   "tavily": 6
  },
  "months": {
@@ -11,7 +11,7 @@
    "claude_calls": 4,
    "collected_items": 400,
    "serpapi": 6,
-   "serper_dev": 18,
+   "serper_dev": 26,
    "tavily": 6
   }
  }

@@ -8,7 +8,12 @@
  ],
  "apify_extra": false,
  "brand": "swoveralls",
- "changes": [],
+ "changes": [
+  {
+   "at": "2026-10-28T09:14:42Z",
+   "text": "drop TikTok"
+  }
+ ],
  "created": "2026-10-28T09:07:13Z",
  "id": "RQ-0001",
  "occasion": "Father's Day",
@@ -23,7 +28,7 @@
   "dropped": [],
   "goal": "Produce a Father's Day content brief with gift angles, hooks, formats and creator-style ideas that show Swoveralls as a comfortable, practical gift for dads",
   "interpretation": "Find out how Father's Day gift content is being made and what resonates with dads and gift buyers, so Swoveralls (comfortable overall-style loungewear and shorts) can be positioned as a gift for dads.",
-  "notes": "Swoveralls is not a typical dad-gift brand, so decide whether to target gift buyers (partners and adult children) or dads buying for themselves. The kids range ($43.99-$49) could support a dad-and-kid matching angle, but check that the sizing and styles suit it. Garden Party and Color Riot are marked Coming Soon, so avoid featuring them as available gifts unless the launch timing fits. Father's Da",
+  "notes": "TikTok has been dropped, so the TikTok hashtag search and the TikTok-specific web searches are removed. Creator research now relies on Instagram and web results. Swoveralls is not a typical dad-gift brand, so decide whether to target gift buyers (partners and adult children) or dads buying for themselves. The kids range ($43.99-$49) could support a dad-and-kid matching angle, but check that the si",
   "occasion": "Father's Day",
   "tools": {
    "deep_research": {
@@ -55,17 +60,6 @@
     "pages": [],
     "why": "See how apparel, loungewear and adjacent gift brands frame Father's Day offers, hooks and creative formats in paid ads."
    },
-   "tiktok": {
-    "hashtags": [
-     "fathersdaygift",
-     "fathersdaygiftideas",
-     "giftsfordad",
-     "dadgiftideas",
-     "fathersday",
-     "dadtok"
-    ],
-    "why": "Surface gift-haul, 'what I got my dad' and gift-reaction videos, and the trending sounds and formats around Father's Day."
-   },
    "web_search": {
     "queries": [
      "what I bought my dad for Father's Day haul site:tiktok.com",
@@ -82,8 +76,85 @@
   }
  },
  "region": "worldwide",
- "run": {},
- "status": "planned",
+ "run": {
+  "finished": "2026-10-28T09:14:42Z",
+  "items_added": [
+   "IB-0199",
+   "IB-0200",
+   "IB-0201",
+   "IB-0202",
+   "IB-0203",
+   "IB-0204",
+   "IB-0205",
+   "IB-0206",
+   "IB-0207",
+   "IB-0208",
+   "IB-0209",
+   "IB-0210",
+   "IB-0211",
+   "IB-0212",
+   "IB-0213",
+   "IB-0214",
+   "IB-0215",
+   "IB-0216",
+   "IB-0217",
+   "IB-0218",
+   "IB-0219",
+   "IB-0220",
+   "IB-0221",
+   "IB-0222",
+   "IB-0223",
+   "IB-0224",
+   "IB-0225",
+   "IB-0226",
+   "IB-0227",
+   "IB-0228",
+   "IB-0229",
+   "IB-0230",
+   "IB-0231",
+   "IB-0232",
+   "IB-0233",
+   "IB-0234",
+   "IB-0235",
+   "IB-0236",
+   "IB-0237",
+   "IB-0238",
+   "IB-0239",
+   "IB-0240",
+   "IB-0241",
+   "IB-0242",
+   "IB-0243",
+   "IB-0244",
+   "IB-0245",
+   "IB-0246",
+   "IB-0247",
+   "IB-0248",
+   "IB-0249",
+   "IB-0250",
+   "IB-0251",
+   "IB-0252",
+   "IB-0253",
+   "IB-0254",
+   "IB-0255",
+   "IB-0256",
+   "IB-0257",
+   "IB-0258"
+  ],
+  "notes": [
+   "collect: meta_ads skipped: out of items under your monthly cap",
+   "collect: instagram skipped: out of items under your monthly cap",
+   "collect: deep_research failed: gemini: not logged in. The cookies in GEMINI_COOKIES may have expired; export fresh ones from the dummy Google account Cookie facts (no va",
+   "web search: 8 searches planned, 0 failed",
+   "idea bank: swoveralls: 60 new item(s) taken in (left out 1 cop(ies))",
+   "idea bank: swoveralls: 60 item(s) scored",
+   "idea bank: swoveralls: 43 item(s) were not relevant enough: 12 scored 50-59, 9 scored 40-49, 22 scored lower. To keep more, lower ideabank.min_relevance in research.yaml and run tidy again: items removed for a low score come back when they reach the new minimum",
+   "idea bank: 17 item(s): the picture or video link has expired (Meta's links last only hours or days), so no file was saved; it is saved if the ad is collected again",
+   "idea bank: swoveralls: files saved for 0 item(s)",
+   "idea bank: swoveralls: 43 item(s) removed (0 the brand's own, 0 cop(ies), 43 not relevant enough); 43 kept"
+  ],
+  "started": "2026-10-28T09:14:42Z"
+ },
+ "status": "done",
  "text": "Father's Day gifting ideas for dads",
  "tools_mode": "auto"
 }
