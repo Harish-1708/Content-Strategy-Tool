@@ -483,7 +483,7 @@ def test_rate_limits_are_retried_with_backoff(dude, store, sleeps):
             return super().create(title)
     client = Flaky()
     report, error = one(dude, store, client)
-    assert error is None and sleeps == [2, 4] and len(client.created) == 1
+    assert error is None and len(sleeps) == 2 and all(60 <= s <= 62 for s in sleeps) and len(client.created) == 1      # a refused write waits out the whole minute
 
 
 def test_a_persistent_server_error_gives_up_with_a_clear_message(dude, store, sleeps):
