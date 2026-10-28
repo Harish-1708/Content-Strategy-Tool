@@ -104,6 +104,8 @@ def build_parser():
     p.add_argument("--allow", default="", help="plan, with --tools manual: the tools allowed, comma separated (" + ", ".join(planner_mod.TOOLS) + ")")
     p.add_argument("--region", default="", help="plan: worldwide (the default) or a two-letter country code")
     p.add_argument("--apify-extra", action="store_true", help="plan: run Apify beside the browser for this request")
+    p.add_argument("--formats", default="", help="plan: the kinds of content to look for, comma separated: " + ", ".join(planner_mod.FORMATS)
+                   + " (words such as posts, reels, creators and AI content are understood)")
     p.add_argument("--request", default="", help="run: the request id, for example RQ-0001")
     p.add_argument("--changes", default="", help="run: changes to make to the plan before it runs")
 
@@ -249,6 +251,12 @@ def _get():
     return requests.get
 
 
+def _skipped_brands(brand, brands_dir):
+    """The brand names the owner marked `skip` under ads.benchmark_pages in the brand's research.yaml."""
+    pages = research_mod.load_brand_research(brand, root=brands_dir)["collect"]["ads"]["benchmark_pages"]
+    return [name for name, value in pages.items() if value == "skip"]
+
+
 def _ideabank(args, store):
     settings = ib_mod.load_settings(args.research_config)
     csettings = collectors_mod.load_collector_settings(args.research_config)
@@ -280,7 +288,7 @@ def _ideabank(args, store):
     for slug in list_brand_slugs(args.brands_dir) if args.all else [args.brand]:
         brand = load_brand(slug, args.brands_dir)
         _, lines = ib_mod.run_ideabank(brand, store, settings=settings, now=now, claude=claude, drive=drive, get=_get(),
-                                       dry_run=args.dry_run, budget=budget)
+                                       dry_run=args.dry_run, budget=budget, skip_brands=_skipped_brands(brand, args.brands_dir))
         print("\n".join(lines))
     return 0
 
@@ -299,7 +307,8 @@ def _request(args, store):
             region = "worldwide" if region == "ALL" else region.lower()
             ticked = [t.strip() for t in args.allow.split(",") if t.strip()]
             request = planner_mod.plan_request(store, brand, claude, budget, settings, text=args.text, mode=args.tools, ticked=ticked,
-                                               region=region, now=now, apify_extra=args.apify_extra, context=context)
+                                               region=region, now=now, apify_extra=args.apify_extra, context=context,
+                                               formats=args.formats)
             print("\n".join(planner_mod.render_plan(request, planner_mod.estimate(request["plan"], settings))))
             print(f"\nNothing has been searched yet. To run it as it is: run mode of the Request workflow with request id {request['id']}. "
                   "To change it first, put what you want changed in the changes box.")
@@ -352,8 +361,10 @@ def _run_request(args, store, brand, request, settings, csettings, claude, budge
     def ideabank_runner(req, queries):
         web = planner_mod.web_sources_for(research_mod.research_sources(store.read_searches(brand.slug)), queries) if queries else None
         return ib_mod.run_ideabank(brand, store, settings=settings, now=now, claude=claude, drive=drive, get=_get(),
-                                   request={"id": req["id"], "region": req["region"], "occasion": req.get("occasion", ""), "text": req["text"]},
-                                   web_sources=web, budget=budget if claude else None, since=started)
+                                   request={"id": req["id"], "region": req["region"], "occasion": req.get("occasion", ""), "text": req["text"],
+                                            "formats": req.get("formats") or []},
+                                   web_sources=web, budget=budget if claude else None, since=started,
+                                   skip_brands=_skipped_brands(brand, args.brands_dir))
 
     done = planner_mod.execute_request(store, brand, request, now=now, collect_runner=collect_runner, research_runner=research_runner,
                                        ideabank_runner=ideabank_runner)
