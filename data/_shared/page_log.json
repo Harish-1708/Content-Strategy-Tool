@@ -1,12 +1,18 @@
 {
  "cursor": {
-  "meta_ads": 24,
-  "tiktok": 5
+  "instagram": 2,
+  "meta_ads": 30,
+  "tiktok": 11
  },
  "days": {
   "2026-10-27": {
    "meta_ads": 24,
    "tiktok": 9
+  },
+  "2026-10-28": {
+   "instagram": 2,
+   "meta_ads": 6,
+   "tiktok": 12
   }
  }
 }
