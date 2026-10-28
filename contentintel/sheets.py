@@ -146,10 +146,51 @@ def _api_message(exc):
     return f"Google said: {text}.{hint}"
 
 
+# Google allows 60 write requests a minute per user. Waiting a few seconds after a 429 only fails again: the allowance comes back with the
+# minute. So writes are paced to stay under it, and a 429 that happens anyway is waited out for a whole quota window.
+WRITES_PER_MINUTE = 45
+_WRITES = {"update", "batch_update", "append_rows", "delete_rows", "insert_rows", "resize", "freeze", "format", "clear", "batch_clear",
+           "update_title", "add_worksheet", "share", "create"}
+_RATE_WAITS = (20, 65, 65, 65, 65)            # seconds before each retry of a refused READ (a refused write waits out a full minute instead)
+_TEMP_WAITS = (2, 4, 8, 16, 32)               # and of a temporary error (500, 502, 503)
+
+
+class WritePacer:
+    """Waits before the write that would be one too many in a minute. After a pause it counts the pause as time passed, so a no-op sleep in
+    a test still moves on instead of waiting for ever."""
+
+    def __init__(self, limit=WRITES_PER_MINUTE, window=60.0, clock=time.monotonic):
+        self.limit, self.window, self.clock, self.skew, self.stamps = limit, window, clock, 0.0, []
+
+    def _now(self):
+        return self.clock() + self.skew
+
+    def wait(self):
+        now = self._now()
+        self.stamps = [t for t in self.stamps if now - t < self.window]
+        if len(self.stamps) >= self.limit:
+            pause = self.window - (now - self.stamps[0]) + 1
+            _SLEEP(pause)
+            self.skew += pause
+            now = self._now()
+            self.stamps = [t for t in self.stamps if now - t < self.window]
+        self.stamps.append(now)
+
+    def spent(self):
+        """Google refused a write for quota: this minute's allowance is gone, whatever we counted."""
+        self.stamps = [self._now()] * self.limit
+
+
+_PACER = WritePacer()
+
+
 def _call(fn, *args, **kwargs):
-    """Call the Google API, retrying rate limits and temporary errors."""
-    delay = 2
-    for attempt in range(6):
+    """Call the Google API, pacing writes under the quota and retrying rate limits and temporary errors."""
+    write = getattr(fn, "__name__", "") in _WRITES
+    attempt = 0
+    while True:
+        if write:
+            _PACER.wait()
         try:
             return fn(*args, **kwargs)
         except gspread.exceptions.APIError as exc:
@@ -157,10 +198,15 @@ def _call(fn, *args, **kwargs):
                 raise DriveQuotaError(
                     "Google says the service account has no Drive storage left, so it cannot "
                     "create files. Use spreadsheets created in your own Drive instead.") from exc
-            if getattr(exc, "code", None) not in _RETRY_CODES or attempt == 5:
+            code = getattr(exc, "code", None)
+            waits = _RATE_WAITS if code == 429 else _TEMP_WAITS
+            if code not in _RETRY_CODES or attempt >= len(waits):
                 raise SheetsError(_api_message(exc)) from exc
-            _SLEEP(min(delay, 60))
-            delay *= 2
+            if code == 429 and write:
+                _PACER.spent()                    # the pacer's next wait is a whole minute, which is what a refused write needs
+            else:
+                _SLEEP(waits[attempt])            # a refused read, or a temporary error
+            attempt += 1
 
 
 # ---------------------------------------------------------------------------------------
@@ -351,9 +397,10 @@ def _ensure_tab(sp, title, report, dry_run, created):
     return ws
 
 
-def _prune_rows(ws, key_col, remove_keys, protect=("Decision", "Notes")):
-    """Delete the rows of removed items, bottom first so the row numbers stay right. A row where a person wrote a Decision or Notes is
-    never deleted. Returns (rows deleted, rows kept because a person had written on them)."""
+def _prune_rows(spreadsheet, ws, key_col, remove_keys, protect=("Decision", "Notes")):
+    """Delete the rows of removed items. A row where a person wrote a Decision or Notes is never deleted. All the deletions go to Google in
+    ONE request (neighbouring rows as one range, last range first so the row numbers stay right): a request per row is what hit
+    Google's write quota when a tidy removed 137 rows. Returns (rows deleted, rows kept because a person had written on them)."""
     values = _call(ws.get_all_values)
     header = [str(h) for h in (values[0] if values else [])]
     if key_col not in header:
@@ -368,8 +415,16 @@ def _prune_rows(ws, key_col, remove_keys, protect=("Decision", "Notes")):
                 kept += 1
             else:
                 doomed.append(row_no)
-    for row_no in sorted(doomed, reverse=True):
-        _call(ws.delete_rows, row_no)
+    ranges = []                                              # [first, last] of neighbouring rows, 1-based
+    for row_no in doomed:
+        if ranges and ranges[-1][1] == row_no - 1:
+            ranges[-1][1] = row_no
+        else:
+            ranges.append([row_no, row_no])
+    requests = [{"deleteDimension": {"range": {"sheetId": ws.id, "dimension": "ROWS", "startIndex": first - 1, "endIndex": last}}}
+                for first, last in reversed(ranges)]
+    for start in range(0, len(requests), 100):
+        _call(spreadsheet.batch_update, {"requests": requests[start:start + 100]})
     return len(doomed), kept
 
 
@@ -624,7 +679,7 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
         except gspread.exceptions.WorksheetNotFound:
             ws = None
     if ws is not None and gone and not dry_run:
-        deleted, kept_rows = _prune_rows(ws, "idea_id", gone)
+        deleted, kept_rows = _prune_rows(spreadsheet, ws, "idea_id", gone)
         if deleted or kept_rows:
             report.notes.append(f"Idea Bank: removed {deleted} row(s) of items that were copies, the brand's own content or not relevant enough"
                                 + (f"; kept {kept_rows} row(s) you had written a Decision or Notes on" if kept_rows else ""))
