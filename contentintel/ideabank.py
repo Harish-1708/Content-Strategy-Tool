@@ -46,7 +46,7 @@ class IdeaBankSettings:
     image_max_mb: int = 15
     video_max_mb: int = 80
     claude_monthly_calls: int = 300
-    min_relevance: int = 60
+    min_relevance: int = 50
     skip_own_brand: bool = True
     # planner (request mode)
     plan_max_keywords: int = 6
@@ -176,6 +176,12 @@ def _metrics(row):
     return out
 
 
+def _media_format(details):
+    """Meta's own label for an ad (IMAGE, VIDEO, CAROUSEL...) from the details text of a collected ad, or ''."""
+    found = re.search(r"format:\s*([A-Za-z_]+)", str(details or ""))
+    return found.group(1).upper() if found else ""
+
+
 def _new_item(idea_id, source, source_item_id, row, now, request):
     return {"id": idea_id, "source_item_id": source_item_id, "kind": KINDS.get(source, "web result"), "platform": source,
             "handle": _clip(row.get("handle"), 80), "title": _clip(row.get("title"), 200), "text": _clip(row.get("text")),
@@ -184,7 +190,9 @@ def _new_item(idea_id, source, source_item_id, row, now, request):
             "request_id": (request or {}).get("id", ""), "occasion": (request or {}).get("occasion", ""), "added_at": now,
             "topic": "", "relevance": None, "score": None, "summary": "", "how_to_use": "", "risk": "", "scored_at": "", "model": "",
             "drive_folder_id": "", "drive_folder_url": "", "assets": [], "asset_note": "", "asset_tries": 0,
-            "state": "new", "removed_reason": "", "duplicate_of": "", "removal_note": "", "fingerprint": ""}
+            "state": "new", "removed_reason": "", "duplicate_of": "", "removal_note": "", "fingerprint": "",
+            "fit": None, "idea": None, "mechanism": "", "concept": "", "generic": False, "category": "", "scoring_version": 0,
+            "format": "", "media_format": _media_format(row.get("details"))}
 
 
 def _interest(row):
@@ -228,8 +236,10 @@ def normalise_bank(bank):
     """Give every item the fields newer code needs. Older banks had no state, page id or fingerprint."""
     for item in bank["items"].values():
         item["state"] = state_of(item)
-        for key, default in (("page_id", ""), ("removed_reason", ""), ("duplicate_of", ""), ("removal_note", "")):
+        for key, default in (("page_id", ""), ("removed_reason", ""), ("duplicate_of", ""), ("removal_note", ""), ("fit", None), ("idea", None),
+                             ("mechanism", ""), ("concept", ""), ("generic", False), ("category", ""), ("format", ""), ("media_format", "")):
             item.setdefault(key, default)
+        item.setdefault("scoring_version", 1 if item.get("score") is not None else 0)       # scored before the concept-first rubric = version 1
         if not item.get("fingerprint"):
             item["fingerprint"] = fingerprint(item)
     return bank
@@ -463,15 +473,28 @@ def save_assets(bank, ids, brand_name, drive, get, settings, brand_folder=None, 
 # scoring
 # ---------------------------------------------------------------------------------------------------------------------
 
+SCORING_VERSION = 2          # 2 = the concept-first rubric below; an item scored under an older one is scored again, once
+CATEGORIES = ("same", "adjacent", "other")
+ITEM_FORMATS = ("ugc", "ai", "influencer", "static", "carousel", "video", "meme", "article", "other")   # what kind of content an item is
+FORMAT_BOOST = 8             # added to the score of an item whose format a request asked for (the idea is still judged on its own merit)
+
 SCORE_SYSTEM = (
-    "You help a marketing agency decide which sourced content is worth building a creative brief on. For each numbered item "
-    "decide how useful it is for THIS brand and, if a request is given, for THAT request. Items come from competitors, creators, "
-    "influencers and the web; judge the idea, not who made it. Reply with JSON only: {\"items\": [{\"id\": \"IB-0001\", "
-    "\"relevance\": 0-100, \"topic\": \"3 to 6 words naming the idea\", \"summary\": \"under 30 words: what it is and why it works\", "
-    "\"how_to_use\": \"under 40 words: how WE could use the idea for this brand, in our own words and with our own products\", "
-    "\"risk\": \"under 20 words: a claim, legal, copyright or brand-fit concern, or the word none\"}]}. Score 80 to 100 only for ideas "
-    "that clearly fit the brand and the request; 40 to 79 for usable with changes; under 40 for weak or off-brand. Use only the "
-    "facts given. Never invent numbers, quotes or results.")
+    "You help a marketing agency find ideas worth turning into this brand's next creative. For each numbered item judge TWO things "
+    "separately. 'fit' (0-100): how well the item's product category, audience and occasion match THIS brand and, if a request is given, "
+    "THAT request. 'idea' (0-100): how strong and reusable the concept itself is: a specific hook, format, story or structure that could be "
+    "re-made for our product. A generic item has no such concept: a discount or promo code, a price, a restock or 'new arrivals' notice, "
+    "free shipping, a plain product shot, a list of reviews or perks with nothing distinctive, or just 'so comfy'. Mark those 'generic': true "
+    "and give them an 'idea' under 40. Evidence counts: an ad that has run 60 or more days, or in several variants, was kept alive by an "
+    "advertiser who watches results, and 150 or more days is very strong; raise 'idea' for that only when a real concept is there. Judge the "
+    "idea, not who made it; a big brand's generic ad is still generic. 'category': 'same' (our own kind of product), 'adjacent' (other "
+    "apparel, loungewear, gifting or lifestyle products whose idea carries over) or 'other' (unrelated products such as shoes, baby goods, "
+    "food, or outdoor gear). Reply with JSON only: {\"items\": [{\"id\": \"IB-0001\", \"fit\": 0-100, \"idea\": 0-100, \"generic\": true or false, "
+    "\"category\": \"same\"|\"adjacent\"|\"other\", \"format\": \"ugc\"|\"ai\"|\"influencer\"|\"static\"|\"carousel\"|\"video\"|\"meme\"|\"article\"|\"other\", \"mechanism\": \"2 to 4 words naming the technique, such as problem-first hook, social proof, "
+    "compliment hook, founder story, checklist, occasion reframe\", \"concept\": \"under 25 words: the reusable idea with the product taken out\", "
+    "\"topic\": \"3 to 6 words naming the idea\", \"summary\": \"under 30 words: what it is and why it works\", \"how_to_use\": \"under 40 words: how "
+    "WE could use the idea for this brand, in our own words and with our own products\", \"risk\": \"under 20 words: a claim, legal, copyright or "
+    "brand-fit concern, or the word none\"}]}. The 'format' is the main kind of content the item is: 'ugc' made by real customers or everyday creators, 'ai' made or edited with AI, 'influencer' a paid or gifted creator partnership post, 'static' a single-image post or ad, 'carousel' several slides, 'video' a brand-made video, 'meme' humour or a trend format, 'article' a web page or guide. If the request lists formats wanted, say so honestly when an item is in one; never stretch an item into a format it is not. Be strict: most items are ordinary, so most scores should be under 60. Use only the facts given. "
+    "Never invent numbers, quotes or results.")
 
 
 def brand_context(brand, store):
@@ -500,33 +523,73 @@ def brand_context(brand, store):
 def _item_line(item):
     m = item["metrics"]
     facts = ", ".join(f"{k} {v}" for k, v in m.items())
+    if item.get("media_format"):
+        facts = (facts + ", " if facts else "") + f"ad format {item['media_format']}"
     return (f'{item["id"]} [{item["kind"]}, {item["platform"]}] by {item["handle"] or "unknown"}: "{item["title"]}" - '
             f'{item["text"][:300]}' + (f" ({facts})" if facts else ""))
 
 
+def _percent(value):
+    return None if isinstance(value, bool) or not isinstance(value, (int, float)) or not 0 <= value <= 100 else value
+
+
+GENERIC_CAP = 45             # a generic item and an unrelated category are held under the usual minimum (50) however they are scored
+OTHER_CAP = 45
+
+
+def combined_score(fit, idea, generic, category):
+    """The score code decides, not the model: the idea counts more than the fit, a generic item cannot reach the usual minimum, and an
+    unrelated product category is held down however well it is made."""
+    score = round(0.4 * fit + 0.6 * idea)
+    if generic:
+        score = min(score, GENERIC_CAP)
+    if category == "other":
+        score = min(score, OTHER_CAP)
+    return score
+
+
 def clean_scores(raw, wanted_ids):
-    """The valid scores in a model's answer, {id: {relevance, topic, summary, how_to_use, risk}}; anything malformed is left out."""
+    """The valid scores in a model's answer, {id: {relevance, fit, idea, generic, category, mechanism, concept, topic, summary, how_to_use,
+    risk}}; anything malformed is left out. An answer with 'fit' and 'idea' is combined by combined_score; an older-style answer with only
+    'relevance' is still accepted as it stands."""
     out = {}
     items = raw.get("items") if isinstance(raw, dict) else raw
     for entry in items if isinstance(items, list) else []:
         if not isinstance(entry, dict) or entry.get("id") not in wanted_ids:
             continue
-        rel = entry.get("relevance")
-        if isinstance(rel, bool) or not isinstance(rel, (int, float)) or not 0 <= rel <= 100:
-            continue
         texts = {k: _clip(entry.get(k), 240) for k in ("topic", "summary", "how_to_use", "risk")}
         if not texts["summary"]:
             continue
-        out[entry["id"]] = {"relevance": int(round(rel)), **texts}
+        fit, idea = _percent(entry.get("fit")), _percent(entry.get("idea"))
+        kind = str(entry.get("format") or "").strip().lower()
+        extra = {"fit": None, "idea": None, "generic": False, "category": "", "mechanism": _clip(entry.get("mechanism"), 60),
+                 "concept": _clip(entry.get("concept"), 240), "format": kind if kind in ITEM_FORMATS else ""}
+        if fit is not None and idea is not None:
+            generic = entry.get("generic") is True or str(entry.get("generic")).strip().lower() in ("true", "yes")
+            category = str(entry.get("category") or "").strip().lower()
+            category = category if category in CATEGORIES else "adjacent"
+            rel = combined_score(fit, idea, generic, category)
+            extra.update({"fit": int(round(fit)), "idea": int(round(idea)), "generic": generic, "category": category})
+        else:
+            rel = _percent(entry.get("relevance"))
+            if rel is None:
+                continue
+        out[entry["id"]] = {"relevance": int(round(rel)), **extra, **texts}
     return out
+
+
+def needs_scoring(item):
+    """Not scored yet, or scored under an older rubric (so the bank is judged by one standard). Removed items are never scored again."""
+    return item["state"] != "removed" and (item["score"] is None or item.get("scoring_version", 1) < SCORING_VERSION)
 
 
 def score_items(bank, ids, claude, brand, store, settings, budget, now, request=None):
     """Score unscored items in batches, most interesting first, within the call limits. Returns (scored count, lines)."""
-    todo = [i for i in ids if bank["items"][i]["score"] is None and state_of(bank["items"][i]) != "removed"]
+    todo = [i for i in ids if needs_scoring(bank["items"][i])]
     todo.sort(key=lambda i: _interest(bank["items"][i]["metrics"]), reverse=True)
     context = brand_context(brand, store)
-    ask = (f"\nRequest: {request['text']}" + (f" (occasion: {request['occasion']})" if request.get("occasion") else "")) if request else ""
+    ask = (f"\nRequest: {request['text']}" + (f" (occasion: {request['occasion']})" if request.get("occasion") else "")
+           + (f"\nFormats wanted: {', '.join(request['formats'])}" if request.get("formats") else "")) if request else ""
     scored, lines, calls = 0, [], 0
     for start in range(0, len(todo), settings.score_batch):
         if calls >= settings.max_scoring_calls:
@@ -546,7 +609,12 @@ def score_items(bank, ids, claude, brand, store, settings, budget, now, request=
         for idea_id, s in got.items():
             item = bank["items"][idea_id]
             item.update({"relevance": s["relevance"], "score": s["relevance"], "summary": s["summary"], "how_to_use": s["how_to_use"],
-                         "risk": s["risk"], "scored_at": now, "model": getattr(claude, "model", "")})
+                         "risk": s["risk"], "scored_at": now, "model": getattr(claude, "model", ""), "fit": s["fit"], "idea": s["idea"],
+                         "generic": s["generic"], "category": s["category"], "mechanism": s["mechanism"], "concept": s["concept"],
+                         "format": s["format"], "scoring_version": SCORING_VERSION})
+            if (request and s["format"] and s["format"] in (request.get("formats") or [])        # an item in a format the request asked for;
+                    and not s["generic"] and s["category"] != "other"):                          # a generic or unrelated one never gets the boost
+                item["score"] = item["relevance"] = min(100, item["score"] + FORMAT_BOOST)
             if s["topic"] and not item["drive_folder_id"]:
                 item["topic"] = s["topic"]
             scored += 1
@@ -574,6 +642,20 @@ def apply_relevance(bank, settings):
             item["state"] = "kept"
         else:
             _remove(item, f"not relevant enough (scored {item['score']}, the minimum is {settings.min_relevance})")
+            removed += 1
+    return removed
+
+
+def tidy_skipped_brands(bank, skip_names):
+    """Remove items from a brand the owner chose to skip (`benchmark_pages: {Name: skip}`), including ones collected before the choice.
+    Names are compared the way benchmark names are, so 'Liquid Death' also matches 'liquid-death'. Returns how many were removed."""
+    from .benchmarks import norm_name
+    skip = {norm_name(n): n for n in skip_names if norm_name(n)}
+    removed = 0
+    for item in bank["items"].values():
+        key = norm_name(item["handle"])
+        if item["state"] != "removed" and key and key in skip:
+            _remove(item, f"from {skip[key]}, a brand you chose to skip")
             removed += 1
     return removed
 
@@ -657,9 +739,9 @@ def trash_folders(bank, drive):
 # the sheet
 # ---------------------------------------------------------------------------------------------------------------------
 
-IDEABANK_COLUMNS = ["idea_id", "kind", "platform", "title", "handle", "url", "posted_at", "score", "summary", "how_to_use", "risk",
-                    "topic", "region", "request_id", "likes", "comments", "shares", "views", "days_running", "signal",
-                    "drive_folder", "assets", "asset_note", "added_at", "scored_at"]
+IDEABANK_COLUMNS = ["idea_id", "kind", "platform", "title", "handle", "url", "posted_at", "score", "fit", "idea", "format", "mechanism", "concept",
+                    "summary", "how_to_use", "risk", "topic", "region", "request_id", "likes", "comments", "shares", "views", "days_running",
+                    "signal", "preview", "drive_folder", "assets", "asset_note", "added_at", "scored_at"]
 
 
 def sheet_rows(bank):
@@ -670,11 +752,14 @@ def sheet_rows(bank):
         m = item["metrics"]
         rows[idea_id] = {"idea_id": idea_id, "kind": item["kind"], "platform": item["platform"], "title": item["title"],
                          "handle": item["handle"], "url": item["url"], "posted_at": item["posted_at"],
-                         "score": item["score"], "summary": item["summary"],
+                         "score": item["score"], "fit": "" if item.get("fit") is None else item["fit"],
+                         "idea": "" if item.get("idea") is None else item["idea"], "format": item.get("format", ""), "mechanism": item.get("mechanism", ""),
+                         "concept": item.get("concept", ""), "summary": item["summary"],
                          "how_to_use": item["how_to_use"], "risk": item["risk"], "topic": item["topic"], "region": item["region"],
                          "request_id": item["request_id"], "likes": m.get("likes", ""), "comments": m.get("comments", ""),
                          "shares": m.get("shares", ""), "views": m.get("views", ""), "days_running": m.get("days_running", ""),
-                         "signal": m.get("signal", ""), "drive_folder": item["drive_folder_url"], "assets": len(item["assets"]),
+                         "signal": m.get("signal", ""), "preview": "saved in Drive" if item["assets"] else "original link only",
+                         "drive_folder": item["drive_folder_url"], "assets": len(item["assets"]),
                          "asset_note": item["asset_note"], "added_at": item["added_at"], "scored_at": item["scored_at"]}
     return rows
 
@@ -722,7 +807,7 @@ def _counts(bank):
 
 
 def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=None, request=None, web_sources=None,
-                 dry_run=False, budget=None, since=""):
+                 dry_run=False, budget=None, since="", skip_brands=()):
     """Take new sourced items into the brand's bank, keep only what is useful, save its files and score it. Returns (new ids, summary lines).
 
     In order: leave out the brand's own content and copies; tidy what is already in the bank the same way; score what is not scored; keep
@@ -744,16 +829,18 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
     before = _counts(bank)
     was_removed = {i for i, it in bank["items"].items() if it["state"] == "removed"}
     own = tidy_own(bank, brand, pages, settings)
+    skipped_brands = tidy_skipped_brands(bank, skip_brands)
     copies = tidy_duplicates(bank)                           # before scoring, so no Claude call is spent on a copy
+    revive_relevant(bank, settings)                          # before scoring too: an item that now reaches a lowered minimum is judged again
     if claude is not None and budget is not None:
-        unscored = [i for i, it in bank["items"].items() if it["score"] is None and it["state"] != "removed"]
+        unscored = [i for i, it in bank["items"].items() if needs_scoring(it)]
         scored, notes = score_items(bank, unscored, claude, brand, store, settings, budget, now, request)
         lines += notes
         lines.append(f"{brand.slug}: {scored} item(s) scored")
-    back = revive_relevant(bank, settings)
     irrelevant = apply_relevance(bank, settings)
     weak = [it["score"] for i, it in bank["items"].items()
             if it["state"] == "removed" and i not in was_removed and it["removed_reason"].startswith("not relevant enough")]
+    back = sum(1 for i in was_removed if bank["items"][i]["state"] == "kept")        # brought back AND still kept after being judged again
     if back:
         lines.append(f"{brand.slug}: {back} item(s) removed earlier for a low score reach the minimum now and were brought back")
     if weak:
@@ -784,7 +871,7 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
     after = _counts(bank)
     removed_now = after["removed"] - before["removed"]
     if removed_now:
-        lines.append(f"{brand.slug}: {removed_now} item(s) removed ({own} the brand's own, {copies} cop(ies), {irrelevant} not relevant enough); "
-                     f"{after['kept']} kept")
+        lines.append(f"{brand.slug}: {removed_now} item(s) removed ({own} the brand's own, {skipped_brands} from brands you skip, {copies} cop(ies), "
+                     f"{irrelevant} not relevant enough); {after['kept']} kept")
     store.write_ideabank(brand.slug, bank)
     return new, lines
