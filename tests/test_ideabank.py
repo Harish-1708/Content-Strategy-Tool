@@ -50,7 +50,7 @@ def kept_bank(*ids):
     """A bank whose items were judged relevant (scored and kept): the only items that get a folder and a row."""
     bank = bank_with(*ids)
     for item in bank["items"].values():
-        item.update({"state": "kept", "score": 80, "relevance": 80, "summary": "s", "how_to_use": "h", "risk": "none"})
+        item.update({"state": "kept", "score": 80, "relevance": 80, "summary": "s", "how_to_use": "h", "risk": "none", "scoring_version": IB.SCORING_VERSION})
     return bank
 
 
@@ -449,7 +449,7 @@ def test_unusable_answers_leave_those_items_unscored_and_say_so(store, swov):
 
 def test_already_scored_items_are_not_scored_again(store, swov):
     bank = bank_with("A", "B")
-    bank["items"]["IB-0001"]["score"] = 55
+    bank["items"]["IB-0001"].update({"score": 55, "scoring_version": IB.SCORING_VERSION})
     claude = FakeClaude()
     claude.json_answers = [{"items": [good("IB-0002")]}]
     run_scoring(store, swov, bank, claude)
@@ -464,7 +464,7 @@ def test_the_request_and_the_brand_are_part_of_what_claude_is_asked(store, swov)
     run_scoring(store, swov, bank, claude, request={"id": "RQ-0001", "text": "Father's Day gifting", "occasion": "Father's Day"})
     system, user, _ = claude.json_calls[0]
     assert "Request: Father's Day gifting (occasion: Father's Day)" in user and "Brand: Swoveralls" in user and "Catalogue:" in user
-    assert "IB-0001 [social post, instagram] by u:" in user and "Never invent numbers" in system and "creators" in system
+    assert "IB-0001 [social post, instagram] by u:" in user and "Never invent numbers" in system and "'fit'" in system and "'idea'" in system
 
 
 def test_a_topic_from_scoring_is_kept_only_while_the_folder_does_not_exist_yet(store, swov):
@@ -581,18 +581,18 @@ def test_a_run_scores_first_then_saves_files_in_folders_named_by_the_scored_topi
 
 def test_an_item_below_the_minimum_is_removed_and_never_gets_a_folder(store, swov, drive):
     seeded(store)
-    new, lines = full_run(store, swov, drive, scored(("IB-0001", 90, "comfort hook"), ("IB-0002", 59, "off topic")))
+    new, lines = full_run(store, swov, drive, scored(("IB-0001", 90, "comfort hook"), ("IB-0002", 49, "off topic")))
     client, fake = drive
     bank = store.read_ideabank("swoveralls")
     low = bank["items"]["IB-0002"]
-    assert low["state"] == "removed" and low["removed_reason"] == "not relevant enough (scored 59, the minimum is 60)" and not low["assets"] and low["drive_folder_id"] == ""
+    assert low["state"] == "removed" and low["removed_reason"] == "not relevant enough (scored 49, the minimum is 50)" and not low["assets"] and low["drive_folder_id"] == ""
     assert [n for n in fake.tree() if n.startswith("  IB-")] == ["  IB-0001 - comfort hook/"]
-    assert "swoveralls: 1 item(s) removed (0 the brand's own, 0 cop(ies), 1 not relevant enough); 1 kept" in lines
+    assert "swoveralls: 1 item(s) removed (0 the brand's own, 0 from brands you skip, 0 cop(ies), 1 not relevant enough); 1 kept" in lines
 
 
 def test_an_item_that_scores_exactly_the_minimum_is_kept(store, swov, drive):
     seeded(store, ("A",))
-    full_run(store, swov, drive, scored(("IB-0001", 60, "just enough")))
+    full_run(store, swov, drive, scored(("IB-0001", S.min_relevance, "just enough")))
     assert store.read_ideabank("swoveralls")["items"]["IB-0001"]["state"] == "kept"
 
 
