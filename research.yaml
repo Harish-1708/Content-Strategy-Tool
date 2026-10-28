@@ -117,7 +117,7 @@ ideabank:
   sources: [meta_ads, instagram, tiktok]   # which collected sources feed it
   max_new_per_run: 60                      # new items taken in per run
   score_batch: 8                           # items scored in one Claude call
-  max_scoring_calls: 12                    # scoring calls per run, 8 items each (what is left is scored next run); a run takes in up to 60
+  max_scoring_calls: 16                    # scoring calls per run, 8 items each (what is left is scored next run); a run takes in up to 60 ads/posts and 60 web results
   save_assets: true                        # save pictures and videos in the Shared Drive
   save_videos: true
   image_max_mb: 15
