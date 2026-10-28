@@ -11,6 +11,7 @@ Nothing in the bank is ever deleted by the tool, and a row is never created twic
 import hashlib
 import re
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
@@ -39,7 +40,7 @@ class IdeaBankSettings:
     sources: tuple = ("meta_ads", "instagram", "tiktok")
     max_new_per_run: int = 60
     score_batch: int = 8
-    max_scoring_calls: int = 6
+    max_scoring_calls: int = 12
     save_assets: bool = True
     save_videos: bool = True
     image_max_mb: int = 15
@@ -269,9 +270,16 @@ def intake_collected(bank, records, settings, now, request=None, since="", brand
     skipped = skipped if skipped is not None else {}
     skipped.setdefault("own", 0)
     skipped.setdefault("duplicate", 0)
+    skipped.setdefault("refreshed", 0)
     known = {item["source_item_id"] for item in bank["items"].values()}
     seen = {item["fingerprint"] for item in bank["items"].values() if item.get("fingerprint")}
     rows = collected_rows([r for r in records if r.get("at", "") >= since])
+    by_source = {item["source_item_id"]: item for item in bank["items"].values()}
+    for iid, row in rows.items():                # an ad collected again has a fresh picture link: use it for an item that has no file yet
+        item = by_source.get(iid)
+        if item and item["state"] != "removed" and not item["assets"] and row.get("media_url") and row["media_url"] != item["media_url"]:
+            item.update({"media_url": row["media_url"], "asset_tries": 0, "asset_note": ""})
+            skipped["refreshed"] += 1
     drafts = []
     for iid, row in rows.items():
         if row["source"] not in settings.sources or iid in known:
@@ -375,21 +383,46 @@ def fetch_media(get, url, settings):
     return data, mime, kind
 
 
+def _parse_time(text):
+    try:
+        return datetime.strptime(str(text), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+
+
+def link_expiry(url):
+    """When a Meta picture or video link stops working, read from its `oe=` part (hexadecimal seconds), or None if it has none.
+    These links last only hours or days, so a file can only be saved soon after the ad was collected."""
+    found = re.search(r"[?&]oe=([0-9a-fA-F]{8})(?:&|$)", str(url or ""))
+    if not found:
+        return None
+    try:
+        return datetime.fromtimestamp(int(found.group(1), 16), tz=timezone.utc)
+    except (ValueError, OverflowError, OSError):
+        return None
+
+
 def needs_assets(item):
     """Only items that were judged relevant get a folder: nothing is saved for an item that is waiting to be scored or has been removed."""
     return state_of(item) == "kept" and bool(item["media_url"]) and not item["assets"] and item["asset_tries"] < ASSET_TRIES
 
 
-def save_assets(bank, ids, brand_name, drive, get, settings, brand_folder=None):
+def save_assets(bank, ids, brand_name, drive, get, settings, brand_folder=None, now=None):
     """Save the picture or video of each given item in its own Drive folder, and note the folder on the item.
     A file that is byte for byte the same as one already saved for another kept item is not saved again: that item is a copy and is removed.
     Returns (saved, lines). An item with nothing to save gets no folder."""
-    lines, saved = [], 0
+    lines, saved, expired = [], 0, 0
+    clock = _parse_time(now) or datetime.now(timezone.utc)
     folder_of_brand = brand_folder
     hashes = {a["sha256"]: i for i, it in bank["items"].items() if state_of(it) == "kept" for a in it["assets"] if a.get("sha256")}
     for idea_id in ids:
         item = bank["items"][idea_id]
         if not needs_assets(item):
+            continue
+        ends = link_expiry(item["media_url"])
+        if ends and ends <= clock:               # not tried and not counted as a try: a fresh link from a new collection starts again
+            item["asset_note"] = f"the link expired on {ends:%Y-%m-%d}; the file is saved if the ad is collected again"
+            expired += 1
             continue
         item["asset_tries"] += 1
         try:
@@ -420,6 +453,9 @@ def save_assets(bank, ids, brand_name, drive, get, settings, brand_folder=None):
         item["assets"].append({"name": name, "drive_id": file_id, "kind": kind, "bytes": len(data), "sha256": digest})
         hashes[digest] = idea_id
         saved += 1
+    if expired:
+        lines.append(f"{expired} item(s): the picture or video link has expired (Meta's links last only hours or days), so no file was saved; "
+                     "it is saved if the ad is collected again")
     return saved, lines
 
 
@@ -540,6 +576,28 @@ def apply_relevance(bank, settings):
             _remove(item, f"not relevant enough (scored {item['score']}, the minimum is {settings.min_relevance})")
             removed += 1
     return removed
+
+
+def revive_relevant(bank, settings):
+    """An item removed only for a low score comes back when the minimum is lowered to its score (a copy or the brand's own never does).
+    Its Drive folder was trashed, so it gets a new one if its picture link still works. Returns how many came back."""
+    back = 0
+    for item in bank["items"].values():
+        if (item["state"] == "removed" and item["score"] is not None and item["score"] >= settings.min_relevance
+                and item["removed_reason"].startswith("not relevant enough")):
+            item.update({"state": "kept", "removed_reason": "", "removal_note": ""})
+            back += 1
+    return back
+
+
+def relevance_bands(scores, minimum):
+    """How far below the minimum the removed items scored, so the minimum can be chosen with the facts in front of you."""
+    near = sum(1 for sc in scores if minimum - 10 <= sc < minimum)
+    middle = sum(1 for sc in scores if minimum - 20 <= sc < minimum - 10)
+    far = len(scores) - near - middle
+    return (f"{len(scores)} item(s) were not relevant enough: {near} scored {max(0, minimum - 10)}-{minimum - 1}, "
+            f"{middle} scored {max(0, minimum - 20)}-{max(0, minimum - 11)}, {far} scored lower. To keep more, lower ideabank.min_relevance in "
+            f"research.yaml and run tidy again: items removed for a low score come back when they reach the new minimum")
 
 
 def tidy_duplicates(bank):
@@ -679,9 +737,12 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
         new += intake_web(bank, web_sources, settings, now, request, brand, pages, skipped)
     left_out = [f"{skipped['own']} of the brand's own" if skipped["own"] else "", f"{skipped['duplicate']} cop(ies)" if skipped["duplicate"] else ""]
     lines.append(f"{brand.slug}: {len(new)} new item(s) taken in" + (f" (left out {' and '.join(x for x in left_out if x)})" if any(left_out) else ""))
+    if skipped["refreshed"]:
+        lines.append(f"{brand.slug}: {skipped['refreshed']} picture or video link(s) were refreshed from this collection, for items with no file yet")
     if dry_run:
         return new, lines
     before = _counts(bank)
+    was_removed = {i for i, it in bank["items"].items() if it["state"] == "removed"}
     own = tidy_own(bank, brand, pages, settings)
     copies = tidy_duplicates(bank)                           # before scoring, so no Claude call is spent on a copy
     if claude is not None and budget is not None:
@@ -689,7 +750,14 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
         scored, notes = score_items(bank, unscored, claude, brand, store, settings, budget, now, request)
         lines += notes
         lines.append(f"{brand.slug}: {scored} item(s) scored")
+    back = revive_relevant(bank, settings)
     irrelevant = apply_relevance(bank, settings)
+    weak = [it["score"] for i, it in bank["items"].items()
+            if it["state"] == "removed" and i not in was_removed and it["removed_reason"].startswith("not relevant enough")]
+    if back:
+        lines.append(f"{brand.slug}: {back} item(s) removed earlier for a low score reach the minimum now and were brought back")
+    if weak:
+        lines.append(f"{brand.slug}: {relevance_bands(weak, settings.min_relevance)}")
     copies += tidy_duplicates(bank)                          # and again among the items that were kept
     waiting = sum(1 for it in bank["items"].values() if state_of(it) == "new")
     if waiting:
@@ -698,7 +766,7 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
     retry = [i for i, it in bank["items"].items() if needs_assets(it)]
     try:
         if settings.save_assets and drive is not None and get is not None:
-            saved, notes = save_assets(bank, retry, brand.name, drive, get, settings)
+            saved, notes = save_assets(bank, retry, brand.name, drive, get, settings, now=now)
             lines += notes
             lines.append(f"{brand.slug}: files saved for {saved} item(s)")
         elif settings.save_assets and retry:
