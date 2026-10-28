@@ -46,7 +46,7 @@ class CollectError(Exception):
 DEFAULT_APIFY_ACTORS = {"meta_ads": "apify/facebook-ads-scraper", "tiktok": "clockworks/tiktok-scraper",
                         "instagram": "apify/instagram-hashtag-scraper"}
 DEFAULT_COLLECTORS = {
-    "browser": {"monthly_items": 400, "items_per_run": 30, "cache_days": 3},
+    "browser": {"monthly_items": 0, "items_per_run": 30, "cache_days": 3},          # 0 = no monthly limit
     "gemini": {"monthly_tasks": 2, "tasks_per_run": 1, "cache_days": 14},
     "apify": {"mode": "off", "monthly_items": 100, "items_per_run": 30, "max_cost_per_run_usd": 1.0,
               "actors": DEFAULT_APIFY_ACTORS},
@@ -1513,6 +1513,8 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
     def items_left(route):
         if route == "apify":
             return min(settings.apify_items_per_run, settings.apify_monthly_items - ledger.month_used("apify_items"))
+        if not settings.monthly_items:                    # 0 means no monthly limit: only the per-run limit applies
+            return settings.items_per_run
         return min(settings.items_per_run, settings.monthly_items - ledger.month_used("collected_items"))
 
     def save(brand, task, rows, stats, via, extra=None):
@@ -1769,8 +1771,9 @@ def format_collect_report(result, settings, ledger=None):
                       "choose a page (see NEEDS YOU above)."]
     if ledger is not None:
         lines.append("")
-        lines.append(f"Used this month ({ledger.month}), against your caps: items {ledger.month_used('collected_items'):g}/"
-                     f"{settings.monthly_items}, Apify items {ledger.month_used('apify_items'):g}/{settings.apify_monthly_items}, "
+        items_cap = f"/{settings.monthly_items}" if settings.monthly_items else " (no monthly cap)"
+        lines.append(f"Used this month ({ledger.month}), against your caps: items {ledger.month_used('collected_items'):g}"
+                     f"{items_cap}, Apify items {ledger.month_used('apify_items'):g}/{settings.apify_monthly_items}, "
                      f"Deep Research tasks {ledger.month_used('deep_research_tasks'):g}/{settings.monthly_tasks}, "
                      f"Claude calls {ledger.month_used('claude_calls'):g}/{settings.claude_monthly_calls}")
     lines.extend(f"note: {n}" for n in result.notes)
@@ -1828,7 +1831,7 @@ def check_collectors(browser_factory, creds, settings, browser_cfg, store, ledge
         if not has_access(site_cfg, site_creds):
             row["detail"] = missing_access_message(site_cfg)
             continue
-        if source != "deep_research" and settings.monthly_items - ledger.month_used("collected_items") < items:
+        if source != "deep_research" and settings.monthly_items and settings.monthly_items - ledger.month_used("collected_items") < items:
             row["detail"] = "skipped: no items left under your monthly cap"
             continue
         try:
