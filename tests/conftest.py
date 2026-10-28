@@ -103,3 +103,12 @@ class FakeServer:
             page = 1
         start = (page - 1) * size
         return {"products": self.products[start:start + size]}
+
+
+@pytest.fixture(autouse=True)
+def fresh_sheet_write_pacer(monkeypatch):
+    """The sheet write pacer counts writes over a real minute. Every test starts with an empty count, so one test's writes can never make
+    another wait, and no test really sleeps (a test that wants to see the waiting builds its own WritePacer)."""
+    from contentintel import sheets
+    monkeypatch.setattr(sheets, "_PACER", sheets.WritePacer())
+    monkeypatch.setattr(sheets, "_SLEEP", lambda seconds: None)           # no test really waits; a test that checks the waits records them itself
