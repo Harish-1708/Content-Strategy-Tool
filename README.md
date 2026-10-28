@@ -403,13 +403,37 @@ batches (`ideabank.score_batch`), most interesting first, within `ideabank.max_s
 `ideabank.claude_monthly_calls` a month; what is left over is scored on the next run. Without a Claude key the rows are still
 added, unscored.
 
+**Asking for the kinds of content a brand makes.** A request can list the **formats** it wants, in plain words, in the Request workflow's
+formats box: for example "UGC, AI content and posts". The formats are `ugc` (real customers and creators on camera or in photos: reviews,
+hauls, try-ons, unboxings, testimonials), `ai` (AI-made or AI-assisted content: AI images, AI video ads, AI avatars), `influencer`
+(creator partnerships), `static` (single-image posts and ads; also typed as posts or images), `carousel`, `video` (Reels, TikToks, video ads)
+and `meme`. Words such as creators, reels, hauls and "AI generated ads" are understood; an unknown word is refused with this list. The plan
+then goes looking for the formats: Claude shapes the keywords, hashtags and creator angles to surface them, and one web search per wanted
+format is added. Creator searches follow the platforms the plan keeps, so dropping TikTok drops the TikTok page searches too. Every item
+found is given a **format label** (the Format column of the Idea Bank tab: `ugc`, `ai`, `influencer`, `static`, `carousel`, `video`, `meme`,
+`article` or `other`), and an item in a wanted format scores 8 points higher (never above 100, and a generic or unrelated item still cannot
+reach the minimum). The Requests tab shows the formats asked for and the tools actually in the plan.
+
+**Ideas, not generic content.** An item is judged on two things, and the code (not the model) combines them. **Fit** is how well its product
+category, audience and occasion match the brand. **Idea strength** is how distinctive and reusable the concept itself is: a specific hook,
+format or story that can be re-made for the brand's own product. The score is 40% fit and 60% idea strength. An item Claude marks **generic**
+(a discount or promo code, a price, a restock notice, free shipping, a plain product shot, a bare list of reviews or perks, or just "so
+comfy") can never score above 45, and an unrelated product category (shoes, baby goods, food, outdoor gear) can never score above 45, so
+neither reaches the usual minimum of 50. Evidence counts: an ad that has run 60 or more days, or in several variants, scores higher on
+idea strength when a real concept is there. Each kept row also shows the **mechanism** (the technique, such as "problem-first hook"), the
+**concept** (the reusable idea with the product taken out, which is what to copy), and a **preview** column: "saved in Drive" or "original
+link only" (the file could not be saved, usually because Meta's picture link had expired). Rows scored under the earlier rubric are **scored
+again once** with this one, and items from **brands you skip** (`benchmark_pages: {Name: skip}` in the brand's research.yaml) are removed
+too, even ones collected before you chose to skip them. The new columns are added to the right of an existing Idea Bank tab, and your
+Decision and Notes columns are never touched.
+
 **A clean bank: one original, nothing of your own, nothing irrelevant.** The bank keeps only ideas that can genuinely help the brand.
 (1) **One original of every idea.** Two items count as the same idea when their text is the same (an ad is compared by its words whoever runs
 it; a post by its account plus its words; a web result by its address), or when their picture or video file is byte for byte the same. Only
 one original is kept (the longest-running ad, else the oldest post) and the copies are never added, including a copy of something that was
 removed earlier. (2) **The brand's own content is left out**: an item from the brand's own account or its own Meta page (found through the
 benchmark pages), a link to its own site, or a post that names the brand (`ideabank.skip_own_brand`). (3) **Only relevant items stay.** An item
-is scored first and kept only if it scores at least `ideabank.min_relevance` (60 by default); nothing is saved in Drive or shown in the sheet
+is scored first and kept only if it scores at least `ideabank.min_relevance` (50 by default); nothing is saved in Drive or shown in the sheet
 for an item that is waiting to be scored or was removed. A removed item has its Drive folder moved to the **Drive trash** (recoverable for 30
 days; this needs the service account to be a **Content manager** in the Shared Drive, and if it is not, the folders are named in the log to
 delete by hand and tried again next run) and its sheet row deleted. **A row you wrote a Decision or Notes on is never deleted.** Every run tidies
@@ -566,7 +590,7 @@ a renamed wrapper does not break it), with the page's links as a fallback. The r
 items came from each.
 
 **Keeping it gentle.** Random pauses of a few seconds before each page and after each scroll, small runs
-(`items_per_run` 30), `monthly_items` 400 across all brands (it was 150 before benchmark brands were followed by page; lower it in `research.yaml` for a tighter ceiling), Deep Research `monthly_tasks` 2 and
+(`items_per_run` 30), `monthly_items` 0 (no monthly limit while the tool is being tested: set a number in `research.yaml` to bring a ceiling back), Deep Research `monthly_tasks` 2 and
 `tasks_per_run` 1, and the same seeds are not collected again for 3 days (14 for Deep Research). Dummy
 accounts can still be limited or banned by the sites; small, paced runs reduce that risk but cannot remove it.
 
