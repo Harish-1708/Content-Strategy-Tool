@@ -36,13 +36,13 @@ def store(tmp_path):
 
 
 def seed_bank(store, ids=("A", "B"), scored=True):
-    store.append_collected("swoveralls", record([row("instagram", i, handle="u", title=f"post {i}", text="caption", url=f"https://www.instagram.com/p/{i}/",
+    store.append_collected("swoveralls", record([row("instagram", i, handle="u", title=f"post {i}", text=f"caption {i}", url=f"https://www.instagram.com/p/{i}/",
                                                      media_url=f"https://cdn.example/{i}.jpg", likes=10) for i in ids]))
     bank = store.read_ideabank("swoveralls")
     IB.intake_collected(bank, store.read_collected("swoveralls"), IB.IdeaBankSettings(), COLLECT_NOW)
     if scored:
         for item in bank["items"].values():
-            item.update({"score": 80, "relevance": 80, "summary": "s", "how_to_use": "h", "risk": "none", "topic": "t", "scored_at": COLLECT_NOW})
+            item.update({"state": "kept", "score": 80, "relevance": 80, "summary": "s", "how_to_use": "h", "risk": "none", "topic": "t", "scored_at": COLLECT_NOW})
     store.write_ideabank("swoveralls", bank)
     return bank
 
@@ -93,7 +93,7 @@ def test_the_decision_column_gets_a_use_maybe_skip_list_once_when_the_tab_is_new
 
 def test_a_persons_decisions_and_notes_survive_every_update_while_the_tools_columns_change(store, swov):
     baselined(swov, store, "swoveralls_full_72.json", 72)
-    bank = seed_bank(store, scored=False)
+    bank = seed_bank(store)
     client = FakeClient()
     one(swov, store, client)
     (sp,) = client.created
@@ -114,7 +114,8 @@ def test_new_items_go_to_the_bottom_and_rows_are_matched_by_id_not_position(stor
     bank = seed_bank(store, ("A",))
     client = FakeClient()
     one(swov, store, client)
-    IB.intake_collected(bank, [record([row("instagram", "Z", title="late post")])], IB.IdeaBankSettings(), COLLECT_NOW)
+    (late,) = IB.intake_collected(bank, [record([row("instagram", "Z", title="late post", text="a late post")])], IB.IdeaBankSettings(), COLLECT_NOW)
+    bank["items"][late].update({"state": "kept", "score": 70, "summary": "s"})
     store.write_ideabank("swoveralls", bank)
     one(swov, store, client)
     _, _, rows = cells(client.created[0], "Idea Bank")
@@ -263,30 +264,32 @@ def test_the_ideabank_command_scores_and_saves_files_for_new_items(env, capsys):
     seed_bank(store, scored=False)
     store.write_ideabank("swoveralls", {"next": 1, "items": {}})
     state["claude"].json_answers = [{"items": [{"id": "IB-0001", "relevance": 88, "topic": "comfort", "summary": "s", "how_to_use": "h", "risk": "none"},
-                                               {"id": "IB-0002", "relevance": 55, "topic": "gift", "summary": "s2", "how_to_use": "h2", "risk": "none"}]}]
+                                               {"id": "IB-0002", "relevance": 65, "topic": "gift", "summary": "s2", "how_to_use": "h2", "risk": "none"}]}]
     assert run("ideabank", "--brand", "swoveralls") == 0
     out = capsys.readouterr().out
-    assert "2 new item(s) for the Idea Bank (2 in all)" in out and "2 item(s) scored" in out and "files saved for 2 item(s)" in out
+    assert "2 new item(s) taken in" in out and "2 item(s) scored" in out and "files saved for 2 item(s)" in out
     bank = store.read_ideabank("swoveralls")
-    assert [i["score"] for i in bank["items"].values()] == [88, 55] and all(i["drive_folder_url"] for i in bank["items"].values())
+    assert [i["score"] for i in bank["items"].values()] == [88, 65] and all(i["drive_folder_url"] for i in bank["items"].values())
     assert state["drive"].tree()[:3] == ["Swoveralls/", "  IB-0001 - comfort/", "    IB-0001-image.jpg"]
     assert store.read_claude_usage() == {"2026-10": 1}
 
 
-def test_the_ideabank_command_still_adds_items_without_claude_or_drive(env, capsys):
+def test_without_claude_or_drive_the_items_are_taken_in_but_wait_with_no_folder_or_row(env, capsys):
     state, run, secrets, store, _ = env
-    store.append_collected("swoveralls", record([row("instagram", "A", title="post A", media_url="https://cdn.example/a.jpg")]))
+    store.append_collected("swoveralls", record([row("instagram", "A", title="post A", text="caption A", media_url="https://cdn.example/a.jpg")]))
     assert run("ideabank", "--all") == 0
     out = capsys.readouterr().out
-    assert "Files will not be saved in Drive: the IDEA_BANK_FOLDER_ID secret is not set." in out and "items left unscored (no Claude key)" in out
-    assert len(store.read_ideabank("swoveralls")["items"]) == 1
+    assert "Files will not be saved in Drive: the IDEA_BANK_FOLDER_ID secret is not set." in out
+    assert "1 item(s) wait to be scored before they are shown or get a folder (no Claude key)" in out
+    (item,) = store.read_ideabank("swoveralls")["items"].values()
+    assert item["state"] == "new" and item["score"] is None
 
 
 def test_a_dry_run_only_counts(env, capsys):
     state, run, secrets, store, tmp_path = env
     store.append_collected("swoveralls", record([row("instagram", "A")]))
     assert run("ideabank", "--brand", "swoveralls", "--dry-run") == 0
-    assert "1 new item(s) for the Idea Bank (1 in all)" in capsys.readouterr().out and not (tmp_path / "data" / "swoveralls" / "ideabank").exists()
+    assert "1 new item(s) taken in" in capsys.readouterr().out and not (tmp_path / "data" / "swoveralls" / "ideabank").exists()
 
 
 def test_the_command_needs_to_know_which_brand(env, capsys):
@@ -573,7 +576,7 @@ def test_the_collect_workflow_adds_to_the_idea_bank_before_the_sheet_update():
     names = [s.get("name", "") for s in wf["jobs"]["collect"]["steps"]]
     assert names.index("Add new items to the Idea Bank") < names.index("Update Google Sheets")
     s = step(wf, "collect", "Add new items to the Idea Bank")
-    assert s["if"] == "inputs.mode == 'collect' || inputs.mode == ''" and s["continue-on-error"] is True and "python -m contentintel ideabank" in s["run"]
+    assert s["if"] == "inputs.mode == 'collect' || inputs.mode == '' || inputs.mode == 'tidy'" and s["continue-on-error"] is True and "python -m contentintel ideabank" in s["run"]
     assert {"ANTHROPIC_API_KEY", "GOOGLE_SERVICE_ACCOUNT_JSON", "IDEA_BANK_FOLDER_ID"} <= set(s["env"])
     check = step(wf, "collect", "Check the Idea Bank Drive folder")
     assert check["if"] == "inputs.mode == 'check'" and "ideabank --check" in check["run"]
