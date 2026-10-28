@@ -54,7 +54,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 9916033073438,IndoorCamo™ Limited Edition DudeRobe,50310722650398,Desert Camo / L-XL,Color=Desert Camo; Size=L-XL,ROBE1-341-L/XL,134.00,,true
 9916033073438,IndoorCamo™ Limited Edition DudeRobe,50310722715934,Desert Camo / 2XL-3XL,Color=Desert Camo; Size=2XL-3XL,ROBE1-341-2XL/3XL,134.00,,true
 8927175672094,Kids DudeRobe,47471190147358,Navy / Youth (5-9 Year Old),Color=Navy; Size=Youth (5-9 Year Old),ROBEYOUTH-NAVY-OS,68.00,,true
-8927175672094,Kids DudeRobe,47532988760350,Navy / XS (10-15 Year Old),Color=Navy; Size=XS (10-15 Year Old),ROBE1-NAVY-XS,68.00,,false
+8927175672094,Kids DudeRobe,47532988760350,Navy / XS (10-15 Year Old),Color=Navy; Size=XS (10-15 Year Old),ROBE1-NAVY-XS,68.00,,true
 8927175672094,Kids DudeRobe,47471189983518,Grey / Youth (5-9 Year Old),Color=Grey; Size=Youth (5-9 Year Old),ROBEYOUTH-GRAY-OS,68.00,,true
 8927175672094,Kids DudeRobe,47532988727582,Grey / XS (10-15 Year Old),Color=Grey; Size=XS (10-15 Year Old),ROBE1-GRAY-XS,68.00,,true
 8927175672094,Kids DudeRobe,47471190311198,Black / Youth (5-9 Year Old),Color=Black; Size=Youth (5-9 Year Old),ROBEYOUTH-BLACK-OS,68.00,,true
@@ -93,7 +93,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 9984465994014,The 1-Second Flannel,50541309231390,Indigo / XX-Large,Color=Indigo; Size=XX-Large,FLANNEL1-YBD-XXL,98.00,,true
 9984465994014,The 1-Second Flannel,50541309264158,Indigo / 3XL,Color=Indigo; Size=3XL,FLANNEL1-YBD-3XL,98.00,,true
 9984465994014,The 1-Second Flannel,50541309296926,Indigo / 4XL,Color=Indigo; Size=4XL,FLANNEL1-YBD-4XL,98.00,,false
-9885198549278,The All-American (Dude)Robe,50216131821854,Navy / XS,Color=Navy; Size=XS,ROBE1AMERICA-NAVY-XS,134.00,,false
+9885198549278,The All-American (Dude)Robe,50216131821854,Navy / XS,Color=Navy; Size=XS,ROBE1AMERICA-NAVY-XS,134.00,,true
 9885198549278,The All-American (Dude)Robe,50216131854622,Navy / S-M,Color=Navy; Size=S-M,ROBE1AMERICA-NAVY-S/M,134.00,,true
 9885198549278,The All-American (Dude)Robe,50216131887390,Navy / L-XL,Color=Navy; Size=L-XL,ROBE1AMERICA-NAVY-L/XL,134.00,,true
 9885198549278,The All-American (Dude)Robe,50216131920158,Navy / 2XL-3XL,Color=Navy; Size=2XL-3XL,ROBE1AMERICA-NAVY-2XL/3XL,134.00,,true
@@ -104,7 +104,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 10084653662494,The BroThrow,51787292049694,Default Title,Title=Default Title,BROTHROW-BLX-OS,98.00,,true
 15979792367902,The Couch Setup,60282238337310,Default Title,Title=Default Title,,199.00,226.00,true
 10114039054622,The Couple Bundle,51888822059294,Default Title,Title=Default Title,,229.00,256.00,true
-1363889356843,The DudeRobe,47315787940126,Navy / XS,Color=Navy; Size=XS,ROBE1-NAVY-XS,128.00,,false
+1363889356843,The DudeRobe,47315787940126,Navy / XS,Color=Navy; Size=XS,ROBE1-NAVY-XS,128.00,,true
 1363889356843,The DudeRobe,31947168907345,Navy / S-M,Color=Navy; Size=S-M,ROBE1-NAVY-S/M,128.00,,true
 1363889356843,The DudeRobe,31947175198801,Navy / L-XL,Color=Navy; Size=L-XL,ROBE1-NAVY-L/XL,128.00,,true
 1363889356843,The DudeRobe,31947197907025,Navy / 2XL-3XL,Color=Navy; Size=2XL-3XL,ROBE1-NAVY-2XL/3XL,128.00,,true
