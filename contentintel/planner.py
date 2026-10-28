@@ -97,7 +97,8 @@ PLAN_SYSTEM = (
     "\"deep_research\": {\"why\": \"...\", \"questions\": [\"one broad question\"]}}, \"creator_angles\": [\"short phrases describing "
     "content that creators and influencers (not brands) post about this, for example 'what I bought my dad for Father's Day haul'\"], "
     "\"notes\": \"anything the person should know or decide\"}. Include only the tools that will help. Look for ideas well beyond the "
-    "brand's direct competitors: other brands in adjacent categories, creators, influencers, gift guides, trends. Use the requested "
+    "brand's direct competitors: other brands in adjacent categories, creators, influencers, gift guides, trends. Today's date is given: if the "
+    "occasion is more than 90 days away or has already passed, say so first in 'notes' and name the nearer occasions worth planning for. Use the requested "
     "region only to choose wording and sources; never put a country code in a search phrase. Keep phrases short and concrete. Do not "
     "invent facts about the brand. If the request lists formats wanted, shape the keywords, hashtags and creator angles to surface that kind "
     "of content: for UGC, hauls, try-ons, reviews and get-ready-with-me posts; for AI content, AI-generated ads, AI influencers and AI video; "
@@ -228,11 +229,13 @@ def estimate(plan, settings, collect_settings=None):
     tools = plan["tools"]
     pages = len(tools.get("meta_ads", {}).get("keywords", [])) + len(tools.get("meta_ads", {}).get("pages", []))
     pages += sum(len(tools[t]["hashtags"]) for t in ("instagram", "tiktok") if t in tools)
-    scoring = min(settings.max_scoring_calls, math.ceil(settings.max_new_per_run / settings.score_batch))
+    sources = any(t in tools for t in ("meta_ads", "instagram", "tiktok"))
+    new_items = settings.max_new_per_run * ((1 if sources else 0) + (1 if "web_search" in tools else 0))       # ads/posts and web results each have the limit
+    scoring = min(settings.max_scoring_calls, math.ceil(new_items / settings.score_batch))
     return {"web_searches": len(tools.get("web_search", {}).get("queries", [])), "browser_pages": pages,
             "deep_research_reports": len(tools.get("deep_research", {}).get("questions", [])),
             "claude_calls_at_most": 1 + scoring + len(tools.get("deep_research", {}).get("questions", [])) * 2,
-            "new_items_at_most": settings.max_new_per_run}
+            "new_items_at_most": new_items}
 
 
 def render_plan(request, est=None):
@@ -280,7 +283,7 @@ def resolve_allowed(mode, ticked):
 
 
 def _ask(request, context, previous=None, changes=""):
-    lines = [f"Brand context: {context}", f"Allowed tools: {', '.join(request['allowed'])}",
+    lines = [f"Brand context: {context}", f"Today: {str(request.get('created', ''))[:10]}", f"Allowed tools: {', '.join(request['allowed'])}",
              f"Region: {request['region']}", f"Request: {request['text']}"]
     if request.get("formats"):
         lines.append("Formats wanted: " + ", ".join(f"{f} = {FORMATS[f]}" for f in request["formats"]))
