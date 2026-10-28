@@ -109,6 +109,13 @@ class FakeWorksheet:
         self._write_block(start, 1, values)
         self.write_calls.append("append_rows")
 
+    def delete_rows(self, start_index, end_index=None):
+        """Remove a row and shift the rows below it up, as Google Sheets does."""
+        end_index = end_index or start_index
+        count = end_index - start_index + 1
+        self.write_calls.append("delete_rows")
+        self.cells = {((r - count) if r > end_index else r, c): v for (r, c), v in self.cells.items() if not (start_index <= r <= end_index)}
+
     def resize(self, rows=None, cols=None):
         if rows is not None:
             self.row_count = rows
