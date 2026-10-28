@@ -40,7 +40,7 @@ class IdeaBankSettings:
     sources: tuple = ("meta_ads", "instagram", "tiktok")
     max_new_per_run: int = 60
     score_batch: int = 8
-    max_scoring_calls: int = 12
+    max_scoring_calls: int = 16
     save_assets: bool = True
     save_videos: bool = True
     image_max_mb: int = 15
@@ -533,6 +533,7 @@ def _percent(value):
     return None if isinstance(value, bool) or not isinstance(value, (int, float)) or not 0 <= value <= 100 else value
 
 
+PROVEN_DAYS = 150            # an ad that has run this long (in a real category, not generic) is proof enough to keep, whatever its score
 GENERIC_CAP = 45             # a generic item and an unrelated category are held under the usual minimum (50) however they are scored
 OTHER_CAP = 45
 
@@ -631,6 +632,13 @@ def _remove(item, reason, duplicate_of=""):
     item.update({"state": "removed", "removed_reason": reason, "duplicate_of": duplicate_of})
 
 
+def is_proven(item):
+    """A long-running ad: someone has kept paying for it for months, which is better evidence than any score. Not for a generic ad (a
+    400-day discount code is persistent, not clever) nor for an unrelated category, and never for an item that has not been scored."""
+    return ((item["metrics"].get("days_running") or 0) >= PROVEN_DAYS and not item.get("generic") and item.get("category") != "other"
+            and item.get("score") is not None)
+
+
 def apply_relevance(bank, settings):
     """A scored item is kept if it scored at least the minimum and removed otherwise (so raising the minimum later tidies the bank).
     Returns how many were removed now."""
@@ -638,7 +646,7 @@ def apply_relevance(bank, settings):
     for item in bank["items"].values():
         if item["state"] == "removed" or item["score"] is None:
             continue
-        if item["score"] >= settings.min_relevance:
+        if item["score"] >= settings.min_relevance or is_proven(item):
             item["state"] = "kept"
         else:
             _remove(item, f"not relevant enough (scored {item['score']}, the minimum is {settings.min_relevance})")
@@ -665,7 +673,7 @@ def revive_relevant(bank, settings):
     Its Drive folder was trashed, so it gets a new one if its picture link still works. Returns how many came back."""
     back = 0
     for item in bank["items"].values():
-        if (item["state"] == "removed" and item["score"] is not None and item["score"] >= settings.min_relevance
+        if (item["state"] == "removed" and item["score"] is not None and (item["score"] >= settings.min_relevance or is_proven(item))
                 and item["removed_reason"].startswith("not relevant enough")):
             item.update({"state": "kept", "removed_reason": "", "removal_note": ""})
             back += 1
