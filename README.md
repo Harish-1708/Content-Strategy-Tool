@@ -403,6 +403,19 @@ batches (`ideabank.score_batch`), most interesting first, within `ideabank.max_s
 `ideabank.claude_monthly_calls` a month; what is left over is scored on the next run. Without a Claude key the rows are still
 added, unscored.
 
+**A clean bank: one original, nothing of your own, nothing irrelevant.** The bank keeps only ideas that can genuinely help the brand.
+(1) **One original of every idea.** Two items count as the same idea when their text is the same (an ad is compared by its words whoever runs
+it; a post by its account plus its words; a web result by its address), or when their picture or video file is byte for byte the same. Only
+one original is kept (the longest-running ad, else the oldest post) and the copies are never added, including a copy of something that was
+removed earlier. (2) **The brand's own content is left out**: an item from the brand's own account or its own Meta page (found through the
+benchmark pages), a link to its own site, or a post that names the brand (`ideabank.skip_own_brand`). (3) **Only relevant items stay.** An item
+is scored first and kept only if it scores at least `ideabank.min_relevance` (60 by default); nothing is saved in Drive or shown in the sheet
+for an item that is waiting to be scored or was removed. A removed item has its Drive folder moved to the **Drive trash** (recoverable for 30
+days; this needs the service account to be a **Content manager** in the Shared Drive, and if it is not, the folders are named in the log to
+delete by hand and tried again next run) and its sheet row deleted. **A row you wrote a Decision or Notes on is never deleted.** Every run tidies
+what is already in the bank the same way, and the Collect workflow's mode **tidy** does only that (it collects nothing), so raising
+`min_relevance` and running `tidy` cleans the sheet and the Drive.
+
 **Pictures and videos in the Shared Drive.** At the moment an item is added, its picture or video is downloaded (these links
 expire within about a day, so it cannot wait) and saved in the Shared Drive folder named by `IDEA_BANK_FOLDER_ID`, laid out as
 `<root> / <Brand name> / IB-0001 - topic / the files`, with each brand's finished briefs in `<Brand name> / Briefs`. Only the
