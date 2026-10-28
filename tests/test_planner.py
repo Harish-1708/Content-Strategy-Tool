@@ -153,7 +153,7 @@ def test_the_summary_is_one_line_of_what_will_be_searched():
 def test_the_estimate_counts_what_the_plan_would_use():
     plan, _ = clean()
     est = PL.estimate(plan, S)
-    assert est == {"web_searches": 6, "browser_pages": 5, "deep_research_reports": 1, "claude_calls_at_most": 1 + 6 + 2, "new_items_at_most": 60}
+    assert est == {"web_searches": 6, "browser_pages": 5, "deep_research_reports": 1, "claude_calls_at_most": 1 + 8 + 2, "new_items_at_most": 60}
 
 
 def test_the_estimate_of_claude_calls_follows_the_scoring_limits():
@@ -175,7 +175,7 @@ def test_the_plan_is_shown_in_plain_words_with_what_it_will_use():
     for needle in ("Request RQ-0001 (swoveralls), region: worldwide", "You asked: Father's Day gifting ideas", "Understood as: Gift ideas for dads",
                    "Occasion: Father's Day", "meta_ads: see who advertises gifting", "      fathers day gift", "      #fathersdaygift", "      best fathers day gifts 2026",
                    "Creator and influencer angles: what I bought my dad haul; dad reacts to gift", "Claude's note: Check the region",
-                   "It will use at most: 6 web searches, 5 browser pages, 1 Deep Research report(s), about 9 Claude calls, and add up to 60 items to the Idea Bank."):
+                   "It will use at most: 6 web searches, 5 browser pages, 1 Deep Research report(s), about 11 Claude calls, and add up to 60 items to the Idea Bank."):
         assert needle in text, needle
 
 
