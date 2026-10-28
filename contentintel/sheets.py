@@ -41,7 +41,7 @@ RESEARCH = "Research"
 COLLECTED = "Collected"
 BENCHMARKS = "Benchmarks"
 IDEABANK, REQUESTS, BRIEFS = "Idea Bank", "Requests", "Briefs"
-REQUEST_COLUMNS = ["request_id", "created", "status", "text", "region", "tools", "plan", "items_added", "run_notes"]
+REQUEST_COLUMNS = ["request_id", "created", "status", "text", "region", "formats", "tools", "plan", "items_added", "run_notes"]
 BRIEF_COLUMNS = ["brief_id", "created", "brief", "ask", "status", "items", "violations", "models", "drive_link"]
 DECISIONS = ("Use", "Maybe", "Skip")
 BENCHMARK_COLUMNS = ["name", "kind", "status", "page_id", "page_name", "page_followers", "reason", "candidates",
@@ -58,7 +58,7 @@ STAMP = "last_updated"                          # when the tool last changed tha
 
 NUMERIC = {"price_min", "price_max", "price", "compare_at_price", "engagement_pct"}
 INTEGER = {"variant_count", "image_count", "times_seen", "best_rank", "likes", "comments", "shares",
-           "views", "saves", "reach", "days_running", "variants", "page_followers", "score", "assets", "violations", "items_added"}
+           "views", "saves", "reach", "days_running", "variants", "page_followers", "score", "fit", "idea", "assets", "violations", "items_added"}
 BOOLEAN = {"excluded", "in_stock", "on_sale", "available"}
 
 _BLANK_TABS = ("Sheet1", "Sheet 1")
@@ -447,7 +447,8 @@ def request_sheet_rows(requests):
     for r in requests:
         run = r.get("run") or {}
         rows[r["id"]] = {"request_id": r["id"], "created": r.get("created", ""), "status": r.get("status", ""), "text": r.get("text", ""),
-                         "region": r.get("region", ""), "tools": ", ".join(r.get("allowed") or []), "plan": plan_summary(r.get("plan") or {}),
+                         "region": r.get("region", ""), "formats": ", ".join(r.get("formats") or []),
+                         "tools": ", ".join(((r.get("plan") or {}).get("tools")) or r.get("allowed") or []), "plan": plan_summary(r.get("plan") or {}),
                          "items_added": len(run.get("items_added") or []), "run_notes": " | ".join((run.get("notes") or [])[:4])}
     return rows
 
