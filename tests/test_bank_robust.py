@@ -240,8 +240,8 @@ def test_a_run_with_a_lower_minimum_brings_items_back_and_saves_their_files_agai
 # ---- a run scores everything it takes in -------------------------------------------------------------------------------------------------------
 
 def test_the_default_scoring_limit_covers_a_full_intake_and_matches_the_shipped_file():
-    assert IB.IdeaBankSettings().max_scoring_calls == 12 == IB.load_settings("research.yaml").max_scoring_calls
-    needed = -(-IB.IdeaBankSettings().max_new_per_run // IB.IdeaBankSettings().score_batch)
+    assert IB.IdeaBankSettings().max_scoring_calls == 16 == IB.load_settings("research.yaml").max_scoring_calls
+    needed = 2 * -(-IB.IdeaBankSettings().max_new_per_run // IB.IdeaBankSettings().score_batch)          # ads and posts, and web results, each have the limit
     assert IB.IdeaBankSettings().max_scoring_calls >= needed
 
 
