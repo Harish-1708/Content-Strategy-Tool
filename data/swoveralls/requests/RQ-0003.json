@@ -1,0 +1,99 @@
+{
+ "allowed": [
+  "meta_ads",
+  "instagram",
+  "tiktok",
+  "web_search",
+  "deep_research"
+ ],
+ "apify_extra": false,
+ "brand": "swoveralls",
+ "changes": [],
+ "created": "2026-10-28T12:00:41Z",
+ "formats": [
+  "ugc",
+  "ai",
+  "static"
+ ],
+ "id": "RQ-0003",
+ "occasion": "Father's Day",
+ "plan": {
+  "audience": "Gift buyers (partners, adult kids, kids with parents) shopping for dads, plus dads who treat themselves; skews toward people who like comfy, casual, novelty-leaning apparel",
+  "creator_angles": [
+   "what I bought my dad for Father's Day haul",
+   "dad opens his Father's Day gift reaction",
+   "unboxing a gift for my husband",
+   "gifts for the dad who has everything"
+  ],
+  "dropped": [],
+  "formats": [
+   "ugc",
+   "ai",
+   "static"
+  ],
+  "goal": "Produce a content brief with Father's Day gift angles, hooks and formats (UGC, AI, static) that position Swoveralls as a comfortable, fun gift for dads, with dad-and-kid matching and merch add-ons as options",
+  "interpretation": "Research Father's Day gift angles for dads that Swoveralls (sweatshirt-style overalls, shorts, kids sizes, merch) can plug into, across UGC, AI-made content and static posts.",
+  "notes": "Decide whether the campaign leans on gifting for dads, dad-and-kid matching (kids line is $43.99-$49), or a merch add-on ($25-$50) for lower-price gifting. The core line is $89-$159, so a value or 'worth it' angle may matter. Garden Party and Color Riot items are marked Coming Soon, so confirm availability before featuring them. For AI formats, check platform disclosure rules and avoid AI content ",
+  "occasion": "Father's Day",
+  "tools": {
+   "deep_research": {
+    "questions": [
+     "How do gift buyers decide what to buy for Father's Day, which apparel and comfort-wear angles, price points, and content formats (UGC, AI-generated, static) perform best, and how do brands in adjacent categories like loungewear, outdoor, and novelty gifts market to them?"
+    ],
+    "why": "Build one broad view of Father's Day shopping behavior and messaging so the angles are grounded in what gift buyers want."
+   },
+   "instagram": {
+    "hashtags": [
+     "fathersdaygiftideas",
+     "fathersdaygift",
+     "giftsfordad",
+     "fathersdaygiftguide",
+     "dadstyle",
+     "dadoutfit"
+    ],
+    "why": "Find creator posts, gift guides and static designs showing what people buy for dads, plus dad and kid matching looks and apparel reviews."
+   },
+   "meta_ads": {
+    "keywords": [
+     "Father's Day gift",
+     "gifts for dad",
+     "Father's Day sale",
+     "dad gift guide",
+     "comfy clothes for dad",
+     "matching dad and son outfit"
+    ],
+    "pages": [],
+    "why": "See how apparel and comfort-wear brands, and gift-focused advertisers, frame Father's Day offers in static and UGC-style ads, and which hooks and CTAs they use."
+   },
+   "tiktok": {
+    "hashtags": [
+     "fathersdaygiftideas",
+     "giftsfordad",
+     "fathersdaygift",
+     "dadgifts",
+     "whatigotmydad",
+     "dadreaction"
+    ],
+    "why": "Surface UGC formats such as gift hauls, unboxings, dad reactions, try-ons and 'what I got my dad' videos, plus trending sounds and AI-style video experiments."
+   },
+   "web_search": {
+    "queries": [
+     "what I bought my dad for Father's Day haul site:tiktok.com",
+     "what I bought my dad for Father's Day haul site:instagram.com",
+     "dad opens his Father's Day gift reaction site:tiktok.com",
+     "dad opens his Father's Day gift reaction site:instagram.com",
+     "UGC ad examples apparel brand",
+     "AI generated ad examples fashion brand",
+     "static image ad examples apparel brand",
+     "best Father's Day gifts for dads who have everything"
+    ],
+    "why": "Collect gift guides, editorial roundups and trend articles that show where comfort wear and novelty apparel fit among Father's Day picks, and which price points and categories get featured."
+   }
+  }
+ },
+ "region": "worldwide",
+ "run": {},
+ "status": "planned",
+ "text": "Father's Day gifting ideas for dads",
+ "tools_mode": "auto"
+}
