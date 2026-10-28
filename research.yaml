@@ -39,8 +39,8 @@ defaults:
 # Google account (a report takes 10+ minutes). The caps keep every run small and gentle.
 collectors:
   browser:
-    monthly_items: 400      # most ads/posts collected per calendar month, across all brands (it was 150 before
-                            # benchmark brands were followed by page; lower it here if you want a tighter ceiling)
+    monthly_items: 0        # most ads/posts collected per calendar month, across all brands. 0 means no monthly limit (while the
+                            # tool is being tested and quality matters more than volume); set a number to bring a ceiling back
     items_per_run: 30       # most ads/posts collected in one run
     cache_days: 3           # the same seeds are not collected again inside this many days
   gemini:
@@ -123,7 +123,7 @@ ideabank:
   image_max_mb: 15
   video_max_mb: 80
   claude_monthly_calls: 300                # all Claude calls by the Idea Bank, request mode and briefs, per month
-  min_relevance: 60                        # an item is kept only if Claude scores it at least this (0 to 100); the rest are removed
+  min_relevance: 50                        # an item is kept only if Claude scores it at least this (0 to 100); the rest are removed
                                            # (lower it and run tidy to bring back items removed for a low score; raise it to be stricter)
   skip_own_brand: true                     # the brand's own content (its account, Meta page, site, or posts naming it) is never an idea
 
