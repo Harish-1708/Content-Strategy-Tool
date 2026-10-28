@@ -241,7 +241,7 @@ def test_an_old_bank_without_state_is_brought_up_to_date():
     assert bank["items"]["IB-0001"]["page_id"] == "" and IB.normalise_bank(bank) is bank
 
 
-@pytest.mark.parametrize("score,state", [(100, "kept"), (60, "kept"), (59, "removed"), (0, "removed"), (None, "new")])
+@pytest.mark.parametrize("score,state", [(100, "kept"), (50, "kept"), (49, "removed"), (0, "removed"), (None, "new")])
 def test_the_minimum_decides_between_kept_and_removed(score, state):
     bank = bank_with("A")
     bank["items"]["IB-0001"].update({"score": score, "state": "new"})
@@ -262,7 +262,7 @@ def test_the_minimum_is_a_setting_between_0_and_100(tmp_path):
     path = tmp_path / "r.yaml"
     path.write_text(yaml.safe_dump({"ideabank": {"min_relevance": 75, "skip_own_brand": False}}))
     s = IB.load_settings(path)
-    assert (s.min_relevance, s.skip_own_brand) == (75, False) and IB.load_settings("does-not-exist.yaml").min_relevance == 60 == IB.load_settings("research.yaml").min_relevance
+    assert (s.min_relevance, s.skip_own_brand) == (75, False) and IB.load_settings("does-not-exist.yaml").min_relevance == 50 == IB.load_settings("research.yaml").min_relevance
     for bad, match in ((101, "between 0 and 100"), (-1, "at least 0"), (60.5, "whole number"), (True, "whole number"), ("60", "whole number")):
         path.write_text(yaml.safe_dump({"ideabank": {"min_relevance": bad}}))
         with pytest.raises(IB.IdeaBankError, match=match):
@@ -422,8 +422,8 @@ def test_the_screenshot_case_one_original_no_own_content_no_irrelevant(store_in_
     assert sorted(i["title"] for i in kept) == ["Bib Overalls That Feel Like a Day Off", "Your nervous system called...It wants this"]
     assert [i["source_item_id"] for i in kept if i["title"].startswith("Bib")] == ["meta_ads:1"]           # the longest-running copy
     assert [n for n in client.session.tree() if n.startswith("  IB-")] == ["  IB-0001 - day off bibs/", "  IB-0002 - calm hoodie/"]
-    assert bank["items"]["IB-0003"]["removed_reason"] == "not relevant enough (scored 12, the minimum is 60)"
-    assert "swoveralls: 1 item(s) removed (0 the brand's own, 0 cop(ies), 1 not relevant enough); 2 kept" in lines
+    assert bank["items"]["IB-0003"]["removed_reason"] == "not relevant enough (scored 12, the minimum is 50)"
+    assert "swoveralls: 1 item(s) removed (0 the brand's own, 0 from brands you skip, 0 cop(ies), 1 not relevant enough); 2 kept" in lines
     assert len(IB.sheet_rows(bank)) == 2
 
 
@@ -623,7 +623,7 @@ def test_a_run_tidies_a_bank_that_already_has_the_brands_own_content(store_in_tm
     new, lines = full_run(store, swov, (client, client.session))
     after = store.read_ideabank("swoveralls")["items"]
     assert after["IB-0001"]["state"] == "removed" and after["IB-0002"]["state"] == "kept"
-    assert "swoveralls: 1 item(s) removed (1 the brand's own, 0 cop(ies), 0 not relevant enough); 1 kept" in lines
+    assert "swoveralls: 1 item(s) removed (1 the brand's own, 0 from brands you skip, 0 cop(ies), 0 not relevant enough); 1 kept" in lines
 
 
 def test_a_run_removes_existing_copies_before_spending_a_claude_call_on_them(store_in_tmp, swov):
