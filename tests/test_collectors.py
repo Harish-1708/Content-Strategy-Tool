@@ -105,7 +105,7 @@ def used(store, month="2026-10"):
 # --- settings ----------------------------------------------------------------------------------------
 
 def test_collector_settings_default_when_there_is_no_file(settings):
-    assert (settings.monthly_items, settings.items_per_run, settings.browser_cache_days) == (400, 30, 3)
+    assert (settings.monthly_items, settings.items_per_run, settings.browser_cache_days) == (0, 30, 3)
     assert (settings.monthly_tasks, settings.tasks_per_run, settings.gemini_cache_days) == (2, 1, 14)
 
 
@@ -757,7 +757,7 @@ def test_the_report_lists_each_task_and_the_month_so_far(tmp_path, store, swov, 
     result = collect(store, tmp_path, [swov], FULL, world(cfg), cfg, settings)
     text = C.format_collect_report(result, settings, R.Ledger(store.load_usage(), "2026-10"))
     assert "=== swoveralls ===" in text and "meta_ads      ran       2 advertiser pages/keywords -> 2 items" in text
-    assert "items 6/400, Apify items 0/100, Deep Research tasks 0/2, Claude calls 0/60" in text
+    assert "items 6 (no monthly cap), Apify items 0/100, Deep Research tasks 0/2, Claude calls 0/60" in text
     empty = collect(store, tmp_path / "e", [swov], {}, world(cfg), cfg, settings)
     assert "nothing to collect" in C.format_collect_report(empty, settings)
 
@@ -927,7 +927,7 @@ def test_cli_real_run_collects_saves_and_never_prints_a_cookie(cli_env, capsys, 
     state, run, cfg = cli_env
     assert run("--brand", "swoveralls") == 0
     out = capsys.readouterr().out
-    assert out.count(" ran ") == 4 and "items 8/400" in out and "followed advertiser pages" in out and "1 keywords" in out and "gemini" not in state["factory"].opened
+    assert out.count(" ran ") == 4 and "items 8 (no monthly cap)" in out and "followed advertiser pages" in out and "1 keywords" in out and "gemini" not in state["factory"].opened
     saved = "".join(p.read_text(encoding="utf-8") for p in (tmp_path / "data").rglob("*") if p.is_file())
     assert (tmp_path / "data" / "swoveralls" / "research" / "collected.jsonl").is_file() and COOKIE_MARKER not in saved + out
 
@@ -959,3 +959,49 @@ def test_cli_reports_a_broken_browser_settings_file_plainly(cli_env, capsys, tmp
     bad.write_text("pacing: {}\n")
     assert cli.main(["collect", "--all", "--browser-config", str(bad), "--data-dir", str(tmp_path / "d"), "--brands-dir", str(tmp_path / "brands")]) == 1
     assert "pacing needs" in capsys.readouterr().out
+
+
+# ---- no monthly limit (set while the tool is being tested and quality matters more than volume) -------------------------------------------------
+
+def test_the_shipped_settings_have_no_monthly_item_limit_and_keep_the_per_run_limit():
+    for source in ("does-not-exist.yaml", "research.yaml"):
+        s = C.load_collector_settings(source)
+        assert (s.monthly_items, s.items_per_run) == (0, 30), source
+
+
+def test_with_no_monthly_limit_collection_goes_on_however_much_was_used(tmp_path, store, swov, cfg, settings):
+    store.save_usage({"months": {"2026-10": {"collected_items": 100000}}, "lifetime": {"collected_items": 100000}})
+    f = world(cfg, meta=many("meta", 40))
+    result = collect(store, tmp_path, [swov], ONE_AD_SEARCH, f, cfg, replace(settings, monthly_items=0))
+    assert statuses(result)[0] == ("meta_ads", "ran") and not any("monthly cap" in r.detail for r in result.brands["swoveralls"])
+    (rec, *_) = store.read_collected("swoveralls")
+    assert len(rec["items"]) == 30 and used(store)["collected_items"] >= 100030                   # still counted, never refused
+
+
+def test_the_per_run_limit_still_applies_when_there_is_no_monthly_limit(tmp_path, store, swov, cfg, settings):
+    f = world(cfg, meta=many("meta", 40))
+    collect(store, tmp_path, [swov], ONE_AD_SEARCH, f, cfg, replace(settings, monthly_items=0, items_per_run=5), sources=("meta_ads",))
+    (rec,) = store.read_collected("swoveralls")
+    assert len(rec["items"]) == 5
+
+
+def test_a_monthly_limit_that_is_set_is_still_enforced_and_shown(tmp_path, store, swov, cfg, settings):
+    f = world(cfg, meta=many("meta", 40))
+    result = collect(store, tmp_path, [swov], ONE_AD_SEARCH, f, cfg, replace(settings, monthly_items=3))
+    assert "out of items under your monthly cap" in result.brands["swoveralls"][1].detail and used(store) == {"collected_items": 3}
+
+
+def test_the_check_is_not_refused_for_a_used_up_month_when_there_is_no_limit(store, cfg, settings):
+    store.save_usage({"months": {"2026-10": {"collected_items": 100000}}, "lifetime": {"collected_items": 100000}})
+    rows = check(store, cfg, replace(settings, monthly_items=0), world(cfg), sources=["tiktok"])
+    assert not rows["tiktok"]["detail"].startswith("skipped")
+    rows = check(store, cfg, replace(settings, monthly_items=1), world(cfg), sources=["tiktok"])
+    assert rows["tiktok"]["detail"].startswith("skipped")
+
+
+def test_the_report_says_there_is_no_monthly_cap_or_shows_the_cap(tmp_path, store, swov, cfg, settings):
+    free = collect(store, tmp_path, [swov], ONE_AD_SEARCH, world(cfg, meta=many("meta", 5)), cfg, replace(settings, monthly_items=0), sources=("meta_ads",))
+    text = C.format_collect_report(free, replace(settings, monthly_items=0), R.Ledger(store.load_usage(), "2026-10"))
+    assert "items 5 (no monthly cap), Apify items 0/100" in text
+    capped = C.format_collect_report(free, replace(settings, monthly_items=50), R.Ledger(store.load_usage(), "2026-10"))
+    assert "items 5/50, Apify items 0/100" in capped and "no monthly cap" not in capped
