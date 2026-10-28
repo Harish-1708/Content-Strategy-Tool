@@ -66,6 +66,10 @@ on:
         description: "Where to look: blank is worldwide, or a two-letter country code such as us"
         required: false
         default: ""
+      formats:
+        description: "Kinds of content to find, comma separated: ugc, ai, influencer, static, carousel, video, meme (posts, reels, creators and AI content are understood). Blank is any"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -129,6 +133,7 @@ jobs:
           USE_DEEP_RESEARCH: ${{ inputs.use_deep_research }}
           APIFY_EXTRA: ${{ inputs.apify_extra }}
           REGION: ${{ inputs.region }}
+          FORMATS: ${{ inputs.formats }}
           INSTAGRAM_COOKIES: ${{ secrets.INSTAGRAM_COOKIES }}
           INSTAGRAM_USERNAME: ${{ secrets.INSTAGRAM_USERNAME }}
           INSTAGRAM_PASSWORD: ${{ secrets.INSTAGRAM_PASSWORD }}
@@ -155,6 +160,7 @@ jobs:
             args=(plan --brand "$BRAND" --text "$IDEA" --tools "$TOOLS" --allow "${allow#,}")
             if [ -n "$REGION" ]; then args+=(--region "$REGION"); fi
             if [ "$APIFY_EXTRA" = "true" ]; then args+=(--apify-extra); fi
+            if [ -n "$FORMATS" ]; then args+=(--formats "$FORMATS"); fi
           else
             args=(run --brand "$BRAND" --request "$REQUEST_ID")
             if [ -n "$CHANGES" ]; then args+=(--changes "$CHANGES"); fi
