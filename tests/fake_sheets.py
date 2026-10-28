@@ -111,9 +111,12 @@ class FakeWorksheet:
 
     def delete_rows(self, start_index, end_index=None):
         """Remove a row and shift the rows below it up, as Google Sheets does."""
+        self.write_calls.append("delete_rows")
+        self._remove_rows(start_index, end_index)
+
+    def _remove_rows(self, start_index, end_index=None):
         end_index = end_index or start_index
         count = end_index - start_index + 1
-        self.write_calls.append("delete_rows")
         self.cells = {((r - count) if r > end_index else r, c): v for (r, c), v in self.cells.items() if not (start_index <= r <= end_index)}
 
     def resize(self, rows=None, cols=None):
@@ -170,6 +173,13 @@ class FakeSpreadsheet:
 
     def batch_update(self, body):
         self.batches.append(body)
+        for request in body.get("requests", []):
+            gone = request.get("deleteDimension")
+            if gone:
+                span = gone["range"]
+                assert span["dimension"] == "ROWS"
+                ws = next(w for w in self._sheets if w.id == span["sheetId"])
+                ws._remove_rows(span["startIndex"] + 1, span["endIndex"])
         return {}
 
 
