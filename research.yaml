@@ -117,13 +117,14 @@ ideabank:
   sources: [meta_ads, instagram, tiktok]   # which collected sources feed it
   max_new_per_run: 60                      # new items taken in per run
   score_batch: 8                           # items scored in one Claude call
-  max_scoring_calls: 6                     # scoring calls per run (what is left is scored next run)
+  max_scoring_calls: 12                    # scoring calls per run, 8 items each (what is left is scored next run); a run takes in up to 60
   save_assets: true                        # save pictures and videos in the Shared Drive
   save_videos: true
   image_max_mb: 15
   video_max_mb: 80
   claude_monthly_calls: 300                # all Claude calls by the Idea Bank, request mode and briefs, per month
   min_relevance: 60                        # an item is kept only if Claude scores it at least this (0 to 100); the rest are removed
+                                           # (lower it and run tidy to bring back items removed for a low score; raise it to be stricter)
   skip_own_brand: true                     # the brand's own content (its account, Meta page, site, or posts naming it) is never an idea
 
 # Request mode: how much a plan may ask for. Code trims Claude's plan to these.
