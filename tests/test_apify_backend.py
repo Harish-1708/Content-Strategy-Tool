@@ -486,7 +486,7 @@ def test_the_collect_workflow_has_one_mode_choice_and_one_backend_choice():
     text = open(".github/workflows/collect.yml", encoding="utf-8").read()
     data = yaml.safe_load(text)
     inputs = (data.get("on") or data.get(True))["workflow_dispatch"]["inputs"]
-    assert inputs["mode"]["options"] == ["plan", "seeds", "check", "recon", "test_deep_research", "collect", "rest"] and inputs["mode"]["default"] == "plan"
+    assert inputs["mode"]["options"] == ["plan", "seeds", "check", "recon", "test_deep_research", "collect", "rest", "tidy"] and inputs["mode"]["default"] == "plan"
     assert inputs["backend"]["options"] == ["auto", "browser", "apify", "fallback", "extra"] and inputs["backend"]["default"] == "auto"
     assert inputs["use_deep_research"]["default"] is False and set(inputs) >= {"brand", "use_meta_ads", "use_tiktok", "use_instagram"}
     for mode, flag in (("plan", "--dry-run"), ("seeds", "--seeds"), ("check", "--check"), ("recon", "--recon"), ("test_deep_research", "--test-deep-research")):
