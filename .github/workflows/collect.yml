@@ -11,6 +11,9 @@
 #                        it also proves the Google Doc for Deep Research reports can be written (DEEP_RESEARCH_DOC_ID)
 #   recon                saves pictures, page HTML and data samples (download the "debug" artifact)
 #   test_deep_research   runs ONE real short Deep Research report, including Claude's prompt and answers
+#   tidy                 collects nothing: tidies each brand's Idea Bank (removes copies, the brand's own content and items that
+#                        are not relevant enough, moves their Drive folders to the trash and deletes their sheet rows), then
+#                        updates the sheets
 #   collect              the real run: saves data, updates the Google Sheets and adds each new Deep Research
 #                        report to the Google Doc as a new tab, and puts each new ad or post in the brand's Idea Bank
 #                        (scored by Claude, with its pictures and videos saved in the Shared Drive folder)
@@ -31,7 +34,7 @@ on:
       mode:
         description: "What to do"
         type: choice
-        options: [plan, seeds, check, recon, test_deep_research, collect, rest]
+        options: [plan, seeds, check, recon, test_deep_research, collect, rest, tidy]
         default: plan
       use_meta_ads:
         description: "Meta Ad Library ads (public pages, no login)"
@@ -96,14 +99,14 @@ jobs:
       - run: pip install -r requirements.txt
 
       - name: Remember the downloaded browser
-        if: inputs.mode != 'plan' && inputs.mode != 'seeds'
+        if: inputs.mode != 'plan' && inputs.mode != 'seeds' && inputs.mode != 'tidy'
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('requirements-browser.txt') }}
 
       - name: Install the browser
-        if: inputs.mode != 'plan' && inputs.mode != 'seeds'
+        if: inputs.mode != 'plan' && inputs.mode != 'seeds' && inputs.mode != 'tidy'
         shell: bash
         run: |
           pip install -r requirements-browser.txt
@@ -117,6 +120,7 @@ jobs:
 
       - name: Collect
         id: collect
+        if: inputs.mode != 'tidy'
         continue-on-error: true
         shell: bash
         env:
@@ -181,7 +185,7 @@ jobs:
 
       - name: Add new items to the Idea Bank
         id: ideabank
-        if: inputs.mode == 'collect' || inputs.mode == ''
+        if: inputs.mode == 'collect' || inputs.mode == '' || inputs.mode == 'tidy'
         continue-on-error: true
         shell: bash
         env:
@@ -217,7 +221,7 @@ jobs:
 
       - name: Update Google Sheets
         id: sheets
-        if: inputs.mode == 'collect' || inputs.mode == ''
+        if: inputs.mode == 'collect' || inputs.mode == '' || inputs.mode == 'tidy'
         continue-on-error: true
         shell: bash
         env:
