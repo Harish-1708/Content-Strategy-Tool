@@ -416,6 +416,21 @@ delete by hand and tried again next run) and its sheet row deleted. **A row you 
 what is already in the bank the same way, and the Collect workflow's mode **tidy** does only that (it collects nothing), so raising
 `min_relevance` and running `tidy` cleans the sheet and the Drive.
 
+**Google's limits, and what the tool does about them.** Google allows 60 sheet writes a minute per user. The tool paces its writes to 45 a
+minute (a brand-new spreadsheet takes about 27, so a normal update never waits), deletes many rows in one request instead of one request per
+row, and if Google refuses a write anyway it waits out a whole minute before it tries again (a refused read waits 20 seconds, then 65). A run
+that still fails can simply be run again: every step carries on from what the sheet already holds.
+
+**Picture links that expire.** Meta's picture and video links work for only hours or days. The Idea Bank step runs straight after a
+collection, while the links work. When a file is wanted later (a `tidy` of older items) and the link has expired, nothing is downloaded and the
+run says so; the row keeps its link to the original ad, and the file is saved if that ad is collected again (the fresh link replaces the old
+one for any item that has no file yet).
+
+**The minimum score works both ways.** Each run says how far below `min_relevance` the items it removed scored (for example "3 scored 50-59").
+If that looks too strict, lower the minimum and run `tidy`: items removed only for a low score come back when they reach the new minimum, and
+get a new Drive folder if their link still works. A copy or the brand's own content never comes back. A run scores up to 12 batches of 8 items
+(`max_scoring_calls`), enough for the 60 new items it can take in.
+
 **Pictures and videos in the Shared Drive.** At the moment an item is added, its picture or video is downloaded (these links
 expire within about a day, so it cannot wait) and saved in the Shared Drive folder named by `IDEA_BANK_FOLDER_ID`, laid out as
 `<root> / <Brand name> / IB-0001 - topic / the files`, with each brand's finished briefs in `<Brand name> / Briefs`. Only the
