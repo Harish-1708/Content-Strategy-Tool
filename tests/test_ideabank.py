@@ -42,7 +42,7 @@ def record(items, at=NOW):
 def bank_with(*ids, **kw):
     bank = {"next": 1, "items": {}}
     IB.intake_collected(bank, [record([row("instagram", i, handle="u", title=f"post {i}", text="caption " + i, url=f"https://www.instagram.com/p/{i}/",
-                                           media_url=f"https://cdn.example/{i}.jpg", likes=10) for i in ids])], S, NOW)
+                                           media_url=f"https://cdn.example/{i}.jpg", likes=10) for i in ids])], replace(S, max_new_per_run=max(60, len(ids))), NOW)
     return bank
 
 
