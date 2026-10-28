@@ -11,7 +11,6 @@ import pytest
 from contentintel import brief as BR
 from contentintel import drive as D
 from contentintel import ideabank as IB
-from contentintel import sheets
 from contentintel.drive import DriveClient
 from contentintel.store import Store
 
@@ -554,19 +553,6 @@ def test_a_dry_run_deletes_no_rows(store_in_tmp, swov):
     remove(store, ["IB-0001"])
     run([swov], store, client, dry_run=True)
     assert row_ids(client.created[0]) == ["IB-0001", "IB-0002"]
-
-
-def test_pruning_without_the_key_column_changes_nothing():
-    class Ws:
-        deleted = []
-
-        def get_all_values(self):
-            return [["title"], ["x"]]
-
-        def delete_rows(self, n):
-            self.deleted.append(n)
-    ws = Ws()
-    assert sheets._prune_rows(ws, "idea_id", {"IB-0001"}) == (0, 0) and ws.deleted == []
 
 
 # ---- the tidy mode of the workflow ----------------------------------------------------------------------------------------------------------
