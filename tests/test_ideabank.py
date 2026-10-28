@@ -46,6 +46,14 @@ def bank_with(*ids, **kw):
     return bank
 
 
+def kept_bank(*ids):
+    """A bank whose items were judged relevant (scored and kept): the only items that get a folder and a row."""
+    bank = bank_with(*ids)
+    for item in bank["items"].values():
+        item.update({"state": "kept", "score": 80, "relevance": 80, "summary": "s", "how_to_use": "h", "risk": "none"})
+    return bank
+
+
 class Media:
     def __init__(self, status=200, mime="image/jpeg", content=b"\xff\xd8\xff" + bytes(200), length=None):
         self.status_code, self.content = status, content
@@ -65,7 +73,7 @@ def getter(responses=None, default=None, boom=None):
         calls.append(url)
         if boom:
             raise boom
-        return (responses or {}).get(url, default or Media())
+        return (responses or {}).get(url) or default or Media(content=b"\xff\xd8\xff" + url.encode() + bytes(200))
     get.calls = calls
     return get
 
@@ -271,26 +279,26 @@ def test_videos_have_their_own_limit_and_can_be_switched_off():
 
 def test_each_items_file_goes_in_its_own_folder_under_the_brands(drive):
     client, fake = drive
-    bank = bank_with("A", "B")
+    bank = kept_bank("A", "B")
     bank["items"]["IB-0001"]["topic"] = "comfort hook"
     saved, lines = IB.save_assets(bank, ["IB-0001", "IB-0002"], "Swoveralls", client, getter(), S)
     assert saved == 2 and lines == []
     assert fake.tree() == ["Swoveralls/", "  IB-0001 - comfort hook/", "    IB-0001-image.jpg", "  IB-0002 - post B/", "    IB-0002-image.jpg"]
     one = bank["items"]["IB-0001"]
     assert one["drive_folder_url"].startswith("https://drive.google.com/drive/folders/") and one["drive_folder_id"] in fake.files
-    assert one["assets"][0]["name"] == "IB-0001-image.jpg" and one["assets"][0]["kind"] == "image" and one["assets"][0]["bytes"] == 203
-    assert fake.files[one["assets"][0]["drive_id"]]["data"] == b"\xff\xd8\xff" + bytes(200)
+    assert one["assets"][0]["name"] == "IB-0001-image.jpg" and one["assets"][0]["kind"] == "image" and one["assets"][0]["bytes"] == 3 + len("https://cdn.example/A.jpg") + 200 and len(one["assets"][0]["sha256"]) == 64
+    assert fake.files[one["assets"][0]["drive_id"]]["data"] == b"\xff\xd8\xff" + b"https://cdn.example/A.jpg" + bytes(200)
 
 
 def test_the_brand_folder_is_made_once_for_many_items(drive):
     client, fake = drive
-    IB.save_assets(bank_with("A", "B", "C"), ["IB-0001", "IB-0002", "IB-0003"], "Swoveralls", client, getter(), S)
+    IB.save_assets(kept_bank("A", "B", "C"), ["IB-0001", "IB-0002", "IB-0003"], "Swoveralls", client, getter(), S)
     assert len([f for f in fake.files.values() if f["name"] == "Swoveralls"]) == 1
 
 
 def test_a_video_is_saved_as_a_video_with_its_type(drive):
     client, fake = drive
-    bank = bank_with("A")
+    bank = kept_bank("A")
     IB.save_assets(bank, ["IB-0001"], "Swoveralls", client, getter(default=Media(mime="video/mp4", content=b"mp4")), S)
     asset = bank["items"]["IB-0001"]["assets"][0]
     assert asset["name"] == "IB-0001-video.mp4" and asset["kind"] == "video" and fake.files[asset["drive_id"]]["mime"] == "video/mp4"
@@ -298,7 +306,7 @@ def test_a_video_is_saved_as_a_video_with_its_type(drive):
 
 def test_an_item_with_no_file_to_save_gets_no_folder_and_no_download(drive):
     client, fake = drive
-    bank = bank_with("A")
+    bank = kept_bank("A")
     bank["items"]["IB-0001"]["media_url"] = ""
     get = getter()
     assert IB.save_assets(bank, ["IB-0001"], "Swoveralls", client, get, S) == (0, []) and fake.tree() == [] and get.calls == []
@@ -306,7 +314,7 @@ def test_an_item_with_no_file_to_save_gets_no_folder_and_no_download(drive):
 
 def test_a_file_that_cannot_be_downloaded_leaves_a_note_and_is_tried_again_up_to_three_times(drive):
     client, fake = drive
-    bank = bank_with("A")
+    bank = kept_bank("A")
     get = getter(default=Media(status=404))
     for attempt in range(1, 5):
         saved, lines = IB.save_assets(bank, ["IB-0001"], "Swoveralls", client, get, S)
@@ -317,7 +325,7 @@ def test_a_file_that_cannot_be_downloaded_leaves_a_note_and_is_tried_again_up_to
 
 def test_a_file_that_saves_on_a_later_try_clears_the_note(drive):
     client, fake = drive
-    bank = bank_with("A")
+    bank = kept_bank("A")
     IB.save_assets(bank, ["IB-0001"], "Swoveralls", client, getter(default=Media(status=500)), S)
     assert bank["items"]["IB-0001"]["asset_note"]
     IB.save_assets(bank, ["IB-0001"], "Swoveralls", client, getter(), S)
@@ -326,7 +334,7 @@ def test_a_file_that_saves_on_a_later_try_clears_the_note(drive):
 
 def test_a_file_already_in_the_folder_is_not_uploaded_again(drive):
     client, fake = drive
-    bank = bank_with("A")
+    bank = kept_bank("A")
     IB.save_assets(bank, ["IB-0001"], "Swoveralls", client, getter(), S)
     uploads = sum(1 for c in fake.calls if "upload/drive" in c["url"])
     item = bank["items"]["IB-0001"]
@@ -337,7 +345,7 @@ def test_a_file_already_in_the_folder_is_not_uploaded_again(drive):
 
 def test_a_topic_comes_from_the_title_when_none_was_scored(drive):
     client, fake = drive
-    bank = bank_with("A")
+    bank = kept_bank("A")
     bank["items"]["IB-0001"]["title"] = "A very long title " * 10
     IB.save_assets(bank, ["IB-0001"], "Swoveralls", client, getter(), S)
     name = fake.children(fake.folder_named(ROOT, "Swoveralls") or "")[0] if False else [n for n in fake.tree() if n.startswith("  IB-0001")][0].strip("/ ")
@@ -346,7 +354,7 @@ def test_a_topic_comes_from_the_title_when_none_was_scored(drive):
 
 def test_a_drive_problem_stops_the_saving_notes_it_and_is_raised(drive):
     client, fake = drive
-    bank = bank_with("A", "B")
+    bank = kept_bank("A", "B")
     fake.script = [(403, {"error": {"message": "no"}})]
     with pytest.raises(DriveError, match="is not shared with"):
         IB.save_assets(bank, ["IB-0001", "IB-0002"], "Swoveralls", client, getter(), S)
@@ -355,7 +363,7 @@ def test_a_drive_problem_stops_the_saving_notes_it_and_is_raised(drive):
 
 def test_items_that_already_have_files_are_left_alone(drive):
     client, fake = drive
-    bank = bank_with("A")
+    bank = kept_bank("A")
     IB.save_assets(bank, ["IB-0001"], "Swoveralls", client, getter(), S)
     assert not IB.needs_assets(bank["items"]["IB-0001"])
     get = getter()
@@ -483,23 +491,26 @@ def test_a_brand_with_no_catalogue_still_has_a_context(store, swov):
 # ---- the sheet --------------------------------------------------------------------------------------------------------------------
 
 def test_the_sheet_rows_have_exactly_the_columns_the_tool_owns():
-    bank = bank_with("A")
+    bank = kept_bank("A")
     (r,) = IB.sheet_rows(bank).values()
     assert list(r) == IB.IDEABANK_COLUMNS and "Decision" not in r and "Notes" not in r and "decision" not in r
 
 
-def test_an_unscored_item_has_a_blank_score_and_a_scored_one_shows_everything(drive, store, swov):
+def test_only_kept_items_are_shown_not_unscored_or_removed_ones():
+    bank = kept_bank("A", "B", "C")
+    bank["items"]["IB-0002"]["state"] = "removed"
+    bank["items"]["IB-0003"].update({"state": "new", "score": None})
+    assert list(IB.sheet_rows(bank)) == ["IB-0001"]
+
+
+def test_a_shown_item_has_its_score_summary_link_and_file_count(drive, store, swov):
     client, fake = drive
-    bank = bank_with("A", "B")
-    claude = FakeClaude()
-    claude.json_answers = [{"items": [good("IB-0001", 77)]}]
-    run_scoring(store, swov, bank, claude, replace(S, score_batch=1, max_scoring_calls=1))
+    bank = kept_bank("A")
+    bank["items"]["IB-0001"].update({"score": 77})
     IB.save_assets(bank, ["IB-0001"], "Swoveralls", client, getter(), S)
-    rows = IB.sheet_rows(bank)
-    scored = next(r for r in rows.values() if r["score"] == 77)
-    blank = next(r for r in rows.values() if r["score"] == "")
-    assert scored["summary"] and scored["drive_folder"].startswith("https://drive.google.com/drive/folders/") and scored["assets"] == 1
-    assert scored["likes"] == 10 and blank["drive_folder"] == "" and blank["assets"] == 0 and blank["summary"] == ""
+    (scored,) = IB.sheet_rows(bank).values()
+    assert scored["score"] == 77 and scored["summary"] and scored["drive_folder"].startswith("https://drive.google.com/drive/folders/") and scored["assets"] == 1
+    assert scored["likes"] == 10
 
 
 # ---- decisions ----------------------------------------------------------------------------------------------------------------------
@@ -540,7 +551,7 @@ def test_a_tab_without_the_columns_is_an_error_that_says_what_to_do(header):
 # ---- one run -----------------------------------------------------------------------------------------------------------------------
 
 def seeded(store, ids=("A", "B")):
-    store.append_collected("swoveralls", record([row("instagram", i, handle="u", title=f"post {i}", text="caption", url=f"https://www.instagram.com/p/{i}/",
+    store.append_collected("swoveralls", record([row("instagram", i, handle="u", title=f"post {i}", text=f"caption {i}", url=f"https://www.instagram.com/p/{i}/",
                                                      media_url=f"https://cdn.example/{i}.jpg", likes=10) for i in ids]))
 
 
@@ -550,59 +561,97 @@ def full_run(store, swov, drive, claude=None, **kw):
     return IB.run_ideabank(swov, store, settings=kw.pop("settings", S), now=NOW, claude=claude, drive=client, get=kw.pop("get", getter()), budget=budget, **kw)
 
 
+def scored(*pairs):
+    """A Claude answer scoring items: (id, relevance, topic)."""
+    c = FakeClaude()
+    c.json_answers = [{"items": [good(i, rel, topic=topic) for i, rel, topic in pairs]}]
+    return c
+
+
 def test_a_run_scores_first_then_saves_files_in_folders_named_by_the_scored_topic(store, swov, drive):
     seeded(store)
-    claude = FakeClaude()
-    claude.json_answers = [{"items": [good("IB-0001", 90, topic="comfort hook"), good("IB-0002", 60, topic="gift guide")]}]
-    new, lines = full_run(store, swov, drive, claude)
+    new, lines = full_run(store, swov, drive, scored(("IB-0001", 90, "comfort hook"), ("IB-0002", 70, "gift guide")))
     client, fake = drive
-    assert sorted(new) == ["IB-0001", "IB-0002"] and "2 item(s) scored" in " ".join(lines) and "files saved for 2 item(s)" in " ".join(lines)
+    text = " ".join(lines)
+    assert sorted(new) == ["IB-0001", "IB-0002"] and "2 item(s) scored" in text and "files saved for 2 item(s)" in text
     assert [n for n in fake.tree() if n.startswith("  IB-")] == ["  IB-0001 - comfort hook/", "  IB-0002 - gift guide/"]
     bank = store.read_ideabank("swoveralls")
-    assert all(i["score"] and i["assets"] and i["drive_folder_url"] for i in bank["items"].values())
+    assert all(i["state"] == "kept" and i["score"] and i["assets"] and i["drive_folder_url"] for i in bank["items"].values())
 
 
-def test_without_claude_the_items_are_still_added_unscored_and_files_are_still_saved(store, swov, drive):
+def test_an_item_below_the_minimum_is_removed_and_never_gets_a_folder(store, swov, drive):
     seeded(store)
+    new, lines = full_run(store, swov, drive, scored(("IB-0001", 90, "comfort hook"), ("IB-0002", 59, "off topic")))
+    client, fake = drive
+    bank = store.read_ideabank("swoveralls")
+    low = bank["items"]["IB-0002"]
+    assert low["state"] == "removed" and low["removed_reason"] == "not relevant enough (scored 59, the minimum is 60)" and not low["assets"] and low["drive_folder_id"] == ""
+    assert [n for n in fake.tree() if n.startswith("  IB-")] == ["  IB-0001 - comfort hook/"]
+    assert "swoveralls: 1 item(s) removed (0 the brand's own, 0 cop(ies), 1 not relevant enough); 1 kept" in lines
+
+
+def test_an_item_that_scores_exactly_the_minimum_is_kept(store, swov, drive):
+    seeded(store, ("A",))
+    full_run(store, swov, drive, scored(("IB-0001", 60, "just enough")))
+    assert store.read_ideabank("swoveralls")["items"]["IB-0001"]["state"] == "kept"
+
+
+def test_raising_the_minimum_later_tidies_the_bank_and_the_drive(store, swov, drive):
+    seeded(store)
+    full_run(store, swov, drive, scored(("IB-0001", 90, "strong"), ("IB-0002", 65, "middling")))
+    client, fake = drive
+    assert len([n for n in fake.tree() if n.startswith("  IB-")]) == 2
+    new, lines = full_run(store, swov, drive, settings=replace(S, min_relevance=80))
+    bank = store.read_ideabank("swoveralls")
+    assert bank["items"]["IB-0002"]["state"] == "removed" and bank["items"]["IB-0001"]["state"] == "kept"
+    assert [n for n in fake.tree() if n.startswith("  IB-")] == ["  IB-0001 - strong/"]
+    assert "1 folder(s) of removed items moved to the Drive trash" in " ".join(lines)
+
+
+def test_without_claude_items_wait_unscored_with_no_folder_and_no_row(store, swov, drive):
+    seeded(store)
+    client, fake = drive
     new, lines = full_run(store, swov, drive)
-    assert len(new) == 2 and "items left unscored (no Claude key)" in " ".join(lines) and "files saved for 2 item(s)" in " ".join(lines)
-    assert all(i["score"] is None for i in store.read_ideabank("swoveralls")["items"].values())
+    text = " ".join(lines)
+    assert len(new) == 2 and "2 item(s) wait to be scored before they are shown or get a folder (no Claude key)" in text and "files saved for 0 item(s)" in text
+    bank = store.read_ideabank("swoveralls")
+    assert all(i["state"] == "new" and i["score"] is None and not i["assets"] for i in bank["items"].values()) and IB.sheet_rows(bank) == {}
+    assert fake.tree() == []
 
 
 def test_without_drive_the_items_are_added_and_scored_and_the_files_are_skipped_with_the_reason(store, swov):
     seeded(store)
-    claude = FakeClaude()
-    claude.json_answers = [{"items": [good("IB-0001"), good("IB-0002")]}]
+    claude = scored(("IB-0001", 80, "a"), ("IB-0002", 80, "b"))
     new, lines = IB.run_ideabank(swov, store, settings=S, now=NOW, claude=claude, drive=None, get=getter(), budget=IB.ClaudeBudget(store, NOW, 10))
     assert len(new) == 2 and "files not saved (no Drive folder is set up: add the IDEA_BANK_FOLDER_ID secret)" in " ".join(lines)
-    assert all(i["score"] == 80 and not i["assets"] for i in store.read_ideabank("swoveralls")["items"].values())
+    assert all(i["score"] == 80 and i["state"] == "kept" and not i["assets"] for i in store.read_ideabank("swoveralls")["items"].values())
 
 
 def test_files_can_be_switched_off(store, swov, drive):
     seeded(store)
     get = getter()
-    new, lines = full_run(store, swov, drive, settings=replace(S, save_assets=False), get=get)
-    assert get.calls == [] and "files" not in " ".join(lines)
+    full_run(store, swov, drive, scored(("IB-0001", 80, "a"), ("IB-0002", 80, "b")), settings=replace(S, save_assets=False), get=get)
+    assert get.calls == []
 
 
 def test_a_dry_run_counts_and_changes_nothing(store, swov, drive, tmp_path):
     seeded(store)
     new, lines = full_run(store, swov, drive, dry_run=True)
-    assert len(new) == 2 and lines == ["swoveralls: 2 new item(s) for the Idea Bank (2 in all)"] and not (tmp_path / "data" / "swoveralls" / "ideabank").exists()
+    assert len(new) == 2 and lines == ["swoveralls: 2 new item(s) taken in"] and not (tmp_path / "data" / "swoveralls" / "ideabank").exists()
 
 
 def test_a_second_run_adds_nothing_and_does_not_touch_drive_again(store, swov, drive):
     seeded(store)
     client, fake = drive
-    full_run(store, swov, drive)
+    full_run(store, swov, drive, scored(("IB-0001", 80, "a"), ("IB-0002", 80, "b")))
     calls = len(fake.calls)
     new, lines = full_run(store, swov, drive)
-    assert new == [] and len(fake.calls) == calls and lines[0] == "swoveralls: 0 new item(s) for the Idea Bank (2 in all)"
+    assert new == [] and len(fake.calls) == calls and lines[0] == "swoveralls: 0 new item(s) taken in"
 
 
 def test_files_that_failed_before_are_tried_again_on_the_next_run(store, swov, drive):
     seeded(store, ("A",))
-    full_run(store, swov, drive, get=getter(default=Media(status=500)))
+    full_run(store, swov, drive, scored(("IB-0001", 80, "a")), get=getter(default=Media(status=500)))
     assert store.read_ideabank("swoveralls")["items"]["IB-0001"]["assets"] == []
     new, lines = full_run(store, swov, drive)
     assert new == [] and len(store.read_ideabank("swoveralls")["items"]["IB-0001"]["assets"]) == 1
@@ -611,18 +660,16 @@ def test_files_that_failed_before_are_tried_again_on_the_next_run(store, swov, d
 def test_a_drive_problem_stops_the_saving_with_a_message_but_keeps_the_items_and_scores(store, swov, drive):
     seeded(store)
     client, fake = drive
-    claude = FakeClaude()
-    claude.json_answers = [{"items": [good("IB-0001"), good("IB-0002")]}]
     fake.script = [(403, {"error": {"message": "no"}})]
-    new, lines = full_run(store, swov, drive, claude)
+    new, lines = full_run(store, swov, drive, scored(("IB-0001", 80, "a"), ("IB-0002", 80, "b")))
     assert any("Drive stopped the saving of files" in line and "is not shared with" in line for line in lines)
     bank = store.read_ideabank("swoveralls")
-    assert len(bank["items"]) == 2 and all(i["score"] == 80 for i in bank["items"].values())
+    assert len(bank["items"]) == 2 and all(i["score"] == 80 and i["state"] == "kept" for i in bank["items"].values())
 
 
 def test_a_request_tags_its_items_and_only_takes_what_its_run_collected(store, swov, drive):
-    store.append_collected("swoveralls", record([row("instagram", "OLD")], at="2026-10-01T00:00:00Z"))
-    store.append_collected("swoveralls", record([row("instagram", "NEW")], at="2026-10-20T09:00:00Z"))
+    store.append_collected("swoveralls", record([row("instagram", "OLD", text="old words")], at="2026-10-01T00:00:00Z"))
+    store.append_collected("swoveralls", record([row("instagram", "NEW", text="new words")], at="2026-10-20T09:00:00Z"))
     new, _ = full_run(store, swov, drive, request={"id": "RQ-0003", "region": "gb", "occasion": "", "text": "x"}, since="2026-10-20T08:00:00Z")
     (item,) = store.read_ideabank("swoveralls")["items"].values()
     assert item["source_item_id"] == "instagram:NEW" and item["request_id"] == "RQ-0003" and item["region"] == "gb"
