@@ -1,0 +1,91 @@
+{
+ "allowed": [
+  "meta_ads",
+  "instagram",
+  "tiktok",
+  "web_search",
+  "deep_research"
+ ],
+ "apify_extra": false,
+ "brand": "swoveralls",
+ "changes": [],
+ "created": "2026-10-28T11:53:49Z",
+ "formats": [],
+ "id": "RQ-0002",
+ "occasion": "Father's Day",
+ "plan": {
+  "audience": "Gift buyers (partners, adult kids, kids with parents) shopping for dads, plus dads who treat themselves; including dads who want comfy, casual, relaxed clothing",
+  "creator_angles": [
+   "what I got my dad for Father's Day gift haul",
+   "gift guide for the dad who has everything",
+   "my dad opens his Father's Day gift reaction",
+   "dad tries on a funny comfy outfit for the first time"
+  ],
+  "dropped": [],
+  "formats": [],
+  "goal": "Produce a Father's Day gifting content brief with hooks, angles and formats that show Swoveralls as an easy, comfortable, giftable pick for dads, including dad-and-kid matching options",
+  "interpretation": "Find Father's Day gift-angle content ideas that position Swoveralls (sweatshirt-style overalls, with shorts and kids' sizes) as a comfortable, fun gift for dads, drawing on adjacent gift categories and creator content rather than only direct competitors.",
+  "notes": "Decide whether to lead with the core range ($89-$159), which is a higher-priced gift, or with lower-priced merch ($25-$50) as an add-on. Kids' items could support a dad-and-kid matching angle, but confirm sizing and availability first. Garden Party and Color Riot are marked as coming soon, so check whether they will be live before Father's Day before featuring them. Also confirm shipping cut-off d",
+  "occasion": "Father's Day",
+  "tools": {
+   "deep_research": {
+    "questions": [
+     "How do people shop for Father's Day gifts, including who buys, typical budgets, timing, popular categories, and what messaging and content formats drive purchases in apparel and casual clothing?"
+    ],
+    "why": "Understand how Father's Day gift shopping works: who buys, budgets, timing, and what gift messaging resonates, so the brief is grounded in buyer behaviour."
+   },
+   "instagram": {
+    "hashtags": [
+     "fathersdaygiftideas",
+     "fathersdaygift",
+     "giftsfordad",
+     "dadstyle",
+     "dadfashion",
+     "dadandme"
+    ],
+    "why": "Find creator and brand posts on dad gift ideas, dad style and father-kid moments, to see what formats earn engagement."
+   },
+   "meta_ads": {
+    "keywords": [
+     "Father's Day gift",
+     "gifts for dad",
+     "Father's Day sale",
+     "dad loungewear",
+     "comfy gifts for dad",
+     "matching dad and kid outfit"
+    ],
+    "pages": [],
+    "why": "See how apparel, loungewear and adjacent gift brands frame Father's Day offers, hooks and creative formats in paid ads."
+   },
+   "tiktok": {
+    "hashtags": [
+     "fathersdaygiftideas",
+     "giftsfordad",
+     "whatigotmydad",
+     "fathersdaygifts",
+     "dadgifts",
+     "dadtok"
+    ],
+    "why": "Surface creator-led gift hauls, 'what I got my dad' videos, reactions to gifts and trending dad content that can be adapted to Swoveralls."
+   },
+   "web_search": {
+    "queries": [
+     "what I got my dad for Father's Day gift haul site:tiktok.com",
+     "what I got my dad for Father's Day gift haul site:instagram.com",
+     "gift guide for the dad who has everything site:tiktok.com",
+     "gift guide for the dad who has everything site:instagram.com",
+     "best Father's Day gifts for dads who have everything",
+     "Father's Day gift guide clothing for dad",
+     "comfortable gifts for dad Father's Day",
+     "unique Father's Day gift ideas"
+    ],
+    "why": "Check which gift guides and editorial lists feature casual apparel and comfy gifts for dads, and what gift categories and price points dominate."
+   }
+  }
+ },
+ "region": "worldwide",
+ "run": {},
+ "status": "planned",
+ "text": "Father's Day gifting ideas for dads",
+ "tools_mode": "auto"
+}
