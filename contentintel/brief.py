@@ -16,7 +16,7 @@ import json
 from . import rules as rules_mod
 from .drive import DOCX, DriveError, file_url, safe_name
 from .export import price_range
-from .ideabank import normalise_decision
+from .ideabank import normalise_decision, state_of
 from .providers import ProviderError
 from .sync import catalogue_state
 
@@ -55,7 +55,7 @@ def approved_items(bank, decisions, include_maybe=False, request_id=""):
     out = []
     for idea_id, item in sorted(bank["items"].items()):
         decision = normalise_decision((decisions.get(idea_id) or {}).get("decision"))
-        if decision in wanted and (not request_id or item.get("request_id") == request_id):
+        if decision in wanted and state_of(item) != "removed" and (not request_id or item.get("request_id") == request_id):
             out.append(item)
     return out
 
