@@ -205,6 +205,10 @@ class DriveClient:
     def download(self, file_id):
         return self._send("GET", f"{API}/{file_id}", params={"alt": "media", "supportsAllDrives": "true"}).content
 
+    def trash(self, file_id):
+        """Move a file or folder to the Drive trash (recoverable for 30 days). Needs the Content manager role on a Shared Drive."""
+        self._send("PATCH", f"{API}/{file_id}", plain=True, params={"supportsAllDrives": "true"}, json={"trashed": True})
+
     def delete(self, file_id):
         self._send("DELETE", f"{API}/{file_id}", plain=True, params={"supportsAllDrives": "true"})
 
