@@ -8,6 +8,7 @@ and the brief reads the saved files, so nothing has to be searched for again.
 
 Nothing in the bank is ever deleted by the tool, and a row is never created twice for the same source item.
 """
+import hashlib
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -15,7 +16,7 @@ from pathlib import Path
 import yaml
 
 from .collectors import collected_rows
-from .drive import DriveError, folder_url, safe_name
+from .drive import DriveError, folder_url, item_folder_name, safe_name
 from .export import price_range
 from .providers import ProviderError
 
@@ -44,6 +45,8 @@ class IdeaBankSettings:
     image_max_mb: int = 15
     video_max_mb: int = 80
     claude_monthly_calls: int = 300
+    min_relevance: int = 60
+    skip_own_brand: bool = True
     # planner (request mode)
     plan_max_keywords: int = 6
     plan_max_hashtags: int = 6
@@ -59,7 +62,7 @@ class IdeaBankSettings:
 
 
 _IDEABANK_KEYS = {"enabled", "sources", "max_new_per_run", "score_batch", "max_scoring_calls", "save_assets", "save_videos",
-                  "image_max_mb", "video_max_mb", "claude_monthly_calls"}
+                  "image_max_mb", "video_max_mb", "claude_monthly_calls", "min_relevance", "skip_own_brand"}
 _PLANNER_KEYS = {"max_keywords", "max_hashtags", "max_queries", "max_questions", "max_pages"}
 _BRIEF_KEYS = {"models", "max_concepts", "max_calls", "images_per_item"}
 _SOURCES = ("meta_ads", "instagram", "tiktok")
@@ -108,7 +111,11 @@ def load_settings(path="research.yaml"):
                          ("claude_monthly_calls", 0)):
         if key in bank:
             kw[key] = _whole(bank[key], f"ideabank.{key}", minimum)
-    for key in ("save_assets", "save_videos"):
+    if "min_relevance" in bank:
+        kw["min_relevance"] = _whole(bank["min_relevance"], "ideabank.min_relevance", 0)
+        if kw["min_relevance"] > 100:
+            raise IdeaBankError(f"ideabank.min_relevance must be between 0 and 100, got {bank['min_relevance']!r}")
+    for key in ("save_assets", "save_videos", "skip_own_brand"):
         if key in bank:
             kw[key] = _flag(bank[key], f"ideabank.{key}")
     for key in _PLANNER_KEYS:
@@ -172,10 +179,11 @@ def _new_item(idea_id, source, source_item_id, row, now, request):
     return {"id": idea_id, "source_item_id": source_item_id, "kind": KINDS.get(source, "web result"), "platform": source,
             "handle": _clip(row.get("handle"), 80), "title": _clip(row.get("title"), 200), "text": _clip(row.get("text")),
             "url": row.get("url") or "", "posted_at": row.get("posted_at") or "", "metrics": _metrics(row),
-            "media_url": row.get("media_url") or "", "region": (request or {}).get("region", ""),
+            "media_url": row.get("media_url") or "", "page_id": row.get("page_id") or "", "region": (request or {}).get("region", ""),
             "request_id": (request or {}).get("id", ""), "occasion": (request or {}).get("occasion", ""), "added_at": now,
             "topic": "", "relevance": None, "score": None, "summary": "", "how_to_use": "", "risk": "", "scored_at": "", "model": "",
-            "drive_folder_id": "", "drive_folder_url": "", "assets": [], "asset_note": "", "asset_tries": 0}
+            "drive_folder_id": "", "drive_folder_url": "", "assets": [], "asset_note": "", "asset_tries": 0,
+            "state": "new", "removed_reason": "", "duplicate_of": "", "removal_note": "", "fingerprint": ""}
 
 
 def _interest(row):
@@ -186,35 +194,143 @@ def _interest(row):
     return (1 if row.get("signal") else 0, num("views") + num("likes") * 10, num("days_running"))
 
 
-def intake_collected(bank, records, settings, now, request=None, since=""):
-    """Add the collected ads and posts that are not yet in the bank. Returns the new ids, newest sourced first."""
+def state_of(item):
+    """'kept' (scored and relevant: shown and used), 'removed' (a copy, the brand's own, or not relevant), or 'new' (not scored yet)."""
+    if item.get("state") in ("kept", "removed", "new"):
+        return item["state"]
+    return "kept" if item.get("score") is not None else "new"
+
+
+def _norm(text):
+    return re.sub(r"[^a-z0-9]+", " ", str(text or "").lower()).strip()
+
+
+def fingerprint(item):
+    """What makes two items the same idea, whatever their ids: an ad is its text (or headline, if the text is short), a web result is
+    its address, a social post is its account plus its words. An item with nothing to compare is never merged with another."""
+    body, head = _norm(item["text"]), _norm(item["title"])
+    if item["kind"] == "ad":
+        base = body if len(body) >= 20 else head
+    elif item["kind"] == "web result":
+        base = re.sub(r"^https?://(www\.)?", "", str(item["url"] or "").lower()).split("#")[0].split("?")[0].rstrip("/")
+    else:
+        base = f"{_norm(item['handle'])}|{body or head}" if (body or head) else ""
+    return hashlib.sha1(base.encode("utf-8")).hexdigest()[:16] if base else ""
+
+
+def pick_original(items):
+    """The item to keep out of copies of one idea: the longest-running ad, else the oldest post, else the first one added."""
+    return min(items, key=lambda i: (-(i["metrics"].get("days_running") or 0), i["posted_at"] or "9999", i["id"]))
+
+
+def normalise_bank(bank):
+    """Give every item the fields newer code needs. Older banks had no state, page id or fingerprint."""
+    for item in bank["items"].values():
+        item["state"] = state_of(item)
+        for key, default in (("page_id", ""), ("removed_reason", ""), ("duplicate_of", ""), ("removal_note", "")):
+            item.setdefault(key, default)
+        if not item.get("fingerprint"):
+            item["fingerprint"] = fingerprint(item)
+    return bank
+
+
+def own_names(brand):
+    """The spellings of the brand's own name: 'swoveralls', 'defi snacks' and the same without the space."""
+    raw = {_norm(brand.name), _norm(brand.slug), _norm(str(brand.domain).split(".")[0])}
+    return {n for n in raw | {n.replace(" ", "") for n in raw} if len(n) >= 4}
+
+
+def own_reason(brand, own_pages, item):
+    """Why this item is the brand's own content (so it is not an idea to take from someone else), or ''."""
+    names = own_names(brand)
+    handle = _norm(item["handle"]).replace(" ", "")
+    if handle and any(n.replace(" ", "") in handle for n in names):
+        return "it comes from the brand's own account"
+    if item.get("page_id") and item["page_id"] in set(own_pages):
+        return "it comes from the brand's own Meta page"
+    domain = str(brand.domain or "").lower()
+    if domain and domain in str(item["url"] or "").lower():
+        return "it is a page on the brand's own site"
+    blob = f" {_norm(item['title'])} {_norm(item['text'])} "
+    if any(f" {n} " in blob for n in names):
+        return "it names the brand itself"
+    return ""
+
+
+def own_page_ids(store, slug):
+    state = store.read_benchmarks(slug) or {}
+    return [p.get("page_id") for p in state.get("pages", []) if p.get("kind") == "own" and p.get("page_id")]
+
+
+def intake_collected(bank, records, settings, now, request=None, since="", brand=None, own_pages=(), skipped=None):
+    """Add the collected ads and posts that are not yet in the bank. Returns the new ids, newest sourced first.
+    Items of the brand's own are left out, and so are copies: of an item already in the bank (whatever its state, so a removed copy
+    never comes back) and of each other (the original is kept). `skipped` is filled with how many of each were left out."""
+    skipped = skipped if skipped is not None else {}
+    skipped.setdefault("own", 0)
+    skipped.setdefault("duplicate", 0)
     known = {item["source_item_id"] for item in bank["items"].values()}
+    seen = {item["fingerprint"] for item in bank["items"].values() if item.get("fingerprint")}
     rows = collected_rows([r for r in records if r.get("at", "") >= since])
-    fresh = [(iid, row) for iid, row in rows.items() if row["source"] in settings.sources and iid not in known]
-    fresh.sort(key=lambda pair: (pair[1].get("last_seen") or "", _interest(pair[1])), reverse=True)
+    drafts = []
+    for iid, row in rows.items():
+        if row["source"] not in settings.sources or iid in known:
+            continue
+        draft = _new_item("", row["source"], iid, row, now, request)
+        if brand is not None and settings.skip_own_brand and own_reason(brand, own_pages, draft):
+            skipped["own"] += 1
+            continue
+        draft["fingerprint"] = fingerprint(draft)
+        drafts.append((iid, row, draft))
+    groups = {}
+    for entry in drafts:
+        groups.setdefault(entry[2]["fingerprint"] or f"unique:{entry[0]}", []).append(entry)
+    fresh = []
+    for fp, group in groups.items():
+        skipped["duplicate"] += len(group) - 1
+        if fp in seen:
+            skipped["duplicate"] += 1
+            continue
+        fresh.append(min(group, key=lambda e: (-(e[2]["metrics"].get("days_running") or 0), e[2]["posted_at"] or "9999")))
+    fresh.sort(key=lambda e: (e[1].get("last_seen") or "", _interest(e[1])), reverse=True)
     new = []
-    for iid, row in fresh[:settings.max_new_per_run]:
+    for iid, row, draft in fresh[:settings.max_new_per_run]:
         idea_id = f"IB-{bank['next']:04d}"
         bank["next"] += 1
-        bank["items"][idea_id] = _new_item(idea_id, row["source"], iid, row, now, request)
+        draft["id"] = idea_id
+        bank["items"][idea_id] = draft
         new.append(idea_id)
     return new
 
 
-def intake_web(bank, sources, settings, now, request=None):
-    """Add web results (articles, TikTok and Instagram pages found by search) that are not yet in the bank.
-    `sources` is the Research tab's rows: {source_id: {title, url, snippet, published, domain, ...}}."""
+def intake_web(bank, sources, settings, now, request=None, brand=None, own_pages=(), skipped=None):
+    """Add web results (articles, TikTok and Instagram pages found by search) that are not yet in the bank, leaving out the brand's own
+    pages and copies of items already there. `sources` is the Research tab's rows:
+    {source_id: {title, url, snippet, published, domain, ...}}."""
+    skipped = skipped if skipped is not None else {}
+    skipped.setdefault("own", 0)
+    skipped.setdefault("duplicate", 0)
     known = {item["source_item_id"] for item in bank["items"].values()}
+    seen = {item["fingerprint"] for item in bank["items"].values() if item.get("fingerprint")}
     new = []
     for sid, row in sources.items():
         key = f"web:{sid}"
         if key in known or not row.get("url") or len(new) >= settings.max_new_per_run:
             continue
+        item = _new_item("", "web", key, {"title": row.get("title"), "text": row.get("snippet"), "url": row.get("url"),
+                                           "posted_at": row.get("published"), "handle": row.get("domain")}, now, request)
+        if brand is not None and settings.skip_own_brand and own_reason(brand, own_pages, item):
+            skipped["own"] += 1
+            continue
+        item["fingerprint"] = fingerprint(item)
+        if item["fingerprint"] in seen:
+            skipped["duplicate"] += 1
+            continue
         idea_id = f"IB-{bank['next']:04d}"
         bank["next"] += 1
-        item = _new_item(idea_id, "web", key, {"title": row.get("title"), "text": row.get("snippet"), "url": row.get("url"),
-                                                "posted_at": row.get("published"), "handle": row.get("domain")}, now, request)
+        item["id"] = idea_id
         bank["items"][idea_id] = item
+        seen.add(item["fingerprint"])
         new.append(idea_id)
     return new
 
@@ -260,14 +376,17 @@ def fetch_media(get, url, settings):
 
 
 def needs_assets(item):
-    return bool(item["media_url"]) and not item["assets"] and item["asset_tries"] < ASSET_TRIES
+    """Only items that were judged relevant get a folder: nothing is saved for an item that is waiting to be scored or has been removed."""
+    return state_of(item) == "kept" and bool(item["media_url"]) and not item["assets"] and item["asset_tries"] < ASSET_TRIES
 
 
 def save_assets(bank, ids, brand_name, drive, get, settings, brand_folder=None):
     """Save the picture or video of each given item in its own Drive folder, and note the folder on the item.
-    Returns (saved, skipped lines). An item with nothing to save gets no folder."""
+    A file that is byte for byte the same as one already saved for another kept item is not saved again: that item is a copy and is removed.
+    Returns (saved, lines). An item with nothing to save gets no folder."""
     lines, saved = [], 0
     folder_of_brand = brand_folder
+    hashes = {a["sha256"]: i for i, it in bank["items"].items() if state_of(it) == "kept" for a in it["assets"] if a.get("sha256")}
     for idea_id in ids:
         item = bank["items"][idea_id]
         if not needs_assets(item):
@@ -278,6 +397,12 @@ def save_assets(bank, ids, brand_name, drive, get, settings, brand_folder=None):
         except AssetSkip as exc:
             item["asset_note"] = str(exc)
             lines.append(f"{idea_id}: no file saved: {exc}")
+            continue
+        digest = hashlib.sha256(data).hexdigest()
+        twin = hashes.get(digest)
+        if twin and twin != idea_id:
+            item.update({"state": "removed", "duplicate_of": twin, "removed_reason": f"a copy of {twin} (the very same file)"})
+            lines.append(f"{idea_id}: removed, it is a copy of {twin} (the very same file)")
             continue
         try:
             folder_of_brand = folder_of_brand or drive.brand_folder(brand_name)
@@ -292,7 +417,8 @@ def save_assets(bank, ids, brand_name, drive, get, settings, brand_folder=None):
             lines.append(f"{idea_id}: not saved in Drive: {exc}")
             raise
         item.update({"drive_folder_id": folder, "drive_folder_url": folder_url(folder), "asset_note": ""})
-        item["assets"].append({"name": name, "drive_id": file_id, "kind": kind, "bytes": len(data)})
+        item["assets"].append({"name": name, "drive_id": file_id, "kind": kind, "bytes": len(data), "sha256": digest})
+        hashes[digest] = idea_id
         saved += 1
     return saved, lines
 
@@ -361,7 +487,7 @@ def clean_scores(raw, wanted_ids):
 
 def score_items(bank, ids, claude, brand, store, settings, budget, now, request=None):
     """Score unscored items in batches, most interesting first, within the call limits. Returns (scored count, lines)."""
-    todo = [i for i in ids if bank["items"][i]["score"] is None]
+    todo = [i for i in ids if bank["items"][i]["score"] is None and state_of(bank["items"][i]) != "removed"]
     todo.sort(key=lambda i: _interest(bank["items"][i]["metrics"]), reverse=True)
     context = brand_context(brand, store)
     ask = (f"\nRequest: {request['text']}" + (f" (occasion: {request['occasion']})" if request.get("occasion") else "")) if request else ""
@@ -394,6 +520,82 @@ def score_items(bank, ids, claude, brand, store, settings, budget, now, request=
 
 
 # ---------------------------------------------------------------------------------------------------------------------
+# keeping the bank clean: relevance, copies, the brand's own content, and the folders of what was removed
+# ---------------------------------------------------------------------------------------------------------------------
+
+def _remove(item, reason, duplicate_of=""):
+    item.update({"state": "removed", "removed_reason": reason, "duplicate_of": duplicate_of})
+
+
+def apply_relevance(bank, settings):
+    """A scored item is kept if it scored at least the minimum and removed otherwise (so raising the minimum later tidies the bank).
+    Returns how many were removed now."""
+    removed = 0
+    for item in bank["items"].values():
+        if item["state"] == "removed" or item["score"] is None:
+            continue
+        if item["score"] >= settings.min_relevance:
+            item["state"] = "kept"
+        else:
+            _remove(item, f"not relevant enough (scored {item['score']}, the minimum is {settings.min_relevance})")
+            removed += 1
+    return removed
+
+
+def tidy_duplicates(bank):
+    """Keep one original of every idea that appears more than once and remove the copies. Returns how many were removed."""
+    groups = {}
+    for item in bank["items"].values():
+        if item["state"] != "removed" and item["fingerprint"]:
+            groups.setdefault(item["fingerprint"], []).append(item)
+    removed = 0
+    for group in groups.values():
+        if len(group) > 1:
+            original = pick_original(group)
+            for item in group:
+                if item is not original:
+                    _remove(item, f"a copy of {original['id']}", original["id"])
+                    removed += 1
+    return removed
+
+
+def tidy_own(bank, brand, own_pages, settings):
+    """Remove items that turn out to be the brand's own content (a Meta page found later, say). Returns how many."""
+    if not settings.skip_own_brand:
+        return 0
+    removed = 0
+    for item in bank["items"].values():
+        if item["state"] != "removed":
+            why = own_reason(brand, own_pages, item)
+            if why:
+                _remove(item, f"the brand's own content: {why}")
+                removed += 1
+    return removed
+
+
+def trash_folders(bank, drive):
+    """Move the Drive folders of removed items to the trash. A folder that cannot be moved (the service account lacks the Content manager
+    role) is noted on its item and tried again next run. Returns (moved, lines)."""
+    moved, stuck, reason = 0, [], ""
+    for item in bank["items"].values():
+        if item["state"] != "removed" or not item["drive_folder_id"]:
+            continue
+        try:
+            drive.trash(item["drive_folder_id"])
+        except DriveError as exc:
+            item["removal_note"], reason = f"the folder could not be moved to the trash: {exc}", str(exc)
+            stuck.append(item_folder_name(item["id"], item["topic"]))
+            continue
+        item.update({"drive_folder_id": "", "drive_folder_url": "", "assets": [], "removal_note": ""})
+        moved += 1
+    lines = []
+    if stuck:
+        lines.append(f"{len(stuck)} folder(s) of removed items could not be moved to the Drive trash ({reason}) Give the service account the Content "
+                     f"manager role in the Shared Drive, or delete them by hand: {'; '.join(stuck[:6])}" + (" ..." if len(stuck) > 6 else ""))
+    return moved, lines
+
+
+# ---------------------------------------------------------------------------------------------------------------------
 # the sheet
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -405,10 +607,12 @@ IDEABANK_COLUMNS = ["idea_id", "kind", "platform", "title", "handle", "url", "po
 def sheet_rows(bank):
     rows = {}
     for idea_id, item in bank["items"].items():
+        if state_of(item) != "kept":                    # waiting to be scored, or removed: not shown
+            continue
         m = item["metrics"]
         rows[idea_id] = {"idea_id": idea_id, "kind": item["kind"], "platform": item["platform"], "title": item["title"],
                          "handle": item["handle"], "url": item["url"], "posted_at": item["posted_at"],
-                         "score": item["score"] if item["score"] is not None else "", "summary": item["summary"],
+                         "score": item["score"], "summary": item["summary"],
                          "how_to_use": item["how_to_use"], "risk": item["risk"], "topic": item["topic"], "region": item["region"],
                          "request_id": item["request_id"], "likes": m.get("likes", ""), "comments": m.get("comments", ""),
                          "shares": m.get("shares", ""), "views": m.get("views", ""), "days_running": m.get("days_running", ""),
@@ -452,34 +656,67 @@ def read_decisions(worksheet):
 # one run
 # ---------------------------------------------------------------------------------------------------------------------
 
+def _counts(bank):
+    out = {"new": 0, "kept": 0, "removed": 0}
+    for item in bank["items"].values():
+        out[state_of(item)] += 1
+    return out
+
+
 def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=None, request=None, web_sources=None,
                  dry_run=False, budget=None, since=""):
-    """Take new sourced items into the brand's bank, save their files and score them. Returns (new ids, summary lines).
-    Missing helpers are not errors: without Drive the files are skipped, without Claude the items stay unscored."""
+    """Take new sourced items into the brand's bank, keep only what is useful, save its files and score it. Returns (new ids, summary lines).
+
+    In order: leave out the brand's own content and copies; tidy what is already in the bank the same way; score what is not scored; keep
+    items that scored at least `min_relevance` and remove the rest; save pictures and videos only for the kept ones; move the Drive folders
+    of removed items to the trash. Missing helpers are not errors: without Drive the files are skipped, without Claude items wait unscored."""
     lines = []
-    bank = store.read_ideabank(brand.slug)
-    new = intake_collected(bank, store.read_collected(brand.slug), settings, now, request, since)
+    bank = normalise_bank(store.read_ideabank(brand.slug))
+    pages = own_page_ids(store, brand.slug)
+    skipped = {}
+    new = intake_collected(bank, store.read_collected(brand.slug), settings, now, request, since, brand, pages, skipped)
     if web_sources:
-        new += intake_web(bank, web_sources, settings, now, request)
-    lines.append(f"{brand.slug}: {len(new)} new item(s) for the Idea Bank ({len(bank['items'])} in all)")
+        new += intake_web(bank, web_sources, settings, now, request, brand, pages, skipped)
+    left_out = [f"{skipped['own']} of the brand's own" if skipped["own"] else "", f"{skipped['duplicate']} cop(ies)" if skipped["duplicate"] else ""]
+    lines.append(f"{brand.slug}: {len(new)} new item(s) taken in" + (f" (left out {' and '.join(x for x in left_out if x)})" if any(left_out) else ""))
     if dry_run:
         return new, lines
+    before = _counts(bank)
+    own = tidy_own(bank, brand, pages, settings)
+    copies = tidy_duplicates(bank)                           # before scoring, so no Claude call is spent on a copy
     if claude is not None and budget is not None:
-        unscored = [i for i, it in bank["items"].items() if it["score"] is None]
+        unscored = [i for i, it in bank["items"].items() if it["score"] is None and it["state"] != "removed"]
         scored, notes = score_items(bank, unscored, claude, brand, store, settings, budget, now, request)
         lines += notes
         lines.append(f"{brand.slug}: {scored} item(s) scored")
-    elif new:
-        lines.append(f"{brand.slug}: items left unscored (no Claude key)")
-    retry = [i for i, it in bank["items"].items() if i not in new and needs_assets(it)]
+    irrelevant = apply_relevance(bank, settings)
+    copies += tidy_duplicates(bank)                          # and again among the items that were kept
+    waiting = sum(1 for it in bank["items"].values() if state_of(it) == "new")
+    if waiting:
+        lines.append(f"{brand.slug}: {waiting} item(s) wait to be scored before they are shown or get a folder"
+                     + ("" if claude is not None else " (no Claude key)"))
+    retry = [i for i, it in bank["items"].items() if needs_assets(it)]
     try:
         if settings.save_assets and drive is not None and get is not None:
-            saved, notes = save_assets(bank, new + retry, brand.name, drive, get, settings)
+            saved, notes = save_assets(bank, retry, brand.name, drive, get, settings)
             lines += notes
             lines.append(f"{brand.slug}: files saved for {saved} item(s)")
-        elif settings.save_assets and new:
+        elif settings.save_assets and retry:
             lines.append(f"{brand.slug}: files not saved (no Drive folder is set up: add the IDEA_BANK_FOLDER_ID secret)")
     except DriveError as exc:
         lines.append(f"{brand.slug}: Drive stopped the saving of files: {exc}")
+    if drive is not None:
+        try:
+            moved, notes = trash_folders(bank, drive)
+            lines += notes
+            if moved:
+                lines.append(f"{brand.slug}: {moved} folder(s) of removed items moved to the Drive trash")
+        except DriveError as exc:
+            lines.append(f"{brand.slug}: Drive stopped the tidy-up of folders: {exc}")
+    after = _counts(bank)
+    removed_now = after["removed"] - before["removed"]
+    if removed_now:
+        lines.append(f"{brand.slug}: {removed_now} item(s) removed ({own} the brand's own, {copies} cop(ies), {irrelevant} not relevant enough); "
+                     f"{after['kept']} kept")
     store.write_ideabank(brand.slug, bank)
     return new, lines
