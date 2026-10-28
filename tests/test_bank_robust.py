@@ -180,10 +180,9 @@ def test_the_breakdown_never_shows_negative_scores_for_a_low_minimum():
 def test_a_run_shows_the_breakdown_only_for_what_it_removed_now(store, swov, drive):
     store.write_ideabank("swoveralls", bank_with("A", "B", "C", "D"))
     claude = FakeClaude()
-    claude.json_answers = [{"items": [good("IB-0001", 90), good("IB-0002", 57), good("IB-0003", 44), good("IB-0004", 20)]}]
+    claude.json_answers = [{"items": [good("IB-0001", 90), good("IB-0002", 57), good("IB-0003", 44), good("IB-0004", 20)]}]       # the minimum is 50
     new, lines = full_run(store, swov, drive, claude)
-    assert "swoveralls: 3 item(s) were not relevant enough: 1 scored 50-59, 1 scored 40-49, 1 scored lower. " in " ".join(lines).replace("\n", " ") or \
-        any(line.startswith("swoveralls: 3 item(s) were not relevant enough: 1 scored 50-59, 1 scored 40-49, 1 scored lower.") for line in lines)
+    assert any(line.startswith("swoveralls: 2 item(s) were not relevant enough: 1 scored 40-49, 0 scored 30-39, 1 scored lower.") for line in lines)
     again, lines = full_run(store, swov, drive)
     assert not any("were not relevant enough" in line for line in lines)
 
@@ -228,10 +227,10 @@ def test_a_run_with_a_lower_minimum_brings_items_back_and_saves_their_files_agai
     client, fake = drive
     store.write_ideabank("swoveralls", bank_with("A", "B"))
     claude = FakeClaude()
-    claude.json_answers = [{"items": [good("IB-0001", 90, topic="strong"), good("IB-0002", 52, topic="middling")]}]
+    claude.json_answers = [{"items": [good("IB-0001", 90, topic="strong"), good("IB-0002", 42, topic="middling")]}]
     full_run(store, swov, drive, claude)
     assert [n for n in fake.tree() if n.startswith("  IB-")] == ["  IB-0001 - strong/"]
-    new, lines = full_run(store, swov, drive, settings=replace(S, min_relevance=50))
+    new, lines = full_run(store, swov, drive, settings=replace(S, min_relevance=40))
     assert "1 item(s) removed earlier for a low score reach the minimum now and were brought back" in " ".join(lines)
     bank = store.read_ideabank("swoveralls")
     assert bank["items"]["IB-0002"]["state"] == "kept" and bank["items"]["IB-0002"]["assets"] and bank["items"]["IB-0002"]["drive_folder_id"]
