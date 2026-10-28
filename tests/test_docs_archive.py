@@ -154,7 +154,7 @@ def test_a_tab_is_named_by_date_brand_and_the_start_of_the_question():
 
 
 @pytest.mark.parametrize("question,expected_tail", [
-    ("**Task:** Produce a brief research report on loungewear", "Produce a brief research report on loungewear"),
+    ("**Task:** Produce a brief report", "Produce a brief report"),
     ("Question: who are the rivals?", "who are the rivals?"),
     ("  lots   of\n\n whitespace\there ", "lots of whitespace here"),
     ("", ""), (None, "")])
