@@ -215,7 +215,9 @@ def test_every_shipped_brand_file_loads_and_hand_writes_only_what_it_must(brands
         cfg = R.load_brand_research(brand, "brands")["collect"]
         assert cfg["auto_seeds"] is True and cfg["track_own_brand"] is True, slug
         assert cfg["deep_research"] == {"questions": [], "context": ""}, slug            # nothing is hard-coded per brand
-        assert cfg["ads"]["pages"] == [] and cfg["ads"]["benchmark_pages"] == {}, slug  # no advertiser is chosen for you
+        # no advertiser is chosen for you; the only decisions in a shipped file are the owner's own "skip" choices (Swoveralls: four off-topic brands)
+        owner_skips = {"swoveralls": {"Allbirds": "skip", "Liquid Death": "skip", "Cotopaxi": "skip", "Dollar Shave Club": "skip"}}
+        assert cfg["ads"]["pages"] == [] and cfg["ads"]["benchmark_pages"] == owner_skips.get(slug, {}), slug
         assert cfg["tiktok"] == {"hashtags": [], "profiles": [], "searches": []} and cfg["instagram"] == {"hashtags": []}, slug
     plans = {slug: [t.seeds for t in C.plan_collections(R.load_brand_research(b, "brands")["collect"])] for slug, b in brands.items()}
     assert plans == {"swoveralls": ["1 advertiser pages/keywords"], "duderobe": [], "defi_snacks": []}   # Swoveralls: its product term
