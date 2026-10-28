@@ -15,7 +15,7 @@ import time
 
 SCOPE = "https://www.googleapis.com/auth/documents"
 API = "https://docs.googleapis.com/v1/documents"
-TITLE_LIMIT = 60                 # characters of a tab's name
+TITLE_LIMIT = 50                 # characters of a tab's name: Google Docs refuses a longer one (error 400)
 _RETRY = (429, 500, 502, 503, 504)
 _SLEEP = time.sleep
 
@@ -70,9 +70,8 @@ def tab_title(date, brand, question):
     q = re.sub(r"\s+", " ", re.sub(r"[\x00-\x1f]", " ", question or "")).strip()
     q = re.sub(r"\*+|`+", "", q).lstrip("# ").strip()                       # markdown bold and code marks
     q = re.sub(r"^(?:task|question)\s*:\s*", "", q, flags=re.I)
-    head = f"{date} {brand} - "
-    room = max(10, TITLE_LIMIT - len(head))
-    return head + (q if len(q) <= room else q[:room - 1].rstrip() + "…")
+    full = f"{date} {brand} - {q}"
+    return full if len(full) <= TITLE_LIMIT else full[:TITLE_LIMIT - 1].rstrip() + "…"          # never longer, even for a very long brand name
 
 
 _HEADING_END = re.compile(r"[.!?;,:]$")
