@@ -28,6 +28,65 @@ class PlanError(Exception):
     pass
 
 
+# The kinds of content a request can ask for. The first words in each list are what a person may type; all are read case-insensitively.
+FORMATS = {
+    "ugc": "UGC: real customers and creators on camera or in photos (reviews, hauls, try-ons, unboxings, testimonials)",
+    "ai": "AI-made or AI-assisted content (AI images, AI video ads, AI avatars and voices)",
+    "influencer": "influencer and creator partnerships",
+    "static": "static posts and single-image ads",
+    "carousel": "carousels and slide posts",
+    "video": "short-form video: Reels, TikToks and video ads",
+    "meme": "memes, humour and trend formats",
+}
+FORMAT_WORDS = {
+    "ugc": "ugc", "user generated": "ugc", "user generated content": "ugc", "customer content": "ugc", "customer videos": "ugc", "testimonial": "ugc",
+    "testimonials": "ugc", "reviews": "ugc", "unboxing": "ugc", "hauls": "ugc",
+    "ai": "ai", "ai content": "ai", "ai generated": "ai", "ai made": "ai", "ai ads": "ai", "ai video": "ai", "ai images": "ai", "ai influencer": "ai",
+    "influencer": "influencer", "influencers": "influencer", "creator": "influencer", "creators": "influencer", "partnerships": "influencer",
+    "static": "static", "static post": "static", "static posts": "static", "post": "static", "posts": "static", "image": "static", "images": "static",
+    "image ads": "static", "photo": "static", "photos": "static",
+    "carousel": "carousel", "carousels": "carousel", "slides": "carousel", "slideshow": "carousel",
+    "video": "video", "videos": "video", "short video": "video", "short videos": "video", "reel": "video", "reels": "video", "video ads": "video",
+    "meme": "meme", "memes": "meme", "humour": "meme", "humor": "meme", "trends": "meme",
+}
+# Searches that go looking for each format, added to the web searches of a request that asks for it.
+FORMAT_QUERIES = {
+    "ugc": ["UGC ad examples apparel brand", "UGC creator try-on haul loungewear"],
+    "ai": ["AI generated ad examples fashion brand", "AI influencer clothing brand campaign"],
+    "influencer": ["influencer partnership campaign loungewear brand", "creator collaboration clothing brand ad"],
+    "static": ["static image ad examples apparel brand", "best performing static social posts fashion brand"],
+    "carousel": ["carousel ad examples fashion brand", "carousel post ideas clothing brand"],
+    "video": ["short video ad examples loungewear brand", "best Reels ideas clothing brand"],
+    "meme": ["meme marketing examples apparel brand", "funny relatable social posts clothing brand"],
+}
+
+
+# A phrase that contains one of these words (and no other format's word) means that format: "AI generated ads" is AI content.
+FORMAT_MARKERS = {"ai": "ai", "ugc": "ugc", "carousel": "carousel", "carousels": "carousel", "meme": "meme", "memes": "meme", "reel": "video", "reels": "video",
+                  "influencer": "influencer", "influencers": "influencer"}
+
+
+def parse_formats(value):
+    """The formats a person asked for, as a list of the names in FORMATS (in the order given, no repeats). Takes text such as
+    'UGC, AI content and posts' or a list. An unknown word is an error that lists what is understood."""
+    if isinstance(value, (list, tuple)):
+        value = ",".join(str(v) for v in value)
+    out = []
+    for word in re.split(r"[,;/\n]|\band\b|&", str(value or "").lower()):
+        word = " ".join(re.sub(r"[^a-z0-9 -]+", " ", word).replace("-", " ").split())
+        if not word:
+            continue
+        name = FORMAT_WORDS.get(word) or (word if word in FORMATS else "")
+        if not name:
+            found = {FORMAT_MARKERS[w] for w in word.split() if w in FORMAT_MARKERS}
+            name = found.pop() if len(found) == 1 else ""
+        if not name:
+            raise PlanError(f"'{word}' is not a content format I know. Use any of: " + "; ".join(f"{k} ({v})" for k, v in FORMATS.items()))
+        if name not in out:
+            out.append(name)
+    return out
+
+
 PLAN_SYSTEM = (
     "You plan content research for a marketing agency. Read the request and the brand, then propose which tools to use and what "
     "to search. Only use the tools listed as allowed. Reply with JSON only, in this shape: {\"interpretation\": \"one sentence on what "
@@ -40,7 +99,9 @@ PLAN_SYSTEM = (
     "\"notes\": \"anything the person should know or decide\"}. Include only the tools that will help. Look for ideas well beyond the "
     "brand's direct competitors: other brands in adjacent categories, creators, influencers, gift guides, trends. Use the requested "
     "region only to choose wording and sources; never put a country code in a search phrase. Keep phrases short and concrete. Do not "
-    "invent facts about the brand.")
+    "invent facts about the brand. If the request lists formats wanted, shape the keywords, hashtags and creator angles to surface that kind "
+    "of content: for UGC, hauls, try-ons, reviews and get-ready-with-me posts; for AI content, AI-generated ads, AI influencers and AI video; "
+    "for influencer content, creator partnerships and gifted posts; and so on.")
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -64,18 +125,30 @@ def _hashtag(text):
     return re.sub(r"[^\w]", "", text.lstrip("#").lower())
 
 
-def creator_queries(angles, limit):
-    """Web searches aimed at what creators and influencers post: each angle on TikTok and on Instagram."""
+def creator_queries(angles, limit, sites=CREATOR_SITES):
+    """Web searches aimed at what creators and influencers post: each angle on each of the given sites (the sites of the platforms the plan
+    uses, so a dropped TikTok is not searched for). With no sites, each angle is searched on its own."""
     out = []
     for angle in angles:
-        for site in CREATOR_SITES:
+        for site in sites or (None,):
             if len(out) >= limit:
                 return out
-            out.append(f"{angle} site:{site}")
+            out.append(f"{angle} site:{site}" if site else angle)
     return out
 
 
-def clean_plan(raw, allowed, settings, request_text=""):
+def format_queries(formats, limit):
+    """One search for each wanted format, then a second for each, and so on, up to the limit."""
+    pools = [list(FORMAT_QUERIES.get(f, [])) for f in formats]
+    out = []
+    for rank in range(max((len(p) for p in pools), default=0)):
+        for pool in pools:
+            if rank < len(pool) and len(out) < limit:
+                out.append(pool[rank])
+    return out
+
+
+def clean_plan(raw, allowed, settings, request_text="", formats=()):
     """A plan the system can run, and notes on anything that was dropped or added. Raises PlanError if nothing usable is left."""
     if not isinstance(raw, dict) or not isinstance(raw.get("tools"), dict):
         raise PlanError("Claude's plan was not in the expected shape")
@@ -106,9 +179,12 @@ def clean_plan(raw, allowed, settings, request_text=""):
                 tools[name] = {"why": why(name), "hashtags": tags}
     if "web_search" in allowed:                      # the web searches always run beside the collectors: they are the extra
         own = given.get("web_search") if isinstance(given.get("web_search"), dict) else {}
-        creators = creator_queries(angles, max(0, settings.plan_max_queries // 2))
+        sites = tuple(site for name, site in (("tiktok", "tiktok.com"), ("instagram", "instagram.com")) if name in tools)
+        creators = creator_queries(angles, max(0, settings.plan_max_queries // 2), sites)
+        room = max(0, settings.plan_max_queries - len(creators) - 1)                 # always leave room for one of Claude's own searches
+        wanted = format_queries(formats, min(max(len(formats), settings.plan_max_queries // 4), room))
         base = _clean_list(own.get("queries"), settings.plan_max_queries)
-        queries = list(dict.fromkeys(creators + [q for q in base if q not in creators]))[:settings.plan_max_queries]
+        queries = list(dict.fromkeys(creators + wanted + [q for q in base if q not in creators]))[:settings.plan_max_queries]
         if not queries and request_text.strip():
             queries = [" ".join(request_text.split())[:120]]
             notes.append("added the request itself as a web search, because the plan had none")
@@ -124,7 +200,7 @@ def clean_plan(raw, allowed, settings, request_text=""):
             "occasion": " ".join(str(raw.get("occasion", "")).split())[:80],
             "audience": " ".join(str(raw.get("audience", "")).split())[:200],
             "goal": " ".join(str(raw.get("goal", "")).split())[:300],
-            "creator_angles": angles, "tools": tools,
+            "creator_angles": angles, "formats": list(formats), "tools": tools,
             "notes": " ".join(str(raw.get("notes", "")).split())[:400], "dropped": notes}
     return plan, notes
 
@@ -133,6 +209,8 @@ def plan_summary(plan):
     """One line: what will be searched."""
     tools = (plan or {}).get("tools") or {}
     parts = []
+    if (plan or {}).get("formats"):
+        parts.append("formats: " + ", ".join(plan["formats"]))
     if "meta_ads" in tools:
         parts.append("ads: " + ", ".join(tools["meta_ads"].get("keywords", [])[:4]))
     for name in ("instagram", "tiktok"):
@@ -165,6 +243,8 @@ def render_plan(request, est=None):
     for key, label in (("occasion", "Occasion"), ("audience", "Audience"), ("goal", "Goal")):
         if plan.get(key):
             lines.append(f"  {label}: {plan[key]}")
+    if request.get("formats"):
+        lines.append("  Formats wanted: " + ", ".join(request["formats"]))
     for name, entry in plan["tools"].items():
         lines.append(f"  {name}: {entry.get('why', '')}".rstrip())
         for key in ("keywords", "hashtags", "pages", "queries", "questions"):
@@ -202,30 +282,33 @@ def resolve_allowed(mode, ticked):
 def _ask(request, context, previous=None, changes=""):
     lines = [f"Brand context: {context}", f"Allowed tools: {', '.join(request['allowed'])}",
              f"Region: {request['region']}", f"Request: {request['text']}"]
+    if request.get("formats"):
+        lines.append("Formats wanted: " + ", ".join(f"{f} = {FORMATS[f]}" for f in request["formats"]))
     if previous:
         lines += ["Current plan (JSON): " + json.dumps(previous, ensure_ascii=False),
                   f"Change it as the person asks, keeping what they did not mention: {changes}"]
     return "\n".join(lines)
 
 
-def plan_request(store, brand, claude, budget, settings, *, text, mode, ticked, region, now, apify_extra=False, context=""):
+def plan_request(store, brand, claude, budget, settings, *, text, mode, ticked, region, now, apify_extra=False, context="", formats=()):
     """Make and save a new request with Claude's plan. Returns the request."""
     text = " ".join(str(text or "").split())
     if len(text) < 8:
         raise PlanError("describe the request in a sentence or two")
     allowed = resolve_allowed(mode, ticked)
+    wanted_formats = parse_formats(formats)
     if claude is None:
         raise PlanError("planning needs the ANTHROPIC_API_KEY secret")
     if not budget.take():
         raise PlanError(f"the monthly Claude limit ({budget.cap} calls) is reached")
     request = {"id": store.next_request_id(brand.slug), "brand": brand.slug, "text": text, "created": now, "status": "planned",
                "tools_mode": mode, "allowed": allowed, "region": region or "worldwide", "apify_extra": bool(apify_extra),
-               "changes": [], "run": {}}
+               "formats": wanted_formats, "changes": [], "run": {}}
     try:
         raw = claude.json_task(PLAN_SYSTEM, _ask(request, context), max_tokens=2500)
     except ProviderError as exc:
         raise PlanError(f"Claude could not make a plan: {exc}") from exc
-    request["plan"], _ = clean_plan(raw, allowed, settings, text)
+    request["plan"], _ = clean_plan(raw, allowed, settings, text, wanted_formats)
     request["occasion"] = request["plan"]["occasion"]
     store.write_request(brand.slug, request)
     return request
@@ -244,7 +327,7 @@ def revise_request(store, brand, request, claude, budget, settings, *, changes, 
         raw = claude.json_task(PLAN_SYSTEM, _ask(request, context, previous=request["plan"], changes=changes), max_tokens=2500)
     except ProviderError as exc:
         raise PlanError(f"Claude could not change the plan: {exc}") from exc
-    plan, _ = clean_plan(raw, request["allowed"], settings, request["text"])
+    plan, _ = clean_plan(raw, request["allowed"], settings, request["text"], request.get("formats") or [])
     request["plan"] = plan
     request["occasion"] = plan["occasion"]
     request["changes"].append({"at": now, "text": changes})
@@ -322,4 +405,3 @@ def execute_request(store, brand, request, *, now, collect_runner, research_runn
     request["run"]["finished"] = now
     store.write_request(brand.slug, request)
     return request
-
