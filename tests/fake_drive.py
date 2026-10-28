@@ -23,12 +23,13 @@ def unescape(text):
 
 
 class FakeDrive:
-    def __init__(self, *, shared=True, root_is_folder=True, script=None, delete_error=None):
+    def __init__(self, *, shared=True, root_is_folder=True, script=None, delete_error=None, trash_error=None):
         self.files = {ROOT: {"id": ROOT, "name": "Idea Bank", "parents": [], "mime": "application/vnd.google-apps.folder",
                              "data": b"", "driveId": "SHAREDDRIVE1" if shared else None}}
         if not root_is_folder:
             self.files[ROOT]["mime"] = "text/plain"
         self.script, self.calls, self.counter, self.resumable = list(script or []), [], 0, {}
+        self.trash_error = trash_error                                         # (status, body) to answer every trash request with
         self.delete_error = delete_error                                       # (status, body) to answer every DELETE with
 
     # ---- the API -----------------------------------------------------------------------------------------------------
@@ -51,6 +52,14 @@ class FakeDrive:
             return self._create(json)
         if method == "GET":
             return self._get(tail, params)
+        if method == "PATCH":
+            if tail not in self.files:
+                return Resp(404, {"error": {"message": "File not found: " + tail}})
+            if self.trash_error:
+                return Resp(*self.trash_error)
+            if json.get("trashed"):
+                self.files[tail]["trashed"] = True
+            return Resp(200, {"id": tail})
         if method == "DELETE":
             if self.delete_error:
                 return Resp(*self.delete_error)
@@ -70,7 +79,7 @@ class FakeDrive:
         parent = re.search(r"'((?:[^'\\]|\\.)*)' in parents", q)
         name = re.search(r"name = '((?:[^'\\]|\\.)*)'", q)
         folder_only = "mimeType = 'application/vnd.google-apps.folder'" in q
-        found = [f for f in self.files.values() if parent and unescape(parent.group(1)) in f["parents"]
+        found = [f for f in self.files.values() if not f.get("trashed") and parent and unescape(parent.group(1)) in f["parents"]
                  and (not name or f["name"] == unescape(name.group(1)))
                  and (not folder_only or f["mime"] == "application/vnd.google-apps.folder")]
         found.sort(key=lambda f: f["id"])
@@ -124,17 +133,17 @@ class FakeDrive:
 
     # ---- helpers for assertions --------------------------------------------------------------------------------------
     def children(self, parent_id):
-        return sorted((f["name"] for f in self.files.values() if parent_id in f["parents"]))
+        return sorted((f["name"] for f in self.files.values() if parent_id in f["parents"] and not f.get("trashed")))
 
     def folder_named(self, parent_id, name):
         for f in self.files.values():
-            if parent_id in f["parents"] and f["name"] == name and f["mime"] == "application/vnd.google-apps.folder":
+            if parent_id in f["parents"] and f["name"] == name and f["mime"] == "application/vnd.google-apps.folder" and not f.get("trashed"):
                 return f["id"]
         return None
 
     def tree(self, folder_id=ROOT, depth=0):
         out = []
-        for f in sorted((f for f in self.files.values() if folder_id in f["parents"]), key=lambda f: f["name"]):
+        for f in sorted((f for f in self.files.values() if folder_id in f["parents"] and not f.get("trashed")), key=lambda f: f["name"]):
             out.append("  " * depth + f["name"] + ("/" if f["mime"] == "application/vnd.google-apps.folder" else ""))
             if f["mime"] == "application/vnd.google-apps.folder":
                 out += self.tree(f["id"], depth + 1)
