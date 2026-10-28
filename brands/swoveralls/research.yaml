@@ -40,7 +40,11 @@ ads:
 #   status: active           # all, active or inactive
 #   pages:                   # an advertiser you want to follow: an Ad Library link copied from the browser
 #     - https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=US&view_all_page_id=PAGE_ID_HERE
-#   benchmark_pages:         # YOUR decision for a benchmark brand Claude suggested; automatic matching never overrides it.
+  benchmark_pages:         # YOUR decision for a benchmark brand Claude suggested; automatic matching never overrides it.
+    Allbirds: skip         # no page is named exactly this ("Allbirds ME" is a small regional page)
+    Liquid Death: skip     # a drink brand, not loungewear
+    Cotopaxi: skip         # outdoor gear
+    Dollar Shave Club: skip   # razors
 #     Gymshark: 123456789012345                       # a page id,
 #     Oodie: https://www.facebook.com/ads/library/?view_all_page_id=123456789012345   # or an Ad Library link,
 #     Some Brand: skip                                # or skip to never follow it.
