@@ -1,6 +1,7 @@
 """A Google Drive that behaves like the real one, as far as this tool uses it: folders found by name and parent, files kept with
 their bytes, multipart and resumable uploads, downloads, deletes, and the errors Google sends. `script` is a queue of
 (status, body) answers that override the real behaviour, one per call, for testing failures."""
+import hashlib
 import json
 import re
 
@@ -23,12 +24,13 @@ def unescape(text):
 
 
 class FakeDrive:
-    def __init__(self, *, shared=True, root_is_folder=True, script=None, delete_error=None, trash_error=None):
+    def __init__(self, *, shared=True, root_is_folder=True, script=None, delete_error=None, trash_error=None, mangle=None):
         self.files = {ROOT: {"id": ROOT, "name": "Idea Bank", "parents": [], "mime": "application/vnd.google-apps.folder",
                              "data": b"", "driveId": "SHAREDDRIVE1" if shared else None}}
         if not root_is_folder:
             self.files[ROOT]["mime"] = "text/plain"
         self.script, self.calls, self.counter, self.resumable = list(script or []), [], 0, {}
+        self.mangle = mangle
         self.trash_error = trash_error                                         # (status, body) to answer every trash request with
         self.delete_error = delete_error                                       # (status, body) to answer every DELETE with
 
@@ -41,15 +43,21 @@ class FakeDrive:
             return Resp(status, body)
         params = params or {}
         if url.startswith("https://www.googleapis.com/upload/drive/v3/files"):
-            return self._upload(method, url, json, params, data, headers or {})
+            return self._after_upload(self._upload(method, url, json, params, data, headers or {}))
         if url.startswith("https://upload.example/"):                                  # the resumable session address
-            return self._finish_resumable(url, data, headers or {})
+            return self._after_upload(self._finish_resumable(url, data, headers or {}))
         assert url.startswith("https://www.googleapis.com/drive/v3/files"), url
         tail = url[len("https://www.googleapis.com/drive/v3/files"):].lstrip("/")
         if method == "GET" and not tail:
             return self._query(params)
         if method == "POST" and not tail:
             return self._create(json)
+        if method == "GET" and params.get("alt") != "media" and "md5Checksum" in str(params.get("fields", "")):
+            entry = self.files.get(tail)
+            if not entry:
+                return Resp(404, {"error": {"message": "File not found: " + tail}})
+            body = entry.get("data") or b""
+            return Resp(200, {"id": tail, "name": entry["name"], "size": str(len(body)), "md5Checksum": hashlib.md5(body).hexdigest(), "mimeType": entry["mime"]})
         if method == "GET":
             return self._get(tail, params)
         if method == "PATCH":
@@ -57,6 +65,8 @@ class FakeDrive:
                 return Resp(404, {"error": {"message": "File not found: " + tail}})
             if self.trash_error:
                 return Resp(*self.trash_error)
+            if json.get("name"):
+                self.files[tail]["name"] = json["name"]
             if json.get("trashed"):
                 self.files[tail]["trashed"] = True
             return Resp(200, {"id": tail})
@@ -68,6 +78,14 @@ class FakeDrive:
             del self.files[tail]
             return Resp(204, {})
         raise AssertionError((method, url))
+
+    def _after_upload(self, response):
+        """`mangle` (a function from bytes to bytes) damages every uploaded file, to prove that a bad copy is noticed."""
+        if self.mangle and self.counter:
+            last = self.files.get(f"FILE{self.counter:04d}xxxxxxxxxxxxxxxx")
+            if last and last.get("data") is not None:
+                last["data"] = self.mangle(last["data"])
+        return response
 
     def _new_id(self):
         self.counter += 1
