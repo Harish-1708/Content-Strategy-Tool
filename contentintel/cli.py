@@ -92,6 +92,8 @@ def build_parser():
     group.add_argument("--all", action="store_true")
     p.add_argument("--check", action="store_true", help="prove the Drive folder can be written (makes a test folder and removes it)")
     p.add_argument("--dry-run", action="store_true", help="say how many items would be added; change nothing")
+    p.add_argument("--sheets-config", default="sheets.yaml", help="ideabank: where the brand's sheet is, to read the Rejected tab's Rescue marks and your Decisions")
+    p.add_argument("--debug-dir", default="debug")
     p.add_argument("--browser-config", default="browser.yaml", help="ideabank: the browser settings, used to fetch a TikTok or Instagram video through the login when yt-dlp is refused")
     p.add_argument("--audit", action="store_true", help="download every saved file back from Drive and check it again (whole, readable, right type)")
 
@@ -269,7 +271,7 @@ def _video_browser_factory(args):
         return None
     if not any((creds.get(site) or {}).get("cookies") for site in ("tiktok", "instagram") if site in creds):
         return None
-    return lambda site: (_BROWSER_FACTORY or _real_factory)(browser_cfg, creds, getattr(args, "debug_dir", None))(site)
+    return lambda site: (_BROWSER_FACTORY or _real_factory)(browser_cfg, creds, getattr(args, "debug_dir", None) or "debug")(site)
 
 
 def _ad_browser_factory(args):
@@ -282,7 +284,7 @@ def _ad_browser_factory(args):
         creds = _site_creds(browser_cfg, os.environ)
     except Exception:
         return None
-    return lambda site: (_BROWSER_FACTORY or _real_factory)(browser_cfg, creds, getattr(args, "debug_dir", None))(site)
+    return lambda site: (_BROWSER_FACTORY or _real_factory)(browser_cfg, creds, getattr(args, "debug_dir", None) or "debug")(site)
 
 
 def _video_runner(args=None):
@@ -296,18 +298,32 @@ def _video_runner(args=None):
     return videofetch_mod.layered_runner(factory=factory, ytdlp=ytdlp) if (ytdlp or factory) else None
 
 
-def _rescues(brand, store, args):
-    """(ids a person marked Use or Maybe on the Rejected tab, a note): never an error, since the sheet may simply not be set up yet."""
+def _read_sheet(what, reader, brand, store, args):
+    """(what the sheet says, a note). Never an error that stops the run: the sheet may not be set up yet, or Google may hiccup. A mistake in this
+    program (a missing option, a wrong call) is NOT hidden: it is raised, so it shows in the first run and in the tests."""
     key = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "")
     if not key or getattr(args, "dry_run", False):
-        return [], ""
+        return None, ""
     try:
         config = sheets_mod.load_sheet_config(args.sheets_config, set(list_brand_slugs(args.brands_dir)))
-        return sheets_mod.fetch_rescues(brand, store, key_json=key, config=config, share_emails=sheets_mod.parse_emails(os.environ.get("SHEET_SHARE_EMAIL", "")),
-                                        folder_id=sheets_mod.parse_folder_id(os.environ.get("SHEET_FOLDER_ID", "")),
-                                        connect_fn=_SHEETS_CONNECT or sheets_mod.connect), ""
-    except Exception as exc:                                           # a missing sheet or a Google hiccup must not stop the run
-        return [], f"{brand.slug}: the Rejected tab could not be read for rescues ({exc.__class__.__name__}: {str(exc)[:100]})"
+        return reader(brand, store, key_json=key, config=config, share_emails=sheets_mod.parse_emails(os.environ.get("SHEET_SHARE_EMAIL", "")),
+                      folder_id=sheets_mod.parse_folder_id(os.environ.get("SHEET_FOLDER_ID", "")), connect_fn=_SHEETS_CONNECT or sheets_mod.connect), ""
+    except (AttributeError, TypeError, NameError):
+        raise
+    except Exception as exc:
+        return None, f"{brand.slug}: {what} could not be read ({exc.__class__.__name__}: {str(exc)[:100]})"
+
+
+def _rescues(brand, store, args):
+    """(ids a person marked Use or Maybe on the Rejected tab, a note)."""
+    got, note = _read_sheet("the Rejected tab (for rescues)", sheets_mod.fetch_rescues, brand, store, args)
+    return got or [], note
+
+
+def _decided(brand, store, args):
+    """(ids a person marked Use or Maybe on the Idea Bank tab, a note): the tool never removes what a person has approved."""
+    got, note = _read_sheet("your Decisions", sheets_mod.fetch_decisions, brand, store, args)
+    return sorted(i for i, d in (got or {}).items() if d.get("decision") in ("use", "maybe")), note
 
 
 def _cookie_secrets():
@@ -351,11 +367,12 @@ def _ideabank(args, store):
     for slug in list_brand_slugs(args.brands_dir) if args.all else [args.brand]:
         brand = load_brand(slug, args.brands_dir)
         rescues, note = _rescues(brand, store, args)
+        protected, note2 = _decided(brand, store, args)
         _, lines = ib_mod.run_ideabank(brand, store, settings=settings, now=now, claude=claude, drive=drive, get=_get(),
                                        dry_run=args.dry_run, budget=budget, skip_brands=_skipped_brands(brand, args.brands_dir),
-                                       audit=args.audit, video_runner=_video_runner(args), cookies=_cookie_secrets(), rescues=rescues,
+                                       audit=args.audit, video_runner=_video_runner(args), cookies=_cookie_secrets(), rescues=rescues, protected=protected,
                                        browser_factory=_ad_browser_factory(args))
-        print("\n".join(([note] if note else []) + lines))
+        print("\n".join([n for n in (note, note2) if n] + lines))
     return 0
 
 
