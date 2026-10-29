@@ -50,15 +50,41 @@ FORMAT_WORDS = {
     "meme": "meme", "memes": "meme", "humour": "meme", "humor": "meme", "trends": "meme",
 }
 # Searches that go looking for each format, added to the web searches of a request that asks for it.
-FORMAT_QUERIES = {
-    "ugc": ["UGC ad examples apparel brand", "UGC creator try-on haul loungewear"],
-    "ai": ["AI generated ad examples fashion brand", "AI influencer clothing brand campaign"],
-    "influencer": ["influencer partnership campaign loungewear brand", "creator collaboration clothing brand ad"],
-    "static": ["static image ad examples apparel brand", "best performing static social posts fashion brand"],
-    "carousel": ["carousel ad examples fashion brand", "carousel post ideas clothing brand"],
-    "video": ["short video ad examples loungewear brand", "best Reels ideas clothing brand"],
-    "meme": ["meme marketing examples apparel brand", "funny relatable social posts clothing brand"],
+QUERIES_BY_SCHEMA = {
+    "apparel": {
+        "ugc": ["UGC ad examples apparel brand", "UGC creator try-on haul loungewear"],
+        "ai": ["AI generated ad examples fashion brand", "AI influencer clothing brand campaign"],
+        "influencer": ["influencer partnership campaign loungewear brand", "creator collaboration clothing brand ad"],
+        "static": ["static image ad examples apparel brand", "best performing static social posts fashion brand"],
+        "carousel": ["carousel ad examples fashion brand", "carousel post ideas clothing brand"],
+        "video": ["short video ad examples loungewear brand", "best Reels ideas clothing brand"],
+        "meme": ["meme marketing examples apparel brand", "funny relatable social posts clothing brand"],
+    },
+    "food": {
+        "ugc": ["UGC ad examples snack brand", "UGC taste test reaction food brand"],
+        "ai": ["AI generated ad examples food brand", "AI generated snack ad campaign"],
+        "influencer": ["influencer partnership campaign snack brand", "creator collaboration food brand ad"],
+        "static": ["static image ad examples snack brand", "best performing static social posts food brand"],
+        "carousel": ["carousel ad examples food brand", "carousel post ideas snack brand"],
+        "video": ["short video ad examples snack brand", "best Reels ideas food brand"],
+        "meme": ["meme marketing examples snack brand", "funny relatable social posts food brand"],
+    },
 }
+GENERIC_QUERIES = {       # for a brand whose kind of product has no list of its own: no industry named at all
+    "ugc": ["UGC ad examples consumer brand", "UGC creator reaction video product"],
+    "ai": ["AI generated ad examples consumer brand", "AI generated product ad campaign"],
+    "influencer": ["influencer partnership campaign consumer brand", "creator collaboration product ad"],
+    "static": ["static image ad examples consumer brand", "best performing static social posts consumer brand"],
+    "carousel": ["carousel ad examples consumer brand", "carousel post ideas product brand"],
+    "video": ["short video ad examples consumer brand", "best Reels ideas product brand"],
+    "meme": ["meme marketing examples consumer brand", "funny relatable social posts consumer brand"],
+}
+FORMAT_QUERIES = QUERIES_BY_SCHEMA["apparel"]            # kept under its old name
+
+
+def queries_for(schema):
+    """The format searches for a brand's kind of product: its own list, or the industry-free one."""
+    return QUERIES_BY_SCHEMA.get(schema, GENERIC_QUERIES)
 
 
 # A phrase that contains one of these words (and no other format's word) means that format: "AI generated ads" is AI content.
@@ -138,9 +164,9 @@ def creator_queries(angles, limit, sites=CREATOR_SITES):
     return out
 
 
-def format_queries(formats, limit):
-    """One search for each wanted format, then a second for each, and so on, up to the limit."""
-    pools = [list(FORMAT_QUERIES.get(f, [])) for f in formats]
+def format_queries(formats, limit, schema="apparel"):
+    """One search for each wanted format, then a second for each, and so on, up to the limit. The searches fit the brand's kind of product."""
+    pools = [list(queries_for(schema).get(f, [])) for f in formats]
     out = []
     for rank in range(max((len(p) for p in pools), default=0)):
         for pool in pools:
@@ -149,7 +175,7 @@ def format_queries(formats, limit):
     return out
 
 
-def clean_plan(raw, allowed, settings, request_text="", formats=()):
+def clean_plan(raw, allowed, settings, request_text="", formats=(), schema="apparel"):
     """A plan the system can run, and notes on anything that was dropped or added. Raises PlanError if nothing usable is left."""
     if not isinstance(raw, dict) or not isinstance(raw.get("tools"), dict):
         raise PlanError("Claude's plan was not in the expected shape")
@@ -183,7 +209,7 @@ def clean_plan(raw, allowed, settings, request_text="", formats=()):
         sites = tuple(site for name, site in (("tiktok", "tiktok.com"), ("instagram", "instagram.com")) if name in tools)
         creators = creator_queries(angles, max(0, settings.plan_max_queries // 2), sites)
         room = max(0, settings.plan_max_queries - len(creators) - 1)                 # always leave room for one of Claude's own searches
-        wanted = format_queries(formats, min(max(len(formats), settings.plan_max_queries // 4), room))
+        wanted = format_queries(formats, min(max(len(formats), settings.plan_max_queries // 4), room), schema)
         base = _clean_list(own.get("queries"), settings.plan_max_queries)
         queries = list(dict.fromkeys(creators + wanted + [q for q in base if q not in creators]))[:settings.plan_max_queries]
         if not queries and request_text.strip():
@@ -311,7 +337,7 @@ def plan_request(store, brand, claude, budget, settings, *, text, mode, ticked, 
         raw = claude.json_task(PLAN_SYSTEM, _ask(request, context), max_tokens=2500)
     except ProviderError as exc:
         raise PlanError(f"Claude could not make a plan: {exc}") from exc
-    request["plan"], _ = clean_plan(raw, allowed, settings, text, wanted_formats)
+    request["plan"], _ = clean_plan(raw, allowed, settings, text, wanted_formats, brand.category_schema)
     request["occasion"] = request["plan"]["occasion"]
     store.write_request(brand.slug, request)
     return request
@@ -330,7 +356,7 @@ def revise_request(store, brand, request, claude, budget, settings, *, changes, 
         raw = claude.json_task(PLAN_SYSTEM, _ask(request, context, previous=request["plan"], changes=changes), max_tokens=2500)
     except ProviderError as exc:
         raise PlanError(f"Claude could not change the plan: {exc}") from exc
-    plan, _ = clean_plan(raw, request["allowed"], settings, request["text"], request.get("formats") or [])
+    plan, _ = clean_plan(raw, request["allowed"], settings, request["text"], request.get("formats") or [], brand.category_schema)
     request["plan"] = plan
     request["occasion"] = plan["occasion"]
     request["changes"].append({"at": now, "text": changes})
