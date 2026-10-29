@@ -19,6 +19,7 @@ from fake_drive import EMAIL, ROOT, FakeDrive
 from fake_sheets import FakeClient
 from test_collectors import NOW
 from test_idea_commands import cells, seed_bank
+from media_fixtures import jpeg_for
 from test_ideabank import Media, S, bank_with, full_run, getter, good, kept_bank, record, row
 from test_sheets import baselined, one
 
@@ -290,7 +291,7 @@ def drive():
 def test_two_items_with_the_very_same_file_are_one_idea(drive):
     client, fake = drive
     bank = kept_bank("A", "B")
-    same = Media(content=b"\xff\xd8\xff" + b"identical" * 50)
+    same = Media(content=jpeg_for("the-same-picture"))
     saved, lines = IB.save_assets(bank, ["IB-0001", "IB-0002"], "Swoveralls", client, getter(default=same), S)
     second = bank["items"]["IB-0002"]
     assert saved == 1 and second["state"] == "removed" and second["duplicate_of"] == "IB-0001" and second["removed_reason"] == "a copy of IB-0001 (the very same file)"
@@ -301,7 +302,7 @@ def test_two_items_with_the_very_same_file_are_one_idea(drive):
 def test_a_file_the_same_as_one_saved_in_an_earlier_run_is_a_copy_too(drive):
     client, fake = drive
     bank = kept_bank("A")
-    same = Media(content=b"\xff\xd8\xff" + b"identical" * 50)
+    same = Media(content=jpeg_for("the-same-picture"))
     IB.save_assets(bank, ["IB-0001"], "Swoveralls", client, getter(default=same), S)
     later = kept_bank("B")["items"]["IB-0001"]
     later["id"] = "IB-0002"
