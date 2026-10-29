@@ -17,6 +17,33 @@ BRIEFS_DIR = ROOT / "briefs"
 
 _CACHE = {}
 
+
+def _no_real_download(url, dest, cookies, max_mb, timeout):
+    return None, "no real downloads in tests"
+
+
+def _no_real_browser(browser_cfg, creds, debug_dir):
+    def factory(site):
+        raise RuntimeError("no real browser in tests")
+    return factory
+
+
+def _no_real_google(key):
+    raise ConnectionError("no real Google in tests")
+
+
+@pytest.fixture(autouse=True)
+def tests_never_touch_the_real_tools(monkeypatch):
+    """GitHub has yt-dlp, a network and, in the repository, your real sheet id. A test that did not set up its own stand-in must never reach any of
+    them: not the real yt-dlp (it would ask Instagram), not a real browser, not real Google, and not the repository's own sheets.yaml."""
+    from contentintel import cli
+    from contentintel import sheets as sheets_mod
+    monkeypatch.setattr(cli, "_VIDEO_RUNNER", _no_real_download)
+    monkeypatch.setattr(cli, "_BROWSER_FACTORY", _no_real_browser)
+    monkeypatch.setattr(cli, "_SHEETS_CONNECT", _no_real_google)
+    real = sheets_mod.load_sheet_config
+    monkeypatch.setattr(sheets_mod, "load_sheet_config", lambda path, slugs: real(FIXTURES / "sheets_blank.yaml", slugs) if path == "sheets.yaml" else real(path, slugs))
+
 # Saved catalogues and brief hooks the tests read. They must be uploaded to tests/fixtures/.
 REQUIRED_FIXTURES = (
     "swoveralls_full_72.json", "swoveralls_truncated_30.json",
