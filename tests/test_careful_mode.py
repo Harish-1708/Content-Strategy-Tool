@@ -40,7 +40,17 @@ def store(tmp_path):
 
 @pytest.fixture
 def settings():
-    return replace(C.load_collector_settings("does-not-exist.yaml"), benchmarks_enabled=False)
+    """Collector settings with the automatic rest switched on for Instagram (the shipped default is off), since these tests are about the rest."""
+    return replace(C.load_collector_settings("does-not-exist.yaml"), benchmarks_enabled=False, cooldown_days={"instagram": 3, "tiktok": 3})
+
+@pytest.fixture(autouse=True)
+def careful_mode_is_switched_on_for_these_tests(monkeypatch, tmp_path_factory):
+    """These tests are about careful mode and the account rest, so they run with Instagram's careful-mode lines switched on."""
+    from careful import careful_yaml
+    path = careful_yaml(tmp_path_factory.mktemp("careful"))
+    real = B.load_browser_settings
+    monkeypatch.setattr(B, "load_browser_settings", lambda p="browser.yaml": real(path if str(p) in ("browser.yaml", BROWSER_YAML) else p))
+
 
 
 def playwright_text_match(selector, page_text):
