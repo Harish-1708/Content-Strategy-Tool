@@ -291,7 +291,7 @@ def test_the_command_reads_rescues_and_never_fails_because_the_sheet_is_missing(
     monkeypatch.setenv("GOOGLE_SERVICE_ACCOUNT_JSON", "{}")
     monkeypatch.setattr(cli, "_SHEETS_CONNECT", lambda key: (_ for _ in ()).throw(ConnectionError("no network")))
     ids, note = cli._rescues(swov, store, Args())
-    assert ids == [] and note.startswith("swoveralls: the Rejected tab could not be read for rescues (ConnectionError: no network")
+    assert ids == [] and note.startswith("swoveralls: the Rejected tab (for rescues) could not be read (ConnectionError: no network)")
     Args.dry_run = True
     assert cli._rescues(swov, store, Args()) == ([], "")
 
