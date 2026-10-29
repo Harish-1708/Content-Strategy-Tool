@@ -487,6 +487,10 @@ same way. The run needs the sheet for this (`--sheets-config`, default `sheets.y
 on, but a mistake in the program itself (a missing option, a wrong call) is never hidden as a note. The sheet report also says **which tab** added rows
 went to, for example "added 427 rows (Rejected 427)", so a large number is never a mystery; change entries are counted on their own.
 
+**Approval follows the sheet; a rescue is permanent.** A row marked Use or Maybe is protected for as long as it is marked: change it to Skip and the
+tool may remove the item again at the next run. If the sheet cannot be read, nothing is lifted. An item you rescue on the Rejected tab stays kept whatever
+the Decision column says. Request mode (`request run`) protects exactly as the `ideabank` command does, and reading the sheet never creates one.
+
 **An expired Meta link is refreshed, not given up on.** Meta's picture and video links last hours or days, but the ad itself is often still
 shown in the Ad Library. For a kept Meta ad with no saved file and an expired link, the browser opens the ad's own Ad Library page, reads the
 fresh link from its data, and the file is saved in the same run (`ideabank.refresh_links`, at most `link_refreshes_per_run` (10) a run and
