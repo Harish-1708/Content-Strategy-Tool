@@ -272,7 +272,7 @@ def test_the_ideabank_command_scores_and_saves_files_for_new_items(env, capsys):
     bank = store.read_ideabank("swoveralls")
     assert [i["score"] for i in bank["items"].values()] == [88, 65] and all(i["drive_folder_url"] for i in bank["items"].values())
     assert state["drive"].tree()[:3] == ["Swoveralls/", "  IB-0001 - comfort/", "    IB-0001-image.jpg"]
-    assert store.read_claude_usage() == {"2026-10": 1}
+    assert store.read_claude_usage() == {"2026-10": 3}                 # scoring, the hook lines and first tests, and a look at the saved pictures
 
 
 def test_without_claude_or_drive_the_items_are_taken_in_but_wait_with_no_folder_or_row(env, capsys):
@@ -713,7 +713,7 @@ def test_the_video_download_is_used_when_yt_dlp_is_there_and_skipped_when_it_is_
     monkeypatch.setattr("shutil.which", lambda name: None)
     assert cli._video_runner() is None
     monkeypatch.setattr("shutil.which", lambda name: "/usr/bin/yt-dlp")
-    assert cli._video_runner() is cli.videofetch_mod.ytdlp_download
+    assert callable(cli._video_runner())                                  # yt-dlp, with the browser as a second route when there is a login
     monkeypatch.setattr(cli, "_VIDEO_RUNNER", "fake")
     assert cli._video_runner() == "fake"
 
