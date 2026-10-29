@@ -52,6 +52,8 @@ class IdeaBankSettings:
     min_relevance: int = 50
     fetch_videos: bool = True
     max_per_technique: int = 2
+    refresh_links: bool = True
+    link_refreshes_per_run: int = 10
     vision: bool = True
     vision_calls_per_run: int = 3
     vision_batch: int = 4
@@ -76,7 +78,7 @@ class IdeaBankSettings:
 
 
 _IDEABANK_KEYS = {"enabled", "sources", "max_new_per_run", "score_batch", "max_scoring_calls", "save_assets", "save_videos",
-                  "image_max_mb", "video_max_mb", "claude_monthly_calls", "min_relevance", "skip_own_brand", "fetch_videos", "video_fetches_per_run", "video_timeout_seconds", "max_per_technique", "vision", "vision_calls_per_run", "vision_batch",
+                  "image_max_mb", "video_max_mb", "claude_monthly_calls", "min_relevance", "skip_own_brand", "fetch_videos", "video_fetches_per_run", "video_timeout_seconds", "max_per_technique", "refresh_links", "link_refreshes_per_run", "vision", "vision_calls_per_run", "vision_batch",
                     "enrich_calls_per_run", "enrich_batch", "cover_lookups_per_run"}
 _PLANNER_KEYS = {"max_keywords", "max_hashtags", "max_queries", "max_questions", "max_pages"}
 _BRIEF_KEYS = {"models", "max_concepts", "max_calls", "images_per_item"}
@@ -122,7 +124,7 @@ def load_settings(path="research.yaml"):
         if not isinstance(srcs, list) or not srcs or any(s not in _SOURCES for s in srcs):
             raise IdeaBankError(f"ideabank.sources must be a list of: {', '.join(_SOURCES)}")
         kw["sources"] = tuple(dict.fromkeys(srcs))
-    for key, minimum in (("max_new_per_run", 1), ("score_batch", 1), ("max_scoring_calls", 0), ("video_fetches_per_run", 0), ("video_timeout_seconds", 10), ("max_per_technique", 0), ("vision_calls_per_run", 0), ("vision_batch", 1),
+    for key, minimum in (("max_new_per_run", 1), ("score_batch", 1), ("max_scoring_calls", 0), ("video_fetches_per_run", 0), ("video_timeout_seconds", 10), ("max_per_technique", 0), ("link_refreshes_per_run", 0), ("vision_calls_per_run", 0), ("vision_batch", 1),
                            ("enrich_calls_per_run", 0), ("enrich_batch", 1), ("cover_lookups_per_run", 0), ("image_max_mb", 1), ("video_max_mb", 1),
                          ("claude_monthly_calls", 0)):
         if key in bank:
@@ -131,7 +133,7 @@ def load_settings(path="research.yaml"):
         kw["min_relevance"] = _whole(bank["min_relevance"], "ideabank.min_relevance", 0)
         if kw["min_relevance"] > 100:
             raise IdeaBankError(f"ideabank.min_relevance must be between 0 and 100, got {bank['min_relevance']!r}")
-    for key in ("save_assets", "save_videos", "skip_own_brand", "fetch_videos", "vision"):
+    for key in ("save_assets", "save_videos", "skip_own_brand", "fetch_videos", "vision", "refresh_links"):
         if key in bank:
             kw[key] = _flag(bank[key], f"ideabank.{key}")
     for key in _PLANNER_KEYS:
@@ -208,7 +210,7 @@ def _new_item(idea_id, source, source_item_id, row, now, request):
             "state": "new", "removed_reason": "", "duplicate_of": "", "removal_note": "", "fingerprint": "",
             "fit": None, "idea": None, "mechanism": "", "concept": "", "generic": False, "category": "", "scoring_version": 0,
             "format": "", "media_format": _media_format(row.get("details")), "video_tries": 0, "video_note": "", "video_status": "", "technique": "", "hook_line": "", "first_test": "", "audience": "", "channel": "",
-            "visual_hook": "", "look": "", "visual_quality": "", "visual_tries": 0, "media_role": "", "rescued": False}
+            "visual_hook": "", "look": "", "visual_quality": "", "visual_tries": 0, "media_role": "", "rescued": False, "link_refreshes": 0}
 
 
 def _interest(row):
@@ -254,7 +256,7 @@ def normalise_bank(bank):
         item["state"] = state_of(item)
         for key, default in (("page_id", ""), ("removed_reason", ""), ("duplicate_of", ""), ("removal_note", ""), ("fit", None), ("idea", None),
                              ("mechanism", ""), ("concept", ""), ("generic", False), ("category", ""), ("format", ""), ("media_format", ""), ("video_tries", 0), ("video_note", ""), ("video_status", ""),
-                           ("technique", ""), ("hook_line", ""), ("first_test", ""), ("audience", ""), ("channel", ""), ("visual_hook", ""), ("look", ""), ("visual_quality", ""), ("visual_tries", 0), ("media_role", ""), ("rescued", False)):
+                           ("technique", ""), ("hook_line", ""), ("first_test", ""), ("audience", ""), ("channel", ""), ("visual_hook", ""), ("look", ""), ("visual_quality", ""), ("visual_tries", 0), ("media_role", ""), ("rescued", False), ("link_refreshes", 0)):
             item.setdefault(key, default)
         item.setdefault("scoring_version", 1 if item.get("score") is not None else 0)       # scored before the concept-first rubric = version 1
         for asset in item["assets"]:                    # files saved before they were checked: what they are is known, that they are whole is not
@@ -546,6 +548,55 @@ def save_assets(bank, ids, brand_name, drive, get, settings, brand_folder=None, 
         lines.append(f"{expired} item(s): the picture or video link has expired (Meta's links last only hours or days), so no file was saved; "
                      "it is saved if the ad is collected again")
     return saved, lines
+
+
+def needs_link_refresh(item, settings, clock):
+    """A kept Meta ad with no saved file whose picture or video link has expired (or was refused): Meta's links last hours or days, but the ad
+    itself is often still shown in the Ad Library, and its page has a fresh link. Tried at most twice."""
+    if not settings.refresh_links or settings.link_refreshes_per_run <= 0:
+        return False
+    if (state_of(item) != "kept" or item["platform"] != "meta_ads" or item["assets"] or not item["media_url"]
+            or not str(item["url"]).startswith("https://www.facebook.com/ads/library/") or item.get("link_refreshes", 0) >= 2):
+        return False
+    ends = link_expiry(item["media_url"])
+    note = item.get("asset_note", "")
+    return bool((ends and ends <= clock) or "expired" in note or "the site answered 4" in note)
+
+
+def refresh_meta_links(bank, factory, settings, now):
+    """Open the Ad Library page of each such ad in the browser and take the fresh picture or video link from its data. Returns (refreshed, lines)."""
+    clock = _parse_time(now) or datetime.now(timezone.utc)
+    todo = [it for it in bank["items"].values() if needs_link_refresh(it, settings, clock)]
+    if not todo:
+        return 0, []
+    if factory is None:
+        return 0, [f"{len(todo)} Meta ad(s) have an expired picture or video link: no browser is available to fetch a fresh one"]
+    from .collectors import _page_data, extract_json_items                       # imported here: collectors does not know the Idea Bank
+    found = 0
+    try:
+        with factory("meta_ads") as browser:
+            for item in todo[:settings.link_refreshes_per_run]:
+                item["link_refreshes"] = item.get("link_refreshes", 0) + 1
+                try:
+                    browser.open(item["url"])
+                    row = extract_json_items("meta_ads", _page_data(browser)).get(item["source_item_id"])
+                except Exception as exc:                                         # a page that will not load is a reason, not a crash
+                    item["asset_note"] = f"the link expired and the Ad Library page could not be opened ({exc.__class__.__name__})"
+                    continue
+                if row and row.get("media_url") and row["media_url"] != item["media_url"]:
+                    item.update({"media_url": row["media_url"], "asset_note": "", "asset_tries": 0})
+                    found += 1
+                else:
+                    item["asset_note"] = "the link expired and the ad is no longer shown in the Ad Library"
+    except Exception as exc:
+        return found, [f"Meta ad links not refreshed: the browser could not start ({exc.__class__.__name__})"]
+    lines = [f"{found} Meta ad picture or video link(s) refreshed from the Ad Library, so their files can be saved"] if found else []
+    left = len(todo) - min(len(todo), settings.link_refreshes_per_run)
+    if left:
+        lines.append(f"{left} more expired Meta link(s) wait for the next run (limit {settings.link_refreshes_per_run} a run)")
+    if todo and not found:
+        lines.append(f"{len(todo) - left} expired Meta ad(s) could not be refreshed: they are no longer shown in the Ad Library")
+    return found, lines
 
 
 def post_is_carousel(item):
@@ -1381,7 +1432,7 @@ def _counts(bank):
 
 
 def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=None, request=None, web_sources=None,
-                 dry_run=False, budget=None, since="", skip_brands=(), audit=False, video_runner=None, cookies=None, rescues=()):
+                 dry_run=False, budget=None, since="", skip_brands=(), audit=False, video_runner=None, cookies=None, rescues=(), browser_factory=None):
     """Take new sourced items into the brand's bank, keep only what is useful, save its files and score it. Returns (new ids, summary lines).
 
     In order: leave out the brand's own content and copies; tidy what is already in the bank the same way; score what is not scored; keep
@@ -1444,6 +1495,9 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
             lines += [f"{brand.slug}: {line}" for line in audit_files(bank, drive)]
         except DriveError as exc:
             lines.append(f"{brand.slug}: the audit of saved files stopped: {exc}")
+    if settings.save_assets and drive is not None and get is not None:
+        _, notes = refresh_meta_links(bank, browser_factory, settings, now)
+        lines += [f"{brand.slug}: {n}" for n in notes]
     retry = [i for i, it in bank["items"].items() if needs_assets(it)]
     try:
         if settings.save_assets and drive is not None and get is not None:
