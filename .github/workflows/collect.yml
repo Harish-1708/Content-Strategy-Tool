@@ -190,13 +190,17 @@ jobs:
         shell: bash
         env:
           BRAND: ${{ inputs.brand }}
+          MODE: ${{ inputs.mode }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           IDEA_BANK_FOLDER_ID: ${{ secrets.IDEA_BANK_FOLDER_ID }}
+          INSTAGRAM_COOKIES: ${{ secrets.INSTAGRAM_COOKIES }}
+          TIKTOK_COOKIES: ${{ secrets.TIKTOK_COOKIES }}
         run: |
           set +e
           args=(--all)
           if [ -n "$BRAND" ] && [ "$BRAND" != "all" ]; then args=(--brand "$BRAND"); fi
+          if [ "$MODE" = "tidy" ]; then args+=(--audit); fi
           { echo "### Idea Bank"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           python -m contentintel ideabank "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           code=${PIPESTATUS[0]}
