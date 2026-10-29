@@ -435,7 +435,7 @@ def test_it_scrolls_only_until_it_has_enough_and_never_more_than_the_limit(cfg):
     assert len(run_task(cfg, more, ig_task("a"), 3)[0]) == 3 and 1 <= more.scrolls <= 3
     never = FakeBrowser({"https://www.instagram.com/explore/tags/": {"json": [many("ig", 1)]}}, present_always=logged_in(cfg, "instagram"))
     run_task(cfg, never, ig_task("a"), 50)
-    assert never.scrolls == site(cfg, "instagram")["max_scrolls_per_page"] == 3        # Instagram is in careful mode: its own, smaller limit
+    assert never.scrolls == cfg["limits"]["max_scrolls_per_page"] == 8 and "max_scrolls_per_page" not in site(cfg, "instagram")   # careful mode is off: the general limit
 
 
 def test_the_limit_is_shared_between_seeds_and_a_full_task_stops_opening_pages(cfg):
