@@ -277,10 +277,15 @@ class SheetReport:
     rows_updated: int = 0
     cells_updated: int = 0
     rows_added: int = 0
+    rows_by_tab: dict = field(default_factory=dict)
     rows_marked_removed: int = 0
     events_added: int = 0
     notes: list = field(default_factory=list)
     dry_run: bool = False
+
+    def _where(self):
+        """' (Rejected 427)': which tabs the added rows went to, so a big number is never a mystery."""
+        return " (" + ", ".join(f"{tab} {n}" for tab, n in self.rows_by_tab.items()) + ")" if self.rows_by_tab else ""
 
     def lines(self):
         out = [f"{self.brand}: {self.url or '(no spreadsheet yet)'}"]
@@ -292,7 +297,7 @@ class SheetReport:
             for tab, cols in self.columns_added.items():
                 out.append(f"  would add columns to {tab}: {', '.join(cols)}")
             out.append(f"  would update {self.rows_updated} rows ({self.cells_updated} cells), "
-                       f"add {self.rows_added} rows, mark {self.rows_marked_removed} as removed, "
+                       f"add {self.rows_added} rows{self._where()}, mark {self.rows_marked_removed} as removed, "
                        f"add {self.events_added} change entries")
         else:
             if self.created_spreadsheet:
@@ -302,7 +307,7 @@ class SheetReport:
             for tab, cols in self.columns_added.items():
                 out.append(f"  added columns to {tab}: {', '.join(cols)}")
             out.append(f"  updated {self.rows_updated} rows ({self.cells_updated} cells), "
-                       f"added {self.rows_added} rows, marked {self.rows_marked_removed} as removed, "
+                       f"added {self.rows_added} rows{self._where()}, marked {self.rows_marked_removed} as removed, "
                        f"new change entries: {self.events_added}")
         out.extend(f"  note: {n}" for n in self.notes)
         return out
@@ -555,6 +560,8 @@ def _sync_table(ws, *, tab, columns, rows_by_key, key_col, report, dry_run,
     report.rows_updated += len(touched_rows)
     report.cells_updated += len(cell_updates) - marked
     report.rows_added += len(to_append)
+    if to_append:
+        report.rows_by_tab[tab] = report.rows_by_tab.get(tab, 0) + len(to_append)
     report.rows_marked_removed += marked
     if dry_run or ws is None:
         return
@@ -636,6 +643,7 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
                 report=report, dry_run=dry_run)
     report.events_added = report.rows_added - before
     report.rows_added = before
+    report.rows_by_tab.pop(CHANGES, None)                  # change entries are counted on their own
 
     sources = research_sources(store.read_searches(brand.slug))
     if sources:                                  # the tab appears once there is something to show
