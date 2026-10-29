@@ -440,6 +440,21 @@ delete by hand and tried again next run) and its sheet row deleted. **A row you 
 what is already in the bank the same way, and the Collect workflow's mode **tidy** does only that (it collects nothing), so raising
 `min_relevance` and running `tidy` cleans the sheet and the Drive.
 
+**Saved files are checked, and described honestly.** A picture or video is judged from its own bytes before it is saved: the real type
+(a PNG that a server called "image/jpeg" is saved as a `.png`), a picture that decodes fully, is not blank and is at least 200 pixels on
+its shorter side, and a video whose structure is whole (a header with a length and a picture track, data that adds up to the file's size).
+A download that arrives short of the size announced, or whose connection drops half way, is tried once more and otherwise refused with
+the reason. After the upload Drive is asked for the file's size and checksum, and a copy that does not match is trashed and sent again.
+The sheet's **preview** column says what is really in Drive: "video saved (28s, 720x1280)", "image saved (1122x1402)", "cover image only,
+the video was not saved" (what the collectors see of a TikTok or Instagram post), "original link only", with "low resolution" for a picture
+under 600 pixels and "not yet checked" for a file saved before the checks existed. The Collect workflow's mode **tidy** now also runs an
+**audit**: every saved file is downloaded back from Drive and checked again as a person opening it would find it; a broken, cut short or
+missing file is removed from the item (and saved again if its link still works), a wrongly named file is renamed, and the log counts files
+complete, renamed, broken, missing and low resolution, and the items that have only a cover. **Real videos:** for each kept TikTok video
+page or Instagram reel and post, `yt-dlp` is asked for the actual video (using your TikTok and Instagram login cookies), at most
+`ideabank.video_fetches_per_run` (12) a run and twice per item; TikTok and Instagram may refuse a data-centre address, and then the log says
+why and the cover stays. Switch it off with `ideabank.fetch_videos: false`.
+
 **Google's limits, and what the tool does about them.** Google allows 60 sheet writes a minute per user. The tool paces its writes to 45 a
 minute (a brand-new spreadsheet takes about 27, so a normal update never waits), deletes many rows in one request instead of one request per
 row, and if Google refuses a write anyway it waits out a whole minute before it tries again (a refused read waits 20 seconds, then 65). A run
