@@ -481,6 +481,12 @@ why and the cover stays. Switch it off with `ideabank.fetch_videos: false`.
 - *A picture for a TikTok found by search.* A TikTok video page found by web search has no picture from the collectors; TikTok's own oEmbed
   gives its thumbnail (up to `cover_lookups_per_run`, 20 a run), saved as a cover and labelled so.
 
+**What you approved is never removed by the tool.** Every Idea Bank run reads your **Decision** column: a row marked Use or Maybe is protected from
+every automatic removal (not relevant enough, a copy, the same technique, the same file). A removed item you rescue on the **Rejected** tab is protected the
+same way. The run needs the sheet for this (`--sheets-config`, default `sheets.yaml`); if the sheet cannot be read the log says so and the run carries
+on, but a mistake in the program itself (a missing option, a wrong call) is never hidden as a note. The sheet report also says **which tab** added rows
+went to, for example "added 427 rows (Rejected 427)", so a large number is never a mystery; change entries are counted on their own.
+
 **An expired Meta link is refreshed, not given up on.** Meta's picture and video links last hours or days, but the ad itself is often still
 shown in the Ad Library. For a kept Meta ad with no saved file and an expired link, the browser opens the ad's own Ad Library page, reads the
 fresh link from its data, and the file is saved in the same run (`ideabank.refresh_links`, at most `link_refreshes_per_run` (10) a run and
