@@ -734,6 +734,11 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
     return report
 
 
+def has_spreadsheet(brand, store, config):
+    """Is there already a spreadsheet for this brand (named in sheets.yaml, or recorded when the tool made one)? Reading must never make one."""
+    return bool(config.get(brand.slug) or (store.load_sheet_info(brand.slug) or {}).get("spreadsheet_id"))
+
+
 def fetch_decisions(brand, store, *, key_json, share_emails, config, folder_id=None, connect_fn=connect):
     """{idea id: {decision, notes}} as a person filled them in on the brand's Idea Bank tab."""
     client, bot_email = connect_fn(key_json)
