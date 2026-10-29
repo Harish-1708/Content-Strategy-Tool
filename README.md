@@ -481,6 +481,11 @@ why and the cover stays. Switch it off with `ideabank.fetch_videos: false`.
 - *A picture for a TikTok found by search.* A TikTok video page found by web search has no picture from the collectors; TikTok's own oEmbed
   gives its thumbnail (up to `cover_lookups_per_run`, 20 a run), saved as a cover and labelled so.
 
+**An expired Meta link is refreshed, not given up on.** Meta's picture and video links last hours or days, but the ad itself is often still
+shown in the Ad Library. For a kept Meta ad with no saved file and an expired link, the browser opens the ad's own Ad Library page, reads the
+fresh link from its data, and the file is saved in the same run (`ideabank.refresh_links`, at most `link_refreshes_per_run` (10) a run and
+twice per ad). An ad that is no longer shown says so ("no saved media: the original link expired"). It needs the browser, which tidy mode installs.
+
 **Google's limits, and what the tool does about them.** Google allows 60 sheet writes a minute per user. The tool paces its writes to 45 a
 minute (a brand-new spreadsheet takes about 27, so a normal update never waits), deletes many rows in one request instead of one request per
 row, and if Google refuses a write anyway it waits out a whole minute before it tries again (a refused read waits 20 seconds, then 65). A run
