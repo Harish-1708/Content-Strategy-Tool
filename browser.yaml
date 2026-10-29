@@ -40,11 +40,12 @@ sites:
     # use. An address containing one of the parts below counts too.
     warning_any: ['text=detected automated behavior', 'text=no other users or tools have access to your account', 'text=We suspect automated behavior', 'text=Action Blocked', 'text=We restrict certain activity', 'text=Your account has been temporarily locked']
     warning_url_any: ['/accounts/suspended', '/accounts/disabled', '/challenge/']
-    # CAREFUL MODE for this account: slower, smaller, and spread over several runs. Raise these only if the account stays quiet.
-    pacing: {min_delay_seconds: 20, max_delay_seconds: 60, scroll_pause_seconds: 8}   # a long pause before each page and each scroll
-    max_scrolls_per_page: 3          # scroll a little, not to the bottom
-    max_pages_per_run: 2             # hashtag pages opened in one run; the next run carries on from where this one stopped
-    max_pages_per_day: 4             # and never more than this many in a day, however often it is run
+    # CAREFUL MODE for this account is OFF by default so it does not limit your results: Instagram is read as fast and as deep as TikTok.
+    # To switch it on (slower, smaller, spread over several runs), remove the # from the next four lines:
+    # pacing: {min_delay_seconds: 20, max_delay_seconds: 60, scroll_pause_seconds: 8}   # a long pause before each page and each scroll
+    # max_scrolls_per_page: 3          # scroll a little, not to the bottom
+    # max_pages_per_run: 2             # hashtag pages opened in one run; the next run carries on from where this one stopped
+    # max_pages_per_day: 4             # and never more than this many in a day, however often it is run
     login_steps:
       - {goto: 'https://www.instagram.com/accounts/login/'}
       - {wait: 3}
