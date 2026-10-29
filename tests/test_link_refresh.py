@@ -113,7 +113,7 @@ def test_a_page_that_will_not_open_is_a_reason_and_the_next_ad_is_still_tried():
         return real(url)
     browser.open = open_
     found, _ = IB.refresh_meta_links(bank, factory, S, NOW)
-    assert found == 1 and bank["items"]["IB-0001"]["asset_note"] == "the link expired and the Ad Library page could not be opened (ConnectionError)"
+    assert found == 1 and bank["items"]["IB-0001"]["asset_note"] == "the link expired and the Ad Library page could not be opened (ConnectionError: down)"
     assert bank["items"]["IB-0002"]["media_url"] == NEW
 
 
@@ -124,7 +124,7 @@ def test_no_browser_or_one_that_cannot_start_changes_nothing_and_says_so():
     def broken(site):
         raise OSError("no chromium")
     found, lines = IB.refresh_meta_links(bank, broken, S, NOW)
-    assert found == 0 and lines == ["Meta ad links not refreshed: the browser could not start (OSError)"] and bank["items"]["IB-0001"]["media_url"] == OLD
+    assert found == 0 and lines == ["Meta ad links not refreshed: the browser could not start (OSError: no chromium)"] and bank["items"]["IB-0001"]["media_url"] == OLD
     assert IB.refresh_meta_links(ads("A", media=f"https://x/y.jpg?oe={FUTURE}"), None, S, NOW) == (0, [])           # nothing expired: nothing to say
 
 
