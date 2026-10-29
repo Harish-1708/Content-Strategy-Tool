@@ -101,7 +101,12 @@ class FakeBrowser:
         return list(self.spec.get("response_links", []))
 
     def html(self):
-        return "<html></html>"
+        return getattr(self, "page_html", "<html></html>")
+
+    def fetch_bytes(self, url, referer, max_bytes):
+        self.fetched = getattr(self, "fetched", []) + [(url, referer)]
+        status, body = getattr(self, "fetch_map", {}).get(url, (404, b""))
+        return status, (body if len(body) <= max_bytes else b"")
 
     def screenshot(self, name):
         self.shots.append(name)
@@ -224,6 +229,8 @@ class FakeClaude:
         self.prepare_calls, self.answer_calls = [], []
         self.completions, self.complete_calls, self.fail_complete = [], [], None
         self.json_answers, self.json_calls = [], []
+        self.technique_answers, self.enrich_answers, self.vision_answers = [], [], []          # the three newer kinds of question, answered apart
+        self.technique_calls, self.enrich_calls, self.vision_calls = [], [], []
 
     def complete(self, system, user, max_tokens=None):
         self.complete_calls.append((system, user, max_tokens))
@@ -231,7 +238,22 @@ class FakeClaude:
             raise self.fail_complete
         return self.completions.pop(0) if self.completions else "{}"
 
+    def json_task_with_images(self, system, user, images, max_tokens=None):
+        self.vision_calls.append((system, user, list(images), max_tokens))
+        answer = self.vision_answers.pop(0) if self.vision_answers else {"items": []}
+        if isinstance(answer, Exception):
+            raise answer
+        return answer
+
     def json_task(self, system, user, max_tokens=None):
+        for marker, calls, answers, empty in (("You group advertising", self.technique_calls, self.technique_answers, {"groups": []}),
+                                              ("You help a creative team act on an idea", self.enrich_calls, self.enrich_answers, {"items": []})):
+            if system.startswith(marker):
+                calls.append((system, user, max_tokens))
+                answer = answers.pop(0) if answers else empty
+                if isinstance(answer, Exception):
+                    raise answer
+                return answer
         self.json_calls.append((system, user, max_tokens))
         if not self.json_answers:
             raise AssertionError("a JSON answer was asked for but none was scripted")
