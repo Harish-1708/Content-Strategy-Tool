@@ -121,7 +121,8 @@ def test_only_the_items_asked_about_are_taken():
 @pytest.mark.parametrize("phrase", [
     "judge TWO things separately", "'fit' (0-100)", "'idea' (0-100)", "a discount or promo code, a price, a restock or 'new arrivals' notice",
     "Mark those 'generic': true", "an ad that has run 60 or more days", "150 or more days is very strong", "a big brand's generic ad is still generic",
-    "'same' (our own kind of product)", "'adjacent'", "'other' (unrelated products such as shoes, baby goods", "outdoor gear",
+    "'same' (our own kind of product)", "'adjacent' (a neighbouring category, whose idea carries over to ours)", "'other' (a product category unrelated to ours",
+    "judge the category from the brand context given, never from a fixed list", "a bare claim such as 'so comfy' or 'so tasty'",
     "Be strict: most items are ordinary, so most scores should be under 60", "Never invent numbers, quotes or results", "the reusable idea with the product taken out"])
 def test_the_instructions_say_what_makes_an_idea_worth_keeping(phrase):
     assert phrase in IB.SCORE_SYSTEM
@@ -268,14 +269,14 @@ def test_the_sheet_shows_the_idea_to_copy_and_whether_there_is_a_file():
     bank["items"]["IB-0002"]["assets"] = [{"name": "x"}]
     rows = IB.sheet_rows(bank)
     one, two = rows["IB-0001"], rows["IB-0002"]
-    assert (one["fit"], one["idea"], one["mechanism"], one["concept"]) == (75, 88, "compliment hook", "Asked where it is from.") and one["preview"] == "original link only"
+    assert (one["fit"], one["idea"], one["mechanism"], one["concept"]) == (75, 88, "compliment hook", "Asked where it is from.") and one["preview"] == "no saved media: original link only"
     assert two["preview"] == "image saved - not yet checked" and two["fit"] == "" and two["idea"] == "" and two["concept"] == ""
     assert list(one) == IB.IDEABANK_COLUMNS
 
 
 def test_the_new_columns_sit_next_to_the_score_in_a_new_tab():
     cols = IB.IDEABANK_COLUMNS
-    assert cols[cols.index("score"):cols.index("score") + 6] == ["score", "fit", "idea", "format", "mechanism", "concept"] and "preview" in cols
+    assert cols[cols.index("score"):cols.index("score") + 7] == ["score", "fit", "idea", "format", "mechanism", "technique", "concept"] and "preview" in cols
 
 
 def test_an_existing_idea_bank_tab_gains_the_new_columns_and_keeps_every_decision(tmp_path, swov):
@@ -297,7 +298,7 @@ def test_an_existing_idea_bank_tab_gains_the_new_columns_and_keeps_every_decisio
     report, error = one(swov, store, client)
     _, header, rows = cells(sp, "Idea Bank")
     assert error is None and rows[0]["Decision"] == "Use" and rows[0]["concept"] == "Lead with the problem." and rows[0]["fit"] == "70" and rows[0]["idea"] == "90"
-    assert rows[0]["preview"] == "original link only"
+    assert rows[0]["preview"] == "no saved media: original link only"
     ws, header, _ = cells(sp, "Idea Bank")
     for column in ("fit", "idea"):
         value = ws.cells[(2, header.index(column) + 1)]
@@ -376,7 +377,7 @@ def test_only_skip_entries_count_not_page_ids_or_links(tmp_path, swov):
 
 def test_the_readme_explains_the_idea_first_scoring_and_the_new_columns():
     text = " ".join(open("README.md", encoding="utf-8").read().split())
-    for needle in ("Ideas, not generic content", "fit", "idea strength", "concept", "original link only", "scored again once", "brands you skip"):
+    for needle in ("Ideas, not generic content", "fit", "idea strength", "concept", "no saved media", "scored again once", "brands you skip"):
         assert needle in text, needle
 
 
