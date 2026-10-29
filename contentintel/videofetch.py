@@ -142,7 +142,7 @@ def browser_download(url, dest_dir, factory, max_mb):
                 return None, "the page shows no video address"
             status, body = browser.fetch_bytes(src, url, max_mb * 1024 * 1024)
     except Exception as exc:                                              # a page that will not load is a reason, not a crash
-        return None, f"the browser could not load the page ({exc.__class__.__name__})"
+        return None, f"the browser could not load the page ({exc.__class__.__name__}: {str(exc)[:100]})"
     if status >= 400 or not body:
         return None, f"the video server answered {status}" if status >= 400 else "the video server sent nothing"
     path = Path(dest_dir) / "video.mp4"
