@@ -419,6 +419,12 @@ class PlaywrightBrowser:
                 continue
         return []
 
+    def fetch_bytes(self, url, referer, max_bytes):
+        """(status, body) of an address fetched with this browser's cookies, as the page itself would."""
+        resp = self.page.context.request.get(url, headers={"Referer": referer, "User-Agent": _UA}, timeout=90000)
+        body = resp.body() if resp.status < 400 else b""
+        return resp.status, (body if len(body) <= max_bytes else b"")
+
     def html(self):
         try:
             return self.page.content()
