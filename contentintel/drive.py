@@ -12,6 +12,7 @@ Only the files themselves live here. Links, text, scores and summaries stay in t
 the link to its folder. A service account cannot store files in a normal My Drive (it has no storage of its own), which is
 why the folder must be inside a Shared Drive that the service account is a member of.
 """
+import hashlib
 import json
 import re
 import time
@@ -31,6 +32,10 @@ _SLEEP = time.sleep
 
 class DriveError(Exception):
     """A problem a person can fix (sharing, a missing switch, a wrong folder), worded as the fix."""
+
+
+class DriveMismatch(DriveError):
+    """Drive holds a different file from the one that was sent (cut short or altered on the way)."""
 
 
 def parse_folder_id(text):
@@ -201,6 +206,21 @@ class DriveClient:
             raise DriveError("Google Drive did not say where to send a large file; nothing was saved.")
         done = self._send("PUT", location, data=data, headers={"Content-Type": mime})
         return done.json()["id"]
+
+    def file_info(self, file_id):
+        return self._json("GET", f"{API}/{file_id}", params={"fields": "id,name,size,md5Checksum,mimeType,trashed", "supportsAllDrives": "true"})
+
+    def verify(self, file_id, data):
+        """Prove Drive holds exactly these bytes (size, and the checksum Drive keeps). Returns the md5 of `data`; raises DriveMismatch if not."""
+        info = self.file_info(file_id)
+        md5 = hashlib.md5(data).hexdigest()
+        sizes = str(info.get("size", ""))
+        if (sizes and sizes != str(len(data))) or (info.get("md5Checksum") and info["md5Checksum"] != md5):
+            raise DriveMismatch(f"Drive holds a different file from the one sent (size {sizes or 'unknown'} instead of {len(data)})")
+        return md5
+
+    def rename(self, file_id, name):
+        self._send("PATCH", f"{API}/{file_id}", plain=True, params={"supportsAllDrives": "true"}, json={"name": safe_name(name, limit=120)})
 
     def download(self, file_id):
         return self._send("GET", f"{API}/{file_id}", params={"alt": "media", "supportsAllDrives": "true"}).content
