@@ -229,6 +229,10 @@ class DriveClient:
         """Move a file or folder to the Drive trash (recoverable for 30 days). Needs the Content manager role on a Shared Drive."""
         self._send("PATCH", f"{API}/{file_id}", plain=True, params={"supportsAllDrives": "true"}, json={"trashed": True})
 
+    def restore(self, file_id):
+        """Take a file or folder back out of the Drive trash."""
+        self._send("PATCH", f"{API}/{file_id}", plain=True, params={"supportsAllDrives": "true"}, json={"trashed": False})
+
     def delete(self, file_id):
         self._send("DELETE", f"{API}/{file_id}", plain=True, params={"supportsAllDrives": "true"})
 
