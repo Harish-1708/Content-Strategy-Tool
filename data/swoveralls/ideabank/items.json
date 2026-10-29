@@ -2,6 +2,7 @@
  "items": {
   "IB-0001": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -66,6 +67,7 @@
   },
   "IB-0002": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -130,6 +132,7 @@
   },
   "IB-0003": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -193,6 +196,7 @@
   },
   "IB-0004": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -256,6 +260,7 @@
   },
   "IB-0005": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -320,6 +325,7 @@
   },
   "IB-0006": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -384,6 +390,7 @@
   },
   "IB-0007": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -448,6 +455,7 @@
   },
   "IB-0008": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 2,
    "assets": [
@@ -526,6 +534,7 @@
   },
   "IB-0009": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -590,6 +599,7 @@
   },
   "IB-0010": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -654,6 +664,7 @@
   },
   "IB-0011": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -718,6 +729,7 @@
   },
   "IB-0012": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 2,
    "assets": [],
@@ -797,6 +809,7 @@
   },
   "IB-0013": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -860,6 +873,7 @@
   },
   "IB-0014": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -923,6 +937,7 @@
   },
   "IB-0015": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -986,6 +1001,7 @@
   },
   "IB-0016": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -1050,6 +1066,7 @@
   },
   "IB-0017": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -1114,6 +1131,7 @@
   },
   "IB-0018": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -1178,6 +1196,7 @@
   },
   "IB-0019": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -1242,6 +1261,7 @@
   },
   "IB-0020": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -1306,6 +1326,7 @@
   },
   "IB-0021": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 2,
    "assets": [],
@@ -1385,6 +1406,7 @@
   },
   "IB-0022": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -1449,6 +1471,7 @@
   },
   "IB-0023": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -1513,6 +1536,7 @@
   },
   "IB-0024": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -1577,6 +1601,7 @@
   },
   "IB-0025": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -1640,6 +1665,7 @@
   },
   "IB-0026": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -1703,6 +1729,7 @@
   },
   "IB-0027": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -1766,6 +1793,7 @@
   },
   "IB-0028": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -1830,6 +1858,7 @@
   },
   "IB-0029": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -1893,6 +1922,7 @@
   },
   "IB-0030": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -1956,6 +1986,7 @@
   },
   "IB-0031": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -2020,6 +2051,7 @@
   },
   "IB-0032": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -2084,6 +2116,7 @@
   },
   "IB-0033": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -2148,6 +2181,7 @@
   },
   "IB-0034": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -2212,6 +2246,7 @@
   },
   "IB-0035": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -2276,6 +2311,7 @@
   },
   "IB-0036": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -2340,6 +2376,7 @@
   },
   "IB-0037": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -2404,6 +2441,7 @@
   },
   "IB-0038": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -2468,6 +2506,7 @@
   },
   "IB-0039": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -2532,6 +2571,7 @@
   },
   "IB-0040": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -2595,6 +2635,7 @@
   },
   "IB-0041": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -2658,6 +2699,7 @@
   },
   "IB-0042": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -2721,6 +2763,7 @@
   },
   "IB-0043": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -2785,6 +2828,7 @@
   },
   "IB-0044": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -2849,6 +2893,7 @@
   },
   "IB-0045": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -2912,6 +2957,7 @@
   },
   "IB-0046": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -2975,6 +3021,7 @@
   },
   "IB-0047": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -3038,6 +3085,7 @@
   },
   "IB-0048": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -3101,6 +3149,7 @@
   },
   "IB-0049": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -3164,6 +3213,7 @@
   },
   "IB-0050": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -3227,6 +3277,7 @@
   },
   "IB-0051": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -3291,6 +3342,7 @@
   },
   "IB-0052": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -3355,6 +3407,7 @@
   },
   "IB-0053": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [
@@ -3433,6 +3486,7 @@
   },
   "IB-0054": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -3497,6 +3551,7 @@
   },
   "IB-0055": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -3561,6 +3616,7 @@
   },
   "IB-0056": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -3625,6 +3681,7 @@
   },
   "IB-0057": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [
@@ -3699,10 +3756,11 @@
    "video_tries": 0,
    "visual_hook": "",
    "visual_quality": "",
-   "visual_tries": 1
+   "visual_tries": 2
   },
   "IB-0058": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -3767,6 +3825,7 @@
   },
   "IB-0059": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -3831,6 +3890,7 @@
   },
   "IB-0060": {
    "added_at": "2026-10-27T13:04:55Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -3895,6 +3955,7 @@
   },
   "IB-0061": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -3958,6 +4019,7 @@
   },
   "IB-0062": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -4021,6 +4083,7 @@
   },
   "IB-0063": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -4084,6 +4147,7 @@
   },
   "IB-0064": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -4147,6 +4211,7 @@
   },
   "IB-0065": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -4211,6 +4276,7 @@
   },
   "IB-0066": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -4275,6 +4341,7 @@
   },
   "IB-0067": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -4338,6 +4405,7 @@
   },
   "IB-0068": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -4401,6 +4469,7 @@
   },
   "IB-0069": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -4464,6 +4533,7 @@
   },
   "IB-0070": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -4528,6 +4598,7 @@
   },
   "IB-0071": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -4592,6 +4663,7 @@
   },
   "IB-0072": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -4656,6 +4728,7 @@
   },
   "IB-0073": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -4720,6 +4793,7 @@
   },
   "IB-0074": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "a video bigger than 80 MB",
    "asset_tries": 1,
    "assets": [],
@@ -4783,6 +4857,7 @@
   },
   "IB-0075": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "a video bigger than 80 MB",
    "asset_tries": 1,
    "assets": [],
@@ -4846,6 +4921,7 @@
   },
   "IB-0076": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -4909,6 +4985,7 @@
   },
   "IB-0077": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -4973,6 +5050,7 @@
   },
   "IB-0078": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -5037,6 +5115,7 @@
   },
   "IB-0079": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -5101,6 +5180,7 @@
   },
   "IB-0080": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -5165,6 +5245,7 @@
   },
   "IB-0081": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -5229,6 +5310,7 @@
   },
   "IB-0082": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -5293,6 +5375,7 @@
   },
   "IB-0083": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -5357,6 +5440,7 @@
   },
   "IB-0084": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -5424,6 +5508,7 @@
   },
   "IB-0085": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -5491,6 +5576,7 @@
   },
   "IB-0086": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -5558,6 +5644,7 @@
   },
   "IB-0087": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -5625,6 +5712,7 @@
   },
   "IB-0088": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -5687,6 +5775,7 @@
   },
   "IB-0089": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -5749,6 +5838,7 @@
   },
   "IB-0090": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -5811,6 +5901,7 @@
   },
   "IB-0091": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -5873,6 +5964,7 @@
   },
   "IB-0092": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -5936,6 +6028,7 @@
   },
   "IB-0093": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -5999,6 +6092,7 @@
   },
   "IB-0094": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -6062,6 +6156,7 @@
   },
   "IB-0095": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -6124,6 +6219,7 @@
   },
   "IB-0096": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "a video bigger than 80 MB",
    "asset_tries": 1,
    "assets": [],
@@ -6186,6 +6282,7 @@
   },
   "IB-0097": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -6248,6 +6345,7 @@
   },
   "IB-0098": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -6311,6 +6409,7 @@
   },
   "IB-0099": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -6374,6 +6473,7 @@
   },
   "IB-0100": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -6436,6 +6536,7 @@
   },
   "IB-0101": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -6498,6 +6599,7 @@
   },
   "IB-0102": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -6560,6 +6662,7 @@
   },
   "IB-0103": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -6622,6 +6725,7 @@
   },
   "IB-0104": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -6684,6 +6788,7 @@
   },
   "IB-0105": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -6746,6 +6851,7 @@
   },
   "IB-0106": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -6810,6 +6916,7 @@
   },
   "IB-0107": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -6873,6 +6980,7 @@
   },
   "IB-0108": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -6935,6 +7043,7 @@
   },
   "IB-0109": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -6997,6 +7106,7 @@
   },
   "IB-0110": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -7059,6 +7169,7 @@
   },
   "IB-0111": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -7121,6 +7232,7 @@
   },
   "IB-0112": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -7183,6 +7295,7 @@
   },
   "IB-0113": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -7245,6 +7358,7 @@
   },
   "IB-0114": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [
@@ -7281,7 +7395,7 @@
    "idea": 50,
    "kind": "ad",
    "link_refreshes": 0,
-   "look": "",
+   "look": "graphic",
    "mechanism": "effortless outfit reframe",
    "media_format": "",
    "media_role": "",
@@ -7315,12 +7429,13 @@
    "video_note": "",
    "video_status": "",
    "video_tries": 0,
-   "visual_hook": "",
-   "visual_quality": "",
-   "visual_tries": 0
+   "visual_hook": "Outfit collage on blue: a woman taking a mirror selfie in a black trim-edge knit set, with product cutouts and bold \"AMAZON matching set\" lettering.",
+   "visual_quality": "ok",
+   "visual_tries": 1
   },
   "IB-0115": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -7383,6 +7498,7 @@
   },
   "IB-0116": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -7445,6 +7561,7 @@
   },
   "IB-0117": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -7507,6 +7624,7 @@
   },
   "IB-0118": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "a video bigger than 80 MB",
    "asset_tries": 1,
    "assets": [],
@@ -7569,6 +7687,7 @@
   },
   "IB-0119": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -7631,6 +7750,7 @@
   },
   "IB-0120": {
    "added_at": "2026-10-27T14:16:29Z",
+   "approved": false,
    "asset_note": "the site answered 403 (the link may have expired)",
    "asset_tries": 1,
    "assets": [],
@@ -7694,6 +7814,7 @@
   },
   "IB-0121": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "the link expired on 2026-10-25; the file is saved if the ad is collected again",
    "asset_tries": 1,
    "assets": [],
@@ -7757,6 +7878,7 @@
   },
   "IB-0122": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -7820,6 +7942,7 @@
   },
   "IB-0123": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -7883,6 +8006,7 @@
   },
   "IB-0124": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -7946,6 +8070,7 @@
   },
   "IB-0125": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "the link expired on 2026-10-26; the file is saved if the ad is collected again",
    "asset_tries": 1,
    "assets": [],
@@ -8009,6 +8134,7 @@
   },
   "IB-0126": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -8072,6 +8198,7 @@
   },
   "IB-0127": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -8135,6 +8262,7 @@
   },
   "IB-0128": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "the link expired on 2026-10-26; the file is saved if the ad is collected again",
    "asset_tries": 1,
    "assets": [],
@@ -8198,6 +8326,7 @@
   },
   "IB-0129": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "the link expired on 2026-10-25; the file is saved if the ad is collected again",
    "asset_tries": 1,
    "assets": [],
@@ -8261,6 +8390,7 @@
   },
   "IB-0130": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -8324,6 +8454,7 @@
   },
   "IB-0131": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -8387,6 +8518,7 @@
   },
   "IB-0132": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -8450,6 +8582,7 @@
   },
   "IB-0133": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -8513,6 +8646,7 @@
   },
   "IB-0134": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -8576,6 +8710,7 @@
   },
   "IB-0135": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -8639,6 +8774,7 @@
   },
   "IB-0136": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -8702,6 +8838,7 @@
   },
   "IB-0137": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "the link expired on 2026-10-25; the file is saved if the ad is collected again",
    "asset_tries": 1,
    "assets": [],
@@ -8765,6 +8902,7 @@
   },
   "IB-0138": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -8828,6 +8966,7 @@
   },
   "IB-0139": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -8891,6 +9030,7 @@
   },
   "IB-0140": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": true,
    "asset_note": "the link expired on 2026-10-26; the file is saved if the ad is collected again",
    "asset_tries": 1,
    "assets": [],
@@ -8954,6 +9094,7 @@
   },
   "IB-0141": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -9017,6 +9158,7 @@
   },
   "IB-0142": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -9080,6 +9222,7 @@
   },
   "IB-0143": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -9143,6 +9286,7 @@
   },
   "IB-0144": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "the link expired on 2026-10-26; the file is saved if the ad is collected again",
    "asset_tries": 1,
    "assets": [],
@@ -9206,6 +9350,7 @@
   },
   "IB-0145": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -9269,6 +9414,7 @@
   },
   "IB-0146": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -9332,6 +9478,7 @@
   },
   "IB-0147": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -9396,6 +9543,7 @@
   },
   "IB-0148": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": true,
    "asset_note": "the link expired on 2026-10-26; the file is saved if the ad is collected again",
    "asset_tries": 1,
    "assets": [],
@@ -9417,7 +9565,7 @@
    "id": "IB-0148",
    "idea": 50,
    "kind": "ad",
-   "link_refreshes": 0,
+   "link_refreshes": 1,
    "look": "",
    "mechanism": "brand-care positioning",
    "media_format": "",
@@ -9460,6 +9608,7 @@
   },
   "IB-0149": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -9523,15 +9672,30 @@
   },
   "IB-0150": {
    "added_at": "2026-10-28T06:15:03Z",
-   "asset_note": "the link expired on 2026-10-25; the file is saved if the ad is collected again",
-   "asset_tries": 0,
-   "assets": [],
+   "approved": false,
+   "asset_note": "",
+   "asset_tries": 1,
+   "assets": [
+    {
+     "bytes": 424962,
+     "drive_id": "1xRBZMInM0zrPqIzZl9b9V3CxfLZcqd0I",
+     "duration": 0.0,
+     "height": 2048,
+     "kind": "image",
+     "md5": "075112a9a96f631586d2ab45fcab5834",
+     "name": "IB-0150-image.jpg",
+     "sha256": "762106e18b958b7a57786fe06b18513eb46ad441d0b02eb69f2eeddfaa57dda8",
+     "source": "media",
+     "verified": true,
+     "width": 1649
+    }
+   ],
    "audience": "Prospects who trust peer reviews over brand claims",
    "category": "adjacent",
    "channel": "paid social",
    "concept": "Pair a customer's emotional quote with a meaningful message printed on clothing, so the garment becomes a statement about identity and legacy.",
-   "drive_folder_id": "",
-   "drive_folder_url": "",
+   "drive_folder_id": "1z5iRBSBYmeIXkBG7ZxJaJo-KuWjaoE3n",
+   "drive_folder_url": "https://drive.google.com/drive/folders/1z5iRBSBYmeIXkBG7ZxJaJo-KuWjaoE3n",
    "duplicate_of": "",
    "fingerprint": "77fbfda8ee6ea2a6",
    "first_test": "Pull one genuine review each for Navy and Midnight Black. Run as static ads against a product-only ad. Measure click-through rate and purchases.",
@@ -9544,12 +9708,12 @@
    "id": "IB-0150",
    "idea": 72,
    "kind": "ad",
-   "link_refreshes": 0,
-   "look": "",
+   "link_refreshes": 1,
+   "look": "photo",
    "mechanism": "identity message plus testimonial",
    "media_format": "",
    "media_role": "",
-   "media_url": "https://scontent-sea5-1.xx.fbcdn.net/v/t39.35426-6/591956980_4165919973661637_4975014380248223269_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=MQMg_3P8DgYQ7kNvwH9ssUB&_nc_oc=AdoTGPuASi97txWLjo_jPMIL8M6LxMo2P7EdW381Ynb-LqNnRpLOxd9T4AjF21Bn3Ac&_nc_zt=14&_nc_ht=scontent-sea5-1.xx&_nc_gid=OMlJKi9FX9HNVadA3hFnBA&_nc_ss=7b289&oh=00_AQNNNHC-u_nLevrt8Rcbw_nPbeIqxgPGodKJC2ILsDoGZg&oe=6ADE914D",
+   "media_url": "https://scontent-dfw6-2.xx.fbcdn.net/v/t39.35426-6/591956980_4165919973661637_4975014380248223269_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=-grVv33Eg-IQ7kNvwGiRg6B&_nc_oc=Adp5gUiQRMPVzmssM-afeZqdetGS36bhwmerSIsnvHo_ZlwpCsVnigY_v3zCSbYca5A&_nc_zt=14&_nc_ht=scontent-dfw6-2.xx&_nc_gid=sQWfz4IqaUIqgQxCJW1aXA&_nc_ss=7b289&oh=00_AQTsvWcYqo8Ko3aHZorbLaSlP1nvXeFhlzEIVJ0TzZbrwQ&oe=6AE91D4D",
    "metrics": {
     "days_running": 275,
     "signal": "worth studying: ran 275 days"
@@ -9580,12 +9744,13 @@
    "video_note": "",
    "video_status": "",
    "video_tries": 0,
-   "visual_hook": "",
-   "visual_quality": "",
-   "visual_tries": 0
+   "visual_hook": "Mustard yellow hoodie laid flat with white drawstrings; chest print of legs in sneakers walking, text reads 'I walk in the prayers the ancestors prayed.'",
+   "visual_quality": "good",
+   "visual_tries": 1
   },
   "IB-0151": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -9650,6 +9815,7 @@
   },
   "IB-0152": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -9713,6 +9879,7 @@
   },
   "IB-0153": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -9777,6 +9944,7 @@
   },
   "IB-0154": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -9840,6 +10008,7 @@
   },
   "IB-0155": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -9903,6 +10072,7 @@
   },
   "IB-0156": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -9966,6 +10136,7 @@
   },
   "IB-0157": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -10029,6 +10200,7 @@
   },
   "IB-0158": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -10093,6 +10265,7 @@
   },
   "IB-0159": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -10156,6 +10329,7 @@
   },
   "IB-0160": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -10218,6 +10392,7 @@
   },
   "IB-0161": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -10281,6 +10456,7 @@
   },
   "IB-0162": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -10344,6 +10520,7 @@
   },
   "IB-0163": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -10406,6 +10583,7 @@
   },
   "IB-0164": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -10468,6 +10646,7 @@
   },
   "IB-0165": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "the link expired on 2026-10-25; the file is saved if the ad is collected again",
    "asset_tries": 0,
    "assets": [],
@@ -10530,6 +10709,7 @@
   },
   "IB-0166": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "the link expired on 2026-10-26; the file is saved if the ad is collected again",
    "asset_tries": 0,
    "assets": [],
@@ -10592,6 +10772,7 @@
   },
   "IB-0167": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -10654,6 +10835,7 @@
   },
   "IB-0168": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -10716,6 +10898,7 @@
   },
   "IB-0169": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -10779,6 +10962,7 @@
   },
   "IB-0170": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -10842,6 +11026,7 @@
   },
   "IB-0171": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -10906,6 +11091,7 @@
   },
   "IB-0172": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -10969,6 +11155,7 @@
   },
   "IB-0173": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -11032,6 +11219,7 @@
   },
   "IB-0174": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -11095,6 +11283,7 @@
   },
   "IB-0175": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -11158,6 +11347,7 @@
   },
   "IB-0176": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -11221,6 +11411,7 @@
   },
   "IB-0177": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -11284,6 +11475,7 @@
   },
   "IB-0178": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -11347,6 +11539,7 @@
   },
   "IB-0179": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -11410,6 +11603,7 @@
   },
   "IB-0180": {
    "added_at": "2026-10-28T06:15:03Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -11472,15 +11666,30 @@
   },
   "IB-0181": {
    "added_at": "2026-10-28T08:43:24Z",
-   "asset_note": "the link expired on 2026-10-25; the file is saved if the ad is collected again",
-   "asset_tries": 0,
-   "assets": [],
+   "approved": true,
+   "asset_note": "",
+   "asset_tries": 1,
+   "assets": [
+    {
+     "bytes": 2932049,
+     "drive_id": "1SUfrZhWuMUhhBqjXyted0pObIhBFqBX1",
+     "duration": 10.6,
+     "height": 1280,
+     "kind": "video",
+     "md5": "f9beb30ce4a3c5be730881795fa48fad",
+     "name": "IB-0181-video.mp4",
+     "sha256": "6d8508ffb7b6f694b8220bb6d4c4ffd66b25aed5ccd24884c467f8cecd56a7fc",
+     "source": "media",
+     "verified": true,
+     "width": 720
+    }
+   ],
    "audience": "Shoppers who want an easy one-piece outfit",
    "category": "same",
    "channel": "paid social",
    "concept": "Describe a seasonal colour as 'deep enough to count as a personality trait', then list effortless-outfit and layering benefits.",
-   "drive_folder_id": "",
-   "drive_folder_url": "",
+   "drive_folder_id": "1s0G6obR7dMILyG0mf9m0eALi42p4jeIQ",
+   "drive_folder_url": "https://drive.google.com/drive/folders/1s0G6obR7dMILyG0mf9m0eALi42p4jeIQ",
    "duplicate_of": "",
    "fingerprint": "fb04cb0e52e21267",
    "first_test": "Build one static Meta ad using the three-benefit checklist format against our current ad. Small budget. Measure click-through rate and add-to-cart.",
@@ -11493,12 +11702,12 @@
    "id": "IB-0181",
    "idea": 55,
    "kind": "ad",
-   "link_refreshes": 0,
+   "link_refreshes": 1,
    "look": "",
    "mechanism": "personality-trait colour hook",
    "media_format": "",
    "media_role": "",
-   "media_url": "https://video-iad6-1.xx.fbcdn.net/o1/v/t2/f2/m366/AQMQe2TCsIyZMtV5Hl8uhlSRHpvDwxIT6R8ysCnKsVsaQlX6eLCjyHlV9_VnKG72-0iVzQZQp45iHGoPs6ME4NyevwXS-4p9waKV9h_cWmOi4Q.mp4?_nc_cat=100&_nc_sid=b66105&_nc_ht=video-iad6-1.xx.fbcdn.net&_nc_ohc=W6WPNPQcLWYQ7kNvwGv3Awd&efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5WSV9VU0VDQVNFX1BST0RVQ1RfVFlQRS4uQzMuNzIwLmRhc2hfaDI2NC1iYXNpYy1nZW4yXzcyMHAiLCJ4cHZfYXNzZXRfaWQiOjIyNTA2NTE4NzU3OTg1MTksImFzc2V0X2FnZV9kYXlzIjo1MSwidmlfdXNlY2FzZV9pZCI6MTAxMzksImR1cmF0aW9uX3MiOjEwLCJ1cmxnZW5fc291cmNlIjoid3d3In0%3D&ccb=17-1&vs=2d8d5705deb53a6&_nc_vs=HBksFQIYRWZiX2VwaGVtZXJhbC8zMjQ3NTkyRTBDQjM5QzBGOUExQjVDQzE1OTgzM0FBQ19tdF8xX3ZpZGVvX2Rhc2hpbml0Lm1wNBUAAsgBEgAVAhhAZmJfcGVybWFuZW50Lzk1NDg1MTU4REM2M0MxMzYwM0VEMTRERjhFOEYzNUJDX2F1ZGlvX2Rhc2hpbml0Lm1wNBUCAsgBEgAoABgAGwKIB3VzZV9vaWwBMRJwcm9ncmVzc2l2ZV9yZWNpcGUBMRUAACbut4-Zl73_BxUCKAJDMywXQCUAAAAAAAAYGWRhc2hfaDI2NC1iYXNpYy1nZW4yXzcyMHARAHUAZbaeAQA&_nc_gid=NYAKyH2EX3NchY1Pkx0R5g&_nc_ss=7b289&_nc_zt=28&oh=00_AQMz4OQ680hnam42aTO5zyTwiiXd0tSsJKlMIkKFJTTr6Q&oe=6ADE5B60",
+   "media_url": "https://video-dfw5-2.xx.fbcdn.net/o1/v/t2/f2/m366/AQMQe2TCsIyZMtV5Hl8uhlSRHpvDwxIT6R8ysCnKsVsaQlX6eLCjyHlV9_VnKG72-0iVzQZQp45iHGoPs6ME4NyevwXS-4p9waKV9h_cWmOi4Q.mp4?_nc_cat=100&_nc_sid=b66105&_nc_ht=video-dfw5-2.xx.fbcdn.net&_nc_ohc=-MjwRUDcKigQ7kNvwE6Fk0Q&efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5WSV9VU0VDQVNFX1BST0RVQ1RfVFlQRS4uQzMuNzIwLmRhc2hfaDI2NC1iYXNpYy1nZW4yXzcyMHAiLCJ4cHZfYXNzZXRfaWQiOjIyNTA2NTE4NzU3OTg1MTksImFzc2V0X2FnZV9kYXlzIjo2MCwidmlfdXNlY2FzZV9pZCI6MTAxMzksImR1cmF0aW9uX3MiOjEwLCJ1cmxnZW5fc291cmNlIjoid3d3In0%3D&ccb=17-1&vs=2d8d5705deb53a6&_nc_vs=HBksFQIYRWZiX2VwaGVtZXJhbC8zMjQ3NTkyRTBDQjM5QzBGOUExQjVDQzE1OTgzM0FBQ19tdF8xX3ZpZGVvX2Rhc2hpbml0Lm1wNBUAAsgBEgAVAhhAZmJfcGVybWFuZW50Lzk1NDg1MTU4REM2M0MxMzYwM0VEMTRERjhFOEYzNUJDX2F1ZGlvX2Rhc2hpbml0Lm1wNBUCAsgBEgAoABgAGwKIB3VzZV9vaWwBMRJwcm9ncmVzc2l2ZV9yZWNpcGUBMRUAACbut4-Zl73_BxUCKAJDMywXQCUAAAAAAAAYGWRhc2hfaDI2NC1iYXNpYy1nZW4yXzcyMHARAHUAZbaeAQA&_nc_gid=bnMe16IRGnsfLzyes9BJqQ&_nc_ss=7b289&_nc_zt=28&oh=00_AQR5Yk20MZzxFBWS0UWnJmNNBGl-vWhmfl-DHlLM89HODQ&oe=6AE91FA0",
    "metrics": {
     "days_running": 53
    },
@@ -11530,10 +11739,11 @@
    "video_tries": 0,
    "visual_hook": "",
    "visual_quality": "",
-   "visual_tries": 0
+   "visual_tries": 1
   },
   "IB-0182": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -11596,6 +11806,7 @@
   },
   "IB-0183": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -11658,6 +11869,7 @@
   },
   "IB-0184": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -11720,6 +11932,7 @@
   },
   "IB-0185": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "the link expired on 2026-10-25; the file is saved if the ad is collected again",
    "asset_tries": 0,
    "assets": [],
@@ -11782,6 +11995,7 @@
   },
   "IB-0186": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -11844,6 +12058,7 @@
   },
   "IB-0187": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -11906,6 +12121,7 @@
   },
   "IB-0188": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "the link expired on 2026-10-25; the file is saved if the ad is collected again",
    "asset_tries": 0,
    "assets": [],
@@ -11968,6 +12184,7 @@
   },
   "IB-0189": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -12031,6 +12248,7 @@
   },
   "IB-0190": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "the link expired on 2026-10-25; the file is saved if the ad is collected again",
    "asset_tries": 0,
    "assets": [],
@@ -12091,6 +12309,7 @@
   },
   "IB-0191": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -12151,6 +12370,7 @@
   },
   "IB-0192": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -12211,6 +12431,7 @@
   },
   "IB-0193": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -12271,6 +12492,7 @@
   },
   "IB-0194": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "the link expired on 2026-10-25; the file is saved if the ad is collected again",
    "asset_tries": 0,
    "assets": [],
@@ -12331,6 +12553,7 @@
   },
   "IB-0195": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "the link expired on 2026-10-25; the file is saved if the ad is collected again",
    "asset_tries": 0,
    "assets": [],
@@ -12391,6 +12614,7 @@
   },
   "IB-0196": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "the link expired on 2026-10-22; the file is saved if the ad is collected again",
    "asset_tries": 0,
    "assets": [],
@@ -12451,6 +12675,7 @@
   },
   "IB-0197": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -12511,6 +12736,7 @@
   },
   "IB-0198": {
    "added_at": "2026-10-28T08:43:24Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -12571,6 +12797,7 @@
   },
   "IB-0199": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -12631,6 +12858,7 @@
   },
   "IB-0200": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -12691,6 +12919,7 @@
   },
   "IB-0201": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -12751,6 +12980,7 @@
   },
   "IB-0202": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -12811,6 +13041,7 @@
   },
   "IB-0203": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -12871,6 +13102,7 @@
   },
   "IB-0204": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -12931,6 +13163,7 @@
   },
   "IB-0205": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -12991,6 +13224,7 @@
   },
   "IB-0206": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -13051,6 +13285,7 @@
   },
   "IB-0207": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -13111,6 +13346,7 @@
   },
   "IB-0208": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -13171,6 +13407,7 @@
   },
   "IB-0209": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -13231,6 +13468,7 @@
   },
   "IB-0210": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -13291,6 +13529,7 @@
   },
   "IB-0211": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -13351,6 +13590,7 @@
   },
   "IB-0212": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -13411,6 +13651,7 @@
   },
   "IB-0213": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -13471,6 +13712,7 @@
   },
   "IB-0214": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -13531,6 +13773,7 @@
   },
   "IB-0215": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -13591,6 +13834,7 @@
   },
   "IB-0216": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -13651,6 +13895,7 @@
   },
   "IB-0217": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -13711,6 +13956,7 @@
   },
   "IB-0218": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -13771,6 +14017,7 @@
   },
   "IB-0219": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -13831,6 +14078,7 @@
   },
   "IB-0220": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -13891,6 +14139,7 @@
   },
   "IB-0221": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -13951,6 +14200,7 @@
   },
   "IB-0222": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14011,6 +14261,7 @@
   },
   "IB-0223": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14071,6 +14322,7 @@
   },
   "IB-0224": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14131,6 +14383,7 @@
   },
   "IB-0225": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14191,6 +14444,7 @@
   },
   "IB-0226": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14251,6 +14505,7 @@
   },
   "IB-0227": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14311,6 +14566,7 @@
   },
   "IB-0228": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14371,6 +14627,7 @@
   },
   "IB-0229": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14431,6 +14688,7 @@
   },
   "IB-0230": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14491,6 +14749,7 @@
   },
   "IB-0231": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14551,6 +14810,7 @@
   },
   "IB-0232": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14611,6 +14871,7 @@
   },
   "IB-0233": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14671,6 +14932,7 @@
   },
   "IB-0234": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14731,6 +14993,7 @@
   },
   "IB-0235": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14791,6 +15054,7 @@
   },
   "IB-0236": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14851,6 +15115,7 @@
   },
   "IB-0237": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14911,6 +15176,7 @@
   },
   "IB-0238": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -14971,6 +15237,7 @@
   },
   "IB-0239": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15031,6 +15298,7 @@
   },
   "IB-0240": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15091,6 +15359,7 @@
   },
   "IB-0241": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15151,6 +15420,7 @@
   },
   "IB-0242": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15211,6 +15481,7 @@
   },
   "IB-0243": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15271,6 +15542,7 @@
   },
   "IB-0244": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15331,6 +15603,7 @@
   },
   "IB-0245": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15391,6 +15664,7 @@
   },
   "IB-0246": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15451,6 +15725,7 @@
   },
   "IB-0247": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15511,6 +15786,7 @@
   },
   "IB-0248": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15571,6 +15847,7 @@
   },
   "IB-0249": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15631,6 +15908,7 @@
   },
   "IB-0250": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15691,6 +15969,7 @@
   },
   "IB-0251": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15737,7 +16016,7 @@
    "source_item_id": "web:s_cc5c19199d2d",
    "state": "kept",
    "summary": "Apparel guide segments by dad type, including a lasting-loungewear pick for comfort-favoring dads. Clear persona structure that is easy to adapt.",
-   "technique": "Gift guide by dad type",
+   "technique": "gift guide by dad type",
    "text": "From rugged gear for the adventure-seeking dad to lasting loungewear for the guy who favors comfort, we're ready with classic gifts for every dad out there.",
    "title": "Father's Day Gift Guide - Shirts, Pants for Dads",
    "topic": "Gifts by dad personality type",
@@ -15751,6 +16030,7 @@
   },
   "IB-0252": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15811,6 +16091,7 @@
   },
   "IB-0253": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15871,6 +16152,7 @@
   },
   "IB-0254": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15917,7 +16199,7 @@
    "source_item_id": "web:s_aa3d5ceddeda",
    "state": "kept",
    "summary": "Guide uses a father's own voice and lifestyle details to make the list feel authentic. The humor and relatability are reusable.",
-   "technique": "Gift list from real use",
+   "technique": "real person's gift list",
    "text": "For the dad fueled by caffeine, backyard grilling, good denim, and uninterrupted TV time, here are 20 gifts worth wrapping this year.",
    "title": "GQ's Father's Day Gift Guide, According to a Father",
    "topic": "Gifts built from dad's habits",
@@ -15931,6 +16213,7 @@
   },
   "IB-0255": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -15991,6 +16274,7 @@
   },
   "IB-0256": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -16051,6 +16335,7 @@
   },
   "IB-0257": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -16111,6 +16396,7 @@
   },
   "IB-0258": {
    "added_at": "2026-10-28T09:14:42Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -16171,6 +16457,7 @@
   },
   "IB-0259": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -16234,6 +16521,7 @@
   },
   "IB-0260": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -16297,6 +16585,7 @@
   },
   "IB-0261": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -16360,6 +16649,7 @@
   },
   "IB-0262": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -16424,6 +16714,7 @@
   },
   "IB-0263": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -16487,6 +16778,7 @@
   },
   "IB-0264": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -16550,6 +16842,7 @@
   },
   "IB-0265": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [],
@@ -16629,6 +16922,7 @@
   },
   "IB-0266": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -16693,6 +16987,7 @@
   },
   "IB-0267": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -16757,6 +17052,7 @@
   },
   "IB-0268": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -16821,6 +17117,7 @@
   },
   "IB-0269": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -16884,6 +17181,7 @@
   },
   "IB-0270": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -16948,6 +17246,7 @@
   },
   "IB-0271": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -17015,6 +17314,7 @@
   },
   "IB-0272": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -17078,6 +17378,7 @@
   },
   "IB-0273": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [
@@ -17093,6 +17394,19 @@
      "source": "cover",
      "verified": true,
      "width": 1080
+    },
+    {
+     "bytes": 5159602,
+     "drive_id": "1CMnSwdfXXxX87E_swFegNMbg8F7q4Foj",
+     "duration": 30.3,
+     "height": 1280,
+     "kind": "video",
+     "md5": "f5a41b01608bdce8695f12d9c160f336",
+     "name": "IB-0273-video.mp4",
+     "sha256": "b84323cd83192b4420073ae7a71af038d9209a03f9d0161096ba620969e868cc",
+     "source": "page",
+     "verified": true,
+     "width": 720
     }
    ],
    "audience": "Gift shoppers wanting funny but useful dad presents",
@@ -17150,8 +17464,8 @@
    "title": "",
    "topic": "Ultimate dad gift novelty demo",
    "url": "https://www.tiktok.com/@talon.krebs/video/7642915593879932191",
-   "video_note": "TikTok refused the download from this server",
-   "video_status": "blocked",
+   "video_note": "",
+   "video_status": "saved",
    "video_tries": 1,
    "visual_hook": "",
    "visual_quality": "",
@@ -17159,6 +17473,7 @@
   },
   "IB-0274": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -17226,6 +17541,7 @@
   },
   "IB-0275": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [
@@ -17316,6 +17632,7 @@
   },
   "IB-0276": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -17383,6 +17700,7 @@
   },
   "IB-0277": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -17450,6 +17768,7 @@
   },
   "IB-0278": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -17517,6 +17836,7 @@
   },
   "IB-0279": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -17584,6 +17904,7 @@
   },
   "IB-0280": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [
@@ -17599,6 +17920,19 @@
      "source": "cover",
      "verified": true,
      "width": 1080
+    },
+    {
+     "bytes": 1797927,
+     "drive_id": "1PXCbdBC-hwQxUYFt0AX1Ve28sso3BH0m",
+     "duration": 17.4,
+     "height": 1280,
+     "kind": "video",
+     "md5": "b9912d76bddc8a5ec4528eef21e6031a",
+     "name": "IB-0280-video.mp4",
+     "sha256": "9ee97b00d0939d4b2e148083755afaccc05e3f7b64e59877e2f05aa0bc194442",
+     "source": "page",
+     "verified": true,
+     "width": 720
     }
    ],
    "audience": "Adult kids buying Father's Day gifts for a low-maintenance dad",
@@ -17656,8 +17990,8 @@
    "title": "",
    "topic": "Gift for dad who never asks",
    "url": "https://www.tiktok.com/@siwusu_s/video/7641525818686033166",
-   "video_note": "TikTok refused the download from this server",
-   "video_status": "blocked",
+   "video_note": "",
+   "video_status": "saved",
    "video_tries": 1,
    "visual_hook": "A hand holds a closed black gift box in front of red stools. Caption: \"Dad said he wanted nothing... until he read this\" with emojis.",
    "visual_quality": "ok",
@@ -17665,6 +17999,7 @@
   },
   "IB-0281": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -17732,6 +18067,7 @@
   },
   "IB-0282": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -17799,6 +18135,7 @@
   },
   "IB-0283": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -17862,6 +18199,7 @@
   },
   "IB-0284": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -17925,6 +18263,7 @@
   },
   "IB-0285": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -17992,6 +18331,7 @@
   },
   "IB-0286": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -18059,6 +18399,7 @@
   },
   "IB-0287": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [
@@ -18074,6 +18415,19 @@
      "source": "cover",
      "verified": true,
      "width": 1080
+    },
+    {
+     "bytes": 197971,
+     "drive_id": "16bnqQr_hbTolHb428bRd5EDf84Vpah0K",
+     "duration": 2.1,
+     "height": 816,
+     "kind": "video",
+     "md5": "107c49b9156a3dc9ec750df4b786c10b",
+     "name": "IB-0287-video.mp4",
+     "sha256": "821065e7f5f631c5aedeb4b23f6f456d5b268b430c17e828880796f6bc113894",
+     "source": "page",
+     "verified": true,
+     "width": 720
     }
    ],
    "audience": "TikTok users planning Father's Day gifts at different budgets",
@@ -18095,7 +18449,7 @@
    "idea": 55,
    "kind": "social post",
    "link_refreshes": 0,
-   "look": "",
+   "look": "graphic",
    "mechanism": "gift guide list",
    "media_format": "",
    "media_role": "",
@@ -18131,15 +18485,16 @@
    "title": "",
    "topic": "Father's Day gift guide",
    "url": "https://www.tiktok.com/@sugaricedtea/video/7646448403366300959",
-   "video_note": "TikTok refused the download from this server",
-   "video_status": "blocked",
+   "video_note": "",
+   "video_status": "saved",
    "video_tries": 1,
-   "visual_hook": "",
-   "visual_quality": "",
-   "visual_tries": 0
+   "visual_hook": "Ties, sunglasses and watches hang from a clothesline on a soft blue gradient, with large black serif text reading \"father's day gift ideas!\" and blue sparkles.",
+   "visual_quality": "good",
+   "visual_tries": 1
   },
   "IB-0288": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -18207,6 +18562,7 @@
   },
   "IB-0289": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -18274,6 +18630,7 @@
   },
   "IB-0290": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -18337,6 +18694,7 @@
   },
   "IB-0291": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -18404,6 +18762,7 @@
   },
   "IB-0292": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -18467,6 +18826,7 @@
   },
   "IB-0293": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -18534,6 +18894,7 @@
   },
   "IB-0294": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -18601,6 +18962,7 @@
   },
   "IB-0295": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -18664,6 +19026,7 @@
   },
   "IB-0296": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -18731,30 +19094,17 @@
   },
   "IB-0297": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
-   "assets": [
-    {
-     "bytes": 59827,
-     "drive_id": "133o9kvoORh4lplC3qNOmuG0AB5TbJtkq",
-     "duration": 0.0,
-     "height": 1280,
-     "kind": "image",
-     "md5": "fa7a5a54e4eb732af19f297acf213fee",
-     "name": "IB-0297-image.jpg",
-     "sha256": "b684c0ea3e63a2dbf26160968d0ce5b8d5414a53fad72fab4361fb3b06c6d9d7",
-     "source": "cover",
-     "verified": true,
-     "width": 720
-    }
-   ],
+   "assets": [],
    "audience": "Daughters and partners buying a gift for dad",
    "category": "adjacent",
    "channel": "organic social",
    "concept": "A humorous apparel gift from a daughter or partner, shown as a funny reveal that people share with each other.",
-   "drive_folder_id": "1F43IpgVTjenV8yu7NkawGF3TEx93qKDj",
-   "drive_folder_url": "https://drive.google.com/drive/folders/1F43IpgVTjenV8yu7NkawGF3TEx93qKDj",
-   "duplicate_of": "",
+   "drive_folder_id": "",
+   "drive_folder_url": "",
+   "duplicate_of": "IB-0410",
    "fingerprint": "5aad059102b15594",
    "first_test": "Post one funny dad-and-Swoveralls skit with a send-to-the-gift-buyer caption. Measure shares per view against our other posts.",
    "fit": 55,
@@ -18788,7 +19138,7 @@
    "region": "worldwide",
    "relevance": 50,
    "removal_note": "",
-   "removed_reason": "",
+   "removed_reason": "another idea with the same technique (recipient gift reaction reveal) scored higher: IB-0410, IB-0412",
    "request_id": "RQ-0002",
    "rescued": false,
    "risk": "Funny-shirt slogans may be copyrighted or off-brand; the actual joke is not shown.",
@@ -18796,12 +19146,28 @@
    "scored_at": "2026-10-28T12:05:29Z",
    "scoring_version": 2,
    "source_item_id": "tiktok:7675400854249245983",
-   "state": "kept",
+   "state": "removed",
    "summary": "A funny-shirt gift for dad, tagged for daughters and partners, with 2,189 shares on 164k views. The high share count suggests people tag the person they would gift it to.",
    "technique": "Humorous gag gift reveal",
    "text": "😂💁#fyp #funnyshirts #giftfordad #daughter #partner",
    "title": "",
    "topic": "Funny apparel gift for dad",
+   "trashed_assets": [
+    {
+     "bytes": 59827,
+     "drive_id": "133o9kvoORh4lplC3qNOmuG0AB5TbJtkq",
+     "duration": 0.0,
+     "height": 1280,
+     "kind": "image",
+     "md5": "fa7a5a54e4eb732af19f297acf213fee",
+     "name": "IB-0297-image.jpg",
+     "sha256": "b684c0ea3e63a2dbf26160968d0ce5b8d5414a53fad72fab4361fb3b06c6d9d7",
+     "source": "cover",
+     "verified": true,
+     "width": 720
+    }
+   ],
+   "trashed_folder": "1F43IpgVTjenV8yu7NkawGF3TEx93qKDj",
    "url": "https://www.tiktok.com/@mythfar8386/video/7675400854249245983",
    "video_note": "Unexpected response from webpage request; please report this issue on  https://github.com/yt-dlp/yt-dlp/issues?q= , filling out the appropriate issue template. ",
    "video_status": "",
@@ -18812,6 +19178,7 @@
   },
   "IB-0298": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -18879,6 +19246,7 @@
   },
   "IB-0299": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -18946,6 +19314,7 @@
   },
   "IB-0300": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -19013,6 +19382,7 @@
   },
   "IB-0301": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -19080,6 +19450,7 @@
   },
   "IB-0302": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [
@@ -19152,8 +19523,8 @@
    "title": "",
    "topic": "Personal magazine for dad",
    "url": "https://www.tiktok.com/@atelier.buba/video/7685381651056135457",
-   "video_note": "Unexpected response from webpage request; please report this issue on  https://github.com/yt-dlp/yt-dlp/issues?q= , filling out the appropriate issue template. ",
-   "video_status": "",
+   "video_note": "TikTok refused the download from this server",
+   "video_status": "blocked",
    "video_tries": 1,
    "visual_hook": "A hand holds a teal tissue-wrapped gift with an olive satin bow and small flower card over paving stones. Caption: \"POV: your dad always says 'I don't need anything'\", then \"so I made this for his bir",
    "visual_quality": "good",
@@ -19161,6 +19532,7 @@
   },
   "IB-0303": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -19224,6 +19596,7 @@
   },
   "IB-0304": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -19287,6 +19660,7 @@
   },
   "IB-0305": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -19354,6 +19728,7 @@
   },
   "IB-0306": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -19417,6 +19792,7 @@
   },
   "IB-0307": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -19480,6 +19856,7 @@
   },
   "IB-0308": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -19543,6 +19920,7 @@
   },
   "IB-0309": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -19606,6 +19984,7 @@
   },
   "IB-0310": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [
@@ -19621,6 +20000,19 @@
      "source": "cover",
      "verified": true,
      "width": 1014
+    },
+    {
+     "bytes": 1597920,
+     "drive_id": "199cWfmRx15sRecTU8Zg6R7pcIanxjYC4",
+     "duration": 13.8,
+     "height": 1024,
+     "kind": "video",
+     "md5": "1187510ec0267d018c35d399fbc581ae",
+     "name": "IB-0310-video.mp4",
+     "sha256": "f2486dd94c3686cd113ad09f0401081a75ca80669606d72e579e9eb7b392b754",
+     "source": "page",
+     "verified": true,
+     "width": 576
     }
    ],
    "audience": "Tired parents who enjoy relatable dad humor",
@@ -19678,8 +20070,8 @@
    "title": "",
    "topic": "Dad's five minutes on sofa",
    "url": "https://www.tiktok.com/@husbandfinds/video/7678681303981772035",
-   "video_note": "Unexpected response from webpage request; please report this issue on  https://github.com/yt-dlp/yt-dlp/issues?q= , filling out the appropriate issue template. ",
-   "video_status": "",
+   "video_note": "",
+   "video_status": "saved",
    "video_tries": 1,
    "visual_hook": "A bearded man's head pokes out above a red and blue toddler slide propped on a beige sofa, with a deadpan look. No text overlay is visible.",
    "visual_quality": "good",
@@ -19687,6 +20079,7 @@
   },
   "IB-0311": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -19750,6 +20143,7 @@
   },
   "IB-0312": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -19813,6 +20207,7 @@
   },
   "IB-0313": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [
@@ -19840,7 +20235,7 @@
    "fingerprint": "e33ca4ba3eb572a1",
    "first_test": "Post a gift-guide carousel with Swoveralls as the practical, comfort-first pick. Measure saves and link clicks against our usual product carousel.",
    "fit": 50,
-   "format": "other",
+   "format": "ai",
    "generic": false,
    "handle": "giftideaswithglory",
    "hook_line": "Dad says he doesn't need anything. Give him the one-piece he'll live in.",
@@ -19849,7 +20244,7 @@
    "idea": 56,
    "kind": "social post",
    "link_refreshes": 0,
-   "look": "",
+   "look": "ai-generated",
    "mechanism": "gift guide by dad type",
    "media_format": "",
    "media_role": "",
@@ -19876,7 +20271,7 @@
    "source_item_id": "instagram:DZfMIp0tMMT",
    "state": "kept",
    "summary": "Twenty gift ideas organised by dad type, including the dad who says he doesn't need anything. The persona segmentation is reusable. Comments were low (4).",
-   "technique": "Gift guide by dad type",
+   "technique": "gift guide by dad type",
    "text": "👔 Struggling to find the perfect gift for Dad? Here are 20 thoughtful gift ideas he’ll actually use, appreciate, and remember. 🎁 Whether he’s the practical dad, the hardworking dad, the traveling dad, or the dad who says he “doesn’t need anything”—there’s something here for every father. No more last-minute shopping. No more boring gifts. Just meaningful ideas that show your appreciation. ❤️ Save this before Father’s Day, his birthday, or the next special occasion. And tell me… which one would y",
    "title": "",
    "topic": "Gift guide by dad persona",
@@ -19884,12 +20279,13 @@
    "video_note": "this post has no video",
    "video_status": "none",
    "video_tries": 2,
-   "visual_hook": "",
-   "visual_quality": "",
-   "visual_tries": 0
+   "visual_hook": "Dark brown gift-guide poster headed '20 Gift Ideas for Fathers', with a 5x4 grid of numbered product images (tumbler, luggage, watch, headphones) each labelled below.",
+   "visual_quality": "good",
+   "visual_tries": 1
   },
   "IB-0314": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -19953,6 +20349,7 @@
   },
   "IB-0315": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -20016,6 +20413,7 @@
   },
   "IB-0316": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -20079,6 +20477,7 @@
   },
   "IB-0317": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -20142,6 +20541,7 @@
   },
   "IB-0318": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -20209,6 +20609,7 @@
   },
   "IB-0319": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -20269,6 +20670,7 @@
   },
   "IB-0320": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -20329,6 +20731,7 @@
   },
   "IB-0321": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -20389,6 +20792,7 @@
   },
   "IB-0322": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -20449,6 +20853,7 @@
   },
   "IB-0323": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -20509,6 +20914,7 @@
   },
   "IB-0324": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -20569,6 +20975,7 @@
   },
   "IB-0325": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -20629,6 +21036,7 @@
   },
   "IB-0326": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -20689,6 +21097,7 @@
   },
   "IB-0327": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [
@@ -20759,10 +21168,11 @@
    "video_tries": 1,
    "visual_hook": "",
    "visual_quality": "",
-   "visual_tries": 1
+   "visual_tries": 2
   },
   "IB-0328": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -20823,6 +21233,7 @@
   },
   "IB-0329": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -20883,6 +21294,7 @@
   },
   "IB-0330": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -20943,6 +21355,7 @@
   },
   "IB-0331": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21003,6 +21416,7 @@
   },
   "IB-0332": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21063,6 +21477,7 @@
   },
   "IB-0333": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21123,6 +21538,7 @@
   },
   "IB-0334": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21183,6 +21599,7 @@
   },
   "IB-0335": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21243,6 +21660,7 @@
   },
   "IB-0336": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21303,6 +21721,7 @@
   },
   "IB-0337": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21363,6 +21782,7 @@
   },
   "IB-0338": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21423,6 +21843,7 @@
   },
   "IB-0339": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21483,6 +21904,7 @@
   },
   "IB-0340": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21543,6 +21965,7 @@
   },
   "IB-0341": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21603,6 +22026,7 @@
   },
   "IB-0342": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21663,6 +22087,7 @@
   },
   "IB-0343": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21723,6 +22148,7 @@
   },
   "IB-0344": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21783,6 +22209,7 @@
   },
   "IB-0345": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21843,6 +22270,7 @@
   },
   "IB-0346": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21903,6 +22331,7 @@
   },
   "IB-0347": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -21963,6 +22392,7 @@
   },
   "IB-0348": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -22023,6 +22453,7 @@
   },
   "IB-0349": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -22083,6 +22514,7 @@
   },
   "IB-0350": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -22143,6 +22575,7 @@
   },
   "IB-0351": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -22203,6 +22636,7 @@
   },
   "IB-0352": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -22263,6 +22697,7 @@
   },
   "IB-0353": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -22323,6 +22758,7 @@
   },
   "IB-0354": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -22383,6 +22819,7 @@
   },
   "IB-0355": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -22443,6 +22880,7 @@
   },
   "IB-0356": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -22503,6 +22941,7 @@
   },
   "IB-0357": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -22563,6 +23002,7 @@
   },
   "IB-0358": {
    "added_at": "2026-10-28T12:05:29Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -22609,7 +23049,7 @@
    "source_item_id": "web:s_fd4a61c4503e",
    "state": "kept",
    "summary": "A wife's roundup of Father's Day gifts with proven daily use, including joggers and a waffle hoodie. The 'actually uses' framing is credible and fits comfy apparel.",
-   "technique": "Gift list from real use",
+   "technique": "real person's gift list",
    "text": "1. Personalized Bracelet · 2. Vuori Joggers · 3. Whiskey Wedge Glass · 4. A Travel Thermos · 5. Lightweight Waffle Hoodie · 6. Twillory AIR Suit · 7.",
    "title": "The Father's Day Gifts My Husband Actually Uses Constantly",
    "topic": "Gifts he actually uses constantly",
@@ -22623,6 +23063,7 @@
   },
   "IB-0359": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -22686,6 +23127,7 @@
   },
   "IB-0360": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -22753,6 +23195,7 @@
   },
   "IB-0361": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -22820,6 +23263,7 @@
   },
   "IB-0362": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -22887,6 +23331,7 @@
   },
   "IB-0363": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -22954,6 +23399,7 @@
   },
   "IB-0364": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [
@@ -22969,6 +23415,19 @@
      "source": "cover",
      "verified": true,
      "width": 1080
+    },
+    {
+     "bytes": 2137727,
+     "drive_id": "1lBCiR68u5TnNB1xP93nqrYR9q7n_Nr8m",
+     "duration": 14.2,
+     "height": 1280,
+     "kind": "video",
+     "md5": "8ac472ffae5b4ca3e6cb1c61dcd993d1",
+     "name": "IB-0364-video.mp4",
+     "sha256": "edee496c77c8c4f0a96857c82ee1d2dfb14d3903af128163f2f5a2da14984280",
+     "source": "page",
+     "verified": true,
+     "width": 720
     }
    ],
    "audience": "Parents of toddlers making Father's Day gifts",
@@ -23026,8 +23485,8 @@
    "title": "",
    "topic": "Toddler Father's Day keepsake craft",
    "url": "https://www.tiktok.com/@mady.motherhood/video/7648829557398588703",
-   "video_note": "Unexpected response from webpage request; please report this issue on  https://github.com/yt-dlp/yt-dlp/issues?q= , filling out the appropriate issue template. ",
-   "video_status": "",
+   "video_note": "",
+   "video_status": "saved",
    "video_tries": 1,
    "visual_hook": "Two hands hold blue painted handprint cutouts reading 'DAD' joined by a folded paper strip. Overlay text: 'EASY FATHERS DAY keepsake idea 💙'.",
    "visual_quality": "good",
@@ -23035,6 +23494,7 @@
   },
   "IB-0365": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -23098,6 +23558,7 @@
   },
   "IB-0366": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -23165,6 +23626,7 @@
   },
   "IB-0367": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -23232,6 +23694,7 @@
   },
   "IB-0368": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -23295,6 +23758,7 @@
   },
   "IB-0369": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -23358,6 +23822,7 @@
   },
   "IB-0370": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -23421,6 +23886,7 @@
   },
   "IB-0371": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -23488,6 +23954,7 @@
   },
   "IB-0372": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -23555,6 +24022,7 @@
   },
   "IB-0373": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -23618,6 +24086,7 @@
   },
   "IB-0374": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -23685,6 +24154,7 @@
   },
   "IB-0375": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -23748,6 +24218,7 @@
   },
   "IB-0376": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [
@@ -23784,7 +24255,7 @@
    "idea": 50,
    "kind": "social post",
    "link_refreshes": 0,
-   "look": "",
+   "look": "polished",
    "mechanism": "giveaway bundle",
    "media_format": "",
    "media_role": "",
@@ -23819,12 +24290,13 @@
    "video_note": "this post has no video",
    "video_status": "none",
    "video_tries": 1,
-   "visual_hook": "",
-   "visual_quality": "",
-   "visual_tries": 0
+   "visual_hook": "Dark green grid with cream \"FATHER'S DAY\" on top and \"GIVEAWAY\" below, two Lowe's gift cards, a mustache and five Octane 500 grooming products.",
+   "visual_quality": "good",
+   "visual_tries": 1
   },
   "IB-0377": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -23892,6 +24364,7 @@
   },
   "IB-0378": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -23959,6 +24432,7 @@
   },
   "IB-0379": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -24022,6 +24496,7 @@
   },
   "IB-0380": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -24089,6 +24564,7 @@
   },
   "IB-0381": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -24152,6 +24628,7 @@
   },
   "IB-0382": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -24215,6 +24692,7 @@
   },
   "IB-0383": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -24278,6 +24756,7 @@
   },
   "IB-0384": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -24345,6 +24824,7 @@
   },
   "IB-0385": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -24412,6 +24892,7 @@
   },
   "IB-0386": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -24475,6 +24956,7 @@
   },
   "IB-0387": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -24538,6 +25020,7 @@
   },
   "IB-0388": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -24601,6 +25084,7 @@
   },
   "IB-0389": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [
@@ -24691,6 +25175,7 @@
   },
   "IB-0390": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -24754,6 +25239,7 @@
   },
   "IB-0391": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -24817,6 +25303,7 @@
   },
   "IB-0392": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -24880,6 +25367,7 @@
   },
   "IB-0393": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -24943,6 +25431,7 @@
   },
   "IB-0394": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -25006,6 +25495,7 @@
   },
   "IB-0395": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -25073,6 +25563,7 @@
   },
   "IB-0396": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -25136,6 +25627,7 @@
   },
   "IB-0397": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -25199,6 +25691,7 @@
   },
   "IB-0398": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -25266,6 +25759,7 @@
   },
   "IB-0399": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -25329,6 +25823,7 @@
   },
   "IB-0400": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -25391,6 +25886,7 @@
   },
   "IB-0401": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -25453,6 +25949,7 @@
   },
   "IB-0402": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -25515,6 +26012,7 @@
   },
   "IB-0403": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [
@@ -25588,10 +26086,11 @@
    "video_tries": 0,
    "visual_hook": "",
    "visual_quality": "",
-   "visual_tries": 1
+   "visual_tries": 2
   },
   "IB-0404": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -25654,6 +26153,7 @@
   },
   "IB-0405": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -25716,6 +26216,7 @@
   },
   "IB-0406": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -25779,6 +26280,7 @@
   },
   "IB-0407": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -25841,6 +26343,7 @@
   },
   "IB-0408": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -25903,6 +26406,7 @@
   },
   "IB-0409": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 1,
    "assets": [
@@ -25918,6 +26422,19 @@
      "source": "cover",
      "verified": true,
      "width": 486
+    },
+    {
+     "bytes": 3354018,
+     "drive_id": "1SVsdj3WO39wA0bUMtcSHXrHk3r3el1F7",
+     "duration": 30.5,
+     "height": 1280,
+     "kind": "video",
+     "md5": "577c2f787c7d76201845f67198cdc708",
+     "name": "IB-0409-video.mp4",
+     "sha256": "5c70509812d44a51189f5932b65b72cf34c5ae5e6f0fe4c21088fce63bc5998f",
+     "source": "page",
+     "verified": true,
+     "width": 720
     }
    ],
    "audience": "Sons and daughters buying a sentimental gift for Dad",
@@ -25939,7 +26456,7 @@
    "idea": 52,
    "kind": "social post",
    "link_refreshes": 0,
-   "look": "",
+   "look": "graphic",
    "mechanism": "unspoken feelings hook",
    "media_format": "",
    "media_role": "",
@@ -25975,23 +26492,38 @@
    "topic": "Things a son never says",
    "url": "https://www.tiktok.com/@cannguyen3326/video/7701625265339796750",
    "video_note": "",
-   "video_status": "",
+   "video_status": "saved",
    "video_tries": 0,
-   "visual_hook": "",
-   "visual_quality": "",
-   "visual_tries": 0
+   "visual_hook": "Headline '5 THINGS A SON NEVER SAYS TO HIS DAD' above a blurry close-up of an engraved dog tag reading 'To my dad... my hero', with a yellow 'TO MY DAD' button.",
+   "visual_quality": "ok",
+   "visual_tries": 1
   },
   "IB-0410": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 0,
-   "assets": [],
+   "assets": [
+    {
+     "bytes": 9102875,
+     "drive_id": "1rgsHMlizvAZ1xXp_c04fgDfkNNZBmca3",
+     "duration": 101.5,
+     "height": 1280,
+     "kind": "video",
+     "md5": "8dfee58fd68a20f50c4b3454cf82d812",
+     "name": "IB-0410-video.mp4",
+     "sha256": "273bf7baa95f2c27aa4954138f3afa88f43407688399c57b03b948aff424a8ab",
+     "source": "page",
+     "verified": true,
+     "width": 720
+    }
+   ],
    "audience": "Gift buyers who want an emotional, shareable moment",
    "category": "adjacent",
    "channel": "creator",
    "concept": "A countdown leads to a dad opening a wrapped present, and his real, puzzled reaction is the payoff.",
-   "drive_folder_id": "",
-   "drive_folder_url": "",
+   "drive_folder_id": "1sNFn8PwuPQuPnFGZFrs2VIDy4c3FFjun",
+   "drive_folder_url": "https://drive.google.com/drive/folders/1sNFn8PwuPQuPnFGZFrs2VIDy4c3FFjun",
    "duplicate_of": "",
    "fingerprint": "30b6766599a44b52",
    "first_test": "Brief three creators or customers to film real dad gift reveals. Post on TikTok. Measure watch-through, comments and link clicks.",
@@ -26029,20 +26561,21 @@
    "source_item_id": "web:s_cc43e8332b20",
    "state": "kept",
    "summary": "A TikTok of a dad unwrapping a gift after a 'three, two, one' countdown, with a puzzled first reaction. Reaction reveals suit UGC and feel authentic.",
-   "technique": "Gift opening reaction reveal",
+   "technique": "recipient gift reaction reveal",
    "text": "After a short countdown — “Three, two, one” — the dad opens his hands to find a wrapped present. His first response is puzzled: “What is that?",
    "title": "Father's Day Surprise Gift Reaction — Heartfelt Dad Reveal",
    "topic": "Dad gift-opening reaction",
    "url": "https://www.tiktok.com/@why.do.i.try.555/video/7693108799103618317",
    "video_note": "",
-   "video_status": "",
+   "video_status": "saved",
    "video_tries": 0,
    "visual_hook": "",
    "visual_quality": "",
-   "visual_tries": 0
+   "visual_tries": 1
   },
   "IB-0411": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -26103,15 +26636,30 @@
   },
   "IB-0412": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 0,
-   "assets": [],
+   "assets": [
+    {
+     "bytes": 31980070,
+     "drive_id": "1k_1TUOfDbzfLYfboRCWv7oWUqdALhIuT",
+     "duration": 195.4,
+     "height": 1280,
+     "kind": "video",
+     "md5": "efd834e09e54c9988e4aa34dffaaaddb",
+     "name": "IB-0412-video.mp4",
+     "sha256": "6b901ea4ac4fe6da0ae2524f92f87d776f87974b63745247642cad42cf978cb7",
+     "source": "page",
+     "verified": true,
+     "width": 720
+    }
+   ],
    "audience": "Parents and kids who want a heartfelt gift story",
    "category": "adjacent",
    "channel": "creator",
    "concept": "A child spends their own saved money on a gift, so the sacrifice behind it carries the emotion and the recipient is visibly overwhelmed.",
-   "drive_folder_id": "",
-   "drive_folder_url": "",
+   "drive_folder_id": "1WasrQ6GrH7y-kN4Quaa5QCT-YYa-BLBe",
+   "drive_folder_url": "https://drive.google.com/drive/folders/1WasrQ6GrH7y-kN4Quaa5QCT-YYa-BLBe",
    "duplicate_of": "",
    "fingerprint": "985a2f2e1928c889",
    "first_test": "Ask a few customers to film a kid gifting Dad a merch piece. Post on TikTok. Measure comments, shares and saves.",
@@ -26149,20 +26697,21 @@
    "source_item_id": "web:s_b018e731fd0b",
    "state": "kept",
    "summary": "The saved-allowance backstory gives the reveal emotional weight and a reason to watch to the end. It is more specific and shareable than a plain unboxing.",
-   "technique": "",
+   "technique": "recipient gift reaction reveal",
    "text": "When the dad opened the gift he was surprised and didn't immediately know how to react, overwhelmed by the gesture and the thought behind it.",
    "title": "Father's Day Gift From Son: Allowance Saved for a ...",
    "topic": "Son saves allowance for dad",
    "url": "https://www.tiktok.com/@nep2une12/video/7653703607425961229",
    "video_note": "",
-   "video_status": "",
+   "video_status": "saved",
    "video_tries": 0,
    "visual_hook": "",
    "visual_quality": "",
-   "visual_tries": 0
+   "visual_tries": 1
   },
   "IB-0413": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -26223,6 +26772,7 @@
   },
   "IB-0414": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -26283,15 +26833,30 @@
   },
   "IB-0415": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
-   "assets": [],
+   "assets": [
+    {
+     "bytes": 8274720,
+     "drive_id": "1vrOB_jL3GwN_69c5IrHbzQwIgv_SxITI",
+     "duration": 40.9,
+     "height": 1280,
+     "kind": "video",
+     "md5": "a453f2ed896132bcfed9627014824b53",
+     "name": "IB-0415-video.mp4",
+     "sha256": "c6d5c9da2bb270b78bedbf060dfcefca599b3717de2a76c9a9f77f8e6e4c0bea",
+     "source": "page",
+     "verified": true,
+     "width": 720
+    }
+   ],
    "audience": "Adult kids and partners buying gifts for dad",
    "category": "adjacent",
    "channel": "organic social",
    "concept": "A compilation of different people opening the same kind of gift shows a recognizable pattern of reactions, played for humor.",
-   "drive_folder_id": "",
-   "drive_folder_url": "",
+   "drive_folder_id": "1rEwgfYLOcqoI5fRdIg_HZqxh-yGUHpTk",
+   "drive_folder_url": "https://drive.google.com/drive/folders/1rEwgfYLOcqoI5fRdIg_HZqxh-yGUHpTk",
    "duplicate_of": "",
    "fingerprint": "b978be9e7ade29b7",
    "first_test": "Film three real dads opening Swoveralls. Post as Reels and TikToks and measure watch-through and shares.",
@@ -26335,14 +26900,15 @@
    "topic": "Funny dad gift reactions compilation",
    "url": "https://www.tiktok.com/@be.lush/video/7645844450765278477",
    "video_note": "",
-   "video_status": "",
+   "video_status": "saved",
    "video_tries": 0,
    "visual_hook": "",
    "visual_quality": "",
-   "visual_tries": 0
+   "visual_tries": 1
   },
   "IB-0416": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -26403,6 +26969,7 @@
   },
   "IB-0417": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -26412,7 +26979,7 @@
    "concept": "The recipient finds an unexpected practical gift and jokes about all the projects he can now do, so the humor comes from his imagined use.",
    "drive_folder_id": "",
    "drive_folder_url": "",
-   "duplicate_of": "",
+   "duplicate_of": "IB-0410",
    "fingerprint": "ba88a68fb49e2669",
    "first_test": "Send two creators boxes to film a dad's unboxing reaction. Measure views, saves and clicks to the product page.",
    "fit": 50,
@@ -26439,7 +27006,7 @@
    "region": "worldwide",
    "relevance": 56,
    "removal_note": "",
-   "removed_reason": "",
+   "removed_reason": "another idea with the same technique (recipient gift reaction reveal) scored higher: IB-0410, IB-0412",
    "request_id": "RQ-0003",
    "rescued": false,
    "risk": "Original is a tool set. Keep our claims about use realistic.",
@@ -26447,7 +27014,7 @@
    "scored_at": "2026-10-28T12:28:33Z",
    "scoring_version": 2,
    "source_item_id": "web:s_8a809ed9a781",
-   "state": "kept",
+   "state": "removed",
    "summary": "Humor from a practical gift and the dad's excited commentary on what he'll do with it. It connects to workwear-style use and is easy to remake.",
    "technique": "",
    "text": "As the dad opens his gifts, he humorously reacts to finding an unexpected tool set, excitedly thinking about all the projects he can tackle.",
@@ -26463,6 +27030,7 @@
   },
   "IB-0418": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -26523,6 +27091,7 @@
   },
   "IB-0419": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -26583,6 +27152,7 @@
   },
   "IB-0420": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -26643,30 +27213,17 @@
   },
   "IB-0421": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
-   "assets": [
-    {
-     "bytes": 21597763,
-     "drive_id": "1h1Jqi8sAHonTGHddTz9mUsMJ3ooAsX7H",
-     "duration": 83.3,
-     "height": 1280,
-     "kind": "video",
-     "md5": "cc395e6aed34eee7b1289edb5032f989",
-     "name": "IB-0421-video.mp4",
-     "sha256": "803ae80ef4684d8d2bcfbba2cc571e220c193e7f8de7906c9727866749da061f",
-     "source": "page",
-     "verified": true,
-     "width": 720
-    }
-   ],
+   "assets": [],
    "audience": "Adult kids shopping for Father's Day who want a gift he'll react to",
    "category": "adjacent",
    "channel": "creator",
    "concept": "A family gift reveal framed with a small conflict, where one relative nearly spoils the surprise, before the dad reacts happily.",
-   "drive_folder_id": "14iWCUQdzHC5_8q2BncVCK_Aa9Vmx3tIB",
-   "drive_folder_url": "https://drive.google.com/drive/folders/14iWCUQdzHC5_8q2BncVCK_Aa9Vmx3tIB",
-   "duplicate_of": "",
+   "drive_folder_id": "",
+   "drive_folder_url": "",
+   "duplicate_of": "IB-0410",
    "fingerprint": "ba0e525df5edb775",
    "first_test": "Ask three customers or creators to film Dad unboxing Swoveralls. Post as Reels and measure saves, shares and link clicks per video.",
    "fit": 42,
@@ -26693,7 +27250,7 @@
    "region": "worldwide",
    "relevance": 55,
    "removal_note": "",
-   "removed_reason": "",
+   "removed_reason": "another idea with the same technique (recipient gift reaction reveal) scored higher: IB-0410, IB-0412",
    "request_id": "RQ-0003",
    "rescued": false,
    "risk": "The full story is not visible. Engagement is high but we cannot verify the concept details.",
@@ -26701,12 +27258,28 @@
    "scored_at": "2026-10-28T12:28:33Z",
    "scoring_version": 2,
    "source_item_id": "web:s_533e4d4e48a8",
-   "state": "kept",
+   "state": "removed",
    "summary": "Has a story hook, a mom nearly ruining the gifts, before a happy reaction. It drew 178K likes and 1,631 comments. The snippet is truncated, so the exact story is unclear.",
    "technique": "Gift opening reaction reveal",
    "text": "178K likes, 1631 comments - karinareyl on June 16, 2026: \"I'm glad my dad liked his Father's Day gifts despite my mom trying to ruin the ...",
    "title": "I'm glad my dad liked his Father's Day gifts despite my mom ...",
    "topic": "Gift reveal with family mishap",
+   "trashed_assets": [
+    {
+     "bytes": 21597763,
+     "drive_id": "1h1Jqi8sAHonTGHddTz9mUsMJ3ooAsX7H",
+     "duration": 83.3,
+     "height": 1280,
+     "kind": "video",
+     "md5": "cc395e6aed34eee7b1289edb5032f989",
+     "name": "IB-0421-video.mp4",
+     "sha256": "803ae80ef4684d8d2bcfbba2cc571e220c193e7f8de7906c9727866749da061f",
+     "source": "page",
+     "verified": true,
+     "width": 720
+    }
+   ],
+   "trashed_folder": "14iWCUQdzHC5_8q2BncVCK_Aa9Vmx3tIB",
    "url": "https://www.instagram.com/reel/DZqVUeYRUhu/",
    "video_note": "",
    "video_status": "saved",
@@ -26717,30 +27290,17 @@
   },
   "IB-0422": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
-   "assets": [
-    {
-     "bytes": 14420858,
-     "drive_id": "1FUbCRZVm89ACUbD-SkiHlIsSE_Mhu-W3",
-     "duration": 54.5,
-     "height": 1280,
-     "kind": "video",
-     "md5": "d95195d6b1e4ebd0547688f227c4b079",
-     "name": "IB-0422-video.mp4",
-     "sha256": "378b735c0e4e2c59ac8f4de3b52a9046f94a1b5ab6f893f1aea0141a7ca43073",
-     "source": "page",
-     "verified": true,
-     "width": 720
-    }
-   ],
+   "assets": [],
    "audience": "Parents of young kids buying matching Father's Day gifts",
    "category": "adjacent",
    "channel": "creator",
    "concept": "Film the givers waiting nervously for the recipient's reaction after keeping a surprise secret for days.",
-   "drive_folder_id": "1wJGZyXI3F_VP6nWE_7PGx0JQzeseJfY_",
-   "drive_folder_url": "https://drive.google.com/drive/folders/1wJGZyXI3F_VP6nWE_7PGx0JQzeseJfY_",
-   "duplicate_of": "",
+   "drive_folder_id": "",
+   "drive_folder_url": "",
+   "duplicate_of": "IB-0410",
    "fingerprint": "d27519c18749ea93",
    "first_test": "Ask three customer families to film the reveal, with kids' pieces and dad's Swoveralls. Measure completion rate and shares.",
    "fit": 42,
@@ -26767,7 +27327,7 @@
    "region": "worldwide",
    "relevance": 52,
    "removal_note": "",
-   "removed_reason": "",
+   "removed_reason": "another idea with the same technique (recipient gift reaction reveal) scored higher: IB-0410, IB-0412",
    "request_id": "RQ-0003",
    "rescued": false,
    "risk": "Filming children needs parental consent. Gift in the original is unknown.",
@@ -26775,12 +27335,28 @@
    "scored_at": "2026-10-28T12:28:33Z",
    "scoring_version": 2,
    "source_item_id": "web:s_efffe9f5c74b",
-   "state": "kept",
+   "state": "removed",
    "summary": "Focuses on the children's anticipation rather than the gift. The secret-keeping build-up makes the reveal feel warmer and more shareable.",
    "technique": "",
    "text": "The best part wasn't the gifts—it was watching the girls wait for Dad's reaction. ❤️ They had been keeping this surprise for days and ...",
    "title": "The best part wasn't the gifts—it was watching the girls wait ...",
    "topic": "Kids waiting for dad's reaction",
+   "trashed_assets": [
+    {
+     "bytes": 14420858,
+     "drive_id": "1FUbCRZVm89ACUbD-SkiHlIsSE_Mhu-W3",
+     "duration": 54.5,
+     "height": 1280,
+     "kind": "video",
+     "md5": "d95195d6b1e4ebd0547688f227c4b079",
+     "name": "IB-0422-video.mp4",
+     "sha256": "378b735c0e4e2c59ac8f4de3b52a9046f94a1b5ab6f893f1aea0141a7ca43073",
+     "source": "page",
+     "verified": true,
+     "width": 720
+    }
+   ],
+   "trashed_folder": "1wJGZyXI3F_VP6nWE_7PGx0JQzeseJfY_",
    "url": "https://www.instagram.com/reel/DZ5GjirOlVL/",
    "video_note": "",
    "video_status": "saved",
@@ -26791,6 +27367,7 @@
   },
   "IB-0423": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [
@@ -26851,7 +27428,7 @@
    "source_item_id": "web:s_d94af0943556",
    "state": "kept",
    "summary": "A repeatable running-gag format: the same gift each year and the same overjoyed reaction. The humour and the 'dad is easy to please' angle make it shareable.",
-   "technique": "Same gift running gag",
+   "technique": "same gift running gag",
    "text": "Dad opening the exact same father's day gift for every year like its the greatest gift ever created #FathersDay #DadLife #BestDadEver #FathersDayGift # ...",
    "title": "To the Dads who deserve to be celebrated today and every day ...",
    "topic": "Dad loves the same gift yearly",
@@ -26861,10 +27438,11 @@
    "video_tries": 0,
    "visual_hook": "",
    "visual_quality": "",
-   "visual_tries": 1
+   "visual_tries": 2
   },
   "IB-0424": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [
@@ -26925,7 +27503,7 @@
    "source_item_id": "web:s_9dc99349c608",
    "state": "kept",
    "summary": "The same gag as IB-0423 from a different post: a yearly repeat gift with an exaggerated happy reaction. It combines humour with family warmth.",
-   "technique": "Same gift running gag",
+   "technique": "same gift running gag",
    "text": "Dad opening the exact same father's day gift for every year like its the greatest gift ever created #FathersDay #DadLife #BestDadEver # ...",
    "title": "This year for Father's Day, the kids and I decided ...",
    "topic": "Same gift every year reaction",
@@ -26935,10 +27513,11 @@
    "video_tries": 0,
    "visual_hook": "",
    "visual_quality": "",
-   "visual_tries": 1
+   "visual_tries": 2
   },
   "IB-0425": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -26999,6 +27578,7 @@
   },
   "IB-0426": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -27059,6 +27639,7 @@
   },
   "IB-0427": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -27119,6 +27700,7 @@
   },
   "IB-0428": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -27179,15 +27761,30 @@
   },
   "IB-0429": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 0,
-   "assets": [],
+   "assets": [
+    {
+     "bytes": 9293627,
+     "drive_id": "1QrM0d1cZ3K2i7y8HgjSEIl0ZNqC_agfH",
+     "duration": 63.4,
+     "height": 1280,
+     "kind": "video",
+     "md5": "38ff1813855d2d27b36761944f4da9ed",
+     "name": "IB-0429-video.mp4",
+     "sha256": "7e06b681f0341b268bc20bcfe6a64ba74e520173eba9fd0913a3094d3edfb7cd",
+     "source": "page",
+     "verified": true,
+     "width": 720
+    }
+   ],
    "audience": "Adult kids shopping for a hard-to-buy-for dad",
    "category": "adjacent",
    "channel": "organic social",
    "concept": "Open with the recipient's line that they need nothing, then show a surprise gift that wins them over on camera.",
-   "drive_folder_id": "",
-   "drive_folder_url": "",
+   "drive_folder_id": "1uy0YG5-ZfXe3R6qpggen7pzlTby4xmgm",
+   "drive_folder_url": "https://drive.google.com/drive/folders/1uy0YG5-ZfXe3R6qpggen7pzlTby4xmgm",
    "duplicate_of": "",
    "fingerprint": "110508253c6c2195",
    "first_test": "Shoot three short POV clips with different dad reactions. Post organically and measure completion rate, saves and shares.",
@@ -27231,14 +27828,15 @@
    "topic": "Dad says he needs nothing",
    "url": "https://www.instagram.com/reel/DZt09TSzoC2/",
    "video_note": "",
-   "video_status": "",
+   "video_status": "saved",
    "video_tries": 0,
    "visual_hook": "",
    "visual_quality": "",
-   "visual_tries": 0
+   "visual_tries": 1
   },
   "IB-0430": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -27299,6 +27897,7 @@
   },
   "IB-0431": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -27359,6 +27958,7 @@
   },
   "IB-0432": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -27419,6 +28019,7 @@
   },
   "IB-0433": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -27479,6 +28080,7 @@
   },
   "IB-0434": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -27539,6 +28141,7 @@
   },
   "IB-0435": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -27599,6 +28202,7 @@
   },
   "IB-0436": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -27659,6 +28263,7 @@
   },
   "IB-0437": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -27719,6 +28324,7 @@
   },
   "IB-0438": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -27779,6 +28385,7 @@
   },
   "IB-0439": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -27839,6 +28446,7 @@
   },
   "IB-0440": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -27899,6 +28507,7 @@
   },
   "IB-0441": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -27959,6 +28568,7 @@
   },
   "IB-0442": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -28019,6 +28629,7 @@
   },
   "IB-0443": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -28079,6 +28690,7 @@
   },
   "IB-0444": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -28139,6 +28751,7 @@
   },
   "IB-0445": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -28199,6 +28812,7 @@
   },
   "IB-0446": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -28259,6 +28873,7 @@
   },
   "IB-0447": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -28319,6 +28934,7 @@
   },
   "IB-0448": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": true,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -28365,7 +28981,7 @@
    "source_item_id": "web:s_8223d9bfb2a3",
    "state": "kept",
    "summary": "A guide with 15 static ad examples and a testing framework. It matches the static format we want, but it is broad and not tied to Father's Day.",
-   "technique": "Ad creative testing guide",
+   "technique": "ad testing advice",
    "text": "Explore 15 static ads examples for fashion brands, plus Meta ad specs, testing tips and a framework to lift ROAS in 2026.",
    "title": "Static Ads for Fashion Brands: 15 Examples That Still Beat ...",
    "topic": "fashion static ad examples",
@@ -28379,6 +28995,7 @@
   },
   "IB-0449": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -28439,6 +29056,7 @@
   },
   "IB-0450": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -28499,6 +29117,7 @@
   },
   "IB-0451": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -28559,6 +29178,7 @@
   },
   "IB-0452": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -28619,6 +29239,7 @@
   },
   "IB-0453": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -28679,15 +29300,30 @@
   },
   "IB-0454": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
-   "assets": [],
+   "assets": [
+    {
+     "bytes": 3706970,
+     "drive_id": "15vQgZM0bC0fxhDJMX8AcPTV3v0MZnvWR",
+     "duration": 144.0,
+     "height": 640,
+     "kind": "video",
+     "md5": "9eb109a43369df62fee8599f4061d5f9",
+     "name": "IB-0454-video.mp4",
+     "sha256": "e109e6a78d8ac8a0ae231cc1120433e67ff242810d59b004bcbd96b6efb4a348",
+     "source": "page",
+     "verified": true,
+     "width": 360
+    }
+   ],
    "audience": "Prospecting and retargeting audiences for core Swoveralls",
    "category": "adjacent",
    "channel": "paid social",
    "concept": "Test hooks, angles, formats, audiences and garment groupings separately instead of running only static ads, because creative volume drives learning.",
-   "drive_folder_id": "",
-   "drive_folder_url": "",
+   "drive_folder_id": "1hXswlPaHpSzfb6g39Hdf-TEUSd9qhzZD",
+   "drive_folder_url": "https://drive.google.com/drive/folders/1hXswlPaHpSzfb6g39Hdf-TEUSd9qhzZD",
    "duplicate_of": "",
    "fingerprint": "b31c26ab9fc6b2a2",
    "first_test": "Make three hooks in static and video for one color. Run small paid spend and compare CTR and add-to-cart by variant.",
@@ -28725,13 +29361,13 @@
    "source_item_id": "web:s_85be7da79d8d",
    "state": "kept",
    "summary": "A fashion-specific prompt to test hooks, angles, formats, audiences and garment groupings. It is a framework rather than an ad, but it fits a multi-colour apparel catalogue.",
-   "technique": "Ad creative testing guide",
+   "technique": "ad testing advice",
    "text": "If you're a serious fashion brand, you should be testing: * Hooks * Angles * Formats * Audiences * Garment groupings. Creative volume = learning ...",
    "title": "If you're in fashion… And your entire ad account is static ...",
    "topic": "Fashion creative testing matrix",
    "url": "https://www.instagram.com/reel/DVrZRl6ifeZ/",
    "video_note": "",
-   "video_status": "",
+   "video_status": "saved",
    "video_tries": 0,
    "visual_hook": "",
    "visual_quality": "",
@@ -28739,6 +29375,7 @@
   },
   "IB-0455": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -28799,6 +29436,7 @@
   },
   "IB-0456": {
    "added_at": "2026-10-28T12:28:33Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -28859,6 +29497,7 @@
   },
   "IB-0457": {
    "added_at": "2026-10-28T14:38:21Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -28922,6 +29561,7 @@
   },
   "IB-0458": {
    "added_at": "2026-10-28T14:38:21Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -28985,6 +29625,7 @@
   },
   "IB-0459": {
    "added_at": "2026-10-28T14:38:21Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -29048,6 +29689,7 @@
   },
   "IB-0460": {
    "added_at": "2026-10-28T14:38:21Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -29111,6 +29753,7 @@
   },
   "IB-0461": {
    "added_at": "2026-10-28T14:38:21Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -29174,6 +29817,7 @@
   },
   "IB-0462": {
    "added_at": "2026-10-28T14:38:21Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -29237,6 +29881,7 @@
   },
   "IB-0463": {
    "added_at": "2026-10-28T14:38:21Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -29299,6 +29944,7 @@
   },
   "IB-0464": {
    "added_at": "2026-10-28T14:38:21Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -29361,6 +30007,7 @@
   },
   "IB-0465": {
    "added_at": "2026-10-28T14:38:21Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
@@ -29424,6 +30071,7 @@
   },
   "IB-0466": {
    "added_at": "2026-10-28T14:38:21Z",
+   "approved": false,
    "asset_note": "",
    "asset_tries": 0,
    "assets": [],
