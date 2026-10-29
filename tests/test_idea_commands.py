@@ -758,3 +758,26 @@ def test_the_ideabank_command_refreshes_an_expired_meta_link_through_the_browser
     item = store.read_ideabank("swoveralls")["items"]["IB-0001"]
     assert "1 Meta ad picture or video link(s) refreshed from the Ad Library" in out and item["media_url"] == NEW and item["assets"]
     assert browser.opened == ["https://www.facebook.com/ads/library/?id=1"]
+
+
+
+def test_the_real_ideabank_command_brings_back_a_rescued_item_and_keeps_what_you_approved(ready, capsys):
+    """The first live run could not read the Rejected tab at all (the command had no --sheets-config). This goes through the real command, the real
+    sheet reader and a real Rejected tab, and fails if any note about an unreadable sheet appears."""
+    state, run, store, client, tmp_path = ready
+    bank = store.read_ideabank("swoveralls")
+    for item in bank["items"].values():
+        item["score"] = max(item["score"] or 0, 60)
+    bank["items"]["IB-0003"] = dict(bank["items"]["IB-0001"], id="IB-0003", source_item_id="x:3", fingerprint="x3", state="removed", score=30,
+                                    removed_reason="not relevant enough (scored 30, the minimum is 50)")
+    store.write_ideabank("swoveralls", bank)
+    from test_sheets import run as run_sheets
+    run_sheets([cli.load_brand("swoveralls", str(BRANDS_DIR))], store, client)
+    ws, header, rows = cells(client.created[0], "Rejected")
+    ws._put(2, header.index("Rescue") + 1, "Use")
+    decide(client, **{"IB-0001": "Use"})
+    assert run("ideabank", "--brand", "swoveralls") == 0
+    out = capsys.readouterr().out
+    items = store.read_ideabank("swoveralls")["items"]
+    assert "could not be read" not in out and "swoveralls: 1 item(s) rescued from the Rejected tab and kept" in out
+    assert items["IB-0003"]["state"] == "kept" and items["IB-0003"]["rescued"] and items["IB-0001"]["rescued"] and not items["IB-0002"]["rescued"]
