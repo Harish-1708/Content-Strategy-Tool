@@ -10,6 +10,7 @@ Nothing in the bank is ever deleted by the tool, and a row is never created twic
 """
 import hashlib
 import re
+import tempfile
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -17,7 +18,9 @@ from pathlib import Path
 import yaml
 
 from .collectors import collected_rows
-from .drive import DriveError, folder_url, item_folder_name, safe_name
+from . import mediacheck
+from .drive import DriveError, DriveMismatch, folder_url, item_folder_name, safe_name
+from .videofetch import cookie_file, video_page
 from .export import price_range
 from .providers import ProviderError
 
@@ -47,6 +50,9 @@ class IdeaBankSettings:
     video_max_mb: int = 80
     claude_monthly_calls: int = 300
     min_relevance: int = 50
+    fetch_videos: bool = True
+    video_fetches_per_run: int = 12
+    video_timeout_seconds: int = 150
     skip_own_brand: bool = True
     # planner (request mode)
     plan_max_keywords: int = 6
@@ -63,7 +69,7 @@ class IdeaBankSettings:
 
 
 _IDEABANK_KEYS = {"enabled", "sources", "max_new_per_run", "score_batch", "max_scoring_calls", "save_assets", "save_videos",
-                  "image_max_mb", "video_max_mb", "claude_monthly_calls", "min_relevance", "skip_own_brand"}
+                  "image_max_mb", "video_max_mb", "claude_monthly_calls", "min_relevance", "skip_own_brand", "fetch_videos", "video_fetches_per_run", "video_timeout_seconds"}
 _PLANNER_KEYS = {"max_keywords", "max_hashtags", "max_queries", "max_questions", "max_pages"}
 _BRIEF_KEYS = {"models", "max_concepts", "max_calls", "images_per_item"}
 _SOURCES = ("meta_ads", "instagram", "tiktok")
@@ -108,7 +114,7 @@ def load_settings(path="research.yaml"):
         if not isinstance(srcs, list) or not srcs or any(s not in _SOURCES for s in srcs):
             raise IdeaBankError(f"ideabank.sources must be a list of: {', '.join(_SOURCES)}")
         kw["sources"] = tuple(dict.fromkeys(srcs))
-    for key, minimum in (("max_new_per_run", 1), ("score_batch", 1), ("max_scoring_calls", 0), ("image_max_mb", 1), ("video_max_mb", 1),
+    for key, minimum in (("max_new_per_run", 1), ("score_batch", 1), ("max_scoring_calls", 0), ("video_fetches_per_run", 0), ("video_timeout_seconds", 10), ("image_max_mb", 1), ("video_max_mb", 1),
                          ("claude_monthly_calls", 0)):
         if key in bank:
             kw[key] = _whole(bank[key], f"ideabank.{key}", minimum)
@@ -116,7 +122,7 @@ def load_settings(path="research.yaml"):
         kw["min_relevance"] = _whole(bank["min_relevance"], "ideabank.min_relevance", 0)
         if kw["min_relevance"] > 100:
             raise IdeaBankError(f"ideabank.min_relevance must be between 0 and 100, got {bank['min_relevance']!r}")
-    for key in ("save_assets", "save_videos", "skip_own_brand"):
+    for key in ("save_assets", "save_videos", "skip_own_brand", "fetch_videos"):
         if key in bank:
             kw[key] = _flag(bank[key], f"ideabank.{key}")
     for key in _PLANNER_KEYS:
@@ -192,7 +198,7 @@ def _new_item(idea_id, source, source_item_id, row, now, request):
             "drive_folder_id": "", "drive_folder_url": "", "assets": [], "asset_note": "", "asset_tries": 0,
             "state": "new", "removed_reason": "", "duplicate_of": "", "removal_note": "", "fingerprint": "",
             "fit": None, "idea": None, "mechanism": "", "concept": "", "generic": False, "category": "", "scoring_version": 0,
-            "format": "", "media_format": _media_format(row.get("details"))}
+            "format": "", "media_format": _media_format(row.get("details")), "video_tries": 0, "video_note": ""}
 
 
 def _interest(row):
@@ -237,9 +243,13 @@ def normalise_bank(bank):
     for item in bank["items"].values():
         item["state"] = state_of(item)
         for key, default in (("page_id", ""), ("removed_reason", ""), ("duplicate_of", ""), ("removal_note", ""), ("fit", None), ("idea", None),
-                             ("mechanism", ""), ("concept", ""), ("generic", False), ("category", ""), ("format", ""), ("media_format", "")):
+                             ("mechanism", ""), ("concept", ""), ("generic", False), ("category", ""), ("format", ""), ("media_format", ""), ("video_tries", 0), ("video_note", "")):
             item.setdefault(key, default)
         item.setdefault("scoring_version", 1 if item.get("score") is not None else 0)       # scored before the concept-first rubric = version 1
+        for asset in item["assets"]:                    # files saved before they were checked: what they are is known, that they are whole is not
+            asset.setdefault("kind", "image")
+            asset.setdefault("source", "cover" if item["platform"] in COVER_PLATFORMS and asset["kind"] == "image" else "media")
+            asset.setdefault("verified", False)
         if not item.get("fingerprint"):
             item["fingerprint"] = fingerprint(item)
     return bank
@@ -365,32 +375,57 @@ _EXT = {"image/jpeg": "jpg", "image/jpg": "jpg", "image/png": "png", "image/webp
         "video/mp4": "mp4", "video/webm": "webm", "video/quicktime": "mov"}
 
 
-def fetch_media(get, url, settings):
-    """Download one picture or video. `get` is requests.get-like. Returns (bytes, mime, kind) or raises AssetSkip."""
+def fetch_media_checked(get, url, settings):
+    """Download one picture or video and prove it is whole. Returns (bytes, MediaCheck) or raises AssetSkip with the reason.
+    The real type comes from the bytes, not from what the server said. A download that is interrupted or arrives short is tried once more,
+    because a dropped connection is common and the second attempt usually works."""
     if not str(url).startswith("https://"):
         raise AssetSkip("no https address for the file")
-    try:
-        resp = get(url, timeout=60, stream=True, headers={"User-Agent": "Mozilla/5.0"})
-    except Exception as exc:                                    # network trouble of any kind is a reason, not a crash
-        raise AssetSkip(f"could not be downloaded ({exc.__class__.__name__})") from exc
-    if resp.status_code >= 400:
-        raise AssetSkip(f"the site answered {resp.status_code} (the link may have expired)")
-    mime = (resp.headers.get("Content-Type") or "").split(";")[0].strip().lower()
-    kind = "image" if mime.startswith("image/") else "video" if mime.startswith("video/") else ""
-    if not kind or mime not in _EXT:
-        raise AssetSkip(f"not a picture or video ({mime or 'unknown type'})")
-    if kind == "video" and not settings.save_videos:
+    last = ""
+    for attempt in (1, 2):
+        try:
+            resp = get(url, timeout=60, stream=True, headers={"User-Agent": "Mozilla/5.0"})
+        except Exception as exc:                                    # network trouble of any kind is a reason, not a crash
+            raise AssetSkip(f"could not be downloaded ({exc.__class__.__name__})") from exc
+        if resp.status_code >= 400:
+            raise AssetSkip(f"the site answered {resp.status_code} (the link may have expired)")
+        mime = (resp.headers.get("Content-Type") or "").split(";")[0].strip().lower()
+        hinted = "image" if mime.startswith("image/") else "video" if mime.startswith("video/") else ""
+        if not hinted or mime not in _EXT:
+            raise AssetSkip(f"not a picture or video ({mime or 'unknown type'})")
+        if hinted == "video" and not settings.save_videos:
+            raise AssetSkip("a video, and saving videos is switched off")
+        limit = (settings.video_max_mb if hinted == "video" else settings.image_max_mb) * 1024 * 1024
+        declared = resp.headers.get("Content-Length")
+        declared = int(declared) if declared and declared.isdigit() else None
+        if declared and declared > limit:
+            raise AssetSkip(f"a {hinted} bigger than {limit // (1024 * 1024)} MB")
+        try:
+            data = b"".join(resp.iter_content(1024 * 256)) if hasattr(resp, "iter_content") else resp.content
+        except Exception as exc:                                    # a connection that drops half way through the body
+            last = f"the download was interrupted ({exc.__class__.__name__})"
+            continue
+        if len(data) > limit:
+            raise AssetSkip(f"a {hinted} bigger than {limit // (1024 * 1024)} MB")
+        check = mediacheck.check_media(data, declared_length=declared)
+        short = [p for p in check.problems if "cut short" in p]
+        if short and attempt == 1:
+            last = short[0]
+            continue
+        break
+    else:
+        raise AssetSkip(last)
+    if check.problems:
+        raise AssetSkip("; ".join(check.problems))
+    if check.kind == "video" and not settings.save_videos:
         raise AssetSkip("a video, and saving videos is switched off")
-    limit = (settings.video_max_mb if kind == "video" else settings.image_max_mb) * 1024 * 1024
-    declared = resp.headers.get("Content-Length")
-    if declared and declared.isdigit() and int(declared) > limit:
-        raise AssetSkip(f"a {kind} bigger than {limit // (1024 * 1024)} MB")
-    data = b"".join(resp.iter_content(1024 * 256)) if hasattr(resp, "iter_content") else resp.content
-    if len(data) > limit:
-        raise AssetSkip(f"a {kind} bigger than {limit // (1024 * 1024)} MB")
-    if not data:
-        raise AssetSkip("an empty file")
-    return data, mime, kind
+    return data, check
+
+
+def fetch_media(get, url, settings):
+    """As fetch_media_checked, returning (bytes, mime, kind) with the type read from the bytes."""
+    data, check = fetch_media_checked(get, url, settings)
+    return data, check.mime, check.kind
 
 
 def _parse_time(text):
@@ -417,13 +452,49 @@ def needs_assets(item):
     return state_of(item) == "kept" and bool(item["media_url"]) and not item["assets"] and item["asset_tries"] < ASSET_TRIES
 
 
+COVER_PLATFORMS = ("tiktok", "instagram")
+
+
+def _ensure_item_folder(item, brand_name, drive, cache):
+    cache["brand"] = cache.get("brand") or drive.brand_folder(brand_name)
+    if not item["topic"]:
+        item["topic"] = safe_name(item["title"] or item["handle"] or item["kind"], 40)
+    return item["drive_folder_id"] or drive.item_folder(cache["brand"], item["id"], item["topic"])
+
+
+def _upload_verified(drive, folder, name, data, mime):
+    """Put a file in Drive and prove Drive holds exactly these bytes. A copy that does not match is moved to the trash and sent once more.
+    Returns (file id, md5)."""
+    existing = drive.list_files(folder)
+    for attempt in (1, 2):
+        file_id = existing.get(name) if attempt == 1 else None
+        if not file_id:
+            file_id = drive.upload(folder, name, data, mime)
+        try:
+            return file_id, drive.verify(file_id, data)
+        except DriveMismatch as exc:
+            try:
+                drive.trash(file_id)
+            except DriveError:
+                pass
+            if attempt == 2:
+                raise DriveError(f"the copy in Drive did not match the download, even on a second try ({exc})") from exc
+
+
+def _record(item, name, file_id, md5, data, check, source):
+    item["assets"].append({"name": name, "drive_id": file_id, "kind": check.kind, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest(),
+                           "md5": md5, "width": check.width, "height": check.height, "duration": round(check.duration, 1), "source": source,
+                           "verified": True})
+
+
 def save_assets(bank, ids, brand_name, drive, get, settings, brand_folder=None, now=None):
     """Save the picture or video of each given item in its own Drive folder, and note the folder on the item.
-    A file that is byte for byte the same as one already saved for another kept item is not saved again: that item is a copy and is removed.
-    Returns (saved, lines). An item with nothing to save gets no folder."""
+    Every file is checked before it is uploaded (it must be whole, readable and not blank) and again after (Drive must hold exactly the
+    bytes that were sent). A file that is byte for byte the same as one already saved for another kept item is not saved again: that item is
+    a copy and is removed. Returns (saved, lines). An item with nothing to save gets no folder."""
     lines, saved, expired = [], 0, 0
     clock = _parse_time(now) or datetime.now(timezone.utc)
-    folder_of_brand = brand_folder
+    cache = {"brand": brand_folder}
     hashes = {a["sha256"]: i for i, it in bank["items"].items() if state_of(it) == "kept" for a in it["assets"] if a.get("sha256")}
     for idea_id in ids:
         item = bank["items"][idea_id]
@@ -436,7 +507,7 @@ def save_assets(bank, ids, brand_name, drive, get, settings, brand_folder=None, 
             continue
         item["asset_tries"] += 1
         try:
-            data, mime, kind = fetch_media(get, item["media_url"], settings)
+            data, check = fetch_media_checked(get, item["media_url"], settings)
         except AssetSkip as exc:
             item["asset_note"] = str(exc)
             lines.append(f"{idea_id}: no file saved: {exc}")
@@ -448,24 +519,137 @@ def save_assets(bank, ids, brand_name, drive, get, settings, brand_folder=None, 
             lines.append(f"{idea_id}: removed, it is a copy of {twin} (the very same file)")
             continue
         try:
-            folder_of_brand = folder_of_brand or drive.brand_folder(brand_name)
-            if not item["topic"]:
-                item["topic"] = safe_name(item["title"] or item["handle"] or item["kind"], 40)
-            folder = item["drive_folder_id"] or drive.item_folder(folder_of_brand, idea_id, item["topic"])
-            name = f"{idea_id}-{kind}.{_EXT[mime]}"
-            existing = drive.list_files(folder)
-            file_id = existing.get(name) or drive.upload(folder, name, data, mime)
+            folder = _ensure_item_folder(item, brand_name, drive, cache)
+            name = f"{idea_id}-{check.kind}.{check.ext}"
+            file_id, md5 = _upload_verified(drive, folder, name, data, check.mime)
         except DriveError as exc:
             item["asset_note"] = f"not saved in Drive: {exc}"
             lines.append(f"{idea_id}: not saved in Drive: {exc}")
             raise
+        cover = item.get("media_role") == "cover" or (item["platform"] in COVER_PLATFORMS and check.kind == "image")
         item.update({"drive_folder_id": folder, "drive_folder_url": folder_url(folder), "asset_note": ""})
-        item["assets"].append({"name": name, "drive_id": file_id, "kind": kind, "bytes": len(data), "sha256": digest})
+        _record(item, name, file_id, md5, data, check, "cover" if cover else "media")
         hashes[digest] = idea_id
         saved += 1
     if expired:
         lines.append(f"{expired} item(s): the picture or video link has expired (Meta's links last only hours or days), so no file was saved; "
                      "it is saved if the ad is collected again")
+    return saved, lines
+
+
+def preview_label(item):
+    """What the person looking at the sheet will really find in Drive, in plain words."""
+    assets = item.get("assets") or []
+    if not assets:
+        return "original link only"
+    video = next((a for a in assets if a.get("kind") == "video"), None)
+    first = video or assets[0]
+    size = f"{first['width']}x{first['height']}" if first.get("width") else ""
+    if video:
+        label = f"video saved ({video.get('duration', 0):.0f}s, {size})" if size else "video saved"
+    elif first.get("source") == "cover":
+        label = "cover image only, the video was not saved"
+    else:
+        label = f"image saved ({size})" if size else "image saved"
+    if first.get("width") and min(first["width"], first.get("height") or first["width"]) < mediacheck.LOW_RES_SIDE and first.get("kind") == "image":
+        label += " - low resolution"
+    if any(not a.get("verified") for a in assets):
+        label += " - not yet checked"
+    return label
+
+
+def audit_files(bank, drive):
+    """Download every saved file back from Drive and check it again, as a person opening it would find it. A file that is broken, cut short
+    or missing is removed from the item (and the item is queued to be saved again if its link still works); a file with the wrong ending
+    (a picture saved as .jpg that is really a .png) is renamed; what is learnt about each file is written back. Returns summary lines."""
+    counts = {"checked": 0, "good": 0, "renamed": 0, "broken": 0, "missing": 0, "low": 0}
+    problems = []
+    for item in bank["items"].values():
+        if not item["assets"]:
+            continue
+        keep = []
+        for asset in item["assets"]:
+            counts["checked"] += 1
+            try:
+                data = drive.download(asset["drive_id"])
+            except DriveError as exc:
+                counts["missing"] += 1
+                problems.append(f"{item['id']}: {asset['name']} is missing or unreadable in Drive ({exc})")
+                continue
+            check = mediacheck.check_media(data, declared_length=asset.get("bytes"))
+            if check.problems:
+                counts["broken"] += 1
+                problems.append(f"{item['id']}: {asset['name']} is broken ({'; '.join(check.problems)})")
+                try:
+                    drive.trash(asset["drive_id"])
+                except DriveError:
+                    pass
+                continue
+            if not mediacheck.extension_matches(asset["name"], check):
+                new = mediacheck.corrected_name(asset["name"], check)
+                try:
+                    drive.rename(asset["drive_id"], new)
+                    asset["name"] = new
+                    counts["renamed"] += 1
+                except DriveError as exc:
+                    problems.append(f"{item['id']}: {asset['name']} is really a .{check.ext} file but could not be renamed ({exc})")
+            asset.update({"kind": check.kind, "bytes": len(data), "width": check.width, "height": check.height, "duration": round(check.duration, 1),
+                          "sha256": hashlib.sha256(data).hexdigest(), "md5": hashlib.md5(data).hexdigest(), "verified": True})
+            counts["low"] += 1 if check.low_resolution else 0
+            counts["good"] += 1
+            keep.append(asset)
+        if len(keep) != len(item["assets"]):
+            item["assets"] = keep
+            item["asset_tries"] = 0                         # asked again next time, if the link still works
+            item["asset_note"] = "audit: a saved file was broken or missing and was removed; it is saved again if the link still works"
+    covers = sum(1 for it in bank["items"].values() if it["assets"] and not any(a["kind"] == "video" for a in it["assets"])
+                 and all(a.get("source") == "cover" for a in it["assets"]))
+    lines = [f"audit: {counts['checked']} saved file(s) downloaded from Drive and checked: {counts['good']} complete, {counts['renamed']} renamed "
+             f"(the ending did not match the real type), {counts['broken']} broken, {counts['missing']} missing; {counts['low']} low resolution; "
+             f"{covers} item(s) have only a cover picture, not the video"]
+    return lines + [f"audit: {p}" for p in problems[:12]] + ([f"audit: ... and {len(problems) - 12} more"] if len(problems) > 12 else [])
+
+
+def needs_video(item, settings):
+    """A kept item with a TikTok or Instagram page whose real video has not been saved, and not given up on."""
+    return (settings.fetch_videos and settings.video_fetches_per_run > 0 and state_of(item) == "kept" and video_page(item)
+            and not any(a.get("kind") == "video" for a in item["assets"]) and item.get("video_tries", 0) < 2)
+
+
+def save_videos(bank, ids, brand_name, drive, settings, runner, cookies_path=None, brand_folder=None):
+    """Fetch and save the real video for each given item (at most `video_fetches_per_run` a run). Returns (saved, lines)."""
+    lines, saved, tried = [], 0, 0
+    cache = {"brand": brand_folder}
+    pending = [i for i in ids if needs_video(bank["items"][i], settings)]
+    for idea_id in pending:
+        item = bank["items"][idea_id]
+        if tried >= settings.video_fetches_per_run:
+            lines.append(f"{len(pending) - tried} more video(s) wait for the next run (limit {settings.video_fetches_per_run} a run)")
+            break
+        tried += 1
+        item["video_tries"] += 1
+        with tempfile.TemporaryDirectory() as tmp:
+            found, why = runner(item["url"], tmp, cookies_path, settings.video_max_mb, settings.video_timeout_seconds)
+            data = Path(found).read_bytes() if found else b""
+        if not found:
+            item["video_note"] = why
+            lines.append(f"{idea_id}: the video could not be downloaded: {why}")
+            continue
+        check = mediacheck.check_media(data)
+        if check.problems or check.kind != "video":
+            item["video_note"] = "; ".join(check.problems) or "what came back is not a video"
+            lines.append(f"{idea_id}: the video was not usable: {item['video_note']}")
+            continue
+        if len(data) > settings.video_max_mb * 1024 * 1024:
+            item["video_note"] = f"a video bigger than {settings.video_max_mb} MB"
+            lines.append(f"{idea_id}: {item['video_note']}")
+            continue
+        folder = _ensure_item_folder(item, brand_name, drive, cache)
+        name = f"{idea_id}-video.{check.ext}"
+        file_id, md5 = _upload_verified(drive, folder, name, data, check.mime)
+        item.update({"drive_folder_id": folder, "drive_folder_url": folder_url(folder), "video_note": ""})
+        _record(item, name, file_id, md5, data, check, "page")
+        saved += 1
     return saved, lines
 
 
@@ -766,7 +950,7 @@ def sheet_rows(bank):
                          "how_to_use": item["how_to_use"], "risk": item["risk"], "topic": item["topic"], "region": item["region"],
                          "request_id": item["request_id"], "likes": m.get("likes", ""), "comments": m.get("comments", ""),
                          "shares": m.get("shares", ""), "views": m.get("views", ""), "days_running": m.get("days_running", ""),
-                         "signal": m.get("signal", ""), "preview": "saved in Drive" if item["assets"] else "original link only",
+                         "signal": m.get("signal", ""), "preview": preview_label(item),
                          "drive_folder": item["drive_folder_url"], "assets": len(item["assets"]),
                          "asset_note": item["asset_note"], "added_at": item["added_at"], "scored_at": item["scored_at"]}
     return rows
@@ -815,7 +999,7 @@ def _counts(bank):
 
 
 def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=None, request=None, web_sources=None,
-                 dry_run=False, budget=None, since="", skip_brands=()):
+                 dry_run=False, budget=None, since="", skip_brands=(), audit=False, video_runner=None, cookies=None):
     """Take new sourced items into the brand's bank, keep only what is useful, save its files and score it. Returns (new ids, summary lines).
 
     In order: leave out the brand's own content and copies; tidy what is already in the bank the same way; score what is not scored; keep
@@ -858,12 +1042,26 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
     if waiting:
         lines.append(f"{brand.slug}: {waiting} item(s) wait to be scored before they are shown or get a folder"
                      + ("" if claude is not None else " (no Claude key)"))
+    if audit and drive is not None:
+        try:
+            lines += [f"{brand.slug}: {line}" for line in audit_files(bank, drive)]
+        except DriveError as exc:
+            lines.append(f"{brand.slug}: the audit of saved files stopped: {exc}")
     retry = [i for i, it in bank["items"].items() if needs_assets(it)]
     try:
         if settings.save_assets and drive is not None and get is not None:
             saved, notes = save_assets(bank, retry, brand.name, drive, get, settings, now=now)
             lines += notes
             lines.append(f"{brand.slug}: files saved for {saved} item(s)")
+            wanting = [i for i, it in bank["items"].items() if needs_video(it, settings)]
+            if wanting and video_runner is None:
+                lines.append(f"{brand.slug}: {len(wanting)} TikTok/Instagram video(s) not saved: yt-dlp is not available here, so only cover pictures are kept")
+            elif wanting:
+                with tempfile.TemporaryDirectory() as tmp:
+                    jar = cookie_file([(cookies or {}).get("instagram"), (cookies or {}).get("tiktok")], Path(tmp) / "cookies.txt")
+                    got, notes = save_videos(bank, wanting, brand.name, drive, settings, video_runner, jar)
+                lines += notes
+                lines.append(f"{brand.slug}: real videos saved for {got} item(s)")
         elif settings.save_assets and retry:
             lines.append(f"{brand.slug}: files not saved (no Drive folder is set up: add the IDEA_BANK_FOLDER_ID secret)")
     except DriveError as exc:
