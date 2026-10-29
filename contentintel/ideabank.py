@@ -527,8 +527,7 @@ def save_assets(bank, ids, brand_name, drive, get, settings, brand_folder=None, 
             continue
         digest = hashlib.sha256(data).hexdigest()
         twin = hashes.get(digest)
-        if twin and twin != idea_id:
-            item.update({"state": "removed", "duplicate_of": twin, "removed_reason": f"a copy of {twin} (the very same file)"})
+        if twin and twin != idea_id and _remove(item, f"a copy of {twin} (the very same file)", twin):          # a rescued item is never removed
             lines.append(f"{idea_id}: removed, it is a copy of {twin} (the very same file)")
             continue
         try:
@@ -581,7 +580,7 @@ def refresh_meta_links(bank, factory, settings, now):
                     browser.open(item["url"])
                     row = extract_json_items("meta_ads", _page_data(browser)).get(item["source_item_id"])
                 except Exception as exc:                                         # a page that will not load is a reason, not a crash
-                    item["asset_note"] = f"the link expired and the Ad Library page could not be opened ({exc.__class__.__name__})"
+                    item["asset_note"] = f"the link expired and the Ad Library page could not be opened ({exc.__class__.__name__}: {str(exc)[:100]})"
                     continue
                 if row and row.get("media_url") and row["media_url"] != item["media_url"]:
                     item.update({"media_url": row["media_url"], "asset_note": "", "asset_tries": 0})
@@ -589,7 +588,7 @@ def refresh_meta_links(bank, factory, settings, now):
                 else:
                     item["asset_note"] = "the link expired and the ad is no longer shown in the Ad Library"
     except Exception as exc:
-        return found, [f"Meta ad links not refreshed: the browser could not start ({exc.__class__.__name__})"]
+        return found, [f"Meta ad links not refreshed: the browser could not start ({exc.__class__.__name__}: {str(exc)[:120]})"]
     lines = [f"{found} Meta ad picture or video link(s) refreshed from the Ad Library, so their files can be saved"] if found else []
     left = len(todo) - min(len(todo), settings.link_refreshes_per_run)
     if left:
@@ -731,7 +730,8 @@ def save_videos(bank, ids, brand_name, drive, settings, runner, cookies_path=Non
             found, why = runner(item["url"], tmp, cookies_path, settings.video_max_mb, settings.video_timeout_seconds)
             data = Path(found).read_bytes() if found else b""
         if not found:
-            status, note = classify_failure(why, item["url"])
+            head, _, browser_why = str(why).partition("; the browser route also failed: ")
+            status, note = classify_failure(head, item["url"])
             item.update({"video_status": status, "video_note": note})
             if status == "none":                               # an image or carousel post: the picture saved IS the creative
                 for a in item["assets"]:
@@ -739,7 +739,7 @@ def save_videos(bank, ids, brand_name, drive, settings, runner, cookies_path=Non
             if status != "blocked":
                 item["video_tries"] += 1
             streak[platform] = streak.get(platform, 0) + 1 if status == "blocked" else 0
-            lines.append(f"{idea_id}: no video saved: {note}")
+            lines.append(f"{idea_id}: no video saved: {note}" + (f" (the browser route also failed: {browser_why})" if browser_why else ""))
             continue
         check = mediacheck.check_media(data)
         if check.problems or check.kind != "video":
@@ -1432,7 +1432,7 @@ def _counts(bank):
 
 
 def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=None, request=None, web_sources=None,
-                 dry_run=False, budget=None, since="", skip_brands=(), audit=False, video_runner=None, cookies=None, rescues=(), browser_factory=None):
+                 dry_run=False, budget=None, since="", skip_brands=(), audit=False, video_runner=None, cookies=None, rescues=(), browser_factory=None, protected=()):
     """Take new sourced items into the brand's bank, keep only what is useful, save its files and score it. Returns (new ids, summary lines).
 
     In order: leave out the brand's own content and copies; tidy what is already in the bank the same way; score what is not scored; keep
@@ -1443,6 +1443,9 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
     if rescues and not dry_run:
         _, notes = rescue_items(bank, rescues, drive)
         lines += [f"{brand.slug}: {n}" for n in notes]
+    for idea_id in protected:                          # approved by a person (Use or Maybe): no tidy-up of the tool's removes it
+        if idea_id in bank["items"] and state_of(bank["items"][idea_id]) == "kept":
+            bank["items"][idea_id]["rescued"] = True
     pages = own_page_ids(store, brand.slug)
     skipped = {}
     new = intake_collected(bank, store.read_collected(brand.slug), settings, now, request, since, brand, pages, skipped)
