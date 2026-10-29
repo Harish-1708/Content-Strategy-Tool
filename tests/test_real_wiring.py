@@ -7,6 +7,7 @@ import pytest
 
 from contentintel import browser as B
 from contentintel import cli
+from contentintel import sheets
 from contentintel import ideabank as IB
 from contentintel.store import Store
 
@@ -113,13 +114,16 @@ def test_approved_rows_are_read_and_only_use_and_maybe_count(store, swov, sheet)
     assert cli._decided(swov, store, parsed())[0] == ["IB-0001", "IB-0002"]
 
 
-def test_a_missing_sheet_is_a_note_but_a_mistake_in_the_program_is_not_hidden(store, swov, monkeypatch):
+def test_a_missing_sheet_is_a_note_but_a_mistake_in_the_program_is_not_hidden(store, swov, monkeypatch, tmp_path):
+    config = tmp_path / "sheets.yaml"
+    config.write_text('sheets:\n  swoveralls: "abc123"\n  duderobe: ""\n  defi_snacks: ""\n')
+    parsed = lambda *extra: cli.build_parser().parse_args(["ideabank", "--brand", "swoveralls", "--sheets-config", str(config), *extra])  # noqa: E731
     monkeypatch.setenv("GOOGLE_SERVICE_ACCOUNT_JSON", "{}")
     monkeypatch.setattr(cli, "_SHEETS_CONNECT", lambda key: (_ for _ in ()).throw(ConnectionError("no network")))
     ids, note = cli._rescues(swov, store, parsed())
     assert ids == [] and note == "swoveralls: the Rejected tab (for rescues) could not be read (ConnectionError: no network)"
     ids, note = cli._decided(swov, store, parsed())
-    assert ids == [] and note == "swoveralls: your Decisions could not be read (ConnectionError: no network)"
+    assert ids is None and note == "swoveralls: your Decisions could not be read (ConnectionError: no network)"      # unknown, not "nobody"
 
     class NoSheetsOption:
         brands_dir = "brands"
@@ -132,9 +136,9 @@ def test_a_missing_sheet_is_a_note_but_a_mistake_in_the_program_is_not_hidden(st
 
 def test_no_key_or_a_dry_run_reads_nothing(store, swov, monkeypatch):
     monkeypatch.delenv("GOOGLE_SERVICE_ACCOUNT_JSON", raising=False)
-    assert cli._rescues(swov, store, parsed()) == ([], "") and cli._decided(swov, store, parsed()) == ([], "")
+    assert cli._rescues(swov, store, parsed()) == ([], "") and cli._decided(swov, store, parsed()) == (None, "")
     monkeypatch.setenv("GOOGLE_SERVICE_ACCOUNT_JSON", "{}")
-    assert cli._rescues(swov, store, parsed("--dry-run")) == ([], "") and cli._decided(swov, store, parsed("--dry-run")) == ([], "")
+    assert cli._rescues(swov, store, parsed("--dry-run")) == ([], "") and cli._decided(swov, store, parsed("--dry-run")) == (None, "")
 
 
 # ---- where added rows go ------------------------------------------------------------------------------------------------------------------------------
@@ -186,26 +190,47 @@ def test_a_post_with_no_video_is_still_told_apart_even_after_a_browser_attempt(t
 
 def test_an_item_you_approved_survives_the_technique_limit_and_a_low_score():
     from test_creative_review import _free, tech_claude, techniques
-    bank = techniques(("A", 80, "t"), ("B", 70, "t"), ("C", 20, "t"))
-    bank["items"]["IB-0003"]["rescued"] = True
-    IB.group_techniques(bank, tech_claude(("t", ["IB-0001", "IB-0002", "IB-0003"])), IB.IdeaBankSettings(max_per_technique=1), _free())
-    assert bank["items"]["IB-0003"]["state"] == "kept" and bank["items"]["IB-0001"]["state"] == "removed" and bank["items"]["IB-0002"]["state"] == "removed"
-    IB.apply_relevance(bank, IB.IdeaBankSettings(min_relevance=90))
-    assert bank["items"]["IB-0003"]["state"] == "kept"
+    for flag in ("approved", "rescued"):
+        bank = techniques(("A", 80, "t"), ("B", 70, "t"), ("C", 20, "t"))
+        bank["items"]["IB-0003"][flag] = True
+        IB.group_techniques(bank, tech_claude(("t", ["IB-0001", "IB-0002", "IB-0003"])), IB.IdeaBankSettings(max_per_technique=1), _free())
+        assert bank["items"]["IB-0003"]["state"] == "kept" and bank["items"]["IB-0001"]["state"] == "removed" and bank["items"]["IB-0002"]["state"] == "removed", flag
+        IB.apply_relevance(bank, IB.IdeaBankSettings(min_relevance=90))
+        assert bank["items"]["IB-0003"]["state"] == "kept", flag
 
 
-def test_a_run_protects_the_ids_it_is_told_were_approved(store, swov):
+def test_a_run_protects_the_ids_it_is_told_were_approved_and_a_later_skip_lifts_it(store, swov):
     from fake_drive import EMAIL, ROOT, FakeDrive
     from contentintel.drive import DriveClient
     from test_ideabank import full_run, kept_bank
     drive = DriveClient(FakeDrive(), ROOT, EMAIL, sleep=lambda s: None)
-    bank = kept_bank("A", "B")
+    bank = kept_bank("A", "B", "C")
     for item in bank["items"].values():
         item["score"] = 20
     store.write_ideabank("swoveralls", bank)
     full_run(store, swov, (drive, drive.session), protected=("IB-0001", "IB-9999"))
     items = store.read_ideabank("swoveralls")["items"]
-    assert items["IB-0001"]["state"] == "kept" and items["IB-0001"]["rescued"] and items["IB-0002"]["state"] == "removed" and not items["IB-0002"]["rescued"]
+    assert items["IB-0001"]["state"] == "kept" and items["IB-0001"]["approved"] and items["IB-0002"]["state"] == "removed" and not items["IB-0002"]["approved"]
+    assert not items["IB-0001"]["rescued"]                                               # an approval is not a rescue
+    bank = store.read_ideabank("swoveralls")
+    store.write_ideabank("swoveralls", bank)
+    full_run(store, swov, (drive, drive.session), protected=None)                         # the sheet could not be read: nothing is lifted
+    assert store.read_ideabank("swoveralls")["items"]["IB-0001"]["approved"] and store.read_ideabank("swoveralls")["items"]["IB-0001"]["state"] == "kept"
+    full_run(store, swov, (drive, drive.session), protected=())                           # the sheet was read and IB-0001 is no longer approved
+    after = store.read_ideabank("swoveralls")["items"]["IB-0001"]
+    assert after["approved"] is False and after["state"] == "removed"
+
+
+def test_a_rescue_is_permanent_whatever_the_sheet_says_about_approvals(store, swov):
+    from fake_drive import EMAIL, ROOT, FakeDrive
+    from contentintel.drive import DriveClient
+    from test_ideabank import full_run, kept_bank
+    drive = DriveClient(FakeDrive(), ROOT, EMAIL, sleep=lambda s: None)
+    bank = kept_bank("A")
+    bank["items"]["IB-0001"].update({"score": 20, "rescued": True})
+    store.write_ideabank("swoveralls", bank)
+    full_run(store, swov, (drive, drive.session), protected=())
+    assert store.read_ideabank("swoveralls")["items"]["IB-0001"]["state"] == "kept"
 
 
 def test_change_entries_are_counted_on_their_own_and_not_as_added_rows(store, swov):
@@ -227,10 +252,48 @@ def test_an_item_the_tool_already_removed_is_not_marked_protected_by_an_approval
     store.write_ideabank("swoveralls", bank)
     full_run(store, swov, (drive, drive.session), protected=("IB-0002",))
     item = store.read_ideabank("swoveralls")["items"]["IB-0002"]
-    assert item["state"] == "removed" and not item["rescued"]
+    assert item["state"] == "removed" and not item["rescued"] and not item["approved"]
 
 
 def test_the_readme_explains_what_is_protected_and_where_rows_are_added():
     text = " ".join(open("README.md", encoding="utf-8").read().split())
-    for needle in ("What you approved is never removed by the tool", "--sheets-config", "Rejected 427", "never hidden as a note"):
+    for needle in ("What you approved is never removed by the tool", "--sheets-config", "Rejected 427", "never hidden as a note", "Approval follows the sheet; a rescue is permanent"):
         assert needle in text, needle
+
+
+# ---- reading never creates anything; the tests never reach the real tools ----------------------------------------------------------------------------
+
+def test_reading_the_sheet_never_creates_one_for_a_brand_that_has_none(store, swov, monkeypatch):
+    """A brand with no spreadsheet yet is simply nothing to read, even when the secret that would let a spreadsheet be created is set."""
+    client = FakeClient()
+    monkeypatch.setattr(cli, "_SHEETS_CONNECT", lambda key: (client, BOT))
+    monkeypatch.setenv("GOOGLE_SERVICE_ACCOUNT_JSON", "{}")
+    monkeypatch.setenv("SHEET_SHARE_EMAIL", "me@kelson.agency")
+    monkeypatch.setenv("SHEET_FOLDER_ID", "folder123")
+    assert cli._rescues(swov, store, parsed()) == ([], "") and cli._decided(swov, store, parsed()) == (None, "")
+    assert client.created == []
+
+
+def test_has_spreadsheet_knows_a_configured_sheet_and_one_the_tool_made(store, swov):
+    assert sheets.has_spreadsheet(swov, store, {}) is False and sheets.has_spreadsheet(swov, store, {"swoveralls": ""}) is False
+    assert sheets.has_spreadsheet(swov, store, {"swoveralls": "abc"}) is True and sheets.has_spreadsheet(swov, store, {"duderobe": "abc"}) is False
+    store.save_sheet_info("swoveralls", {"spreadsheet_id": "made-by-the-tool"})
+    assert sheets.has_spreadsheet(swov, store, {}) is True
+
+
+def test_the_request_command_has_the_options_its_helpers_read():
+    args = cli.build_parser().parse_args(["request", "run", "--brand", "swoveralls", "--request", "RQ-0001"])
+    assert (args.sheets_config, args.debug_dir, args.browser_config) == ("sheets.yaml", "debug", "browser.yaml")
+
+
+def test_the_tests_never_reach_the_real_download_tool_browser_google_or_the_repositorys_own_sheet_ids(monkeypatch):
+    """On GitHub yt-dlp is installed and sheets.yaml names your real sheet; a test must not depend on either."""
+    import shutil
+    monkeypatch.setattr(shutil, "which", lambda name: "/usr/bin/yt-dlp")                 # as on GitHub
+    assert cli._video_runner(parsed()) is not cli.videofetch_mod.ytdlp_download
+    assert cli._video_runner(parsed())("https://www.instagram.com/p/x/", "/tmp", None, 80, 150) == (None, "no real downloads in tests")
+    with pytest.raises(RuntimeError, match="no real browser in tests"):
+        cli._ad_browser_factory(parsed())("meta_ads")
+    with pytest.raises(ConnectionError, match="no real Google in tests"):
+        cli._SHEETS_CONNECT("{}")
+    assert not any(sheets.load_sheet_config("sheets.yaml", {"swoveralls", "duderobe", "defi_snacks"}).values())
