@@ -312,16 +312,25 @@ def asset(**kw):
 
 
 @pytest.mark.parametrize("item,label", [
-    (item_with(), "original link only"),
+    (item_with(), "no saved media: original link only"),
+    (item_with(asset_note="the link expired on 2026-10-27; the file is saved if the ad is collected again"), "no saved media: the original link expired"),
+    (item_with(asset_note="could not be downloaded (ConnectionError)"), "no saved media: the original link is unavailable"),
     (item_with(asset()), "image saved (1122x1402)"),
-    (item_with(asset(source="cover", width=1080, height=1920)), "cover image only, the video was not saved"),
-    (item_with(asset(kind="video", duration=27.5, width=720, height=1280)), "video saved (28s, 720x1280)"),
-    (item_with(asset(source="cover"), asset(kind="video", source="page", duration=9, width=720, height=1280)), "video saved (9s, 720x1280)"),
+    (item_with(asset(source="cover", width=1080, height=1920)), "cover image only: the video has not been fetched yet"),
+    (item_with(asset(source="cover", width=1080, height=1920), video_status="blocked"), "cover image only: the video could not be downloaded (the platform refused the download)"),
+    (item_with(asset(source="cover", width=1080, height=1920), video_status="gone"), "cover image only: the video could not be downloaded (the post is no longer available)"),
+    (item_with(asset(source="cover", width=1080, height=1920), video_status="failed", video_note="yt-dlp gave up after 150 seconds"), "cover image only: the video could not be downloaded (yt-dlp gave up after 150 seconds)"),
+    (item_with(asset(source="media", width=1080, height=1920), video_status="none"), "image post saved (1080x1920), it has no video"),
+    (item_with(asset(source="media", width=1080, height=1920), video_status="none", format="carousel"), "carousel: first slide saved, the other slides were not"),
+    (item_with(asset(), media_format="CAROUSEL"), "carousel: first slide saved, the other slides were not"),
+    (item_with(asset(kind="video", duration=27.5, width=720, height=1280)), "video saved and checked (28s, 720x1280)"),
+    (item_with(asset(source="cover"), asset(kind="video", source="page", duration=9, width=720, height=1280)), "video saved and checked (9s, 720x1280)"),
+    (item_with(asset(source="cover"), asset(kind="video", source="page", duration=9, width=720, height=1280), video_status="blocked", video_note="old"), "video saved and checked (9s, 720x1280)"),
     (item_with(asset(width=486, height=648)), "image saved (486x648) - low resolution"),
     (item_with(asset(verified=False)), "image saved (1122x1402) - not yet checked"),
     (item_with(asset(width=486, height=648, verified=False)), "image saved (486x648) - low resolution - not yet checked"),
     (item_with({"name": "x"}), "image saved - not yet checked"),
-    (item_with(asset(kind="video", width=0, height=0, duration=0)), "video saved")])
+    (item_with(asset(kind="video", width=0, height=0, duration=0)), "video saved and checked")])
 def test_the_preview_says_what_a_person_will_really_find_in_drive(item, label):
     assert IB.preview_label(item) == label
 
@@ -329,7 +338,7 @@ def test_the_preview_says_what_a_person_will_really_find_in_drive(item, label):
 def test_the_sheet_row_uses_the_honest_label():
     bank = kept_bank("A")
     bank["items"]["IB-0001"]["assets"] = [asset(source="cover")]
-    assert IB.sheet_rows(bank)["IB-0001"]["preview"] == "cover image only, the video was not saved"
+    assert IB.sheet_rows(bank)["IB-0001"]["preview"] == "cover image only: the video has not been fetched yet"
 
 
 def test_files_saved_before_they_were_checked_are_marked_unchecked_and_their_kind_is_worked_out():
@@ -512,9 +521,9 @@ def test_a_real_video_is_downloaded_checked_saved_beside_the_cover_and_proved(dr
     saved, lines = IB.save_videos(bank, ["IB-0001"], "Swoveralls", client, S, runner_writing(tiny_mp4(seconds=20), log))
     item = bank["items"]["IB-0001"]
     assert saved == 1 and lines == [] and [a["kind"] for a in item["assets"]] == ["image", "video"] and item["assets"][1]["name"] == "IB-0001-video.mp4"
-    assert item["assets"][1]["source"] == "page" and item["assets"][1]["verified"] and item["video_tries"] == 1 and item["video_note"] == ""
+    assert item["assets"][1]["source"] == "page" and item["assets"][1]["verified"] and item["video_tries"] == 0 and item["video_status"] == "saved" and item["video_note"] == ""
     assert log == [("https://www.tiktok.com/@c/video/1", None, S.video_max_mb, S.video_timeout_seconds)]
-    assert IB.preview_label(item) == "video saved (20s, 720x1280)"
+    assert IB.preview_label(item) == "video saved and checked (20s, 720x1280)"
     assert sorted(n.strip() for n in fake.tree() if "IB-0001-" in n) == ["IB-0001-image.jpg", "IB-0001-video.mp4"]
 
 
@@ -526,7 +535,7 @@ def test_a_video_for_an_item_with_no_cover_still_gets_a_folder(drive):
     assert bank["items"]["IB-0001"]["drive_folder_id"] and bank["items"]["IB-0001"]["assets"][0]["kind"] == "video"
 
 
-def test_a_video_that_cannot_be_downloaded_is_a_reason_and_is_tried_at_most_twice(drive):
+def test_a_video_that_is_gone_is_a_reason_and_is_not_asked_for_again(drive):
     client, fake = drive
     bank = kept_with_cover("A")
     calls = []
@@ -536,7 +545,7 @@ def test_a_video_that_cannot_be_downloaded_is_a_reason_and_is_tried_at_most_twic
         return None, "Video not available"
     for _ in range(4):
         saved, lines = IB.save_videos(bank, ["IB-0001"], "Swoveralls", client, S, runner)
-    assert len(calls) == 2 and bank["items"]["IB-0001"]["video_note"] == "Video not available" and bank["items"]["IB-0001"]["assets"] == []
+    assert len(calls) == 1 and bank["items"]["IB-0001"]["video_status"] == "gone" and bank["items"]["IB-0001"]["video_note"] == "the post is no longer available"
 
 
 @pytest.mark.parametrize("data,fragment", [(b"junk" * 500, "not a picture or video"), (cut(tiny_mp4(), .5), "cut short"), (jpeg_for("a"), "what came back is not a video")])
@@ -545,6 +554,7 @@ def test_what_comes_back_must_be_a_whole_video(drive, data, fragment):
     bank = kept_with_cover("A")
     saved, lines = IB.save_videos(bank, ["IB-0001"], "Swoveralls", client, S, runner_writing(data, name="video.mp4"))
     assert saved == 0 and fragment in bank["items"]["IB-0001"]["video_note"] and "the video was not usable" in lines[0] and bank["items"]["IB-0001"]["assets"] == []
+    assert bank["items"]["IB-0001"]["video_status"] == "failed" and bank["items"]["IB-0001"]["video_tries"] == 1
 
 
 def test_a_video_bigger_than_the_limit_is_refused(drive):
@@ -581,7 +591,7 @@ def test_a_run_without_yt_dlp_says_so_and_keeps_the_covers(store, swov, drive):
     store.write_ideabank("swoveralls", kept_with_cover("A", "B"))
     new, lines = full_run(store, swov, (client, fake), video_runner=None)
     assert "swoveralls: 2 TikTok/Instagram video(s) not saved: yt-dlp is not available here, so only cover pictures are kept" in lines
-    assert all(IB.preview_label(it) == "cover image only, the video was not saved" for it in store.read_ideabank("swoveralls")["items"].values())
+    assert all(IB.preview_label(it) == "cover image only: the video has not been fetched yet" for it in store.read_ideabank("swoveralls")["items"].values())
 
 
 def test_the_login_cookies_are_handed_to_the_video_download_as_a_file(store, swov, drive):
@@ -689,7 +699,8 @@ def test_the_picture_checker_and_the_video_downloader_are_installed_with_the_too
 
 def test_the_readme_explains_file_checks_the_audit_labels_and_videos():
     text = " ".join(open("README.md", encoding="utf-8").read().split())
-    for needle in ("Saved files are checked", "cover image only", "audit", "yt-dlp", "not yet checked", "low resolution", "the real type"):
+    for needle in ("Saved files are checked", "cover image only", "audit", "yt-dlp", "not yet checked", "low resolution", "the real type", "no saved media",
+                   "it has no video", "carousel: first slide saved", "Careful mode (slower, smaller, spread out) is OFF by default"):
         assert needle in text, needle
 
 
