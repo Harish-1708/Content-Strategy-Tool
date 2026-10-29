@@ -279,12 +279,14 @@ def test_there_is_no_rejected_tab_until_something_is_removed_and_a_missing_one_r
     assert sheets.fetch_rescues(swov, store, key_json="{}", share_emails=["me@kelson.agency"], config={}, connect_fn=lambda key: (client, BOT)) == []
 
 
-def test_the_command_reads_rescues_and_never_fails_because_the_sheet_is_missing(store, swov, monkeypatch, capsys):
+def test_the_command_reads_rescues_and_never_fails_because_the_sheet_is_missing(store, swov, monkeypatch, capsys, tmp_path):
     from contentintel import cli
+    config = tmp_path / "sheets.yaml"
+    config.write_text('sheets:\n  swoveralls: "abc123"\n  duderobe: ""\n  defi_snacks: ""\n')
 
     class Args:
         dry_run = False
-        sheets_config = "tests/fixtures/sheets_blank.yaml"
+        sheets_config = str(config)
         brands_dir = "brands"
     monkeypatch.delenv("GOOGLE_SERVICE_ACCOUNT_JSON", raising=False)
     assert cli._rescues(swov, store, Args()) == ([], "")
