@@ -565,7 +565,7 @@ def test_the_tidy_mode_collects_nothing_but_tidies_and_updates_the_sheets():
     assert "tidy" in wf[True]["workflow_dispatch"]["inputs"]["mode"]["options"]
     assert steps["Collect"]["if"] == "inputs.mode != 'tidy'"
     for name in ("Remember the downloaded browser", "Install the browser"):
-        assert steps[name]["if"].endswith("inputs.mode != 'tidy'")
+        assert "inputs.mode != 'tidy'" not in steps[name]["if"]            # tidy fetches videos through the browser now, so it is installed
     for name in ("Add new items to the Idea Bank", "Update Google Sheets"):
         assert steps[name]["if"] == "inputs.mode == 'collect' || inputs.mode == '' || inputs.mode == 'tidy'"
     assert steps["Add Deep Research reports to the Google Doc"]["if"] == "inputs.mode == 'collect' || inputs.mode == ''"
