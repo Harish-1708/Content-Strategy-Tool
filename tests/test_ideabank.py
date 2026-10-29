@@ -12,6 +12,7 @@ from contentintel.providers import ProviderError
 from contentintel.store import Store
 
 from fake_browser import FakeClaude
+from media_fixtures import jpeg_for, png_for, tiny_mp4  # noqa: F401
 from fake_drive import EMAIL, ROOT, FakeDrive
 from test_collectors import NOW
 from test_sheets import baselined
@@ -55,8 +56,8 @@ def kept_bank(*ids):
 
 
 class Media:
-    def __init__(self, status=200, mime="image/jpeg", content=b"\xff\xd8\xff" + bytes(200), length=None):
-        self.status_code, self.content = status, content
+    def __init__(self, status=200, mime="image/jpeg", content=None, length=None):
+        self.status_code, self.content = status, (jpeg_for("default") if content is None else content)
         self.headers = {"Content-Type": mime}
         if length is not None:
             self.headers["Content-Length"] = str(length)
@@ -73,7 +74,7 @@ def getter(responses=None, default=None, boom=None):
         calls.append(url)
         if boom:
             raise boom
-        return (responses or {}).get(url) or default or Media(content=b"\xff\xd8\xff" + url.encode() + bytes(200))
+        return (responses or {}).get(url) or default or Media(content=jpeg_for(url))
     get.calls = calls
     return get
 
@@ -239,12 +240,19 @@ def test_web_intake_respects_the_limit():
 def test_a_picture_and_a_video_are_downloaded_with_their_kind():
     data, mime, kind = IB.fetch_media(getter(default=Media()), "https://cdn.example/a.jpg", S)
     assert (mime, kind) == ("image/jpeg", "image") and data.startswith(b"\xff\xd8")
-    data, mime, kind = IB.fetch_media(getter(default=Media(mime="video/mp4", content=b"mp4data")), "https://cdn.example/v.mp4", S)
-    assert (data, mime, kind) == (b"mp4data", "video/mp4", "video")
+    video = tiny_mp4()
+    data, mime, kind = IB.fetch_media(getter(default=Media(mime="video/mp4", content=video)), "https://cdn.example/v.mp4", S)
+    assert (data, mime, kind) == (video, "video/mp4", "video")
 
 
 def test_the_content_type_parameters_and_case_are_ignored():
-    assert IB.fetch_media(getter(default=Media(mime="IMAGE/PNG; charset=binary")), "https://c.example/a", S)[1] == "image/png"
+    assert IB.fetch_media(getter(default=Media(mime="IMAGE/PNG; charset=binary", content=png_for("a"))), "https://c.example/a", S)[1] == "image/png"
+
+
+def test_the_real_type_comes_from_the_bytes_not_from_what_the_server_said():
+    """The first real folders had pictures that were PNG files named .jpg because the server said image/jpeg."""
+    data, mime, kind = IB.fetch_media(getter(default=Media(mime="image/jpeg", content=png_for("a"))), "https://c.example/a", S)
+    assert (mime, kind) == ("image/png", "image") and data == png_for("a")
 
 
 @pytest.mark.parametrize("url,get,match", [
@@ -254,7 +262,7 @@ def test_the_content_type_parameters_and_case_are_ignored():
     ("https://c.example/a", getter(default=Media(mime="image/svg+xml")), "not a picture or video"),
     ("https://c.example/a", getter(default=Media(mime="")), "unknown type"),
     ("https://c.example/a", getter(default=Media(length=99 * 1024 * 1024)), "bigger than 15 MB"),
-    ("https://c.example/a", getter(default=Media(content=b"")), "an empty file"),
+    ("https://c.example/a", getter(default=Media(content=b"")), "the file is empty"),
     ("https://c.example/a", getter(boom=ConnectionError("down")), "could not be downloaded .ConnectionError.")])
 def test_a_file_that_cannot_be_saved_says_why(url, get, match):
     with pytest.raises(IB.AssetSkip, match=match):
@@ -267,7 +275,7 @@ def test_a_file_bigger_than_the_limit_in_the_body_alone_is_refused():
 
 
 def test_videos_have_their_own_limit_and_can_be_switched_off():
-    big = Media(mime="video/mp4", content=b"v" * (2 * 1024 * 1024))
+    big = Media(mime="video/mp4", content=tiny_mp4(padding=2 * 1024 * 1024))
     with pytest.raises(IB.AssetSkip, match="bigger than 1 MB"):
         IB.fetch_media(getter(default=big), "https://c.example/v", replace(S, video_max_mb=1))
     assert IB.fetch_media(getter(default=big), "https://c.example/v", replace(S, image_max_mb=1, video_max_mb=5))[2] == "video"
@@ -286,8 +294,8 @@ def test_each_items_file_goes_in_its_own_folder_under_the_brands(drive):
     assert fake.tree() == ["Swoveralls/", "  IB-0001 - comfort hook/", "    IB-0001-image.jpg", "  IB-0002 - post B/", "    IB-0002-image.jpg"]
     one = bank["items"]["IB-0001"]
     assert one["drive_folder_url"].startswith("https://drive.google.com/drive/folders/") and one["drive_folder_id"] in fake.files
-    assert one["assets"][0]["name"] == "IB-0001-image.jpg" and one["assets"][0]["kind"] == "image" and one["assets"][0]["bytes"] == 3 + len("https://cdn.example/A.jpg") + 200 and len(one["assets"][0]["sha256"]) == 64
-    assert fake.files[one["assets"][0]["drive_id"]]["data"] == b"\xff\xd8\xff" + b"https://cdn.example/A.jpg" + bytes(200)
+    assert one["assets"][0]["name"] == "IB-0001-image.jpg" and one["assets"][0]["kind"] == "image" and one["assets"][0]["bytes"] == len(jpeg_for("https://cdn.example/A.jpg")) and len(one["assets"][0]["sha256"]) == 64
+    assert fake.files[one["assets"][0]["drive_id"]]["data"] == jpeg_for("https://cdn.example/A.jpg")
 
 
 def test_the_brand_folder_is_made_once_for_many_items(drive):
@@ -299,7 +307,7 @@ def test_the_brand_folder_is_made_once_for_many_items(drive):
 def test_a_video_is_saved_as_a_video_with_its_type(drive):
     client, fake = drive
     bank = kept_bank("A")
-    IB.save_assets(bank, ["IB-0001"], "Swoveralls", client, getter(default=Media(mime="video/mp4", content=b"mp4")), S)
+    IB.save_assets(bank, ["IB-0001"], "Swoveralls", client, getter(default=Media(mime="video/mp4", content=tiny_mp4())), S)
     asset = bank["items"]["IB-0001"]["assets"][0]
     assert asset["name"] == "IB-0001-video.mp4" and asset["kind"] == "video" and fake.files[asset["drive_id"]]["mime"] == "video/mp4"
 
