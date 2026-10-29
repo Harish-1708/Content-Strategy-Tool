@@ -780,4 +780,29 @@ def test_the_real_ideabank_command_brings_back_a_rescued_item_and_keeps_what_you
     out = capsys.readouterr().out
     items = store.read_ideabank("swoveralls")["items"]
     assert "could not be read" not in out and "swoveralls: 1 item(s) rescued from the Rejected tab and kept" in out
-    assert items["IB-0003"]["state"] == "kept" and items["IB-0003"]["rescued"] and items["IB-0001"]["rescued"] and not items["IB-0002"]["rescued"]
+    assert items["IB-0003"]["state"] == "kept" and items["IB-0003"]["rescued"] and items["IB-0001"]["approved"] and not items["IB-0002"]["approved"]
+
+
+def test_a_request_run_protects_what_you_approved_and_reads_your_rescues_too(env, monkeypatch, capsys):
+    """Request mode runs the same Idea Bank tidy-up, so it must protect approved rows exactly as the ideabank command does."""
+    state, run, secrets, store, tmp_path = env
+    secrets("ANTHROPIC_API_KEY", "GOOGLE_SERVICE_ACCOUNT_JSON", "IDEA_BANK_FOLDER_ID", "INSTAGRAM_COOKIES", "TIKTOK_COOKIES")
+    seed_bank(store)
+    client = FakeClient()
+    from test_sheets import run as run_sheets
+    run_sheets([cli.load_brand("swoveralls", str(BRANDS_DIR))], store, client)
+    monkeypatch.setattr(cli, "_SHEETS_CONNECT", lambda key: (client, BOT))
+    decide(client, **{"IB-0001": "Use", "IB-0002": "Skip"})
+    plan(run, state, *MANUAL)
+    state["claude"].json_answers = [{"items": [{"id": f"IB-{n:04d}", "relevance": 70, "topic": f"idea {n}", "summary": "s", "how_to_use": "h", "risk": "none"} for n in range(1, 40)]}] * 3
+    seen = {}
+    real = cli.ib_mod.run_ideabank
+
+    def spy(*args, **kw):
+        seen.update(kw)
+        return real(*args, **kw)
+    monkeypatch.setattr(cli.ib_mod, "run_ideabank", spy)
+    assert run("request", "run", "--brand", "swoveralls", "--request", "RQ-0001", "--browser-config", BROWSER_YAML) == 0
+    assert seen["protected"] == ["IB-0001"] and seen["rescues"] == [] and callable(seen["browser_factory"])
+    items = store.read_ideabank("swoveralls")["items"]
+    assert items["IB-0001"]["approved"] and not items["IB-0002"]["approved"]
