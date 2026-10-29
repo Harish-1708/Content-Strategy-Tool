@@ -269,7 +269,7 @@ def test_the_sheet_shows_the_idea_to_copy_and_whether_there_is_a_file():
     rows = IB.sheet_rows(bank)
     one, two = rows["IB-0001"], rows["IB-0002"]
     assert (one["fit"], one["idea"], one["mechanism"], one["concept"]) == (75, 88, "compliment hook", "Asked where it is from.") and one["preview"] == "original link only"
-    assert two["preview"] == "saved in Drive" and two["fit"] == "" and two["idea"] == "" and two["concept"] == ""
+    assert two["preview"] == "image saved - not yet checked" and two["fit"] == "" and two["idea"] == "" and two["concept"] == ""
     assert list(one) == IB.IDEABANK_COLUMNS
 
 
