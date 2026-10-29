@@ -744,3 +744,17 @@ def test_the_ideabank_command_saves_real_videos_for_kept_tiktok_pages(env, capsy
     assert "real videos saved for 1 item(s)" in capsys.readouterr().out
     item = store.read_ideabank("swoveralls")["items"]["IB-0001"]
     assert [a["kind"] for a in item["assets"]] == ["image", "video"]
+
+
+def test_the_ideabank_command_refreshes_an_expired_meta_link_through_the_browser(env, capsys, monkeypatch):
+    from test_link_refresh import NEW, ad_json, ads, library
+    state, run, secrets, store, _ = env
+    secrets("GOOGLE_SERVICE_ACCOUNT_JSON", "IDEA_BANK_FOLDER_ID")
+    store.write_ideabank("swoveralls", ads("A"))
+    browser, factory = library(ad_json(1))
+    monkeypatch.setattr(cli, "_BROWSER_FACTORY", lambda browser_cfg, creds, debug: factory)
+    assert run("ideabank", "--brand", "swoveralls") == 0
+    out = capsys.readouterr().out
+    item = store.read_ideabank("swoveralls")["items"]["IB-0001"]
+    assert "1 Meta ad picture or video link(s) refreshed from the Ad Library" in out and item["media_url"] == NEW and item["assets"]
+    assert browser.opened == ["https://www.facebook.com/ads/library/?id=1"]
