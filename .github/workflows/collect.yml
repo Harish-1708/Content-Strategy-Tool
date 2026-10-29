@@ -99,14 +99,14 @@ jobs:
       - run: pip install -r requirements.txt
 
       - name: Remember the downloaded browser
-        if: inputs.mode != 'plan' && inputs.mode != 'seeds' && inputs.mode != 'tidy'
+        if: inputs.mode != 'plan' && inputs.mode != 'seeds'
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('requirements-browser.txt') }}
 
       - name: Install the browser
-        if: inputs.mode != 'plan' && inputs.mode != 'seeds' && inputs.mode != 'tidy'
+        if: inputs.mode != 'plan' && inputs.mode != 'seeds'
         shell: bash
         run: |
           pip install -r requirements-browser.txt
