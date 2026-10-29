@@ -38,7 +38,17 @@ def store(tmp_path):
 
 @pytest.fixture
 def settings():
-    return replace(C.load_collector_settings("does-not-exist.yaml"), benchmarks_enabled=False)
+    """Collector settings with the automatic rest switched on for Instagram (the shipped default is off), since these tests are about the rest."""
+    return replace(C.load_collector_settings("does-not-exist.yaml"), benchmarks_enabled=False, cooldown_days={"instagram": 3, "tiktok": 3})
+
+@pytest.fixture(autouse=True)
+def careful_mode_is_switched_on_for_these_tests(monkeypatch, tmp_path_factory):
+    """These tests are about careful mode and the account rest, so they run with Instagram's careful-mode lines switched on."""
+    from careful import careful_yaml
+    path = careful_yaml(tmp_path_factory.mktemp("careful"))
+    real = B.load_browser_settings
+    monkeypatch.setattr(B, "load_browser_settings", lambda p="browser.yaml": real(path if str(p) in ("browser.yaml", BROWSER_YAML) else p))
+
 
 
 def warned_page(cfg, *, text=WARNING, tag_only=True):
@@ -391,9 +401,9 @@ def test_a_damaged_memory_means_nothing_resting_never_a_crash(store, tmp_path, c
 
 # ---- the settings -----------------------------------------------------------------------------------------------------------
 
-def test_the_defaults_rest_instagram_and_tiktok_for_three_days():
-    assert C.load_collector_settings("does-not-exist.yaml").cooldown_days == {"instagram": 3, "tiktok": 3}
-    assert C.load_collector_settings("research.yaml").cooldown_days == {"instagram": 3, "tiktok": 3}
+def test_the_defaults_never_rest_instagram_and_rest_tiktok_for_three_days():
+    assert C.load_collector_settings("does-not-exist.yaml").cooldown_days == {"instagram": 0, "tiktok": 3}
+    assert C.load_collector_settings("research.yaml").cooldown_days == {"instagram": 0, "tiktok": 3}
 
 
 def test_one_site_can_be_changed_without_losing_the_other(tmp_path):
