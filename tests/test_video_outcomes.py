@@ -257,7 +257,7 @@ def test_a_page_that_will_not_load_is_a_reason_not_a_crash(tmp_path):
     def broken(site):
         raise ConnectionError("down")
     path, why = V.browser_download("https://www.tiktok.com/@c/video/1", str(tmp_path), broken, 80)
-    assert path is None and why == "the browser could not load the page (ConnectionError)"
+    assert path is None and why == "the browser could not load the page (ConnectionError: down)"
 
 
 def test_the_browser_is_the_second_route_only_when_the_platform_refuses_yt_dlp(tmp_path):
