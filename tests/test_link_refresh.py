@@ -189,7 +189,7 @@ def test_a_new_item_and_a_tidied_old_one_have_exactly_the_same_fields():
     fresh = set(bank["items"]["IB-0001"])
     old = copy.deepcopy(bank)
     later = ("video_tries", "video_note", "video_status", "technique", "hook_line", "first_test", "audience", "channel", "visual_hook", "look", "visual_quality",
-             "visual_tries", "media_role", "rescued", "link_refreshes", "fit", "idea", "mechanism", "concept", "generic", "category", "scoring_version", "format", "media_format")
+             "visual_tries", "media_role", "rescued", "approved", "link_refreshes", "fit", "idea", "mechanism", "concept", "generic", "category", "scoring_version", "format", "media_format")
     for item in old["items"].values():
         for key in later:
             item.pop(key, None)
