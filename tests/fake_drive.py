@@ -67,6 +67,8 @@ class FakeDrive:
                 return Resp(*self.trash_error)
             if json.get("name"):
                 self.files[tail]["name"] = json["name"]
+            if json.get("trashed") is False:
+                self.files[tail]["trashed"] = False
             if json.get("trashed"):
                 self.files[tail]["trashed"] = True
             return Resp(200, {"id": tail})
