@@ -210,7 +210,7 @@ def _new_item(idea_id, source, source_item_id, row, now, request):
             "state": "new", "removed_reason": "", "duplicate_of": "", "removal_note": "", "fingerprint": "",
             "fit": None, "idea": None, "mechanism": "", "concept": "", "generic": False, "category": "", "scoring_version": 0,
             "format": "", "media_format": _media_format(row.get("details")), "video_tries": 0, "video_note": "", "video_status": "", "technique": "", "hook_line": "", "first_test": "", "audience": "", "channel": "",
-            "visual_hook": "", "look": "", "visual_quality": "", "visual_tries": 0, "media_role": "", "rescued": False, "link_refreshes": 0}
+            "visual_hook": "", "look": "", "visual_quality": "", "visual_tries": 0, "media_role": "", "rescued": False, "approved": False, "link_refreshes": 0}
 
 
 def _interest(row):
@@ -256,7 +256,7 @@ def normalise_bank(bank):
         item["state"] = state_of(item)
         for key, default in (("page_id", ""), ("removed_reason", ""), ("duplicate_of", ""), ("removal_note", ""), ("fit", None), ("idea", None),
                              ("mechanism", ""), ("concept", ""), ("generic", False), ("category", ""), ("format", ""), ("media_format", ""), ("video_tries", 0), ("video_note", ""), ("video_status", ""),
-                           ("technique", ""), ("hook_line", ""), ("first_test", ""), ("audience", ""), ("channel", ""), ("visual_hook", ""), ("look", ""), ("visual_quality", ""), ("visual_tries", 0), ("media_role", ""), ("rescued", False), ("link_refreshes", 0)):
+                           ("technique", ""), ("hook_line", ""), ("first_test", ""), ("audience", ""), ("channel", ""), ("visual_hook", ""), ("look", ""), ("visual_quality", ""), ("visual_tries", 0), ("media_role", ""), ("rescued", False), ("approved", False), ("link_refreshes", 0)):
             item.setdefault(key, default)
         item.setdefault("scoring_version", 1 if item.get("score") is not None else 0)       # scored before the concept-first rubric = version 1
         for asset in item["assets"]:                    # files saved before they were checked: what they are is known, that they are whole is not
@@ -930,7 +930,7 @@ def score_items(bank, ids, claude, brand, store, settings, budget, now, request=
 # ---------------------------------------------------------------------------------------------------------------------
 
 def _remove(item, reason, duplicate_of=""):
-    if item.get("rescued"):                              # a person rescued this item: nothing the tool does removes it again
+    if item.get("rescued") or item.get("approved"):      # a person rescued it, or has it marked Use or Maybe now: nothing the tool does removes it
         return False
     item.update({"state": "removed", "removed_reason": reason, "duplicate_of": duplicate_of})
     return True
@@ -1114,7 +1114,7 @@ def group_techniques(bank, claude, settings, budget):
     removed, lines = 0, []
     for name, ids in groups:
         items = [bank["items"][i] for i in ids]
-        items.sort(key=lambda it: (bool(it.get("rescued")), is_proven(it), it["score"] or 0, it["metrics"].get("days_running") or 0), reverse=True)
+        items.sort(key=lambda it: (bool(it.get("rescued") or it.get("approved")), is_proven(it), it["score"] or 0, it["metrics"].get("days_running") or 0), reverse=True)
         best = items[:settings.max_per_technique]
         for it in best:
             it["technique"] = name
@@ -1432,7 +1432,7 @@ def _counts(bank):
 
 
 def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=None, request=None, web_sources=None,
-                 dry_run=False, budget=None, since="", skip_brands=(), audit=False, video_runner=None, cookies=None, rescues=(), browser_factory=None, protected=()):
+                 dry_run=False, budget=None, since="", skip_brands=(), audit=False, video_runner=None, cookies=None, rescues=(), browser_factory=None, protected=None):
     """Take new sourced items into the brand's bank, keep only what is useful, save its files and score it. Returns (new ids, summary lines).
 
     In order: leave out the brand's own content and copies; tidy what is already in the bank the same way; score what is not scored; keep
@@ -1443,9 +1443,10 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
     if rescues and not dry_run:
         _, notes = rescue_items(bank, rescues, drive)
         lines += [f"{brand.slug}: {n}" for n in notes]
-    for idea_id in protected:                          # approved by a person (Use or Maybe): no tidy-up of the tool's removes it
-        if idea_id in bank["items"] and state_of(bank["items"][idea_id]) == "kept":
-            bank["items"][idea_id]["rescued"] = True
+    if protected is not None:      # the sheet was read: whoever is marked Use or Maybe NOW is protected, and no one else (a later Skip lifts it)
+        approved = set(protected)
+        for idea_id, item in bank["items"].items():
+            item["approved"] = idea_id in approved and state_of(item) == "kept"
     pages = own_page_ids(store, brand.slug)
     skipped = {}
     new = intake_collected(bank, store.read_collected(brand.slug), settings, now, request, since, brand, pages, skipped)
