@@ -147,11 +147,11 @@ def test_a_newly_scored_long_running_ad_is_kept_in_the_same_run(store, swov):
     bank["items"]["IB-0001"]["metrics"] = {"days_running": 300}
     store.write_ideabank("swoveralls", bank)
     claude = FakeClaude()
-    claude.json_answers = [{"items": [{"id": "IB-0001", "fit": 40, "idea": 30, "generic": False, "category": "adjacent", "mechanism": "m", "concept": "c",
+    claude.json_answers = [{"items": [{"id": "IB-0001", "fit": 55, "idea": 30, "generic": False, "category": "adjacent", "mechanism": "m", "concept": "c",
                                        "topic": "t", "summary": "s", "how_to_use": "h", "risk": "none"}]}]
     full_run(store, swov, (drive, drive.session), claude)
     got = store.read_ideabank("swoveralls")["items"]["IB-0001"]
-    assert got["score"] == 34 and got["state"] == "kept"                  # the score is honest; the long run is why it stays
+    assert got["score"] == 40 and got["state"] == "kept"                  # the score is honest; the long run is why it stays
 
 
 # ---- a plan that says when its occasion is ----------------------------------------------------------------------------------------------
