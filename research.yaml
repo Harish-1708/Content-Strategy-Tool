@@ -73,7 +73,7 @@ collectors:
   # with a warning to use the account again earlier.
   safety:
     cooldown_days:
-      instagram: 3
+      instagram: 0          # 0 = Instagram is never switched off automatically after a warning (it still stops for that run). Set a number of days to turn the automatic rest on
       tiktok: 3
   claude:
     model: claude-sonnet-5-5
