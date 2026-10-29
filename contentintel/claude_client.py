@@ -62,18 +62,22 @@ class Claude(Provider):
         super().__init__(api_key, http=http, sleep=sleep)
         self.model, self.max_tokens, self.prompt_max_tokens = model, max_tokens, prompt_max_tokens
 
-    def complete(self, system, user, max_tokens=None):
+    def _ask(self, system, content, limit):
+        """One request; `content` is text, or a list of picture and text blocks. The text of the answer, never a cut-off one."""
         body = self._call("POST", self.url, headers={"x-api-key": self.api_key, "anthropic-version": "2023-06-01",
                                                       "content-type": "application/json"},
-                          json_body={"model": self.model, "max_tokens": max_tokens or self.max_tokens, "system": system,
-                                     "messages": [{"role": "user", "content": user}]})
+                          json_body={"model": self.model, "max_tokens": limit, "system": system,
+                                     "messages": [{"role": "user", "content": content}]})
         parts = body.get("content") if isinstance(body, dict) else None
         text = "".join(p.get("text", "") for p in (parts or []) if isinstance(p, dict) and p.get("type") == "text").strip()
         if not text:
             raise ProviderError(f"{self.label}: the answer had no text")
         if isinstance(body, dict) and body.get("stop_reason") == "max_tokens":
-            raise TruncatedError(f"{self.label}: the answer was cut off after {max_tokens or self.max_tokens} tokens")
+            raise TruncatedError(f"{self.label}: the answer was cut off after {limit} tokens")
         return text
+
+    def complete(self, system, user, max_tokens=None):
+        return self._ask(system, user, max_tokens or self.max_tokens)
 
     def _complete_whole(self, system, user, first_limit):
         """The answer, never a cut-off one: if it runs out of room it is asked again with twice the room, once."""
@@ -81,6 +85,13 @@ class Claude(Provider):
             return self.complete(system, user, max_tokens=first_limit)
         except TruncatedError:
             return self.complete(system, user, max_tokens=first_limit * 2)
+
+    def json_task_with_images(self, system, user, images, max_tokens=None):
+        """As json_task, with pictures: `images` is a list of (media_type, bytes). The answer must be JSON."""
+        import base64
+        content = [{"type": "image", "source": {"type": "base64", "media_type": mt, "data": base64.b64encode(raw).decode("ascii")}} for mt, raw in images]
+        content.append({"type": "text", "text": user})
+        return parse_json(self._ask(system, content, max_tokens or self.prompt_max_tokens))
 
     def json_task(self, system, user, max_tokens=None):
         """An answer that must be JSON: asked again once, plainly, if the first one is not."""
