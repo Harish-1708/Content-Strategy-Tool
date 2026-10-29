@@ -672,3 +672,75 @@ def test_a_request_run_searches_for_its_formats_and_scores_with_them(env, monkey
     assert seen["request"]["formats"] == ["ugc", "ai"]
     asked = [c["json"]["q"] for c in state["http"].calls]
     assert any("UGC ad examples apparel brand" in q for q in asked) and any("AI generated ad examples fashion brand" in q for q in asked)
+
+
+# ---- the saved files: audit, videos, logins -----------------------------------------------------------------------------------------------
+
+def _saved_in_drive(state, store, *ids):
+    from contentintel.drive import DriveClient as _Client
+    from test_ideabank import S as _S, getter as _getter, kept_bank as _kept
+    client = _Client(state["drive"], ROOT, ROBOT, sleep=lambda s: None)
+    bank = _kept(*ids)
+    ib_mod = cli.ib_mod
+    ib_mod.save_assets(bank, list(bank["items"]), "Swoveralls", client, _getter(), _S)
+    store.write_ideabank("swoveralls", bank)
+    return bank
+
+
+def test_the_ideabank_command_checks_every_saved_file_again_when_asked(env, capsys):
+    state, run, secrets, store, _ = env
+    secrets("GOOGLE_SERVICE_ACCOUNT_JSON", "IDEA_BANK_FOLDER_ID")
+    bank = _saved_in_drive(state, store, "A", "B")
+    bad = bank["items"]["IB-0001"]["assets"][0]["drive_id"]
+    state["drive"].files[bad]["data"] = state["drive"].files[bad]["data"][:300]
+    assert run("ideabank", "--brand", "swoveralls", "--audit") == 0
+    out = capsys.readouterr().out
+    assert "swoveralls: audit: 2 saved file(s) downloaded from Drive and checked: 1 complete" in out and "1 broken" in out
+    assert "IB-0001-image.jpg is broken" in out
+
+
+def test_the_ideabank_command_does_not_download_files_back_unless_asked(env, capsys):
+    state, run, secrets, store, _ = env
+    secrets("GOOGLE_SERVICE_ACCOUNT_JSON", "IDEA_BANK_FOLDER_ID")
+    _saved_in_drive(state, store, "A")
+    before = len([c for c in state["drive"].calls if c["params"].get("alt") == "media"])
+    assert run("ideabank", "--brand", "swoveralls") == 0
+    assert "audit" not in capsys.readouterr().out and len([c for c in state["drive"].calls if c["params"].get("alt") == "media"]) == before
+
+
+def test_the_video_download_is_used_when_yt_dlp_is_there_and_skipped_when_it_is_not(monkeypatch):
+    monkeypatch.setattr(cli, "_VIDEO_RUNNER", None)
+    monkeypatch.setattr("shutil.which", lambda name: None)
+    assert cli._video_runner() is None
+    monkeypatch.setattr("shutil.which", lambda name: "/usr/bin/yt-dlp")
+    assert cli._video_runner() is cli.videofetch_mod.ytdlp_download
+    monkeypatch.setattr(cli, "_VIDEO_RUNNER", "fake")
+    assert cli._video_runner() == "fake"
+
+
+def test_the_instagram_and_tiktok_logins_are_taken_from_the_secrets(monkeypatch):
+    monkeypatch.setenv("INSTAGRAM_COOKIES", "ig")
+    monkeypatch.setenv("TIKTOK_COOKIES", "tt")
+    assert cli._cookie_secrets() == {"instagram": "ig", "tiktok": "tt"}
+    monkeypatch.delenv("INSTAGRAM_COOKIES")
+    monkeypatch.delenv("TIKTOK_COOKIES")
+    assert cli._cookie_secrets() == {"instagram": "", "tiktok": ""}
+
+
+def test_the_ideabank_command_saves_real_videos_for_kept_tiktok_pages(env, capsys, monkeypatch):
+    from media_fixtures import tiny_mp4
+    from pathlib import Path as _Path
+    state, run, secrets, store, _ = env
+    secrets("GOOGLE_SERVICE_ACCOUNT_JSON", "IDEA_BANK_FOLDER_ID")
+    bank = _saved_in_drive(state, store, "A")
+    bank["items"]["IB-0001"].update({"platform": "tiktok", "url": "https://www.tiktok.com/@c/video/9"})
+    store.write_ideabank("swoveralls", bank)
+
+    def runner(url, dest, cookies, max_mb, timeout):
+        (_Path(dest) / "video.mp4").write_bytes(tiny_mp4(seconds=15))
+        return _Path(dest) / "video.mp4", ""
+    monkeypatch.setattr(cli, "_VIDEO_RUNNER", runner)
+    assert run("ideabank", "--brand", "swoveralls") == 0
+    assert "real videos saved for 1 item(s)" in capsys.readouterr().out
+    item = store.read_ideabank("swoveralls")["items"]["IB-0001"]
+    assert [a["kind"] for a in item["assets"]] == ["image", "video"]
