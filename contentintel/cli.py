@@ -92,6 +92,7 @@ def build_parser():
     group.add_argument("--all", action="store_true")
     p.add_argument("--check", action="store_true", help="prove the Drive folder can be written (makes a test folder and removes it)")
     p.add_argument("--dry-run", action="store_true", help="say how many items would be added; change nothing")
+    p.add_argument("--browser-config", default="browser.yaml", help="ideabank: the browser settings, used to fetch a TikTok or Instagram video through the login when yt-dlp is refused")
     p.add_argument("--audit", action="store_true", help="download every saved file back from Drive and check it again (whole, readable, right type)")
 
     p = sub.add_parser("request", help="advanced mode: plan a request in your own words, then run it")
@@ -256,12 +257,44 @@ def _get():
 _VIDEO_RUNNER = None                  # tests put a fake here
 
 
-def _video_runner():
-    """The function that fetches a post's real video: yt-dlp when it is installed, else none (the cover picture is kept)."""
+def _video_browser_factory(args):
+    """The logged-in browser as a second route to a post's video, if there is a login to use (None if not)."""
+    path = getattr(args, "browser_config", None)
+    if not path:
+        return None
+    try:
+        browser_cfg = browser_mod.load_browser_settings(path)
+        creds = _site_creds(browser_cfg, os.environ)
+    except Exception:                                                     # no browser settings: yt-dlp alone is still tried
+        return None
+    if not any((creds.get(site) or {}).get("cookies") for site in ("tiktok", "instagram") if site in creds):
+        return None
+    return lambda site: (_BROWSER_FACTORY or _real_factory)(browser_cfg, creds, getattr(args, "debug_dir", None))(site)
+
+
+def _video_runner(args=None):
+    """The function that fetches a post's real video: yt-dlp first, then the logged-in browser if the platform refuses yt-dlp. None when
+    neither is available (the cover picture is kept)."""
     if _VIDEO_RUNNER is not None:
         return _VIDEO_RUNNER
     import shutil
-    return videofetch_mod.ytdlp_download if shutil.which("yt-dlp") else None
+    ytdlp = videofetch_mod.ytdlp_download if shutil.which("yt-dlp") else None
+    factory = _video_browser_factory(args) if args is not None else None
+    return videofetch_mod.layered_runner(factory=factory, ytdlp=ytdlp) if (ytdlp or factory) else None
+
+
+def _rescues(brand, store, args):
+    """(ids a person marked Use or Maybe on the Rejected tab, a note): never an error, since the sheet may simply not be set up yet."""
+    key = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "")
+    if not key or getattr(args, "dry_run", False):
+        return [], ""
+    try:
+        config = sheets_mod.load_sheet_config(args.sheets_config, set(list_brand_slugs(args.brands_dir)))
+        return sheets_mod.fetch_rescues(brand, store, key_json=key, config=config, share_emails=sheets_mod.parse_emails(os.environ.get("SHEET_SHARE_EMAIL", "")),
+                                        folder_id=sheets_mod.parse_folder_id(os.environ.get("SHEET_FOLDER_ID", "")),
+                                        connect_fn=_SHEETS_CONNECT or sheets_mod.connect), ""
+    except Exception as exc:                                           # a missing sheet or a Google hiccup must not stop the run
+        return [], f"{brand.slug}: the Rejected tab could not be read for rescues ({exc.__class__.__name__}: {str(exc)[:100]})"
 
 
 def _cookie_secrets():
@@ -304,10 +337,11 @@ def _ideabank(args, store):
     budget = ib_mod.ClaudeBudget(store, now, settings.claude_monthly_calls) if claude else None
     for slug in list_brand_slugs(args.brands_dir) if args.all else [args.brand]:
         brand = load_brand(slug, args.brands_dir)
+        rescues, note = _rescues(brand, store, args)
         _, lines = ib_mod.run_ideabank(brand, store, settings=settings, now=now, claude=claude, drive=drive, get=_get(),
                                        dry_run=args.dry_run, budget=budget, skip_brands=_skipped_brands(brand, args.brands_dir),
-                                       audit=args.audit, video_runner=_video_runner(), cookies=_cookie_secrets())
-        print("\n".join(lines))
+                                       audit=args.audit, video_runner=_video_runner(args), cookies=_cookie_secrets(), rescues=rescues)
+        print("\n".join(([note] if note else []) + lines))
     return 0
 
 
@@ -382,7 +416,7 @@ def _run_request(args, store, brand, request, settings, csettings, claude, budge
                                    request={"id": req["id"], "region": req["region"], "occasion": req.get("occasion", ""), "text": req["text"],
                                             "formats": req.get("formats") or []},
                                    web_sources=web, budget=budget if claude else None, since=started,
-                                   skip_brands=_skipped_brands(brand, args.brands_dir), video_runner=_video_runner(), cookies=_cookie_secrets())
+                                   skip_brands=_skipped_brands(brand, args.brands_dir), video_runner=_video_runner(args), cookies=_cookie_secrets())
 
     done = planner_mod.execute_request(store, brand, request, now=now, collect_runner=collect_runner, research_runner=research_runner,
                                        ideabank_runner=ideabank_runner)
