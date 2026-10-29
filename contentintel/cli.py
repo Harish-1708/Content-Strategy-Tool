@@ -272,6 +272,19 @@ def _video_browser_factory(args):
     return lambda site: (_BROWSER_FACTORY or _real_factory)(browser_cfg, creds, getattr(args, "debug_dir", None))(site)
 
 
+def _ad_browser_factory(args):
+    """The browser, for fetching a fresh picture or video link from a Meta ad's own Ad Library page (None if its settings cannot be read)."""
+    path = getattr(args, "browser_config", None)
+    if not path:
+        return None
+    try:
+        browser_cfg = browser_mod.load_browser_settings(path)
+        creds = _site_creds(browser_cfg, os.environ)
+    except Exception:
+        return None
+    return lambda site: (_BROWSER_FACTORY or _real_factory)(browser_cfg, creds, getattr(args, "debug_dir", None))(site)
+
+
 def _video_runner(args=None):
     """The function that fetches a post's real video: yt-dlp first, then the logged-in browser if the platform refuses yt-dlp. None when
     neither is available (the cover picture is kept)."""
@@ -340,7 +353,8 @@ def _ideabank(args, store):
         rescues, note = _rescues(brand, store, args)
         _, lines = ib_mod.run_ideabank(brand, store, settings=settings, now=now, claude=claude, drive=drive, get=_get(),
                                        dry_run=args.dry_run, budget=budget, skip_brands=_skipped_brands(brand, args.brands_dir),
-                                       audit=args.audit, video_runner=_video_runner(args), cookies=_cookie_secrets(), rescues=rescues)
+                                       audit=args.audit, video_runner=_video_runner(args), cookies=_cookie_secrets(), rescues=rescues,
+                                       browser_factory=_ad_browser_factory(args))
         print("\n".join(([note] if note else []) + lines))
     return 0
 
