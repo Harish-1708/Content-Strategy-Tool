@@ -57,7 +57,7 @@ DEFAULT_COLLECTORS = {
     "benchmarks": {"enabled": True, "max_pages": 6, "discovery_per_run": 3, "items_per_name": 10,
                    "items_per_page": 8, "retry_days": 30},
     # days an account rests after a warning (0: only the rest of that run). Other settings keep the defaults.
-    "safety": {"cooldown_days": {"instagram": 3, "tiktok": 3}},
+    "safety": {"cooldown_days": {"instagram": 0, "tiktok": 3}},
 }
 COOLDOWN_SITES = ("instagram", "tiktok", "gemini")
 AUTO_SCOPES = ("direct", "adjacent", "cross_industry")
