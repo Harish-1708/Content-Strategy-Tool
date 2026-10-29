@@ -25,6 +25,7 @@ from . import providers as providers_mod
 from . import research as research_mod
 from . import sheets as sheets_mod
 from . import sync as sync_mod
+from . import videofetch as videofetch_mod
 from .brands import BrandError, list_brand_slugs, load_brand
 from .shopify_fetch import FetchError, fetch_sitemap_handles
 from .store import Store, StoreError
@@ -91,6 +92,7 @@ def build_parser():
     group.add_argument("--all", action="store_true")
     p.add_argument("--check", action="store_true", help="prove the Drive folder can be written (makes a test folder and removes it)")
     p.add_argument("--dry-run", action="store_true", help="say how many items would be added; change nothing")
+    p.add_argument("--audit", action="store_true", help="download every saved file back from Drive and check it again (whole, readable, right type)")
 
     p = sub.add_parser("request", help="advanced mode: plan a request in your own words, then run it")
     _common(p)
@@ -251,6 +253,21 @@ def _get():
     return requests.get
 
 
+_VIDEO_RUNNER = None                  # tests put a fake here
+
+
+def _video_runner():
+    """The function that fetches a post's real video: yt-dlp when it is installed, else none (the cover picture is kept)."""
+    if _VIDEO_RUNNER is not None:
+        return _VIDEO_RUNNER
+    import shutil
+    return videofetch_mod.ytdlp_download if shutil.which("yt-dlp") else None
+
+
+def _cookie_secrets():
+    return {"instagram": os.environ.get("INSTAGRAM_COOKIES", ""), "tiktok": os.environ.get("TIKTOK_COOKIES", "")}
+
+
 def _skipped_brands(brand, brands_dir):
     """The brand names the owner marked `skip` under ads.benchmark_pages in the brand's research.yaml."""
     pages = research_mod.load_brand_research(brand, root=brands_dir)["collect"]["ads"]["benchmark_pages"]
@@ -288,7 +305,8 @@ def _ideabank(args, store):
     for slug in list_brand_slugs(args.brands_dir) if args.all else [args.brand]:
         brand = load_brand(slug, args.brands_dir)
         _, lines = ib_mod.run_ideabank(brand, store, settings=settings, now=now, claude=claude, drive=drive, get=_get(),
-                                       dry_run=args.dry_run, budget=budget, skip_brands=_skipped_brands(brand, args.brands_dir))
+                                       dry_run=args.dry_run, budget=budget, skip_brands=_skipped_brands(brand, args.brands_dir),
+                                       audit=args.audit, video_runner=_video_runner(), cookies=_cookie_secrets())
         print("\n".join(lines))
     return 0
 
@@ -364,7 +382,7 @@ def _run_request(args, store, brand, request, settings, csettings, claude, budge
                                    request={"id": req["id"], "region": req["region"], "occasion": req.get("occasion", ""), "text": req["text"],
                                             "formats": req.get("formats") or []},
                                    web_sources=web, budget=budget if claude else None, since=started,
-                                   skip_brands=_skipped_brands(brand, args.brands_dir))
+                                   skip_brands=_skipped_brands(brand, args.brands_dir), video_runner=_video_runner(), cookies=_cookie_secrets())
 
     done = planner_mod.execute_request(store, brand, request, now=now, collect_runner=collect_runner, research_runner=research_runner,
                                        ideabank_runner=ideabank_runner)
