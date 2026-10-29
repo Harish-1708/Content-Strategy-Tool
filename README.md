@@ -445,15 +445,41 @@ what is already in the bank the same way, and the Collect workflow's mode **tidy
 its shorter side, and a video whose structure is whole (a header with a length and a picture track, data that adds up to the file's size).
 A download that arrives short of the size announced, or whose connection drops half way, is tried once more and otherwise refused with
 the reason. After the upload Drive is asked for the file's size and checksum, and a copy that does not match is trashed and sent again.
-The sheet's **preview** column says what is really in Drive: "video saved (28s, 720x1280)", "image saved (1122x1402)", "cover image only,
-the video was not saved" (what the collectors see of a TikTok or Instagram post), "original link only", with "low resolution" for a picture
-under 600 pixels and "not yet checked" for a file saved before the checks existed. The Collect workflow's mode **tidy** now also runs an
+The sheet's **preview** column says what is really in Drive, worked out from the files that are there and never from the last download
+attempt, so a reviewer knows at a glance whether they can judge the full creative, a cover only, or nothing: "video saved and checked (28s,
+720x1280)"; "image saved (1122x1402)"; "cover image only: the video could not be downloaded (the platform refused the download)" (or "the post
+is no longer available", or the reason); "cover image only: the video has not been fetched yet"; "image post saved (1080x1920), it has no
+video" and "carousel: first slide saved, the other slides were not" (a post that simply has no video is never shown as a failed download);
+"no saved media: the original link expired" (Meta's links last hours or days) or "...is unavailable", or "...original link only"; with
+"low resolution" for a picture under 600 pixels and "not yet checked" for a file saved before the checks existed. Each video outcome is kept
+on the item (`video_status`: saved, none, gone, blocked, failed). If TikTok or Instagram refuses three downloads in a row in one run, the rest
+of that platform waits for the next run instead of hammering it, and a refusal costs no try. The real video is fetched by `yt-dlp` first and,
+if that is refused, through the logged-in browser (the post's own page data, with the browser's cookies); this is best effort, and the log
+says which route failed and why. The Collect workflow's mode **tidy** now also runs an
 **audit**: every saved file is downloaded back from Drive and checked again as a person opening it would find it; a broken, cut short or
 missing file is removed from the item (and saved again if its link still works), a wrongly named file is renamed, and the log counts files
 complete, renamed, broken, missing and low resolution, and the items that have only a cover. **Real videos:** for each kept TikTok video
 page or Instagram reel and post, `yt-dlp` is asked for the actual video (using your TikTok and Instagram login cookies), at most
 `ideabank.video_fetches_per_run` (12) a run and twice per item; TikTok and Instagram may refuse a data-centre address, and then the log says
 why and the cover stays. Switch it off with `ideabank.fetch_videos: false`.
+
+**For a creative team: variety, a way to check the tool's judgement, and what to do next.**
+- *One technique, at most twice.* After scoring, one Claude call groups the kept ideas by technique (a gift guide sorted by type of person,
+  a reaction clip, a blind taste test), whatever the product. Each technique keeps its best `ideabank.max_per_technique` (2; 0 switches this
+  off); a long-running ad that is proven outranks a higher score. The rest are removed with the reason and the better ideas named.
+- *Rejected tab.* Everything the tool removed (a copy, the brand's own, not relevant enough, the same technique) is listed with the reason.
+  Mark **Use** or **Maybe** in the **Rescue** column and run the Idea Bank step (Collect, mode tidy): the item comes back, stays kept whatever
+  any later tidy-up says, and its Drive folder is taken out of the trash if it is still there (30 days). A rescued row leaves the tab unless
+  you wrote on it.
+- *The tool looks at the saved pictures.* Claude looks at the saved picture of each kept item (one frame of a video, when ffmpeg is there) and
+  writes `visual_hook` (what a viewer sees in the first second), `look` (ugc, polished, ai-generated, screenshot, graphic, photo) and a quality
+  note. A picture that plainly looks AI-made labels the item `ai`, which the text alone never could. At most `ideabank.vision_calls_per_run`
+  (3) calls of `vision_batch` (4) pictures a run; `ideabank.vision: false` switches it off.
+- *Hook line, first test, audience, channel.* Every scored idea comes with the first line or visual to open our version with, the cheapest first
+  test, who it is for, and a channel (paid social, organic social, creator, email, site, mixed): columns `hook_line`, `first_test`, `audience`,
+  `channel`, next to `how_to_use`. Ideas scored before these existed are filled in without their scores changing (`enrich_calls_per_run`, 4).
+- *A picture for a TikTok found by search.* A TikTok video page found by web search has no picture from the collectors; TikTok's own oEmbed
+  gives its thumbnail (up to `cover_lookups_per_run`, 20 a run), saved as a cover and labelled so.
 
 **Google's limits, and what the tool does about them.** Google allows 60 sheet writes a minute per user. The tool paces its writes to 45 a
 minute (a brand-new spreadsheet takes about 27, so a normal update never waits), deletes many rows in one request instead of one request per
@@ -567,8 +593,8 @@ account and where the run is). The Ad Library with ALL countries is not yet chec
 
 **When a site warns an account.** If Instagram or TikTok shows an account warning (suspected automated behaviour, an
 action blocked, a lock), the tool stops using that account immediately, saves a picture (`warning-instagram`), and rests
-the account: its browser tasks are skipped (not failed) for `collectors.safety.cooldown_days` (3 days by default; 0 means
-only the rest of that run). The report lists resting accounts, and Apify still runs if it is switched on. Instagram stays
+the account: its browser tasks are skipped (not failed) for `collectors.safety.cooldown_days` (TikTok 3 days by default; Instagram 0, which
+means only the rest of that run, so Instagram is never switched off automatically; set a number of days to turn the automatic rest on). The report lists resting accounts, and Apify still runs if it is switched on. Instagram stays
 switched on and in the schedule; the rest is there because using a warned account again straight away is what turns a
 warning into a ban. Once you have dealt with a warning by hand, tick **ignore_cooldown** in the Collect workflow to use
 the account again early. The phrases that count as a warning are in `browser.yaml` (`warning_any`, `warning_url_any`):
@@ -579,8 +605,9 @@ appears on the site and you have not run the tool since, **rest the account by h
 `rest_account`: `instagram`, `tiktok` or both; box `rest_days`: blank uses research.yaml) writes the rest without
 opening the account at all.
 
-**Careful mode (slower, smaller, spread out).** An account that has been warned is better used gently, so Instagram now
-ships in careful mode (the settings sit under `sites.instagram` in `browser.yaml`, and any site can have them):
+**Careful mode (slower, smaller, spread out) is OFF by default**, because it limits what a run can collect. Instagram is read as fast and
+as deep as TikTok. To switch it on for a warned account, remove the `#` from the four commented lines under `sites.instagram` in
+`browser.yaml` (any site can have them):
 `pacing` (20 to 60 seconds before each page, 8 seconds after each scroll, against 3 to 8 and 3 for the other sites),
 `max_scrolls_per_page: 3`, `max_pages_per_run: 2` and `max_pages_per_day: 4`. A run that has more hashtags than it
 may open takes its turn: it opens the next ones after where the last run stopped and goes back to the first after the
