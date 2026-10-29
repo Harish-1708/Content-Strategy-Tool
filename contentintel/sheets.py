@@ -40,7 +40,7 @@ PRODUCTS, VARIANTS, CHANGES, STATUS = "Products", "Variants", "Changes", "Status
 RESEARCH = "Research"
 COLLECTED = "Collected"
 BENCHMARKS = "Benchmarks"
-IDEABANK, REQUESTS, BRIEFS = "Idea Bank", "Requests", "Briefs"
+IDEABANK, REQUESTS, BRIEFS, REJECTED = "Idea Bank", "Requests", "Briefs", "Rejected"
 REQUEST_COLUMNS = ["request_id", "created", "status", "text", "region", "formats", "tools", "plan", "items_added", "run_notes"]
 BRIEF_COLUMNS = ["brief_id", "created", "brief", "ask", "status", "items", "violations", "models", "drive_link"]
 DECISIONS = ("Use", "Maybe", "Skip")
@@ -53,7 +53,7 @@ COLLECTED_COLUMNS = ["item_id", "source", "handle", "title", "text", "url", "pos
                      "comments", "shares", "views", "saves", "reach", "days_running", "variants",
                      "engagement_pct", "signal", "media_url", "details", "first_seen", "last_seen", "times_seen", "queries"]
 STARTER_MANUAL = {PRODUCTS: ["Notes"], RESEARCH: ["Review"], COLLECTED: ["Review"], BENCHMARKS: ["Review"],
-                  IDEABANK: ["Decision", "Notes"], REQUESTS: ["Changes"], BRIEFS: ["Feedback"]}   # added only when a tab is brand new
+                  IDEABANK: ["Decision", "Notes"], REQUESTS: ["Changes"], BRIEFS: ["Feedback"], REJECTED: ["Rescue"]}   # added only when a tab is brand new
 STAMP = "last_updated"                          # when the tool last changed that row
 
 NUMERIC = {"price_min", "price_max", "price", "compare_at_price", "engagement_pct"}
@@ -685,6 +685,22 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
             report.notes.append(f"Idea Bank: removed {deleted} row(s) of items that were copies, the brand's own content or not relevant enough"
                                 + (f"; kept {kept_rows} row(s) you had written a Decision or Notes on" if kept_rows else ""))
 
+    rejected = ib.rejected_rows(bank)
+    ws = None
+    if rejected:                                 # what the tool removed and why, so its judgement can be checked and anything rescued
+        ws = _ensure_tab(spreadsheet, REJECTED, report, dry_run, created)
+        rows = {iid: {c: _typed(c, row[c]) for c in ib.REJECTED_COLUMNS} for iid, row in rejected.items()}
+        _sync_table(ws, tab=REJECTED, columns=ib.REJECTED_COLUMNS, rows_by_key=rows, key_col="idea_id", report=report,
+                    dry_run=dry_run, starter_manual=STARTER_MANUAL[REJECTED])
+    elif spreadsheet is not None:
+        try:
+            ws = _call(spreadsheet.worksheet, REJECTED)
+        except gspread.exceptions.WorksheetNotFound:
+            ws = None
+    back = {i for i, it in bank["items"].items() if it["state"] != "removed"}                   # rescued, or never removed: off this tab
+    if ws is not None and back and not dry_run:
+        _prune_rows(spreadsheet, ws, "idea_id", back, protect=("Rescue",))                      # a row with a Rescue mark written on it stays
+
     requests_made = store.list_requests(brand.slug)
     if requests_made:
         ws = _ensure_tab(spreadsheet, REQUESTS, report, dry_run, created)
@@ -723,6 +739,18 @@ def fetch_decisions(brand, store, *, key_json, share_emails, config, folder_id=N
         return ib.read_decisions(ws)
     except ib.IdeaBankError as exc:
         raise SheetsError(str(exc)) from exc
+
+
+def fetch_rescues(brand, store, *, key_json, share_emails, config, folder_id=None, connect_fn=connect):
+    """[idea id] a person marked Use or Maybe in the Rescue column of the brand's Rejected tab (none if there is no such tab yet)."""
+    client, bot_email = connect_fn(key_json)
+    report = SheetReport(brand=brand.slug, dry_run=False)
+    sp = resolve_spreadsheet(client, brand, store, config, share_emails, report, False, bot_email, folder_id=folder_id)
+    try:
+        ws = _call(sp.worksheet, REJECTED)
+    except gspread.exceptions.WorksheetNotFound:
+        return []
+    return ib.read_rescues(ws)
 
 
 def run_sheets(brands, store, *, key_json, share_emails, config, now, dry_run=False,
