@@ -103,6 +103,7 @@ def build_parser():
     p.add_argument("--brand", required=True)
     p.add_argument("--research-config", default="research.yaml")
     p.add_argument("--browser-config", default="browser.yaml")
+    p.add_argument("--sheets-config", default="sheets.yaml", help="run: where the brand's sheet is, to protect the rows you approved and read your rescues")
     p.add_argument("--debug-dir", default="debug")
     p.add_argument("--text", default="", help="plan: what you want, in your own words")
     p.add_argument("--tools", choices=["auto", "manual"], default="auto", help="plan: let Claude choose the tools, or choose them yourself")
@@ -306,8 +307,9 @@ def _read_sheet(what, reader, brand, store, args):
         return None, ""
     try:
         config = sheets_mod.load_sheet_config(args.sheets_config, set(list_brand_slugs(args.brands_dir)))
-        return reader(brand, store, key_json=key, config=config, share_emails=sheets_mod.parse_emails(os.environ.get("SHEET_SHARE_EMAIL", "")),
-                      folder_id=sheets_mod.parse_folder_id(os.environ.get("SHEET_FOLDER_ID", "")), connect_fn=_SHEETS_CONNECT or sheets_mod.connect), ""
+        if not sheets_mod.has_spreadsheet(brand, store, config):          # nothing to read, and reading must never create a spreadsheet
+            return None, ""
+        return reader(brand, store, key_json=key, config=config, share_emails=[], folder_id=None, connect_fn=_SHEETS_CONNECT or sheets_mod.connect), ""
     except (AttributeError, TypeError, NameError):
         raise
     except Exception as exc:
@@ -321,9 +323,10 @@ def _rescues(brand, store, args):
 
 
 def _decided(brand, store, args):
-    """(ids a person marked Use or Maybe on the Idea Bank tab, a note): the tool never removes what a person has approved."""
+    """(ids a person marked Use or Maybe on the Idea Bank tab, a note): the tool never removes what a person has approved. None, not an empty list,
+    when the sheet could not be read: 'nobody is approved' and 'we do not know' are different, and only the first may lift a protection."""
     got, note = _read_sheet("your Decisions", sheets_mod.fetch_decisions, brand, store, args)
-    return sorted(i for i, d in (got or {}).items() if d.get("decision") in ("use", "maybe")), note
+    return (None if got is None else sorted(i for i, d in got.items() if d.get("decision") in ("use", "maybe"))), note
 
 
 def _cookie_secrets():
@@ -443,11 +446,15 @@ def _run_request(args, store, brand, request, settings, csettings, claude, budge
 
     def ideabank_runner(req, queries):
         web = planner_mod.web_sources_for(research_mod.research_sources(store.read_searches(brand.slug)), queries) if queries else None
-        return ib_mod.run_ideabank(brand, store, settings=settings, now=now, claude=claude, drive=drive, get=_get(),
+        rescues, note = _rescues(brand, store, args)
+        protected, note2 = _decided(brand, store, args)
+        new_items, lines = ib_mod.run_ideabank(brand, store, settings=settings, now=now, claude=claude, drive=drive, get=_get(),
                                    request={"id": req["id"], "region": req["region"], "occasion": req.get("occasion", ""), "text": req["text"],
                                             "formats": req.get("formats") or []},
                                    web_sources=web, budget=budget if claude else None, since=started,
-                                   skip_brands=_skipped_brands(brand, args.brands_dir), video_runner=_video_runner(args), cookies=_cookie_secrets())
+                                   skip_brands=_skipped_brands(brand, args.brands_dir), video_runner=_video_runner(args), cookies=_cookie_secrets(),
+                                   rescues=rescues, protected=protected, browser_factory=_ad_browser_factory(args))
+        return new_items, [n for n in (note, note2) if n] + lines
 
     done = planner_mod.execute_request(store, brand, request, now=now, collect_runner=collect_runner, research_runner=research_runner,
                                        ideabank_runner=ideabank_runner)
