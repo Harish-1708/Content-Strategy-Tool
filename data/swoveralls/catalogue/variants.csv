@@ -328,7 +328,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15022560804975,Swoveralls - Nightshade Plum,53160030011503,S / Nightshade Plum,Size=S; Color=Nightshade Plum,SWPANTS-066-S,120.00,,false
 15022560804975,Swoveralls - Nightshade Plum,53160030044271,M / Nightshade Plum,Size=M; Color=Nightshade Plum,SWPANTS-066-M,120.00,,true
 15022560804975,Swoveralls - Nightshade Plum,53160030077039,L / Nightshade Plum,Size=L; Color=Nightshade Plum,SWPANTS-066-L,120.00,,true
-15022560804975,Swoveralls - Nightshade Plum,53160030109807,XL / Nightshade Plum,Size=XL; Color=Nightshade Plum,SWPANTS-066-XL,120.00,,true
+15022560804975,Swoveralls - Nightshade Plum,53160030109807,XL / Nightshade Plum,Size=XL; Color=Nightshade Plum,SWPANTS-066-XL,120.00,,false
 15022560804975,Swoveralls - Nightshade Plum,53160030142575,2XL / Nightshade Plum,Size=2XL; Color=Nightshade Plum,SWPANTS-066-2XL,120.00,,false
 15022560804975,Swoveralls - Nightshade Plum,53160030175343,3XL / Nightshade Plum,Size=3XL; Color=Nightshade Plum,SWPANTS-066-3XL,120.00,,true
 15022560804975,Swoveralls - Nightshade Plum,53160030208111,4XL / Nightshade Plum,Size=4XL; Color=Nightshade Plum,SWPANTS-066-4XL,120.00,,true
@@ -352,7 +352,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15346061738095,Swoveralls - Something 90s,53753433063535,M / Jammers,Size=M; Color=Jammers,SWPANTS-ZOF-M,120.00,,true
 15346061738095,Swoveralls - Something 90s,53753433096303,L / Jammers,Size=L; Color=Jammers,SWPANTS-ZOF-L,120.00,,true
 15346061738095,Swoveralls - Something 90s,53753433129071,XL / Jammers,Size=XL; Color=Jammers,SWPANTS-ZOF-XL,120.00,,true
-15346061738095,Swoveralls - Something 90s,53753433161839,2XL / Jammers,Size=2XL; Color=Jammers,SWPANTS-ZOF-2XL,120.00,,true
+15346061738095,Swoveralls - Something 90s,53753433161839,2XL / Jammers,Size=2XL; Color=Jammers,SWPANTS-ZOF-2XL,120.00,,false
 15346061738095,Swoveralls - Something 90s,53753433194607,3XL / Jammers,Size=3XL; Color=Jammers,SWPANTS-ZOF-3XL,120.00,,true
 15346061738095,Swoveralls - Something 90s,53753433227375,4XL / Jammers,Size=4XL; Color=Jammers,SWPANTS-ZOF-4XL,120.00,,true
 15023423979631,Swoveralls - Stripes Blue/White,53166816165999,S / Blue/White,Size=S; Color=Blue/White,SWPANTS-NVW-S,95.99,120.00,true
