@@ -1,6 +1,6 @@
 {
  "brand": "swoveralls",
- "count": 73,
+ "count": 72,
  "products": [
   {
    "allergens": "",
@@ -1576,13 +1576,12 @@
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_2_6d27bc91-e359-4628-a65c-5d512c507ca7.png?v=1763054840",
    "product_id": "15347005325423",
    "readiness": "ready",
-   "status": "pre_order",
+   "status": "active",
    "tags": [
     "Active",
     "ag-le-prints",
     "All",
     "badge_NEW",
-    "badge_Pre-Order",
     "InventoryCheck",
     "LimitedSW",
     "New",
@@ -1718,243 +1717,6 @@
      ],
      "price": 129.0,
      "sku": "SWPANTSCORD-002-4XL",
-     "title": "4XL / Forest Green"
-    }
-   ]
-  },
-  {
-   "allergens": "",
-   "audience_hints": [],
-   "audience_stated": "",
-   "category": "core",
-   "description": "Final sale. Every pair in this batch has rust spots. Please read before you buy. During final quality control on our Forest Green corduroy, after the pairs were cut, sewn, and had their trims attached, we noticed rust-colored spots showing up on the fabric. This has never happened to us before, and we are still investigating the cause. We decided to make an entirely new batch of Forest Green for our regular line. That left us with these pairs, and we still really love them. They have the same super soft, stretchy cord, the same fit, and the same pockets as our regular Corduroy Swoveralls, with rust spots in random places. Instead of tossing them, we priced them way down so they can find a good home. What to know before you buy Every pair has rust-colored spots in random places, which can include the bib, legs, straps, and the fabric near the buckles. Some pairs have a few spots and some have more. The photo of the stack, the close-up of the straps, and the photo of several pairs laid out are real pairs from this batch. The single flat lay is a digital illustration of a typical pair. Your pair will look different from the photos. We can't pick a pair for you or send photos of a specific pair. We can't promise the spots will wash out, so plan on them staying. Final sale: no returns or exchanges. Check the size chart before you order. The details Super Soft Blend of cotton (60%), poly (36%), and spandex (4%) Inside-bib secret pocket with zipper closure Deep front bib and side pockets Boot cuff, adjustable straps, zipper fly, unisex sizing Inseam: S to XL 29\", 2XL to 4XL 30\" Once they're gone, they're gone.",
-   "excluded": false,
-   "excluded_reason": null,
-   "fact_conflicts": [],
-   "facts": {
-    "description": {
-     "source": "catalogue_description",
-     "status": "stated",
-     "value": {
-      "chars": 1630
-     }
-    },
-    "features": {
-     "source": "catalogue_description",
-     "status": "stated",
-     "value": [
-      "Every pair has rust-colored spots in random places, which can include the bib, legs, straps, and the fabric near the buckles. Some pairs have a few spots and some have more.",
-      "The photo of the stack, the close-up of the straps, and the photo of several pairs laid out are real pairs from this batch. The single flat lay is a digital illustration of a typical pair.",
-      "Your pair will look different from the photos. We can't pick a pair for you or send photos of a specific pair.",
-      "We can't promise the spots will wash out, so plan on them staying.",
-      "Final sale: no returns or exchanges. Check the size chart before you order.",
-      "Super Soft Blend of cotton (60%), poly (36%), and spandex (4%)",
-      "Inside-bib secret pocket with zipper closure",
-      "Deep front bib and side pockets",
-      "Boot cuff, adjustable straps, zipper fly, unisex sizing",
-      "Inseam: S to XL 29\", 2XL to 4XL 30\""
-     ]
-    },
-    "images": {
-     "source": "catalogue_images",
-     "status": "stated",
-     "value": {
-      "count": 4
-     }
-    },
-    "materials": {
-     "source": "catalogue_description",
-     "status": "stated",
-     "value": {
-      "consistent": true,
-      "items": [
-       {
-        "label": "cotton",
-        "material": "cotton",
-        "percent": 60
-       },
-       {
-        "label": "poly",
-        "material": "poly",
-        "percent": 36
-       },
-       {
-        "label": "spandex",
-        "material": "spandex",
-        "percent": 4
-       }
-      ],
-      "total": 100
-     }
-    }
-   },
-   "family": "Corduroy Swoveralls",
-   "flags": [
-    "final_sale",
-    "on_sale"
-   ],
-   "handle": "corduroy-swoveralls-forest-green-sample-sale",
-   "image_count": 4,
-   "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/UnrollPantCuffs.png?v=1793319670",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/forest-green-sample-sale-3.jpg?v=1792061586",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/forest-green-sample-sale-1.jpg?v=1792061586",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/forest-green-sample-sale-2.jpg?v=1792061586"
-   ],
-   "in_stock": true,
-   "ingredients": "",
-   "materials": "cotton 60%; poly 36%; spandex 4%",
-   "missing_expected": [
-    "pocket_claims"
-   ],
-   "missing_required": [],
-   "on_sale": true,
-   "pocket_claims": "",
-   "price_max": 59.99,
-   "price_min": 59.99,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/UnrollPantCuffs.png?v=1793319670",
-   "product_id": "15606113009775",
-   "readiness": "ready",
-   "status": "active",
-   "tags": [
-    "Active",
-    "ag-unassigned",
-    "All",
-    "final sale",
-    "InventoryCheck",
-    "perfectly-imperfect",
-    "sample-sale",
-    "Shop",
-    "swoveralls"
-   ],
-   "title": "Corduroy Swoveralls - Forest Green (Rust Spots, Final Sale)",
-   "url": "https://swoveralls.com/products/corduroy-swoveralls-forest-green-sample-sale",
-   "variant_count": 7,
-   "variants": [
-    {
-     "available": true,
-     "compare_at_price": 129.0,
-     "id": 67781417238639,
-     "options": [
-      {
-       "name": "Size",
-       "value": "S"
-      },
-      {
-       "name": "Color",
-       "value": "Forest Green"
-      }
-     ],
-     "price": 59.99,
-     "sku": "SWDISC-002-S",
-     "title": "S / Forest Green"
-    },
-    {
-     "available": true,
-     "compare_at_price": 129.0,
-     "id": 67781417271407,
-     "options": [
-      {
-       "name": "Size",
-       "value": "M"
-      },
-      {
-       "name": "Color",
-       "value": "Forest Green"
-      }
-     ],
-     "price": 59.99,
-     "sku": "SWDISC-002-M",
-     "title": "M / Forest Green"
-    },
-    {
-     "available": true,
-     "compare_at_price": 129.0,
-     "id": 67781417304175,
-     "options": [
-      {
-       "name": "Size",
-       "value": "L"
-      },
-      {
-       "name": "Color",
-       "value": "Forest Green"
-      }
-     ],
-     "price": 59.99,
-     "sku": "SWDISC-002-L",
-     "title": "L / Forest Green"
-    },
-    {
-     "available": true,
-     "compare_at_price": 129.0,
-     "id": 67781417336943,
-     "options": [
-      {
-       "name": "Size",
-       "value": "XL"
-      },
-      {
-       "name": "Color",
-       "value": "Forest Green"
-      }
-     ],
-     "price": 59.99,
-     "sku": "SWDISC-002-XL",
-     "title": "XL / Forest Green"
-    },
-    {
-     "available": true,
-     "compare_at_price": 129.0,
-     "id": 67781417369711,
-     "options": [
-      {
-       "name": "Size",
-       "value": "2XL"
-      },
-      {
-       "name": "Color",
-       "value": "Forest Green"
-      }
-     ],
-     "price": 59.99,
-     "sku": "SWDISC-002-2XL",
-     "title": "2XL / Forest Green"
-    },
-    {
-     "available": true,
-     "compare_at_price": 129.0,
-     "id": 67781417402479,
-     "options": [
-      {
-       "name": "Size",
-       "value": "3XL"
-      },
-      {
-       "name": "Color",
-       "value": "Forest Green"
-      }
-     ],
-     "price": 59.99,
-     "sku": "SWDISC-002-3XL",
-     "title": "3XL / Forest Green"
-    },
-    {
-     "available": true,
-     "compare_at_price": 129.0,
-     "id": 67781417435247,
-     "options": [
-      {
-       "name": "Size",
-       "value": "4XL"
-      },
-      {
-       "name": "Color",
-       "value": "Forest Green"
-      }
-     ],
-     "price": 59.99,
-     "sku": "SWDISC-002-4XL",
      "title": "4XL / Forest Green"
     }
    ]
@@ -11248,7 +11010,7 @@
    "variant_count": 7,
    "variants": [
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753483853935,
      "options": [

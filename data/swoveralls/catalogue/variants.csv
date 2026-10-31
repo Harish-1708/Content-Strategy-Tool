@@ -48,13 +48,6 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15347005325423,Corduroy Swoveralls - Forest Green,53755990442095,2XL / Forest Green,Size=2XL; Color=Forest Green,SWPANTSCORD-002-2XL,129.00,,true
 15347005325423,Corduroy Swoveralls - Forest Green,53755990474863,3XL / Forest Green,Size=3XL; Color=Forest Green,SWPANTSCORD-002-3XL,129.00,,true
 15347005325423,Corduroy Swoveralls - Forest Green,53755990507631,4XL / Forest Green,Size=4XL; Color=Forest Green,SWPANTSCORD-002-4XL,129.00,,true
-15606113009775,"Corduroy Swoveralls - Forest Green (Rust Spots, Final Sale)",67781417238639,S / Forest Green,Size=S; Color=Forest Green,SWDISC-002-S,59.99,129.00,true
-15606113009775,"Corduroy Swoveralls - Forest Green (Rust Spots, Final Sale)",67781417271407,M / Forest Green,Size=M; Color=Forest Green,SWDISC-002-M,59.99,129.00,true
-15606113009775,"Corduroy Swoveralls - Forest Green (Rust Spots, Final Sale)",67781417304175,L / Forest Green,Size=L; Color=Forest Green,SWDISC-002-L,59.99,129.00,true
-15606113009775,"Corduroy Swoveralls - Forest Green (Rust Spots, Final Sale)",67781417336943,XL / Forest Green,Size=XL; Color=Forest Green,SWDISC-002-XL,59.99,129.00,true
-15606113009775,"Corduroy Swoveralls - Forest Green (Rust Spots, Final Sale)",67781417369711,2XL / Forest Green,Size=2XL; Color=Forest Green,SWDISC-002-2XL,59.99,129.00,true
-15606113009775,"Corduroy Swoveralls - Forest Green (Rust Spots, Final Sale)",67781417402479,3XL / Forest Green,Size=3XL; Color=Forest Green,SWDISC-002-3XL,59.99,129.00,true
-15606113009775,"Corduroy Swoveralls - Forest Green (Rust Spots, Final Sale)",67781417435247,4XL / Forest Green,Size=4XL; Color=Forest Green,SWDISC-002-4XL,59.99,129.00,true
 15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992146031,S / Glacier Navy,Size=S; Color=Glacier Navy,SWPANTSGRID-179-S,129.00,,true
 15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992178799,M / Glacier Navy,Size=M; Color=Glacier Navy,SWPANTSGRID-179-M,129.00,,true
 15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992211567,L / Glacier Navy,Size=L; Color=Glacier Navy,SWPANTSGRID-179-L,129.00,,true
@@ -332,7 +325,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15022560804975,Swoveralls - Nightshade Plum,53160030142575,2XL / Nightshade Plum,Size=2XL; Color=Nightshade Plum,SWPANTS-066-2XL,120.00,,false
 15022560804975,Swoveralls - Nightshade Plum,53160030175343,3XL / Nightshade Plum,Size=3XL; Color=Nightshade Plum,SWPANTS-066-3XL,120.00,,true
 15022560804975,Swoveralls - Nightshade Plum,53160030208111,4XL / Nightshade Plum,Size=4XL; Color=Nightshade Plum,SWPANTS-066-4XL,120.00,,true
-15346083430511,Swoveralls - Otter Romp,53753483853935,S / Otter Romp,Size=S; Color=Otter Romp,SWPANTS-DHG-S,120.00,,true
+15346083430511,Swoveralls - Otter Romp,53753483853935,S / Otter Romp,Size=S; Color=Otter Romp,SWPANTS-DHG-S,120.00,,false
 15346083430511,Swoveralls - Otter Romp,53753483886703,M / Otter Romp,Size=M; Color=Otter Romp,SWPANTS-DHG-M,120.00,,true
 15346083430511,Swoveralls - Otter Romp,53753483919471,L / Otter Romp,Size=L; Color=Otter Romp,SWPANTS-DHG-L,120.00,,true
 15346083430511,Swoveralls - Otter Romp,53753483952239,XL / Otter Romp,Size=XL; Color=Otter Romp,SWPANTS-DHG-XL,120.00,,false

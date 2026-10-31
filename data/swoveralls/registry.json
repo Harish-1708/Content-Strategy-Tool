@@ -344,7 +344,246 @@
  "15606113009775": {
   "first_seen": "2026-10-30T05:48:53Z",
   "handle": "corduroy-swoveralls-forest-green-sample-sale",
-  "presence": "present",
+  "last_record": {
+   "audience_hints": [],
+   "availability": {
+    "67781417238639": true,
+    "67781417271407": true,
+    "67781417304175": true,
+    "67781417336943": true,
+    "67781417369711": true,
+    "67781417402479": true,
+    "67781417435247": true
+   },
+   "body_text": "Final sale. Every pair in this batch has rust spots. Please read before you buy. During final quality control on our Forest Green corduroy, after the pairs were cut, sewn, and had their trims attached, we noticed rust-colored spots showing up on the fabric. This has never happened to us before, and we are still investigating the cause. We decided to make an entirely new batch of Forest Green for our regular line. That left us with these pairs, and we still really love them. They have the same super soft, stretchy cord, the same fit, and the same pockets as our regular Corduroy Swoveralls, with rust spots in random places. Instead of tossing them, we priced them way down so they can find a good home. What to know before you buy Every pair has rust-colored spots in random places, which can include the bib, legs, straps, and the fabric near the buckles. Some pairs have a few spots and some have more. The photo of the stack, the close-up of the straps, and the photo of several pairs laid out are real pairs from this batch. The single flat lay is a digital illustration of a typical pair. Your pair will look different from the photos. We can't pick a pair for you or send photos of a specific pair. We can't promise the spots will wash out, so plan on them staying. Final sale: no returns or exchanges. Check the size chart before you order. The details Super Soft Blend of cotton (60%), poly (36%), and spandex (4%) Inside-bib secret pocket with zipper closure Deep front bib and side pockets Boot cuff, adjustable straps, zipper fly, unisex sizing Inseam: S to XL 29\", 2XL to 4XL 30\" Once they're gone, they're gone.",
+   "brand": "swoveralls",
+   "category": "core",
+   "content_hash": "b314fd2ec9ecaa79d86334252c979be221408d829ebed35b614d464b85069d40",
+   "created_at": "2026-10-15T06:27:31-04:00",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 1630
+     }
+    },
+    "features": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Every pair has rust-colored spots in random places, which can include the bib, legs, straps, and the fabric near the buckles. Some pairs have a few spots and some have more.",
+      "The photo of the stack, the close-up of the straps, and the photo of several pairs laid out are real pairs from this batch. The single flat lay is a digital illustration of a typical pair.",
+      "Your pair will look different from the photos. We can't pick a pair for you or send photos of a specific pair.",
+      "We can't promise the spots will wash out, so plan on them staying.",
+      "Final sale: no returns or exchanges. Check the size chart before you order.",
+      "Super Soft Blend of cotton (60%), poly (36%), and spandex (4%)",
+      "Inside-bib secret pocket with zipper closure",
+      "Deep front bib and side pockets",
+      "Boot cuff, adjustable straps, zipper fly, unisex sizing",
+      "Inseam: S to XL 29\", 2XL to 4XL 30\""
+     ]
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 4
+     }
+    },
+    "materials": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "consistent": true,
+      "items": [
+       {
+        "label": "cotton",
+        "material": "cotton",
+        "percent": 60
+       },
+       {
+        "label": "poly",
+        "material": "poly",
+        "percent": 36
+       },
+       {
+        "label": "spandex",
+        "material": "spandex",
+        "percent": 4
+       }
+      ],
+      "total": 100
+     }
+    }
+   },
+   "family": "Corduroy Swoveralls",
+   "flags": [
+    "final_sale",
+    "on_sale"
+   ],
+   "handle": "corduroy-swoveralls-forest-green-sample-sale",
+   "images": [
+    {
+     "height": 1200,
+     "id": 44961340096623,
+     "key": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/UnrollPantCuffs.png",
+     "position": 1,
+     "src": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/UnrollPantCuffs.png?v=1793319670",
+     "variant_ids": [],
+     "width": 896
+    },
+    {
+     "height": 1500,
+     "id": 44563843678319,
+     "key": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/forest-green-sample-sale-3.jpg",
+     "position": 2,
+     "src": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/forest-green-sample-sale-3.jpg?v=1792061586",
+     "variant_ids": [],
+     "width": 1125
+    },
+    {
+     "height": 1500,
+     "id": 44563843612783,
+     "key": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/forest-green-sample-sale-1.jpg",
+     "position": 3,
+     "src": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/forest-green-sample-sale-1.jpg?v=1792061586",
+     "variant_ids": [],
+     "width": 1125
+    },
+    {
+     "height": 1500,
+     "id": 44563843645551,
+     "key": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/forest-green-sample-sale-2.jpg",
+     "position": 4,
+     "src": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/forest-green-sample-sale-2.jpg?v=1792061586",
+     "variant_ids": [],
+     "width": 1125
+    }
+   ],
+   "in_stock": true,
+   "option_names": [
+    "Size",
+    "Color"
+   ],
+   "product_id": "15606113009775",
+   "product_type": "Swoveralls",
+   "published_at": "2026-10-29T20:21:30-04:00",
+   "readiness": {
+    "missing_expected": [
+     "pocket_claims"
+    ],
+    "missing_required": [],
+    "state": "ready"
+   },
+   "status": "active",
+   "tags": [
+    "Active",
+    "ag-unassigned",
+    "All",
+    "final sale",
+    "InventoryCheck",
+    "perfectly-imperfect",
+    "sample-sale",
+    "Shop",
+    "swoveralls"
+   ],
+   "title": "Corduroy Swoveralls - Forest Green (Rust Spots, Final Sale)",
+   "updated_at": "2026-10-30T18:20:02-04:00",
+   "url": "https://swoveralls.com/products/corduroy-swoveralls-forest-green-sample-sale",
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": 129.0,
+     "id": 67781417238639,
+     "options": {
+      "Color": "Forest Green",
+      "Size": "S"
+     },
+     "price": 59.99,
+     "sku": "SWDISC-002-S",
+     "title": "S / Forest Green"
+    },
+    {
+     "available": true,
+     "compare_at_price": 129.0,
+     "id": 67781417271407,
+     "options": {
+      "Color": "Forest Green",
+      "Size": "M"
+     },
+     "price": 59.99,
+     "sku": "SWDISC-002-M",
+     "title": "M / Forest Green"
+    },
+    {
+     "available": true,
+     "compare_at_price": 129.0,
+     "id": 67781417304175,
+     "options": {
+      "Color": "Forest Green",
+      "Size": "L"
+     },
+     "price": 59.99,
+     "sku": "SWDISC-002-L",
+     "title": "L / Forest Green"
+    },
+    {
+     "available": true,
+     "compare_at_price": 129.0,
+     "id": 67781417336943,
+     "options": {
+      "Color": "Forest Green",
+      "Size": "XL"
+     },
+     "price": 59.99,
+     "sku": "SWDISC-002-XL",
+     "title": "XL / Forest Green"
+    },
+    {
+     "available": true,
+     "compare_at_price": 129.0,
+     "id": 67781417369711,
+     "options": {
+      "Color": "Forest Green",
+      "Size": "2XL"
+     },
+     "price": 59.99,
+     "sku": "SWDISC-002-2XL",
+     "title": "2XL / Forest Green"
+    },
+    {
+     "available": true,
+     "compare_at_price": 129.0,
+     "id": 67781417402479,
+     "options": {
+      "Color": "Forest Green",
+      "Size": "3XL"
+     },
+     "price": 59.99,
+     "sku": "SWDISC-002-3XL",
+     "title": "3XL / Forest Green"
+    },
+    {
+     "available": true,
+     "compare_at_price": 129.0,
+     "id": 67781417435247,
+     "options": {
+      "Color": "Forest Green",
+      "Size": "4XL"
+     },
+     "price": 59.99,
+     "sku": "SWDISC-002-4XL",
+     "title": "4XL / Forest Green"
+    }
+   ],
+   "vendor": "Swoveralls"
+  },
+  "presence": "suspected_removed",
+  "suspected_since": "2026-10-31T21:34:04Z",
   "title": "Corduroy Swoveralls - Forest Green (Rust Spots, Final Sale)"
  },
  "3223478698084": {
