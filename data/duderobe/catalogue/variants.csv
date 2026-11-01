@@ -158,7 +158,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 711295500331,The Shorts,31947535974481,Grey / 2X/3X,Color=Grey; Size=2X/3X,SHORT1-GRAY-2XL/3XL,61.00,,true
 15979780702494,The Whole House,60282221822238,Default Title,Title=Default Title,,339.00,422.00,true
 9503608013086,UFC DudeRobe - Black,49183460327710,Black / XS,Color=Black; Size=XS,ROBE1UFC1-BLACK-XS,134.00,,false
-9503608013086,UFC DudeRobe - Black,49183460360478,Black / S-M,Color=Black; Size=S-M,ROBE1UFC1-BLACK-S/M,134.00,,true
+9503608013086,UFC DudeRobe - Black,49183460360478,Black / S-M,Color=Black; Size=S-M,ROBE1UFC1-BLACK-S/M,134.00,,false
 9503608013086,UFC DudeRobe - Black,49183460393246,Black / L-XL,Color=Black; Size=L-XL,ROBE1UFC1-BLACK-L/XL,134.00,,true
 9503608013086,UFC DudeRobe - Black,49183460426014,Black / 2XL-3XL,Color=Black; Size=2XL-3XL,ROBE1UFC1-BLACK-2XL/3XL,134.00,,true
 9503607030046,UFC DudeRobe - Grey,49183455609118,Grey / XS,Color=Grey; Size=XS,ROBE1UFC1-GRAY-XS,134.00,,true
