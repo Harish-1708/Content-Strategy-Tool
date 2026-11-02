@@ -19,6 +19,11 @@ text_rules:
 product_rules:
   allowed_statuses: [active]
 
+claim_rules:
+  # The offer the brief itself states ("30% OFF THE DUDEROBE"). Any other offer, price, number or claim in a generated brief is flagged.
+  allowed_offers:
+    - "30% off"
+
 judgement_rules:
   - "No spa lighting or anything soft, even, cool or sterile."
   - "No shirtless reveal poses on studio white."
