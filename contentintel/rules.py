@@ -17,10 +17,11 @@ class RuleError(Exception):
     pass
 
 
-_TOP = {"brief", "brand", "version", "source", "text_rules", "product_rules",
+_TOP = {"brief", "brand", "version", "source", "text_rules", "product_rules", "claim_rules",
         "judgement_rules", "open_questions"}
 _TEXT = {"banned_chars", "banned_phrases", "ordered_terms"}
 _PRODUCT = {"block_flags", "allowed_statuses", "approved_products"}
+_CLAIM = {"allowed_offers", "allowed_claims", "skip"}      # "skip", not "off": YAML reads a bare off as False
 _SEVERITIES = {"error", "warn"}
 
 
@@ -65,6 +66,16 @@ def load_ruleset(path):
     product = raw.get("product_rules") or {}
     if set(product) - _PRODUCT:
         raise RuleError(f"{path}: unknown product_rules {sorted(set(product) - _PRODUCT)}")
+    claim = raw.get("claim_rules") or {}
+    if not isinstance(claim, dict) or set(claim) - _CLAIM:
+        raise RuleError(f"{path}: claim_rules may only hold {sorted(_CLAIM)}, got {sorted(set(claim) - _CLAIM) if isinstance(claim, dict) else claim!r}")
+    for key in _CLAIM:
+        if claim.get(key) is not None and (not isinstance(claim[key], list) or not all(isinstance(x, str) and x.strip() for x in claim[key])):
+            raise RuleError(f"{path}: claim_rules.{key} must be a list of non-empty text")
+    from .claimcheck import RULES as _CLAIM_RULES                                  # imported here: claimcheck needs this module's Violation
+    unknown_skip = sorted(set(claim.get("skip") or []) - set(_CLAIM_RULES))
+    if unknown_skip:
+        raise RuleError(f"{path}: claim_rules.skip names unknown rules {unknown_skip}; the rules are {list(_CLAIM_RULES)}")
     for item in text.get("banned_chars") or []:
         if not item.get("char"):
             raise RuleError(f"{path}: banned_chars entry without 'char'")
@@ -80,6 +91,8 @@ def load_ruleset(path):
             raise RuleError(f"{path}: ordered_terms mode must be when_both_present or strict")
         _severity(item)
     rules = {"text_rules": text, "product_rules": product}
+    if claim:
+        rules["claim_rules"] = claim                                              # only when present, so the digest of an older rules file is unchanged
     blob = json.dumps(rules, sort_keys=True, ensure_ascii=False)
     digest = hashlib.sha256(blob.encode("utf-8")).hexdigest()[:12]
     return RuleSet(brief=raw["brief"], brand=raw["brand"], version=raw["version"],
