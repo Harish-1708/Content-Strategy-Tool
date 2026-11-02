@@ -4,7 +4,7 @@
   "collected_items": 740,
   "deep_research_tasks": 1,
   "serpapi": 6,
-  "serper_dev": 39,
+  "serper_dev": 48,
   "tavily": 6
  },
  "months": {
@@ -15,6 +15,9 @@
    "serpapi": 6,
    "serper_dev": 39,
    "tavily": 6
+  },
+  "2026-11": {
+   "serper_dev": 9
   }
  }
 }
