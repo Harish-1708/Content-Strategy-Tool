@@ -463,6 +463,21 @@ page or Instagram reel and post, `yt-dlp` is asked for the actual video (using y
 `ideabank.video_fetches_per_run` (12) a run and twice per item; TikTok and Instagram may refuse a data-centre address, and then the log says
 why and the cover stays. Switch it off with `ideabank.fetch_videos: false`.
 
+**The claim check: a brief never states what the brand cannot back up.** A brief goes to creators who will say its words on camera, so every factual claim in
+what they will say or show (the title, the key message and each concept's name, hook, script, visual direction and call to action) is checked by code, and each
+must be supported by the catalogue, the approved-claims register or the brief's own allowed list; instructions to the team (dos, don'ts, deliverables, notes) are
+not checked. Rules (each named in the brief's violation list and, for an error, handed to the repair pass): `price_not_in_catalogue` (only real prices),
+`offer_not_provided` (no discount, code, free shipping or guarantee unless allowed), `material_claim_unsupported` and `count_claim_unsupported` (fibre
+percentages and pocket counts), `nutrition_claim_unsupported` (figures such as 20g of protein or 150 calories), `dietary_claim_unsupported` (vegan, gluten
+free, organic, keto and so on), `health_claim_prohibited` (cures, detox, clinically proven), `social_proof_unverified` (10,000 customers, rated 4.8),
+`result_claim_unproven` (results in 7 days), `unregistered_claim` (as seen on, featured in, recommended by), `claim_status` (a register claim that is
+prohibited, or licensed with its guidelines still pending: a warning) and `superlative_unproven` (best-selling, #1: a warning). Support comes from the
+product's title, description, tags and extracted facts (a claim about no particular product is supported if any allowed product supports it), the brand's
+`claims.yaml` register, and the brief's `claim_rules` in its rules file: `allowed_offers` (for example "30% off"), `allowed_claims` (wording that may be
+used) and `skip` (rules to switch off for this brief; not `off`, which YAML reads as False). The model is told these facts, offers and approved claims in
+its prompt, so the check is a safety net behind a prompt that already says what may be said. Prices, offers, figures and endorsements are never invented.
+The DudeRobe rules file allows "30% off" because the brief itself states it.
+
 **For a creative team: variety, a way to check the tool's judgement, and what to do next.**
 - *One technique, at most twice.* After scoring, one Claude call groups the kept ideas by technique (a gift guide sorted by type of person,
   a reaction clip, a blind taste test), whatever the product. Each technique keeps its best `ideabank.max_per_technique` (2; 0 switches this
