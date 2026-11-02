@@ -13,6 +13,7 @@
 import io
 import json
 
+from . import claimcheck
 from . import rules as rules_mod
 from .drive import DOCX, DriveError, file_url, safe_name
 from .export import price_range
@@ -87,6 +88,35 @@ def _item_text(item):
             f'How we could use it: {item["how_to_use"] or "not scored"}. Risk: {item["risk"] or "none noted"}.')
 
 
+def facts_line(handle, record):
+    """What the catalogue states about one product, in a line a model can stay within."""
+    ev = claimcheck.Evidence().absorb(record)
+    bits = []
+    if ev.materials:
+        bits.append("materials " + ", ".join(f"{p}% {f}" for f, p in sorted(ev.materials, key=lambda x: -x[1])))
+    if ev.pockets:
+        bits.append("pockets " + ", ".join(str(c) for c in sorted(ev.pockets)))
+    facts = record.get("facts") or {}
+    stated = [name for name in ("ingredients", "allergens") if name in facts]
+    if stated:
+        bits.append("the description states its " + " and ".join(stated))
+    return f"- {handle}: " + ("; ".join(bits) if bits else "no materials, counts or nutrition are stated")
+
+
+def claim_lines(brand, ruleset, products):
+    """The 'what you may state' block of the prompt: product facts, allowed offers and approved claims."""
+    rules = ruleset.rules.get("claim_rules") or {}
+    offers = rules.get("allowed_offers") or []
+    approved = [c["text"] for c in brand.claims if isinstance(c, dict) and c.get("text") and str(c.get("status", "")).lower() in ("licensed", "approved", "active")]
+    lines = ["Facts you may state (state NO other fact, price, number, offer, ingredient, dietary or health claim, endorsement or result):"]
+    lines += [facts_line(h, r) for h, r in sorted(products.items())] or ["- (none)"]
+    lines.append("Allowed offers: " + ("; ".join(offers) if offers else "none: state no offer, discount, code, free shipping or guarantee"))
+    lines.append("Approved claims you may use word for word: " + ("; ".join(approved) if approved else "none"))
+    if rules.get("allowed_claims"):
+        lines.append("Other allowed wording: " + "; ".join(rules["allowed_claims"]))
+    return "\n".join(lines)
+
+
 def build_prompt(brand, ask, items, products, ruleset, max_concepts):
     def price(record):
         low, high = price_range(record)
@@ -94,7 +124,7 @@ def build_prompt(brand, ask, items, products, ruleset, max_concepts):
     product_lines = "\n".join(f'- {h}: {r.get("title", h)}{price(r)}' for h, r in sorted(products.items())) or "- (none)"
     return (f"Brand: {brand.name} ({brand.domain}).\nRequest: {ask}\nWrite between 3 and {max_concepts} concepts, about one for each reference idea.\n\n"
             f"Approved reference ideas:\n" + "\n".join(_item_text(i) for i in items) + f"\n\nProducts you may use:\n{product_lines}\n\n"
-            f"Rules for this brief:\n{_rules_text(ruleset)}")
+            f"{claim_lines(brand, ruleset, products)}\n\nRules for this brief:\n{_rules_text(ruleset)}")
 
 
 def clean_brief(raw, item_ids, handles, max_concepts):
@@ -136,7 +166,7 @@ def clean_brief(raw, item_ids, handles, max_concepts):
     return brief, notes
 
 
-def check_brief(brief, ruleset, products):
+def check_brief(brief, ruleset, products, claims=()):
     """Every rule broken by the brief, as [{where, rule, severity, message}]. Exact rules only: this is code, not opinion."""
     found = []
 
@@ -162,6 +192,17 @@ def check_brief(brief, ruleset, products):
     for field in ("dos", "donts", "deliverables"):
         for line in brief[field]:
             add(field, rules_mod.check_text(ruleset, line, scope="copy"))
+    # what a creator will say or show must be true: every claim backed by the catalogue, the register or this brief's allowed list
+    claim_rules = ruleset.rules.get("claim_rules") or {}
+    everything = claimcheck.evidence_for(products.values())
+    for field in ("title", "key_message"):
+        add(field, claimcheck.check_text(brief[field], everything, claims, claim_rules))
+    for n, concept in enumerate(brief["concepts"], start=1):
+        label = f"concept {n} ({concept['name']})"
+        record = products.get(concept["product"]) if concept["product"] else None
+        evidence = claimcheck.evidence_for([record]) if record else everything
+        for field in ("name", "hook", "script", "visual_direction", "cta"):
+            add(f"{label} {field.replace('_', ' ')}", claimcheck.check_text(concept[field], evidence, claims, claim_rules))
     return found
 
 
@@ -186,15 +227,15 @@ def write_brief(claude, brand, ask, items, products, ruleset, settings, budget):
         raise BriefError(f"Claude could not write the brief: {exc}") from exc
     brief, fixes = clean_brief(raw, ids, handles, settings.brief_max_concepts)
     notes += fixes
-    violations = check_brief(brief, ruleset, products)
+    violations = check_brief(brief, ruleset, products, brand.claims)
     if errors_of(violations):
         if calls < settings.brief_max_calls and budget.take():
             calls += 1
             try:
-                raw = claude.json_task(REPAIR_SYSTEM, f"Rules:\n{_rules_text(ruleset)}\n\nProblems to fix:\n{_violation_lines(errors_of(violations))}"
+                raw = claude.json_task(REPAIR_SYSTEM, f"{claim_lines(brand, ruleset, products)}\n\nRules:\n{_rules_text(ruleset)}\n\nProblems to fix:\n{_violation_lines(errors_of(violations))}"
                                                       f"\n\nBrief:\n{json.dumps(brief, ensure_ascii=False)}", max_tokens=6000)
                 fixed, more = clean_brief(raw, ids, handles, settings.brief_max_concepts)
-                again = check_brief(fixed, ruleset, products)
+                again = check_brief(fixed, ruleset, products, brand.claims)
                 if len(errors_of(again)) <= len(errors_of(violations)):
                     brief, violations = fixed, again
                     notes += more
