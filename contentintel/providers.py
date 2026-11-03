@@ -32,6 +32,10 @@ class ProviderError(Exception):
     """A search failed; another provider may still answer."""
 
 
+class ProviderConfigError(ProviderError):
+    """Our own request cannot be accepted as it is configured. Nothing was run and nothing was spent; the provider is not at fault."""
+
+
 class AuthError(ProviderError):
     """The key was rejected. Do not use this provider again in this run."""
 
@@ -87,7 +91,7 @@ class Provider:
         text = str(text)
         return text.replace(self.api_key, "***") if self.api_key else text
 
-    def _call(self, method, url, *, params=None, json_body=None, headers=None, timeout=30):
+    def _call(self, method, url, *, params=None, json_body=None, headers=None, timeout=30, ok=(200,), stop=()):
         last = "no response"
         for attempt in range(3):
             try:
@@ -98,7 +102,7 @@ class Provider:
                 last = f"network error ({exc.__class__.__name__})"
                 self.sleep(2 ** attempt)
                 continue
-            if status == 200:
+            if status in ok:
                 self.last_note = "response contained: " + _shape(body)
                 return body
             text = body if isinstance(body, str) else json.dumps(body)
@@ -107,6 +111,8 @@ class Provider:
                 raise AuthError(f"{self.label} rejected the API key (HTTP {status})")
             if status in (402, 432, 433) or any(w in low for w in _QUOTA_WORDS):
                 raise QuotaError(f"{self.label} is out of credits (HTTP {status})")
+            if status in stop:
+                raise ProviderError(f"{self.label}: HTTP {status}: not repeated (repeating it could run, and charge for, the same job again)")
             if status == 429 or status >= 500:
                 last = f"HTTP {status}"
                 wait = int(retry_after) if str(retry_after or "").isdigit() else 2 ** attempt
