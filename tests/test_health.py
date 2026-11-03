@@ -266,14 +266,14 @@ def test_every_declared_route_has_a_row_with_every_column(tmp_path):
     passing(led, source="meta_ads", route="browser")
     fail(led, K.RATE_LIMITED)
     rows = led.rows(NOW)
-    assert len(rows) == 19 and all(list(r) == H.SHEET_COLUMNS for r in rows)
+    assert len(rows) == 20 and all(list(r) == H.SHEET_COLUMNS for r in rows)
     by = {r["route_key"]: r for r in rows}
     assert by["meta_ads|browser"]["status"] == "healthy" and by["meta_ads|browser"]["verified"] == "yes" and by["meta_ads|browser"]["acceptance_result"] == "pass"
     t = by["tiktok|browser"]
     assert t["status"] == "paused" and t["error_code"] == K.RATE_LIMITED and t["pause_until"] == at(NOW, hours=1) and t["verified"] == "no"
     assert t["tier"] == "session_based" and t["access_type"] == "site_data" and "refused video downloads" in t["limits"]
     assert by["instagram|agent_reach"]["status"] == "disabled" and "stealth" in by["instagram|agent_reach"]["limits"]
-    assert by["reddit_public|public_web"]["status"] == "planned" and by["youtube_public|yt_dlp"]["status"] == "unverified"
+    assert by["reddit_public|public_web"]["status"] == "planned" and by["youtube_public|data_api"]["status"] == "unverified" and by["youtube_public|yt_dlp"]["status"] == "disabled"
     assert by["claude|api"]["route_hash"] == led.route_hash("claude", "api")
 
 
