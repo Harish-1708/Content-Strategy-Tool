@@ -69,6 +69,10 @@ class FakeBrowser:
         here = self.present_always | set(self.spec.get("present", ())) | self.dynamic_present()
         return any(s in here for s in selectors)
 
+    def form_facts(self):
+        return getattr(self, "facts", None) or {"url": self.url.split("?")[0], "title": "Log in", "inputs": [
+            {"tag": "input", "type": "text", "name": "email", "id": "", "placeholder": "Phone number, username, or email", "autocomplete": "username", "aria": "", "visible": True}]}
+
     def on_click(self, selector):
         pass
 
