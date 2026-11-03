@@ -28,6 +28,10 @@ def _no_real_browser(browser_cfg, creds, debug_dir):
     return factory
 
 
+def _no_real_ytdlp(*args, **kwargs):
+    raise ConnectionError("no real yt-dlp in tests")
+
+
 def _no_real_google(key):
     raise ConnectionError("no real Google in tests")
 
@@ -41,6 +45,7 @@ def tests_never_touch_the_real_tools(monkeypatch):
     monkeypatch.setattr(cli, "_VIDEO_RUNNER", _no_real_download)
     monkeypatch.setattr(cli, "_BROWSER_FACTORY", _no_real_browser)
     monkeypatch.setattr(cli, "_SHEETS_CONNECT", _no_real_google)
+    monkeypatch.setattr(cli, "_YTDLP_RUNNER", _no_real_ytdlp)
     real = sheets_mod.load_sheet_config
     monkeypatch.setattr(sheets_mod, "load_sheet_config", lambda path, slugs: real(FIXTURES / "sheets_blank.yaml", slugs) if path == "sheets.yaml" else real(path, slugs))
 
