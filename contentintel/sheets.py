@@ -31,6 +31,7 @@ from gspread.utils import ValueInputOption, ValueRenderOption
 
 from .export import PRODUCT_COLUMNS, VARIANT_COLUMNS, product_rows, variant_rows
 from . import benchmarks as bench
+from . import health as health_mod
 from . import ideabank as ib
 from .collectors import collected_rows
 from .research import research_sources
@@ -40,6 +41,7 @@ PRODUCTS, VARIANTS, CHANGES, STATUS = "Products", "Variants", "Changes", "Status
 RESEARCH = "Research"
 COLLECTED = "Collected"
 BENCHMARKS = "Benchmarks"
+COLLECTOR_HEALTH = "Collector Health"
 IDEABANK, REQUESTS, BRIEFS, REJECTED = "Idea Bank", "Requests", "Briefs", "Rejected"
 REQUEST_COLUMNS = ["request_id", "created", "status", "text", "region", "formats", "tools", "plan", "items_added", "run_notes"]
 BRIEF_COLUMNS = ["brief_id", "created", "brief", "ask", "status", "items", "violations", "models", "drive_link"]
@@ -56,8 +58,8 @@ STARTER_MANUAL = {PRODUCTS: ["Notes"], RESEARCH: ["Review"], COLLECTED: ["Review
                   IDEABANK: ["Decision", "Notes"], REQUESTS: ["Changes"], BRIEFS: ["Feedback"], REJECTED: ["Rescue"]}   # added only when a tab is brand new
 STAMP = "last_updated"                          # when the tool last changed that row
 
-NUMERIC = {"price_min", "price_max", "price", "compare_at_price", "engagement_pct"}
-INTEGER = {"variant_count", "image_count", "times_seen", "best_rank", "likes", "comments", "shares",
+NUMERIC = {"price_min", "price_max", "price", "compare_at_price", "engagement_pct", "success_rate_7d", "avg_items"}
+INTEGER = {"variant_count", "image_count", "times_seen", "best_rank", "likes", "comments", "shares", "attempts_7d", "acceptance_items",
            "views", "saves", "reach", "days_running", "variants", "page_followers", "score", "fit", "idea", "assets", "violations", "items_added"}
 BOOLEAN = {"excluded", "in_stock", "on_sale", "available"}
 
@@ -602,7 +604,7 @@ def _status_rows(brand, store, latest, registry, now):
     ]
 
 
-def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=None):
+def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=None, health_rows=None):
     """Sync one brand's spreadsheet. Returns a SheetReport."""
     report = report or SheetReport(brand=brand.slug, dry_run=dry_run)
     report.dry_run = dry_run
@@ -670,6 +672,11 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
                 for row in bench.sheet_rows(benchmark_state).values()}
         _sync_table(ws, tab=BENCHMARKS, columns=BENCHMARK_COLUMNS, rows_by_key=rows, key_col="name",
                     report=report, dry_run=dry_run, starter_manual=STARTER_MANUAL[BENCHMARKS])
+
+    if health_rows:                              # how each source and route is doing, and which have earned trust (the same on every brand's sheet)
+        ws = _ensure_tab(spreadsheet, COLLECTOR_HEALTH, report, dry_run, created)
+        rows = {r["route_key"]: {c: _typed(c, r[c]) for c in health_mod.SHEET_COLUMNS} for r in health_rows}
+        _sync_table(ws, tab=COLLECTOR_HEALTH, columns=health_mod.SHEET_COLUMNS, rows_by_key=rows, key_col="route_key", report=report, dry_run=dry_run)
 
     bank = ib.normalise_bank(store.read_ideabank(brand.slug))
     shown = ib.sheet_rows(bank)
@@ -767,7 +774,7 @@ def fetch_rescues(brand, store, *, key_json, share_emails, config, folder_id=Non
 
 
 def run_sheets(brands, store, *, key_json, share_emails, config, now, dry_run=False,
-               connect_fn=connect, folder_id=None):
+               connect_fn=connect, folder_id=None, health_rows=None):
     """Update every given brand's sheet. Returns [(slug, SheetReport | None, error text | None)].
 
     One brand failing never stops the others. Returns None when no key is configured."""
@@ -780,7 +787,7 @@ def run_sheets(brands, store, *, key_json, share_emails, config, now, dry_run=Fa
         try:
             sp = resolve_spreadsheet(client, brand, store, config, share_emails, report,
                                      dry_run, bot_email, folder_id=folder_id)
-            update_brand_sheet(brand, store, sp, now, dry_run=dry_run, report=report)
+            update_brand_sheet(brand, store, sp, now, dry_run=dry_run, report=report, health_rows=health_rows)
             results.append((brand.slug, report, None))
         except (SheetsError, gspread.exceptions.GSpreadException,
                 requests.exceptions.RequestException) as exc:
