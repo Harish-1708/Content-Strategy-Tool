@@ -1,0 +1,220 @@
+# The AI layer's checks, in two separate jobs so a pretend answer can never be mistaken for a real one.
+#
+#   mock   Always runs. Builds the PINNED gateway (the exact commit in ai/gateway.lock.json) and starts it on localhost, puts a fake
+#          model behind it and checks the plumbing: login, key, the model allowlist, routing, the answer-provider check, token
+#          counts, log masking. Then it checks the lanes and routes with a scripted stand-in. It uses no provider account and proves
+#          NOTHING about whether any real provider works.
+#   live   Runs only when you tick "live". Uses the real credentials in GitHub Secrets and makes tiny real calls to the providers
+#          you have switched on in ai_providers.yaml, and to Claude (counted against the spending cap). It reports application
+#          problems (ours to fix) separately from external provider problems (rate limits, outages, unusable answers).
+#
+# Actions > AI gateway > Run workflow. Nothing is spent unless you tick live AND a provider is switched on AND its secret exists.
+# No Slack message is sent. A problem on our side turns the run red; a provider's own failure does not (unless you tick strict).
+name: AI gateway
+
+on:
+  workflow_dispatch:
+    inputs:
+      live:
+        description: "Make real calls with real credentials (otherwise only the mock checks run)"
+        type: boolean
+        default: false
+      evaluate:
+        description: "live only: also run the evaluation tasks on the enabled providers (uses free quota; Claude routes are not included)"
+        type: boolean
+        default: false
+      only:
+        description: "live only: limit to these providers, comma-separated (blank: every enabled provider)"
+        required: false
+        default: ""
+      strict:
+        description: "live only: also turn the run red for external provider problems"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalogue-data
+  cancel-in-progress: false
+
+jobs:
+  mock:
+    name: Mock-provider checks (real gateway, no provider account)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - run: pip install -r requirements.txt
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Fetch and build the pinned gateway
+        shell: bash
+        run: |
+          commit=$(python -c "import json;print(json.load(open('ai/gateway.lock.json'))['gateway']['commit'])")
+          mkdir gateway-src && cd gateway-src
+          git init --quiet
+          git remote add origin https://github.com/tashfeenahmed/freellmapi
+          git fetch --quiet --depth 1 origin "$commit"
+          git checkout --quiet FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$commit" || { echo "::error::The fetched gateway is not the pinned commit"; exit 1; }
+          npm ci --workspace=shared --workspace=server --include-workspace-root --no-audit --no-fund
+          npm run build -w shared -w server
+
+      - name: Real gateway, fake model (MOCK-PROVIDER result)
+        shell: bash
+        run: |
+          { echo "### Real pinned gateway with a fake model (mock-provider result)"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel ai smoke --gateway-dir gateway-src 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Lanes, routes and the plan (nothing is called)
+        shell: bash
+        run: |
+          { echo "### What would run, for internal data (no call is made)"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel ai plan --data-class internal 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Scripted stand-in check (MOCK result)
+        shell: bash
+        run: |
+          { echo "### Scripted stand-in (mock): proves our code only"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel ai check 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          python -m contentintel ai eval 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+  live:
+    name: Live-provider checks (real calls)
+    if: inputs.live == true
+    needs: mock
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - run: pip install -r requirements.txt
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Fetch and build the pinned gateway
+        shell: bash
+        run: |
+          commit=$(python -c "import json;print(json.load(open('ai/gateway.lock.json'))['gateway']['commit'])")
+          mkdir gateway-src && cd gateway-src
+          git init --quiet
+          git remote add origin https://github.com/tashfeenahmed/freellmapi
+          git fetch --quiet --depth 1 origin "$commit"
+          git checkout --quiet FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$commit" || { echo "::error::The fetched gateway is not the pinned commit"; exit 1; }
+          npm ci --workspace=shared --workspace=server --include-workspace-root --no-audit --no-fund
+          npm run build -w shared -w server
+
+      - name: What is switched on, and what would run
+        shell: bash
+        run: |
+          { echo "### Providers switched on"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel ai providers 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Live check (LIVE result)
+        id: live
+        continue-on-error: true
+        shell: bash
+        env:
+          ONLY: ${{ inputs.only }}
+          STRICT: ${{ inputs.strict }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FREEAPI_ENCRYPTION_KEY: ${{ secrets.FREEAPI_ENCRYPTION_KEY }}
+          FREEAPI_ADMIN_PASSWORD: ${{ secrets.FREEAPI_ADMIN_PASSWORD }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set +e
+          args=(--live)
+          if [ -n "$ONLY" ]; then args+=(--only "$ONLY"); fi
+          if [ "$STRICT" = "true" ]; then args+=(--strict); fi
+          { echo "### Live check (real calls)"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel ai check "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Live evaluation (LIVE result)
+        id: evaluate
+        if: inputs.evaluate == true
+        continue-on-error: true
+        shell: bash
+        env:
+          ONLY: ${{ inputs.only }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FREEAPI_ENCRYPTION_KEY: ${{ secrets.FREEAPI_ENCRYPTION_KEY }}
+          FREEAPI_ADMIN_PASSWORD: ${{ secrets.FREEAPI_ADMIN_PASSWORD }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set +e
+          args=(--live)
+          if [ -n "$ONLY" ]; then args+=(--only "$ONLY"); fi
+          { echo "### Live evaluation (real calls)"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel ai eval "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Usage and spending so far
+        if: always()
+        shell: bash
+        run: |
+          { echo "### AI usage and spending"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel ai usage 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save the results
+        if: always()
+        shell: bash
+        run: |
+          git config user.name "catalogue-ai"
+          git config user.email "catalogue-ai@users.noreply.github.com"
+          git add -f data
+          if git diff --cached --quiet; then
+            echo "No changes to save."
+          else
+            git commit -m "AI live check $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase
+            git push
+          fi
+
+      - name: Show the run as red when the problem is ours
+        if: steps.live.outcome == 'failure' || steps.evaluate.outcome == 'failure'
+        run: exit 1
