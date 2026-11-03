@@ -13,7 +13,7 @@ FLOW = yaml.safe_load(TEXT)
 def test_it_runs_weekly_and_by_hand_with_its_three_choices():
     on = FLOW[True]
     assert on["schedule"] == [{"cron": "17 6 * * 4"}]
-    assert set(on["workflow_dispatch"]["inputs"]) == {"only", "plan", "brand"}
+    assert set(on["workflow_dispatch"]["inputs"]) == {"only", "plan", "brand", "clear"}
     assert on["workflow_dispatch"]["inputs"]["plan"]["type"] == "boolean"
 
 
