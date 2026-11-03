@@ -203,7 +203,7 @@ names marked set or not set, so you can see what the run can see (the values are
 | Secret | What it is for | Needed? | What to paste |
 |---|---|---|---|
 | `INSTAGRAM_COOKIES` | Instagram posts, logged in as the dummy account | for Instagram | the dummy account's cookies, exported as a JSON list |
-| `INSTAGRAM_USERNAME` and `INSTAGRAM_PASSWORD` | a backup way to log in when there are no cookies | optional; both or neither | the dummy account's login |
+| `INSTAGRAM_USERNAME` and `INSTAGRAM_PASSWORD` | a backup way to log in: used when there are no cookies and, for Instagram and TikTok (`password_fallback: when_cookies_fail` in `browser.yaml`), when the site refuses the cookies | optional; both or neither | the dummy account's login |
 | `TIKTOK_COOKIES` | TikTok posts, logged in as the dummy account | for TikTok | cookies exported as a JSON list |
 | `TIKTOK_USERNAME` and `TIKTOK_PASSWORD` | a backup way to log in | optional; both or neither | the dummy account's login |
 | `GEMINI_COOKIES` | Gemini Deep Research, logged in as the dummy Google account | for Deep Research | cookies exported as a JSON list (Google blocks automated sign-in, so there is no password option) |
@@ -337,7 +337,7 @@ names marked set or not set, so you can see what the run can see (the values are
 | Secret | What it is for | Needed? | What to paste |
 |---|---|---|---|
 | `INSTAGRAM_COOKIES` | Instagram posts, logged in as the dummy account | for Instagram | the dummy account's cookies, exported as a JSON list |
-| `INSTAGRAM_USERNAME` and `INSTAGRAM_PASSWORD` | a backup way to log in when there are no cookies | optional; both or neither | the dummy account's login |
+| `INSTAGRAM_USERNAME` and `INSTAGRAM_PASSWORD` | a backup way to log in: used when there are no cookies and, for Instagram and TikTok (`password_fallback: when_cookies_fail` in `browser.yaml`), when the site refuses the cookies | optional; both or neither | the dummy account's login |
 | `TIKTOK_COOKIES` | TikTok posts, logged in as the dummy account | for TikTok | cookies exported as a JSON list |
 | `TIKTOK_USERNAME` and `TIKTOK_PASSWORD` | a backup way to log in | optional; both or neither | the dummy account's login |
 | `GEMINI_COOKIES` | Gemini Deep Research, logged in as the dummy Google account | for Deep Research | cookies exported as a JSON list (Google blocks automated sign-in, so there is no password option) |
