@@ -197,8 +197,10 @@ def test_sync_all_keeps_each_brand_in_its_own_folder_and_isolates_failures(tmp_p
     assert run("sync", "--all") == 3
     for slug, count in (("swoveralls", 72), ("duderobe", 25), ("defi_snacks", 7)):
         assert run("confirm-baseline", "--brand", slug, "--count", str(count), "--by", "alice") == 0
-    folders = sorted(p.name for p in data.iterdir())
+    folders = sorted(p.name for p in data.iterdir() if p.name != "_shared")
     assert folders == ["defi_snacks", "duderobe", "swoveralls"]
+    # the one shared folder holds only the collector health ledger (the catalogue fetch is recorded there), never brand data
+    assert sorted(p.name for p in (data / "_shared").iterdir()) == ["collector_health.json"]
     counts = {slug: len(read_csv(data / slug / "catalogue" / "products.csv")) for slug in folders}
     assert counts == {"defi_snacks": 7, "duderobe": 25, "swoveralls": 72}
 
