@@ -60,7 +60,7 @@ collectors:
     monthly_items: 100
     items_per_run: 30
     max_cost_per_run_usd: 1.0     # a hard dollar ceiling Apify enforces for a single run
-    check_max_cost_usd: 0.25      # the same ceiling for the Check / Acceptance test runs only. Some actors refuse a ceiling below their own minimum
+    check_max_cost_usd: 0.50      # the same ceiling for the Check / Acceptance test runs only. Some actors refuse a ceiling below their own minimum
                                   # (the TikTok one wants $0.50); that check is then skipped, not failed. Raise this only if you approve the spending.
     actors:                       # swap a scraper for another here without touching any code
       meta_ads: apify/facebook-ads-scraper
