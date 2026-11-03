@@ -891,16 +891,24 @@ def ensure_session(browser, site, site_cfg, creds):
         raise Challenge(f"{site}: the site asked for a security check (a code, a puzzle or 'confirm it's you')"
                         f"{_closed_note(site_cfg)}. "
                         f"Log in once as the dummy account in a normal browser, then export its cookies into {cookies_name}")
-    # A password login is the backup for "no cookies". When cookies WERE given and the site did not accept them, a password
-    # login from a data-centre address is the likeliest way to get the account warned, so it is not tried: the cookies are
-    # reported instead (below), with what they contained.
-    if state != "ok" and not creds.get("cookies") and creds.get("username") and creds.get("password") and site_cfg.get("login_steps"):
+    # The password login is the backup. Each site's `password_fallback` in browser.yaml says when it is used:
+    #   no_cookies_only (the default): only when no cookies were given;
+    #   when_cookies_fail: also when cookies were given and the site plainly did not accept them (the page shows its login
+    #   wall). A page that merely looks unfamiliar is never logged into, because that is not proof the cookies failed.
+    # A site's login can still stop at a security check or a warning; both are caught below and the account is rested.
+    cookies_given = bool(creds.get("cookies"))
+    password_ok = (not cookies_given) or (site_cfg.get("password_fallback", "no_cookies_only") == "when_cookies_fail" and state == "login_wall")
+    if state != "ok" and password_ok and creds.get("username") and creds.get("password") and site_cfg.get("login_steps"):
+        if cookies_given:
+            print(f"::warning::{site}: the cookies in {cookies_name} were not accepted, so the username and password were used instead. "
+                  f"Export fresh cookies into {cookies_name} soon.{cookie_facts(site, creds)}")
         try:
             run_steps(browser, site_cfg["login_steps"], creds)
         except BrowserError as exc:
             browser.screenshot(f"login-form-{site}")
             facts = getattr(browser, "form_facts", None)
-            raise BrowserError(f"{exc}. Before logging in the page looked '{state}'; after trying, " + describe_form_facts(facts() if callable(facts) else None)) from None
+            raise BrowserError(f"{exc}. Before logging in the page looked '{state}'; after trying, " + describe_form_facts(facts() if callable(facts) else None)
+                               + (f".{cookie_facts(site, creds)}" if cookies_given else "")) from None
         check_warning(browser, site, site_cfg)
         state = session_state(browser, site_cfg)
         if state == "challenge":
@@ -1912,6 +1920,7 @@ def check_collectors(browser_factory, creds, settings, browser_cfg, store, ledge
                                      if not unconfirmed else f"Gemini opened (login looks {state}) but {unconfirmed}")
                     continue
                 found, stats = run_browser_task(browser, CHECK_SEEDS[source](), items, site_cfg, browser_cfg, site_creds)
+                browser.wait(site_cfg.get("settle_seconds", 3))        # the check stops as soon as it has enough; give the page time to draw before its picture
                 browser.screenshot(f"check-{source}")
         except (LoginWall, Challenge, BrowserError) as exc:
             row["detail"] = str(exc)
