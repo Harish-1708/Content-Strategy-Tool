@@ -9,8 +9,8 @@ Written for the person running the tool. Nothing here needs a computer of your o
 | Meta ads through Apify | A bug in the tool (Apify answers a good run with the number 201; the tool only accepted 200). **Fixed.** | You: upload the files and run Acceptance again. |
 | Instagram through Apify | The same bug. **Fixed.** | The same. |
 | TikTok through Apify | The check's spending ceiling ($0.25) is below what that actor allows ($0.50). Nothing was run and nothing was spent. | **You decide** whether to approve $0.50 (below). Until then the check is shown as skipped. |
-| TikTok in the browser | Not yet known: see "Why the cause is not known yet". The tool no longer tries a password login when cookies were given, and it now saves a picture and a list of the page's boxes. | You: put fresh cookies in the secret, then run Acceptance. |
-| Instagram in the browser | The same. | The same. |
+| TikTok in the browser | Expired cookies, then a backup password login that could not find its box. Fresh cookies fixed it; the password is now a controlled backup and failures leave evidence. | Done: passed on the second run. |
+| Instagram in the browser | The same; Instagram is also given more time to load. | Done: passed on the second run. |
 | Gemini Deep Research | Google did not accept the saved cookies (the page still showed its Sign in button). A credential that has to be renewed; not a bug. | You: export fresh cookies the careful way (below). |
 | YouTube | YouTube refuses `yt-dlp` from GitHub's servers ("Sign in to confirm you're not a bot"). A restriction on their side. The tool now uses YouTube's official Data API instead. | You: create a free API key (below). |
 
@@ -31,22 +31,29 @@ The TikTok actor refuses any run whose cost ceiling is below **$0.50**. The Acce
 
 ## 3. TikTok and Instagram in the browser
 
-### Why the cause is not known yet
+### What it was
 
-The message "could not find the username box" comes from the backup password login. That backup ran because the page was not recognised as logged in, which has three possible causes: the saved cookies had expired, the site showed a page we do not recognise, or GitHub's servers were shown a block page. The old code threw away which one it was. I could not open those sites from where I work, so I have **not** changed any selector in `browser.yaml`: guessing would risk breaking a login that may be fine.
+The message "could not find the username box" came from the backup password login. That backup ran because the page was not recognised as logged in (expired cookies, an unfamiliar page, or a block page), and the old code threw away which one it was. The second Acceptance run, with fresh cookies, passed both routes, and the Instagram picture from that run shows a logged-in page.
 
-### What changed
+### Cookies expire, so the password stays as the backup
 
-- **No more password login over cookies.** The README already says the username and password are the backup for "no cookies". When cookies are given and refused, a password login from a data-centre address is the likeliest way to get the dummy account warned. Now the run stops with a plain "not logged in, the cookies may have expired" message, with counts (never values) of what the cookies contained.
-- **Evidence.** If the backup login is ever used and cannot find a box, the run saves a picture (`login-form-instagram` or `login-form-tiktok`) and the error lists the page's boxes (kind, name, placeholder; never a value).
+You asked to keep the usernames and passwords because cookies alone will not last. They stay. Each site now has a setting in `browser.yaml`:
+
+- `password_fallback: no_cookies_only` (the built-in default): the password is used only when no cookies are given.
+- `password_fallback: when_cookies_fail`: the password is also used when cookies were given and the site plainly refused them (its login wall appears). **Instagram and TikTok are set to this.** The run prints a warning line telling you the cookies were refused and need replacing.
+- A page that merely looks unfamiliar is never logged into, because that does not prove the cookies failed.
+- Google (Gemini) never gets a password login.
+
+Honest limits: this backup has **not run live yet** (the cookies have worked since), and its login steps in `browser.yaml` are still first guesses. If it is ever used and cannot find a box, the run saves a picture and lists the page's boxes, which is what is needed to fix the steps. A password login from GitHub's servers can also stop at a code or a puzzle; the tool then stops and rests the account, as before.
+
+### Instagram is given time to draw its grid
+
+Instagram's grid loads slowly, and the old waits were short (3 seconds after opening a page, 3 after each scroll). Instagram now waits **10 seconds** after opening a page and **6 seconds** after each scroll (`settle_seconds` and `pacing: scroll_pause_seconds` under `instagram` in `browser.yaml`). Other sites keep the general values. The test run's picture is taken after a further short wait. Note that the test deliberately stops as soon as it has the 3 items it needs, so its picture shows a partly loaded page; that is expected. A full-page picture also never scrolls, so tiles lower down can look blank even when the data was read. I could not test these timings on the live site; if a Collect still returns too few Instagram posts, raise the two numbers.
 
 ### What you do
 
-1. Export fresh cookies for the dummy Instagram and TikTok accounts (steps are in the README under "cookies"; use a normal browser window logged in as the dummy account, export as JSON).
-2. In GitHub: Settings > Secrets and variables > Actions > open `INSTAGRAM_COOKIES` > Update secret > paste > Update. The same for `TIKTOK_COOKIES`. Do not paste cookies into a chat or an issue.
-3. Optional but safer: delete the `INSTAGRAM_USERNAME`, `INSTAGRAM_PASSWORD`, `TIKTOK_USERNAME` and `TIKTOK_PASSWORD` secrets. The tool no longer uses them when cookies exist.
-4. Actions > Acceptance > Run workflow with **clear** set to `tiktok,instagram` (a failed route rests for a while and a run skips resting routes; this lifts the rest).
-5. If a route still fails, open that run, scroll to Artifacts, download `debug`, and look at the pictures named `login-wall-...`, `unknown-state-...` or `login-form-...`. Send me the picture and the error line: that is the evidence the selectors need.
+1. Keep the secrets as they are. When a run prints the warning about refused cookies, replace `INSTAGRAM_COOKIES` or `TIKTOK_COOKIES` with a fresh export.
+2. If a route fails, open that run, download the `debug` artifact under Artifacts, and look at the pictures named `login-wall-...`, `unknown-state-...` or `login-form-...`. Send me the picture and the error line.
 
 ## 4. Gemini Deep Research
 
@@ -87,9 +94,21 @@ Create the key (free; no payment card; do not turn on billing):
 |---|---|
 | `INSTAGRAM_COOKIES`, `TIKTOK_COOKIES`, `GEMINI_COOKIES` | Replace with fresh exports. |
 | `YOUTUBE_API_KEY` | New. |
-| `INSTAGRAM_USERNAME`, `INSTAGRAM_PASSWORD`, `TIKTOK_USERNAME`, `TIKTOK_PASSWORD` | Optional: delete (no longer used while cookies exist). |
+| `INSTAGRAM_USERNAME`, `INSTAGRAM_PASSWORD`, `TIKTOK_USERNAME`, `TIKTOK_PASSWORD` | Keep. They are the backup when the cookies are refused (see section 3). |
 | `APIFY_TOKEN` | Keep. Each Acceptance run makes small capped runs on Apify (see section 1). |
 
 ## What was and was not tested
 
 Tested here with stand-ins for the websites: the Apify answers (200, 201, 400, 408, 5xx), the cost-ceiling skip, the settings, the password-login rule, the evidence capture, the YouTube API answers and their error codes, the workflow wiring and these documents. **Not** tested: any real website, real cookies, a real browser page (the script that lists a page's boxes has not run in a real browser), or the YouTube API with a real key. The first real run of each is your next Acceptance run.
+
+
+## 7. The second Acceptance run
+
+Five routes passed (TikTok and Instagram in the browser, Instagram through Apify, Gemini Deep Research, YouTube through the Data API) and one was skipped as designed (TikTok through Apify, which needs your decision in section 2).
+
+Two rows still say "degraded" only because of the **first** run's false failures, which a later run has not yet replaced:
+
+- **Meta ads through Apify:** it was not part of the second run. Run Acceptance with only `meta_ads` and clear `meta_ads`. It makes one small Apify run capped at $0.25.
+- **TikTok through Apify:** it stays that way until the check can run, which needs the $0.50 decision in section 2.
+
+A healthy row can still show an old "last error". That is the last error the route ever had, not a current problem.
