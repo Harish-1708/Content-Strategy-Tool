@@ -344,7 +344,7 @@ def test_the_sheet_gets_a_collector_health_tab_that_updates_in_place(swov, store
     sp = FakeSpreadsheet("sid")
     sheets.update_brand_sheet(swov, store, sp, NOW, health_rows=ledger.rows(NOW))
     header, rows = read(sp.worksheet("Collector Health"))
-    assert header[:len(H.SHEET_COLUMNS)] == H.SHEET_COLUMNS and len(rows) == 19
+    assert header[:len(H.SHEET_COLUMNS)] == H.SHEET_COLUMNS and len(rows) == 20
     by = {r["route_key"]: r for r in rows}
     assert by["meta_ads|browser"]["status"] == "healthy" and by["meta_ads|browser"]["acceptance_items"] == 4 and by["meta_ads|browser"]["acceptance_result"] == "pass"
     assert by["meta_ads|browser"]["success_rate_7d"] == 100 and by["meta_ads|browser"]["attempts_7d"] == 1
@@ -352,7 +352,7 @@ def test_the_sheet_gets_a_collector_health_tab_that_updates_in_place(swov, store
     ledger.observe("tiktok", "browser", ok=False, code=K.RATE_LIMITED, message="429", now=at(NOW, hours=1))
     sheets.update_brand_sheet(swov, store, sp, at(NOW, hours=1), health_rows=ledger.rows(at(NOW, hours=1)))
     _, again = read(sp.worksheet("Collector Health"))
-    assert len(again) == 19 and {r["route_key"]: r for r in again}["tiktok|browser"]["status"] == "paused"
+    assert len(again) == 20 and {r["route_key"]: r for r in again}["tiktok|browser"]["status"] == "paused"
     assert {r["route_key"]: r for r in again}["tiktok|browser"]["error_code"] == "RATE_LIMITED"
 
 
@@ -367,10 +367,10 @@ def test_a_person_reordering_or_adding_columns_to_the_health_tab_is_respected(sw
     sheets.update_brand_sheet(swov, store, sp, NOW, health_rows=ledger.rows(NOW))
     ws = sp.worksheet("Collector Health")
     from fake_sheets import insert_column
-    insert_column(ws, 1, "My notes", {row: "note" for row in range(2, 21)})
+    insert_column(ws, 1, "My notes", {row: "note" for row in range(2, 22)})
     sheets.update_brand_sheet(swov, store, sp, at(NOW, hours=1), health_rows=ledger.rows(at(NOW, hours=1)))
     header, rows = read(ws)
-    assert header[0] == "My notes" and len(rows) == 19 and all(r["My notes"] == "note" for r in rows) and "route_key" in header
+    assert header[0] == "My notes" and len(rows) == 20 and all(r["My notes"] == "note" for r in rows) and "route_key" in header
 
 
 # ---- the command line -------------------------------------------------------------------------------------------------------
@@ -397,7 +397,7 @@ def test_health_prints_every_route_and_json_matches(run_cli, capsys):
     assert "meta_ads / browser" in out and "unverified" in out and "instagram / agent_reach" in out and "disabled" in out and "planned" in out
     assert run_cli("health", "--json") == 0
     rows = json.loads(capsys.readouterr().out)
-    assert len(rows) == 19 and rows[0]["route_key"] == "meta_ads|browser"
+    assert len(rows) == 20 and rows[0]["route_key"] == "meta_ads|browser"
     assert run_cli("health", "--matrix") == 0
     assert "OFF EXPERIMENTAL" in capsys.readouterr().out
 
@@ -436,34 +436,50 @@ def test_acceptance_plan_names_what_can_and_cannot_run_and_calls_nothing(run_cli
     assert "claude / api / check: cannot run: no ANTHROPIC_API_KEY" in out and "instagram / agent_reach" not in out
 
 
+class YT:
+    """A stand-in for a requests response from YouTube's Data API."""
+
+    def __init__(self, status, body):
+        self.status_code, self._body = status, body
+
+    def json(self):
+        return self._body
+
+
+OK_VIDEO = {"items": [{"snippet": {"title": "Me at the zoo"}, "statistics": {"viewCount": "1234567"}}]}
+
+
 class Done:
     def __init__(self, code=0, out="", err=""):
         self.returncode, self.stdout, self.stderr = code, out, err
 
 
 def test_a_passing_youtube_acceptance_run_earns_trust_and_is_remembered(run_cli, capsys, monkeypatch, tmp_path):
-    monkeypatch.setattr(cli, "_YTDLP_RUNNER", lambda cmd, **kw: Done(0, json.dumps({"title": "Me at the zoo"})))
+    monkeypatch.setenv("YOUTUBE_API_KEY", "AIzaFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKE0")
+    monkeypatch.setattr(cli, "_YT_API_GET", lambda url, **kw: YT(200, OK_VIDEO))
     monkeypatch.delenv("GITHUB_SHA", raising=False)                       # GitHub always sets it; the test must not depend on where it runs
     assert run_cli("acceptance", "--only", "youtube_public") == 0
-    assert "PASSED" in capsys.readouterr().out
-    store = Store(tmp_path / "data")
-    [rec] = store.read_acceptance()
-    assert rec["source"] == "youtube_public" and rec["passed"] is True and rec["items"] == 1 and rec["version"] == "dev"
+    out = capsys.readouterr().out
+    assert "PASSED" in out and "video_details" in out and "1 item(s)" in out and "AIzaFAKE" not in out
+    [rec] = Store(tmp_path / "data").read_acceptance()
+    assert rec["source"] == "youtube_public" and rec["route"] == "data_api" and rec["passed"] is True and rec["items"] == 1 and rec["version"] == "dev"
     assert run_cli("health", "--json") == 0
-    row = next(r for r in json.loads(capsys.readouterr().out) if r["source"] == "youtube_public")
-    assert row["status"] == "healthy" and row["verified"] == "yes" and row["acceptance_result"] == "pass" and row["acceptance_items"] == 1
+    rows = {r["route_key"]: r for r in json.loads(capsys.readouterr().out)}
+    assert rows["youtube_public|data_api"]["status"] == "healthy" and rows["youtube_public|data_api"]["acceptance_items"] == 1
+    assert rows["youtube_public|yt_dlp"]["status"] == "disabled"           # the blocked route is off and is never checked
 
 
 def test_a_refused_youtube_acceptance_run_fails_loudly_with_the_real_code(run_cli, capsys, monkeypatch, tmp_path):
-    monkeypatch.setattr(cli, "_YTDLP_RUNNER", lambda cmd, **kw: Done(1, "", "ERROR: [youtube] jNQXAC9IVRw: Sign in to confirm you're not a bot"))
+    monkeypatch.setenv("YOUTUBE_API_KEY", "AIzaFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKE0")
+    monkeypatch.setattr(cli, "_YT_API_GET", lambda url, **kw: YT(403, {"error": {"message": "quota", "errors": [{"reason": "quotaExceeded"}]}}))
     assert run_cli("acceptance", "--only", "youtube_public") == 1
     out = capsys.readouterr().out
-    assert "FAILED" in out and "PLATFORM_BLOCKED" in out and "::error::youtube_public / yt_dlp failed acceptance (PLATFORM_BLOCKED)" in out
+    assert "FAILED" in out and "RATE_LIMITED" in out and "::error::youtube_public / data_api failed acceptance (RATE_LIMITED)" in out and "AIzaFAKE" not in out
     [rec] = Store(tmp_path / "data").read_acceptance()
-    assert rec["passed"] is False and rec["code"] == K.PLATFORM_BLOCKED
+    assert rec["passed"] is False and rec["code"] == K.RATE_LIMITED
     assert run_cli("health", "--json") == 0
-    row = next(r for r in json.loads(capsys.readouterr().out) if r["source"] == "youtube_public")
-    assert row["status"] == "paused" and row["error_code"] == K.PLATFORM_BLOCKED and row["acceptance_result"] == "fail" and row["verified"] == "no"
+    row = next(r for r in json.loads(capsys.readouterr().out) if r["route_key"] == "youtube_public|data_api")
+    assert row["status"] == "paused" and row["error_code"] == K.RATE_LIMITED and row["acceptance_result"] == "fail" and row["verified"] == "no"
     assert run_cli("acceptance", "--only", "youtube_public", "--plan") == 0
 
 
@@ -592,7 +608,7 @@ def test_the_sheets_command_puts_the_health_tab_on_the_sheet(tmp_path, monkeypat
     monkeypatch.setenv("SHEET_SHARE_EMAIL", EMAIL)
     assert cli.main(["sheets", "--brand", "swoveralls", "--data-dir", str(data), "--sheets-config", str(tmp_path / "none.yaml")]) == 0
     header, rows = read(client.created[0].worksheet("Collector Health"))
-    assert header[:len(H.SHEET_COLUMNS)] == H.SHEET_COLUMNS and len(rows) == 19 and {r["status"] for r in rows} == {"unverified", "disabled", "planned"}
+    assert header[:len(H.SHEET_COLUMNS)] == H.SHEET_COLUMNS and len(rows) == 20 and {r["status"] for r in rows} == {"unverified", "disabled", "planned"}
 
 
 def test_without_sources_yaml_the_sheets_command_still_works_and_adds_no_health_tab(tmp_path, monkeypatch, swov):
@@ -719,7 +735,8 @@ def test_search_checks_are_paid_for_once_per_service_not_once_per_kind(run_cli, 
 
 
 def test_the_acceptance_record_names_the_commit_it_ran_on(run_cli, monkeypatch, tmp_path):
-    monkeypatch.setattr(cli, "_YTDLP_RUNNER", lambda cmd, **kw: Done(0, json.dumps({"title": "Me at the zoo"})))
+    monkeypatch.setenv("YOUTUBE_API_KEY", "AIzaFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKE0")
+    monkeypatch.setattr(cli, "_YT_API_GET", lambda url, **kw: YT(200, OK_VIDEO))
     monkeypatch.setenv("GITHUB_SHA", "4b6aceca6445f0e1d2c3b4a5968778695a4b3c2d")
     assert run_cli("acceptance", "--only", "youtube_public") == 0
     assert Store(tmp_path / "data").read_acceptance()[0]["version"] == "4b6aceca6445"          # the first 12 characters of the commit id
