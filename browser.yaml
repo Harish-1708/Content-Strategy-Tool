@@ -7,8 +7,11 @@
 # Logging in: Instagram, TikTok and Google often stop automated logins from GitHub's servers with
 # a code or a puzzle. The reliable way is to log in ONCE as the dummy account in an ordinary
 # browser, export its cookies (for example with the Cookie-Editor extension, "Export as JSON"), and
-# paste the JSON into the repository secret named below. The username/password route is only a
-# best-effort fallback. Google blocks automated sign-in, so Gemini uses cookies only.
+# paste the JSON into the repository secret named below. The username/password route is a
+# fallback, controlled per site by `password_fallback`: no_cookies_only (the default) uses it only when no
+# cookies are given; when_cookies_fail also uses it when the site plainly rejected the cookies (a warning
+# line then asks you to refresh them). It can still stop at a code or a puzzle, and then the account rests.
+# Google blocks automated sign-in, so Gemini uses cookies only.
 pacing:
   min_delay_seconds: 3          # a random pause before opening each page
   max_delay_seconds: 8
@@ -27,6 +30,9 @@ sites:
     needs_login: true
     secrets: {cookies: INSTAGRAM_COOKIES, username: INSTAGRAM_USERNAME, password: INSTAGRAM_PASSWORD}
     home: https://www.instagram.com/
+    password_fallback: when_cookies_fail
+    settle_seconds: 10            # Instagram draws its grid slowly: wait this long after opening a page (the general default is 3)
+    scroll_pause_seconds: 6       # and this long after each scroll, so more posts have loaded before the next read (Careful Mode's pacing, below, overrides it)
     hashtag_url: https://www.instagram.com/explore/tags/{tag}/
     json_url_hints: [graphql, /api/v1/]
     link_contains: ['/p/', '/reel/']
@@ -60,6 +66,7 @@ sites:
   tiktok:
     needs_login: true
     secrets: {cookies: TIKTOK_COOKIES, username: TIKTOK_USERNAME, password: TIKTOK_PASSWORD}
+    password_fallback: when_cookies_fail
     home: https://www.tiktok.com/
     hashtag_url: https://www.tiktok.com/tag/{tag}
     profile_url: https://www.tiktok.com/@{name}
