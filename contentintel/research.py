@@ -17,6 +17,7 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 import yaml
 
 from .collectors import CollectError, parse_collect_config
+from . import contract
 from .providers import PROVIDER_NAMES, RECENCY, AuthError, ProviderError, QuotaError
 
 KINDS = ("web", "news")
@@ -391,8 +392,19 @@ def _urls(results):
     return [canonical_url(r["url"]) for r in results if r.get("url")]
 
 
+def _seen(health, name, now, *, exc=None, items=0):
+    """Tell the health ledger how a search service just did (nothing happens without one)."""
+    if health is None:
+        return
+    if exc is None:
+        health.observe("web_search", name, ok=True, items=items, now=now)
+        return
+    err = contract.classify_exception(exc)
+    health.observe("web_search", name, ok=False, code=err["code"], message=err["message"], now=now)
+
+
 def run_research(brands, store, *, providers, settings, now, configs=None, dry_run=False,
-                 max_queries=None, root="brands", compare=False, compare_limit=None):
+                 max_queries=None, root="brands", compare=False, compare_limit=None, health=None):
     """Plan, route and run searches for `brands`. `providers` maps name -> Provider."""
     result = ResearchResult(run_id=secrets.token_hex(4), now=now, dry_run=dry_run,
                             enabled=sorted(providers), settings=settings)
@@ -431,7 +443,7 @@ def run_research(brands, store, *, providers, settings, now, configs=None, dry_r
             key = cache_key(q)
             if compared < compare_cap and attempted < limit:
                 outcome = _compare_one(q, key, providers, disabled, exhausted, settings, ledger,
-                                       reported, past, now, store, brand, result, dry_run, spent)
+                                       reported, past, now, store, brand, result, dry_run, spent, health)
                 if outcome == "reused":
                     report.cached.append(q)
                     continue
@@ -452,6 +464,10 @@ def run_research(brands, store, *, providers, settings, now, configs=None, dry_r
             for name in settings.routing[q.kind]:
                 if name not in providers or name in disabled or name in exhausted:
                     continue
+                resting = health.is_paused("web_search", name, now) if health is not None else None
+                if resting:
+                    reasons.append(("paused", name, resting["message"]))
+                    continue
                 provider = providers[name]
                 cost = provider.cost(q.kind, q.depth)
                 if _allowance(name, settings.caps, ledger, reported) < cost:
@@ -465,17 +481,21 @@ def run_research(brands, store, *, providers, settings, now, configs=None, dry_r
                                                   country=q.country, recency=q.recency,
                                                   depth=q.depth)
                     except AuthError as exc:
+                        _seen(health, name, now, exc=exc)
                         disabled[name] = str(exc)
                         result.notes.append(f"{name} switched off for this run: {exc}")
                         result.notes_with_problems.append(name)
                         continue
                     except QuotaError as exc:
+                        _seen(health, name, now, exc=exc)
                         exhausted.add(name)
                         result.notes.append(f"{name} is out of credits: {exc}")
                         continue
                     except ProviderError as exc:
+                        _seen(health, name, now, exc=exc)
                         reasons.append(("error", name, str(exc)))
                         continue
+                    _seen(health, name, now, items=len(results))
                 ledger.charge(name, cost)
                 if reported.get(name) is not None:
                     reported[name] -= cost
@@ -486,7 +506,8 @@ def run_research(brands, store, *, providers, settings, now, configs=None, dry_r
                 if errors:
                     report.failed.append((q, "; ".join(errors)))
                 elif reasons:
-                    report.skipped.append((q, "out of credits under your caps"))
+                    report.skipped.append((q, "out of credits under your caps" if any(k == "budget" for k, _, _ in reasons)
+                                           else "every search service is resting after a failure"))
                 else:
                     report.skipped.append((q, "no provider available for this kind of search"))
                 continue
@@ -511,7 +532,7 @@ def run_research(brands, store, *, providers, settings, now, configs=None, dry_r
 
 
 def _compare_one(q, key, providers, disabled, exhausted, settings, ledger, reported, past, now,
-                 store, brand, result, dry_run, spent):
+                 store, brand, result, dry_run, spent, health=None):
     """Run one search on every usable provider so their answers can be compared.
 
     Returns "reused" when every provider already has a fresh answer and nothing needs paying
@@ -520,6 +541,10 @@ def _compare_one(q, key, providers, disabled, exhausted, settings, ledger, repor
     answers, used, credits, failures = {}, [], 0, {}
     for name in sorted(providers):
         if name in disabled or name in exhausted:
+            continue
+        resting = health.is_paused("web_search", name, now) if health is not None else None
+        if resting:
+            failures[name] = resting["message"]
             continue
         hit = _find_cached(past, key, now, settings.cache_days, provider=name)
         if hit:
@@ -537,17 +562,21 @@ def _compare_one(q, key, providers, disabled, exhausted, settings, ledger, repor
                 results = provider.search(q.text, kind=q.kind, num=settings.results_per_query,
                                           country=q.country, recency=q.recency, depth=q.depth)
             except AuthError as exc:
+                _seen(health, name, now, exc=exc)
                 disabled[name] = str(exc)
                 result.notes.append(f"{name} switched off for this run: {exc}")
                 result.notes_with_problems.append(name)
                 continue
             except QuotaError as exc:
+                _seen(health, name, now, exc=exc)
                 exhausted.add(name)
                 result.notes.append(f"{name} is out of credits: {exc}")
                 continue
             except ProviderError as exc:
+                _seen(health, name, now, exc=exc)
                 failures[name] = str(exc)
                 continue
+            _seen(health, name, now, items=len(results))
         ledger.charge(name, cost)
         if reported.get(name) is not None:
             reported[name] -= cost
@@ -640,13 +669,14 @@ def check_providers(providers, store, settings, now):
     rows = []
     for name in sorted(providers):
         provider = providers[name]
-        dead = None
+        dead, dead_code = None, ""
         for kind in KINDS:
             row = {"provider": name, "kind": kind, "ok": False, "credits": 0, "count": 0,
                    "sample": "", "problem": "", "note": ""}
             rows.append(row)
             if dead:
                 row["problem"] = dead
+                row["code"] = dead_code
                 continue
             cost = provider.cost(kind)
             if _allowance(name, settings.caps, ledger, {}) < cost:
@@ -659,12 +689,15 @@ def check_providers(providers, store, settings, now):
                     recency=CHECK_NEWS_RECENCY if kind == "news" else None)
             except AuthError as exc:
                 dead = row["problem"] = str(exc)
+                dead_code = row["code"] = contract.code_for(exc)
                 continue
             except QuotaError as exc:
                 dead = row["problem"] = str(exc)
+                dead_code = row["code"] = contract.code_for(exc)
                 continue
             except ProviderError as exc:
                 row["problem"] = str(exc)
+                row["code"] = contract.code_for(exc)
                 continue
             ledger.charge(name, cost)
             store.save_usage(ledger.usage)
