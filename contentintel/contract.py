@@ -91,6 +91,8 @@ def classify_message(text):
     status = _HTTP_STATUS.search(low)
     if status:
         number = int(status.group(1))
+        if number in (408, 504):
+            return TIMEOUT
         if number in (401, 403, 404, 429):
             return _http_code(number)
         if 500 <= number <= 599:
@@ -117,6 +119,8 @@ def classify_exception(exc):
         return make_error(NEED_LOGIN, message)
     if "AuthError" in names:
         return make_error(NEED_SETUP, message or "the key was rejected")
+    if "ProviderConfigError" in names:
+        return make_error(BAD_INPUT, message)
     if "QuotaError" in names:
         return make_error(RATE_LIMITED, message or "out of credits")
     if isinstance(exc, (subprocess.TimeoutExpired, socket.timeout, TimeoutError)) or "Timeout" in names or "ReadTimeout" in names:
