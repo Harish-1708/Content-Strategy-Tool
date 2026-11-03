@@ -70,7 +70,7 @@ jobs:
           git checkout --quiet FETCH_HEAD
           test "$(git rev-parse HEAD)" = "$commit" || { echo "::error::The fetched gateway is not the pinned commit"; exit 1; }
           npm ci --workspace=shared --workspace=server --include-workspace-root --no-audit --no-fund
-          npm run build -w shared -w server
+          npm run build -w server
 
       - name: Real gateway, fake model (MOCK-PROVIDER result)
         shell: bash
@@ -128,7 +128,7 @@ jobs:
           git checkout --quiet FETCH_HEAD
           test "$(git rev-parse HEAD)" = "$commit" || { echo "::error::The fetched gateway is not the pinned commit"; exit 1; }
           npm ci --workspace=shared --workspace=server --include-workspace-root --no-audit --no-fund
-          npm run build -w shared -w server
+          npm run build -w server
 
       - name: What is switched on, and what would run
         shell: bash
