@@ -729,6 +729,26 @@ links Meta provides stop working after about a day, so open them soon, or ask fo
 advertiser is that brand (a page named Rhoback selling on rhoback.com); otherwise it is dropped, so the text
 is left blank rather than showing a token or a wrong brand.
 
+## Source health and live acceptance (Actions > Acceptance)
+
+Unit tests prove the code handles an answer correctly. They cannot prove that TikTok, Instagram, YouTube or a search service still talks to a GitHub server. So the tool keeps a record of what each way of reaching each source has actually done, and trusts a route only after it has been proved from GitHub.
+
+**`sources.yaml`** declares every source and route: how it is reached (an official API, a public page read politely, a dummy account's login, a paid service), what comes back (a site's own data, only page links, a search snippet, a report, a media file), what it can give and what it cannot. It declares; it proves nothing. The Instagram route through Agent-Reach is listed but switched off: its only Instagram route drives a logged-in stealth browser, which is not wired in.
+
+**The result every route gives.** Every action reports in one shape and every failure has one of eight codes: `NEED_SETUP`, `NEED_LOGIN`, `UPSTREAM_BROKEN`, `TIMEOUT`, `RATE_LIMITED`, `PLATFORM_BLOCKED`, `NOT_FOUND`, `BAD_INPUT`. A login wall, a block, a rate limit, a wrong request or a missing page is *final*: another route cannot fix it, so that source stops for the run instead of trying the next. The published shape is `contracts/envelope.v1.schema.json`.
+
+**The health ledger** (`data/_shared/collector_health.json`) records every real attempt and rests a route after a failure that deserves a rest: a rate limit an hour, a login problem 12 hours, a block a day, a timeout a minute. The rest survives to the next run, so a refused platform is not asked again at once. A route is called *degraded* only after 3 failures in a row and *healthy* again only after 2 successes in a row, so one flicker never changes it (`sources.yaml` holds the numbers). A request problem (a missing page, a wrong address) says nothing about the source and is not counted. **Nothing is healthy because ordinary runs worked.** A route is healthy only when a live acceptance run has passed within 14 days, for the route as it is declared and set up now; change a selector in `browser.yaml` and the route has to pass again. Everything else is shown as `unverified`, and nothing that scores or ranks may depend on it.
+
+**Actions > Acceptance** (also every Thursday) makes one small real call per route and records the result, failures included, in `data/_shared/acceptance.jsonl`: time, version, route, items, error code. Tick `plan` to see what would be checked and what is missing, making no call. A route whose secret is missing is reported as *skipped*, never *failed*. A route that is resting is not asked again. The run turns red when a route fails. Besides the collectors, search services, Claude and your catalogue feed, it checks one public YouTube video through `yt-dlp`: **that is the test of whether YouTube works from GitHub at all**, which has not been shown yet.
+
+**`python -m contentintel health`** prints every route with its status (`--matrix` compares what each source gives and cannot give, `--json` for other tools, `--clear SOURCE` or `SOURCE|ROUTE` when you have dealt with a problem and want its rest removed). The same table is the **Collector Health** tab of each brand's sheet, updated whenever the sheets step runs.
+
+**The evidence record** (`python -m contentintel evidence --brand NAME`, with `--check` and `--export FILE`). Every ad, post, search result and report can be seen as one record with the same fields: where it came from and how it was reached, its identity and duplicates, its content and media, how complete it is, how old it is, its metrics with what each one measures, and its handling. Records are built on demand from what is already saved (each saved batch now also carries a small `provenance` note: the route, how it was reached, and the route's health when it was collected); nothing stored is changed. The honesty rules are checked, not just stated: a search snippet is labelled `snippet_only` and never as the page; an item known only from links is `links_only`; a cover picture is never a video; days running and variant counts are labelled as proxies, never as measurements; old data is labelled stale with its age. The published shape is `contracts/evidence.v1.schema.json`.
+
+**Safety.** Every address read from the internet before a file is fetched must be a clearly public web address (not a private or internal one, nor one with a name and password in it). Secrets are hidden from every message the health ledger keeps. Invisible and control characters (the way instructions can be hidden in a caption) are removed from the title, text and details of everything collected. `contentintel/safety.py` also holds the rule for what a model is told about collected text: it is fenced and described as data, never instructions. A saved file that is not plain JSON, such as a pickle, is refused and never opened.
+
+**What this does not do.** It does not make any source work: the acceptance run says whether one does. It does not change how collecting, the Idea Bank or the briefs behave, except that a route that is resting is skipped and a media address that is not public is not opened. The address check applies to the address given; it does not follow or check redirects. Moving the model-facing text fence into every prompt is a later step.
+
 ## Telling the tool what it cannot know (`brands/<brand>/manual_facts.yaml`)
 
 Facts you state outrank the website. Edit the file in GitHub; keys are product handles
@@ -762,7 +782,8 @@ are live, add each handle with `status: active` (the template is `brands/swovera
 | `research/deep/*.md` | the full text of each Deep Research report |
 
 `data/_shared/research_usage.json` counts the credits spent on each search service, across all
-brands.
+brands. `data/_shared/collector_health.json` is the health ledger and `data/_shared/acceptance.jsonl` every live
+acceptance result (see Source health and live acceptance).
 
 A quiet run writes only `last_checked.json` (about 100 bytes). Files are rewritten only when
 their content changes.
