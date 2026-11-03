@@ -211,6 +211,14 @@ names marked set or not set, so you can see what the run can see (the values are
 | `APIFY_TOKEN` | the optional Apify extra | only if you switch Apify on | the API token from your Apify account |
 | `IDEA_BANK_FOLDER_ID` | the Shared Drive folder where each Idea Bank item's pictures and videos are saved | optional (without it the files are skipped; everything else works) | the id of a folder inside a Shared Drive (the part after `/folders/` in its address) |
 | `DEEP_RESEARCH_DOC_ID` | the Google Doc where every Deep Research report is added as a new tab | optional (reports are always saved in the repository too) | the Doc's address, or just the long id between `/d/` and `/edit` |
+| `FREEAPI_ENCRYPTION_KEY` | the AI gateway's own storage key (64 hex characters) | only for the AI layer's live checks | you generate it in any browser (docs/ai/setup-instructions.md) |
+| `FREEAPI_ADMIN_PASSWORD` | the AI gateway's admin password | only for the AI layer's live checks | you generate it the same way |
+| `GROQ_API_KEY` | Groq models through the gateway | only if you switch Groq on | console.groq.com > API Keys |
+| `MISTRAL_API_KEY` | Mistral models through the gateway (free plan may train on prompts: Public data only) | only if you switch Mistral on | console.mistral.ai > API keys |
+| `OPENROUTER_API_KEY` | OpenRouter `:free` models through the gateway | only if you switch OpenRouter on | openrouter.ai > Keys |
+| `GEMINI_API_KEY` | Google Gemini through the gateway (free tier may train on prompts: Public data only) | only if you switch Gemini on | aistudio.google.com > Get API key |
+| `CEREBRAS_API_KEY` | Cerebras through the gateway | optional | cloud.cerebras.ai |
+| `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` | Cloudflare Workers AI through the gateway | optional; both or neither | the Cloudflare dashboard > Workers AI |
 
 **Needs no secret:** Meta Ad Library (public pages), the catalogue sync (public store data), and
 `GITHUB_TOKEN` (GitHub provides it automatically).
@@ -748,6 +756,20 @@ Unit tests prove the code handles an answer correctly. They cannot prove that Ti
 **Safety.** Every address read from the internet before a file is fetched must be a clearly public web address (not a private or internal one, nor one with a name and password in it). Secrets are hidden from every message the health ledger keeps. Invisible and control characters (the way instructions can be hidden in a caption) are removed from the title, text and details of everything collected. `contentintel/safety.py` also holds the rule for what a model is told about collected text: it is fenced and described as data, never instructions. A saved file that is not plain JSON, such as a pickle, is refused and never opened.
 
 **What this does not do.** It does not make any source work: the acceptance run says whether one does. It does not change how collecting, the Idea Bank or the briefs behave, except that a route that is resting is skipped and a media address that is not public is not opened. The address check applies to the address given; it does not follow or check redirects. Moving the model-facing text fence into every prompt is a later step.
+
+## The AI layer (Claude coordinating, a gateway for specialist models)
+
+Claude is the coordinator. A pinned, local copy of the open-source FreeLLMAPI gateway (v0.16.17, commit in `ai/gateway.lock.json`) can reach many free providers, but **nothing is switched on until a person approves it**. Comparison and setup: `docs/ai/` (`freellmapi-version-comparison.md`, `provider-comparison.md`, `provider_inventory.json`, `setup-instructions.md`).
+
+**Files you edit.** `ai_providers.yaml` lists all 84 platforms of the pinned gateway plus Claude: whether each is on, the highest data class its terms allow, which classes you approved, and the **approved-model allowlist** (a model is used only if it is listed there; the gateway's remote catalogue is switched off, and even if it were on it could not make a model usable). `ai_lanes.yaml` defines ten kinds of work and, for each, a fixed chain of providers and models, how the output is checked and whether a person must review it. `ai_eval_tasks.yaml` holds the sample tasks used to compare models.
+
+**Data classes.** Public, Internal, Restricted. A provider receives data only if its ceiling (set by its checked terms) and your approval both allow that class; unknown means Restricted. Restricted data can go to Claude only. You can raise a ceiling for a provider with a dated `owner_override` naming who decided and why; the tool does what you record.
+
+**What happens to a task.** The lane must be allowed to carry the data class; each route is checked (enabled, approved model, approved class, has a credential, not resting after a failure, inside its free limits or spending cap); the first usable one answers; the answer must pass the lane's checks; a failure or an unusable answer moves to the next route, and Claude answers only if the lane allows it and the spending cap has room; otherwise the task is **deferred**. A free quota running out never switches to a paid route silently. Claude's spending is capped (default $0.50 a day, $3 a month in `ai_providers.yaml`) and a call is refused *before* it is made if its worst case would cross the cap.
+
+**Commands** (`python -m contentintel ai ACTION`; mock unless `--live`): `plan` (what would run and why not, no call), `providers`, `usage`, `review` (list, or `--approve ID --by NAME`), `ask --lane L --text T`, `check`, `eval`, `smoke`. **Actions > AI gateway** runs two separate jobs: *mock* (always; the real pinned gateway with a fake model, proving the plumbing) and *live* (only if you tick it; real calls, with our problems reported separately from provider problems). A mock pass never proves a live provider works.
+
+**What this does not do.** It creates no accounts and holds no keys; each provider needs a person to sign up (instructions in `docs/ai/setup-instructions.md`). Nothing in the platform calls the router yet: the lanes are ready for the next stages to use.
 
 ## Telling the tool what it cannot know (`brands/<brand>/manual_facts.yaml`)
 
