@@ -443,6 +443,7 @@ class Done:
 
 def test_a_passing_youtube_acceptance_run_earns_trust_and_is_remembered(run_cli, capsys, monkeypatch, tmp_path):
     monkeypatch.setattr(cli, "_YTDLP_RUNNER", lambda cmd, **kw: Done(0, json.dumps({"title": "Me at the zoo"})))
+    monkeypatch.delenv("GITHUB_SHA", raising=False)                       # GitHub always sets it; the test must not depend on where it runs
     assert run_cli("acceptance", "--only", "youtube_public") == 0
     assert "PASSED" in capsys.readouterr().out
     store = Store(tmp_path / "data")
@@ -715,3 +716,10 @@ def test_search_checks_are_paid_for_once_per_service_not_once_per_kind(run_cli, 
         brand, brands_dir, research_config, browser_config, debug_dir = "swoveralls", str(tmp_path / "brands"), "research.yaml", "browser.yaml", "debug"
     ctx = cli._acceptance_context(Args, Store(tmp_path / "data"), REG, NOW)
     assert ctx.provider_check("tavily", "web")["ok"] and ctx.provider_check("tavily", "news")["ok"] and len(calls) == 1
+
+
+def test_the_acceptance_record_names_the_commit_it_ran_on(run_cli, monkeypatch, tmp_path):
+    monkeypatch.setattr(cli, "_YTDLP_RUNNER", lambda cmd, **kw: Done(0, json.dumps({"title": "Me at the zoo"})))
+    monkeypatch.setenv("GITHUB_SHA", "4b6aceca6445f0e1d2c3b4a5968778695a4b3c2d")
+    assert run_cli("acceptance", "--only", "youtube_public") == 0
+    assert Store(tmp_path / "data").read_acceptance()[0]["version"] == "4b6aceca6445"          # the first 12 characters of the commit id
