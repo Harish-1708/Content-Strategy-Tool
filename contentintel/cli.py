@@ -897,6 +897,47 @@ def _youtube_probe():
     return 1, f"read the details of a public video ({title[:40]})"
 
 
+_YT_API_GET = None             # tests replace this; None means the real network
+YOUTUBE_PROBE_ID = "jNQXAC9IVRw"
+
+
+def _youtube_api_probe(key):
+    """(1, what was read) for one public video through YouTube's official Data API, or raise the failure with its real code.
+    A video lookup costs 1 unit of the free 10,000 a day. The key is never put in a message."""
+    import requests
+    get = _YT_API_GET or requests.get
+    try:
+        resp = get("https://www.googleapis.com/youtube/v3/videos", params={"part": "snippet,statistics", "id": YOUTUBE_PROBE_ID, "key": key}, timeout=30)
+    except requests.exceptions.Timeout:
+        raise Failure(contract_mod.TIMEOUT, "YouTube's Data API did not answer in 30 seconds") from None
+    except requests.exceptions.RequestException as exc:
+        raise Failure(contract_mod.UPSTREAM_BROKEN, f"network error ({exc.__class__.__name__})") from None
+    try:
+        body = resp.json()
+    except ValueError:
+        body = {}
+    error = body.get("error") or {} if isinstance(body, dict) else {}
+    reason = ((error.get("errors") or [{}])[0].get("reason") or "").strip()
+    message = " ".join(str(error.get("message", "")).split())[:160]
+    if resp.status_code == 200 and isinstance(body, dict) and body.get("items"):
+        item = body["items"][0]
+        views = (item.get("statistics") or {}).get("viewCount", "?")
+        return 1, f"read the public details of a video ({str(item.get('snippet', {}).get('title', ''))[:40]}; {views} views)"
+    if resp.status_code == 200:
+        raise Failure(contract_mod.UPSTREAM_BROKEN, "the Data API answered but returned no video")
+    if reason in ("quotaExceeded", "dailyLimitExceeded", "rateLimitExceeded", "userRateLimitExceeded"):
+        raise Failure(contract_mod.RATE_LIMITED, f"the free daily quota is used up ({reason}); it resets at midnight Pacific time")
+    if resp.status_code == 400 and reason in ("keyInvalid", "badRequest") or "API key not valid" in message:
+        raise Failure(contract_mod.NEED_SETUP, "YouTube rejected the API key: check the YOUTUBE_API_KEY secret")
+    if resp.status_code == 403:
+        raise Failure(contract_mod.NEED_SETUP, f"the key cannot use the YouTube Data API v3 ({reason or 'forbidden'}): enable that API for the key's project and check the key's restrictions. {message}")
+    if resp.status_code == 404:
+        raise Failure(contract_mod.NOT_FOUND, "the test video was not found")
+    if resp.status_code >= 500:
+        raise Failure(contract_mod.UPSTREAM_BROKEN, f"the Data API answered {resp.status_code}")
+    raise Failure(contract_mod.BAD_INPUT, f"the Data API refused the request ({resp.status_code} {reason}). {message}")
+
+
 def _acceptance_context(args, store, registry, now):
     from .shopify_fetch import fetch_products
     settings = collectors_mod.load_collector_settings(args.research_config)
@@ -945,6 +986,8 @@ def _acceptance_context(args, store, registry, now):
     ctx.claude_check = claude_check if claude is not None else None
     ctx.catalogue_check = catalogue_check
     ctx.youtube_check = _youtube_probe
+    yt_key = (os.environ.get("YOUTUBE_API_KEY") or "").strip()
+    ctx.youtube_api_check = (lambda: _youtube_api_probe(yt_key)) if yt_key else None
     return ctx
 
 
