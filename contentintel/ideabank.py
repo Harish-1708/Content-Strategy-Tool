@@ -20,6 +20,8 @@ import yaml
 from .collectors import collected_rows
 from . import mediacheck
 from .drive import DriveError, DriveMismatch, folder_url, item_folder_name, safe_name
+from . import contract
+from .safety import is_public_url
 from .videofetch import classify_failure, cookie_file, platform_of, video_page
 from .export import price_range
 from .providers import ProviderError
@@ -394,6 +396,8 @@ def fetch_media_checked(get, url, settings):
     because a dropped connection is common and the second attempt usually works."""
     if not str(url).startswith("https://"):
         raise AssetSkip("no https address for the file")
+    if not is_public_url(url):
+        raise AssetSkip("not a public web address, so it was not opened")
     last = ""
     for attempt in (1, 2):
         try:
@@ -705,16 +709,34 @@ def needs_video(item, settings):
             and item.get("video_tries", 0) < 2)
 
 
+_VIDEO_CODES = {"blocked": contract.PLATFORM_BLOCKED, "failed": contract.UPSTREAM_BROKEN, "gone": contract.NOT_FOUND, "none": contract.NOT_FOUND}
+
+
+def _video_seen(health, platform, now, status, note=""):
+    """Tell the health ledger how a video download went. A post that has no video, or is gone, says nothing about the platform."""
+    if health is None or platform not in ("tiktok", "instagram"):
+        return
+    if status == "saved":
+        health.observe(f"video_{platform}", "layered", ok=True, items=1, now=now)
+    else:
+        health.observe(f"video_{platform}", "layered", ok=False, code=_VIDEO_CODES.get(status, contract.UPSTREAM_BROKEN), message=note, now=now)
+
+
 BLOCKED_STREAK = 3          # after this many refusals in a row from one platform in one run, the rest of that platform waits for the next run
 
 
-def save_videos(bank, ids, brand_name, drive, settings, runner, cookies_path=None, brand_folder=None):
+def save_videos(bank, ids, brand_name, drive, settings, runner, cookies_path=None, brand_folder=None, health=None, now=""):
     """Fetch and save the real video for each given item (at most `video_fetches_per_run` a run). Every outcome is recorded on the item as
     `video_status`: saved, none (the post has no video: an image or carousel), gone, blocked (the platform refused this server) or failed.
     Returns (saved, lines)."""
     lines, saved, tried = [], 0, 0
     cache = {"brand": brand_folder}
     streak, skipped = {}, {}
+    for platform in ("tiktok", "instagram"):               # a platform that refused this server recently is not asked again yet
+        resting = health.is_paused(f"video_{platform}", "layered", now) if health is not None else None
+        if resting:
+            streak[platform] = BLOCKED_STREAK
+            lines.append(resting["message"])
     pending = [i for i in ids if needs_video(bank["items"][i], settings)]
     for idea_id in pending:
         item = bank["items"][idea_id]
@@ -732,6 +754,7 @@ def save_videos(bank, ids, brand_name, drive, settings, runner, cookies_path=Non
         if not found:
             head, _, browser_why = str(why).partition("; the browser route also failed: ")
             status, note = classify_failure(head, item["url"])
+            _video_seen(health, platform, now, status, note)
             item.update({"video_status": status, "video_note": note})
             if status == "none":                               # an image or carousel post: the picture saved IS the creative
                 for a in item["assets"]:
@@ -745,11 +768,13 @@ def save_videos(bank, ids, brand_name, drive, settings, runner, cookies_path=Non
         if check.problems or check.kind != "video":
             item["video_tries"] += 1
             item.update({"video_status": "failed", "video_note": "; ".join(check.problems) or "what came back is not a video"})
+            _video_seen(health, platform, now, "failed", item["video_note"])
             lines.append(f"{idea_id}: the video was not usable: {item['video_note']}")
             continue
         if len(data) > settings.video_max_mb * 1024 * 1024:
             item["video_tries"] += 1
             item.update({"video_status": "failed", "video_note": f"a video bigger than {settings.video_max_mb} MB"})
+            _video_seen(health, platform, now, "failed", item["video_note"])
             lines.append(f"{idea_id}: {item['video_note']}")
             continue
         streak[platform] = 0
@@ -758,6 +783,7 @@ def save_videos(bank, ids, brand_name, drive, settings, runner, cookies_path=Non
         file_id, md5 = _upload_verified(drive, folder, name, data, check.mime)
         item.update({"drive_folder_id": folder, "drive_folder_url": folder_url(folder), "video_note": "", "video_status": "saved"})
         _record(item, name, file_id, md5, data, check, "page")
+        _video_seen(health, platform, now, "saved")
         saved += 1
     for platform, n in skipped.items():
         lines.append(f"{n} more {platform or 'platform'} video(s) skipped this run: it refused {BLOCKED_STREAK} downloads in a row from this server (they are tried again next run)")
@@ -1432,7 +1458,7 @@ def _counts(bank):
 
 
 def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=None, request=None, web_sources=None,
-                 dry_run=False, budget=None, since="", skip_brands=(), audit=False, video_runner=None, cookies=None, rescues=(), browser_factory=None, protected=None):
+                 dry_run=False, budget=None, since="", skip_brands=(), audit=False, video_runner=None, cookies=None, rescues=(), browser_factory=None, protected=None, health=None):
     """Take new sourced items into the brand's bank, keep only what is useful, save its files and score it. Returns (new ids, summary lines).
 
     In order: leave out the brand's own content and copies; tidy what is already in the bank the same way; score what is not scored; keep
@@ -1514,7 +1540,7 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
             elif wanting:
                 with tempfile.TemporaryDirectory() as tmp:
                     jar = cookie_file([(cookies or {}).get("instagram"), (cookies or {}).get("tiktok")], Path(tmp) / "cookies.txt")
-                    got, notes = save_videos(bank, wanting, brand.name, drive, settings, video_runner, jar)
+                    got, notes = save_videos(bank, wanting, brand.name, drive, settings, video_runner, jar, health=health, now=now)
                 lines += notes
                 lines.append(f"{brand.slug}: real videos saved for {got} item(s)")
         elif settings.save_assets and retry:
