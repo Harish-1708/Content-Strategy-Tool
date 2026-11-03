@@ -1,3 +1,4 @@
+import json
 """The Idea Bank, request and brief features as a person uses them: the sheet tabs, the three commands, and the workflows."""
 from pathlib import Path
 
@@ -806,3 +807,25 @@ def test_a_request_run_protects_what_you_approved_and_reads_your_rescues_too(env
     assert seen["protected"] == ["IB-0001"] and seen["rescues"] == [] and callable(seen["browser_factory"])
     items = store.read_ideabank("swoveralls")["items"]
     assert items["IB-0001"]["approved"] and not items["IB-0002"]["approved"]
+
+
+# ---- source health is kept by the commands that make real calls -------------------------------------------------------------------------
+
+def test_a_research_run_from_the_command_line_keeps_the_health_ledger(env):
+    state, run, secrets, store, tmp = env
+    assert run("research", "--brand", "swoveralls", "--max-queries", "1") == 0
+    ledger = json.loads((tmp / "data" / "_shared" / "collector_health.json").read_text(encoding="utf-8"))
+    assert ledger["routes"]["web_search|serper_dev"]["history"][-1]["ok"] is True and ledger["routes"]["web_search|serper_dev"]["history"][-1]["items"] == 3
+
+
+def test_an_ideabank_run_from_the_command_line_keeps_what_it_learned_about_video_downloads(env):
+    state, run, secrets, store, tmp = env
+    secrets("ANTHROPIC_API_KEY", "GOOGLE_SERVICE_ACCOUNT_JSON", "IDEA_BANK_FOLDER_ID")
+    seed_bank(store, scored=False)
+    store.write_ideabank("swoveralls", {"next": 1, "items": {}})
+    state["claude"].json_answers = [{"items": [{"id": "IB-0001", "relevance": 88, "topic": "comfort", "summary": "s", "how_to_use": "h", "risk": "none"},
+                                               {"id": "IB-0002", "relevance": 65, "topic": "gift", "summary": "s2", "how_to_use": "h2", "risk": "none"}]}]
+    assert run("ideabank", "--brand", "swoveralls") == 0
+    ledger = json.loads((tmp / "data" / "_shared" / "collector_health.json").read_text(encoding="utf-8"))
+    video = {k: v for k, v in ledger["routes"].items() if k.startswith("video_")}
+    assert video and all(v["history"][-1]["ok"] is False for v in video.values())          # the test stand-in downloads nothing, and that is what was recorded
