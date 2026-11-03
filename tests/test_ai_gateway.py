@@ -1,6 +1,7 @@
 """The clients and the gateway launcher, and the provider inventory. MOCK: fake HTTP and a fake process. The one real-gateway test runs only when FREEAPI_GATEWAY_DIR points at a built gateway."""
 import json
 import os
+import re
 
 import pytest
 
@@ -363,3 +364,34 @@ def test_any_status_other_than_ok_is_a_broken_answer_with_its_own_message(status
     with pytest.raises(Failure) as seen:
         C.GatewayClient("http://127.0.0.1:1", "k", Http((status, body, {}))).complete(ROUTE, "", "hi", 5)
     assert seen.value.code == K.UPSTREAM_BROKEN and str(seen.value) == message
+
+
+def _gateway_build_lines():
+    text = (ROOT / ".github" / "workflows" / "ai-gateway.yml").read_text()
+    return [line.strip() for line in text.splitlines() if line.strip().startswith("npm run build")]
+
+
+def test_both_jobs_build_the_gateway_with_the_one_package_that_has_a_build_script():
+    # The first run on GitHub failed because "-w shared" was built and that package has no build script.
+    assert _gateway_build_lines() == ["npm run build -w server", "npm run build -w server"]
+
+
+@pytest.mark.skipif(not os.environ.get("FREEAPI_GATEWAY_DIR"), reason="needs the pinned gateway's source (FREEAPI_GATEWAY_DIR)")
+def test_every_package_the_workflow_builds_has_a_build_script_in_the_pinned_gateway():
+    root = os.environ["FREEAPI_GATEWAY_DIR"]
+    built = [name for line in _gateway_build_lines() for name in re.findall(r"-w (\w+)", line)]
+    assert built
+    for name in built:
+        with open(os.path.join(root, name, "package.json")) as fh:
+            assert "build" in json.load(fh).get("scripts", {}), f"{name} has no build script"
+
+
+def test_the_gateway_is_always_given_an_absolute_database_path_because_it_runs_in_its_own_folder(tmp_path, monkeypatch):
+    # The gateway process starts inside the gateway folder; a relative path would be resolved there, not where this code
+    # looks and cleans up, and a stale database from an earlier run then made the admin login fail with 401.
+    monkeypatch.chdir(tmp_path)
+    lock = {"required_env": {"HOST": "127.0.0.1"}, "must_stay_unset": []}
+    env = G.gateway_env(lock, {"FREEAPI_ENCRYPTION_KEY": "ab" * 32}, port=1234, db_path=os.path.join("ai-work", "gateway.db"), config={})
+    assert os.path.isabs(env["FREEAPI_DB_PATH"]) and env["FREEAPI_DB_PATH"] == str((tmp_path / "ai-work" / "gateway.db").resolve())
+    env = G.gateway_env(lock, {"FREEAPI_ENCRYPTION_KEY": "ab" * 32}, port=1234, db_path=tmp_path / "x" / "gateway.db", config={})
+    assert env["FREEAPI_DB_PATH"] == str((tmp_path / "x" / "gateway.db").resolve())
