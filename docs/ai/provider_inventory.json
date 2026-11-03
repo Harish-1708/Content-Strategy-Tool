@@ -1,0 +1,4150 @@
+{
+ "schema_version": 1,
+ "generated": "2026-11-03",
+ "pinned_gateway": {
+  "repo": "https://github.com/tashfeenahmed/freellmapi",
+  "tag": "v0.16.17",
+  "commit": "741d03094398facceb1b6019a838f806e4d9f7f9"
+ },
+ "how_to_read": "verification.status: verified = read from the provider's own page on 2026-11-03; verified_secondary = checked against provider documentation as quoted by other sites on 2026-11-03 (a person must confirm in our own account before activation); upstream_documented = stated in the gateway project's own documentation; declared_only / unverified = nothing but the gateway's own claim. No provider is approved or enabled by this file.",
+ "counts": {
+  "platform_ids": 84,
+  "with_bundled_models": 15,
+  "bundled_models": 108,
+  "verified_secondary": 3,
+  "verified": 1
+ },
+ "platforms": [
+  {
+   "id": "google",
+   "categories": [
+    "chat",
+    "media",
+    "transcription",
+    "embedding"
+   ],
+   "display_name": "Google Gemini",
+   "auth": "Keyed",
+   "adapter": "Native (`GoogleProvider`)",
+   "upstream_notes": "Gemini wire format; 60s default timeout because Gemma reasoning variants take 20–60s on cold start.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [
+    {
+     "modelId": "gemini-2.5-pro",
+     "displayName": "Gemini 2.5 Pro",
+     "declared_limits": {
+      "rpm": 5,
+      "rpd": 50,
+      "tpm": 250000,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 1048576,
+     "vision": true,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": false,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "gemini-2.5-flash",
+     "displayName": "Gemini 2.5 Flash",
+     "declared_limits": {
+      "rpm": 10,
+      "rpd": 20,
+      "tpm": 250000,
+      "tpd": null,
+      "monthly_token_budget": "~3M"
+     },
+     "context_window": 1048576,
+     "vision": true,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "gemini-2.5-flash-lite",
+     "displayName": "Gemini 2.5 Flash-Lite",
+     "declared_limits": {
+      "rpm": 15,
+      "rpd": 20,
+      "tpm": 250000,
+      "tpd": null,
+      "monthly_token_budget": "~3M"
+     },
+     "context_window": 1048576,
+     "vision": true,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "gemini-3.1-pro-preview",
+     "displayName": "Gemini 3.1 Pro Preview",
+     "declared_limits": {
+      "rpm": 5,
+      "rpd": 20,
+      "tpm": 250000,
+      "tpd": null,
+      "monthly_token_budget": "~3M"
+     },
+     "context_window": 1048576,
+     "vision": true,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": false,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "gemini-3-flash-preview",
+     "displayName": "Gemini 3 Flash Preview",
+     "declared_limits": {
+      "rpm": 10,
+      "rpd": 20,
+      "tpm": 250000,
+      "tpd": null,
+      "monthly_token_budget": "~3M"
+     },
+     "context_window": 1048576,
+     "vision": true,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "gemini-3.1-flash-lite-preview",
+     "displayName": "Gemini 3.1 Flash-Lite Preview",
+     "declared_limits": {
+      "rpm": 15,
+      "rpd": 20,
+      "tpm": 250000,
+      "tpd": null,
+      "monthly_token_budget": "~3M"
+     },
+     "context_window": 1048576,
+     "vision": true,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "gemini-3.5-flash",
+     "displayName": "Gemini 3.5 Flash",
+     "declared_limits": {
+      "rpm": 10,
+      "rpd": 20,
+      "tpm": 250000,
+      "tpd": null,
+      "monthly_token_budget": "~3M"
+     },
+     "context_window": 1048576,
+     "vision": true,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "gemma-4-31b-it",
+     "displayName": "Gemma 4 31B IT",
+     "declared_limits": {
+      "rpm": 15,
+      "rpd": 1000,
+      "tpm": 250000,
+      "tpd": null,
+      "monthly_token_budget": "~30M"
+     },
+     "context_window": 32768,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "gemma-4-26b-a4b-it",
+     "displayName": "Gemma 4 26B IT",
+     "declared_limits": {
+      "rpm": 15,
+      "rpd": 1000,
+      "tpm": 250000,
+      "tpd": null,
+      "monthly_token_budget": "~30M"
+     },
+     "context_window": 32768,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    }
+   ],
+   "model_list_note": "",
+   "verification": {
+    "status": "verified_secondary",
+    "date": "2026-11-03",
+    "account_required": true,
+    "credential": "Google account + AI Studio API key",
+    "anonymous": false,
+    "payment_required": false,
+    "free_allowance": {
+     "kind": "recurring free tier",
+     "limits": "per-model limits are no longer published; they are shown only per project in the AI Studio rate-limit console",
+     "confidence": "limits unknown until read from our own console"
+    },
+    "business_use": "free tier is for prototyping; clients serving the EEA, Switzerland or the UK must use paid services",
+    "trains_on_data": "yes on the free tier: content may be used to improve Google products and human reviewers may read it; the paid tier does not (terms effective 2026-03-23)",
+    "retention": "may be stored transiently or cached in any country where Google operates",
+    "sources": [
+     "https://ai.google.dev/gemini-api/docs/rate-limits",
+     "https://ai.google.dev/gemini-api/terms"
+    ],
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "groq",
+   "categories": [
+    "chat",
+    "transcription"
+   ],
+   "display_name": "Groq",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Standard compatible endpoint at `api.groq.com/openai/v1`.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [
+    {
+     "modelId": "llama-3.3-70b-versatile",
+     "displayName": "Llama 3.3 70B",
+     "declared_limits": {
+      "rpm": 30,
+      "rpd": 1000,
+      "tpm": 12000,
+      "tpd": 100000,
+      "monthly_token_budget": "~15M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "meta-llama/llama-4-scout-17b-16e-instruct",
+     "displayName": "Llama 4 Scout",
+     "declared_limits": {
+      "rpm": 30,
+      "rpd": 1000,
+      "tpm": 30000,
+      "tpd": 1000000,
+      "monthly_token_budget": "~30M"
+     },
+     "context_window": 131072,
+     "vision": true,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "openai/gpt-oss-120b",
+     "displayName": "GPT-OSS 120B (Groq)",
+     "declared_limits": {
+      "rpm": 30,
+      "rpd": 1000,
+      "tpm": 8000,
+      "tpd": 200000,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "openai/gpt-oss-20b",
+     "displayName": "GPT-OSS 20B (Groq)",
+     "declared_limits": {
+      "rpm": 30,
+      "rpd": 1000,
+      "tpm": 8000,
+      "tpd": 200000,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "qwen/qwen3-32b",
+     "displayName": "Qwen3 32B (Groq)",
+     "declared_limits": {
+      "rpm": 60,
+      "rpd": 1000,
+      "tpm": 6000,
+      "tpd": 500000,
+      "monthly_token_budget": "~15M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "llama-3.1-8b-instant",
+     "displayName": "Llama 3.1 8B Instant",
+     "declared_limits": {
+      "rpm": 30,
+      "rpd": 14400,
+      "tpm": 6000,
+      "tpd": 500000,
+      "monthly_token_budget": "~15M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "groq/compound",
+     "displayName": "Compound (Groq)",
+     "declared_limits": {
+      "rpm": 30,
+      "rpd": 250,
+      "tpm": 70000,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "groq/compound-mini",
+     "displayName": "Compound Mini (Groq)",
+     "declared_limits": {
+      "rpm": 30,
+      "rpd": 250,
+      "tpm": 70000,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "openai/gpt-oss-safeguard-20b",
+     "displayName": "GPT-OSS Safeguard 20B (Groq)",
+     "declared_limits": {
+      "rpm": 30,
+      "rpd": 1000,
+      "tpm": 8000,
+      "tpd": 200000,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    }
+   ],
+   "model_list_note": "",
+   "verification": {
+    "status": "verified_secondary",
+    "date": "2026-11-03",
+    "account_required": true,
+    "credential": "API key (GroqCloud console)",
+    "anonymous": false,
+    "payment_required": "not stated for the free tier; a payment method is needed to upgrade to the Developer tier",
+    "free_allowance": {
+     "kind": "recurring free plan, limits per organisation",
+     "limits": "sample free-plan limits: openai/gpt-oss-120b 30 requests/minute, 1,000/day, 8K tokens/minute, 200K tokens/day; groq/compound 250 requests/day. The console limits page is authoritative",
+     "confidence": "sample rows from the provider's table, quoted by secondary sites"
+    },
+    "business_use": "free plan is rate-limited for prototyping",
+    "trains_on_data": "no: the Services Agreement says Groq may not use inputs or outputs for training unless the customer permits it",
+    "retention": "verified from Groq's own page (console.groq.com/docs/your-data, fetched 2026-11-03): inference requests are not retained by default; inputs and outputs may be logged for up to 30 days only to troubleshoot reliability or investigate abuse; Zero Data Retention is self-serve in Data Controls. Training position: not stated on that page; a secondary source says the Services Agreement forbids training unless the customer permits it (read the agreement before approving Internal data)",
+    "sources": [
+     "https://console.groq.com/docs/rate-limits",
+     "https://console.groq.com/docs/your-data"
+    ],
+    "allowed_data_classes": [
+     "public"
+    ],
+    "verified_from": "retention: Groq's own docs; free limits and training clause: secondary sources"
+   }
+  },
+  {
+   "id": "cerebras",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "Cerebras",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "`api.cerebras.ai/v1`.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [
+    {
+     "modelId": "qwen-3-235b-a22b-instruct-2507",
+     "displayName": "Qwen3 235B",
+     "declared_limits": {
+      "rpm": 5,
+      "rpd": 2400,
+      "tpm": 30000,
+      "tpd": 1000000,
+      "monthly_token_budget": "~30M"
+     },
+     "context_window": 8192,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": false,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "zai-glm-4.7",
+     "displayName": "GLM-4.7 (Cerebras)",
+     "declared_limits": {
+      "rpm": 10,
+      "rpd": 100,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~3M"
+     },
+     "context_window": 8192,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "gpt-oss-120b",
+     "displayName": "GPT-OSS 120B (Cerebras)",
+     "declared_limits": {
+      "rpm": 5,
+      "rpd": 2400,
+      "tpm": 30000,
+      "tpd": 1000000,
+      "monthly_token_budget": "~30M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "llama3.1-8b",
+     "displayName": "Llama 3.1 8B (Cerebras)",
+     "declared_limits": {
+      "rpm": 5,
+      "rpd": 2400,
+      "tpm": 30000,
+      "tpd": 1000000,
+      "monthly_token_budget": "~30M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": false,
+     "verification": "declared_by_gateway_seed_unverified"
+    }
+   ],
+   "model_list_note": "",
+   "verification": {
+    "status": "declared_only",
+    "date": "2026-11-03",
+    "note": "not verified by us; the gateway seeds 4 Cerebras models. Verify the current free developer entitlement before use",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "sail",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "Sail Research",
+   "auth": "Keyed (payment method required for recurring credit)",
+   "adapter": "Native (`SailProvider`)",
+   "upstream_notes": "Stable `/v1/responses` integration submits background jobs and polls them to completion; flex-only models use the `flex` completion window. Sail grants $5 in monthly credits while a payment method is attached, then charges usage beyond that credit.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "aclide",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "aclide",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "speka",
+   "categories": [
+    "embedding"
+   ],
+   "display_name": "speka",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "kenari",
+   "categories": [
+    "media"
+   ],
+   "display_name": "kenari",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "kiosapi",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "kiosapi",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "beatapi",
+   "categories": [
+    "decision"
+   ],
+   "display_name": "beatapi",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "apinex",
+   "categories": [
+    "decision"
+   ],
+   "display_name": "apinex",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "onomeo",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "onomeo",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "iteracompute",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "iteracompute",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "typhoon",
+   "categories": [
+    "transcription"
+   ],
+   "display_name": "typhoon",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "plugsky",
+   "categories": [
+    "media"
+   ],
+   "display_name": "plugsky",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "inferbase",
+   "categories": [
+    "embedding"
+   ],
+   "display_name": "inferbase",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "simplellm",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "simplellm",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "llmtr",
+   "categories": [
+    "embedding"
+   ],
+   "display_name": "llmtr",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "gizmo",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "gizmo",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "blockrun",
+   "categories": [
+    "decision"
+   ],
+   "display_name": "blockrun",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "moondream",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "moondream",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "jamai",
+   "categories": [
+    "embedding"
+   ],
+   "display_name": "jamai",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "nabh",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "nabh",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "novai",
+   "categories": [
+    "video"
+   ],
+   "display_name": "novai",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": false,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "electronhub",
+   "categories": [
+    "chat",
+    "media",
+    "embedding"
+   ],
+   "display_name": "ElectronHub",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat subclass",
+   "upstream_notes": "Shared weekly credit pool; validates against `/v1/user/me`, rejects HTTP-200 proxy-error banners. Funding and integration notes.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "experiential",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "Experiential Labs",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat subclass",
+   "upstream_notes": "Shared monthly credit pool; authenticated `/v1/models`, model-specific Claude sampling compatibility. Funding and account-verification notes.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "router9",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "router9",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "septor",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "septor",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "clod",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "clod",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "speechify",
+   "categories": [
+    "media"
+   ],
+   "display_name": "speechify",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "freeai",
+   "categories": [
+    "media",
+    "transcription"
+   ],
+   "display_name": "freeai",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "blaze",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "blaze",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "lucidity",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "lucidity",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "airforce",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "airforce",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "dreamprompting",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "dreamprompting",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "waterfall",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "waterfall",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "logfare",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "logfare",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "bai",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "B.AI",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Gateway added in #918; only catalog row is a limited-time 0-credit promo, kept in the hosted catalog.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "anyapi",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "AnyAPI",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Free tier $0/no card/recurring, capped at 100K tokens/day over \"free and basic\" models; no RPM/RPD published (#772). Model ids arrive via catalog-sync, never seeded blind.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "radeon",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "AMD Radeon Cloud TokenFactory",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Shared Model API at `developer.amd.com.cn/radeon/api/v1`; public models are free without consuming instance credits and use a rotating experimental roster. Current per-account limits are read from response headers rather than hard-coded. Parallel tool calls are disabled and the adapter allows the documented ten-minute generation window.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "nvidia",
+   "categories": [
+    "chat",
+    "media",
+    "embedding"
+   ],
+   "display_name": "NVIDIA NIM",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "`parallel_tool_calls` pinned false (#255); 180s timeout doubles as streaming first-byte grace (#584).",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [
+    {
+     "modelId": "meta/llama-3.1-70b-instruct",
+     "displayName": "Llama 3.1 70B (NV)",
+     "declared_limits": {
+      "rpm": 40,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~3M (1k credits)"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "deepseek-ai/deepseek-v4-pro",
+     "displayName": "DeepSeek V4 Pro (NV)",
+     "declared_limits": {
+      "rpm": 40,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~2M (credits)"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "mistralai/mistral-large-3-675b-instruct-2512",
+     "displayName": "Mistral Large 3 675B (NV)",
+     "declared_limits": {
+      "rpm": 40,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~2M (credits)"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "minimaxai/minimax-m2.7",
+     "displayName": "MiniMax M2.7 (NV)",
+     "declared_limits": {
+      "rpm": 40,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~2M (credits)"
+     },
+     "context_window": 196608,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "moonshotai/kimi-k2.6",
+     "displayName": "Kimi K2.6 (NV)",
+     "declared_limits": {
+      "rpm": 40,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~2M (credits)"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "meta/llama-4-maverick-17b-128e-instruct",
+     "displayName": "Llama 4 Maverick (NV)",
+     "declared_limits": {
+      "rpm": 40,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~3M (credits)"
+     },
+     "context_window": 131072,
+     "vision": true,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "meta/llama-3.3-70b-instruct",
+     "displayName": "Llama 3.3 70B (NV)",
+     "declared_limits": {
+      "rpm": 40,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~3M (credits)"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "google/gemma-4-31b-it",
+     "displayName": "Gemma 4 31B (NV)",
+     "declared_limits": {
+      "rpm": 40,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~3M (credits)"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": false,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "nvidia/nemotron-3-super-120b-a12b",
+     "displayName": "Nemotron 3 Super 120B (NV)",
+     "declared_limits": {
+      "rpm": 40,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~2M (credits)"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "nvidia/nemotron-3-nano-30b-a3b",
+     "displayName": "Nemotron 3 Nano 30B (NV)",
+     "declared_limits": {
+      "rpm": 40,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~3M (credits)"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "qwen/qwen3-coder-480b-a35b-instruct",
+     "displayName": "Qwen3-Coder 480B (NV)",
+     "declared_limits": {
+      "rpm": 40,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~3M (credits)"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "deepseek-ai/deepseek-v4-flash",
+     "displayName": "DeepSeek V4 Flash (NV)",
+     "declared_limits": {
+      "rpm": 40,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~3M (credits)"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "z-ai/glm-5.1",
+     "displayName": "GLM-5.1 (NV, slow cold-start)",
+     "declared_limits": {
+      "rpm": 40,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~3M (credits)"
+     },
+     "context_window": 200000,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    }
+   ],
+   "model_list_note": "",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "mistral",
+   "categories": [
+    "chat",
+    "media",
+    "transcription"
+   ],
+   "display_name": "Mistral",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "`api.mistral.ai/v1`.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [
+    {
+     "modelId": "magistral-medium-latest",
+     "displayName": "Magistral Medium",
+     "declared_limits": {
+      "rpm": 2,
+      "rpd": null,
+      "tpm": 500000,
+      "tpd": null,
+      "monthly_token_budget": "~50-100M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "codestral-latest",
+     "displayName": "Codestral",
+     "declared_limits": {
+      "rpm": 2,
+      "rpd": null,
+      "tpm": 500000,
+      "tpd": null,
+      "monthly_token_budget": "~50-100M"
+     },
+     "context_window": 256000,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "mistral-large-latest",
+     "displayName": "Mistral Large 3",
+     "declared_limits": {
+      "rpm": 2,
+      "rpd": null,
+      "tpm": 500000,
+      "tpd": null,
+      "monthly_token_budget": "~50-100M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "mistral-medium-latest",
+     "displayName": "Mistral Medium 3.5",
+     "declared_limits": {
+      "rpm": 2,
+      "rpd": null,
+      "tpm": 500000,
+      "tpd": null,
+      "monthly_token_budget": "~50-100M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "devstral-latest",
+     "displayName": "Devstral",
+     "declared_limits": {
+      "rpm": 2,
+      "rpd": null,
+      "tpm": 500000,
+      "tpd": null,
+      "monthly_token_budget": "~50-100M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "mistral-small-latest",
+     "displayName": "Mistral Small 4",
+     "declared_limits": {
+      "rpm": 2,
+      "rpd": null,
+      "tpm": 500000,
+      "tpd": null,
+      "monthly_token_budget": "~50-100M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "ministral-8b-latest",
+     "displayName": "Ministral 3 8B",
+     "declared_limits": {
+      "rpm": 2,
+      "rpd": null,
+      "tpm": 500000,
+      "tpd": null,
+      "monthly_token_budget": "~50-100M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    }
+   ],
+   "model_list_note": "",
+   "verification": {
+    "status": "verified",
+    "date": "2026-11-03",
+    "account_required": true,
+    "credential": "API key (Mistral Studio); a verified phone number is required for the free plan (one phone number per plan); no credit card",
+    "anonymous": false,
+    "payment_required": false,
+    "free_allowance": {
+     "kind": "recurring (standing free plan)",
+     "limits": "about 1 request/second, about 500K tokens/minute, about 1B tokens/month per model; Mistral no longer publishes exact numbers: read them in Admin > Limits",
+     "confidence": "secondary sources, approximate"
+    },
+    "business_use": "free Experiment plan is for evaluation and prototyping, not production",
+    "trains_on_data": "yes: Mistral's own help page states that API requests made under the Experiment plan may be used to train its models",
+    "retention": "not established",
+    "sources": [
+     "https://help.mistral.ai/en/articles/455206-how-can-i-try-the-api-for-free-with-the-experiment-plan",
+     "https://docs.mistral.ai/getting-started/quickstarts/studio/activate-and-generate-api-key"
+    ],
+    "allowed_data_classes": [
+     "public"
+    ],
+    "verified_from": "Mistral's own help page, fetched 2026-11-03 (limits are still secondary: Mistral no longer publishes exact numbers)"
+   }
+  },
+  {
+   "id": "sambanova",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "SambaNova",
+   "auth": "Retired (V23)",
+   "adapter": "Not registered",
+   "upstream_notes": "Free tier permanently gone; kept in the type union for historical key rows.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "retired_upstream",
+    "date": "2026-11-03",
+    "note": "free tier permanently retired upstream (V23); kept in the type union only",
+    "allowed_data_classes": []
+   }
+  },
+  {
+   "id": "openrouter",
+   "categories": [
+    "chat",
+    "embedding",
+    "decision"
+   ],
+   "display_name": "OpenRouter",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Sends `HTTP-Referer`/`X-Title` headers; `:free` model suffix marks zero-cost routes.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [
+    {
+     "modelId": "qwen/qwen3-coder:free",
+     "displayName": "Qwen3 Coder (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 1048576,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "z-ai/glm-4.5-air:free",
+     "displayName": "GLM-4.5 Air (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "nvidia/nemotron-3-super-120b-a12b:free",
+     "displayName": "Nemotron 3 Super 120B (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 1000000,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "qwen/qwen3-next-80b-a3b-instruct:free",
+     "displayName": "Qwen3-Next 80B (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "openai/gpt-oss-120b:free",
+     "displayName": "GPT-OSS 120B (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "meta-llama/llama-3.3-70b-instruct:free",
+     "displayName": "Llama 3.3 70B (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "openai/gpt-oss-20b:free",
+     "displayName": "GPT-OSS 20B (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "nvidia/nemotron-3-nano-30b-a3b:free",
+     "displayName": "Nemotron 3 Nano 30B (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "google/gemma-4-31b-it:free",
+     "displayName": "Gemma 4 31B (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "liquid/lfm-2.5-1.2b-instruct:free",
+     "displayName": "Liquid LFM 2.5 1.2B (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 32768,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "poolside/laguna-m.1:free",
+     "displayName": "Poolside Laguna M.1 (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "google/gemma-4-26b-a4b-it:free",
+     "displayName": "Gemma 4 26B-A4B (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "displayName": "Nemotron 3 Nano 30B Reasoning (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "poolside/laguna-xs.2:free",
+     "displayName": "Poolside Laguna XS.2 (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "nvidia/nemotron-nano-9b-v2:free",
+     "displayName": "Nemotron Nano 9B v2 (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 128000,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "liquid/lfm-2.5-1.2b-thinking:free",
+     "displayName": "Liquid LFM 2.5 1.2B Thinking (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 32768,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "openrouter/owl-alpha",
+     "displayName": "Owl Alpha (OR-house)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 1048576,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "nousresearch/hermes-3-llama-3.1-405b:free",
+     "displayName": "Hermes 3 405B (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "moonshotai/kimi-k2.6:free",
+     "displayName": "Kimi K2.6 (OR free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "displayName": "Nemotron 3 Ultra 550B (free, slow)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 1000000,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": false,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
+     "displayName": "Dolphin Mistral 24B Venice (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 32768,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "nvidia/nemotron-nano-12b-v2-vl:free",
+     "displayName": "Nemotron Nano 12B VL (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 128000,
+     "vision": true,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "meta-llama/llama-3.2-3b-instruct:free",
+     "displayName": "Llama 3.2 3B (free)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~6M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    }
+   ],
+   "model_list_note": "",
+   "verification": {
+    "status": "verified_secondary",
+    "date": "2026-11-03",
+    "account_required": true,
+    "credential": "API key (OpenRouter account)",
+    "anonymous": false,
+    "payment_required": "no for 50 requests/day; buying at least $10 of credits once raises the free-model cap to 1,000/day",
+    "free_allowance": {
+     "kind": "recurring, request-capped",
+     "limits": "models whose id ends in :free: 20 requests/minute, 50 requests/day (1,000/day after at least $10 of lifetime credit purchases), per account across all keys; no token cap; a negative balance returns 402 even on free models",
+     "confidence": "matches the provider's documentation as quoted by several sites"
+    },
+    "business_use": "free models are described as unsuitable for production",
+    "trains_on_data": "depends on the hosting provider: some free endpoints log or train on prompts. OpenRouter lets a request refuse such providers; not tested by us",
+    "retention": "varies by hosting provider",
+    "sources": [
+     "https://openrouter.ai/docs/api-reference/limits"
+    ],
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "cohere",
+   "categories": [
+    "chat",
+    "transcription",
+    "embedding"
+   ],
+   "display_name": "Cohere",
+   "auth": "Keyed",
+   "adapter": "Native (`CohereProvider`)",
+   "upstream_notes": "Uses Cohere's OpenAI-compatible endpoint.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [
+    {
+     "modelId": "command-r-plus-08-2024",
+     "displayName": "Command R+ (08-2024)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 33,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~1-2M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "command-a-03-2025",
+     "displayName": "Command-A (03-2025)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 33,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~1-2M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "command-a-reasoning-08-2025",
+     "displayName": "Command A Reasoning (08-2025)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 33,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~1-2M"
+     },
+     "context_window": 256000,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "command-r-08-2024",
+     "displayName": "Command R (08-2024)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 33,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~1-2M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    }
+   ],
+   "model_list_note": "",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "tavily",
+   "categories": [
+    "search"
+   ],
+   "display_name": "tavily",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "exa",
+   "categories": [
+    "search"
+   ],
+   "display_name": "exa",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "firecrawl",
+   "categories": [
+    "search"
+   ],
+   "display_name": "firecrawl",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "linkup",
+   "categories": [
+    "search"
+   ],
+   "display_name": "linkup",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "parallel",
+   "categories": [
+    "search"
+   ],
+   "display_name": "parallel",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "serpsearch",
+   "categories": [
+    "search"
+   ],
+   "display_name": "serpsearch",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "keenable",
+   "categories": [
+    "search"
+   ],
+   "display_name": "keenable",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "halx",
+   "categories": [
+    "decision"
+   ],
+   "display_name": "halx",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "aisense",
+   "categories": [
+    "decision"
+   ],
+   "display_name": "aisense",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "brave",
+   "categories": [
+    "search"
+   ],
+   "display_name": "brave",
+   "auth": "not stated in the upstream catalogue document",
+   "adapter": "",
+   "upstream_notes": "",
+   "in_versions": {
+    "v0.13.0": false,
+    "v0.13.10": false,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "cloudflare",
+   "categories": [
+    "chat",
+    "media",
+    "transcription",
+    "embedding",
+    "decision"
+   ],
+   "display_name": "Cloudflare Workers AI",
+   "auth": "Keyed (`account_id:token`)",
+   "adapter": "Native (`CloudflareProvider`)",
+   "upstream_notes": "Compound credential format parsed by the adapter.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [
+    {
+     "modelId": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+     "displayName": "Llama 3.3 70B fp8-fast (CF)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~18-45M"
+     },
+     "context_window": 24000,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "@cf/openai/gpt-oss-120b",
+     "displayName": "GPT-OSS 120B (CF)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~18-45M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "@cf/zai-org/glm-4.7-flash",
+     "displayName": "GLM-4.7 Flash (CF)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~18-45M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "@cf/meta/llama-4-scout-17b-16e-instruct",
+     "displayName": "Llama 4 Scout (CF)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~18-45M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "@cf/qwen/qwen3-30b-a3b-fp8",
+     "displayName": "Qwen3 30B-A3B fp8 (CF)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~18-45M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b",
+     "displayName": "DeepSeek R1 Distill Qwen 32B (CF)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~3-5M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "@cf/moonshotai/kimi-k2.6",
+     "displayName": "Kimi K2.6 (CF)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~10-20M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "@cf/ibm-granite/granite-4.0-h-micro",
+     "displayName": "Granite 4.0 H Micro (CF)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~5-10M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "@cf/nvidia/nemotron-3-120b-a12b",
+     "displayName": "Nemotron 3 120B (CF)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~5-10M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "@cf/google/gemma-4-26b-a4b-it",
+     "displayName": "Gemma 4 26B-A4B it (CF)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~10-20M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    }
+   ],
+   "model_list_note": "",
+   "verification": {
+    "status": "declared_only",
+    "date": "2026-11-03",
+    "note": "not verified by us; needs an account id and an API token (stored as account_id:token); verify the free daily allocation before use",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "zhipu",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "Zhipu (Z.ai / bigmodel.cn)",
+   "auth": "Keyed",
+   "adapter": "Native (`ZhipuProvider`)",
+   "upstream_notes": "Console autodetect: a rejected domestic key is re-probed against the global `api.z.ai` host; 60s timeout covers glm-4.7-flash hidden reasoning.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [
+    {
+     "modelId": "glm-4.5-flash",
+     "displayName": "GLM-4.5 Flash",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": 1000000,
+      "monthly_token_budget": "~30M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "glm-4.7-flash",
+     "displayName": "GLM-4.7 Flash",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": 1000000,
+      "monthly_token_budget": "~30M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "glm-4.6v-flash",
+     "displayName": "GLM-4.6V Flash",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~30M"
+     },
+     "context_window": 131072,
+     "vision": true,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    }
+   ],
+   "model_list_note": "",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "ollama",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "Ollama Cloud",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "120s timeout for frontier reasoning models; reasoning returned in `message.reasoning`; catalog filtered to confirmed-free rows.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [
+    {
+     "modelId": "qwen3-coder:480b",
+     "displayName": "Qwen3-Coder 480B (Ollama)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~5-10M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "mistral-large-3:675b",
+     "displayName": "Mistral Large 3 675B (Ollama)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~5-10M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": false,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "deepseek-v3.2",
+     "displayName": "DeepSeek V3.2 (Ollama)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~5-10M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": false,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "cogito-2.1:671b",
+     "displayName": "Cogito 2.1 671B (Ollama)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~5-10M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "kimi-k2-thinking",
+     "displayName": "Kimi K2 Thinking (Ollama)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~5-10M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": false,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "glm-4.7",
+     "displayName": "GLM-4.7 (Ollama)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~5-10M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "gpt-oss:120b",
+     "displayName": "GPT-OSS 120B (Ollama)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~10-20M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "devstral-2:123b",
+     "displayName": "Devstral 2 123B (Ollama)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~10-20M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "gpt-oss:20b",
+     "displayName": "GPT-OSS 20B (Ollama)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~20-30M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "gemma4:31b",
+     "displayName": "Gemma 4 31B (Ollama)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~20-30M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "qwen3-coder-next",
+     "displayName": "Qwen3-Coder Next (Ollama)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~10-20M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    }
+   ],
+   "model_list_note": "",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "kilo",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "Kilo Gateway",
+   "auth": "Keyless",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Anonymous `:free` routes rate-limited 200 req/hr per IP; prompts/outputs logged for training; validation probes `/api/gateway/models` (#181).",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [
+    {
+     "modelId": "nvidia/nemotron-3-super-120b-a12b:free",
+     "displayName": "Nemotron 3 Super 120B (Kilo)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~2-3M (200/hr)"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "poolside/laguna-m.1:free",
+     "displayName": "Poolside Laguna M.1 (Kilo)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "free · 200/hr per IP"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "stepfun/step-3.7-flash:free",
+     "displayName": "StepFun Step 3.7 Flash (Kilo)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "free · 200/hr per IP"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "poolside/laguna-xs.2:free",
+     "displayName": "Poolside Laguna XS.2 (Kilo)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "free · 200/hr per IP"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    }
+   ],
+   "model_list_note": "",
+   "verification": {
+    "status": "upstream_documented",
+    "date": "2026-11-03",
+    "experimental": true,
+    "anonymous": true,
+    "note": "anonymous :free routes limited to 200 requests/hour per IP; the gateway's own documentation says prompts and outputs are logged for training",
+    "trains_on_data": "yes (per upstream documentation)",
+    "allowed_data_classes": [
+     "public"
+    ],
+    "routing": "experimental only; never carries Internal or Restricted data"
+   }
+  },
+  {
+   "id": "pollinations",
+   "categories": [
+    "chat",
+    "media",
+    "video"
+   ],
+   "display_name": "Pollinations",
+   "auth": "Keyed",
+   "adapter": "Native (`PollinationsProvider`)",
+   "upstream_notes": "`GET /v1/models` answers 200 even for revoked keys, so validation probes the authenticated `/account/key` instead (#608).",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [
+    {
+     "modelId": "openai-fast",
+     "displayName": "GPT-OSS 20B (Pollinations)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~? (anon)"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    }
+   ],
+   "model_list_note": "",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "llm7",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "LLM7.io",
+   "auth": "Keyed (anonymous works for basic models)",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "100 req/hr free tier.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [
+    {
+     "modelId": "codestral-latest",
+     "displayName": "Codestral (LLM7)",
+     "declared_limits": {
+      "rpm": 100,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~2-3M (100/hr)"
+     },
+     "context_window": 32000,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    }
+   ],
+   "model_list_note": "",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "huggingface",
+   "categories": [
+    "chat",
+    "video",
+    "embedding"
+   ],
+   "display_name": "Hugging Face Router",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "`router.huggingface.co` meta-router (re-added V13); recurring $0.10/mo router credit on the free tier.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [
+    {
+     "modelId": "moonshotai/Kimi-K2.6",
+     "displayName": "Kimi K2.6 (HF)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~1-3M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "Qwen/Qwen3-Coder-Next",
+     "displayName": "Qwen3-Coder Next (HF)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~1-3M"
+     },
+     "context_window": 262144,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "deepseek-ai/DeepSeek-V4-Flash",
+     "displayName": "DeepSeek V4 Flash (HF)",
+     "declared_limits": {
+      "rpm": null,
+      "rpd": null,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "~1-3M"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    }
+   ],
+   "model_list_note": "",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "opencode",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "OpenCode Zen",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Free roster is locked to the OpenCode client since 2026-09 (403 FreeTierError, #1249) and disabled in the catalog; paid models only.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [
+    {
+     "modelId": "deepseek-v4-flash-free",
+     "displayName": "DeepSeek V4 Flash Free (OpenCode Zen)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "promo (trial)"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "big-pickle",
+     "displayName": "Big Pickle (OpenCode Zen, stealth)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "promo (trial)"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "nemotron-3-super-free",
+     "displayName": "Nemotron 3 Super Free (OpenCode Zen)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "promo (trial)"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": false,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "mimo-v2.5-free",
+     "displayName": "MiMo-V2.5 Free (OpenCode Zen)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "promo (trial)"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": false,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "minimax-m3-free",
+     "displayName": "MiniMax M3 Free (OpenCode Zen)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "promo (trial)"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": false,
+     "verification": "declared_by_gateway_seed_unverified"
+    },
+    {
+     "modelId": "nemotron-3-ultra-free",
+     "displayName": "Nemotron 3 Ultra Free (OpenCode Zen)",
+     "declared_limits": {
+      "rpm": 20,
+      "rpd": 200,
+      "tpm": null,
+      "tpd": null,
+      "monthly_token_budget": "promo (trial)"
+     },
+     "context_window": 131072,
+     "vision": false,
+     "tools": true,
+     "source": "catalog",
+     "enabled_in_gateway_seed": true,
+     "verification": "declared_by_gateway_seed_unverified"
+    }
+   ],
+   "model_list_note": "",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "ovh",
+   "categories": [
+    "chat",
+    "media",
+    "transcription"
+   ],
+   "display_name": "OVHcloud AI Endpoints",
+   "auth": "Keyless",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Anonymous tier: 2 req/min per IP per model (observed stricter); authenticated tier requires a Public Cloud project with payment method on file (`migrateModelsV26`).",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "upstream_documented",
+    "date": "2026-11-03",
+    "experimental": true,
+    "anonymous": true,
+    "note": "anonymous tier about 2 requests/minute per IP per model (observed stricter); the authenticated tier needs a Public Cloud project with a payment method",
+    "allowed_data_classes": [
+     "public"
+    ],
+    "routing": "experimental only"
+   }
+  },
+  {
+   "id": "agnes",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "Agnes AI",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Proprietary models served at $0/token promotionally; ~30 concurrent requests before 429s; 60s timeout for reasoning TTFB.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "reka",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "Reka",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "No free tier for new accounts since 2026-09: prepaid credits required (#1202). Accounts that still hold credit keep working; balance dashboard-only.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "siliconflow",
+   "categories": [
+    "chat",
+    "media"
+   ],
+   "display_name": "SiliconFlow",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Registered mainly for FREE generative-media models (FLUX.1-schnell image, CosyVoice2 TTS) routed via `services/media.ts`.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "routeway",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "Routeway",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Requires browser-style User-Agent (Cloudflare rejects others with error 1010); free pool observed stricter (~5 rpm) than the documented 20 rpm / 200 rpd.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "bazaarlink",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "BazaarLink",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Only the `auto:free` route is cataloged — direct model ids are paid (#385).",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "ainative",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "AINative Studio",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Advertises recurring ~10M tokens/month free allocation; quota treated as unverified until confirmed by a real account.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "aion",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "Aion Labs",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "No-card free key; availability catalog-managed behind the 30-day age gate.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "requesty",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "Requesty",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Router endpoint at `router.requesty.ai/v1`; free rows age into the monthly catalog; the free tier is 200 requests/day shared across all free models.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "navy",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "NavyAI",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Free plan: 150K tokens/day and 20 RPM; live smoke tests require an explicit User-Agent header.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "nara",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "NaraRouter",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Free plan additionally requires Telegram channel/link verification; live-probed 2026-07-09.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "sealion",
+   "categories": [
+    "chat",
+    "embedding"
+   ],
+   "display_name": "SEA-LION (AI Singapore)",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "First-party API; Google sign-in, no card, no region wall; 10 RPM recurring free tier.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "orcarouter",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "OrcaRouter",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Recurring `$0` free aliases with intentionally unpublished limits (#896): 429 is a clean quota signal because free routes never fall back to paid models.",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "unorouter",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "UnoRouter",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Free models carry `:free` suffix; per-minute rate limit (429 on cap). `GET /v1/models` public (200 no key) but 401 on wrong key; default key validation works. Catalog rows in hosted catalog (premium now, free after 30-day age gate).",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "xkiro",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "xKiro",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Free plan: 5M tokens/day on free models (Mistral, MiniMax, DeepSeek families); paid models 403. `GET /v1/models` public (200 no key), so `validateUrl` points to `/v1/usage` which 401s on missing/invalid key. Accepts Bearer or `x-api-key`. Catalog rows in hosted catalog (premium now, free after 30-day age gate).",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "modelscope",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "ModelScope (Alibaba)",
+   "auth": "Keyed",
+   "adapter": "Native (`ModelScopeProvider`)",
+   "upstream_notes": "Calls require binding to an Alibaba Cloud CHINA-site account with real-name verification; `GET /v1/models` accepts garbage tokens so validation uses a 1-token chat probe; retired models answer 429 \"insufficient balance\" (#581).",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "qianfan",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "Baidu Qianfan",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "ERNIE-Speed/Lite/Tiny free indefinitely via pay-as-you-go billing bounded by rate limits; Chinese real-name auth required (#936).",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "volcengine",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "Volcengine Ark (ByteDance)",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Recurring daily per-model reward quota of 2M tokens/day/model for individual developers, on top of a one-time 500K new-user grant; real-name auth required (#936).",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "longcat",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "LongCat (Meituan)",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Daily free quota; exception among the Chinese providers — email signup works from outside mainland China. Also speaks Anthropic wire at `/anthropic` (unused here) (#936).",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "xfyun",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "iFlytek Spark",
+   "auth": "Keyed",
+   "adapter": "OpenAI-compat",
+   "upstream_notes": "Auth is the console APIPassword as a Bearer token; the Lite model is the documented free one; no published token/QPS ceiling (#936).",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  },
+  {
+   "id": "aihorde",
+   "categories": [
+    "chat"
+   ],
+   "display_name": "AI Horde",
+   "auth": "Keyless (anonymous sentinel `0000000000`; registered key raises queue priority)",
+   "adapter": "Native (`AIHordeProvider`)",
+   "upstream_notes": "Community volunteer workers via queue-based proxy: max_tokens >= 16, stop must be array, no tools, usage reported as kudos, 120s timeout, no upstream streaming (#345).",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "upstream_documented",
+    "date": "2026-11-03",
+    "experimental": true,
+    "anonymous": true,
+    "note": "community volunteer workers behind a queue; anonymous sentinel key; text is processed by unknown third parties",
+    "allowed_data_classes": [
+     "public"
+    ],
+    "routing": "experimental only; assume anything sent is public"
+   }
+  },
+  {
+   "id": "custom",
+   "categories": [
+    "unclassified"
+   ],
+   "display_name": "Custom (OpenAI-compatible)",
+   "auth": "User-supplied base URL stored per `api_keys` row",
+   "adapter": "OpenAI-compat built per key via `resolveProvider()`",
+   "upstream_notes": "Registered placeholder keeps `getProvider('custom')`/`hasProvider('custom')` well-behaved; 120s timeout for slow local runtimes (llama.cpp, vLLM, LM Studio) (#145).",
+   "in_versions": {
+    "v0.13.0": true,
+    "v0.13.10": true,
+    "v0.16.15": true,
+    "v0.16.17": true
+   },
+   "models": [],
+   "model_list_note": "no model is bundled with the gateway; its model rows arrive through the signed remote catalogue (or are not chat models)",
+   "verification": {
+    "status": "unverified",
+    "date": "2026-11-03",
+    "note": "declared by the upstream project only; not checked against the provider",
+    "allowed_data_classes": [
+     "public"
+    ]
+   }
+  }
+ ]
+}
