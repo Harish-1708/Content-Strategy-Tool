@@ -45,7 +45,8 @@ class Context:
     provider_check: object = None     # (provider name, kind) -> a check_providers row
     claude_check: object = None       # () -> detail
     catalogue_check: object = None    # () -> (items, detail)
-    youtube_check: object = None      # () -> (items, detail)
+    youtube_check: object = None      # () -> (items, detail), the yt-dlp route
+    youtube_api_check: object = None  # () -> (items, detail), the official Data API route
     providers: tuple = ()             # provider names that have a key
     missing: dict = field(default_factory=dict)     # (source, route) -> reason
 
@@ -84,6 +85,9 @@ def build_probes(ctx, wanted=None):
             elif src.id == "shopify_catalogue":
                 skip = skip or ("" if ctx.catalogue_check else "no brand catalogue to try")
                 probes.append(Probe(src.id, "fetch_page", rt.name, None if skip else ctx.catalogue_check, skip))
+            elif src.id == "youtube_public" and rt.name == "data_api":
+                skip = skip or ("" if ctx.youtube_api_check else "no key: set YOUTUBE_API_KEY")
+                probes.append(Probe(src.id, "video_details", rt.name, None if skip else ctx.youtube_api_check, skip))
             elif src.id == "youtube_public":
                 skip = skip or ("" if ctx.youtube_check else "no yt-dlp on this machine")
                 probes.append(Probe(src.id, "metadata", rt.name, None if skip else ctx.youtube_check, skip))
