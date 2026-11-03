@@ -26,8 +26,8 @@ from . import benchmarks as bench
 from . import contract
 from . import deepcheck
 from . import evidence as evidence_mod
-from .browser import AccountWarning, BrowserError, Challenge, LoginWall, describe_cookies, site_pacing, site_scrolls
-from .providers import AuthError, ProviderError, QuotaError
+from .browser import AccountWarning, BrowserError, Challenge, LoginWall, describe_cookies, describe_form_facts, site_pacing, site_scrolls
+from .providers import AuthError, ProviderConfigError, ProviderError, QuotaError
 from .safety import clean_text
 
 BROWSER_SOURCES = ("meta_ads", "tiktok", "instagram")
@@ -51,7 +51,7 @@ DEFAULT_APIFY_ACTORS = {"meta_ads": "apify/facebook-ads-scraper", "tiktok": "clo
 DEFAULT_COLLECTORS = {
     "browser": {"monthly_items": 0, "items_per_run": 30, "cache_days": 3},          # 0 = no monthly limit
     "gemini": {"monthly_tasks": 2, "tasks_per_run": 1, "cache_days": 14},
-    "apify": {"mode": "off", "monthly_items": 100, "items_per_run": 30, "max_cost_per_run_usd": 1.0,
+    "apify": {"mode": "off", "monthly_items": 100, "items_per_run": 30, "max_cost_per_run_usd": 1.0, "check_max_cost_usd": 0.25,
               "actors": DEFAULT_APIFY_ACTORS},
     "claude": {"model": "claude-sonnet-5-5", "monthly_calls": 60, "max_rounds": 3, "max_tokens": 700, "prompt_max_tokens": 2000, "review_rounds": 1,
                "prepare_prompt": True},
@@ -80,6 +80,7 @@ class CollectorSettings:
     apify_monthly_items: int
     apify_items_per_run: int
     apify_max_cost_per_run_usd: float
+    apify_check_max_cost_usd: float
     actors: dict
     claude_model: str
     claude_monthly_calls: int
@@ -172,6 +173,7 @@ def load_collector_settings(path="research.yaml"):
         apify_monthly_items=_count(apify["monthly_items"], "collectors.apify.monthly_items"),
         apify_items_per_run=_count(apify["items_per_run"], "collectors.apify.items_per_run", 1),
         apify_max_cost_per_run_usd=_count(apify["max_cost_per_run_usd"], "collectors.apify.max_cost_per_run_usd", 0.01, whole=False),
+        apify_check_max_cost_usd=_count(apify["check_max_cost_usd"], "collectors.apify.check_max_cost_usd", 0.01, whole=False),
         actors={k: v.replace("~", "/") for k, v in actors.items()},
         claude_model=claude["model"].strip(),
         claude_monthly_calls=_count(claude["monthly_calls"], "collectors.claude.monthly_calls"),
@@ -889,8 +891,16 @@ def ensure_session(browser, site, site_cfg, creds):
         raise Challenge(f"{site}: the site asked for a security check (a code, a puzzle or 'confirm it's you')"
                         f"{_closed_note(site_cfg)}. "
                         f"Log in once as the dummy account in a normal browser, then export its cookies into {cookies_name}")
-    if state != "ok" and creds.get("username") and creds.get("password") and site_cfg.get("login_steps"):
-        run_steps(browser, site_cfg["login_steps"], creds)
+    # A password login is the backup for "no cookies". When cookies WERE given and the site did not accept them, a password
+    # login from a data-centre address is the likeliest way to get the account warned, so it is not tried: the cookies are
+    # reported instead (below), with what they contained.
+    if state != "ok" and not creds.get("cookies") and creds.get("username") and creds.get("password") and site_cfg.get("login_steps"):
+        try:
+            run_steps(browser, site_cfg["login_steps"], creds)
+        except BrowserError as exc:
+            browser.screenshot(f"login-form-{site}")
+            facts = getattr(browser, "form_facts", None)
+            raise BrowserError(f"{exc}. Before logging in the page looked '{state}'; after trying, " + describe_form_facts(facts() if callable(facts) else None)) from None
         check_warning(browser, site, site_cfg)
         state = session_state(browser, site_cfg)
         if state == "challenge":
@@ -1855,7 +1865,11 @@ def check_collectors(browser_factory, creds, settings, browser_cfg, store, ledge
                 continue
             try:
                 raw = apify.run(settings.actors[source], apify_input(CHECK_SEEDS[source](), items), max_items=items,
-                                max_cost_usd=min(0.25, settings.apify_max_cost_per_run_usd))
+                                max_cost_usd=min(settings.apify_check_max_cost_usd, settings.apify_max_cost_per_run_usd))
+            except ProviderConfigError as exc:
+                row["detail"] = "skipped: " + str(exc)
+                row["code"] = contract.code_for(exc)
+                continue
             except (AuthError, QuotaError, ProviderError) as exc:
                 row["detail"] = str(exc)
                 row["code"] = contract.code_for(exc)
