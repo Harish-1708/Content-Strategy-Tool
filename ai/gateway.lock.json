@@ -1,0 +1,26 @@
+{
+ "schema_version": 1,
+ "gateway": {
+  "repo": "https://github.com/tashfeenahmed/freellmapi",
+  "tag": "v0.16.17",
+  "commit": "741d03094398facceb1b6019a838f806e4d9f7f9"
+ },
+ "node": "22",
+ "build": [
+  "npm ci --workspace=shared --workspace=server --include-workspace-root",
+  "npm run build -w shared -w server"
+ ],
+ "run": "node server/dist/index.js",
+ "required_env": {
+  "HOST": "127.0.0.1",
+  "CATALOG_SYNC_DISABLED": "1",
+  "NODE_ENV": "production"
+ },
+ "must_stay_unset": [
+  "MODEL_PROBE_ENABLED",
+  "BUDGET_ALERT_WEBHOOK_URL",
+  "ALLOWED_HOSTS"
+ ],
+ "reviewed_from": "v0.16.15 (identical to the snapshot reviewed in October); v0.16.17 delta read in full",
+ "changing_this_file_requires": "a review of the upstream diff and a passing mock-gateway job"
+}
