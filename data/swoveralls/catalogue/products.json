@@ -7129,7 +7129,7 @@
      "title": "M / Cosmic"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53753225478255,
      "options": [
@@ -7465,7 +7465,7 @@
    "audience_hints": [],
    "audience_stated": "",
    "category": "core",
-   "description": "Meet the comfiest overalls on earth. Swoveralls combine sweatpants and overalls into one ridiculously comfy masterpiece. Made from butter-soft fabric with the perfect amount of stretch, they feature six pockets (including a hidden zip one), jogger cuffs that stay put, and a no-waistband design for all-day freedom. Great for concerts, dog walks, naps, travel, and everything in between. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 65% cotton, 31% recycled polyester, 4% spandex",
+   "description": "Meet the comfiest overalls on earth. Swoveralls combine sweatpants and overalls into one ridiculously comfy masterpiece. Made from butter-soft fabric with the perfect amount of stretch, they feature six pockets (including a hidden zip one), jogger cuffs that stay put, and a no-waistband design for all-day freedom. Great for concerts, dog walks, naps, travel, and everything in between. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 95% organic cotton, 5% spandex",
    "excluded": false,
    "excluded_reason": null,
    "fact_conflicts": [],
@@ -7474,7 +7474,7 @@
      "source": "catalogue_description",
      "status": "stated",
      "value": {
-      "chars": 602
+      "chars": 586
      }
     },
     "features": {
@@ -7488,14 +7488,14 @@
       "Adjustable Straps",
       "Zipper fly",
       "Unisex Sizing",
-      "65% cotton, 31% recycled polyester, 4% spandex"
+      "95% organic cotton, 5% spandex"
      ]
     },
     "images": {
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 9
+      "count": 10
      }
     },
     "materials": {
@@ -7505,19 +7505,14 @@
       "consistent": true,
       "items": [
        {
-        "label": "cotton",
+        "label": "organic cotton",
         "material": "cotton",
-        "percent": 65
-       },
-       {
-        "label": "recycled polyester",
-        "material": "polyester",
-        "percent": 31
+        "percent": 95
        },
        {
         "label": "spandex",
         "material": "spandex",
-        "percent": 4
+        "percent": 5
        }
       ],
       "total": 100
@@ -7537,7 +7532,7 @@
    "family": "Swoveralls",
    "flags": [],
    "handle": "swoveralls-dark-athletic-grey",
-   "image_count": 9,
+   "image_count": 10,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwagBraReplacement.jpg?v=1780854121",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricColorUpdate.jpg?v=1780856035",
@@ -7547,11 +7542,12 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/11_ddaedfee-308a-49e6-943f-3530d8b10421.png?v=1763865041",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/13_53449bbd-5771-4631-8070-209e0ef7995b.png?v=1763865041",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/gen-m1786bx3j7cvptywpqjkhy93x18hfvet-0.jpg?v=1793651380"
    ],
    "in_stock": true,
    "ingredients": "",
-   "materials": "cotton 65%; polyester 31%; spandex 4%",
+   "materials": "cotton 95%; spandex 5%",
    "missing_expected": [],
    "missing_required": [],
    "on_sale": false,
@@ -8543,7 +8539,7 @@
    "audience_hints": [],
    "audience_stated": "",
    "category": "core",
-   "description": "Meet the comfiest overalls on earth. Swoveralls combine sweatpants and overalls into one ridiculously comfy masterpiece. Made from butter-soft fabric with the perfect amount of stretch, they feature six pockets (including a hidden zip one), jogger cuffs that stay put, and a no-waistband design for all-day freedom. Great for concerts, dog walks, naps, travel, and everything in between. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 65% cotton, 31% recycled polyester, 4% spandex",
+   "description": "Meet the comfiest overalls on earth. Swoveralls combine sweatpants and overalls into one ridiculously comfy masterpiece. Made from butter-soft fabric with the perfect amount of stretch, they feature six pockets (including a hidden zip one), jogger cuffs that stay put, and a no-waistband design for all-day freedom. Great for concerts, dog walks, naps, travel, and everything in between. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 95% organic cotton, 5% spandex",
    "excluded": false,
    "excluded_reason": null,
    "fact_conflicts": [],
@@ -8552,7 +8548,7 @@
      "source": "catalogue_description",
      "status": "stated",
      "value": {
-      "chars": 602
+      "chars": 586
      }
     },
     "features": {
@@ -8566,14 +8562,14 @@
       "Adjustable Straps",
       "Zipper fly",
       "Unisex Sizing",
-      "65% cotton, 31% recycled polyester, 4% spandex"
+      "95% organic cotton, 5% spandex"
      ]
     },
     "images": {
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 9
+      "count": 10
      }
     },
     "materials": {
@@ -8583,19 +8579,14 @@
       "consistent": true,
       "items": [
        {
-        "label": "cotton",
+        "label": "organic cotton",
         "material": "cotton",
-        "percent": 65
-       },
-       {
-        "label": "recycled polyester",
-        "material": "polyester",
-        "percent": 31
+        "percent": 95
        },
        {
         "label": "spandex",
         "material": "spandex",
-        "percent": 4
+        "percent": 5
        }
       ],
       "total": 100
@@ -8615,7 +8606,7 @@
    "family": "Swoveralls",
    "flags": [],
    "handle": "swoveralls-forest-green",
-   "image_count": 9,
+   "image_count": 10,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/BackgroundRemoval.jpg?v=1780855421",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/27.png?v=1763689293",
@@ -8625,11 +8616,12 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/30.png?v=1767819869",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/32.png?v=1767819869",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/d0442dac-5cdf-4ca4-bdc4-2ba5140f0ea1.jpg?v=1793651377"
    ],
    "in_stock": true,
    "ingredients": "",
-   "materials": "cotton 65%; polyester 31%; spandex 4%",
+   "materials": "cotton 95%; spandex 5%",
    "missing_expected": [],
    "missing_required": [],
    "on_sale": false,
@@ -9587,7 +9579,7 @@
    "audience_hints": [],
    "audience_stated": "",
    "category": "core",
-   "description": "Meet the comfiest overalls on earth. Swoveralls combine sweatpants and overalls into one ridiculously comfy masterpiece. Made from butter-soft fabric with the perfect amount of stretch, they feature six pockets (including a hidden zip one), jogger cuffs that stay put, and a no-waistband design for all-day freedom. Great for concerts, dog walks, naps, travel, and everything in between. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 65% cotton, 31% recycled polyester, 4% spandex",
+   "description": "Meet the comfiest overalls on earth. Swoveralls combine sweatpants and overalls into one ridiculously comfy masterpiece. Made from butter-soft fabric with the perfect amount of stretch, they feature six pockets (including a hidden zip one), jogger cuffs that stay put, and a no-waistband design for all-day freedom. Great for concerts, dog walks, naps, travel, and everything in between. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 95% organic cotton, 5% spandex",
    "excluded": false,
    "excluded_reason": null,
    "fact_conflicts": [],
@@ -9596,7 +9588,7 @@
      "source": "catalogue_description",
      "status": "stated",
      "value": {
-      "chars": 602
+      "chars": 586
      }
     },
     "features": {
@@ -9610,14 +9602,14 @@
       "Adjustable Straps",
       "Zipper fly",
       "Unisex Sizing",
-      "65% cotton, 31% recycled polyester, 4% spandex"
+      "95% organic cotton, 5% spandex"
      ]
     },
     "images": {
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 9
+      "count": 10
      }
     },
     "materials": {
@@ -9627,19 +9619,14 @@
       "consistent": true,
       "items": [
        {
-        "label": "cotton",
+        "label": "organic cotton",
         "material": "cotton",
-        "percent": 65
-       },
-       {
-        "label": "recycled polyester",
-        "material": "polyester",
-        "percent": 31
+        "percent": 95
        },
        {
         "label": "spandex",
         "material": "spandex",
-        "percent": 4
+        "percent": 5
        }
       ],
       "total": 100
@@ -9659,7 +9646,7 @@
    "family": "Swoveralls",
    "flags": [],
    "handle": "swoveralls-heather-grey",
-   "image_count": 9,
+   "image_count": 10,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/21.png?v=1763054414",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricTextureDesign.jpg?v=1781000354",
@@ -9669,11 +9656,12 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/23.png?v=1763054414",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/26.png?v=1763054414",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/gen-m176rqg35mz8dvzws116vsmmmh8hf50e-0.jpg?v=1793651380"
    ],
    "in_stock": true,
    "ingredients": "",
-   "materials": "cotton 65%; polyester 31%; spandex 4%",
+   "materials": "cotton 95%; spandex 5%",
    "missing_expected": [],
    "missing_required": [],
    "on_sale": false,
@@ -9876,7 +9864,7 @@
    "audience_hints": [],
    "audience_stated": "",
    "category": "core",
-   "description": "Meet the comfiest overalls on earth. Swoveralls combine sweatpants and overalls into one ridiculously comfy masterpiece. Made from butter-soft fabric with the perfect amount of stretch, they feature six pockets (including a hidden zip one), jogger cuffs that stay put, and a no-waistband design for all-day freedom. Great for concerts, dog walks, naps, travel, and everything in between. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 65% cotton, 31% recycled polyester, 4% spandex",
+   "description": "Meet the comfiest overalls on earth. Swoveralls combine sweatpants and overalls into one ridiculously comfy masterpiece. Made from butter-soft fabric with the perfect amount of stretch, they feature six pockets (including a hidden zip one), jogger cuffs that stay put, and a no-waistband design for all-day freedom. Great for concerts, dog walks, naps, travel, and everything in between. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 95% organic cotton, 5% spandex",
    "excluded": false,
    "excluded_reason": null,
    "fact_conflicts": [],
@@ -9885,7 +9873,7 @@
      "source": "catalogue_description",
      "status": "stated",
      "value": {
-      "chars": 602
+      "chars": 586
      }
     },
     "features": {
@@ -9899,14 +9887,14 @@
       "Adjustable Straps",
       "Zipper fly",
       "Unisex Sizing",
-      "65% cotton, 31% recycled polyester, 4% spandex"
+      "95% organic cotton, 5% spandex"
      ]
     },
     "images": {
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 9
+      "count": 10
      }
     },
     "materials": {
@@ -9916,19 +9904,14 @@
       "consistent": true,
       "items": [
        {
-        "label": "cotton",
+        "label": "organic cotton",
         "material": "cotton",
-        "percent": 65
-       },
-       {
-        "label": "recycled polyester",
-        "material": "polyester",
-        "percent": 31
+        "percent": 95
        },
        {
         "label": "spandex",
         "material": "spandex",
-        "percent": 4
+        "percent": 5
        }
       ],
       "total": 100
@@ -9948,7 +9931,7 @@
    "family": "Swoveralls",
    "flags": [],
    "handle": "swoveralls-midnight-black",
-   "image_count": 9,
+   "image_count": 10,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ModelRemovalRequest.jpg?v=1780855876",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricColorUpdate_1.jpg?v=1780857535",
@@ -9958,11 +9941,12 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025_Enhanced_PDP_PLP_Image_Size_Revisions.png?v=1767819895",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025_Enhanced_PDP_PLP_Image_Size_Revisions_1.png?v=1770085764",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/gen-m17f9z97j9nk9kb1ej4dva5g9s8hek79-0.jpg?v=1793651379"
    ],
    "in_stock": true,
    "ingredients": "",
-   "materials": "cotton 65%; polyester 31%; spandex 4%",
+   "materials": "cotton 95%; spandex 5%",
    "missing_expected": [],
    "missing_required": [],
    "on_sale": false,
@@ -10386,7 +10370,7 @@
    "audience_hints": [],
    "audience_stated": "",
    "category": "core",
-   "description": "Meet the comfiest overalls on earth. Swoveralls combine sweatpants and overalls into one ridiculously comfy masterpiece. Made from butter-soft fabric with the perfect amount of stretch, they feature six pockets (including a hidden zip one), jogger cuffs that stay put, and a no-waistband design for all-day freedom. Great for concerts, dog walks, naps, travel, and everything in between. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 65% cotton, 31% recycled polyester, 4% spandex",
+   "description": "Meet the comfiest overalls on earth. Swoveralls combine sweatpants and overalls into one ridiculously comfy masterpiece. Made from butter-soft fabric with the perfect amount of stretch, they feature six pockets (including a hidden zip one), jogger cuffs that stay put, and a no-waistband design for all-day freedom. Great for concerts, dog walks, naps, travel, and everything in between. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 95% organic cotton, 5% spandex",
    "excluded": false,
    "excluded_reason": null,
    "fact_conflicts": [],
@@ -10395,7 +10379,7 @@
      "source": "catalogue_description",
      "status": "stated",
      "value": {
-      "chars": 602
+      "chars": 586
      }
     },
     "features": {
@@ -10409,14 +10393,14 @@
       "Adjustable Straps",
       "Zipper fly",
       "Unisex Sizing",
-      "65% cotton, 31% recycled polyester, 4% spandex"
+      "95% organic cotton, 5% spandex"
      ]
     },
     "images": {
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 8
+      "count": 9
      }
     },
     "materials": {
@@ -10426,19 +10410,14 @@
       "consistent": true,
       "items": [
        {
-        "label": "cotton",
+        "label": "organic cotton",
         "material": "cotton",
-        "percent": 65
-       },
-       {
-        "label": "recycled polyester",
-        "material": "polyester",
-        "percent": 31
+        "percent": 95
        },
        {
         "label": "spandex",
         "material": "spandex",
-        "percent": 4
+        "percent": 5
        }
       ],
       "total": 100
@@ -10458,7 +10437,7 @@
    "family": "Swoveralls",
    "flags": [],
    "handle": "swoveralls-navy",
-   "image_count": 8,
+   "image_count": 9,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/AdjustImageFraming.jpg?v=1780854481",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/14_642e82d1-a4ab-443d-855f-73531f00c597.png?v=1763054402",
@@ -10467,11 +10446,12 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/16_0bc4d53d-b052-47a7-a92b-ff0a7ebfb70f.png?v=1763054402",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/18.png?v=1763054808",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/gen-m176m00yeb4z0c0tr6n88j9c198hfgdw-0.jpg?v=1793651379"
    ],
    "in_stock": true,
    "ingredients": "",
-   "materials": "cotton 65%; polyester 31%; spandex 4%",
+   "materials": "cotton 95%; spandex 5%",
    "missing_expected": [],
    "missing_required": [],
    "on_sale": false,
@@ -12798,7 +12778,7 @@
    "audience_hints": [],
    "audience_stated": "",
    "category": "core",
-   "description": "The comfiest overalls ever, but with no pant legs. Cool, functional, extremely comfortable. Swovie Shorts are the comfiest thing you never knew ya needed when in warmer weather. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 65% cotton, 31% recycled polyester, 4% spandex",
+   "description": "The comfiest overalls ever, but with no pant legs. Cool, functional, extremely comfortable. Swovie Shorts are the comfiest thing you never knew ya needed when in warmer weather. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 95% organic cotton, 5% spandex",
    "excluded": false,
    "excluded_reason": null,
    "fact_conflicts": [],
@@ -12807,7 +12787,7 @@
      "source": "catalogue_description",
      "status": "stated",
      "value": {
-      "chars": 392
+      "chars": 376
      }
     },
     "features": {
@@ -12821,14 +12801,14 @@
       "Adjustable Straps",
       "Zipper fly",
       "Unisex Sizing",
-      "65% cotton, 31% recycled polyester, 4% spandex"
+      "95% organic cotton, 5% spandex"
      ]
     },
     "images": {
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 6
+      "count": 7
      }
     },
     "materials": {
@@ -12838,19 +12818,14 @@
       "consistent": true,
       "items": [
        {
-        "label": "cotton",
+        "label": "organic cotton",
         "material": "cotton",
-        "percent": 65
-       },
-       {
-        "label": "recycled polyester",
-        "material": "polyester",
-        "percent": 31
+        "percent": 95
        },
        {
         "label": "spandex",
         "material": "spandex",
-        "percent": 4
+        "percent": 5
        }
       ],
       "total": 100
@@ -12860,18 +12835,19 @@
    "family": "Swovie Shorts",
    "flags": [],
    "handle": "swovie-shorts-dark-athletic-grey",
-   "image_count": 6,
+   "image_count": 7,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Short_Overalls_Overlay_2026-03-22_10-10.jpg?v=1774190586",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricColorUpdate.jpg?v=1780856035",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/17-min_7319717e-4822-41c7-ab86-c87ce2a4567a.jpg?v=1774190586",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/18-min_5d8fbba2-7c0c-49a8-8410-c6141ca74ede.jpg?v=1774190586",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/19-min_3565f56e-6dbd-44f0-af60-e1440693edc8.jpg?v=1774190586",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025PDP_PLPImageSizeRevisions_2b3dd24c-17f7-4490-99ad-3d2eae2ae3b0.png?v=1774190625"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025PDP_PLPImageSizeRevisions_2b3dd24c-17f7-4490-99ad-3d2eae2ae3b0.png?v=1774190625",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/b6bc8a48-cd1f-4151-b448-2c0f5181fc3d.jpg?v=1793651380"
    ],
    "in_stock": true,
    "ingredients": "",
-   "materials": "cotton 65%; polyester 31%; spandex 4%",
+   "materials": "cotton 95%; spandex 5%",
    "missing_expected": [
     "pocket_claims"
    ],
@@ -13076,7 +13052,7 @@
    "audience_hints": [],
    "audience_stated": "",
    "category": "core",
-   "description": "The comfiest overalls ever, but with no pant legs. Cool, functional, extremely comfortable. Swovie Shorts are the comfiest thing you never knew ya needed when in warmer weather. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 65% cotton, 31% recycled polyester, 4% spandex",
+   "description": "The comfiest overalls ever, but with no pant legs. Cool, functional, extremely comfortable. Swovie Shorts are the comfiest thing you never knew ya needed when in warmer weather. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 95% organic cotton, 5% spandex",
    "excluded": false,
    "excluded_reason": null,
    "fact_conflicts": [],
@@ -13085,7 +13061,7 @@
      "source": "catalogue_description",
      "status": "stated",
      "value": {
-      "chars": 392
+      "chars": 376
      }
     },
     "features": {
@@ -13099,14 +13075,14 @@
       "Adjustable Straps",
       "Zipper fly",
       "Unisex Sizing",
-      "65% cotton, 31% recycled polyester, 4% spandex"
+      "95% organic cotton, 5% spandex"
      ]
     },
     "images": {
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 6
+      "count": 7
      }
     },
     "materials": {
@@ -13116,19 +13092,14 @@
       "consistent": true,
       "items": [
        {
-        "label": "cotton",
+        "label": "organic cotton",
         "material": "cotton",
-        "percent": 65
-       },
-       {
-        "label": "recycled polyester",
-        "material": "polyester",
-        "percent": 31
+        "percent": 95
        },
        {
         "label": "spandex",
         "material": "spandex",
-        "percent": 4
+        "percent": 5
        }
       ],
       "total": 100
@@ -13138,18 +13109,19 @@
    "family": "Swovie Shorts",
    "flags": [],
    "handle": "swovie-shorts-forest-green",
-   "image_count": 6,
+   "image_count": 7,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Color_Change_Request_2026-03-22_10-10.jpg?v=1774189848",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Fabric_Texture_Close-up.jpg?v=1781000512",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/29-min_b01a968b-964c-40a2-b2d4-0f422507ee9a.jpg?v=1774189848",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/30-min_d92a3dde-9f3a-4da3-8377-8e5fee7f6baa.jpg?v=1774189848",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/31-min_bc59dc4f-5904-4cd2-9da6-acb4d9ea8ca8.jpg?v=1774189848",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025PDP_PLPImageSizeRevisions.png?v=1774189848"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025PDP_PLPImageSizeRevisions.png?v=1774189848",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/566f62f6-8748-4114-ac12-1bcd2698f4dd.jpg?v=1793651381"
    ],
    "in_stock": true,
    "ingredients": "",
-   "materials": "cotton 65%; polyester 31%; spandex 4%",
+   "materials": "cotton 95%; spandex 5%",
    "missing_expected": [
     "pocket_claims"
    ],
@@ -13628,7 +13600,7 @@
    "audience_hints": [],
    "audience_stated": "",
    "category": "core",
-   "description": "The comfiest overalls ever, but with no pant legs. Cool, functional, extremely comfortable. Swovie Shorts are the comfiest thing you never knew ya needed when in warmer weather. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 65% cotton, 31% recycled polyester, 4% spandex",
+   "description": "The comfiest overalls ever, but with no pant legs. Cool, functional, extremely comfortable. Swovie Shorts are the comfiest thing you never knew ya needed when in warmer weather. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 95% organic cotton, 5% spandex",
    "excluded": false,
    "excluded_reason": null,
    "fact_conflicts": [],
@@ -13637,7 +13609,7 @@
      "source": "catalogue_description",
      "status": "stated",
      "value": {
-      "chars": 392
+      "chars": 376
      }
     },
     "features": {
@@ -13651,14 +13623,14 @@
       "Adjustable Straps",
       "Zipper fly",
       "Unisex Sizing",
-      "65% cotton, 31% recycled polyester, 4% spandex"
+      "95% organic cotton, 5% spandex"
      ]
     },
     "images": {
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 8
+      "count": 9
      }
     },
     "materials": {
@@ -13668,19 +13640,14 @@
       "consistent": true,
       "items": [
        {
-        "label": "cotton",
+        "label": "organic cotton",
         "material": "cotton",
-        "percent": 65
-       },
-       {
-        "label": "recycled polyester",
-        "material": "polyester",
-        "percent": 31
+        "percent": 95
        },
        {
         "label": "spandex",
         "material": "spandex",
-        "percent": 4
+        "percent": 5
        }
       ],
       "total": 100
@@ -13690,7 +13657,7 @@
    "family": "Swovie Shorts",
    "flags": [],
    "handle": "swovie-shorts-light-heather-grey",
-   "image_count": 8,
+   "image_count": 9,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Backdrop_Change_2026-03-22_10-45.jpg?v=1774190751",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricTextureDesign.jpg?v=1781000354",
@@ -13699,11 +13666,12 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/36.png?v=1774190751",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/38_8f5534c6-036c-4027-9007-ad6b1e055c90.png?v=1774190751"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/38_8f5534c6-036c-4027-9007-ad6b1e055c90.png?v=1774190751",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/10472802-9663-4692-bcde-483bbeeee658.jpg?v=1793651380"
    ],
    "in_stock": true,
    "ingredients": "",
-   "materials": "cotton 65%; polyester 31%; spandex 4%",
+   "materials": "cotton 95%; spandex 5%",
    "missing_expected": [
     "pocket_claims"
    ],
@@ -13908,7 +13876,7 @@
    "audience_hints": [],
    "audience_stated": "",
    "category": "core",
-   "description": "The comfiest overalls ever, but with no pant legs. Cool, functional, extremely comfortable. Swovie Shorts are the comfiest thing you never knew ya needed when in warmer weather. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 65% cotton, 31% recycled polyester, 4% spandex",
+   "description": "The comfiest overalls ever, but with no pant legs. Cool, functional, extremely comfortable. Swovie Shorts are the comfiest thing you never knew ya needed when in warmer weather. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 95% organic cotton, 5% spandex",
    "excluded": false,
    "excluded_reason": null,
    "fact_conflicts": [],
@@ -13917,7 +13885,7 @@
      "source": "catalogue_description",
      "status": "stated",
      "value": {
-      "chars": 392
+      "chars": 376
      }
     },
     "features": {
@@ -13931,14 +13899,14 @@
       "Adjustable Straps",
       "Zipper fly",
       "Unisex Sizing",
-      "65% cotton, 31% recycled polyester, 4% spandex"
+      "95% organic cotton, 5% spandex"
      ]
     },
     "images": {
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 7
+      "count": 8
      }
     },
     "materials": {
@@ -13948,19 +13916,14 @@
       "consistent": true,
       "items": [
        {
-        "label": "cotton",
+        "label": "organic cotton",
         "material": "cotton",
-        "percent": 65
-       },
-       {
-        "label": "recycled polyester",
-        "material": "polyester",
-        "percent": 31
+        "percent": 95
        },
        {
         "label": "spandex",
         "material": "spandex",
-        "percent": 4
+        "percent": 5
        }
       ],
       "total": 100
@@ -13970,7 +13933,7 @@
    "family": "Swovie Shorts",
    "flags": [],
    "handle": "swovie-shorts-midnight-black",
-   "image_count": 7,
+   "image_count": 8,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Darker_Overalls_Color_2026-03-22_10-41.jpg?v=1774190625",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricColorUpdate_1.jpg?v=1780857535",
@@ -13978,11 +13941,12 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/14_30588be9-79d4-43c1-925e-bff5cf03e827.jpg?v=1774190625",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/SWOVERALLS_080422_FW22_Lifestyle_0642-800x1200-cb6eae5.jpg?v=1774190625",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/15_3634f9b3-c4d1-4d72-8a1e-0a2aa0800253.jpg?v=1774190625",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025PDP_PLPImageSizeRevisions_2b3dd24c-17f7-4490-99ad-3d2eae2ae3b0.png?v=1774190625"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025PDP_PLPImageSizeRevisions_2b3dd24c-17f7-4490-99ad-3d2eae2ae3b0.png?v=1774190625",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/3fed4188-9731-408c-95eb-6984d8f2a89e.jpg?v=1793651379"
    ],
    "in_stock": true,
    "ingredients": "",
-   "materials": "cotton 65%; polyester 31%; spandex 4%",
+   "materials": "cotton 95%; spandex 5%",
    "missing_expected": [
     "pocket_claims"
    ],
@@ -14186,7 +14150,7 @@
    "audience_hints": [],
    "audience_stated": "",
    "category": "core",
-   "description": "The comfiest overalls ever, but with no pant legs. Cool, functional, extremely comfortable. Swovie Shorts are the comfiest thing you never knew ya needed when in warmer weather. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 65% cotton, 31% recycled polyester, 4% spandex",
+   "description": "The comfiest overalls ever, but with no pant legs. Cool, functional, extremely comfortable. Swovie Shorts are the comfiest thing you never knew ya needed when in warmer weather. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 95% organic cotton, 5% spandex",
    "excluded": false,
    "excluded_reason": null,
    "fact_conflicts": [],
@@ -14195,7 +14159,7 @@
      "source": "catalogue_description",
      "status": "stated",
      "value": {
-      "chars": 392
+      "chars": 376
      }
     },
     "features": {
@@ -14209,14 +14173,14 @@
       "Adjustable Straps",
       "Zipper fly",
       "Unisex Sizing",
-      "65% cotton, 31% recycled polyester, 4% spandex"
+      "95% organic cotton, 5% spandex"
      ]
     },
     "images": {
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 8
+      "count": 9
      }
     },
     "materials": {
@@ -14226,19 +14190,14 @@
       "consistent": true,
       "items": [
        {
-        "label": "cotton",
+        "label": "organic cotton",
         "material": "cotton",
-        "percent": 65
-       },
-       {
-        "label": "recycled polyester",
-        "material": "polyester",
-        "percent": 31
+        "percent": 95
        },
        {
         "label": "spandex",
         "material": "spandex",
-        "percent": 4
+        "percent": 5
        }
       ],
       "total": 100
@@ -14248,7 +14207,7 @@
    "family": "Swovie Shorts",
    "flags": [],
    "handle": "swovie-shorts-navy",
-   "image_count": 8,
+   "image_count": 9,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Navy_Overalls_Styling_2026-03-22_10-10.jpg?v=1774190603",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Fabric_Texture_Close-Up_1.jpg?v=1781000516",
@@ -14257,11 +14216,12 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/17.png?v=1774190603",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/34.png?v=1774190603",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c1eee9d7-5bb5-4dbc-ae74-b35376dd0273.jpg?v=1793651380"
    ],
    "in_stock": true,
    "ingredients": "",
-   "materials": "cotton 65%; polyester 31%; spandex 4%",
+   "materials": "cotton 95%; spandex 5%",
    "missing_expected": [
     "pocket_claims"
    ],
