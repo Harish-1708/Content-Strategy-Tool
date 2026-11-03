@@ -1,0 +1,1924 @@
+# AI providers: every platform in the pinned FreeLLMAPI v0.16.17 (84 ids), plus Claude.
+#
+# NOTHING is on unless it says enabled: true. A provider carries the terms found when it was checked (terms.status says
+# how well: verified = the provider's own page; verified_secondary = quoted by other sites; upstream_documented = the gateway
+# project's notes only; declared_only/unverified = nothing checked), and a ceiling set by those terms (public until proven otherwise).
+#
+# To switch a provider on, a person: (1) creates the account and key (docs/ai/setup-instructions.md), (2) adds the key as a GitHub
+# Secret, (3) reads its terms, (4) sets enabled: true and the classes it may receive in approved_classes. The loader refuses a
+# provider that is unverified or declared_only being enabled.
+#
+# To let a provider receive INTERNAL data although its ceiling says public, add a recorded decision, for example:
+#   owner_override: {ceiling: internal, approved_by: "Harish", date: "2026-11-03", reason: "paid tier, written no-training term read"}
+# and add internal to approved_classes. Restricted data can be approved for claude only.
+#
+# models: is the version-controlled allowlist. A model is used only if listed here with approved: true. The remote gateway
+# catalogue is switched off, and even if it were on it could not make a model routable.
+#
+# budgets: the conservative testing cap for paid use (only Claude is paid). A call is refused if its worst case would cross it.
+# Keep the cap below the Anthropic balance; also set a spend limit in the Anthropic Console.
+
+version: 1
+budgets:
+  daily_usd: 0.5
+  monthly_usd: 3.0
+providers:
+  google:
+    label: Google Gemini
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - GEMINI_API_KEY
+    gateway_platform: google
+    terms:
+      status: verified_secondary
+      date: '2026-11-03'
+      trains_on_data: 'yes on the free tier: content may be used to improve Google products and human reviewers may read it; the paid tier does not (terms effective
+        2026-03-23)'
+      retention: may be stored transiently or cached in any country where Google operates
+      business_use: free tier is for prototyping; clients serving the EEA, Switzerland or the UK must use paid services
+    limits:
+      requests_per_day: 100
+    models:
+    - id: gemini-2.5-pro
+      approved: false
+      capabilities:
+      - text
+      - vision
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: gemini-2.5-flash
+      approved: true
+      capabilities:
+      - text
+      - vision
+      - tools
+      note: proposed starter approval; review before enabling
+    - id: gemini-2.5-flash-lite
+      approved: true
+      capabilities:
+      - text
+      - vision
+      - tools
+      note: proposed starter approval; review before enabling
+    - id: gemini-3.1-pro-preview
+      approved: false
+      capabilities:
+      - text
+      - vision
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: gemini-3-flash-preview
+      approved: false
+      capabilities:
+      - text
+      - vision
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: gemini-3.1-flash-lite-preview
+      approved: false
+      capabilities:
+      - text
+      - vision
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: gemini-3.5-flash
+      approved: false
+      capabilities:
+      - text
+      - vision
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: gemma-4-31b-it
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: gemma-4-26b-a4b-it
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+  groq:
+    label: Groq
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - GROQ_API_KEY
+    gateway_platform: groq
+    terms:
+      status: verified_secondary
+      date: '2026-11-03'
+      trains_on_data: 'no: the Services Agreement says Groq may not use inputs or outputs for training unless the customer permits it'
+      retention: 'Groq''s own pages disagree: not retained by default, versus logs kept up to 30 days for reliability and abuse; Zero Data Retention is self-serve
+        in Data Controls'
+      business_use: free plan is rate-limited for prototyping
+    limits:
+      requests_per_day: 1000
+      tokens_per_day: 200000
+    models:
+    - id: llama-3.3-70b-versatile
+      approved: true
+      capabilities:
+      - text
+      - tools
+      note: proposed starter approval; review before enabling
+    - id: meta-llama/llama-4-scout-17b-16e-instruct
+      approved: false
+      capabilities:
+      - text
+      - vision
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: openai/gpt-oss-120b
+      approved: true
+      capabilities:
+      - text
+      - tools
+      note: proposed starter approval; review before enabling
+    - id: openai/gpt-oss-20b
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: qwen/qwen3-32b
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: llama-3.1-8b-instant
+      approved: true
+      capabilities:
+      - text
+      - tools
+      note: proposed starter approval; review before enabling
+    - id: groq/compound
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: groq/compound-mini
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: openai/gpt-oss-safeguard-20b
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+  cerebras:
+    label: Cerebras
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - CEREBRAS_API_KEY
+    gateway_platform: cerebras
+    terms:
+      status: declared_only
+      date: '2026-11-03'
+      note: not verified by us; the gateway seeds 4 Cerebras models. Verify the current free developer entitlement before use
+    models:
+    - id: qwen-3-235b-a22b-instruct-2507
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: zai-glm-4.7
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: gpt-oss-120b
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: llama3.1-8b
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+  sail:
+    label: Sail Research
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - SAIL_API_KEY
+    gateway_platform: sail
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  aclide:
+    label: aclide
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - ACLIDE_API_KEY
+    gateway_platform: aclide
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  speka:
+    label: speka
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - SPEKA_API_KEY
+    gateway_platform: speka
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  kenari:
+    label: kenari
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - KENARI_API_KEY
+    gateway_platform: kenari
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  kiosapi:
+    label: kiosapi
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - KIOSAPI_API_KEY
+    gateway_platform: kiosapi
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  beatapi:
+    label: beatapi
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - BEATAPI_API_KEY
+    gateway_platform: beatapi
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  apinex:
+    label: apinex
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - APINEX_API_KEY
+    gateway_platform: apinex
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  onomeo:
+    label: onomeo
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - ONOMEO_API_KEY
+    gateway_platform: onomeo
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  iteracompute:
+    label: iteracompute
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - ITERACOMPUTE_API_KEY
+    gateway_platform: iteracompute
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  typhoon:
+    label: typhoon
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - TYPHOON_API_KEY
+    gateway_platform: typhoon
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  plugsky:
+    label: plugsky
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - PLUGSKY_API_KEY
+    gateway_platform: plugsky
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  inferbase:
+    label: inferbase
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - INFERBASE_API_KEY
+    gateway_platform: inferbase
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  simplellm:
+    label: simplellm
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - SIMPLELLM_API_KEY
+    gateway_platform: simplellm
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  llmtr:
+    label: llmtr
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - LLMTR_API_KEY
+    gateway_platform: llmtr
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  gizmo:
+    label: gizmo
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - GIZMO_API_KEY
+    gateway_platform: gizmo
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  blockrun:
+    label: blockrun
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - BLOCKRUN_API_KEY
+    gateway_platform: blockrun
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  moondream:
+    label: moondream
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - MOONDREAM_API_KEY
+    gateway_platform: moondream
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  jamai:
+    label: jamai
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - JAMAI_API_KEY
+    gateway_platform: jamai
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  nabh:
+    label: nabh
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - NABH_API_KEY
+    gateway_platform: nabh
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  novai:
+    label: novai
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - NOVAI_API_KEY
+    gateway_platform: novai
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  electronhub:
+    label: ElectronHub
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - ELECTRONHUB_API_KEY
+    gateway_platform: electronhub
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  experiential:
+    label: Experiential Labs
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - EXPERIENTIAL_API_KEY
+    gateway_platform: experiential
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  router9:
+    label: router9
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - ROUTER9_API_KEY
+    gateway_platform: router9
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  septor:
+    label: septor
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - SEPTOR_API_KEY
+    gateway_platform: septor
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  clod:
+    label: clod
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - CLOD_API_KEY
+    gateway_platform: clod
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  speechify:
+    label: speechify
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - SPEECHIFY_API_KEY
+    gateway_platform: speechify
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  freeai:
+    label: freeai
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - FREEAI_API_KEY
+    gateway_platform: freeai
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  blaze:
+    label: blaze
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - BLAZE_API_KEY
+    gateway_platform: blaze
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  lucidity:
+    label: lucidity
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - LUCIDITY_API_KEY
+    gateway_platform: lucidity
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  airforce:
+    label: airforce
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - AIRFORCE_API_KEY
+    gateway_platform: airforce
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  dreamprompting:
+    label: dreamprompting
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - DREAMPROMPTING_API_KEY
+    gateway_platform: dreamprompting
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  waterfall:
+    label: waterfall
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - WATERFALL_API_KEY
+    gateway_platform: waterfall
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  logfare:
+    label: logfare
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - LOGFARE_API_KEY
+    gateway_platform: logfare
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  bai:
+    label: B.AI
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - BAI_API_KEY
+    gateway_platform: bai
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  anyapi:
+    label: AnyAPI
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - ANYAPI_API_KEY
+    gateway_platform: anyapi
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  radeon:
+    label: AMD Radeon Cloud TokenFactory
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - RADEON_API_KEY
+    gateway_platform: radeon
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  nvidia:
+    label: NVIDIA NIM
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - NVIDIA_API_KEY
+    gateway_platform: nvidia
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+    models:
+    - id: meta/llama-3.1-70b-instruct
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: deepseek-ai/deepseek-v4-pro
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: mistralai/mistral-large-3-675b-instruct-2512
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: minimaxai/minimax-m2.7
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: moonshotai/kimi-k2.6
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: meta/llama-4-maverick-17b-128e-instruct
+      approved: false
+      capabilities:
+      - text
+      - vision
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: meta/llama-3.3-70b-instruct
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: google/gemma-4-31b-it
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: nvidia/nemotron-3-super-120b-a12b
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: nvidia/nemotron-3-nano-30b-a3b
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: qwen/qwen3-coder-480b-a35b-instruct
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: deepseek-ai/deepseek-v4-flash
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: z-ai/glm-5.1
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+  mistral:
+    label: Mistral
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - MISTRAL_API_KEY
+    gateway_platform: mistral
+    terms:
+      status: verified
+      date: '2026-11-03'
+      trains_on_data: 'yes: Mistral states Experiment-plan requests may be used to train its models (newer pages mention an opt-out toggle; treat as training until
+        confirmed in our account)'
+      retention: not established
+      business_use: free Experiment plan is for evaluation and prototyping, not production
+    limits:
+      tokens_per_day: 20000000
+      requests_per_day: 5000
+    models:
+    - id: magistral-medium-latest
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: codestral-latest
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: mistral-large-latest
+      approved: true
+      capabilities:
+      - text
+      - tools
+      note: proposed starter approval; review before enabling
+    - id: mistral-medium-latest
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: devstral-latest
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: mistral-small-latest
+      approved: true
+      capabilities:
+      - text
+      - tools
+      note: proposed starter approval; review before enabling
+    - id: ministral-8b-latest
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+  sambanova:
+    label: SambaNova
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - SAMBANOVA_API_KEY
+    gateway_platform: sambanova
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: free tier permanently retired upstream (V23); kept in the type union only
+  openrouter:
+    label: OpenRouter
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - OPENROUTER_API_KEY
+    gateway_platform: openrouter
+    terms:
+      status: verified_secondary
+      date: '2026-11-03'
+      trains_on_data: 'depends on the hosting provider: some free endpoints log or train on prompts. OpenRouter lets a request refuse such providers; not tested by
+        us'
+      retention: varies by hosting provider
+      business_use: free models are described as unsuitable for production
+    limits:
+      requests_per_day: 50
+      requests_per_minute: 20
+    models:
+    - id: qwen/qwen3-coder:free
+      approved: true
+      capabilities:
+      - text
+      - tools
+      note: proposed starter approval; review before enabling
+    - id: z-ai/glm-4.5-air:free
+      approved: true
+      capabilities:
+      - text
+      - tools
+      note: proposed starter approval; review before enabling
+    - id: nvidia/nemotron-3-super-120b-a12b:free
+      approved: true
+      capabilities:
+      - text
+      - tools
+      note: proposed starter approval; review before enabling
+    - id: qwen/qwen3-next-80b-a3b-instruct:free
+      approved: true
+      capabilities:
+      - text
+      - tools
+      note: proposed starter approval; review before enabling
+    - id: openai/gpt-oss-120b:free
+      approved: true
+      capabilities:
+      - text
+      - tools
+      note: proposed starter approval; review before enabling
+    - id: meta-llama/llama-3.3-70b-instruct:free
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: openai/gpt-oss-20b:free
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: nvidia/nemotron-3-nano-30b-a3b:free
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: google/gemma-4-31b-it:free
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: liquid/lfm-2.5-1.2b-instruct:free
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: poolside/laguna-m.1:free
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: google/gemma-4-26b-a4b-it:free
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: poolside/laguna-xs.2:free
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: nvidia/nemotron-nano-9b-v2:free
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: liquid/lfm-2.5-1.2b-thinking:free
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: openrouter/owl-alpha
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: nousresearch/hermes-3-llama-3.1-405b:free
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: moonshotai/kimi-k2.6:free
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: nvidia/nemotron-3-ultra-550b-a55b:free
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: cognitivecomputations/dolphin-mistral-24b-venice-edition:free
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: nvidia/nemotron-nano-12b-v2-vl:free
+      approved: false
+      capabilities:
+      - text
+      - vision
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: meta-llama/llama-3.2-3b-instruct:free
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+  cohere:
+    label: Cohere
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - COHERE_API_KEY
+    gateway_platform: cohere
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+    models:
+    - id: command-r-plus-08-2024
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: command-a-03-2025
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: command-a-reasoning-08-2025
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: command-r-08-2024
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+  tavily:
+    label: tavily
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - TAVILY_API_KEY
+    gateway_platform: tavily
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  exa:
+    label: exa
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - EXA_API_KEY
+    gateway_platform: exa
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  firecrawl:
+    label: firecrawl
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - FIRECRAWL_API_KEY
+    gateway_platform: firecrawl
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  linkup:
+    label: linkup
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - LINKUP_API_KEY
+    gateway_platform: linkup
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  parallel:
+    label: parallel
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - PARALLEL_API_KEY
+    gateway_platform: parallel
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  serpsearch:
+    label: serpsearch
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - SERPSEARCH_API_KEY
+    gateway_platform: serpsearch
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  keenable:
+    label: keenable
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - KEENABLE_API_KEY
+    gateway_platform: keenable
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  halx:
+    label: halx
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - HALX_API_KEY
+    gateway_platform: halx
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  aisense:
+    label: aisense
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - AISENSE_API_KEY
+    gateway_platform: aisense
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  brave:
+    label: brave
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - BRAVE_API_KEY
+    gateway_platform: brave
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  cloudflare:
+    label: Cloudflare Workers AI
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - CLOUDFLARE_ACCOUNT_ID
+      - CLOUDFLARE_API_TOKEN
+    gateway_platform: cloudflare
+    terms:
+      status: declared_only
+      date: '2026-11-03'
+      note: not verified by us; needs an account id and an API token (stored as account_id:token); verify the free daily allocation before use
+    models:
+    - id: '@cf/meta/llama-3.3-70b-instruct-fp8-fast'
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: '@cf/openai/gpt-oss-120b'
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: '@cf/zai-org/glm-4.7-flash'
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: '@cf/meta/llama-4-scout-17b-16e-instruct'
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: '@cf/qwen/qwen3-30b-a3b-fp8'
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: '@cf/deepseek-ai/deepseek-r1-distill-qwen-32b'
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: '@cf/moonshotai/kimi-k2.6'
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: '@cf/ibm-granite/granite-4.0-h-micro'
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: '@cf/nvidia/nemotron-3-120b-a12b'
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: '@cf/google/gemma-4-26b-a4b-it'
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+  zhipu:
+    label: Zhipu (Z.ai / bigmodel.cn)
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - ZHIPU_API_KEY
+    gateway_platform: zhipu
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+    models:
+    - id: glm-4.5-flash
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: glm-4.7-flash
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: glm-4.6v-flash
+      approved: false
+      capabilities:
+      - text
+      - vision
+      - tools
+      note: present in the gateway baseline; not approved
+  ollama:
+    label: Ollama Cloud
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - OLLAMA_API_KEY
+    gateway_platform: ollama
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+    models:
+    - id: qwen3-coder:480b
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: mistral-large-3:675b
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: deepseek-v3.2
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: cogito-2.1:671b
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: kimi-k2-thinking
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: glm-4.7
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: gpt-oss:120b
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: devstral-2:123b
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: gpt-oss:20b
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: gemma4:31b
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: qwen3-coder-next
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+  kilo:
+    label: Kilo Gateway
+    enabled: false
+    experimental: true
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env: []
+    gateway_platform: kilo
+    terms:
+      status: upstream_documented
+      date: '2026-11-03'
+      trains_on_data: yes (per upstream documentation)
+      note: anonymous :free routes limited to 200 requests/hour per IP; the gateway's own documentation says prompts and outputs are logged for training
+    models:
+    - id: nvidia/nemotron-3-super-120b-a12b:free
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: poolside/laguna-m.1:free
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: stepfun/step-3.7-flash:free
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: poolside/laguna-xs.2:free
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+  pollinations:
+    label: Pollinations
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - POLLINATIONS_API_KEY
+    gateway_platform: pollinations
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+    models:
+    - id: openai-fast
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+  llm7:
+    label: LLM7.io
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - LLM7_API_KEY
+    gateway_platform: llm7
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+    models:
+    - id: codestral-latest
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+  huggingface:
+    label: Hugging Face Router
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - HUGGINGFACE_API_KEY
+    gateway_platform: huggingface
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+    models:
+    - id: moonshotai/Kimi-K2.6
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: Qwen/Qwen3-Coder-Next
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: deepseek-ai/DeepSeek-V4-Flash
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+  opencode:
+    label: OpenCode Zen
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - OPENCODE_API_KEY
+    gateway_platform: opencode
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+    models:
+    - id: deepseek-v4-flash-free
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: big-pickle
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: nemotron-3-super-free
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: mimo-v2.5-free
+      approved: false
+      capabilities:
+      - text
+      note: present in the gateway baseline; not approved
+    - id: minimax-m3-free
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+    - id: nemotron-3-ultra-free
+      approved: false
+      capabilities:
+      - text
+      - tools
+      note: present in the gateway baseline; not approved
+  ovh:
+    label: OVHcloud AI Endpoints
+    enabled: false
+    experimental: true
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env: []
+    gateway_platform: ovh
+    terms:
+      status: upstream_documented
+      date: '2026-11-03'
+      note: anonymous tier about 2 requests/minute per IP per model (observed stricter); the authenticated tier needs a Public Cloud project with a payment method
+  agnes:
+    label: Agnes AI
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - AGNES_API_KEY
+    gateway_platform: agnes
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  reka:
+    label: Reka
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - REKA_API_KEY
+    gateway_platform: reka
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  siliconflow:
+    label: SiliconFlow
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - SILICONFLOW_API_KEY
+    gateway_platform: siliconflow
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  routeway:
+    label: Routeway
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - ROUTEWAY_API_KEY
+    gateway_platform: routeway
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  bazaarlink:
+    label: BazaarLink
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - BAZAARLINK_API_KEY
+    gateway_platform: bazaarlink
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  ainative:
+    label: AINative Studio
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - AINATIVE_API_KEY
+    gateway_platform: ainative
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  aion:
+    label: Aion Labs
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - AION_API_KEY
+    gateway_platform: aion
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  requesty:
+    label: Requesty
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - REQUESTY_API_KEY
+    gateway_platform: requesty
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  navy:
+    label: NavyAI
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - NAVY_API_KEY
+    gateway_platform: navy
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  nara:
+    label: NaraRouter
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - NARA_API_KEY
+    gateway_platform: nara
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  sealion:
+    label: SEA-LION (AI Singapore)
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - SEALION_API_KEY
+    gateway_platform: sealion
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  orcarouter:
+    label: OrcaRouter
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - ORCAROUTER_API_KEY
+    gateway_platform: orcarouter
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  unorouter:
+    label: UnoRouter
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - UNOROUTER_API_KEY
+    gateway_platform: unorouter
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  xkiro:
+    label: xKiro
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - XKIRO_API_KEY
+    gateway_platform: xkiro
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  modelscope:
+    label: ModelScope (Alibaba)
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - MODELSCOPE_API_KEY
+    gateway_platform: modelscope
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  qianfan:
+    label: Baidu Qianfan
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - QIANFAN_API_KEY
+    gateway_platform: qianfan
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  volcengine:
+    label: Volcengine Ark (ByteDance)
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - VOLCENGINE_API_KEY
+    gateway_platform: volcengine
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  longcat:
+    label: LongCat (Meituan)
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - LONGCAT_API_KEY
+    gateway_platform: longcat
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  xfyun:
+    label: iFlytek Spark
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - XFYUN_API_KEY
+    gateway_platform: xfyun
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  aihorde:
+    label: AI Horde
+    enabled: false
+    experimental: true
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env: []
+    gateway_platform: aihorde
+    terms:
+      status: upstream_documented
+      date: '2026-11-03'
+      note: community volunteer workers behind a queue; anonymous sentinel key; text is processed by unknown third parties
+  custom:
+    label: Custom (OpenAI-compatible)
+    enabled: false
+    experimental: false
+    ceiling: public
+    approved_classes: []
+    credentials:
+      env:
+      - CUSTOM_API_KEY
+    gateway_platform: custom
+    terms:
+      status: unverified
+      date: '2026-11-03'
+      note: declared by the upstream project only; not checked against the provider
+  claude:
+    label: Claude (Anthropic API)
+    enabled: true
+    paid: true
+    ceiling: restricted
+    approved_classes:
+    - public
+    - internal
+    - restricted
+    credentials:
+      env:
+      - ANTHROPIC_API_KEY
+    gateway_platform: claude
+    terms:
+      status: owner_decision
+      date: '2026-11-03'
+      note: 'The owner decided Claude is the only provider that may receive Restricted data. Anthropic''s API data terms were not re-checked in this review: confirm
+        them before the first Restricted use. A Claude.ai subscription does not include API use; this key is billed separately.'
+    models:
+    - id: claude-haiku-5-5
+      approved: true
+      capabilities:
+      - text
+      - vision
+      price_per_million:
+        input: 0.1
+        output: 0.5
+      note: coordinator triage and checks; $0.10/$0.50 per million tokens for prompts up to 100K
+    - id: claude-sonnet-5-5
+      approved: true
+      capabilities:
+      - text
+      - vision
+      - tools
+      price_per_million:
+        input: 2.0
+        output: 10.0
+      note: strategy and briefs; $2/$10 per million tokens
+    - id: claude-opus-5-5
+      approved: false
+      capabilities:
+      - text
+      - vision
+      - tools
+      price_per_million:
+        input: 4.0
+        output: 20.0
+      note: 'not approved: costlier than the test budget needs'
+    - id: claude-fable-5-1
+      approved: false
+      capabilities:
+      - text
+      - vision
+      - tools
+      price_per_million:
+        input: 10.0
+        output: 50.0
+      note: 'not approved: $10/$50 per million tokens'
