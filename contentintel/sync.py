@@ -16,6 +16,7 @@ from . import diff as diff_mod
 from .export import write_exports
 from .gate import GateResult, check_completeness
 from .normalize import catalogue_fingerprint, normalize_all
+from . import contract
 from .shopify_fetch import FetchError, fetch_products
 
 SCHEMA_VERSION = 1
@@ -84,17 +85,22 @@ def _record_check(store, slug, run_at, count, gate_status):
 
 
 def run_sync(brand, store, *, raw_products=None, fetch_meta=None, fetcher=None,
-             sitemap_handles=None, now=None):
+             sitemap_handles=None, now=None, health=None):
     """Run one sync for `brand`. Supply raw_products (e.g. from a saved file) or let it fetch."""
     now = now or utc_now()
     if raw_products is None:
         try:
             fetched = (fetcher or fetch_products)(brand.domain)
         except FetchError as exc:
+            if health is not None:
+                err = contract.classify_exception(exc)
+                health.observe("shopify_catalogue", "public_json", ok=False, code=err["code"], message=err["message"], now=now)
             gate = GateResult(status="fail", count=0, reasons=[
                 {"level": "fail", "code": "fetch_error", "message": str(exc)}])
             return _blocked(brand, gate, now, store, {"source": "live"}, 0)
         raw_products, fetch_meta = fetched.products, fetched.meta()
+        if health is not None:
+            health.observe("shopify_catalogue", "public_json", ok=True, items=len(raw_products), now=now)
     meta = fetch_meta or {"source": "file", "terminal_empty_page": None}
 
     records, problems = normalize_all(raw_products, brand)
