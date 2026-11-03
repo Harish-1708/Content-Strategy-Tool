@@ -1,0 +1,204 @@
+# What each source is, how the tool reaches it, and what it can and cannot give.
+#
+# This file DECLARES; it proves nothing. A source counts as working (healthy) only after a live
+# acceptance run has passed on GitHub: Actions > Acceptance > Run workflow. Until then the Collector
+# Health tab shows it as "unverified", and nothing that scores or ranks is allowed to depend on it.
+#
+# tier (how the data is reached):
+#   official_api         a documented programme or API
+#   public_polite        a public page or feed, read politely (robots.txt, throttle, honest user agent)
+#   session_based        a dummy account's saved login (cookies)
+#   third_party_service  a paid or free service that does the collecting (Apify, a search API)
+#   licensed_vendor      a data vendor whose terms cover the use
+#   human_assisted       a person captured it
+# access_type (what comes back, so a snippet is never mistaken for a page, nor a cover picture for a video):
+#   site_data  the site's own structured data     page_links  only links found on a page
+#   page_text  the text of a page                  search_snippet  a search result's short extract
+#   report_text  a written report                  media_file  a downloaded picture or video
+#   model_output  an AI model's answer             feed  a catalogue or news feed
+# status: established (in use), experimental (to be proven; off unless enabled), planned (not built yet)
+#
+# A route with "enabled: false" never runs. Changing a route's entry changes its route hash, and a
+# changed route has to pass acceptance again before it is trusted.
+
+version: 1
+
+defaults:
+  stale_after_days: 14            # data older than this is labelled stale
+  acceptance_max_age_days: 14     # a pass older than this no longer counts
+  window_days: 7                  # the success rate looks at this many days
+  degrade_after_failures: 3       # failures in a row before a route is called degraded
+  recover_after_successes: 2      # successes in a row before it is healthy again (stops flapping)
+  history_cap: 200                # attempts remembered per route
+  pause_seconds:                  # how long a route rests after each kind of failure
+    RATE_LIMITED: 3600
+    TIMEOUT: 60
+    UPSTREAM_BROKEN: 120
+    NEED_SETUP: 60
+    NEED_LOGIN: 43200
+    PLATFORM_BLOCKED: 86400
+
+sources:
+  meta_ads:
+    kind: collector
+    label: Meta Ad Library
+    platform: meta
+    status: established
+    capabilities: [ad text, advertiser page, start date, days running, variant count]
+    limitations:
+      - no view counts, so days running and variant count are used as labelled proxies
+      - public pages are read; a complete list of an advertiser's ads is not guaranteed
+    routes:
+      browser: {tier: public_polite, access_type: site_data, login: none}
+      apify: {tier: third_party_service, access_type: site_data, login: none}
+
+  tiktok:
+    kind: collector
+    label: TikTok
+    platform: tiktok
+    status: established
+    capabilities: [posts, captions, engagement counts, cover pictures]
+    limitations:
+      - GitHub's servers have been refused video downloads, so many items are cover picture only
+      - a dummy account can be warned
+    routes:
+      browser: {tier: session_based, access_type: site_data, login: dummy_account}
+      apify: {tier: third_party_service, access_type: site_data, login: none}
+
+  instagram:
+    kind: collector
+    label: Instagram
+    platform: instagram
+    status: established
+    capabilities: [posts, captions, engagement counts, cover pictures]
+    limitations:
+      - a dummy account can be warned
+      - posts only; no private analytics
+    routes:
+      browser: {tier: session_based, access_type: site_data, login: dummy_account}
+      apify: {tier: third_party_service, access_type: site_data, login: none}
+      agent_reach:
+        tier: session_based
+        access_type: site_data
+        login: dummy_account
+        enabled: false
+        experimental: true
+        note: >-
+          Agent-Reach's only Instagram route drives a logged-in stealth browser and is marked experimental
+          by its authors. It is not wired in and stays off. It would be judged against the existing route on
+          unique usable items, completeness and failure rate before it could be enabled.
+
+  deep_research:
+    kind: collector
+    label: Gemini Deep Research
+    platform: gemini
+    status: established
+    capabilities: [long written reports with sources]
+    limitations:
+      - runs in the Gemini web app with a dummy account; a report takes 10 minutes or more
+    routes:
+      browser: {tier: session_based, access_type: report_text, login: dummy_account}
+
+  web_search:
+    kind: search
+    label: Web and news search services
+    platform: web
+    status: established
+    capabilities: [search results, news results]
+    limitations:
+      - a result is a short snippet, never the page; it is labelled search_snippet
+    routes:
+      serper_dev: {tier: third_party_service, access_type: search_snippet, login: api_key}
+      tavily: {tier: third_party_service, access_type: search_snippet, login: api_key}
+      serpapi: {tier: third_party_service, access_type: search_snippet, login: api_key}
+
+  shopify_catalogue:
+    kind: catalogue
+    label: Brand catalogue (public Shopify feed)
+    platform: shopify
+    status: established
+    stale_after_days: 3
+    capabilities: [products, variants, prices, stock]
+    limitations:
+      - only what the shop publishes; unpublished products are invisible
+    routes:
+      public_json: {tier: public_polite, access_type: feed, login: none}
+
+  video_tiktok:
+    kind: video
+    label: TikTok video downloads
+    platform: tiktok
+    status: established
+    capabilities: [video file for Idea Bank items]
+    limitations:
+      - the platform often refuses GitHub's servers; the item then keeps its cover picture and says so
+    routes:
+      layered: {tier: session_based, access_type: media_file, login: dummy_account}
+
+  video_instagram:
+    kind: video
+    label: Instagram video downloads
+    platform: instagram
+    status: established
+    capabilities: [video file for Idea Bank items]
+    limitations:
+      - the platform often refuses GitHub's servers; the item then keeps its cover picture and says so
+    routes:
+      layered: {tier: session_based, access_type: media_file, login: dummy_account}
+
+  youtube_public:
+    kind: collector
+    label: YouTube public videos and captions
+    platform: youtube
+    status: experimental
+    capabilities: [video details, public captions]
+    limitations:
+      - not yet shown to work from GitHub's servers; the acceptance run decides
+      - public details only; never a channel's private analytics
+    routes:
+      yt_dlp: {tier: public_polite, access_type: site_data, login: none}
+
+  claude:
+    kind: ai
+    label: Claude
+    platform: anthropic
+    status: established
+    stale_after_days: 3
+    capabilities: [text, picture review]
+    limitations:
+      - metered; every call is counted against the monthly cap
+    routes:
+      api: {tier: official_api, access_type: model_output, login: api_key}
+
+  reddit_public:
+    kind: collector
+    label: Reddit and community discussions
+    platform: reddit
+    status: planned
+    capabilities: [public discussions]
+    limitations:
+      - built in Stage 3; public search and permitted public pages only
+    routes:
+      public_web: {tier: public_polite, access_type: page_text, login: none}
+
+  competitor_stores:
+    kind: collector
+    label: Competitor stores (public feeds and sitemaps)
+    platform: shopify
+    status: planned
+    capabilities: [products, prices, collections, sitemap dates]
+    limitations:
+      - built in Stage 3; robots.txt obeyed
+    routes:
+      public_json: {tier: public_polite, access_type: feed, login: none}
+
+  competitor_pages:
+    kind: collector
+    label: Competitor pages and blogs
+    platform: web
+    status: planned
+    capabilities: [page text]
+    limitations:
+      - built in Stage 3; robots.txt obeyed
+    routes:
+      static_fetch: {tier: public_polite, access_type: page_text, login: none}
