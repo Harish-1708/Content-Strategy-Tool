@@ -332,6 +332,37 @@ class Store:
     def write_cooldowns(self, data):
         return _atomic_write(self.data_dir / "_shared" / "cooldowns.json", data)
 
+    def read_health(self):
+        """The collector health ledger (see health.py). Reading creates nothing; a damaged file reads as empty."""
+        try:
+            data = _read(self.data_dir / "_shared" / "collector_health.json", {})
+        except ValueError:
+            return {}
+        return data if isinstance(data, dict) else {}
+
+    def write_health(self, data):
+        return _atomic_write(self.data_dir / "_shared" / "collector_health.json", data)
+
+    def append_acceptance(self, record):
+        """Add one live acceptance result (passed or failed) to data/_shared/acceptance.jsonl."""
+        path = self.data_dir / "_shared" / "acceptance.jsonl"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
+
+    def read_acceptance(self, limit=None):
+        path = self.data_dir / "_shared" / "acceptance.jsonl"
+        if not path.is_file():
+            return []
+        rows = []
+        with open(path, encoding="utf-8") as fh:
+            for line in fh:
+                try:
+                    rows.append(json.loads(line))
+                except ValueError:
+                    continue                    # a half-written line is skipped, never a crash
+        return rows[-limit:] if limit else rows
+
     def read_page_log(self):
         """{"days": {date: {site: pages opened}}, "cursor": {site: where the next run starts}}. Reading creates nothing."""
         try:
