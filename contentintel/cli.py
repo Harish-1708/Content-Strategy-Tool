@@ -10,10 +10,13 @@ import secrets
 from pathlib import Path
 import os
 
+from . import acceptance as acceptance_mod
 from . import autoseeds as autoseeds_mod
 from . import browser as browser_mod
 from .apify import Apify
 from .claude_client import Claude
+from .contract import Failure, classify_message
+from . import contract as contract_mod
 from . import brief as brief_mod
 from . import collectors as collectors_mod
 from . import drive as drive_mod
@@ -21,9 +24,12 @@ from . import ideabank as ib_mod
 from . import planner as planner_mod
 from . import rules as rules_mod
 from . import docs_archive as docs_mod
+from . import evidence as evidence_mod
+from . import health as health_mod
 from . import providers as providers_mod
 from . import research as research_mod
 from . import sheets as sheets_mod
+from . import sources as sources_mod
 from . import sync as sync_mod
 from . import videofetch as videofetch_mod
 from .brands import BrandError, list_brand_slugs, load_brand
@@ -36,6 +42,7 @@ EXIT = {"ok": 0, "warn": 0, "blocked": 2, "needs_baseline": 3}
 def _common(p):
     p.add_argument("--data-dir", default="data")
     p.add_argument("--brands-dir", default="brands")
+    p.add_argument("--sources-config", default=sources_mod.DEFAULT_PATH, help="the declared sources (sources.yaml)")
 
 
 def build_parser():
@@ -174,6 +181,30 @@ def build_parser():
     p.add_argument("--browser-config", default="browser.yaml")
     p.add_argument("--debug-dir", default="debug")
 
+    p = sub.add_parser("health", help="show how each source and route is doing, and which ones have earned trust")
+    _common(p)
+    p.add_argument("--json", action="store_true", help="print the rows as JSON")
+    p.add_argument("--matrix", action="store_true", help="print what each source is, how it is reached and what it can and cannot give")
+    p.add_argument("--clear", default="", help="say a problem is dealt with: SOURCE or SOURCE|ROUTE; its rest period is removed")
+    p.add_argument("--browser-config", default="browser.yaml")
+
+    p = sub.add_parser("acceptance", help="one small live call per route, from this machine, recorded in the acceptance ledger")
+    _common(p)
+    p.add_argument("--only", default="", help="comma-separated source names (default: every source with something to check)")
+    p.add_argument("--plan", action="store_true", help="show what would be checked and what is missing; make no call")
+    p.add_argument("--brand", default="", help="the brand whose catalogue is tried (default: the first one)")
+    p.add_argument("--research-config", default="research.yaml")
+    p.add_argument("--browser-config", default="browser.yaml")
+    p.add_argument("--debug-dir", default="debug")
+
+    p = sub.add_parser("evidence", help="show, check or export the shared evidence records built from what was collected")
+    _common(p)
+    group = p.add_mutually_exclusive_group(required=True)
+    group.add_argument("--brand")
+    group.add_argument("--all", action="store_true")
+    p.add_argument("--check", action="store_true", help="validate every record and its honesty rules; exit 1 on a problem")
+    p.add_argument("--export", default="", help="write the records as JSON lines to this file")
+
     p = sub.add_parser("status", help="can generation use this catalogue right now?")
     _common(p)
     p.add_argument("--brand", required=True)
@@ -196,7 +227,9 @@ def _sync_one(args, slug, store):
             handles = fetch_sitemap_handles(brand.domain)
         except FetchError as exc:
             print(f"Sitemap cross-check skipped: {exc}")
-    result = sync_mod.run_sync(brand, store, raw_products=raw, sitemap_handles=handles)
+    registry, ledger = _health(args, store)
+    result = sync_mod.run_sync(brand, store, raw_products=raw, sitemap_handles=handles, health=ledger)
+    _save_health(ledger, store, args)
     print(sync_mod.format_report(result))
     if result.state == "warn":
         print(f"::warning::{slug}: sync finished with warnings")
@@ -212,8 +245,10 @@ def _sheets(args, store):
         print("::warning::Google Sheets update skipped: GOOGLE_SERVICE_ACCOUNT_JSON is not set")
         return 0
     config = sheets_mod.load_sheet_config(args.sheets_config, set(list_brand_slugs(args.brands_dir)))
+    _, ledger = _health(args, store)
+    health_rows = ledger.rows(sync_mod.utc_now()) if ledger is not None else None
     results = sheets_mod.run_sheets(
-        brands, store, key_json=key, config=config, now=sync_mod.utc_now(),
+        brands, store, key_json=key, config=config, now=sync_mod.utc_now(), health_rows=health_rows,
         share_emails=sheets_mod.parse_emails(os.environ.get("SHEET_SHARE_EMAIL", "")),
         folder_id=sheets_mod.parse_folder_id(os.environ.get("SHEET_FOLDER_ID", "")),
         dry_run=args.dry_run, connect_fn=sheets_mod.connect)
@@ -367,6 +402,7 @@ def _ideabank(args, store):
     now = sync_mod.utc_now()
     claude = _claude(csettings)
     budget = ib_mod.ClaudeBudget(store, now, settings.claude_monthly_calls) if claude else None
+    registry, ledger = _health(args, store)
     for slug in list_brand_slugs(args.brands_dir) if args.all else [args.brand]:
         brand = load_brand(slug, args.brands_dir)
         rescues, note = _rescues(brand, store, args)
@@ -374,8 +410,9 @@ def _ideabank(args, store):
         _, lines = ib_mod.run_ideabank(brand, store, settings=settings, now=now, claude=claude, drive=drive, get=_get(),
                                        dry_run=args.dry_run, budget=budget, skip_brands=_skipped_brands(brand, args.brands_dir),
                                        audit=args.audit, video_runner=_video_runner(args), cookies=_cookie_secrets(), rescues=rescues, protected=protected,
-                                       browser_factory=_ad_browser_factory(args))
+                                       browser_factory=_ad_browser_factory(args), health=ledger)
         print("\n".join([n for n in (note, note2) if n] + lines))
+    _save_health(ledger, store, args)
     return 0
 
 
@@ -567,10 +604,12 @@ def _research(args, store):
         return 1
     slugs = list_brand_slugs(args.brands_dir) if args.all else [args.brand]
     brands = [load_brand(slug, args.brands_dir) for slug in slugs]
+    registry, ledger = _health(args, store)
     result = research_mod.run_research(
         brands, store, providers=providers, settings=settings, now=sync_mod.utc_now(),
         dry_run=args.dry_run, max_queries=args.max_queries or None, root=args.brands_dir,
-        compare=args.compare, compare_limit=args.compare_queries or None)
+        compare=args.compare, compare_limit=args.compare_queries or None, health=ledger)
+    _save_health(ledger, store, args)
     if args.compare and len(providers) < 2:
         print("::warning::Compare mode needs at least two services; running normally")
     print(research_mod.format_research_report(result))
@@ -707,11 +746,13 @@ def _collect(args, store):
         return 1
     slugs = list_brand_slugs(args.brands_dir) if args.all else [args.brand]
     brands = [load_brand(slug, args.brands_dir) for slug in slugs]
+    registry, health_ledger = _health(args, store)
     result = collectors_mod.run_collect(
         brands, store, browser_factory=factory, creds=creds, settings=settings, browser_cfg=browser_cfg,
         ledger_cls=research_mod.Ledger, sources=wanted, now=now, run_id=secrets.token_hex(4),
         dry_run=args.dry_run, root=args.brands_dir, apify=apify, claude=claude, backend=backend,
-        region=args.region.strip() or None)
+        region=args.region.strip() or None, health=health_ledger, registry=registry)
+    _save_health(health_ledger, store, args)
     ledger = None if args.dry_run else research_mod.Ledger(store.load_usage(), now[:7])
     print(collectors_mod.format_collect_report(result, settings, ledger))
     for name in result.problems_for:
@@ -722,6 +763,194 @@ def _collect(args, store):
         if failed:
             print(f"::error::{slug}: {len(failed)} collection tasks failed")
     return 1 if result.problems else 0
+
+
+def _route_extra(browser_cfg):
+    """What a route depends on besides its declaration: for a browser route, the site settings (so a changed selector means a new check)."""
+    def extra(source, route):
+        site = collectors_mod.SITE_OF.get(source)
+        if browser_cfg and route == "browser" and site in (browser_cfg.get("sites") or {}):
+            return browser_cfg["sites"][site]
+        return None
+    return extra
+
+
+def _health(args, store):
+    """(declared sources, health ledger). Both are None, with a warning, when sources.yaml is missing: collection never stops for it."""
+    path = getattr(args, "sources_config", sources_mod.DEFAULT_PATH)
+    if not Path(path).is_file():
+        print(f"::warning::{path} was not found, so collector health is not recorded this run.")
+        return None, None
+    registry = sources_mod.load_sources(path)
+    try:
+        browser_cfg = browser_mod.load_browser_settings(getattr(args, "browser_config", "browser.yaml"))
+    except (browser_mod.BrowserError, OSError):
+        browser_cfg = None
+    extra = _route_extra(browser_cfg)
+    ledger = health_mod.HealthLedger.load(store, registry, hash_for=lambda source, route: sources_mod.route_hash(registry, source, route, extra(source, route)))
+    return registry, ledger
+
+
+def _save_health(ledger, store, args):
+    if ledger is not None and not getattr(args, "dry_run", False):
+        ledger.save(store)
+
+
+def _health_cmd(args, store):
+    registry, ledger = _health(args, store)
+    if ledger is None:
+        return 1
+    now = sync_mod.utc_now()
+    if args.clear:
+        source, _, route = args.clear.partition("|")
+        if source.strip() not in registry.sources:
+            print(f"Error: {source.strip()!r} is not a declared source (choose from {', '.join(registry.sources)})")
+            return 1
+        cleared = ledger.clear(source.strip(), route.strip() or None)
+        ledger.save(store)
+        print(f"Removed the rest period and failure run of {cleared} route(s) of {source.strip()}.")
+        return 0
+    rows = ledger.rows(now)
+    if args.json:
+        print(json.dumps(rows, indent=1, ensure_ascii=False))
+    elif args.matrix:
+        print(health_mod.format_matrix(registry, rows))
+    else:
+        print(health_mod.format_report(rows))
+    return 0
+
+
+def _evidence_cmd(args, store):
+    registry = sources_mod.load_sources(args.sources_config)
+    now = sync_mod.utc_now()
+    slugs = list_brand_slugs(args.brands_dir) if args.all else [args.brand]
+    everything, bad = [], 0
+    for slug in slugs:
+        records = evidence_mod.build_all(store, slug, registry, now)
+        everything += records
+        print(f"=== {slug}: {len(records)} evidence record(s) ===")
+        stats = evidence_mod.summary(records)
+        for key in ("by_source", "by_tier", "by_access_type", "by_completeness"):
+            print(f"  {key.replace('by_', 'by ').replace('_', ' ')}: " + (", ".join(f"{k} {v}" for k, v in stats[key].items()) or "none"))
+        print(f"  stale: {stats['stale']}, in duplicate clusters: {stats['in_duplicate_clusters']}")
+        if args.check:
+            for rec in records:
+                problems = evidence_mod.validate_evidence(rec, registry, now)
+                if problems:
+                    bad += 1
+                    print(f"  PROBLEM {rec['identity']['item_id']}: " + "; ".join(problems))
+    if args.export:
+        Path(args.export).write_text(evidence_mod.export_jsonl(everything), encoding="utf-8")
+        print(f"Wrote {len(everything)} record(s) to {args.export}")
+    if args.check:
+        print(f"Evidence check: {len(everything) - bad} of {len(everything)} record(s) keep the contract and its honesty rules.")
+    return 1 if bad else 0
+
+
+_YTDLP_RUNNER = None            # tests replace this; None means a real yt-dlp
+YOUTUBE_PROBE = "https://www.youtube.com/watch?v=jNQXAC9IVRw"       # the first YouTube video ever uploaded: public, short, will not vanish
+
+
+def _youtube_probe():
+    """(1, what was read) for a public YouTube video's details, or raise the failure. Proves yt-dlp can reach YouTube from this machine."""
+    import subprocess
+    import sys
+    run = _YTDLP_RUNNER or subprocess.run
+    try:
+        done = run([sys.executable, "-m", "yt_dlp", "--skip-download", "--dump-json", "--no-playlist", "--no-warnings", YOUTUBE_PROBE],
+                   capture_output=True, text=True, timeout=120)
+    except subprocess.TimeoutExpired:
+        raise Failure(contract_mod.TIMEOUT, "yt-dlp did not answer in 120 seconds") from None
+    except FileNotFoundError:
+        raise Failure(contract_mod.NEED_SETUP, "yt-dlp is not installed") from None
+    if done.returncode != 0:
+        last = (str(done.stderr or "").strip().splitlines() or ["yt-dlp failed"])[-1]
+        raise Failure(classify_message(last) or contract_mod.UPSTREAM_BROKEN, last)
+    try:
+        title = str(json.loads(done.stdout).get("title") or "")
+    except ValueError:
+        raise Failure(contract_mod.UPSTREAM_BROKEN, "yt-dlp answered with something that is not JSON") from None
+    if not title:
+        raise Failure(contract_mod.UPSTREAM_BROKEN, "yt-dlp answered without a title")
+    return 1, f"read the details of a public video ({title[:40]})"
+
+
+def _acceptance_context(args, store, registry, now):
+    from .shopify_fetch import fetch_products
+    settings = collectors_mod.load_collector_settings(args.research_config)
+    rsettings = research_mod.load_settings(args.research_config)
+    browser_cfg = browser_mod.load_browser_settings(args.browser_config)
+    creds = _site_creds(browser_cfg, os.environ)
+    apify_token, claude_key = (os.environ.get("APIFY_TOKEN") or "").strip(), (os.environ.get("ANTHROPIC_API_KEY") or "").strip()
+    apify = Apify(apify_token) if apify_token else None
+    claude = _claude(settings) if claude_key else None
+    providers = providers_mod.build_providers(os.environ)
+    ctx = acceptance_mod.Context(registry=registry, providers=tuple(sorted(providers)))
+    for source in ("meta_ads", "tiktok", "instagram", "deep_research"):
+        site = collectors_mod.SITE_OF[source]
+        if not collectors_mod.has_access(browser_cfg["sites"][site], creds.get(site, {})):
+            ctx.missing[(source, "browser")] = collectors_mod.missing_access_message(browser_cfg["sites"][site])
+        if apify is None:
+            ctx.missing[(source, "apify")] = "no key: set APIFY_TOKEN"
+    state = {}
+
+    def collect_check(source, backend):
+        if "factory" not in state:
+            state["factory"] = (_BROWSER_FACTORY or _real_factory)(browser_cfg, creds, args.debug_dir)
+        rows = collectors_mod.check_collectors(state["factory"], creds, settings, browser_cfg, store, research_mod.Ledger, now, [source],
+                                               apify=apify, claude=None, backend=backend)
+        return next(r for r in rows if r["source"] == source)
+
+    cache = {}
+
+    def provider_check(name, kind):
+        if name not in cache:                      # one pass asks the service both kinds of question: do not pay for it twice
+            cache[name] = research_mod.check_providers({name: providers[name]}, store, rsettings, now)
+        return next(r for r in cache[name] if r["kind"] == kind)
+
+    def claude_check():
+        claude.check()
+        return f"key accepted; {claude.model} answered"
+
+    def catalogue_check():
+        slug = args.brand or (list_brand_slugs(args.brands_dir) or [""])[0]
+        if not slug:
+            raise Failure(contract_mod.BAD_INPUT, "there is no brand to try the catalogue of")
+        found = fetch_products(load_brand(slug, args.brands_dir).domain, max_pages=1, delay=0)
+        return len(found.products), f"{slug}: read {len(found.products)} products from the first page of the public feed"
+
+    ctx.collect_check, ctx.provider_check = collect_check, provider_check
+    ctx.claude_check = claude_check if claude is not None else None
+    ctx.catalogue_check = catalogue_check
+    ctx.youtube_check = _youtube_probe
+    return ctx
+
+
+def _acceptance_cmd(args, store):
+    registry, ledger = _health(args, store)
+    if ledger is None:
+        return 1
+    now = sync_mod.utc_now()
+    wanted = {n.strip() for n in args.only.split(",") if n.strip()}
+    unknown = sorted(wanted - set(registry.sources))
+    if unknown:
+        print(f"Error: unknown source {', '.join(unknown)} (choose from {', '.join(registry.sources)})")
+        return 1
+    ctx = _acceptance_context(args, store, registry, now)
+    probes = acceptance_mod.build_probes(ctx, wanted or None)
+    if args.plan:
+        print("Acceptance plan (no call is made):")
+        for p in probes:
+            print(f"  {p.source} / {p.route} / {p.action}: " + (f"cannot run: {p.skip}" if p.skip else "will run"))
+        return 0
+    version = (os.environ.get("GITHUB_SHA") or "dev")[:12]
+    results = acceptance_mod.run_acceptance(probes, health=ledger, store=store, now=now, version=version, run_id=secrets.token_hex(4))
+    ledger.save(store)
+    print(acceptance_mod.format_results(results))
+    failed = [r for r in results if r["status"] == "failed"]
+    for r in failed:
+        print(f"::error::{r['source']} / {r['route']} failed acceptance ({r['code']}): {r['detail']}")
+    return 1 if failed else 0
 
 
 def main(argv=None):
@@ -765,6 +994,12 @@ def main(argv=None):
             return _research(args, store)
         if args.cmd == "collect":
             return _collect(args, store)
+        if args.cmd == "health":
+            return _health_cmd(args, store)
+        if args.cmd == "acceptance":
+            return _acceptance_cmd(args, store)
+        if args.cmd == "evidence":
+            return _evidence_cmd(args, store)
         if args.cmd == "status":
             state = sync_mod.catalogue_state(args.brand, store)
             print(json.dumps(state, indent=1))
