@@ -1,11 +1,11 @@
 {
  "lifetime": {
   "claude_calls": 7,
-  "collected_items": 740,
+  "collected_items": 743,
   "deep_research_tasks": 1,
-  "serpapi": 6,
-  "serper_dev": 48,
-  "tavily": 6
+  "serpapi": 8,
+  "serper_dev": 50,
+  "tavily": 8
  },
  "months": {
   "2026-10": {
@@ -17,7 +17,10 @@
    "tavily": 6
   },
   "2026-11": {
-   "serper_dev": 9
+   "collected_items": 3,
+   "serpapi": 2,
+   "serper_dev": 11,
+   "tavily": 2
   }
  }
 }
