@@ -344,7 +344,8 @@ def test_both_jobs_build_exactly_the_pinned_commit_and_verify_it():
     for job in WF["jobs"].values():
         build = next(s for s in job["steps"] if s.get("name") == "Fetch and build the pinned gateway")["run"]
         assert "ai/gateway.lock.json" in build and 'git fetch --quiet --depth 1 origin "$commit"' in build and 'test "$(git rev-parse HEAD)" = "$commit"' in build
-        assert "npm ci --workspace=shared --workspace=server" in build and "npm run build -w shared -w server" in build
+        assert "npm ci --workspace=shared --workspace=server" in build
+        assert "npm run build -w server" in build and "-w shared -w server" not in build        # `shared` has no build script: building it fails the job
         assert next(s for s in job["steps"] if "setup-node" in s.get("uses", ""))["with"]["node-version"] == "22"
 
 
