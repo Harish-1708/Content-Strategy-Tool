@@ -24,7 +24,7 @@ def load(tmp_path, data):
 
 def test_the_shipped_file_loads_and_every_value_is_in_its_vocabulary():
     reg = shipped()
-    assert len(reg.sources) == 13 and sum(len(s.routes) for s in reg.sources.values()) == 19
+    assert len(reg.sources) == 13 and sum(len(s.routes) for s in reg.sources.values()) == 20
     for src in reg.sources.values():
         assert src.kind in S.KINDS and src.status in S.STATUSES and src.stale_after_days >= 1
         assert src.capabilities and src.limitations, f"{src.id} must say what it gives and what it cannot"
