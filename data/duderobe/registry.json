@@ -110,7 +110,165 @@
  "15987538559262": {
   "first_seen": "2026-10-19T17:09:22Z",
   "handle": "welcome-home-tee-hazy-days",
-  "presence": "present",
+  "last_record": {
+   "audience_hints": [],
+   "availability": {
+    "60321201684766": true,
+    "60321201717534": true,
+    "60321201750302": true,
+    "60321201783070": true,
+    "60321201815838": true
+   },
+   "body_text": "The Welcome Home tee: the DudeRobe D on the left chest, for the guy whose favorite part of the day is walking back through his own front door. Classic crew neck and a regular fit, roomy enough to throw a DudeRobe over. Pre-shrunk, so it keeps its shape wash after wash. Printed to order at our warehouse, so give it a couple of extra days to ship. How to wear it: under a DudeRobe on Sunday morning, with lounge pants on the couch, or on its own anywhere else.",
+   "brand": "duderobe",
+   "category": "merch",
+   "content_hash": "188c0287c7c922cddb7feb4be747eb52bf3a8d5a4d604c607faca83f3224aa01",
+   "created_at": "2026-10-14T16:28:28-04:00",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 460
+     }
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 3
+     }
+    }
+   },
+   "family": "DudeRobe Tee - Welcome Home",
+   "flags": [],
+   "handle": "welcome-home-tee-hazy-days",
+   "images": [
+    {
+     "height": 2400,
+     "id": 65827446554910,
+     "key": "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-welcome-home-hazy-v2.jpg",
+     "position": 1,
+     "src": "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-welcome-home-hazy-v2.jpg?v=1792009712",
+     "variant_ids": [],
+     "width": 1792
+    },
+    {
+     "height": 2154,
+     "id": 65856097157406,
+     "key": "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-lifestyle-03-welcome-home-hazy-days-tee.jpg",
+     "position": 2,
+     "src": "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-lifestyle-03-welcome-home-hazy-days-tee.jpg?v=1792156701",
+     "variant_ids": [],
+     "width": 1616
+    },
+    {
+     "height": 2154,
+     "id": 65856099156254,
+     "key": "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-lifestyle-07-welcome-home-hazy-days-with-robe.jpg",
+     "position": 3,
+     "src": "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-tee-lifestyle-07-welcome-home-hazy-days-with-robe.jpg?v=1792156707",
+     "variant_ids": [],
+     "width": 1616
+    }
+   ],
+   "in_stock": true,
+   "option_names": [
+    "Size",
+    "Color"
+   ],
+   "product_id": "15987538559262",
+   "product_type": "T-Shirt",
+   "published_at": "2026-10-16T08:51:41-04:00",
+   "readiness": {
+    "missing_expected": [
+     "materials",
+     "features"
+    ],
+    "missing_required": [],
+    "state": "ready"
+   },
+   "status": "active",
+   "tags": [
+    "Coastal Colors",
+    "DPS Custom",
+    "dude-tees",
+    "edd-exclude",
+    "FW26",
+    "POD"
+   ],
+   "title": "DudeRobe Tee - Welcome Home - Hazy Days",
+   "updated_at": "2026-11-01T17:01:21-05:00",
+   "url": "https://duderobe.com/products/welcome-home-tee-hazy-days",
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60321201684766,
+     "options": {
+      "Color": "Hazy Days",
+      "Size": "S"
+     },
+     "price": 25.0,
+     "sku": "23414DR-6AZ-S",
+     "title": "S / Hazy Days"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60321201717534,
+     "options": {
+      "Color": "Hazy Days",
+      "Size": "M"
+     },
+     "price": 25.0,
+     "sku": "23414DR-6AZ-M",
+     "title": "M / Hazy Days"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60321201750302,
+     "options": {
+      "Color": "Hazy Days",
+      "Size": "L"
+     },
+     "price": 25.0,
+     "sku": "23414DR-6AZ-L",
+     "title": "L / Hazy Days"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60321201783070,
+     "options": {
+      "Color": "Hazy Days",
+      "Size": "XL"
+     },
+     "price": 25.0,
+     "sku": "23414DR-6AZ-XL",
+     "title": "XL / Hazy Days"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 60321201815838,
+     "options": {
+      "Color": "Hazy Days",
+      "Size": "2XL"
+     },
+     "price": 25.0,
+     "sku": "23414DR-6AZ-XXL",
+     "title": "2XL / Hazy Days"
+    }
+   ],
+   "vendor": "DudeRobe"
+  },
+  "presence": "suspected_removed",
+  "suspected_since": "2026-11-03T23:24:11Z",
   "title": "DudeRobe Tee - Welcome Home - Hazy Days"
  },
  "7009053737041": {
