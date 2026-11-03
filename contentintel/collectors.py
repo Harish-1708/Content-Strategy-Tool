@@ -23,9 +23,12 @@ from urllib.parse import parse_qs, quote, quote_plus, unquote, urlsplit
 import yaml
 
 from . import benchmarks as bench
+from . import contract
 from . import deepcheck
+from . import evidence as evidence_mod
 from .browser import AccountWarning, BrowserError, Challenge, LoginWall, describe_cookies, site_pacing, site_scrolls
 from .providers import AuthError, ProviderError, QuotaError
+from .safety import clean_text
 
 BROWSER_SOURCES = ("meta_ads", "tiktok", "instagram")
 SOURCES = BROWSER_SOURCES + ("deep_research",)
@@ -455,7 +458,7 @@ def _iso(value):
 
 
 def _clip(text):
-    return " ".join(str(text or "").split())[:TEXT_LIMIT]
+    return " ".join(clean_text(text or "").split())[:TEXT_LIMIT]          # invisible and control characters never enter collected text
 
 
 def _row(source, ident, **fields):
@@ -1453,11 +1456,15 @@ def format_benchmark_status(brand, store, auto, settings, now, root="brands"):
 
 
 def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg, ledger_cls, sources, now,
-                run_id, configs=None, dry_run=False, root="brands", apify=None, claude=None, backend="browser", region=None):
+                run_id, configs=None, dry_run=False, root="brands", apify=None, claude=None, backend="browser", region=None,
+                health=None, registry=None):
     """Plan and run collection tasks for each brand, within the caps in `settings`.
 
     backend: browser (the default), apify (Apify only) or fallback (the browser first, Apify when
     the browser fails). Deep Research always uses the browser.
+
+    health (a HealthLedger) records how each route does and keeps a route that is resting after a failure from being
+    asked again; registry (the declared sources) lets each saved batch carry its provenance. Both are optional.
     """
     from .research import load_brand_research         # local import: research imports this module
     ledger = ledger_cls(store.load_usage(), now[:7])
@@ -1517,9 +1524,26 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
             return settings.items_per_run
         return min(settings.items_per_run, settings.monthly_items - ledger.month_used("collected_items"))
 
+    def seen(source, route, *, exc=None, items=0, message=""):
+        """Tell the health ledger how a route just did. Nothing happens without a ledger, or in a dry run."""
+        if health is None or dry_run:
+            return
+        if exc is not None:
+            err = contract.classify_exception(exc)
+            health.observe(source, route, ok=False, code=err["code"], message=err["message"], now=now)
+        elif items:
+            health.observe(source, route, ok=True, items=items, now=now)
+        else:
+            health.observe(source, route, ok=False, code=contract.UPSTREAM_BROKEN,
+                           message=message or "the route answered but nothing usable came back", now=now)
+
     def save(brand, task, rows, stats, via, extra=None):
         record = {"at": now, "run": run_id, "source": task.source, "key": task.key, "seeds": task.seeds, "via": via,
                   "from_site_data": stats.get("json", 0), "from_links": stats.get("links", 0), "items": rows}
+        if registry is not None:
+            first = via.split("+")[0]
+            record["provenance"] = evidence_mod.provenance(registry, task.source, via, now, run_id,
+                                                           health.status(task.source, first, now) if health is not None else "")
         record.update(extra or {})
         store.append_collected(brand.slug, record)
         store.save_usage(ledger.usage)
@@ -1554,6 +1578,11 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                 report = TaskReport(task.source, task.seeds, "skipped")
                 reports.append(report)
                 routes, why = _routes(deep, backend, apify, apify_state, site_cfg, site_creds, disabled.get(site))
+                if health is not None and routes:
+                    resting = {r: health.is_paused(task.source, r, now) for r in routes}
+                    if any(resting.values()):
+                        why = why or next(p["message"] for p in resting.values() if p)
+                        routes = [r for r in routes if not resting[r]]
                 if not routes:
                     report.detail = why
                     continue
@@ -1602,7 +1631,9 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                                              f"finished-report button seen: {'yes' if d['done_button_seen'] else 'no'} | "
                                              f"waited {d['waited_seconds']} s"))
                         item["extra_sources"] = out["sources"]
+                        seen(task.source, "browser", items=1)
                     except (LoginWall, Challenge) as exc:
+                        seen(task.source, "browser", exc=exc)
                         message = str(exc) + (cookie_facts(site, site_creds)
                                               if isinstance(exc, LoginWall) and "Cookie facts" not in str(exc) else "") + rest_after(exc, site)
                         disabled[site] = message
@@ -1611,6 +1642,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                         report.status, report.detail = "failed", message
                         continue
                     except BrowserError as exc:
+                        seen(task.source, "browser", exc=exc)
                         report.status, report.detail = "failed", str(exc)
                         if site not in opened:
                             disabled[site] = str(exc)
@@ -1671,6 +1703,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                             ledger.charge("collected_items", len(rows))
                             note_pages(site, stats)
                     except (LoginWall, Challenge) as exc:
+                        seen(task.source, route, exc=exc)
                         message = str(exc) + rest_after(exc, site)
                         disabled[site] = message
                         result.problems_for.append(site)
@@ -1679,6 +1712,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                         hard = True
                         continue
                     except BrowserError as exc:
+                        seen(task.source, route, exc=exc)
                         errors.append(str(exc))
                         hard = True
                         if site not in opened:                       # the browser itself would not start
@@ -1686,6 +1720,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                             result.problems_for.append(site)
                         continue
                     except AuthError as exc:
+                        seen(task.source, route, exc=exc)
                         apify_state["disabled"] = str(exc)
                         result.problems_for.append("apify")
                         result.notes.append(f"apify switched off for this run: {exc}")
@@ -1693,15 +1728,18 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                         hard = True
                         continue
                     except QuotaError as exc:
+                        seen(task.source, route, exc=exc)
                         apify_state["exhausted"] = True
                         result.notes.append(f"apify is out of credit: {exc}")
                         errors.append(str(exc))
                         continue
                     except ProviderError as exc:
+                        seen(task.source, route, exc=exc)
                         errors.append(str(exc))
                         hard = True
                         continue
                     if rows:
+                        seen(task.source, route, items=len(rows))
                         parts.append((route, rows, stats))
                         if backend != "extra":
                             break
@@ -1710,6 +1748,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                     errors.append("the page opened but no ads or posts could be read "
                                   "(a screenshot was saved; run Recon to see what the site sends)"
                                   if route == "browser" else "Apify returned no readable items")
+                    seen(task.source, route, message=errors[-1])
                 if parts:
                     route, rows, stats = parts[0]
                     via = route
@@ -1819,11 +1858,13 @@ def check_collectors(browser_factory, creds, settings, browser_cfg, store, ledge
                                 max_cost_usd=min(0.25, settings.apify_max_cost_per_run_usd))
             except (AuthError, QuotaError, ProviderError) as exc:
                 row["detail"] = str(exc)
+                row["code"] = contract.code_for(exc)
                 continue
             ledger.charge("apify_items", len(raw))
             store.save_usage(ledger.usage)
             got, bad = normalize_items(source, raw)
             row["ok"] = bool(got)
+            row["items"] = len(got)
             row["detail"] = (f"via Apify: {len(raw)} items, {len(got)} readable" + (f", {bad} unreadable" if bad else "")
                              if raw else "via Apify: the scraper ran but returned no items (check the actor name in research.yaml)")
             continue
@@ -1851,6 +1892,7 @@ def check_collectors(browser_factory, creds, settings, browser_cfg, store, ledge
                     unconfirmed = switch_to_deep_research(browser, site_cfg)
                     browser.screenshot("check-gemini-deep-research")
                     row["ok"] = not unconfirmed
+                    row["items"] = 0 if unconfirmed else 1
                     row["detail"] = (f"Gemini opened (login looks {state}), the prompt box is there and the Deep Research "
                                      "button was found and pressed; no research was started"
                                      if not unconfirmed else f"Gemini opened (login looks {state}) but {unconfirmed}")
@@ -1859,10 +1901,12 @@ def check_collectors(browser_factory, creds, settings, browser_cfg, store, ledge
                 browser.screenshot(f"check-{source}")
         except (LoginWall, Challenge, BrowserError) as exc:
             row["detail"] = str(exc)
+            row["code"] = contract.code_for(exc)
             continue
         ledger.charge("collected_items", len(found))
         store.save_usage(ledger.usage)
         row["ok"] = bool(found)
+        row["items"] = len(found)
         row["detail"] = (f"login {stats['state']}; {len(found)} items ({stats['json']} from the site's data, "
                          f"{stats['links']} only from page links)"
                          + (" - rate-limited, first page only" if stats.get("rate_limited") else "")
