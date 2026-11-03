@@ -249,6 +249,22 @@ def describe_cookies(text, site="", now=None):
     return "; ".join(parts)
 
 
+def describe_form_facts(facts):
+    """A short plain sentence from form_facts(): never a value, only what kinds of boxes the page has."""
+    if not facts:
+        return "the page's boxes could not be listed"
+    boxes = []
+    for e in facts.get("inputs", [])[:10]:
+        bits = [e.get("tag", "input") + (f"[type={e['type']}]" if e.get("type") else "")]
+        for key, label in (("name", "name"), ("id", "id"), ("placeholder", "placeholder"), ("autocomplete", "autocomplete"), ("aria", "aria-label")):
+            if e.get(key):
+                bits.append(f"{label}='{str(e[key])[:40]}'")
+        bits.append("visible" if e.get("visible") else "hidden")
+        boxes.append(" ".join(bits))
+    return (f"the page was {facts.get('url') or '(unknown address)'} titled '{facts.get('title', '')}' and had "
+            + (f"{len(boxes)} box(es): " + "; ".join(boxes) if boxes else "no boxes to type into (an interstitial, a block page or a page that had not finished loading)"))
+
+
 def parse_json_text(text):
     """Every JSON value in a response body (some sites send one per line, or a 'for (;;);' prefix)."""
     text = (text or "").strip()
@@ -398,6 +414,22 @@ class PlaywrightBrowser:
             except Exception:
                 continue
         return False
+
+    def form_facts(self):
+        """What the page offers to type into (kind, type, name, placeholder; never a value), with its address (no query) and title.
+        Evidence for fixing a login step that cannot find its box."""
+        try:
+            inputs = self.page.eval_on_selector_all(
+                "input, textarea", "els => els.slice(0, 15).map(e => ({tag: e.tagName.toLowerCase(), type: e.type || '', name: e.name || '', "
+                "id: e.id || '', placeholder: e.placeholder || '', autocomplete: e.autocomplete || '', aria: e.getAttribute('aria-label') || '', "
+                "visible: !!(e.offsetWidth || e.offsetHeight)}))")
+        except Exception:
+            inputs = []
+        try:
+            title = self.page.title()
+        except Exception:
+            title = ""
+        return {"url": str(self.url).split("?")[0][:120], "title": str(title)[:80], "inputs": inputs}
 
     def text(self, selectors):
         for sel in selectors:
