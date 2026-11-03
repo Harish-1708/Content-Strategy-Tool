@@ -1,0 +1,164 @@
+# Proves, from GitHub's own servers, that each source and route really answers.
+#
+# Unit tests prove the code handles an answer correctly; they cannot prove TikTok, Instagram, YouTube or a search
+# service still talk to a GitHub server. This workflow makes ONE small real call per route, records exactly what
+# happened (time, version, route, how many items, the error code) in data/_shared/acceptance.jsonl, and updates the
+# health ledger. A route is shown as healthy on the Collector Health tab only after one of these has passed.
+#
+# Runs every Thursday by itself. To run it by hand: Actions > Acceptance > Run workflow.
+#   only   limit it to some sources, comma-separated (meta_ads, tiktok, instagram, deep_research, web_search,
+#          shopify_catalogue, youtube_public, claude). Blank checks every source that has what it needs.
+#   plan   show what would be checked and what is missing (a missing secret, for example); make no call at all.
+#   brand  which brand's public catalogue feed is tried (blank: the first brand).
+# A route that is resting after a block is skipped, never asked again. A route whose secret is missing is
+# reported as skipped, not failed.
+# It uses a few collector items and a few search credits (counted in the usual caps), and one Claude call.
+# This workflow sends no Slack message; a failed route turns the run red.
+name: Acceptance
+
+on:
+  schedule:
+    - cron: "17 6 * * 4"          # Thursdays 06:17 UTC
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Only these sources, comma-separated (blank: every source that has what it needs)"
+        required: false
+        default: ""
+      plan:
+        description: "Show what would be checked and what is missing; make no call"
+        type: boolean
+        default: false
+      brand:
+        description: "Brand whose public catalogue feed is tried (blank: the first brand)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalogue-data
+  cancel-in-progress: false
+
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-browser.txt
+
+      - run: pip install -r requirements.txt
+
+      - name: Remember the downloaded browser
+        if: inputs.plan != true
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('requirements-browser.txt') }}
+
+      - name: Install the browser
+        if: inputs.plan != true
+        shell: bash
+        run: |
+          pip install -r requirements-browser.txt
+          for attempt in 1 2 3; do
+            if playwright install --with-deps chromium; then exit 0; fi
+            echo "The browser download failed (try $attempt of 3); trying again in 20 seconds"
+            sleep 20
+          done
+          echo "::error::The browser could not be downloaded after 3 tries. Run the workflow again."
+          exit 1
+
+      - name: Check each route
+        id: acceptance
+        continue-on-error: true
+        shell: bash
+        env:
+          ONLY: ${{ inputs.only }}
+          PLAN: ${{ inputs.plan }}
+          BRAND: ${{ inputs.brand }}
+          INSTAGRAM_COOKIES: ${{ secrets.INSTAGRAM_COOKIES }}
+          INSTAGRAM_USERNAME: ${{ secrets.INSTAGRAM_USERNAME }}
+          INSTAGRAM_PASSWORD: ${{ secrets.INSTAGRAM_PASSWORD }}
+          TIKTOK_COOKIES: ${{ secrets.TIKTOK_COOKIES }}
+          TIKTOK_USERNAME: ${{ secrets.TIKTOK_USERNAME }}
+          TIKTOK_PASSWORD: ${{ secrets.TIKTOK_PASSWORD }}
+          GEMINI_COOKIES: ${{ secrets.GEMINI_COOKIES }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
+        run: |
+          set +e
+          args=()
+          if [ -n "$ONLY" ]; then args+=(--only "$ONLY"); fi
+          if [ -n "$BRAND" ]; then args+=(--brand "$BRAND"); fi
+          if [ "$PLAN" = "true" ]; then args+=(--plan); fi
+          { echo "### Acceptance"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel acceptance "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Keep the pictures and page samples
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug
+          path: debug
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Show the health of every route
+        if: inputs.plan != true
+        shell: bash
+        run: |
+          { echo "### Collector health"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel health 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Update Google Sheets
+        id: sheets
+        if: inputs.plan != true
+        continue-on-error: true
+        shell: bash
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          SHEET_SHARE_EMAIL: ${{ secrets.SHEET_SHARE_EMAIL }}
+          SHEET_FOLDER_ID: ${{ secrets.SHEET_FOLDER_ID }}
+        run: |
+          set +e
+          { echo "### Google Sheets"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel sheets --all 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Save the results
+        if: inputs.plan != true
+        shell: bash
+        run: |
+          git config user.name "catalogue-acceptance"
+          git config user.email "catalogue-acceptance@users.noreply.github.com"
+          git add -f data
+          if git diff --cached --quiet; then
+            echo "No changes to save."
+          else
+            git commit -m "Acceptance $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase
+            git push
+          fi
+
+      - name: Show the run as red when a route failed
+        if: steps.acceptance.outcome == 'failure' || steps.sheets.outcome == 'failure'
+        run: exit 1
