@@ -207,8 +207,8 @@ def test_an_http_408_or_504_in_a_message_is_a_timeout():
 
 # --- 2. cookies were given but not accepted: no password login from a data-centre address ---------------------------------------
 
-def test_with_cookies_a_signed_out_page_is_reported_not_logged_into_with_a_password(cfg):
-    ig = site(cfg, "instagram")
+def test_by_default_a_signed_out_page_with_cookies_is_reported_not_logged_into_with_a_password(cfg):
+    ig = {k: v for k, v in site(cfg, "instagram").items() if k != "password_fallback"}          # the setting absent: the default applies
     b = FakeBrowser({}, present_always={ig["login_wall_any"][0]}, typeable={"x"}, clickable={"x"})
     creds = {"cookies": json.dumps([{"name": "sessionid", "value": "v", "domain": ".instagram.com", "path": "/"}]), "username": "u", "password": "p"}
     with pytest.raises(B.LoginWall, match="export fresh ones.*Cookie facts"):
@@ -411,3 +411,128 @@ def test_spaces_pasted_around_the_key_never_reach_the_request(run_cli, monkeypat
     monkeypatch.setenv("YOUTUBE_API_KEY", "  " + KEY + "\n")
     monkeypatch.setattr(cli, "_YT_API_GET", lambda url, **kw: seen.append(kw["params"]["key"]) or YT(200, GOOD))
     assert run_cli("acceptance", "--only", "youtube_public") == 0 and seen == [KEY]
+
+
+# --- password_fallback: a site can ask for the password to be the backup when its cookies are refused -----------------------------
+
+COOKIES = json.dumps([{"name": "sessionid", "value": "COOKIEVALUE", "domain": ".instagram.com", "path": "/"}])
+
+
+def with_mode(cfg, mode):
+    return {**site(cfg, "instagram"), "password_fallback": mode}
+
+
+def test_when_cookies_fail_a_refused_session_falls_back_to_the_password_and_says_so_without_secrets(cfg, capsys):
+    b = LoginFake(cfg)
+    state = C.ensure_session(b, "instagram", with_mode(cfg, "when_cookies_fail"), {"cookies": COOKIES, "username": "u", "password": "SECRETPW"})
+    out = capsys.readouterr().out
+    assert state == "ok" and b.typed == ["u", "SECRETPW"]
+    assert "::warning::instagram: the cookies in INSTAGRAM_COOKIES were not accepted" in out and "Export fresh cookies" in out
+    assert "SECRETPW" not in out and "COOKIEVALUE" not in out and "1 cookies loaded" in out
+
+
+def test_the_fallback_is_off_for_a_site_that_says_no_cookies_only(cfg, capsys):
+    b = LoginFake(cfg)
+    with pytest.raises(B.LoginWall):
+        C.ensure_session(b, "instagram", with_mode(cfg, "no_cookies_only"), {"cookies": COOKIES, "username": "u", "password": "p"})
+    assert b.typed == [] and "::warning::" not in capsys.readouterr().out
+
+
+def test_an_unfamiliar_page_is_never_logged_into_even_when_the_fallback_is_on(cfg):
+    b = FakeBrowser({}, typeable={"x"}, clickable={"x"})
+    assert C.ensure_session(b, "instagram", with_mode(cfg, "when_cookies_fail"), {"cookies": COOKIES, "username": "u", "password": "p"}) == "unknown"
+    assert b.typed == [] and b.opened == [site(cfg, "instagram")["home"]]
+
+
+def test_the_fallback_needs_both_username_and_password(cfg):
+    for creds in ({"cookies": COOKIES, "username": "u"}, {"cookies": COOKIES, "password": "p"}, {"cookies": COOKIES, "username": "", "password": ""}):
+        b = LoginFake(cfg)
+        with pytest.raises(B.LoginWall, match="Cookie facts"):
+            C.ensure_session(b, "instagram", with_mode(cfg, "when_cookies_fail"), creds)
+        assert b.typed == []
+
+
+def test_a_security_check_after_the_fallback_login_stops_the_run_and_still_warns_first(cfg, capsys):
+    with pytest.raises(B.Challenge, match="triggered a security check"):
+        C.ensure_session(LoginFake(cfg, after="challenge"), "instagram", with_mode(cfg, "when_cookies_fail"), {"cookies": COOKIES, "username": "u", "password": "p"})
+    assert "::warning::instagram" in capsys.readouterr().out
+
+
+def test_a_fallback_login_that_cannot_find_its_box_reports_the_cookies_and_the_page_and_saves_a_picture(cfg):
+    b = LoginFake(cfg)
+    b.typeable = set()
+    with pytest.raises(B.BrowserError) as seen:
+        C.ensure_session(b, "instagram", with_mode(cfg, "when_cookies_fail"), {"cookies": COOKIES, "username": "u", "password": "SECRETPW"})
+    text = str(seen.value)
+    assert "could not find the username box" in text and "1 cookies loaded" in text and "box(es)" in text
+    assert "SECRETPW" not in text and "COOKIEVALUE" not in text and b.shots == ["login-form-instagram"]
+
+
+def test_the_fallback_setting_is_validated_and_both_modes_are_accepted(tmp_path):
+    raw = yaml.safe_load((ROOT / "browser.yaml").read_text())
+    for mode in B.PASSWORD_FALLBACKS:
+        raw["sites"]["instagram"]["password_fallback"] = mode
+        path = tmp_path / f"{mode}.yaml"
+        path.write_text(yaml.safe_dump(raw))
+        assert B.load_browser_settings(str(path))["sites"]["instagram"]["password_fallback"] == mode
+    for bad in ("always", "yes", True, "", None):
+        raw["sites"]["instagram"]["password_fallback"] = bad
+        path = tmp_path / "bad.yaml"
+        path.write_text(yaml.safe_dump(raw))
+        with pytest.raises(B.BrowserError, match="password_fallback must be one of"):
+            B.load_browser_settings(str(path))
+
+
+def test_the_shipped_settings_keep_the_password_as_the_backup_for_instagram_and_tiktok_only(cfg):
+    sites = cfg["sites"]
+    assert sites["instagram"]["password_fallback"] == "when_cookies_fail" and sites["tiktok"]["password_fallback"] == "when_cookies_fail"
+    assert "password_fallback" not in sites["meta_ads"] and "password_fallback" not in sites["gemini"]          # Google never gets a password login
+
+
+# --- Instagram is given time to draw its grid -------------------------------------------------------------------------------------
+
+def test_instagram_waits_longer_after_opening_and_after_each_scroll_than_the_general_settings(cfg):
+    ig = site(cfg, "instagram")
+    pace = B.site_pacing(cfg, "instagram")
+    assert ig["settle_seconds"] >= 8 and pace["scroll_pause_seconds"] >= 5
+    assert pace["min_delay_seconds"] == cfg["pacing"]["min_delay_seconds"] and pace["max_delay_seconds"] == cfg["pacing"]["max_delay_seconds"]
+    assert B.site_pacing(cfg, "tiktok")["scroll_pause_seconds"] == cfg["pacing"]["scroll_pause_seconds"] == 3          # other sites keep the general pause
+    assert B.site_scrolls(cfg, "instagram") == cfg["limits"]["max_scrolls_per_page"]                                 # the scroll limit is untouched
+
+
+def test_a_real_instagram_read_uses_those_waits(cfg):
+    ig = site(cfg, "instagram")
+    b = FakeBrowser({"https://www.instagram.com/explore/tags/": {"json": []}}, present_always={ig["logged_in_any"][0]})
+    C.run_browser_task(b, C.Task("instagram", "t", {"hashtags": ["a"]}, "k", 1), 50, ig, cfg, CREDS["instagram"])
+    assert 10 in b.waits and b.scrolls == cfg["limits"]["max_scrolls_per_page"] and set(b.pauses) == {6}
+
+
+def test_the_check_lets_the_page_draw_before_it_takes_its_picture(cfg, store, settings):
+    f = world(cfg)
+    browser, events = f.browsers["instagram"], []
+    wait, shot = browser.wait, browser.screenshot
+    browser.wait = lambda seconds: (events.append(("wait", seconds)), wait(seconds))[1]
+    browser.screenshot = lambda name: (events.append(("shot", name)), shot(name))[1]
+    [row] = C.check_collectors(f, CREDS, settings, cfg, store, R.Ledger, NOW, ["instagram"], apify=None, claude=None, backend="browser")
+    waits = [e for e in events if e[0] == "wait"]
+    assert row["ok"] and events[-1] == ("shot", "check-instagram")
+    assert waits[-2:] == [("wait", 10), ("wait", 10)]            # the wait after opening the page, then the check's own wait before the picture
+
+
+def test_instagrams_scroll_wait_is_its_own_setting_so_careful_mode_can_still_take_the_pacing_block(cfg):
+    ig = site(cfg, "instagram")
+    assert "pacing" not in ig and ig["scroll_pause_seconds"] == 6              # `pacing` stays free for Careful Mode, which writes it
+    assert B.site_pacing(cfg, "instagram")["scroll_pause_seconds"] == 6
+    careful = {**cfg, "sites": {**cfg["sites"], "instagram": {**ig, "pacing": {"min_delay_seconds": 20, "max_delay_seconds": 60, "scroll_pause_seconds": 8}}}}
+    assert B.site_pacing(careful, "instagram") == {"min_delay_seconds": 20, "max_delay_seconds": 60, "scroll_pause_seconds": 8}      # Careful Mode wins
+    assert B.site_pacing({**cfg, "sites": {**cfg["sites"], "instagram": {k: v for k, v in ig.items() if k != "scroll_pause_seconds"}}}, "instagram")["scroll_pause_seconds"] == 3
+
+
+def test_a_site_scroll_wait_must_be_a_number(tmp_path):
+    raw = yaml.safe_load((ROOT / "browser.yaml").read_text())
+    for bad in ("six", -1, True):
+        raw["sites"]["instagram"]["scroll_pause_seconds"] = bad
+        path = tmp_path / "bad.yaml"
+        path.write_text(yaml.safe_dump(raw))
+        with pytest.raises(B.BrowserError, match="scroll_pause_seconds must be a number"):
+            B.load_browser_settings(str(path))
