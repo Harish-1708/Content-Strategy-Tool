@@ -10,6 +10,9 @@
 #          shopify_catalogue, youtube_public, claude). Blank checks every source that has what it needs.
 #   plan   show what would be checked and what is missing (a missing secret, for example); make no call at all.
 #   brand  which brand's public catalogue feed is tried (blank: the first brand).
+#   clear  sources whose rest period is lifted first, comma-separated (for example: tiktok,instagram,deep_research). A route that
+#          failed rests (12 hours after a login problem, a day after a block) and an acceptance run SKIPS a resting route, so use this
+#          after you have fixed the cause (fresh cookies, a new key) and want to test straight away.
 # A route that is resting after a block is skipped, never asked again. A route whose secret is missing is
 # reported as skipped, not failed.
 # It uses a few collector items and a few search credits (counted in the usual caps), and one Claude call.
@@ -31,6 +34,10 @@ on:
         default: false
       brand:
         description: "Brand whose public catalogue feed is tried (blank: the first brand)"
+        required: false
+        default: ""
+      clear:
+        description: "Lift the rest period of these sources first, comma-separated (after you have fixed the cause)"
         required: false
         default: ""
 
@@ -78,6 +85,18 @@ jobs:
           echo "::error::The browser could not be downloaded after 3 tries. Run the workflow again."
           exit 1
 
+      - name: Lift rest periods you asked to lift
+        if: inputs.clear != '' && inputs.plan != true
+        shell: bash
+        env:
+          CLEAR: ${{ inputs.clear }}
+        run: |
+          IFS=',' read -ra sources <<< "$CLEAR"
+          for s in "${sources[@]}"; do
+            s=$(echo "$s" | tr -d '[:space:]')
+            if [ -n "$s" ]; then python -m contentintel health --clear "$s"; fi
+          done
+
       - name: Check each route
         id: acceptance
         continue-on-error: true
@@ -98,6 +117,7 @@ jobs:
           SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
           set +e
           args=()
