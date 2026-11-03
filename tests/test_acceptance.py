@@ -175,6 +175,7 @@ def ctx(reg, **kw):
     c.provider_check = lambda name, kind: {"ok": True, "count": {"web": 2, "news": 3}[kind], "problem": ""}
     c.catalogue_check = lambda: (10, "read 10 products")
     c.youtube_check = lambda: (1, "read a video")
+    c.youtube_api_check = lambda: (1, "read a video through the API")
     c.claude_check = lambda: "key accepted"
     c.seen = seen
     return c
@@ -192,7 +193,7 @@ def test_one_probe_per_enabled_route_that_has_something_to_check(tmp_path):
     assert ("deep_research", "apify", "check") not in k                                          # Deep Research has no Apify route
     assert ("instagram", "agent_reach", "check") not in k                                         # a route that is off is never checked
     assert {kk for kk in k if kk[0] == "web_search"} == {("web_search", r, a) for r in ("serper_dev", "tavily", "serpapi") for a in ("search_web", "search_news")}
-    assert ("shopify_catalogue", "public_json", "fetch_page") in k and ("youtube_public", "yt_dlp", "metadata") in k and ("claude", "api", "check") in k
+    assert ("shopify_catalogue", "public_json", "fetch_page") in k and ("youtube_public", "data_api", "video_details") in k and ("claude", "api", "check") in k
     assert not [kk for kk in k if kk[0] in ("reddit_public", "competitor_stores", "competitor_pages")]     # planned sources have nothing to check yet
     assert not [kk for kk in k if kk[0].startswith("video_")]                                      # video downloads are judged on real items, not a probe
     assert all(p.skip == "" for p in probes)
@@ -209,12 +210,12 @@ def test_a_probe_runs_its_own_check_with_the_right_arguments(tmp_path):
 
 def test_what_cannot_run_says_why(tmp_path):
     c = ctx(shipped(), providers=("tavily",), missing={("tiktok", "browser"): "no login: set TIKTOK_COOKIES", ("meta_ads", "apify"): "no key: set APIFY_TOKEN"})
-    c.claude_check = c.catalogue_check = c.youtube_check = None
+    c.claude_check = c.catalogue_check = c.youtube_check = c.youtube_api_check = None
     by = {(p.source, p.route, p.action): p.skip for p in A.build_probes(c)}
     assert by[("tiktok", "browser", "check")] == "no login: set TIKTOK_COOKIES" and by[("meta_ads", "apify", "check")] == "no key: set APIFY_TOKEN"
     assert by[("web_search", "serper_dev", "search_web")] == "no API key for this service" and by[("web_search", "tavily", "search_web")] == ""
     assert by[("claude", "api", "check")] == "no ANTHROPIC_API_KEY" and by[("shopify_catalogue", "public_json", "fetch_page")] == "no brand catalogue to try"
-    assert by[("youtube_public", "yt_dlp", "metadata")] == "no yt-dlp on this machine"
+    assert by[("youtube_public", "data_api", "video_details")] == "no key: set YOUTUBE_API_KEY"
     c2 = ctx(shipped())
     c2.collect_check = c2.provider_check = None
     assert all(p.skip for p in A.build_probes(c2) if p.source in ("meta_ads", "web_search"))
