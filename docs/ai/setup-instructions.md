@@ -98,3 +98,14 @@ Free tiers that train on prompts (Mistral, Gemini) should stay Public unless you
 - Tick **live** only after the secrets exist and you have switched a provider on: it makes tiny real calls and reports **problems on our side** separately from **problems on the provider's side** (rate limits, outages, unusable answers). Tick **evaluate** to also run the sample tasks on the enabled free providers and compare them.
 
 Costs: the free providers cost nothing; the live check uses a few Claude calls worth well under a cent each. `python -m contentintel ai usage` (or the run summary) shows today's spend against the cap.
+
+
+## 9. Checking the upload
+
+After uploading update 36, open the repository on GitHub and confirm:
+
+- the folder `contentintel/ai/` exists and holds **14 files**: `__init__.py`, `clients.py`, `commands.py`, `coordinator.py`, `data_class.py`, `evaluate.py`, `gateway.py`, `lanes.py`, `registry.py`, `review.py`, `router.py`, `smoke.py`, `usage.py`, `validate.py`;
+- `ai/gateway.lock.json` (a folder named `ai` at the top level, next to `contentintel`), the three files `ai_providers.yaml`, `ai_lanes.yaml`, `ai_eval_tasks.yaml` at the top level, and the folder `docs/ai/` with four files;
+- `.github/workflows/ai-gateway.yml`.
+
+If `contentintel/ai/` is missing, nothing else is affected: ordinary commands keep working and only the `ai` command says its files are missing. To add the folder through the GitHub website: open `contentintel`, choose **Add file > Create new file**, type `ai/__init__.py` as the name (typing the slash creates the folder), paste the file's text, commit; then open `contentintel/ai/` and use **Add file > Upload files** for the other 13.
