@@ -11,7 +11,6 @@ from pathlib import Path
 import os
 
 from . import acceptance as acceptance_mod
-from .ai import commands as ai_commands
 from . import autoseeds as autoseeds_mod
 from . import browser as browser_mod
 from .apify import Apify
@@ -1018,6 +1017,12 @@ def main(argv=None):
         if args.cmd == "collect":
             return _collect(args, store)
         if args.cmd == "ai":
+            try:
+                from .ai import commands as ai_commands          # loaded only here: the AI layer can never stop collection or research
+            except ImportError as exc:
+                print("APPLICATION problem: the AI layer's files are missing or incomplete (" + str(exc) + "). "
+                      "Check that the folder contentintel/ai/ has all 14 files from update 36 (see docs/ai/setup-instructions.md, 'Checking the upload').")
+                return 1
             args.mock = not args.live
             _, ledger = _health(args, store)
             if ledger is None:
