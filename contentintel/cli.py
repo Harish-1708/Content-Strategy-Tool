@@ -11,6 +11,7 @@ from pathlib import Path
 import os
 
 from . import acceptance as acceptance_mod
+from .ai import commands as ai_commands
 from . import autoseeds as autoseeds_mod
 from . import browser as browser_mod
 from .apify import Apify
@@ -204,6 +205,28 @@ def build_parser():
     group.add_argument("--all", action="store_true")
     p.add_argument("--check", action="store_true", help="validate every record and its honesty rules; exit 1 on a problem")
     p.add_argument("--export", default="", help="write the records as JSON lines to this file")
+
+    p = sub.add_parser("ai", help="the AI layer: plan, providers, usage, review, ask, check, eval, smoke (mock unless --live)")
+    _common(p)
+    p.add_argument("action", choices=["plan", "providers", "usage", "review", "ask", "check", "eval", "smoke"])
+    p.add_argument("--providers-config", default="ai_providers.yaml")
+    p.add_argument("--lanes-config", default="ai_lanes.yaml")
+    p.add_argument("--tasks-config", default="ai_eval_tasks.yaml")
+    p.add_argument("--browser-config", default="browser.yaml")
+    p.add_argument("--live", action="store_true", help="make real calls with real credentials (default: a scripted mock; no network, no spend)")
+    p.add_argument("--data-class", default="public", choices=["public", "internal", "restricted"])
+    p.add_argument("--all", action="store_true", help="providers: include the ones that are off")
+    p.add_argument("--lane", default="", help="ask: the lane")
+    p.add_argument("--text", default="", help="ask: the instruction")
+    p.add_argument("--only", default="", help="check/eval: comma-separated providers")
+    p.add_argument("--include-claude", action="store_true", help="eval: also run the Claude routes (they cost money)")
+    p.add_argument("--strict", action="store_true", help="check: exit 1 on an external provider problem too")
+    p.add_argument("--approve", default="", help="review: approve this item id")
+    p.add_argument("--reject", default="", help="review: reject this item id")
+    p.add_argument("--by", default="", help="review: who decided")
+    p.add_argument("--note", default="", help="review: why")
+    p.add_argument("--gateway-dir", default="gateway-src", help="the built, pinned gateway")
+    p.add_argument("--workdir", default="ai-work", help="scratch folder for the gateway database and log")
 
     p = sub.add_parser("status", help="can generation use this catalogue right now?")
     _common(p)
@@ -994,6 +1017,16 @@ def main(argv=None):
             return _research(args, store)
         if args.cmd == "collect":
             return _collect(args, store)
+        if args.cmd == "ai":
+            args.mock = not args.live
+            _, ledger = _health(args, store)
+            if ledger is None:
+                print("Error: sources.yaml is needed (the AI layer records provider health in the same ledger)")
+                return 1
+            if args.action == "ask" and not (args.lane and args.text):
+                print("Error: ask needs --lane and --text")
+                return 1
+            return ai_commands.run_ai(args, store, ledger, sync_mod.utc_now())
         if args.cmd == "health":
             return _health_cmd(args, store)
         if args.cmd == "acceptance":
