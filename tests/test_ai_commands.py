@@ -408,3 +408,22 @@ def test_a_live_run_with_the_secrets_but_no_built_gateway_says_so(ai, monkeypatc
     p, l = enabled_groq(ai)
     code, out = ai("check", "--live", "--only", "groq", "--gateway-dir", str(ai.tmp / "nothing-here"), providers=p, lanes=l)
     assert code == 1 and "APPLICATION: the gateway is not built at" in out
+
+
+def test_a_missing_ai_folder_cannot_stop_anything_else_and_the_ai_command_says_what_is_wrong(ai, monkeypatch, capsys):
+    import sys
+    for name in [n for n in sys.modules if n == "contentintel.ai" or n.startswith("contentintel.ai.")]:
+        monkeypatch.delitem(sys.modules, name)
+    monkeypatch.setitem(sys.modules, "contentintel.ai", None)          # importing it now raises ImportError, as if the folder were not uploaded
+    code, out = ai("providers")
+    assert code == 1 and "APPLICATION problem: the AI layer's files are missing or incomplete" in out and "all 14 files" in out
+    assert cli.main(["health", "--data-dir", str(ai.tmp / "d"), "--sources-config", str(ROOT / "sources.yaml"), "--browser-config", str(ROOT / "browser.yaml")]) == 0
+    assert "meta_ads / browser" in capsys.readouterr().out                # an ordinary command works exactly as before
+
+
+def test_the_cli_module_does_not_import_the_ai_package_at_start_up():
+    import subprocess
+    import sys
+    code = "import sys; import contentintel.cli; print(any(n == 'contentintel.ai' or n.startswith('contentintel.ai.') for n in sys.modules))"
+    out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, cwd=str(ROOT))
+    assert out.stdout.strip() == "False", out.stderr
