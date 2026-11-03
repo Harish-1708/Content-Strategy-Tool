@@ -148,15 +148,26 @@ sources:
 
   youtube_public:
     kind: collector
-    label: YouTube public videos and captions
+    label: YouTube public videos
     platform: youtube
     status: experimental
-    capabilities: [video details, public captions]
+    capabilities: [video details, public view and like counts, channel uploads]
     limitations:
-      - not yet shown to work from GitHub's servers; the acceptance run decides
-      - public details only; never a channel's private analytics
+      - official API with a free key; the free quota is 10,000 units a day (a video lookup costs 1, a search costs 100)
+      - public details and counts only; never a channel's private analytics
+      - captions and transcripts of other people's videos are not available this way
     routes:
-      yt_dlp: {tier: public_polite, access_type: site_data, login: none}
+      data_api: {tier: official_api, access_type: site_data, login: api_key}
+      yt_dlp:
+        tier: public_polite
+        access_type: site_data
+        login: none
+        enabled: false
+        experimental: true
+        note: >-
+          Switched off. On 2026-11-03 the first live acceptance run from GitHub's servers was refused with "Sign in to confirm
+          you're not a bot" (YouTube treats data-centre addresses as bots). The only workaround is logged-in cookies, which this
+          tool does not use for YouTube. Use data_api instead.
 
   claude:
     kind: ai
