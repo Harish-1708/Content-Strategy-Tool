@@ -55,7 +55,8 @@ _TYPES = {
     "pacing": "pace", "max_scrolls_per_page": "whole", "max_pages_per_run": "whole", "max_pages_per_day": "whole",
     "deep_research_active_any": "strs", "signed_out_any": "strs", "link_contains": "strs", "prompt_box": "strs", "send": "strs",
     "start_research": "strs", "still_working_any": "strs", "done_any": "strs", "response": "strs",
-    "deep_research_clicks": "strs_list", "login_steps": "steps", "wait": "wait",
+    "deep_research_clicks": "strs_list", "login_steps": "steps", "wait": "wait", "password_fallback": "fallback",
+    "scroll_pause_seconds": "num",
 }
 _REQUIRED = {
     "meta_ads": ["needs_login"],
@@ -69,6 +70,7 @@ _WAIT_KEYS = ("max_minutes", "plan_wait_seconds", "poll_seconds", "settle_second
               "question_settle_seconds")
 _PACE_KEYS = {"min_delay_seconds", "max_delay_seconds", "scroll_pause_seconds"}
 _STEP_ACTIONS = ("goto", "fill", "click", "click_optional", "wait")
+PASSWORD_FALLBACKS = ("no_cookies_only", "when_cookies_fail")
 
 
 def _num(value, where, minimum=0):
@@ -101,6 +103,9 @@ def _check_value(kind, value, where):
             raise BrowserError(f"{where} must be some of: {', '.join(sorted(_PACE_KEYS))}")
         for k, v in value.items():
             _num(v, f"{where}.{k}")
+    elif kind == "fallback":
+        if value not in PASSWORD_FALLBACKS:
+            raise BrowserError(f"{where} must be one of: {', '.join(PASSWORD_FALLBACKS)}; got {value!r}")
     elif kind == "strs":
         _strs(value, where)
     elif kind == "strs_list":
@@ -180,8 +185,13 @@ def load_browser_settings(path="browser.yaml"):
 
 
 def site_pacing(cfg, site):
-    """The pauses for one site: its own `pacing` over the general ones."""
-    return {**cfg["pacing"], **cfg["sites"][site].get("pacing", {})}
+    """The pauses for one site. From weakest to strongest: the general ones; the site's own `scroll_pause_seconds` (how long a
+    slow-drawing page is given after each scroll); the site's `pacing` block, which is what Careful Mode writes and so always wins."""
+    own = cfg["sites"][site]
+    pace = dict(cfg["pacing"])
+    if "scroll_pause_seconds" in own:
+        pace["scroll_pause_seconds"] = own["scroll_pause_seconds"]
+    return {**pace, **own.get("pacing", {})}
 
 
 def site_scrolls(cfg, site):
