@@ -1,0 +1,343 @@
+{
+  "$id": "evidence.v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "analysis": {
+      "type": "object"
+    },
+    "content": {
+      "properties": {
+        "claims": {
+          "type": "array"
+        },
+        "media": {
+          "items": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "image",
+                  "video",
+                  "unknown"
+                ],
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "linked",
+                  "saved",
+                  "cover_only",
+                  "none",
+                  "gone",
+                  "blocked",
+                  "failed"
+                ],
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "url",
+              "status"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "media_status": {
+          "enum": [
+            "linked",
+            "saved",
+            "cover_only",
+            "none",
+            "gone",
+            "blocked",
+            "failed"
+          ],
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "transcript": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "text",
+        "media",
+        "media_status"
+      ],
+      "type": "object"
+    },
+    "evidence_id": {
+      "pattern": "^ev1-[0-9a-f]{16}$",
+      "type": "string"
+    },
+    "governance": {
+      "properties": {
+        "data_class": {
+          "enum": [
+            "public",
+            "internal",
+            "restricted"
+          ],
+          "type": "string"
+        },
+        "review_status": {
+          "enum": [
+            "unreviewed",
+            "reviewed",
+            "approved",
+            "excluded"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "retention_class",
+        "data_class",
+        "review_status"
+      ],
+      "type": "object"
+    },
+    "identity": {
+      "properties": {
+        "content_hash": {
+          "type": "string"
+        },
+        "duplicate_cluster": {
+          "type": "string"
+        },
+        "first_seen": {
+          "type": "string"
+        },
+        "item_id": {
+          "type": "string"
+        },
+        "last_seen": {
+          "type": "string"
+        },
+        "times_seen": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "url_hash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "item_id",
+        "content_hash",
+        "url_hash",
+        "duplicate_cluster",
+        "first_seen",
+        "last_seen",
+        "times_seen"
+      ],
+      "type": "object"
+    },
+    "metrics": {
+      "items": {
+        "properties": {
+          "captured_at": {
+            "type": "string"
+          },
+          "denominator": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "kind": {
+            "enum": [
+              "measured",
+              "proxy"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          },
+          "window": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "value",
+          "unit",
+          "denominator",
+          "window",
+          "captured_at",
+          "platform",
+          "source",
+          "kind"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "origin": {
+      "properties": {
+        "access_tier": {
+          "enum": [
+            "official_api",
+            "public_polite",
+            "session_based",
+            "third_party_service",
+            "licensed_vendor",
+            "human_assisted"
+          ],
+          "type": "string"
+        },
+        "access_type": {
+          "enum": [
+            "site_data",
+            "page_links",
+            "page_text",
+            "search_snippet",
+            "report_text",
+            "media_file",
+            "model_output",
+            "feed"
+          ],
+          "type": "string"
+        },
+        "canonical_url": {
+          "type": "string"
+        },
+        "captured_at": {
+          "type": "string"
+        },
+        "collector": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "route": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "platform",
+        "route",
+        "access_tier",
+        "access_type",
+        "captured_at"
+      ],
+      "type": "object"
+    },
+    "quality": {
+      "properties": {
+        "age_days": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "completeness": {
+          "properties": {
+            "missing": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "observed": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "status": {
+              "enum": [
+                "observed",
+                "partial",
+                "snippet_only",
+                "links_only",
+                "cover_only",
+                "unknown"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "status",
+            "observed",
+            "missing"
+          ],
+          "type": "object"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "parse_confidence": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ],
+          "type": "string"
+        },
+        "stale": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "completeness",
+        "stale",
+        "age_days",
+        "parse_confidence",
+        "limitations"
+      ],
+      "type": "object"
+    },
+    "schema_version": {
+      "const": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "evidence_id",
+    "origin",
+    "identity",
+    "content",
+    "quality",
+    "metrics",
+    "analysis",
+    "governance"
+  ],
+  "title": "Evidence record, version 1",
+  "type": "object"
+}

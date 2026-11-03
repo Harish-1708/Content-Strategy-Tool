@@ -1,0 +1,151 @@
+{
+  "$id": "envelope.v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "ok": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "error": {
+            "type": "null"
+          },
+          "route": {
+            "minLength": 1,
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "ok": {
+            "const": false
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "error": {
+            "type": "object"
+          },
+          "items": {
+            "maxItems": 0
+          },
+          "route": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "action": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "error": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "properties": {
+            "code": {
+              "enum": [
+                "NEED_SETUP",
+                "NEED_LOGIN",
+                "UPSTREAM_BROKEN",
+                "TIMEOUT",
+                "RATE_LIMITED",
+                "PLATFORM_BLOCKED",
+                "NOT_FOUND",
+                "BAD_INPUT"
+              ],
+              "type": "string"
+            },
+            "hint": {
+              "type": "string"
+            },
+            "message": {
+              "maxLength": 500,
+              "type": "string"
+            },
+            "retry_after_seconds": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "code",
+            "message",
+            "hint"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "items": {
+      "type": "array"
+    },
+    "meta": {
+      "properties": {
+        "attempts": {
+          "items": {
+            "required": [
+              "route",
+              "result"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "elapsed_ms": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "elapsed_ms",
+        "attempts"
+      ],
+      "type": "object"
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "route": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "source": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "ok",
+    "source",
+    "action",
+    "route",
+    "items",
+    "meta",
+    "error"
+  ],
+  "title": "Collector result envelope, version 1",
+  "type": "object"
+}
