@@ -72,7 +72,7 @@ def gateway_env(lock, environ, *, port, db_path, config):
     encryption = environ.get("FREEAPI_ENCRYPTION_KEY", "")
     if not re.fullmatch(r"[0-9a-fA-F]{64}", encryption):
         raise GatewayError("FREEAPI_ENCRYPTION_KEY must be 64 hex characters")
-    env.update({"PORT": str(port), "ENCRYPTION_KEY": encryption, "FREEAPI_DB_PATH": str(db_path), "FREEAPI_CONFIG_JSON": json.dumps(config)})
+    env.update({"PORT": str(port), "ENCRYPTION_KEY": encryption, "FREEAPI_DB_PATH": str(Path(db_path).resolve()), "FREEAPI_CONFIG_JSON": json.dumps(config)})
     return env
 
 
