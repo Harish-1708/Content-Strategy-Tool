@@ -17,18 +17,82 @@
 #
 # budgets: the conservative testing cap for paid use (only Claude is paid). A call is refused if its worst case would cross it.
 # Keep the cap below the Anthropic balance; also set a spend limit in the Anthropic Console.
+# 2026-11-03: Harish set the monthly cap to $10 (the same limit is set in the Anthropic Console) and kept the daily testing cap at $0.50.
+# Nothing else here can spend money: the other providers are used only on free plans with no card on file, and a free quota that runs
+# out stops that provider for the period. The tool never buys credits and never upgrades a plan.
 
 version: 1
 budgets:
   daily_usd: 0.5
-  monthly_usd: 3.0
+  monthly_usd: 10.0
 providers:
-  google:
-    label: Google Gemini
-    enabled: false
+  github:
+    label: GitHub Models
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-03'
+      reason: 'Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent.'
+    credentials:
+      env:
+      - GITHUB_TOKEN
+    gateway_platform: github
+    direct:
+      base_url: https://models.github.ai/inference
+    terms:
+      status: verified_secondary
+      date: '2026-11-03'
+      trains_on_data: not confirmed in the pages checked (secondary sources and GitHub's own blog); the models are served by their publishers through GitHub, so read GitHub's terms before relying on this
+      retention: not confirmed
+      business_use: GitHub describes the free tier as for prototyping. Paid inference is used only if someone turns it on in GitHub settings; it must stay off. The workflow's own token needs the permission models read
+      note: 'free with any GitHub account and no card; per-request limits are 8,000 tokens in and 4,000 out; small models 15 requests a minute and 150 a day, large models 10 and 50 (checked 2026-11-03 against GitHub''s blog and secondary summaries)'
+    limits:
+      requests_per_day: 150
+      requests_per_minute: 15
+    models:
+    - id: openai/gpt-4.1-mini
+      approved: true
+      capabilities: [text, tools]
+      note: small-model tier (15 a minute, 150 a day)
+    - id: meta/Llama-3.3-70B-Instruct
+      approved: true
+      capabilities: [text, tools]
+      note: small-model tier per the summaries checked; if GitHub counts it as large (50 a day) the daily limit here would be too high, so confirm in the first live check
+    - id: openai/gpt-4.1
+      approved: false
+      capabilities: [text, vision, tools]
+      note: large-model tier (10 a minute, 50 a day); not approved until the provider limit can be set per model
+    - id: openai/gpt-4o
+      approved: false
+      capabilities: [text, vision, tools]
+      note: large-model tier; not approved for the same reason
+    - id: deepseek/DeepSeek-V3-0324
+      approved: false
+      capabilities: [text]
+      note: present for review; not approved
+    - id: microsoft/Phi-4
+      approved: false
+      capabilities: [text]
+      note: present for review; not approved
+  google:
+    label: Google Gemini
+    enabled: true
+    experimental: false
+    ceiling: public
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-03'
+      reason: 'Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent.'
     credentials:
       env:
       - GEMINI_API_KEY
@@ -104,10 +168,17 @@ providers:
       note: present in the gateway baseline; not approved
   groq:
     label: Groq
-    enabled: false
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-03'
+      reason: 'Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent.'
     credentials:
       env:
       - GROQ_API_KEY
@@ -187,9 +258,10 @@ providers:
       - CEREBRAS_API_KEY
     gateway_platform: cerebras
     terms:
-      status: declared_only
+      status: verified_secondary
       date: '2026-11-03'
-      note: not verified by us; the gateway seeds 4 Cerebras models. Verify the current free developer entitlement before use
+      business_use: not free under the no-card rule
+      note: 'checked 2026-11-03 against two summaries of Cerebras''s own rate-limit and pricing pages: the open no-card free tier ended on 2026-07-21; a new account gets a one-time $5 credit only after a payment method is added, and the API stays inactive until then. That breaks the rule of no card and no surprise charges, so it stays off. Re-check if Cerebras restores a no-card tier'
     models:
     - id: qwen-3-235b-a22b-instruct-2507
       approved: false
@@ -812,10 +884,17 @@ providers:
       note: present in the gateway baseline; not approved
   mistral:
     label: Mistral
-    enabled: false
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-03'
+      reason: 'Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent.'
     credentials:
       env:
       - MISTRAL_API_KEY
@@ -889,10 +968,17 @@ providers:
       note: free tier permanently retired upstream (V23); kept in the type union only
   openrouter:
     label: OpenRouter
-    enabled: false
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-03'
+      reason: 'Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent.'
     credentials:
       env:
       - OPENROUTER_API_KEY
