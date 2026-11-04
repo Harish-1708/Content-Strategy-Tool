@@ -1,4 +1,7 @@
-"""The AI layer: data classes, provider registry, task lanes, router, gateway launcher, evaluation and the `ai` commands.
+"""The research observatory (Stage 3): polite collection of public competitor and market information,
+dated snapshots, change detection, automatic competitor discovery and a public research corpus.
 
-Loaded only when the `ai` command is used, so a problem here can never stop collection, research or the Idea Bank.
+Everything here follows the collector contract (contentintel/contract.py), carries the shared evidence record
+(contentintel/evidence.py) and obeys one rule: a source that pushes back is recognised and routed around, never
+disguised against or fought. See THIRD_PARTY_NOTICES.md for the open-source projects whose ideas are used.
 """
