@@ -47,8 +47,13 @@ class Context:
     catalogue_check: object = None    # () -> (items, detail)
     youtube_check: object = None      # () -> (items, detail), the yt-dlp route
     youtube_api_check: object = None  # () -> (items, detail), the official Data API route
+    observatory_checks: dict = field(default_factory=dict)   # (source, route) -> () -> (items, detail), the competitor-site routes
     providers: tuple = ()             # provider names that have a key
     missing: dict = field(default_factory=dict)     # (source, route) -> reason
+
+
+_OBSERVATORY_ACTIONS = {("competitor_stores", "public_json"): "catalogue_walk", ("competitor_stores", "sitemap"): "read_sitemap", ("competitor_pages", "static_fetch"): "read_page",
+                        ("competitor_pages", "feed"): "read_feed", ("competitor_pages", "reader"): "read_via_reader"}
 
 
 def row_result(row):
@@ -91,6 +96,11 @@ def build_probes(ctx, wanted=None):
             elif src.id == "youtube_public":
                 skip = skip or ("" if ctx.youtube_check else "no yt-dlp on this machine")
                 probes.append(Probe(src.id, "metadata", rt.name, None if skip else ctx.youtube_check, skip))
+            elif src.id in ("competitor_stores", "competitor_pages"):
+                action = _OBSERVATORY_ACTIONS.get(key, "check")
+                fn = ctx.observatory_checks.get(key)
+                skip = skip or ("" if fn else "no contact address or no brand website: set OBSERVATORY_CONTACT")
+                probes.append(Probe(src.id, action, rt.name, None if skip else fn, skip))
             elif src.id == "claude":
                 skip = skip or ("" if ctx.claude_check else "no ANTHROPIC_API_KEY")
                 probes.append(Probe(src.id, "check", rt.name, None if skip else (lambda: (1, str(ctx.claude_check()))), skip))
