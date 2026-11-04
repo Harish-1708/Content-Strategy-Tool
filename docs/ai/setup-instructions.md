@@ -24,7 +24,7 @@ Your `ANTHROPIC_API_KEY` secret already exists. A Claude.ai subscription does **
 1. Go to **console.anthropic.com**, sign in, open **Settings > Limits** (or Billing).
 2. Set a **monthly spend limit** of **$5** (half your balance) so that even a bug cannot spend more.
 3. Make sure **auto-reload is off** (Billing).
-4. The tool also enforces its own cap in `ai_providers.yaml`: **$0.50 a day and $3 a month**. It refuses a call whose worst case would cross it. You can raise these two numbers later.
+4. The tool also enforces its own cap in `ai_providers.yaml`: **$0.50 a day and $10 a month**. It refuses a call whose worst case would cross it. You can raise these two numbers later.
 
 ## 2. Groq (free)
 
