@@ -94,7 +94,14 @@ def mock_clients(registry, lanes):
 def live_clients(registry, environ, gateway_dir, workdir, notes):
     """Real clients for enabled providers that have a credential. Starts the gateway on localhost when any gateway provider is usable."""
     clients, side = {}, None
-    gateway_providers = [p for p in registry.providers.values() if p.enabled and p.id != "claude"]
+    gateway_providers = [p for p in registry.providers.values() if p.enabled and p.id != "claude" and not p.direct]
+    for p in registry.providers.values():                    # providers called straight from here (GitHub Models), with the credential from the environment
+        if p.enabled and p.direct:
+            token = next((environ[n].strip() for n in p.credential_env if environ.get(n, "").strip()), "")
+            if token:
+                clients[p.id] = cl.DirectClient(p.direct["base_url"], token)
+            else:
+                notes.append("APPLICATION: " + p.id + ": enabled, but no credential in the environment: " + ", ".join(p.credential_env))
     if "ANTHROPIC_API_KEY" in environ and environ["ANTHROPIC_API_KEY"].strip() and registry.providers["claude"].enabled:
         clients["claude"] = cl.AnthropicClient(environ["ANTHROPIC_API_KEY"].strip())
     elif registry.providers["claude"].enabled:
