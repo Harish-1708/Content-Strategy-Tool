@@ -1,0 +1,5 @@
+# The isolated Scrapling environment (never installed with the main tool; see docs/observatory/README.md).
+# Pinned exactly: a new version is adopted only after the contract tests pass (tests/test_observatory_worker.py).
+# Scrapling is BSD 3-Clause (https://github.com/D4Vinci/Scrapling). Its browser downloads are not fetched unless the "browsers" input is ticked.
+scrapling[fetchers]==0.5
+markdownify==1.2.3
