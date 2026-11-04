@@ -170,20 +170,48 @@ def test_missing_lanes_file_is_refused(tmp_path):
 
 # ---- the shipped files -----------------------------------------------------------------------------------------------------------
 
-def test_the_shipped_registry_switches_nothing_on_except_a_capped_claude():
+ROLLED_OUT = ["github", "google", "groq", "mistral", "openrouter"]        # the providers whose terms have been checked and which the owner has approved
+
+
+def test_the_shipped_registry_enables_only_checked_providers_and_claude():
     reg = R.load_registry(SHIPPED_P)
-    assert len(reg.providers) == 85
-    assert [p.id for p in reg.providers.values() if p.enabled] == ["claude"]
+    assert len(reg.providers) == 86
+    assert [p.id for p in reg.providers.values() if p.enabled] == ROLLED_OUT + ["claude"]
     for p in reg.providers.values():
-        if p.id != "claude":
+        if p.id not in ROLLED_OUT + ["claude"]:
             assert not p.enabled and p.approved_classes == () and p.effective_ceiling == "public" and not p.override and not p.paid, p.id
+        if p.enabled:
+            assert p.terms.get("status") not in ("unverified", "declared_only"), p.id        # the registry itself refuses otherwise
     assert {p.id for p in reg.providers.values() if p.experimental} == {"kilo", "ovh", "aihorde"}
     assert [p.id for p in reg.providers.values() if p.paid] == ["claude"]
 
 
-def test_the_spending_cap_is_conservative_and_inside_the_ten_dollar_balance():
+def test_each_rolled_out_provider_carries_a_dated_named_owner_decision_for_internal_data_and_never_restricted():
     reg = R.load_registry(SHIPPED_P)
-    assert 0 < reg.daily_usd <= 1 and 0 < reg.monthly_usd <= 5 and reg.daily_usd <= reg.monthly_usd
+    for pid in ROLLED_OUT:
+        p = reg.provider(pid)
+        assert p.approved_classes == ("public", "internal") and p.effective_ceiling == "internal", pid
+        assert p.override["approved_by"] == "Harish" and p.override["date"] == "2026-11-03" and p.override["ceiling"] == "internal", pid
+        assert "Restricted data" in p.override["reason"] and "never sent" in p.override["reason"] and "credentials" in p.override["reason"], pid
+        assert "restricted" not in p.approved_classes
+
+
+def test_free_providers_can_only_route_to_models_the_owner_listed_as_free_to_use():
+    reg = R.load_registry(SHIPPED_P)
+    for pid in ROLLED_OUT:
+        p = reg.provider(pid)
+        assert not p.paid and not getattr(p, "price_per_million", None)
+        approved = [m.id for m in p.models if m.approved]
+        assert approved, pid
+        if pid == "openrouter":
+            assert all(m.endswith(":free") for m in approved), approved                  # OpenRouter charges for models without the :free suffix
+    assert [m.id for m in reg.provider("claude").models if m.approved] == ["claude-haiku-5-5", "claude-sonnet-5-5"]
+
+
+def test_the_spending_cap_is_the_owners_ten_dollars_a_month_and_fifty_cents_a_day():
+    reg = R.load_registry(SHIPPED_P)
+    assert (reg.daily_usd, reg.monthly_usd) == (0.5, 10.0)
+    assert 0 < reg.daily_usd <= reg.monthly_usd <= 10
 
 
 def test_claude_is_the_only_provider_that_may_receive_restricted_data_and_unapproved_models_are_off():
@@ -198,7 +226,8 @@ def test_claude_is_the_only_provider_that_may_receive_restricted_data_and_unappr
 def test_every_platform_in_the_pinned_gateway_is_in_the_registry_and_nowhere_else():
     reg = R.load_registry(SHIPPED_P)
     ids = {p["id"] for p in INVENTORY["platforms"]}
-    assert len(ids) == 84 and set(reg.providers) == ids | {"claude"}
+    through_gateway = {pid for pid, p in reg.providers.items() if not p.direct}
+    assert len(ids) == 84 and through_gateway == ids | {"claude"} and {pid for pid, p in reg.providers.items() if p.direct} == {"github"}      # GitHub Models is called directly
     for pid in ids:
         assert reg.provider(pid).gateway_platform == pid
 
@@ -207,10 +236,10 @@ def test_the_registry_allowlist_is_a_subset_of_the_models_the_pinned_gateway_shi
     reg = R.load_registry(SHIPPED_P)
     shipped = {p["id"]: {m["modelId"] for m in p["models"]} for p in INVENTORY["platforms"]}
     for p in reg.providers.values():
-        if p.id == "claude":
+        if p.id == "claude" or p.direct:
             continue
         assert {m.id for m in p.models} <= shipped[p.id], p.id
-    assert sum(len(p.models) for p in reg.providers.values() if p.id != "claude") == 108
+    assert sum(len(p.models) for p in reg.providers.values() if p.id != "claude" and not p.direct) == 108
 
 
 def test_the_shipped_lanes_load_against_the_allowlist_and_cover_the_ten_kinds_of_work():
