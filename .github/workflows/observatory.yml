@@ -1,0 +1,229 @@
+# The research observatory: competitor stores, sitemaps, feeds and pages read politely; automatic competitor discovery; the YouTube and public-content corpus.
+#
+# Actions > Observatory > Run workflow.
+#   plan       shows what is watched and what is missing. Makes no request.
+#   discover   finds competitors in everything already collected (and looks up their websites within the search credit caps)
+#   decide     your choice about a discovered competitor: monitor, stop, or reset (fill in competitor and decision). You can also type monitor or stop in the
+#              Decision column of the Competitors tab; the next sheet update reads it.
+#   monitor    reads every watched competitor, stores dated snapshots, writes change events and a report
+#   corpus     YouTube (needs the YOUTUBE_API_KEY secret), the outlier ranking, a search of the whole corpus, or reading one page through Jina Reader
+#   report / status / history / prune   read what was stored
+#
+# It also runs by itself every Monday (monitor), so competitor changes are found weekly without anyone starting it.
+#
+# REQUIRED SECRET: OBSERVATORY_CONTACT, your business email address or contact-page address. The tool names itself honestly in its requests and will not read without it.
+# Optional secrets: YOUTUBE_API_KEY, EXA_API_KEY, JINA_API_KEY (raises Jina's free limit), the search keys, and for sites we own or are authorised to use:
+# proxy and cookie secrets (add each one to the env block below; see docs/observatory/README.md, "Advanced access").
+name: Observatory
+
+on:
+  schedule:
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "What to do"
+        type: choice
+        options: [plan, discover, decide, monitor, corpus, report, status, history, prune]
+        default: plan
+      brand:
+        description: "Brand (blank: every brand)"
+        required: false
+        default: ""
+      only:
+        description: "monitor: only these parts (pages, feeds, sitemap, shopify; comma-separated)"
+        required: false
+        default: ""
+      competitor:
+        description: "monitor: only these competitor ids (comma-separated). decide: the competitor's key or website"
+        required: false
+        default: ""
+      decision:
+        description: "decide: monitor, stop or reset"
+        type: choice
+        options: [monitor, stop, reset]
+        default: monitor
+      what:
+        description: "corpus: what to do"
+        type: choice
+        options: [youtube, outliers, search, stats, read]
+        default: youtube
+      query:
+        description: "corpus search: the words to look for"
+        required: false
+        default: ""
+      url:
+        description: "corpus read: a public page to read through Jina Reader"
+        required: false
+        default: ""
+      channels:
+        description: "corpus youtube: extra channels (@handle or id, comma-separated)"
+        required: false
+        default: ""
+      find_channels:
+        description: "corpus youtube: also search for channels (each search uses 100 of the free daily units)"
+        type: boolean
+        default: false
+      site:
+        description: "history: the competitor id"
+        required: false
+        default: ""
+      product:
+        description: "history: a product handle or id"
+        required: false
+        default: ""
+      scrapling:
+        description: "Read pages with the isolated Scrapling worker instead of the built-in reader"
+        type: boolean
+        default: false
+      browsers:
+        description: "Also download Scrapling's browsers (only for sites we own or are authorised to use that need them)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalogue-data
+  cancel-in-progress: false
+
+jobs:
+  observatory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-scrapling.txt
+
+      - run: pip install -r requirements.txt
+
+      - name: Check the required contact secret
+        if: ${{ !contains(fromJSON('["plan","report","status","history","prune","decide"]'), inputs.action || 'monitor') }}
+        shell: bash
+        env:
+          OBSERVATORY_CONTACT: ${{ secrets.OBSERVATORY_CONTACT }}
+        run: |
+          if [ -z "$OBSERVATORY_CONTACT" ]; then
+            echo "::error::The secret OBSERVATORY_CONTACT is missing. Add your business email address or contact-page address under Settings > Secrets and variables > Actions. The tool identifies itself honestly in its requests and will not read without it."
+            exit 1
+          fi
+
+      - name: Install the isolated Scrapling environment
+        if: ${{ inputs.scrapling || inputs.browsers }}
+        shell: bash
+        run: |
+          python -m venv "$RUNNER_TEMP/scrapling-env"
+          "$RUNNER_TEMP/scrapling-env/bin/pip" install -q -r requirements-scrapling.txt
+          echo "SCRAPLING_PYTHON=$RUNNER_TEMP/scrapling-env/bin/python" >> "$GITHUB_ENV"
+          if [ "${{ inputs.browsers }}" = "true" ]; then
+            "$RUNNER_TEMP/scrapling-env/bin/python" -m playwright install --with-deps chromium
+          fi
+
+      - name: Run
+        id: run
+        continue-on-error: true
+        shell: bash
+        env:
+          ACTION: ${{ inputs.action || 'monitor' }}
+          BRAND: ${{ inputs.brand }}
+          ONLY: ${{ inputs.only }}
+          COMPETITOR: ${{ inputs.competitor }}
+          WHAT: ${{ inputs.what }}
+          DECISION: ${{ inputs.decision }}
+          QUERY: ${{ inputs.query }}
+          URL: ${{ inputs.url }}
+          CHANNELS: ${{ inputs.channels }}
+          FIND: ${{ inputs.find_channels }}
+          SITE: ${{ inputs.site }}
+          PRODUCT: ${{ inputs.product }}
+          SCRAPLING: ${{ inputs.scrapling }}
+          OBSERVATORY_CONTACT: ${{ secrets.OBSERVATORY_CONTACT }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
+          SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
+          EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
+          EXA_MCP: "on"
+          # For a site we own or are authorised to use (listed under authorised_access in observatory.yaml), pass its proxy address or account cookies here,
+          # one line per secret, under the secret's own name. docs/observatory/README.md ("Advanced access") shows the exact lines.
+        run: |
+          set +e
+          args=("$ACTION")
+          if [ -n "$BRAND" ]; then args+=(--brand "$BRAND"); else args+=(--all); fi
+          if [ -n "$ONLY" ]; then args+=(--only "$ONLY"); fi
+          if [ -n "$COMPETITOR" ]; then args+=(--competitor "$COMPETITOR"); fi
+          if [ "$ACTION" = "corpus" ]; then
+            args+=(--what "$WHAT")
+            if [ -n "$QUERY" ]; then args+=(--query "$QUERY"); fi
+            if [ -n "$URL" ]; then args+=(--url "$URL"); fi
+            if [ -n "$CHANNELS" ]; then args+=(--channel "$CHANNELS"); fi
+            if [ "$FIND" = "true" ]; then args+=(--find-channels); fi
+          fi
+          if [ "$ACTION" = "decide" ]; then args+=(--decision "$DECISION"); fi
+          if [ "$ACTION" = "history" ]; then
+            if [ -n "$SITE" ]; then args+=(--site "$SITE"); fi
+            if [ -n "$PRODUCT" ]; then args+=(--product "$PRODUCT"); fi
+          fi
+          if [ "$SCRAPLING" = "true" ]; then export OBSERVATORY_ENGINE_PAGES=scrapling; fi
+          { echo "### Observatory: $ACTION"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel observatory "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Show the health of every route
+        if: ${{ (inputs.action || 'monitor') != 'plan' }}
+        shell: bash
+        run: |
+          { echo "### Collector health"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel health 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save the data
+        if: ${{ !contains(fromJSON('["plan","report","status","history"]'), inputs.action || 'monitor') }}
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f data
+          if git diff --cached --quiet; then
+            echo "No data changes to save."
+          else
+            git commit -m "Observatory $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase -q || true
+            git push
+          fi
+
+      - name: Update Google Sheets
+        id: sheets
+        if: ${{ !contains(fromJSON('["plan","report","status","history","prune"]'), inputs.action || 'monitor') }}
+        continue-on-error: true
+        shell: bash
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          SHEET_SHARE_EMAIL: ${{ secrets.SHEET_SHARE_EMAIL }}
+          SHEET_FOLDER_ID: ${{ secrets.SHEET_FOLDER_ID }}
+        run: |
+          set +e
+          args=()
+          if [ -n "${{ inputs.brand }}" ]; then args+=(--brand "${{ inputs.brand }}"); else args+=(--all); fi
+          { echo "### Google Sheets"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel sheets "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Fail the run if the observatory had problems
+        if: ${{ steps.run.outcome == 'failure' }}
+        run: |
+          echo "::error::The observatory step reported a problem; see the summary above."
+          exit 1
