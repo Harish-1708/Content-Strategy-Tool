@@ -58,9 +58,11 @@ STARTER_MANUAL = {PRODUCTS: ["Notes"], RESEARCH: ["Review"], COLLECTED: ["Review
                   IDEABANK: ["Decision", "Notes"], REQUESTS: ["Changes"], BRIEFS: ["Feedback"], REJECTED: ["Rescue"]}   # added only when a tab is brand new
 STAMP = "last_updated"                          # when the tool last changed that row
 
-NUMERIC = {"price_min", "price_max", "price", "compare_at_price", "engagement_pct", "success_rate_7d", "avg_items"}
+NUMERIC = {"price_min", "price_max", "price", "compare_at_price", "engagement_pct", "success_rate_7d", "avg_items", "multiple", "spend_this_month_usd"}
 INTEGER = {"variant_count", "image_count", "times_seen", "best_rank", "likes", "comments", "shares", "attempts_7d", "acceptance_items",
-           "views", "saves", "reach", "days_running", "variants", "page_followers", "score", "fit", "idea", "assets", "violations", "items_added"}
+           "views", "saves", "reach", "days_running", "variants", "page_followers", "score", "fit", "idea", "assets", "violations", "items_added",
+           "products", "collections", "on_sale_products", "events_7d", "median", "approved_models", "requests_today", "daily_limit", "left_today", "requests_this_month",
+           "failures_this_month", "tokens_today"}
 BOOLEAN = {"excluded", "in_stock", "on_sale", "available"}
 
 _BLANK_TABS = ("Sheet1", "Sheet 1")
@@ -213,6 +215,61 @@ def _call(fn, *args, **kwargs):
 
 # ---------------------------------------------------------------------------------------
 # values
+
+def _plain(value):
+    """A value from the observatory as the text the typing step expects: true/false in lower case, nothing as empty."""
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    return "" if value is None else value
+
+
+def _observatory_tabs(brand, store, now, report):
+    """The competitor tabs, or none. A problem here is written in the run's notes and never stops the rest of the sheet."""
+    try:
+        from .observatory import config as obs_config
+        from .observatory import report as obs_report
+        from .observatory.snapshots import SnapshotStore
+        return obs_report.sheet_tabs(brand, store, SnapshotStore(store.data_dir), now, obs_config.load_settings())
+    except ImportError:
+        return []
+    except Exception as exc:
+        report.notes.append(f"Competitor tabs skipped: {exc}")
+        return []
+
+
+def _read_competitor_decisions(spreadsheet, brand, store, now, report, dry_run):
+    """Before the tabs are rewritten, read what a person typed in the Competitors tab's Decision column (monitor, stop, reset) and record it. Never stops the sheet update."""
+    try:
+        from .observatory import report as obs_report
+    except ImportError:
+        return
+    try:
+        if "Competitors" not in [w.title for w in spreadsheet.worksheets()]:
+            return
+        n = obs_report.apply_sheet_decisions(spreadsheet.worksheet("Competitors").get_all_values(), store, brand.slug, now, save=not dry_run)
+        if n:
+            report.notes.append(f"Competitor decisions read from the sheet: {n}")
+    except Exception as exc:
+        report.notes.append(f"Competitor decisions not read: {exc}")
+
+
+def _ai_tabs(store, now, report):
+    """The AI Gateway Health tab, or none (no AI layer files, or nothing switched on or used). Never stops the rest of the sheet."""
+    try:
+        from .ai import registry as ai_registry
+        from .ai import sheetrows as ai_rows
+        from .ai import usage as ai_usage
+        from pathlib import Path as _Path
+        if not _Path("ai_providers.yaml").is_file():
+            return []
+        spec = ai_rows.tab(ai_registry.load_registry("ai_providers.yaml"), ai_usage.UsageLedger(_Path(store.data_dir) / "_shared" / "ai_usage.json"), store.read_health(), now)
+        return [spec] if spec else []
+    except ImportError:
+        return []
+    except Exception as exc:
+        report.notes.append(f"AI Gateway Health tab skipped: {exc}")
+        return []
+
 
 def _typed(column, text):
     """The export rows are text. Sheets gets numbers and true/false where they belong."""
@@ -677,6 +734,13 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
         ws = _ensure_tab(spreadsheet, COLLECTOR_HEALTH, report, dry_run, created)
         rows = {r["route_key"]: {c: _typed(c, r[c]) for c in health_mod.SHEET_COLUMNS} for r in health_rows}
         _sync_table(ws, tab=COLLECTOR_HEALTH, columns=health_mod.SHEET_COLUMNS, rows_by_key=rows, key_col="route_key", report=report, dry_run=dry_run)
+
+    _read_competitor_decisions(spreadsheet, brand, store, now, report, dry_run)
+    for tab in _observatory_tabs(brand, store, now, report) + _ai_tabs(store, now, report):     # what the competitor observatory has found, and how the AI providers are doing
+        ws = _ensure_tab(spreadsheet, tab["title"], report, dry_run, created)
+        rows = {key: {c: _typed(c, _plain(row.get(c))) for c in tab["columns"]} for key, row in tab["rows_by_key"].items()}
+        _sync_table(ws, tab=tab["title"], columns=tab["columns"], rows_by_key=rows, key_col=tab["key_col"], report=report, dry_run=dry_run,
+                    starter_manual=tab["starter_manual"], stamp=(STAMP, now))
 
     bank = ib.normalise_bank(store.read_ideabank(brand.slug))
     shown = ib.sheet_rows(bank)
