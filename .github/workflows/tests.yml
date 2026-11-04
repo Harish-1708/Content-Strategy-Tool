@@ -41,9 +41,19 @@ jobs:
       - name: Lint
         run: python -m pyflakes contentintel tests
 
+      - name: Install the pinned Scrapling in its own environment (the worker tests run the real thing)
+        run: |
+          python -m venv "$RUNNER_TEMP/scrapling-env"
+          "$RUNNER_TEMP/scrapling-env/bin/pip" install -q -r requirements-scrapling.txt
+          echo "SCRAPLING_PYTHON=$RUNNER_TEMP/scrapling-env/bin/python" >> "$GITHUB_ENV"
+
       - name: Tests
         run: python -m pytest -q
 
       - name: Sabotage check
         if: ${{ inputs.sabotage }}
         run: python tests/sabotage/run_sabotage.py
+
+      - name: Sabotage check for the observatory, the AI additions and the sheet decisions
+        if: ${{ inputs.sabotage }}
+        run: python tests/sabotage/run_observatory_sabotage.py
