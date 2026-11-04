@@ -45,8 +45,8 @@ def build_config(registry, environ, baseline_models):
         raise GatewayError("FREEAPI_ADMIN_PASSWORD (at least 8 characters) is required: without an admin the gateway prints an open setup code")
     keys, skipped, models = [], [], []
     for p in registry.providers.values():
-        if p.id == "claude":
-            continue                                    # Claude is called directly, never through the gateway
+        if p.id == "claude" or p.direct:
+            continue                                    # Claude, and providers with a direct client, are never sent through the gateway
         if not p.enabled:
             continue
         cred = _credential(p, environ)
@@ -55,7 +55,7 @@ def build_config(registry, environ, baseline_models):
             continue
         if p.credential_env:
             keys.append({"platform": p.gateway_platform, "key": cred, "label": "actions", "enabled": True})
-    live = {k["platform"] for k in keys} | {p.gateway_platform for p in registry.providers.values() if p.enabled and not p.credential_env and p.id != "claude"}
+    live = {k["platform"] for k in keys} | {p.gateway_platform for p in registry.providers.values() if p.enabled and not p.credential_env and p.id != "claude" and not p.direct}
     for platform, ids in sorted(baseline_models.items()):
         provider = next((p for p in registry.providers.values() if p.gateway_platform == platform), None)
         for model_id in ids:
