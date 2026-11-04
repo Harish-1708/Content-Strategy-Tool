@@ -111,6 +111,8 @@ sources:
       serper_dev: {tier: third_party_service, access_type: search_snippet, login: api_key}
       tavily: {tier: third_party_service, access_type: search_snippet, login: api_key}
       serpapi: {tier: third_party_service, access_type: search_snippet, login: api_key}
+      exa: {tier: third_party_service, access_type: search_snippet, login: api_key}
+      exa_mcp: {tier: third_party_service, access_type: search_snippet, login: none}
 
   shopify_catalogue:
     kind: catalogue
@@ -194,22 +196,28 @@ sources:
 
   competitor_stores:
     kind: collector
-    label: Competitor stores (public feeds and sitemaps)
+    label: Competitor stores (public product data and sitemaps)
     platform: shopify
-    status: planned
-    capabilities: [products, prices, collections, sitemap dates]
+    status: experimental
+    capabilities: [products, prices and compare-at prices, stock, every collection a product sits in with its position, sitemap dates, change events]
     limitations:
-      - built in Stage 3; robots.txt obeyed
+      - reads only what a store publishes openly (meta.json, products.json, collections.json and its sitemaps); robots.txt is always obeyed
+      - a store may switch these files off; that is reported, never worked around
+      - the best-seller order is available only where the store honours the sort option (tested per store)
     routes:
       public_json: {tier: public_polite, access_type: feed, login: none}
+      sitemap: {tier: public_polite, access_type: feed, login: none}
 
   competitor_pages:
     kind: collector
-    label: Competitor pages and blogs
+    label: Competitor pages, blogs and feeds
     platform: web
-    status: planned
-    capabilities: [page text]
+    status: experimental
+    capabilities: [page text, headlines, announcement bars, offers, blog and product feeds]
     limitations:
-      - built in Stage 3; robots.txt obeyed
+      - robots.txt is always obeyed; a page that needs a login or shows a bot check is reported, not worked around
+      - page text is cleaned of hidden and invisible content before anything else reads it
     routes:
       static_fetch: {tier: public_polite, access_type: page_text, login: none}
+      feed: {tier: public_polite, access_type: feed, login: none}
+      reader: {tier: third_party_service, access_type: page_text, login: none}
