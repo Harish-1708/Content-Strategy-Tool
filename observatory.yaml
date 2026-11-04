@@ -1,0 +1,51 @@
+# Settings for the competitor observatory, the YouTube corpus and the public readers. Every value here is the default, written out so you can see it and change it in GitHub.
+# A mistake in this file stops the run with a message naming the key; nothing is guessed. Per-brand competitors go in brands/<brand>/observatory.yaml (see docs/observatory/README.md).
+version: 1
+
+# How the tool behaves toward other people's websites. The contact address is NOT written here: set the OBSERVATORY_CONTACT secret.
+politeness:
+  min_delay_seconds: 5          # pause between requests to one site; doubles after a block, up to max_delay_seconds
+  max_delay_seconds: 60
+  max_requests_per_domain: 80   # a hard ceiling per site per run
+  cache_minutes: 360
+
+# robots.txt is a crawler preference, not an access control. For the tool's own crawler the default is to obey it. For public pages read through Jina Reader the default
+# is to read and say that robots.txt asked otherwise. Either can be changed; an exception always names who decided and why.
+crawl_policy:
+  robots: obey                  # obey, or advisory (advisory needs a written basis below)
+  reader_robots: advisory       # obey or advisory, for Jina Reader
+  basis: "Owner decision (Harish, 2026-11-03): public pages may be read through Jina Reader for research; a robots.txt exclusion is noted in the report, never hidden"
+  overrides: []                 # per site, for example:
+  # - {host: example.com, robots: obey, basis: owner_decision, approved_by: Harish, date: "2026-11-03", note: "asked us to stay away"}
+
+# Sites and accounts we own or are explicitly authorised to access may use the advanced methods (stealth, challenge, fingerprint, proxy, logged_in_browser). Nothing is listed
+# by default, so nothing advanced runs. An entry is a recorded decision. See docs/observatory/README.md, "Advanced access".
+authorised_access:
+  hosts: []
+  # - {host: ourstore.com, basis: owner, approved_by: Harish, date: "2026-11-03", methods: [fingerprint, proxy], note: "our own store behind a bot shield"}
+
+advanced:
+  proxies: []                   # names only (for example eu1); the address is the secret OBSERVATORY_PROXY_EU1
+  rotate: none
+
+engine:
+  pages: core                   # core, or scrapling (the isolated worker; needs SCRAPLING_PYTHON, which the workflow's "scrapling" box creates)
+
+readers:
+  jina: true
+  exa: true
+  jina_per_minute: 15           # Jina's free limit without a key is 20 a minute
+
+discovery:
+  enabled: true
+  min_score: 40
+  auto_monitor_score: 65        # at or above this a competitor is monitored automatically
+  auto_monitor_max: 6           # at most this many are added automatically
+  max_monitored: 10             # at most this many competitors are monitored per brand in total
+  use_ai: false                 # the AI judge is not built yet; turning this on is refused
+
+youtube:
+  daily_unit_cap: 3000          # the tool's own ceiling, well under YouTube's free 10,000 a day
+  max_channels: 25
+  videos_per_channel: 50
+  search_calls_per_run: 2       # each channel search costs 100 units
