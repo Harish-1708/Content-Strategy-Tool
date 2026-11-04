@@ -24,7 +24,7 @@ def load(tmp_path, data):
 
 def test_the_shipped_file_loads_and_every_value_is_in_its_vocabulary():
     reg = shipped()
-    assert len(reg.sources) == 13 and sum(len(s.routes) for s in reg.sources.values()) == 20
+    assert len(reg.sources) == 13 and sum(len(s.routes) for s in reg.sources.values()) == 25
     for src in reg.sources.values():
         assert src.kind in S.KINDS and src.status in S.STATUSES and src.stale_after_days >= 1
         assert src.capabilities and src.limitations, f"{src.id} must say what it gives and what it cannot"
@@ -59,8 +59,8 @@ def test_the_agent_reach_instagram_route_is_declared_but_off_and_experimental():
 
 def test_planned_sources_are_declared_but_not_established():
     reg = shipped()
-    assert {s.id for s in reg.sources.values() if s.status == "planned"} == {"reddit_public", "competitor_stores", "competitor_pages"}
-    assert reg.source("youtube_public").status == "experimental"
+    assert {s.id for s in reg.sources.values() if s.status == "planned"} == {"reddit_public"}
+    assert {s.id for s in reg.sources.values() if s.status == "experimental"} >= {"youtube_public", "competitor_stores", "competitor_pages"}      # built in Stage 3, not yet proven live
 
 
 def test_defaults_and_pauses_are_read():
