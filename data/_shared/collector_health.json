@@ -117,7 +117,7 @@
     "version": "bad821df5e24"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 1,
+   "consecutive_successes": 4,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -132,6 +132,27 @@
      "items": 3,
      "ms": 23763,
      "ok": true
+    },
+    {
+     "at": "2026-11-04T15:45:26Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T15:45:26Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T15:45:26Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": {
@@ -139,7 +160,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "could not find the username box on the login page (the page may have changed: update login_steps in browser.yaml)"
    },
-   "last_success": "2026-11-03T09:11:44Z",
+   "last_success": "2026-11-04T15:45:26Z",
    "pause": null,
    "route": "browser",
    "source": "instagram",
@@ -192,7 +213,7 @@
     "version": "30b21f30b650"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 1,
+   "consecutive_successes": 11,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -200,10 +221,80 @@
      "items": 3,
      "ms": 13659,
      "ok": true
+    },
+    {
+     "at": "2026-11-04T15:45:26Z",
+     "code": "",
+     "items": 8,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T15:45:26Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T15:45:26Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T15:45:26Z",
+     "code": "",
+     "items": 8,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T15:45:26Z",
+     "code": "",
+     "items": 8,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T15:45:26Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T15:45:26Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T15:45:26Z",
+     "code": "",
+     "items": 24,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T15:45:26Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T15:45:26Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-03T07:34:12Z",
+   "last_success": "2026-11-04T15:45:26Z",
    "pause": null,
    "route": "browser",
    "source": "meta_ads",
@@ -343,7 +434,7 @@
     "version": "bad821df5e24"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 1,
+   "consecutive_successes": 4,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -358,6 +449,27 @@
      "items": 3,
      "ms": 58652,
      "ok": true
+    },
+    {
+     "at": "2026-11-04T15:45:26Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T15:45:26Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T15:45:26Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": {
@@ -365,10 +477,181 @@
     "code": "UPSTREAM_BROKEN",
     "message": "could not find the username box on the login page (the page may have changed: update login_steps in browser.yaml)"
    },
-   "last_success": "2026-11-03T09:11:44Z",
+   "last_success": "2026-11-04T15:45:26Z",
    "pause": null,
    "route": "browser",
    "source": "tiktok",
+   "state": "healthy"
+  },
+  "video_instagram|layered": {
+   "acceptance": null,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 0,
+     "ok": null
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-04T16:11:21Z",
+    "code": "UPSTREAM_BROKEN",
+    "message": "the video is shorter than a second (0.0s)"
+   },
+   "last_success": "2026-11-04T16:11:21Z",
+   "pause": {
+    "code": "UPSTREAM_BROKEN",
+    "message": "the video is shorter than a second (0.0s)",
+    "until": "2026-11-04T16:13:21Z"
+   },
+   "route": "layered",
+   "source": "video_instagram",
+   "state": "healthy"
+  },
+  "video_tiktok|layered": {
+   "acceptance": null,
+   "consecutive_failures": 0,
+   "consecutive_successes": 4,
+   "history": [
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-04T16:11:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-04T16:11:21Z",
+    "code": "UPSTREAM_BROKEN",
+    "message": "the file is not a picture or video we can read"
+   },
+   "last_success": "2026-11-04T16:11:21Z",
+   "pause": null,
+   "route": "layered",
+   "source": "video_tiktok",
    "state": "healthy"
   },
   "web_search|serpapi": {

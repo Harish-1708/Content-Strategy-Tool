@@ -1,5 +1,73 @@
 {
  "items": {
+  "barefootdreams": {
+   "candidates": [
+    {
+     "ads": 1,
+     "likes": 4936494,
+     "name": "Nordstrom",
+     "page_id": "12854644836"
+    },
+    {
+     "ads": 1,
+     "likes": 3353504,
+     "name": "QVC",
+     "page_id": "23797290954"
+    },
+    {
+     "ads": 5,
+     "likes": 45310,
+     "name": "Barefoot Dreams",
+     "page_id": "180580075286145"
+    },
+    {
+     "ads": 1,
+     "likes": 15981,
+     "name": "Designer Travel",
+     "page_id": "260023630723703"
+    },
+    {
+     "ads": 1,
+     "likes": 7515,
+     "name": "ELLE SHOP （エル・ショップ）",
+     "page_id": "187681184671507"
+    }
+   ],
+   "checked_at": "2026-11-04T15:45:26Z",
+   "kind": "benchmark",
+   "name": "Barefoot Dreams",
+   "page_id": "180580075286145",
+   "page_likes": 45310,
+   "page_name": "Barefoot Dreams",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
+  "cozyearth": {
+   "candidates": [
+    {
+     "ads": 7,
+     "likes": 236736,
+     "name": "Dark War Survival Mobile",
+     "page_id": "460444747145333"
+    },
+    {
+     "ads": 3,
+     "likes": 106077,
+     "name": "Cozy Earth",
+     "page_id": "123039741087725"
+    }
+   ],
+   "checked_at": "2026-11-04T15:45:26Z",
+   "kind": "benchmark",
+   "name": "Cozy Earth",
+   "page_id": "123039741087725",
+   "page_likes": 106077,
+   "page_name": "Cozy Earth",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
   "duderobe": {
    "candidates": [
     {
@@ -24,6 +92,25 @@
    "reason": "other advertisers turned up, but none has a name like this one",
    "source": "auto",
    "status": "unresolved"
+  },
+  "gymshark": {
+   "candidates": [
+    {
+     "ads": 10,
+     "likes": 2233736,
+     "name": "Gymshark",
+     "page_id": "129669023798560"
+    }
+   ],
+   "checked_at": "2026-11-04T15:45:26Z",
+   "kind": "benchmark",
+   "name": "Gymshark",
+   "page_id": "129669023798560",
+   "page_likes": 2233736,
+   "page_name": "Gymshark",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
   },
   "oodie": {
    "candidates": [

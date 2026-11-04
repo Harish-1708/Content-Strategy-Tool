@@ -1,5 +1,30 @@
 {
  "items": {
+  "chobani": {
+   "candidates": [
+    {
+     "ads": 2,
+     "likes": 1344558,
+     "name": "Chobani",
+     "page_id": "112002018446346"
+    },
+    {
+     "ads": 1,
+     "likes": 1344558,
+     "name": "Chobani",
+     "page_id": "203224163148546"
+    }
+   ],
+   "checked_at": "2026-11-04T15:45:26Z",
+   "kind": "benchmark",
+   "name": "Chobani",
+   "page_id": "",
+   "page_likes": 0,
+   "page_name": "",
+   "reason": "2 pages have this name and none is clearly the main one",
+   "source": "auto",
+   "status": "ambiguous"
+  },
   "defisnacks": {
    "candidates": [
     {
@@ -136,6 +161,49 @@
    "source": "auto",
    "status": "unresolved"
   },
+  "liquiddeath": {
+   "candidates": [
+    {
+     "ads": 3,
+     "likes": 403351,
+     "name": "Pocket FM Stories",
+     "page_id": "191352894054471"
+    },
+    {
+     "ads": 4,
+     "likes": 341873,
+     "name": "Liquid Death",
+     "page_id": "2012750189007245"
+    },
+    {
+     "ads": 1,
+     "likes": 185166,
+     "name": "Jolie Beauty",
+     "page_id": "1675580096042114"
+    },
+    {
+     "ads": 1,
+     "likes": 2411,
+     "name": "Nicole Carter",
+     "page_id": "304489473615893"
+    },
+    {
+     "ads": 1,
+     "likes": 946,
+     "name": "David Miller",
+     "page_id": "1069464769584242"
+    }
+   ],
+   "checked_at": "2026-11-04T15:45:26Z",
+   "kind": "benchmark",
+   "name": "Liquid Death",
+   "page_id": "2012750189007245",
+   "page_likes": 341873,
+   "page_name": "Liquid Death",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
   "magicspoon": {
    "candidates": [
     {
@@ -172,6 +240,43 @@
    "checked_at": "2026-10-21T13:13:17Z",
    "kind": "benchmark",
    "name": "Magic Spoon",
+   "page_id": "",
+   "page_likes": 0,
+   "page_name": "",
+   "reason": "other advertisers turned up, but none has a name like this one",
+   "source": "auto",
+   "status": "unresolved"
+  },
+  "olipop": {
+   "candidates": [
+    {
+     "ads": 3,
+     "likes": 20491134,
+     "name": "Meta for Business",
+     "page_id": "185130644919625"
+    },
+    {
+     "ads": 2,
+     "likes": 20491134,
+     "name": "Meta for Business",
+     "page_id": "74100576336"
+    },
+    {
+     "ads": 2,
+     "likes": 1772312,
+     "name": "Thrive Market",
+     "page_id": "789439407744270"
+    },
+    {
+     "ads": 3,
+     "likes": 1342068,
+     "name": "Whirlpool",
+     "page_id": "152290218141343"
+    }
+   ],
+   "checked_at": "2026-11-04T15:45:26Z",
+   "kind": "benchmark",
+   "name": "Olipop",
    "page_id": "",
    "page_likes": 0,
    "page_name": "",
