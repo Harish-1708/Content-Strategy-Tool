@@ -6,7 +6,7 @@ it is recorded in version control, and the loader refuses an override that has n
 reach Claude only. A model is routable only if it is listed and approved for its provider: the remote gateway catalogue can
 add models, but it can never make one routable.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import yaml
@@ -14,6 +14,8 @@ import yaml
 from . import data_class as dc
 
 DEFAULT_PATH = "ai_providers.yaml"
+# endpoints a provider may be called at directly (everything else goes through the local gateway); a prompt is never sent to an address typed into a file
+DIRECT_ENDPOINTS = ("https://models.github.ai/inference",)
 TERMS_STATUS = ("verified", "verified_secondary", "upstream_documented", "declared_only", "unverified", "owner_decision")
 CLAUDE = "claude"
 
@@ -47,6 +49,7 @@ class Provider:
     limits: dict
     price_per_million: dict
     models: tuple
+    direct: dict = field(default_factory=dict)      # a provider called straight from this tool (not through the gateway): {base_url}
 
     @property
     def effective_ceiling(self):
@@ -133,7 +136,7 @@ def load_registry(path=DEFAULT_PATH):
         if not isinstance(d, dict):
             raise RegistryError(f"{where} must be a list of settings")
         _only(d, ("label", "enabled", "experimental", "paid", "ceiling", "owner_override", "approved_classes", "credentials", "gateway_platform",
-                  "terms", "limits", "price_per_million", "models"), where)
+                  "terms", "limits", "price_per_million", "models", "direct"), where)
         ceiling = d.get("ceiling", dc.PUBLIC)
         try:
             dc.validate(ceiling)
@@ -186,13 +189,21 @@ def load_registry(path=DEFAULT_PATH):
         ids = [m.id for m in models]
         if len(ids) != len(set(ids)):
             raise RegistryError(f"{where}: a model is listed twice")
+        direct = d.get("direct") or {}
+        if direct:
+            _only(direct, ("base_url",), f"{where}.direct")
+            base = str(direct.get("base_url", ""))
+            if not any(base == ok or base.startswith(ok + "/") for ok in DIRECT_ENDPOINTS):
+                raise RegistryError(f"{where}.direct.base_url must be one of the endpoints this tool knows: {', '.join(DIRECT_ENDPOINTS)}")
+            if pid == CLAUDE:
+                raise RegistryError(f"{where}: Claude has its own client")
         paid = bool(d.get("paid", False))
         if paid and not (price or all(m.price for m in models if m.approved)):
             raise RegistryError(f"{where}: a paid provider needs price_per_million, for the provider or for every approved model")
         out[pid] = Provider(id=pid, label=str(d.get("label") or pid), enabled=bool(d.get("enabled", False)), experimental=bool(d.get("experimental", False)),
                             paid=paid, ceiling=ceiling, override=override, approved_classes=approved,
                             credential_env=tuple((d.get("credentials") or {}).get("env", [])), gateway_platform=str(d.get("gateway_platform") or pid),
-                            terms=terms, limits=limits, price_per_million=price, models=tuple(models))
+                            terms=terms, limits=limits, price_per_million=price, models=tuple(models), direct=dict(direct))
     if not out:
         raise RegistryError(f"{path}: providers must name at least one provider")
     return Registry(providers=out, daily_usd=_num(budgets.get("daily_usd", 0), "budgets.daily_usd"), monthly_usd=_num(budgets.get("monthly_usd", 0), "budgets.monthly_usd"))
