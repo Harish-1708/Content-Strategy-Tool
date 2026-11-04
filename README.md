@@ -220,6 +220,9 @@ names marked set or not set, so you can see what the run can see (the values are
 | `CEREBRAS_API_KEY` | Cerebras through the gateway | optional | cloud.cerebras.ai |
 | `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` | Cloudflare Workers AI through the gateway | optional; both or neither | the Cloudflare dashboard > Workers AI |
 | `YOUTUBE_API_KEY` | public YouTube video details through YouTube's official Data API (free quota, no card) | optional | Google Cloud console > APIs and services > Credentials (docs/acceptance-fixes.md) |
+| `OBSERVATORY_CONTACT` | the contact address the competitor observatory puts in its requests so a site owner can reach you | **required** for the observatory | your business email address, or the address of your contact page (the tool names itself honestly and will not read without it) |
+| `EXA_API_KEY` | Exa search (free credits that stop at zero; add no card) | optional | dashboard.exa.ai > API keys. Exa's free hosted search needs no key and is switched on by the workflows |
+| `JINA_API_KEY` | raises Jina Reader's free limit from 20 to 500 requests a minute | optional | jina.ai > API key (the reader works without one) |
 
 **Needs no secret:** Meta Ad Library (public pages), the catalogue sync (public store data), and
 `GITHUB_TOKEN` (GitHub provides it automatically).
@@ -766,7 +769,7 @@ Claude is the coordinator. A pinned, local copy of the open-source FreeLLMAPI ga
 
 **Data classes.** Public, Internal, Restricted. A provider receives data only if its ceiling (set by its checked terms) and your approval both allow that class; unknown means Restricted. Restricted data can go to Claude only. You can raise a ceiling for a provider with a dated `owner_override` naming who decided and why; the tool does what you record.
 
-**What happens to a task.** The lane must be allowed to carry the data class; each route is checked (enabled, approved model, approved class, has a credential, not resting after a failure, inside its free limits or spending cap); the first usable one answers; the answer must pass the lane's checks; a failure or an unusable answer moves to the next route, and Claude answers only if the lane allows it and the spending cap has room; otherwise the task is **deferred**. A free quota running out never switches to a paid route silently. Claude's spending is capped (default $0.50 a day, $3 a month in `ai_providers.yaml`) and a call is refused *before* it is made if its worst case would cross the cap.
+**What happens to a task.** The lane must be allowed to carry the data class; each route is checked (enabled, approved model, approved class, has a credential, not resting after a failure, inside its free limits or spending cap); the first usable one answers; the answer must pass the lane's checks; a failure or an unusable answer moves to the next route, and Claude answers only if the lane allows it and the spending cap has room; otherwise the task is **deferred**. A free quota running out never switches to a paid route silently. Claude's spending is capped (default $0.50 a day, $10 a month in `ai_providers.yaml`, the same limit the owner set in the Anthropic Console) and a call is refused *before* it is made if its worst case would cross the cap.
 
 **Commands** (`python -m contentintel ai ACTION`; mock unless `--live`): `plan` (what would run and why not, no call), `providers`, `usage`, `review` (list, or `--approve ID --by NAME`), `ask --lane L --text T`, `check`, `eval`, `smoke`. **Actions > AI gateway** runs two separate jobs: *mock* (always; the real pinned gateway with a fake model, proving the plumbing) and *live* (only if you tick it; real calls, with our problems reported separately from provider problems). A mock pass never proves a live provider works.
 
