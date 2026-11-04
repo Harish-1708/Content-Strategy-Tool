@@ -18,12 +18,16 @@ providers:
   serpapi:
     monthly_cap: 100
     keep_free: 20
+  exa:                      # Exa's search API: new accounts get free credits and the free tier renews monthly; when they end it stops (402). Add no card.
+    monthly_cap: 200
+  exa_mcp:                  # Exa's free hosted search, no key; a third-party service, so public queries only; its own limit is not published
+    monthly_cap: 150
 
 # The first provider in each list that still has credits takes the search; the next one is the
 # fallback. News searches go to Tavily first because it renews monthly and dates its results.
 routing:
-  web: [serper_dev, tavily, serpapi]
-  news: [tavily, serper_dev, serpapi]
+  web: [serper_dev, tavily, serpapi, exa, exa_mcp]
+  news: [tavily, serper_dev, serpapi, exa, exa_mcp]
 
 defaults:
   results_per_query: 10     # 1 to 10; more results never cost more credits here
