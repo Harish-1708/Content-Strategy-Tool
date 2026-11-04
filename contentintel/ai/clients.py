@@ -83,6 +83,47 @@ class GatewayClient:
                           latency_ms=ms, model=str(body.get("model") or route["model"]))
 
 
+class DirectClient:
+    """A provider with an OpenAI-style endpoint called straight from here (GitHub Models). The token is sent as a header and never appears in a message or a result."""
+
+    def __init__(self, base_url, token, http=None, clock=time.monotonic):
+        if not str(base_url).startswith("https://"):
+            raise ValueError("a direct provider is only reached over https")
+        self.base_url, self.token, self.http, self.clock = str(base_url).rstrip("/"), token, http or default_http, clock
+
+    def _clean(self, text):
+        return str(text).replace(self.token, "***") if self.token else str(text)
+
+    def complete(self, route, system, prompt, max_tokens, timeout=90, expect_platform=None, lane=None):
+        messages = ([{"role": "system", "content": system}] if system else []) + [{"role": "user", "content": prompt}]
+        t0 = self.clock()
+        try:
+            status, body, headers = self.http("POST", self.base_url + "/chat/completions", headers={"Authorization": "Bearer " + self.token, "Content-Type": "application/json",
+                                                                                                   "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"},
+                                              body={"model": route["model"], "messages": messages, "max_tokens": max_tokens, "temperature": 0}, timeout=timeout)
+        except Exception as exc:
+            raise Failure(contract.classify_exception(exc)["code"], self._clean(f"the provider could not be reached: {exc}")) from None
+        ms = int((self.clock() - t0) * 1000)
+        err = body.get("error") if isinstance(body, dict) else None
+        text_error = self._clean((err.get("message") if isinstance(err, dict) else err) or "")[:200] if err else ""
+        if status in (401, 403):
+            raise Failure(contract.NEED_SETUP, "the provider rejected the token (for GitHub Models the job needs the permission models: read)")
+        if status in (402, 429):
+            retry = headers.get("Retry-After") or headers.get("retry-after") or ""
+            raise Failure(contract.RATE_LIMITED, text_error or f"the provider answered {status}: its free limit was reached", retry_after=int(retry) if str(retry).isdigit() else None)
+        if status in (400, 413, 422):
+            raise Failure(contract.BAD_INPUT, text_error or "the provider refused the request (often: more than its per-request token limit)")
+        if status != 200:
+            raise Failure(contract.UPSTREAM_BROKEN, text_error or f"the provider answered {status}")
+        try:
+            choice = body["choices"][0]["message"]["content"]
+        except (KeyError, IndexError, TypeError):
+            raise Failure(contract.UPSTREAM_BROKEN, "the provider's answer had no message") from None
+        usage = body.get("usage") or {}
+        return Completion(text=choice or "", tokens_in=int(usage.get("prompt_tokens", 0)), tokens_out=int(usage.get("completion_tokens", 0)), latency_ms=ms,
+                          model=str(body.get("model") or route["model"]))
+
+
 class AnthropicClient:
     """Claude through Anthropic's Messages API directly, so every call reports its real token counts (the cost ledger never guesses).
 
