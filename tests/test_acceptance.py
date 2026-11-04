@@ -186,17 +186,19 @@ def keys(probes):
 
 
 def test_one_probe_per_enabled_route_that_has_something_to_check(tmp_path):
-    c = ctx(shipped(), providers=("serper_dev", "tavily", "serpapi"))
+    c = ctx(shipped(), providers=("serper_dev", "tavily", "serpapi", "exa", "exa_mcp"))
     probes = A.build_probes(c)
     k = keys(probes)
     assert ("meta_ads", "browser", "check") in k and ("meta_ads", "apify", "check") in k and ("deep_research", "browser", "check") in k
     assert ("deep_research", "apify", "check") not in k                                          # Deep Research has no Apify route
     assert ("instagram", "agent_reach", "check") not in k                                         # a route that is off is never checked
-    assert {kk for kk in k if kk[0] == "web_search"} == {("web_search", r, a) for r in ("serper_dev", "tavily", "serpapi") for a in ("search_web", "search_news")}
+    assert {kk for kk in k if kk[0] == "web_search"} == {("web_search", r, a) for r in ("serper_dev", "tavily", "serpapi", "exa", "exa_mcp") for a in ("search_web", "search_news")}
     assert ("shopify_catalogue", "public_json", "fetch_page") in k and ("youtube_public", "data_api", "video_details") in k and ("claude", "api", "check") in k
-    assert not [kk for kk in k if kk[0] in ("reddit_public", "competitor_stores", "competitor_pages")]     # planned sources have nothing to check yet
+    assert not [kk for kk in k if kk[0] == "reddit_public"]                                                  # a planned source has nothing to check yet
+    assert {kk[2] for kk in k if kk[0] in ("competitor_stores", "competitor_pages")} == {"catalogue_walk", "read_sitemap", "read_page", "read_feed", "read_via_reader"}
     assert not [kk for kk in k if kk[0].startswith("video_")]                                      # video downloads are judged on real items, not a probe
-    assert all(p.skip == "" for p in probes)
+    assert all(p.skip == "" for p in probes if p.source not in ("competitor_stores", "competitor_pages"))
+    assert all("OBSERVATORY_CONTACT" in p.skip for p in probes if p.source in ("competitor_stores", "competitor_pages"))     # nothing to check them against in this test
 
 
 def test_a_probe_runs_its_own_check_with_the_right_arguments(tmp_path):
