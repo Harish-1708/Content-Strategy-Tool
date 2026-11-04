@@ -68,8 +68,9 @@ def test_settings_default_when_there_is_no_file(settings):
     assert settings.caps["serper_dev"] == R.Caps(250, 2400, 0)
     assert settings.caps["tavily"] == R.Caps(600, None, 50)
     assert settings.caps["serpapi"] == R.Caps(100, None, 20)
-    assert settings.routing == {"web": ["serper_dev", "tavily", "serpapi"],
-                                "news": ["tavily", "serper_dev", "serpapi"]}
+    assert settings.caps["exa"] == R.Caps(200, None, 0) and settings.caps["exa_mcp"] == R.Caps(150, None, 0)
+    assert settings.routing == {"web": ["serper_dev", "tavily", "serpapi", "exa", "exa_mcp"],          # the original three keep their order; Exa answers when they cannot
+                                "news": ["tavily", "serper_dev", "serpapi", "exa", "exa_mcp"]}
     assert (settings.results_per_query, settings.cache_days, settings.max_queries_per_run,
             settings.country, settings.recency) == (10, 7, 30, "worldwide", None)
 
