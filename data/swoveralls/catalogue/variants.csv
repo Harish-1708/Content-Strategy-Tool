@@ -209,7 +209,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15345983324271,Swoveralls - Cosmic,53753225478255,L / Cosmic,Size=L; Color=Cosmic,SWPANTS-BPR-L,120.00,,false
 15345983324271,Swoveralls - Cosmic,53753225511023,XL / Cosmic,Size=XL; Color=Cosmic,SWPANTS-BPR-XL,120.00,,false
 15345983324271,Swoveralls - Cosmic,53753225543791,2XL / Cosmic,Size=2XL; Color=Cosmic,SWPANTS-BPR-2XL,120.00,,false
-15345983324271,Swoveralls - Cosmic,53753225576559,3XL / Cosmic,Size=3XL; Color=Cosmic,SWPANTS-BPR-3XL,120.00,,true
+15345983324271,Swoveralls - Cosmic,53753225576559,3XL / Cosmic,Size=3XL; Color=Cosmic,SWPANTS-BPR-3XL,120.00,,false
 15345983324271,Swoveralls - Cosmic,53753225609327,4XL / Cosmic,Size=4XL; Color=Cosmic,SWPANTS-BPR-4XL,120.00,,true
 15346022973551,Swoveralls - Dancing Skeletons,53753349013615,S / Dancing Skeletons,Size=S; Color=Dancing Skeletons,SWPANTS-BKX-S,120.00,,false
 15346022973551,Swoveralls - Dancing Skeletons,53753349046383,M / Dancing Skeletons,Size=M; Color=Dancing Skeletons,SWPANTS-BKX-M,120.00,,true

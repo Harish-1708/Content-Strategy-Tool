@@ -35,7 +35,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 8
+      "count": 10
      }
     },
     "materials": {
@@ -74,16 +74,18 @@
     "new"
    ],
    "handle": "comfyalls-bca",
-   "image_count": 8,
+   "image_count": 10,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ElissaSwoveralls_09172026-0150.jpg?v=1790103016",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/cf5.jpg?v=1793796445",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ProductImageUpdate.png?v=1788986466",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Fabric_Details_Shot_6a52e9e7-3e66-421e-a659-8f1f39c2a71d.png?v=1793799563",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ElissaSwoveralls_09172026-0268.jpg?v=1790103016",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ElissaSwoveralls_09172026-0297.jpg?v=1790103016",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ReferenceImageUpdate_c75772af-deda-42f2-a0e6-85ece9274f96.png?v=1788986466",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ElissaSwoveralls_09172026-0150.jpg?v=1790103016",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/DarkHeatherGray.png?v=1788986466",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ElissaSwoveralls_09172026-0092.jpg?v=1790103016",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ElissaSwoveralls_09172026-0108.jpg?v=1790103016"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ElissaSwoveralls_09172026-0108.jpg?v=1790103016",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ReferenceImageUpdate_c75772af-deda-42f2-a0e6-85ece9274f96.png?v=1788986466"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -94,7 +96,7 @@
    "pocket_claims": "7",
    "price_max": 159.0,
    "price_min": 159.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ElissaSwoveralls_09172026-0150.jpg?v=1790103016",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/cf5.jpg?v=1793796445",
    "product_id": "15347014565999",
    "readiness": "ready",
    "status": "active",
@@ -278,7 +280,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 11
+      "count": 12
      }
     },
     "materials": {
@@ -322,17 +324,18 @@
     "new"
    ],
    "handle": "comfyalls-forest-green-1",
-   "image_count": 11,
+   "image_count": 12,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/cf2.jpg?v=1793796432",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Color_Change.jpg?v=1790643286",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Instructions-1.png?v=1790643286",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/kids-fabric-closeup-forest.jpg?v=1790609179",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Model_Image_Update-1.png?v=1790643287",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Editing_Request.png?v=1790643286",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Instructions-1.png?v=1790643286",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/15_7f568f00-236e-4f9d-8433-573359621b2c.jpg?v=1692872915",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/27.jpg?v=1692872915",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/23.jpg?v=1692872915",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/31_6fb42182-a344-4d4c-b395-7e4643916449.jpg?v=1692872915",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Editing_Request.png?v=1790643286",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Pant_Legs_Close-up.png?v=1790643287",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/layer-editor-19668acf-638c-4cee-8152-1b5b9b372998_1.png?v=1790643955"
    ],
@@ -345,7 +348,7 @@
    "pocket_claims": "7",
    "price_max": 149.0,
    "price_min": 149.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Color_Change.jpg?v=1790643286",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/cf2.jpg?v=1793796432",
    "product_id": "15347010044015",
    "readiness": "ready",
    "status": "active",
@@ -528,7 +531,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 11
+      "count": 12
      }
     },
     "materials": {
@@ -572,19 +575,20 @@
     "new"
    ],
    "handle": "comfyalls-midnight-black-1",
-   "image_count": 11,
+   "image_count": 12,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/cf1.jpg?v=1793796428",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Modification.jpg?v=1790643286",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Instructions-2.png?v=1790643286",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricColorUpdate_1.jpg?v=1780857535",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Model_Image_Update-3.png?v=1790643286",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/LayerEditor3.png?v=1790643995",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Pant_Legs_Detail.png?v=1790643287",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Model_Image_Update-2.png?v=1790643286",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Instructions-2.png?v=1790643286",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/26.jpg?v=1692873813",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/14_3056b74a-9dd8-4e78-9dda-15047277ca09.jpg?v=1692873813",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/22.jpg?v=1692873813",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/30_8d4d58b3-15ec-4f6c-8890-2f61d45354b1.jpg?v=1692873813",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Model_Image_Update-2.png?v=1790643286"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Pant_Legs_Detail.png?v=1790643287",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/LayerEditor3.png?v=1790643995"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -595,7 +599,7 @@
    "pocket_claims": "7",
    "price_max": 149.0,
    "price_min": 149.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Modification.jpg?v=1790643286",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/cf1.jpg?v=1793796428",
    "product_id": "15347007291503",
    "readiness": "ready",
    "status": "active",
@@ -778,7 +782,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 11
+      "count": 12
      }
     },
     "materials": {
@@ -822,18 +826,19 @@
     "new"
    ],
    "handle": "comfyalls-navy-1",
-   "image_count": 11,
+   "image_count": 12,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/cf3.jpg?v=1793796436",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Fabric_Change.jpg?v=1790643286",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Request_6aaf2c9b-5e7c-4bc0-a2cb-98ca5f77701a.png?v=1790643287",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Fabric_Texture_Close-Up_1.jpg?v=1781000516",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Model_Wardrobe_Update.png?v=1790643286",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Fashion_Forward_Fiasco.png?v=1790643286",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/21_fabf33fb-d5cf-450a-a0c8-92f9688218fa.jpg?v=1692873168",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Pant_Leg_Cuff.png?v=1790643287",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Request_6aaf2c9b-5e7c-4bc0-a2cb-98ca5f77701a.png?v=1790643287",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/13_d9e812d7-63b5-4dd6-98d1-0c928104d5e3.jpg?v=1692873168",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/29_c4b4d8f0-3bea-4097-a65e-32ada0ff1f44.jpg?v=1692873168",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/25.jpg?v=1692873168",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/21_fabf33fb-d5cf-450a-a0c8-92f9688218fa.jpg?v=1692873168",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Pant_Leg_Cuff.png?v=1790643287",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/layer-editor-5415653a-3d7e-4cdd-aafb-6dbc1a37c5fd.png?v=1790644046"
    ],
    "in_stock": true,
@@ -845,7 +850,7 @@
    "pocket_claims": "7",
    "price_max": 149.0,
    "price_min": 149.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Fabric_Change.jpg?v=1790643286",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/cf3.jpg?v=1793796436",
    "product_id": "15347011616879",
    "readiness": "ready",
    "status": "active",
@@ -1028,7 +1033,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 6
+      "count": 8
      }
     },
     "materials": {
@@ -1072,14 +1077,16 @@
     "new"
    ],
    "handle": "comfyalls-90s",
-   "image_count": 6,
+   "image_count": 8,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/cf4.jpg?v=1793796441",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Photography_Enhancement.png?v=1790690916",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Textile_Close-Up_c0651ae6-45b7-43d0-80a7-6b8574f7d44c.png?v=1793799558",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Update_Image_2.png?v=1790690914",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Update_Swoveralls_Design.png?v=1790690914",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Request-2_203cdf2e-5f96-48f6-a210-730ba0197b74.png?v=1790690915",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Edit_Request.png?v=1790690916",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Request-1_4649a983-c1c8-4d04-b103-a717a4020975.png?v=1790690916",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Update_Image_2.png?v=1790690914",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Update_Swoveralls_Design.png?v=1790690914"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Request-1_4649a983-c1c8-4d04-b103-a717a4020975.png?v=1790690916"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -1090,7 +1097,7 @@
    "pocket_claims": "7",
    "price_max": 159.0,
    "price_min": 159.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Photography_Enhancement.png?v=1790690916",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/cf4.jpg?v=1793796441",
    "product_id": "15347013517423",
    "readiness": "ready",
    "status": "active",
@@ -1307,18 +1314,18 @@
    "handle": "corduroy-swoveralls-bordeaux",
    "image_count": 13,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageUpdateRequest-2.png?v=1792367302",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/n2_b8c26382-07d0-4c7a-82bf-460f4bd5b24f.jpg?v=1793795649",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/bordeaux_flatlay.jpg?v=1793800260",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Fabric_Swatch_Design.jpg?v=1790867037",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageUpdateRequest-1.png?v=1792367302",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageUpdateRequest-2.png?v=1792367302",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/CorduroySwoverallsUpdate.png?v=1792367302",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Overall_Flatlay_Photography.jpg?v=1790867036",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageUpdateRequest-1.png?v=1792367302",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Corduroy-Swoveralls-Bordeaux-PDP-3.png?v=1792348268",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Corduroy-Swoveralls-Bordeaux-PDP-4-clean.png?v=1792348378",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwoverallsUpdate.png?v=1792367061",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Overall_Flatlay_Photography_1.jpg?v=1790867036",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Fabric_Replacement.jpg?v=1790867036",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/13_53449bbd-5771-4631-8070-209e0ef7995b.png?v=1763865041",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwoverallsUpdate.png?v=1792367061",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/13_53449bbd-5771-4631-8070-209e0ef7995b.png?v=1763865041",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
    "in_stock": true,
@@ -1332,7 +1339,7 @@
    "pocket_claims": "",
    "price_max": 129.0,
    "price_min": 129.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageUpdateRequest-2.png?v=1792367302",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/n2_b8c26382-07d0-4c7a-82bf-460f4bd5b24f.jpg?v=1793795649",
    "product_id": "15347005489263",
    "readiness": "ready",
    "status": "active",
@@ -1514,7 +1521,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 10
+      "count": 12
      }
     },
     "materials": {
@@ -1549,13 +1556,15 @@
     "new"
    ],
    "handle": "corduroy-swoveralls-forest-green-1",
-   "image_count": 10,
+   "image_count": 12,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_2_6d27bc91-e359-4628-a65c-5d512c507ca7.png?v=1763054840",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/n1_cd6e231c-f0ab-4a52-bd63-1382e42a31fc.jpg?v=1793795700",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/f_cordfg.jpg?v=1793799550",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Corduroy-Swoveralls-forest-green-fabric.jpg?v=1792349072",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_fedd546c-0636-4042-bb0b-ce6199d5f5f7.png?v=1763054840",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/11_579b65bd-5a54-43ee-8f88-b5d35bea3c59.png?v=1763054840",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_2_6d27bc91-e359-4628-a65c-5d512c507ca7.png?v=1763054840",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_3_d8f42ff9-0bff-4d31-bbf1-ed8b20a01b2b.png?v=1763054840",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/11_579b65bd-5a54-43ee-8f88-b5d35bea3c59.png?v=1763054840",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_fedd546c-0636-4042-bb0b-ce6199d5f5f7.png?v=1763054840",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/12_fe18e744-7350-4d3f-a6f9-8de00d9969bd.png?v=1763054840",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/cord-collection-duo-v2.jpg?v=1792367129",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
@@ -1573,7 +1582,7 @@
    "pocket_claims": "",
    "price_max": 129.0,
    "price_min": 129.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_2_6d27bc91-e359-4628-a65c-5d512c507ca7.png?v=1763054840",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/n1_cd6e231c-f0ab-4a52-bd63-1382e42a31fc.jpg?v=1793795700",
    "product_id": "15347005325423",
    "readiness": "ready",
    "status": "active",
@@ -1764,7 +1773,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 4
+      "count": 5
      }
     },
     "materials": {
@@ -1794,8 +1803,9 @@
     "new"
    ],
    "handle": "grid-fleece-swoveralls-glacier-navy",
-   "image_count": 4,
+   "image_count": 5,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g20_92cd85c1-e956-4752-bedb-670b9556bb0f.jpg?v=1793795631",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageUpdateRequest_02d18e88-4cc5-4d64-87ff-ae472e33f811.png?v=1790696129",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ColorUpdateFabric.png?v=1790696130",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ColorUpdateRequest.png?v=1790696129",
@@ -1812,7 +1822,7 @@
    "pocket_claims": "",
    "price_max": 129.0,
    "price_min": 129.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageUpdateRequest_02d18e88-4cc5-4d64-87ff-ae472e33f811.png?v=1790696129",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g20_92cd85c1-e956-4752-bedb-670b9556bb0f.jpg?v=1793795631",
    "product_id": "15347005816943",
    "readiness": "ready",
    "status": "active",
@@ -1999,7 +2009,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 5
+      "count": 6
      }
     },
     "materials": {
@@ -2029,8 +2039,9 @@
     "new"
    ],
    "handle": "grid-fleece-swoveralls-moss",
-   "image_count": 5,
+   "image_count": 6,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/n3_174a3d7c-688b-4d23-98c8-5246ae10c2c7.jpg?v=1793795705",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/AspectRatioUpdate-2.png?v=1790696129",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/AspectRatioUpdate-1.png?v=1790696129",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageUpdateRequest_10.png?v=1791801865",
@@ -2048,7 +2059,7 @@
    "pocket_claims": "",
    "price_max": 129.0,
    "price_min": 129.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/AspectRatioUpdate-2.png?v=1790696129",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/n3_174a3d7c-688b-4d23-98c8-5246ae10c2c7.jpg?v=1793795705",
    "product_id": "15347005915247",
    "readiness": "ready",
    "status": "active",
@@ -2231,7 +2242,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 4
+      "count": 6
      }
     },
     "materials": {
@@ -2275,9 +2286,11 @@
     "new"
    ],
    "handle": "kids-swoveralls-forest-green-1",
-   "image_count": 4,
+   "image_count": 6,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/k1.jpg?v=1793796471",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Overalls_Design.png?v=1785442917",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_fg_d320b097-02e3-4dcd-a4c7-d1d8a53295c8.jpg?v=1793799507",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Label_Removal_Only_3.jpg?v=1785442918",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Match_Background_Color.png?v=1785442918",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/y10-green_tag.jpg?v=1630373487"
@@ -2291,14 +2304,13 @@
    "pocket_claims": "5",
    "price_max": 49.0,
    "price_min": 49.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Overalls_Design.png?v=1785442917",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/k1.jpg?v=1793796471",
    "product_id": "15114943692911",
    "readiness": "ready",
    "status": "active",
    "tags": [
     "Active",
     "All",
-    "badge_KIDS",
     "color-family:GREEN",
     "final sale",
     "FW22",
@@ -2449,7 +2461,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 4
+      "count": 6
      }
     },
     "materials": {
@@ -2476,13 +2488,14 @@
    "family": "Kids Swoveralls",
    "flags": [
     "limited_edition",
-    "new",
     "on_sale"
    ],
    "handle": "kids-swoveralls-gooble-search",
-   "image_count": 4,
+   "image_count": 6,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g37.jpg?v=1793794291",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/GooBleSearchFront.jpg?v=1783626521",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Swoveralls_Fabric_Detail_4b31f4f0-9c62-4059-9a66-66a923188fc2.png?v=1793799503",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Request-1.png?v=1785440885",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Swoveralls_Close-Up.png?v=1785440885",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Swoveralls_Redesign.png?v=1785440885"
@@ -2498,7 +2511,7 @@
    "pocket_claims": "",
    "price_max": 43.99,
    "price_min": 43.99,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/GooBleSearchFront.jpg?v=1783626521",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g37.jpg?v=1793794291",
    "product_id": "15114936909935",
    "readiness": "ready",
    "status": "active",
@@ -2506,14 +2519,12 @@
     "Active",
     "ag-ygg",
     "All",
-    "badge_KIDS",
     "color-family:",
     "color-family:YELLOW",
     "full price",
     "igg26_fashion_forward",
     "InventoryCheck",
     "LimitedSW",
-    "New",
     "Shop",
     "size_guide_kids",
     "swatch_group_swoveralls",
@@ -2655,7 +2666,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 5
+      "count": 6
      }
     },
     "materials": {
@@ -2682,15 +2693,15 @@
    "family": "Kids Swoveralls",
    "flags": [
     "limited_edition",
-    "new",
     "on_sale"
    ],
    "handle": "kids-swoveralls-kammy-kubes",
-   "image_count": 5,
+   "image_count": 6,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g38_67d9a12e-1411-4884-88aa-42e8a02c7105.jpg?v=1793795711",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/KammyKubesFront.jpg?v=1783626521",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Flat_Lay_Pants.png?v=1785440890",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Fabric_Close-Up.png?v=1785440890",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Flat_Lay_Pants.png?v=1785440890",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Swoveralls_Close-up_a6590ddd-4535-4053-8180-45a4532f07d9.png?v=1785440890",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Request_6529d6b4-4b46-4a1a-8713-58c318fc3dfd.png?v=1785440890"
    ],
@@ -2705,7 +2716,7 @@
    "pocket_claims": "",
    "price_max": 43.99,
    "price_min": 43.99,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/KammyKubesFront.jpg?v=1783626521",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g38_67d9a12e-1411-4884-88aa-42e8a02c7105.jpg?v=1793795711",
    "product_id": "15114939498607",
    "readiness": "ready",
    "status": "active",
@@ -2713,14 +2724,12 @@
     "Active",
     "ag-ygg",
     "All",
-    "badge_KIDS",
     "color-family:",
     "color-family:YELLOW",
     "full price",
     "igg26_fashion_forward",
     "InventoryCheck",
     "LimitedSW",
-    "New",
     "Shop",
     "size_guide_kids",
     "swatch_group_swoveralls",
@@ -2863,7 +2872,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 4
+      "count": 6
      }
     },
     "materials": {
@@ -2903,9 +2912,11 @@
     "new"
    ],
    "handle": "kids-swoveralls-light-heather-grey-1",
-   "image_count": 4,
+   "image_count": 6,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/k2.jpg?v=1793796475",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Overalls_Redesign-2.png?v=1785442917",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricTextureDesign_8647408f-5399-4b8f-a6b5-dff23fb6b706.jpg?v=1793799512",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Label_Removal_Only_4.jpg?v=1785442918",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Color_Matching.png?v=1785442918",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/light-grey_tag_67426d85-37ea-445a-be06-d1c4ff4bb305.jpg?v=1724408393"
@@ -2919,14 +2930,13 @@
    "pocket_claims": "5",
    "price_max": 49.0,
    "price_min": 49.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Overalls_Redesign-2.png?v=1785442917",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/k2.jpg?v=1793796475",
    "product_id": "15114946510959",
    "readiness": "ready",
    "status": "active",
    "tags": [
     "Active",
     "All",
-    "badge_KIDS",
     "color-family:GREY",
     "final sale",
     "FW22",
@@ -3078,7 +3088,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 4
+      "count": 6
      }
     },
     "materials": {
@@ -3118,9 +3128,11 @@
     "new"
    ],
    "handle": "kids-swoveralls-midnight-black-1",
-   "image_count": 4,
+   "image_count": 6,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/k4.jpg?v=1793796485",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_d8202094-28c6-4d2d-a938-2716b61e8283.png?v=1785442917",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricColorUpdate_1_b3244ca9-0965-4923-a745-31a50a419b4f.jpg?v=1793799522",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Label_Removal_Only_2.jpg?v=1785442916",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Background_Color_Change-1.png?v=1785442918",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/black_tag.jpg?v=1724407351"
@@ -3134,14 +3146,13 @@
    "pocket_claims": "5",
    "price_max": 49.0,
    "price_min": 49.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_d8202094-28c6-4d2d-a938-2716b61e8283.png?v=1785442917",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/k4.jpg?v=1793796485",
    "product_id": "15114948771951",
    "readiness": "ready",
    "status": "active",
    "tags": [
     "Active",
     "All",
-    "badge_KIDS",
     "color-family:BLACK",
     "final sale",
     "FW22",
@@ -3291,7 +3302,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 4
+      "count": 6
      }
     },
     "materials": {
@@ -3331,9 +3342,11 @@
     "new"
    ],
    "handle": "kids-swoveralls-navy-1",
-   "image_count": 4,
+   "image_count": 6,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/k3.jpg?v=1793796481",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Overalls_Redesign-1.png?v=1785442916",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_navy_5302d03a-8a3a-45f3-9e0b-c7e909181439.jpg?v=1793799517",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Label_Removal_Only_1.jpg?v=1785442917",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Background_Color_Change-2.png?v=1785442918",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/navy-rib_tag_0ce91877-74af-4a38-b919-043f59533eb1.jpg?v=1686592355"
@@ -3347,14 +3360,13 @@
    "pocket_claims": "5",
    "price_max": 49.0,
    "price_min": 49.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Overalls_Redesign-1.png?v=1785442916",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/k3.jpg?v=1793796481",
    "product_id": "15114947264623",
    "readiness": "ready",
    "status": "active",
    "tags": [
     "Active",
     "All",
-    "badge_KIDS",
     "color-family:BLUE",
     "final sale",
     "FW22",
@@ -3549,16 +3561,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 2
+      "count": 4
      }
     }
    },
    "family": "Sidekick Crew - Dancing Skeletons",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "sidekick-crew-dancing-skeletons-fog-grey",
-   "image_count": 2,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c4.jpg?v=1793795362",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/skeleton_gray_front.png?v=1788883456",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_crew_fog_7a419dd5-aa09-4a84-b84b-5142ec51bf59.jpg?v=1793799605",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/skeleton_gray_back.png?v=1788883456"
    ],
    "in_stock": true,
@@ -3573,15 +3589,17 @@
    "pocket_claims": "",
    "price_max": 50.0,
    "price_min": 50.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/skeleton_gray_front.png?v=1788883456",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c4.jpg?v=1793795362",
    "product_id": "15462441025647",
    "readiness": "inactive",
    "status": "inactive",
    "tags": [
+    "badge_NEW",
     "Coastal Colors",
     "DPS Custom",
     "FW26",
     "igg26_fashion_forward",
+    "New",
     "POD",
     "sidekick"
    ],
@@ -3720,16 +3738,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 2
+      "count": 4
      }
     }
    },
    "family": "Sidekick Crew - Dancing Skeletons",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "sidekick-crew-dancing-skeletons-salt-navy",
-   "image_count": 2,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c2.jpg?v=1793795353",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Skeleton_navy-front.png?v=1788883455",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_crew_saltnavy.jpg?v=1793799591",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Skeleton_navy-back.png?v=1788883456"
    ],
    "in_stock": true,
@@ -3744,15 +3766,17 @@
    "pocket_claims": "",
    "price_max": 50.0,
    "price_min": 50.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Skeleton_navy-front.png?v=1788883455",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c2.jpg?v=1793795353",
    "product_id": "15462440927343",
    "readiness": "inactive",
    "status": "inactive",
    "tags": [
+    "badge_NEW",
     "Coastal Colors",
     "DPS Custom",
     "FW26",
     "igg26_fashion_forward",
+    "New",
     "POD",
     "sidekick"
    ],
@@ -3873,16 +3897,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 2
+      "count": 4
      }
     }
    },
    "family": "Sidekick Crew - Free The Waistband",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "sidekick-crew-free-the-waistband-fog-grey",
-   "image_count": 2,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c3.jpg?v=1793795357",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FTW_gray_front.png?v=1788883455",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_crew_fog.jpg?v=1793799601",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FTW_gray_back.png?v=1788883456"
    ],
    "in_stock": true,
@@ -3897,15 +3925,17 @@
    "pocket_claims": "",
    "price_max": 50.0,
    "price_min": 50.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FTW_gray_front.png?v=1788883455",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c3.jpg?v=1793795357",
    "product_id": "15462440992879",
    "readiness": "inactive",
    "status": "inactive",
    "tags": [
+    "badge_NEW",
     "Coastal Colors",
     "DPS Custom",
     "FW26",
     "igg26_fashion_forward",
+    "New",
     "POD",
     "sidekick"
    ],
@@ -4044,16 +4074,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 2
+      "count": 4
      }
     }
    },
    "family": "Sidekick Crew - Swoveralls",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "sidekick-crew-swoveralls-cloud-cream",
-   "image_count": 2,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c0.jpg?v=1793795343",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Swoveralls_Cream_Front.png?v=1788883357",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_crew_cream.jpg?v=1793799581",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Swoveralls_Cream_back.png?v=1788883357"
    ],
    "in_stock": true,
@@ -4068,15 +4102,17 @@
    "pocket_claims": "",
    "price_max": 50.0,
    "price_min": 50.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Swoveralls_Cream_Front.png?v=1788883357",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c0.jpg?v=1793795343",
    "product_id": "15462440829039",
    "readiness": "inactive",
    "status": "inactive",
    "tags": [
+    "badge_NEW",
     "Coastal Colors",
     "DPS Custom",
     "FW26",
     "igg26_fashion_forward",
+    "New",
     "POD",
     "sidekick"
    ],
@@ -4197,16 +4233,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 2
+      "count": 4
      }
     }
    },
    "family": "Sidekick Crew - Swoveralls",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "sidekick-crew-swoveralls-olive-branch",
-   "image_count": 2,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c1.jpg?v=1793795348",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Swoveralls_Olive_front.png?v=1788883430",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_crew_olive.jpg?v=1793799586",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Swoveralls_Olive_back.png?v=1788883430"
    ],
    "in_stock": true,
@@ -4221,15 +4261,17 @@
    "pocket_claims": "",
    "price_max": 50.0,
    "price_min": 50.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Swoveralls_Olive_front.png?v=1788883430",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c1.jpg?v=1793795348",
    "product_id": "15462440861807",
    "readiness": "inactive",
    "status": "inactive",
    "tags": [
+    "badge_NEW",
     "Coastal Colors",
     "DPS Custom",
     "FW26",
     "igg26_fashion_forward",
+    "New",
     "POD",
     "sidekick"
    ],
@@ -4350,16 +4392,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 2
+      "count": 4
      }
     }
    },
    "family": "Sidekick Crew - Trash Panda",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "sidekick-crew-trash-panda-fog-grey",
-   "image_count": 2,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c5.jpg?v=1793795366",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/TP_gray_front.png?v=1788883430",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_crew_fog_5e132365-5c18-4ddb-8913-7b20ffa1ec0b.jpg?v=1793799610",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/TP_gray_back.png?v=1788883430"
    ],
    "in_stock": true,
@@ -4374,15 +4420,17 @@
    "pocket_claims": "",
    "price_max": 50.0,
    "price_min": 50.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/TP_gray_front.png?v=1788883430",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c5.jpg?v=1793795366",
    "product_id": "15462441058415",
    "readiness": "inactive",
    "status": "inactive",
    "tags": [
+    "badge_NEW",
     "Coastal Colors",
     "DPS Custom",
     "FW26",
     "igg26_fashion_forward",
+    "New",
     "POD",
     "sidekick"
    ],
@@ -4521,16 +4569,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 2
+      "count": 4
      }
     }
    },
    "family": "Sidekick Crew - Trash Panda",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "sidekick-crew-trash-panda-salt-navy",
-   "image_count": 2,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c12.jpg?v=1793795399",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/TP_Navy_front.png?v=1788883430",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_crew_saltnavy_413a2ee8-e562-4b62-8eae-0fb97f6bc029.jpg?v=1793799596",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/TP_Navy_back.png?v=1788883430"
    ],
    "in_stock": true,
@@ -4545,15 +4597,17 @@
    "pocket_claims": "",
    "price_max": 50.0,
    "price_min": 50.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/TP_Navy_front.png?v=1788883430",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c12.jpg?v=1793795399",
    "product_id": "15462440960111",
    "readiness": "inactive",
    "status": "inactive",
    "tags": [
+    "badge_NEW",
     "Coastal Colors",
     "DPS Custom",
     "FW26",
     "igg26_fashion_forward",
+    "New",
     "POD",
     "sidekick"
    ],
@@ -4674,16 +4728,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 2
+      "count": 4
      }
     }
    },
    "family": "Sidekick Tee - Dancing Skeletons",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "sidekick-tee-dancing-skeletons-ash-black",
-   "image_count": 2,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c10.jpg?v=1793795389",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/skeletons_black_tee_front.png?v=1788883452",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_tee_ash_2051b459-7061-4922-966e-234ba2f5a41b.jpg?v=1793799642",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/skeletons_black_tee_back.png?v=1788883455"
    ],
    "in_stock": true,
@@ -4698,17 +4756,19 @@
    "pocket_claims": "",
    "price_max": 25.0,
    "price_min": 25.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/skeletons_black_tee_front.png?v=1788883452",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c10.jpg?v=1793795389",
    "product_id": "15462441320559",
    "readiness": "ready",
    "status": "active",
    "tags": [
     "Active",
     "all",
+    "badge_NEW",
     "Coastal Colors",
     "DPS Custom",
     "FW26",
     "igg26_fashion_forward",
+    "New",
     "POD",
     "sidekick"
    ],
@@ -4847,16 +4907,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 2
+      "count": 4
      }
     }
    },
    "family": "Sidekick Tee - Dancing Skeletons",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "sidekick-tee-dancing-skeletons-salt-navy",
-   "image_count": 2,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c7.jpg?v=1793795376",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/skeleton_navy_tee_front.png?v=1788883452",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_tee_saltnavy_b8899199-8dcc-4173-9418-fc1a122893d5.jpg?v=1793799620",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/skeleton_navy_tee_back.png?v=1788883454"
    ],
    "in_stock": true,
@@ -4871,17 +4935,19 @@
    "pocket_claims": "",
    "price_max": 25.0,
    "price_min": 25.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/skeleton_navy_tee_front.png?v=1788883452",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c7.jpg?v=1793795376",
    "product_id": "15462441123951",
    "readiness": "ready",
    "status": "active",
    "tags": [
     "Active",
     "all",
+    "badge_NEW",
     "Coastal Colors",
     "DPS Custom",
     "FW26",
     "igg26_fashion_forward",
+    "New",
     "POD",
     "sidekick"
    ],
@@ -5002,16 +5068,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 2
+      "count": 4
      }
     }
    },
    "family": "Sidekick Tee - Good at Naps",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "sidekick-tee-good-at-naps-salt-navy",
-   "image_count": 2,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c6.jpg?v=1793795371",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/GAN_navy_tee_front.png?v=1788883452",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_tee_saltnavy_88be50b7-5fc8-449b-a5ac-3a88b35ec36f.jpg?v=1793799616",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/GAN-Navy_tee_back.png?v=1788883455"
    ],
    "in_stock": true,
@@ -5026,17 +5096,19 @@
    "pocket_claims": "",
    "price_max": 25.0,
    "price_min": 25.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/GAN_navy_tee_front.png?v=1788883452",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c6.jpg?v=1793795371",
    "product_id": "15462441091183",
    "readiness": "ready",
    "status": "active",
    "tags": [
     "Active",
     "all",
+    "badge_NEW",
     "Coastal Colors",
     "DPS Custom",
     "FW26",
     "igg26_fashion_forward",
+    "New",
     "POD",
     "sidekick"
    ],
@@ -5157,16 +5229,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 2
+      "count": 4
      }
     }
    },
    "family": "Sidekick Tee - Jimothy",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "sidekick-tee-jimothy-salt-navy",
-   "image_count": 2,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c8.jpg?v=1793795380",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/TP_navy_tee_front.png?v=1788883429",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_tee_saltnavy_9c51dc90-d800-4443-bab9-21c0793e4815.jpg?v=1793799625",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/TP_navy_tee_back.png?v=1788883429"
    ],
    "in_stock": true,
@@ -5181,17 +5257,19 @@
    "pocket_claims": "",
    "price_max": 25.0,
    "price_min": 25.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/TP_navy_tee_front.png?v=1788883429",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c8.jpg?v=1793795380",
    "product_id": "15462441156719",
    "readiness": "ready",
    "status": "active",
    "tags": [
     "Active",
     "all",
+    "badge_NEW",
     "Coastal Colors",
     "DPS Custom",
     "FW26",
     "igg26_fashion_forward",
+    "New",
     "POD",
     "sidekick"
    ],
@@ -5312,16 +5390,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 2
+      "count": 4
      }
     }
    },
    "family": "Sidekick Tee - Swoveralls",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "sidekick-tee-swoveralls-ash-black",
-   "image_count": 2,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c9.jpg?v=1793795385",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/swoveralls_black_tee_front.png?v=1788883451",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_tee_ash.jpg?v=1793799635",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/swoveralls_black_tee_back.png?v=1788883454"
    ],
    "in_stock": true,
@@ -5336,17 +5418,19 @@
    "pocket_claims": "",
    "price_max": 25.0,
    "price_min": 25.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/swoveralls_black_tee_front.png?v=1788883451",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c9.jpg?v=1793795385",
    "product_id": "15462441287791",
    "readiness": "ready",
    "status": "active",
    "tags": [
     "Active",
     "all",
+    "badge_NEW",
     "Coastal Colors",
     "DPS Custom",
     "FW26",
     "igg26_fashion_forward",
+    "New",
     "POD",
     "sidekick"
    ],
@@ -5485,16 +5569,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 2
+      "count": 4
      }
     }
    },
    "family": "Sidekick Tee - Swoveralls",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "sidekick-tee-swoveralls-crystal-blue",
-   "image_count": 2,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c13.jpg?v=1793795404",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/swoveralls_blue_tee_front.png?v=1788883449",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_tee_crystal.jpg?v=1793799630",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/swoveralls_blue_tee_back.png?v=1788883450"
    ],
    "in_stock": true,
@@ -5509,17 +5597,19 @@
    "pocket_claims": "",
    "price_max": 25.0,
    "price_min": 25.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/swoveralls_blue_tee_front.png?v=1788883449",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c13.jpg?v=1793795404",
    "product_id": "15462441189487",
    "readiness": "ready",
    "status": "active",
    "tags": [
     "Active",
     "all",
+    "badge_NEW",
     "Coastal Colors",
     "DPS Custom",
     "FW26",
     "igg26_fashion_forward",
+    "New",
     "POD",
     "sidekick"
    ],
@@ -5640,16 +5730,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 2
+      "count": 4
      }
     }
    },
    "family": "Sidekick Tee - Trash Panda",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "sidekick-tee-trash-panda-ash-black",
-   "image_count": 2,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c11.jpg?v=1793795394",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/TP_black_tee_front.png?v=1788883429",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_tee_ash_1b6d8f80-bd1d-47ba-9336-ca8e6564dca9.jpg?v=1793799645",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/TP_black_tee_back.png?v=1788883430"
    ],
    "in_stock": true,
@@ -5664,17 +5758,19 @@
    "pocket_claims": "",
    "price_max": 25.0,
    "price_min": 25.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/TP_black_tee_front.png?v=1788883429",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c11.jpg?v=1793795394",
    "product_id": "15462441353327",
    "readiness": "ready",
    "status": "active",
    "tags": [
     "Active",
     "all",
+    "badge_NEW",
     "Coastal Colors",
     "DPS Custom",
     "FW26",
     "igg26_fashion_forward",
+    "New",
     "POD",
     "sidekick"
    ],
@@ -5859,14 +5955,14 @@
    "image_count": 9,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image19.jpg?v=1780965220",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricTextureClose-Up.png?v=1780923373",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwoverallsEdit.png?v=1780923374",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricTextureClose-Up.png?v=1780923373",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FlatLayImage.png?v=1780923373",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/PatternReplacementRequest.png?v=1780923373",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Close-upBuckleShot.png?v=1780923373",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/DressUpdateRequest.png?v=1780923373",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Value_Props.png?v=1778533284"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Value_Props.png?v=1778533284",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -6064,7 +6160,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 6
+      "count": 7
      }
     },
     "materials": {
@@ -6094,8 +6190,9 @@
     "new"
    ],
    "handle": "swoveralls-black-white-stripes",
-   "image_count": 6,
+   "image_count": 7,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g17.jpg?v=1793794268",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Black_WhiteStripesFront.jpg?v=1783626521",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Fabric_Close-Up_8c5994ee-bd67-434a-9c5a-123cec689d00.png?v=1788481863",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Close-up_Design_Shot.png?v=1788481863",
@@ -6114,7 +6211,7 @@
    "pocket_claims": "",
    "price_max": 120.0,
    "price_min": 120.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Black_WhiteStripesFront.jpg?v=1783626521",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g17.jpg?v=1793794268",
    "product_id": "15346069864559",
    "readiness": "ready",
    "status": "active",
@@ -6302,7 +6399,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 7
+      "count": 8
      }
     },
     "materials": {
@@ -6332,15 +6429,16 @@
     "new"
    ],
    "handle": "swoveralls-boobies",
-   "image_count": 7,
+   "image_count": 8,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ElissaSwoveralls_09172026-0614.jpg?v=1790103016",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/f_boob.jpg?v=1793799544",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Fabric_Details_Shot.png?v=1790186216",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ElissaSwoveralls_09172026-0497.jpg?v=1790103016",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ElissaSwoveralls_09172026-0592.jpg?v=1790103016",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Request-2_4c7e7ae3-f427-47e2-9f41-b197dc3be33f.png?v=1790186162",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ElissaSwoveralls_09172026-0497.jpg?v=1790103016",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ElissaSwoveralls_09172026-0373.jpg?v=1790103016",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ElissaSwoveralls_09172026-0365.jpg?v=1790103016"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ElissaSwoveralls_09172026-0365.jpg?v=1790103016",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Request-2_4c7e7ae3-f427-47e2-9f41-b197dc3be33f.png?v=1790186162"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -6541,7 +6639,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 6
+      "count": 7
      }
     },
     "materials": {
@@ -6571,8 +6669,9 @@
     "new"
    ],
    "handle": "swoveralls-buffalo-plaid",
-   "image_count": 6,
+   "image_count": 7,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g14_cedbcfee-7c8f-41af-8434-3f6f74fa9824.jpg?v=1793795613",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/BuffaloPlaidFront.jpg?v=1783626521",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Fabric_Close-Up_508873ef-c3f1-42dc-977c-f81527b7eacc.png?v=1788481874",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Flat_Lay_Image.png?v=1788481874",
@@ -6591,7 +6690,7 @@
    "pocket_claims": "",
    "price_max": 120.0,
    "price_min": 120.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/BuffaloPlaidFront.jpg?v=1783626521",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g14_cedbcfee-7c8f-41af-8434-3f6f74fa9824.jpg?v=1793795613",
    "product_id": "15345957273711",
    "readiness": "ready",
    "status": "active",
@@ -6778,7 +6877,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 6
+      "count": 7
      }
     },
     "materials": {
@@ -6807,8 +6906,9 @@
     "limited_edition"
    ],
    "handle": "swoveralls-campfire",
-   "image_count": 6,
+   "image_count": 7,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g11_b6119fe8-05f0-41ff-905e-7b74f64f8666.jpg?v=1793795593",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwoverallsStyling1_2b706b75-5291-4421-aadd-0b925d628100.jpg?v=1781899383",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricClose-Up.png?v=1781899383",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Close-UpDetails.png?v=1781899383",
@@ -6827,7 +6927,7 @@
    "pocket_claims": "",
    "price_max": 120.0,
    "price_min": 120.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwoverallsStyling1_2b706b75-5291-4421-aadd-0b925d628100.jpg?v=1781899383",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g11_b6119fe8-05f0-41ff-905e-7b74f64f8666.jpg?v=1793795593",
    "product_id": "15023021490287",
    "readiness": "ready",
    "status": "active",
@@ -7012,7 +7112,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 13
+      "count": 14
      }
     },
     "materials": {
@@ -7042,18 +7142,19 @@
     "new"
    ],
    "handle": "swoveralls-cosmic",
-   "image_count": 13,
+   "image_count": 14,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_2.png?v=1754350960",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/f_cosmic.jpg?v=1793799527",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/3_b0d42cc0-ca17-4dac-9139-f5fbc7484464.png?v=1754350960",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_4.png?v=1753787109",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_5.png?v=1753787109",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_3.png?v=1753787109",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_0d68105a-7ee4-41a0-99cd-ea45991809e8.png?v=1754350960",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2_b77e68c8-329e-4882-843f-8ec3fd25c557.png?v=1754350960",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/11_d72ad929-d1bb-4d78-9cfd-f920cad7af72.png?v=1754350960",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/9_96303414-c085-4841-9729-6fa51f003124.png?v=1754350960",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_6.png?v=1754350960",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_3.png?v=1753787109",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_4.png?v=1753787109",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_5.png?v=1753787109",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_7.png?v=1753787109",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
@@ -7183,7 +7284,7 @@
      "title": "2XL / Cosmic"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753225576559,
      "options": [
@@ -7254,7 +7355,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 12
+      "count": 13
      }
     },
     "materials": {
@@ -7284,20 +7385,21 @@
     "new"
    ],
    "handle": "swoveralls-dancing-skeletons",
-   "image_count": 12,
+   "image_count": 13,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_6_5622adfc-9181-4ce0-a088-1bc9d66f3f7a.png?v=1756140244",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/f_skel.jpg?v=1793799536",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2_a7a4928f-7e1f-4db3-8f7b-530ad6634c2c.png?v=1756140244",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_2_ac1e5192-5482-4a59-9e95-8331ff0c02de.png?v=1756140244",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_7_9a8d2fb5-ad4c-46ce-ba34-934776b9c5d8.png?v=1756140244",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/9_b1506b9c-1050-47c0-96a0-f25bfa325101.png?v=1756140244",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_3_a10bf43d-f73f-469a-80e2-639fee78d82e.png?v=1756140244",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_4_b5070278-a960-4b6e-abdc-3e6d73c241ee.png?v=1756140244",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_5_1a003919-3d93-4487-9d76-7cbb102a9eb7.png?v=1756140244",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_2_ac1e5192-5482-4a59-9e95-8331ff0c02de.png?v=1756140244",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_7_9a8d2fb5-ad4c-46ce-ba34-934776b9c5d8.png?v=1756140244",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/9_b1506b9c-1050-47c0-96a0-f25bfa325101.png?v=1756140244",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_8.png?v=1756140190",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025_Enhanced_PDP_PLP_Image_Size_Revisions_1.png?v=1770085764"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025_Enhanced_PDP_PLP_Image_Size_Revisions_1.png?v=1770085764",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -7535,6 +7637,7 @@
    "image_count": 10,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwagBraReplacement.jpg?v=1780854121",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/gen-m1786bx3j7cvptywpqjkhy93x18hfvet-0.jpg?v=1793651380",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricColorUpdate.jpg?v=1780856035",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/9_6ab42e2a-8ea3-44c5-a1b6-0ea7d2fb70fc.png?v=1763865041",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/10_bef4644b-9ebf-4825-a985-1d0863a0e73d.png?v=1763865041",
@@ -7542,8 +7645,7 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/11_ddaedfee-308a-49e6-943f-3530d8b10421.png?v=1763865041",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/13_53449bbd-5771-4631-8070-209e0ef7995b.png?v=1763865041",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/gen-m1786bx3j7cvptywpqjkhy93x18hfvet-0.jpg?v=1793651380"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -7778,7 +7880,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 7
+      "count": 8
      }
     },
     "materials": {
@@ -7822,15 +7924,16 @@
     "limited_edition"
    ],
    "handle": "swoveralls-dino-print",
-   "image_count": 7,
+   "image_count": 8,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g6.jpg?v=1793794204",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dinosaur_Print_Extension_1.jpg?v=1780595595",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dinosaur_Fabric_Close-Up.png?v=1780595595",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dinosaur_Bib_Panel.jpg?v=1780595601",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Remove_Button_Design.jpg?v=1780595601",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dino_Print_Close-up.png?v=1780595595",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
    "in_stock": false,
    "ingredients": "",
@@ -7841,7 +7944,7 @@
    "pocket_claims": "6",
    "price_max": 120.0,
    "price_min": 120.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dinosaur_Print_Extension_1.jpg?v=1780595595",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g6.jpg?v=1793794204",
    "product_id": "7215056781423",
    "readiness": "ready",
    "status": "coming_soon",
@@ -8062,7 +8165,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 3
+      "count": 5
      }
     },
     "materials": {
@@ -8098,9 +8201,11 @@
     "new"
    ],
    "handle": "swoveralls-dog-days",
-   "image_count": 3,
+   "image_count": 5,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g8_8f627ebb-6a9d-4fb9-aac6-fcd87f2d8c97.jpg?v=1793795575",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/job-1767309946930-0-0.jpg?v=1767635833",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_dog.jpg?v=1793799487",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FLORA-Image33-4bc502ab.png?v=1767635833",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FLORA-CasualSwoverallsPose-e484bb52.png?v=1767635833"
    ],
@@ -8115,7 +8220,7 @@
    "pocket_claims": "",
    "price_max": 120.0,
    "price_min": 120.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/job-1767309946930-0-0.jpg?v=1767635833",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g8_8f627ebb-6a9d-4fb9-aac6-fcd87f2d8c97.jpg?v=1793795575",
    "product_id": "7969918091375",
    "readiness": "ready",
    "status": "coming_soon",
@@ -8337,7 +8442,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 3
+      "count": 4
      }
     },
     "materials": {
@@ -8367,8 +8472,9 @@
     "new"
    ],
    "handle": "swoveralls-duck-camo-2",
-   "image_count": 3,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g15_8f2ce250-e8c6-4a0b-94ea-37670819b56b.jpg?v=1793795694",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/DuckCamoFront.jpg?v=1783626521",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageUpdateRequest_ae506035-0677-4769-9888-e6375d8ea7b5.png?v=1788482049",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ReferenceImageUpdate.png?v=1788482049"
@@ -8384,7 +8490,7 @@
    "pocket_claims": "",
    "price_max": 120.0,
    "price_min": 120.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/DuckCamoFront.jpg?v=1783626521",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g15_8f2ce250-e8c6-4a0b-94ea-37670819b56b.jpg?v=1793795694",
    "product_id": "15346055970927",
    "readiness": "inactive",
    "status": "inactive",
@@ -8569,7 +8675,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 10
+      "count": 13
      }
     },
     "materials": {
@@ -8606,18 +8712,21 @@
    "family": "Swoveralls",
    "flags": [],
    "handle": "swoveralls-forest-green",
-   "image_count": 10,
+   "image_count": 13,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/BackgroundRemoval.jpg?v=1780855421",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g0.jpg?v=1793794178",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/d0442dac-5cdf-4ca4-bdc4-2ba5140f0ea1.jpg?v=1793651377",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_fg.jpg?v=1793799458",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g1.jpg?v=1793794179",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/29.png?v=1767819869",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/27.png?v=1763689293",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/28.png?v=1763689293",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/29.png?v=1767819869",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/31.png?v=1767819869",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/30.png?v=1767819869",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/32.png?v=1767819869",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/d0442dac-5cdf-4ca4-bdc4-2ba5140f0ea1.jpg?v=1793651377"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/BackgroundRemoval.jpg?v=1780855421"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -8628,7 +8737,7 @@
    "pocket_claims": "6",
    "price_max": 99.0,
    "price_min": 99.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/BackgroundRemoval.jpg?v=1780855421",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g0.jpg?v=1793794178",
    "product_id": "1509945606244",
    "readiness": "ready",
    "status": "active",
@@ -8855,7 +8964,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 4
+      "count": 5
      }
     },
     "materials": {
@@ -8890,8 +8999,9 @@
     "new"
    ],
    "handle": "swoveralls-garden-party",
-   "image_count": 4,
+   "image_count": 5,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g9_e5662f30-528f-4099-90e6-8a5844354156.jpg?v=1793795581",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Resize_Instructions-1.png?v=1775221120",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_28-1.png?v=1775221120",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Aspect_Ratio_Change-3.png?v=1775221120",
@@ -8908,7 +9018,7 @@
    "pocket_claims": "",
    "price_max": 120.0,
    "price_min": 120.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Resize_Instructions-1.png?v=1775221120",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g9_e5662f30-528f-4099-90e6-8a5844354156.jpg?v=1793795581",
    "product_id": "14917967904879",
    "readiness": "ready",
    "status": "coming_soon",
@@ -9130,7 +9240,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 6
+      "count": 7
      }
     },
     "materials": {
@@ -9157,15 +9267,15 @@
    "family": "Swoveralls",
    "flags": [
     "limited_edition",
-    "new",
     "on_sale"
    ],
    "handle": "swoveralls-gooble-search",
-   "image_count": 6,
+   "image_count": 7,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g13_3f807082-dc49-4816-b5c4-8ecdd4cd2d0b.jpg?v=1793795606",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/GooBleSearchFront.jpg?v=1783626521",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Request-2.png?v=1785440885",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Swoveralls_Fabric_Detail.png?v=1785440885",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Request-2.png?v=1785440885",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Request-1.png?v=1785440885",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Swoveralls_Redesign.png?v=1785440885",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Swoveralls_Close-Up.png?v=1785440885"
@@ -9181,7 +9291,7 @@
    "pocket_claims": "",
    "price_max": 89.99,
    "price_min": 89.99,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/GooBleSearchFront.jpg?v=1783626521",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g13_3f807082-dc49-4816-b5c4-8ecdd4cd2d0b.jpg?v=1793795606",
    "product_id": "15114935926895",
    "readiness": "ready",
    "status": "active",
@@ -9189,14 +9299,12 @@
     "Active",
     "ag-ygg",
     "All",
-    "badge_NEW",
     "color-family:",
     "color-family:YELLOW",
     "full price",
     "igg26_fashion_forward",
     "InventoryCheck",
     "LimitedSW",
-    "New",
     "refunnel",
     "Shop",
     "swatch_group_swoveralls",
@@ -9369,7 +9477,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 6
+      "count": 7
      }
     },
     "materials": {
@@ -9396,12 +9504,12 @@
    "family": "Swoveralls",
    "flags": [
     "limited_edition",
-    "new",
     "on_sale"
    ],
    "handle": "swoveralls-kammy-kubes",
-   "image_count": 6,
+   "image_count": 7,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g12_9b069908-de69-4ff8-bbc8-20ff3a509a44.jpg?v=1793795600",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/KammyKubesFront.jpg?v=1783626521",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Fabric_Close-Up.png?v=1785440890",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Flat_Lay_Pants.png?v=1785440890",
@@ -9420,7 +9528,7 @@
    "pocket_claims": "",
    "price_max": 89.99,
    "price_min": 89.99,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/KammyKubesFront.jpg?v=1783626521",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g12_9b069908-de69-4ff8-bbc8-20ff3a509a44.jpg?v=1793795600",
    "product_id": "15114929307759",
    "readiness": "ready",
    "status": "active",
@@ -9428,14 +9536,12 @@
     "Active",
     "ag-ygg",
     "All",
-    "badge_NEW",
     "color-family:",
     "color-family:YELLOW",
     "full price",
     "igg26_fashion_forward",
     "InventoryCheck",
     "LimitedSW",
-    "New",
     "refunnel",
     "Shop",
     "swatch_group_swoveralls",
@@ -9609,7 +9715,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 10
+      "count": 11
      }
     },
     "materials": {
@@ -9646,18 +9752,19 @@
    "family": "Swoveralls",
    "flags": [],
    "handle": "swoveralls-heather-grey",
-   "image_count": 10,
+   "image_count": 11,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/21.png?v=1763054414",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/lhg_model.jpg?v=1793800255",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/gen-m176rqg35mz8dvzws116vsmmmh8hf50e-0.jpg?v=1793651380",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricTextureDesign.jpg?v=1781000354",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/21.png?v=1763054414",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/23.png?v=1763054414",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/22.png?v=1763054414",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/25.png?v=1774190751",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/24.png?v=1763054414",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/23.png?v=1763054414",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/26.png?v=1763054414",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/gen-m176rqg35mz8dvzws116vsmmmh8hf50e-0.jpg?v=1793651380"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -9668,7 +9775,7 @@
    "pocket_claims": "6",
    "price_max": 99.0,
    "price_min": 99.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/21.png?v=1763054414",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/lhg_model.jpg?v=1793800255",
    "product_id": "4429779927151",
    "readiness": "ready",
    "status": "active",
@@ -9894,7 +10001,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 10
+      "count": 12
      }
     },
     "materials": {
@@ -9931,10 +10038,12 @@
    "family": "Swoveralls",
    "flags": [],
    "handle": "swoveralls-midnight-black",
-   "image_count": 10,
+   "image_count": 12,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ModelRemovalRequest.jpg?v=1780855876",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g2.jpg?v=1793794185",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/gen-m17f9z97j9nk9kb1ej4dva5g9s8hek79-0.jpg?v=1793651379",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricColorUpdate_1.jpg?v=1780857535",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g3.jpg?v=1793794186",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/1_3f2f1606-162b-4d15-b8d0-1505c51cc766.png?v=1763734202",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025EnhancedPDP_PLPImageSizeRevisions_3.png?v=1767819895",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/5_bef14919-bfd1-4f53-ab81-7eebcd6822b4.png?v=1767819895",
@@ -9942,7 +10051,7 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025_Enhanced_PDP_PLP_Image_Size_Revisions_1.png?v=1770085764",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/gen-m17f9z97j9nk9kb1ej4dva5g9s8hek79-0.jpg?v=1793651379"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ModelRemovalRequest.jpg?v=1780855876"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -9953,7 +10062,7 @@
    "pocket_claims": "6",
    "price_max": 99.0,
    "price_min": 99.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ModelRemovalRequest.jpg?v=1780855876",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g2.jpg?v=1793794185",
    "product_id": "3223478698084",
    "readiness": "ready",
    "status": "active",
@@ -10180,7 +10289,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 8
+      "count": 9
      }
     }
    },
@@ -10190,11 +10299,12 @@
     "new"
    ],
    "handle": "swoveralls-nasa",
-   "image_count": 8,
+   "image_count": 9,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/Brett_Cass2.jpg?v=1696969755",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/Cass1.jpg?v=1696969755",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/PDPFRONTcopyV2_a780a4f2-a67f-4df3-9aae-4695d3b93c40.jpg?v=1696969755",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_nasa.jpg?v=1793799531",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/Brett_Cass2.jpg?v=1696969755",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/Brett2.jpg?v=1654277274",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/NASA-strap_1.jpg?v=1654277274",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/NASA-tag_1.jpg?v=1654277274",
@@ -10213,7 +10323,7 @@
    "pocket_claims": "",
    "price_max": 120.0,
    "price_min": 120.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/Brett_Cass2.jpg?v=1696969755",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/Cass1.jpg?v=1696969755",
    "product_id": "15345988632687",
    "readiness": "ready",
    "status": "active",
@@ -10400,7 +10510,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 9
+      "count": 10
      }
     },
     "materials": {
@@ -10437,17 +10547,18 @@
    "family": "Swoveralls",
    "flags": [],
    "handle": "swoveralls-navy",
-   "image_count": 9,
+   "image_count": 10,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/AdjustImageFraming.jpg?v=1780854481",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/gen-m176m00yeb4z0c0tr6n88j9c198hfgdw-0.jpg?v=1793651379",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_navy.jpg?v=1793799463",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/14_642e82d1-a4ab-443d-855f-73531f00c597.png?v=1763054402",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/15_cd6cb6d3-b296-4657-b9b8-80643e8f9b26.png?v=1763054402",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/17.png?v=1774190603",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/16_0bc4d53d-b052-47a7-a92b-ff0a7ebfb70f.png?v=1763054402",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/18.png?v=1763054808",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/gen-m176m00yeb4z0c0tr6n88j9c198hfgdw-0.jpg?v=1793651379"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -10684,7 +10795,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 5
+      "count": 6
      }
     },
     "materials": {
@@ -10713,8 +10824,9 @@
     "limited_edition"
    ],
    "handle": "swoveralls-nightshade-plum",
-   "image_count": 5,
+   "image_count": 6,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g10_a2135d12-b4ef-44c2-8859-b95be5ce5e37.jpg?v=1793795587",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwoverallsStyling1_b34cd414-eb75-4d70-b2a1-846fb86e449f.jpg?v=1781899722",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricClose-up_994105f1-a11d-4625-be2b-1631dc8a46cf.png?v=1781899722",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwoverallsPocketDesign.jpg?v=1781899714",
@@ -10732,7 +10844,7 @@
    "pocket_claims": "",
    "price_max": 120.0,
    "price_min": 120.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwoverallsStyling1_b34cd414-eb75-4d70-b2a1-846fb86e449f.jpg?v=1781899722",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g10_a2135d12-b4ef-44c2-8859-b95be5ce5e37.jpg?v=1793795587",
    "product_id": "15022560804975",
    "readiness": "ready",
    "status": "active",
@@ -10917,7 +11029,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 3
+      "count": 4
      }
     },
     "materials": {
@@ -10947,8 +11059,9 @@
     "new"
    ],
    "handle": "swoveralls-otter-romp",
-   "image_count": 3,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g18.jpg?v=1793794274",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/OtterRompFront_08bff144-bc9a-4339-8fd5-31c512105a45.jpg?v=1783644896",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Close-upFabricShot.png?v=1788482304",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025CustomerDesignContestWinnerElizabethBrown.png?v=1789085956"
@@ -10964,7 +11077,7 @@
    "pocket_claims": "",
    "price_max": 120.0,
    "price_min": 120.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/OtterRompFront_08bff144-bc9a-4339-8fd5-31c512105a45.jpg?v=1783644896",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g18.jpg?v=1793794274",
    "product_id": "15346083430511",
    "readiness": "ready",
    "status": "active",
@@ -11152,7 +11265,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 2
+      "count": 4
      }
     },
     "materials": {
@@ -11187,9 +11300,11 @@
     "limited_edition"
    ],
    "handle": "swoveralls-cat",
-   "image_count": 2,
+   "image_count": 4,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g7_8dc9ffa6-865d-4ec7-bc48-ad8024f72f6e.jpg?v=1793795570",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/job-1767304907256-1-0.jpg?v=1767539336",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_cat.jpg?v=1793799482",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FLORA-CatPrintJoggers-db9cd1ed.jpg?v=1767635891"
    ],
    "in_stock": false,
@@ -11203,7 +11318,7 @@
    "pocket_claims": "",
    "price_max": 120.0,
    "price_min": 120.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/job-1767304907256-1-0.jpg?v=1767539336",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g7_8dc9ffa6-865d-4ec7-bc48-ad8024f72f6e.jpg?v=1793795570",
    "product_id": "7969917927535",
    "readiness": "ready",
    "status": "coming_soon",
@@ -11425,7 +11540,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 5
+      "count": 6
      }
     },
     "materials": {
@@ -11455,8 +11570,9 @@
     "new"
    ],
    "handle": "swoveralls-something-90s",
-   "image_count": 5,
+   "image_count": 6,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g16_834b7fd4-b349-4b91-8ef1-678ea7ebccaf.jpg?v=1793795619",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/JammersFront.jpg?v=1783626524",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Textile_Close-Up.png?v=1788481874",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Swoveralls_Redesign-1.png?v=1788481874",
@@ -11474,7 +11590,7 @@
    "pocket_claims": "",
    "price_max": 120.0,
    "price_min": 120.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/JammersFront.jpg?v=1783626524",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g16_834b7fd4-b349-4b91-8ef1-678ea7ebccaf.jpg?v=1793795619",
    "product_id": "15346061738095",
    "readiness": "ready",
    "status": "active",
@@ -11704,14 +11820,14 @@
    "image_count": 9,
    "images": [
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image20.jpg?v=1780965192",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricTextureClose-up_cc79bd23-c074-42c4-9347-dbc473cfe333.png?v=1780923448",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwoverallsPhotoshoot.png?v=1780923409",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricTextureClose-up_cc79bd23-c074-42c4-9347-dbc473cfe333.png?v=1780923448",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FlatLayRedesign.png?v=1780923409",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageUpdateRequest.png?v=1780923409",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/JumpsuitPhotography.png?v=1780923410",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwovieAllsDesign.png?v=1780923409",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Value_Props.png?v=1778533284"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Value_Props.png?v=1778533284",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -11939,16 +12055,16 @@
    "handle": "swoveralls-navy-gold-stripe",
    "image_count": 10,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageUpdateRequest_9.png?v=1791397283",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/StripePrintClose-up.png?v=1780923304",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageModificationRequest2.jpg?v=1780965209",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwoverallsPhotographySetup.png?v=1780923304",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/StripePrintClose-up.png?v=1780923304",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageUpdateRequest_9.png?v=1791397283",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FlatLayDesign.png?v=1780923304",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwovieAllsRedesign.png?v=1780923304",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/OverallPatternChange.png?v=1780923304",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwovieDetailShot.png?v=1780923304",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Value_Props.png?v=1778533284"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Value_Props.png?v=1778533284",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -11961,7 +12077,7 @@
    "pocket_claims": "",
    "price_max": 95.99,
    "price_min": 95.99,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageUpdateRequest_9.png?v=1791397283",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageModificationRequest2.jpg?v=1780965209",
    "product_id": "15023423783023",
    "readiness": "ready",
    "status": "active",
@@ -12146,7 +12262,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 4
+      "count": 5
      }
     },
     "materials": {
@@ -12176,8 +12292,9 @@
     "new"
    ],
    "handle": "swoveralls-trash-pandas",
-   "image_count": 4,
+   "image_count": 5,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g19_da94473f-c398-4604-b993-5e234e644860.jpg?v=1793795625",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/TrashPandasFront.jpg?v=1783626522",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricTextureClose-Up_4510e20b-fa2d-4d0c-b47e-d81cff2b3aad.png?v=1788482146",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Untitleddesign-2026-09-09T123559.982.png?v=1788971770",
@@ -12194,7 +12311,7 @@
    "pocket_claims": "",
    "price_max": 120.0,
    "price_min": 120.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/TrashPandasFront.jpg?v=1783626522",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g19_da94473f-c398-4604-b993-5e234e644860.jpg?v=1793795625",
    "product_id": "15346086379631",
    "readiness": "ready",
    "status": "active",
@@ -12528,7 +12645,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 9
+      "count": 10
      }
     },
     "materials": {
@@ -12564,17 +12681,18 @@
     "new"
    ],
    "handle": "swovie-shorts-color-riot",
-   "image_count": 9,
+   "image_count": 10,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageRequestHumor.jpg?v=1780999697",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/RainbowFabricChange_bea52f5b-74f2-4d2c-a949-68cf68674aeb.jpg?v=1774984702",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/sh4.jpg?v=1793796462",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ColorfulOveralls.jpg?v=1777041136",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/RainbowFabricChange_bea52f5b-74f2-4d2c-a949-68cf68674aeb.jpg?v=1774984702",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageRequestHumor.jpg?v=1780999697",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/RainbowFabricChange_1.jpg?v=1774984702",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ColorChangeRequest_2.jpg?v=1774984702",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageColorChange.jpg?v=1774984702",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Value_Props.png?v=1778533284",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Value_Props.png?v=1778533284"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
    "in_stock": false,
    "ingredients": "",
@@ -12587,7 +12705,7 @@
    "pocket_claims": "",
    "price_max": 99.99,
    "price_min": 99.99,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageRequestHumor.jpg?v=1780999697",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/sh4.jpg?v=1793796462",
    "product_id": "14938100531311",
    "readiness": "ready",
    "status": "coming_soon",
@@ -12808,7 +12926,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 7
+      "count": 8
      }
     },
     "materials": {
@@ -12835,15 +12953,16 @@
    "family": "Swovie Shorts",
    "flags": [],
    "handle": "swovie-shorts-dark-athletic-grey",
-   "image_count": 7,
+   "image_count": 8,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Short_Overalls_Overlay_2026-03-22_10-10.jpg?v=1774190586",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g4.jpg?v=1793794192",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/b6bc8a48-cd1f-4151-b448-2c0f5181fc3d.jpg?v=1793651380",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricColorUpdate.jpg?v=1780856035",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/17-min_7319717e-4822-41c7-ab86-c87ce2a4567a.jpg?v=1774190586",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/18-min_5d8fbba2-7c0c-49a8-8410-c6141ca74ede.jpg?v=1774190586",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/19-min_3565f56e-6dbd-44f0-af60-e1440693edc8.jpg?v=1774190586",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025PDP_PLPImageSizeRevisions_2b3dd24c-17f7-4490-99ad-3d2eae2ae3b0.png?v=1774190625",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/b6bc8a48-cd1f-4151-b448-2c0f5181fc3d.jpg?v=1793651380"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Short_Overalls_Overlay_2026-03-22_10-10.jpg?v=1774190586"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -12856,7 +12975,7 @@
    "pocket_claims": "",
    "price_max": 89.0,
    "price_min": 89.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Short_Overalls_Overlay_2026-03-22_10-10.jpg?v=1774190586",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g4.jpg?v=1793794192",
    "product_id": "4483781623919",
    "readiness": "ready",
    "status": "active",
@@ -13082,7 +13201,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 7
+      "count": 8
      }
     },
     "materials": {
@@ -13109,15 +13228,16 @@
    "family": "Swovie Shorts",
    "flags": [],
    "handle": "swovie-shorts-forest-green",
-   "image_count": 7,
+   "image_count": 8,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Color_Change_Request_2026-03-22_10-10.jpg?v=1774189848",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g5.jpg?v=1793794198",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/566f62f6-8748-4114-ac12-1bcd2698f4dd.jpg?v=1793651381",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Fabric_Texture_Close-up.jpg?v=1781000512",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/29-min_b01a968b-964c-40a2-b2d4-0f422507ee9a.jpg?v=1774189848",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/30-min_d92a3dde-9f3a-4da3-8377-8e5fee7f6baa.jpg?v=1774189848",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/31-min_bc59dc4f-5904-4cd2-9da6-acb4d9ea8ca8.jpg?v=1774189848",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025PDP_PLPImageSizeRevisions.png?v=1774189848",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/566f62f6-8748-4114-ac12-1bcd2698f4dd.jpg?v=1793651381"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Color_Change_Request_2026-03-22_10-10.jpg?v=1774189848"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -13130,7 +13250,7 @@
    "pocket_claims": "",
    "price_max": 89.0,
    "price_min": 89.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Color_Change_Request_2026-03-22_10-10.jpg?v=1774189848",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g5.jpg?v=1793794198",
    "product_id": "7208669970543",
    "readiness": "ready",
    "status": "active",
@@ -13353,7 +13473,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 6
+      "count": 7
      }
     },
     "materials": {
@@ -13388,11 +13508,12 @@
     "new"
    ],
    "handle": "swovie-shorts-garden-party",
-   "image_count": 6,
+   "image_count": 7,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Aspect_Ratio_Change-10.png?v=1775221075",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_28-1.png?v=1775221120",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/sh5.jpg?v=1793796466",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image33.jpg?v=1775221075",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_28-1.png?v=1775221120",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Aspect_Ratio_Change-10.png?v=1775221075",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_22-2.png?v=1775221075",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Aspect_Ratio_Change-8.png?v=1775221075",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Aspect_Ratio_Change-3.png?v=1775221120"
@@ -13408,7 +13529,7 @@
    "pocket_claims": "",
    "price_max": 98.0,
    "price_min": 98.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Aspect_Ratio_Change-10.png?v=1775221075",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/sh5.jpg?v=1793796466",
    "product_id": "14917967970415",
    "readiness": "ready",
    "status": "coming_soon",
@@ -13630,7 +13751,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 9
+      "count": 10
      }
     },
     "materials": {
@@ -13657,17 +13778,18 @@
    "family": "Swovie Shorts",
    "flags": [],
    "handle": "swovie-shorts-light-heather-grey",
-   "image_count": 9,
+   "image_count": 10,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Backdrop_Change_2026-03-22_10-45.jpg?v=1774190751",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/sh3.jpg?v=1793796457",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/10472802-9663-4692-bcde-483bbeeee658.jpg?v=1793651380",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricTextureDesign.jpg?v=1781000354",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/25.png?v=1774190751",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/35.png?v=1774190751",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/36.png?v=1774190751",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/25.png?v=1774190751",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Backdrop_Change_2026-03-22_10-45.jpg?v=1774190751",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/38_8f5534c6-036c-4027-9007-ad6b1e055c90.png?v=1774190751",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/10472802-9663-4692-bcde-483bbeeee658.jpg?v=1793651380"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -13680,7 +13802,7 @@
    "pocket_claims": "",
    "price_max": 89.0,
    "price_min": 89.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Backdrop_Change_2026-03-22_10-45.jpg?v=1774190751",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/sh3.jpg?v=1793796457",
    "product_id": "4483784441967",
    "readiness": "ready",
    "status": "active",
@@ -13906,7 +14028,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 8
+      "count": 9
      }
     },
     "materials": {
@@ -13933,16 +14055,17 @@
    "family": "Swovie Shorts",
    "flags": [],
    "handle": "swovie-shorts-midnight-black",
-   "image_count": 8,
+   "image_count": 9,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Darker_Overalls_Color_2026-03-22_10-41.jpg?v=1774190625",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/sh1.jpg?v=1793796450",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/3fed4188-9731-408c-95eb-6984d8f2a89e.jpg?v=1793651379",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricColorUpdate_1.jpg?v=1780857535",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/SWOVERALLS_080422_FW22_Lifestyle_0642-800x1200-cb6eae5.jpg?v=1774190625",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/13_32c21ef0-f256-43d5-8bab-5cae6781355b.jpg?v=1774190625",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/14_30588be9-79d4-43c1-925e-bff5cf03e827.jpg?v=1774190625",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/SWOVERALLS_080422_FW22_Lifestyle_0642-800x1200-cb6eae5.jpg?v=1774190625",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/15_3634f9b3-c4d1-4d72-8a1e-0a2aa0800253.jpg?v=1774190625",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025PDP_PLPImageSizeRevisions_2b3dd24c-17f7-4490-99ad-3d2eae2ae3b0.png?v=1774190625",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/3fed4188-9731-408c-95eb-6984d8f2a89e.jpg?v=1793651379"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Darker_Overalls_Color_2026-03-22_10-41.jpg?v=1774190625"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -13955,7 +14078,7 @@
    "pocket_claims": "",
    "price_max": 89.0,
    "price_min": 89.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Darker_Overalls_Color_2026-03-22_10-41.jpg?v=1774190625",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/sh1.jpg?v=1793796450",
    "product_id": "4483733913711",
    "readiness": "ready",
    "status": "active",
@@ -14180,7 +14303,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 9
+      "count": 10
      }
     },
     "materials": {
@@ -14207,17 +14330,18 @@
    "family": "Swovie Shorts",
    "flags": [],
    "handle": "swovie-shorts-navy",
-   "image_count": 9,
+   "image_count": 10,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Navy_Overalls_Styling_2026-03-22_10-10.jpg?v=1774190603",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/sh2.jpg?v=1793796455",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c1eee9d7-5bb5-4dbc-ae74-b35376dd0273.jpg?v=1793651380",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Fabric_Texture_Close-Up_1.jpg?v=1781000516",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/31_036d5d24-e07f-4706-82e2-2cd247d8984e.png?v=1774190603",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/33_f1d5614d-a8da-4fae-85fa-753cfd4314ac.png?v=1774190603",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/17.png?v=1774190603",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Navy_Overalls_Styling_2026-03-22_10-10.jpg?v=1774190603",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/34.png?v=1774190603",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c1eee9d7-5bb5-4dbc-ae74-b35376dd0273.jpg?v=1793651380"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -14230,7 +14354,7 @@
    "pocket_claims": "",
    "price_max": 89.0,
    "price_min": 89.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SW_PDP_Asset_Revision_Navy_Overalls_Styling_2026-03-22_10-10.jpg?v=1774190603",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/sh2.jpg?v=1793796455",
    "product_id": "4483773431919",
    "readiness": "ready",
    "status": "active",
@@ -14456,16 +14580,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 1
+      "count": 3
      }
     }
    },
    "family": "The Free Your Waistband Beanie",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "the-free-your-waistband-beanie-black",
-   "image_count": 1,
+   "image_count": 3,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SimilarShotRequest.png?v=1787951996"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/bn2.jpg?v=1793794321",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SimilarShotRequest.png?v=1787951996",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_beanie_blk.jpg?v=1793799665"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -14479,14 +14607,16 @@
    "pocket_claims": "",
    "price_max": 36.0,
    "price_min": 36.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SimilarShotRequest.png?v=1787951996",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/bn2.jpg?v=1793794321",
    "product_id": "15560986067055",
    "readiness": "ready",
    "status": "active",
    "tags": [
     "Active",
     "all",
+    "badge_NEW",
     "igg26_fashion_forward",
+    "New",
     "sidekick"
    ],
    "title": "The Free Your Waistband Beanie - Black",
@@ -14543,16 +14673,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 1
+      "count": 3
      }
     }
    },
    "family": "The Free Your Waistband Beanie",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "the-free-your-waistband-beanie-sunglow",
-   "image_count": 1,
+   "image_count": 3,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/YellowBeanieShot.png?v=1787951997"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/bn1.jpg?v=1793794316",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/YellowBeanieShot.png?v=1787951997",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_beanie_sun.jpg?v=1793799656"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -14566,14 +14700,16 @@
    "pocket_claims": "",
    "price_max": 36.0,
    "price_min": 36.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/YellowBeanieShot.png?v=1787951997",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/bn1.jpg?v=1793794316",
    "product_id": "15486915543151",
    "readiness": "ready",
    "status": "active",
    "tags": [
     "Active",
     "all",
+    "badge_NEW",
     "igg26_fashion_forward",
+    "New",
     "sidekick"
    ],
    "title": "The Free Your Waistband Beanie - Sunglow",
@@ -14631,17 +14767,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 3
+      "count": 4
      }
     }
    },
    "family": "The Free Your Waistband Hat",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "the-free-your-waistband-hat",
-   "image_count": 3,
+   "image_count": 4,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageUpdateRequest_c9748a91-aaa9-4bc0-ac7a-28cfd5d7abf2.png?v=1787952091",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/F0C65VAJAJK-IMG_8518.jpg?v=1791138075",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageUpdateRequest_c9748a91-aaa9-4bc0-ac7a-28cfd5d7abf2.png?v=1787952091",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_hat_fyw.jpg?v=1793799660",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/F0C6G22A4Q5-IMG_8522.jpg?v=1791138075"
    ],
    "in_stock": true,
@@ -14656,14 +14795,16 @@
    "pocket_claims": "",
    "price_max": 36.0,
    "price_min": 36.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ImageUpdateRequest_c9748a91-aaa9-4bc0-ac7a-28cfd5d7abf2.png?v=1787952091",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/F0C65VAJAJK-IMG_8518.jpg?v=1791138075",
    "product_id": "15486918590575",
    "readiness": "ready",
    "status": "active",
    "tags": [
     "Active",
     "all",
+    "badge_NEW",
     "igg26_fashion_forward",
+    "New",
     "sidekick"
    ],
    "title": "The Free Your Waistband Hat",
@@ -14720,18 +14861,21 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 5
+      "count": 6
      }
     }
    },
    "family": "The Good At Naps Hat",
-   "flags": [],
+   "flags": [
+    "new"
+   ],
    "handle": "the-good-at-naps-hat",
-   "image_count": 5,
+   "image_count": 6,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/RealisticPDPShot.png?v=1787951830",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/F0C7FMSNCSU-IMG_8535.jpg?v=1791138072",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/F0C6G21U5U5-IMG_8529.jpg?v=1791138072",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/RealisticPDPShot.png?v=1787951830",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_hat_naps.jpg?v=1793799650",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/F0C7FMSNCSU-IMG_8535.jpg?v=1791138072",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/F0C6R1K9LRJ-IMG_8538.jpg?v=1791138072",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/F0C6KC8A9V4-IMG_8532.jpg?v=1791138072"
    ],
@@ -14747,14 +14891,16 @@
    "pocket_claims": "",
    "price_max": 36.0,
    "price_min": 36.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/RealisticPDPShot.png?v=1787951830",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/F0C6G21U5U5-IMG_8529.jpg?v=1791138072",
    "product_id": "15486912757871",
    "readiness": "ready",
    "status": "active",
    "tags": [
     "Active",
     "all",
+    "badge_NEW",
     "igg26_fashion_forward",
+    "New",
     "sidekick"
    ],
    "title": "The Good At Naps Hat",
@@ -14809,7 +14955,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 5
+      "count": 6
      }
     },
     "materials": {
@@ -14833,13 +14979,14 @@
     "new"
    ],
    "handle": "the-sidekick-tee-copy-copy",
-   "image_count": 5,
+   "image_count": 6,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/1_fb00b5dd-4935-4c95-9473-2cfaab67b287.png?v=1762960356",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2_ca783948-c5f7-4b33-9d89-f9a4d93b4b76.png?v=1762960356",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/3_46873a72-9c19-4ae3-bea4-07b30c640023.png?v=1762960356",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/4_462b1098-7adc-47d4-8a21-8213c090b49e.png?v=1762960356",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/5_0908fa0a-ca35-4566-bd98-2c39e9cd7249.png?v=1762960356"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2_ca783948-c5f7-4b33-9d89-f9a4d93b4b76.png?v=1762960356",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_tee_fog.jpg?v=1793799472",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/5_0908fa0a-ca35-4566-bd98-2c39e9cd7249.png?v=1762960356",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/1_fb00b5dd-4935-4c95-9473-2cfaab67b287.png?v=1762960356",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/3_46873a72-9c19-4ae3-bea4-07b30c640023.png?v=1762960356"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -14852,7 +14999,7 @@
    "pocket_claims": "",
    "price_max": 25.0,
    "price_min": 25.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/1_fb00b5dd-4935-4c95-9473-2cfaab67b287.png?v=1762960356",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/4_462b1098-7adc-47d4-8a21-8213c090b49e.png?v=1762960356",
    "product_id": "7934710153327",
    "readiness": "ready",
    "status": "active",
@@ -15014,7 +15161,7 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 5
+      "count": 6
      }
     },
     "materials": {
@@ -15038,13 +15185,14 @@
     "new"
    ],
    "handle": "the-sidekick-tee-copy-copy-copy",
-   "image_count": 5,
+   "image_count": 6,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/11_c6b2126a-8035-4d71-9699-9263f7e75e1b.png?v=1762960356",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/13_a1cf1b9f-d848-4cb0-b7fc-0cd13779273d.png?v=1762960356",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/14_4791a4eb-a2b4-4ae6-bd45-79e9380a6a0f.png?v=1762960356",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/12_dc56d2e0-b8b6-4d74-9dd4-782a89070f87.png?v=1762960356",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_tee_saltnavy.jpg?v=1793799478",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/15_edc07633-bc21-42d8-90ac-ce5770e72f9a.png?v=1762960356",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/14_4791a4eb-a2b4-4ae6-bd45-79e9380a6a0f.png?v=1762960356"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/11_c6b2126a-8035-4d71-9699-9263f7e75e1b.png?v=1762960356",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/13_a1cf1b9f-d848-4cb0-b7fc-0cd13779273d.png?v=1762960356"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -15057,7 +15205,7 @@
    "pocket_claims": "",
    "price_max": 25.0,
    "price_min": 25.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/11_c6b2126a-8035-4d71-9699-9263f7e75e1b.png?v=1762960356",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/14_4791a4eb-a2b4-4ae6-bd45-79e9380a6a0f.png?v=1762960356",
    "product_id": "7934710644847",
    "readiness": "ready",
    "status": "active",
@@ -15219,21 +15367,20 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 5
+      "count": 6
      }
     }
    },
    "family": "The Sidekick Tee in Marble Heather",
-   "flags": [
-    "new"
-   ],
+   "flags": [],
    "handle": "the-sidekick-tee-read-the-room-mable",
-   "image_count": 5,
+   "image_count": 6,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Request_4.jpg?v=1777285135",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/4_d661b33f-31c8-4273-b3a2-8e0a2c24f092.png?v=1778594588",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Color_Update.jpg?v=1777285135",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Request_4.jpg?v=1777285135",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_tee_marble.jpg?v=1793799493",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Color_Update_1.jpg?v=1777285138",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/4_d661b33f-31c8-4273-b3a2-8e0a2c24f092.png?v=1778594588",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Color_Update_2.jpg?v=1777285137"
    ],
    "in_stock": true,
@@ -15248,14 +15395,13 @@
    "pocket_claims": "",
    "price_max": 25.0,
    "price_min": 25.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Update_Request_4.jpg?v=1777285135",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Color_Update.jpg?v=1777285135",
    "product_id": "14987685986415",
    "readiness": "ready",
    "status": "active",
    "tags": [
     "Active",
     "All",
-    "badge_NEW",
     "full price",
     "igg26_fashion_forward",
     "image-tall",
