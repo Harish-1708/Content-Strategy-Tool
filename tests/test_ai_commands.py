@@ -147,9 +147,17 @@ def ai(tmp_path, monkeypatch, capsys):
     for name in ("ANTHROPIC_API_KEY", "FREEAPI_ENCRYPTION_KEY", "FREEAPI_ADMIN_PASSWORD", "GROQ_API_KEY", "MISTRAL_API_KEY"):
         monkeypatch.delenv(name, raising=False)
 
+    claude_only = tmp_path / "claude_only_providers.yaml"          # the shipped registry with every other provider switched off, whatever has been rolled out
+    shipped = yaml.safe_load((ROOT / "ai_providers.yaml").read_text(encoding="utf-8"))
+    for pid, entry in shipped["providers"].items():
+        if pid != "claude":
+            entry["enabled"], entry["approved_classes"] = False, []
+            entry.pop("owner_override", None)
+    claude_only.write_text(yaml.safe_dump(shipped), encoding="utf-8")
+
     def run(action, *extra, providers=None, lanes=None):
         argv = ["ai", action, "--data-dir", str(tmp_path / "data"), "--sources-config", str(ROOT / "sources.yaml"), "--browser-config", str(ROOT / "browser.yaml"),
-                "--providers-config", str(providers or ROOT / "ai_providers.yaml"), "--lanes-config", str(lanes or ROOT / "ai_lanes.yaml"),
+                "--providers-config", str(providers or claude_only), "--lanes-config", str(lanes or ROOT / "ai_lanes.yaml"),
                 "--tasks-config", str(ROOT / "ai_eval_tasks.yaml"), "--workdir", str(tmp_path / "work"), *extra]
         code = cli.main(argv)
         return code, capsys.readouterr().out
@@ -159,7 +167,7 @@ def ai(tmp_path, monkeypatch, capsys):
 
 def test_providers_lists_what_is_on_and_all_with_a_flag(ai):
     code, out = ai("providers")
-    assert code == 0 and "claude" in out and "groq" not in out and "85 providers in the registry, 1 enabled" in out
+    assert code == 0 and "claude" in out and "groq" not in out and "86 providers in the registry, 1 enabled" in out
     code, out = ai("providers", "--all")
     assert "groq" in out and "kilo" in out and "exp" in out and out.count("\n") > 80
 
@@ -182,7 +190,7 @@ def test_plan_shows_claude_ready_when_its_credential_exists(ai, monkeypatch):
 
 def test_usage_reports_spend_against_the_caps(ai):
     code, out = ai("usage")
-    assert code == 0 and "of $0.50" in out and "of $3.00" in out and "no calls today" in out
+    assert code == 0 and "of $0.50" in out and "of $10.00" in out and "no calls today" in out
 
 
 def test_the_review_commands_need_a_name_and_never_overwrite_a_decision(ai):
@@ -428,3 +436,26 @@ def test_the_cli_module_does_not_import_the_ai_package_at_start_up():
     code = "import sys; import contentintel.cli; print(any(n == 'contentintel.ai' or n.startswith('contentintel.ai.') for n in sys.modules))"
     out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, cwd=str(ROOT))
     assert out.stdout.strip() == "False", out.stderr
+
+
+# ---- the shipped rollout, with the real files --------------------------------------------------------------------------------------
+
+def test_the_shipped_providers_command_shows_the_rolled_out_providers_with_their_recorded_decision(ai):
+    code, out = ai("providers", providers=ROOT / "ai_providers.yaml")
+    assert code == 0 and "86 providers in the registry, 6 enabled" in out
+    for pid in ("github", "google", "groq", "mistral", "openrouter"):
+        line = next(l for l in out.splitlines() if l.strip().startswith(pid + " "))
+        assert "ON" in line and "internal*" in line and "public,internal" in line, line         # * = raised by a recorded owner decision
+    assert "restricted" in next(l for l in out.splitlines() if l.strip().startswith("claude "))
+
+
+def test_with_the_real_files_a_provider_without_a_key_is_waiting_not_used_and_restricted_data_still_reaches_only_claude(ai, monkeypatch):
+    code, out = ai("plan", "--data-class", "internal", providers=ROOT / "ai_providers.yaml")
+    assert code == 0 and "groq / llama-3.3-70b-versatile" in out and "ready   groq" not in out        # enabled, but no GROQ_API_KEY here, so never ready
+    code, out = ai("plan", "--data-class", "restricted", providers=ROOT / "ai_providers.yaml")
+    assert "groq" not in out.split("strategic_reasoning")[1].split("content_ideation")[0]
+    monkeypatch.setenv("GROQ_API_KEY", "gsk_" + "a" * 40)
+    code, out = ai("plan", "--data-class", "internal", providers=ROOT / "ai_providers.yaml")
+    assert "ready   groq / llama-3.3-70b-versatile" in out
+    code, out = ai("plan", "--data-class", "restricted", providers=ROOT / "ai_providers.yaml")
+    assert "ready   groq" not in out
