@@ -221,7 +221,7 @@ def test_only_providers_with_a_key_are_built():
 
 def test_each_provider_reads_its_own_secret_name():
     assert {c.name: c.env_var for c in P.PROVIDER_CLASSES} == {
-        "serper_dev": "SERPER_API_KEY", "tavily": "TAVILY_API_KEY", "serpapi": "SERPAPI_API_KEY"}
+        "serper_dev": "SERPER_API_KEY", "tavily": "TAVILY_API_KEY", "serpapi": "SERPAPI_API_KEY", "exa": "EXA_API_KEY", "exa_mcp": "EXA_MCP"}
 
 
 def test_results_become_plain_dicts_for_saving():
