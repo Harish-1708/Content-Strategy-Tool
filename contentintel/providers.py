@@ -5,6 +5,7 @@ credits. Network access goes through an injectable `http` function so tests neve
 internet. API keys are never written into errors or logs.
 """
 import json
+import re
 import time
 from dataclasses import dataclass
 
@@ -234,7 +235,91 @@ class SerpApi(Provider):
         return None
 
 
-PROVIDER_CLASSES = (SerperDev, Tavily, SerpApi)
+_EXA_LIMIT = re.compile(r"\b429\b|rate[ _-]?limit|too many requests|\bquota\b|(?:usage|request|daily|monthly|free)[ _-]+limit|(?:out of|insufficient|exhausted).{0,20}credits?", re.I)
+
+
+def parse_exa_blocks(text):
+    """Exa's hosted search answers in blocks: Title:, URL:, Published:, Author:, then the text. Returns [Result]."""
+    results = []
+    for block in re.split(r"\n(?=Title: )", "\n" + str(text or "").strip()):
+        block = block.strip()
+        if not block.startswith("Title:"):
+            continue
+        fields, body = {}, []
+        for line in block.splitlines():
+            m = re.match(r"^(Title|URL|Published|Author):\s*(.*)$", line)
+            if m and not body:
+                fields[m.group(1).lower()] = m.group(2).strip()
+            elif line.strip() not in ("Highlights:", "Text:"):
+                body.append(line)
+        if fields.get("url"):
+            published = fields.get("published")
+            results.append(Result(rank=len(results) + 1, title=fields.get("title", ""), url=fields["url"], snippet=" ".join(" ".join(body).split())[:300],
+                                  date=None if published in (None, "", "N/A") else published))
+    return results
+
+
+class Exa(Provider):
+    """Exa's search API (an API key; new accounts get free credits and the free tier renews monthly; when credits end it answers 402 and stops)."""
+    name = "exa"
+    label = "Exa"
+    env_var = "EXA_API_KEY"
+    base = "https://api.exa.ai"
+
+    def search(self, query, *, kind="web", num=10, country=None, recency=None, depth="basic"):
+        body = {"query": query, "numResults": min(num, 10), "type": "auto"}          # no page contents are requested: they are billed separately
+        if kind == "news":
+            body["category"] = "news"
+        if recency:
+            from datetime import datetime, timedelta, timezone
+            days = {"day": 1, "week": 7, "month": 30, "year": 365}[recency]
+            body["startPublishedDate"] = (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+        data = self._call("POST", self.base + "/search", json_body=body, headers={"x-api-key": self.api_key, "Content-Type": "application/json"})
+        items = data.get("results", []) if isinstance(data, dict) else []
+        return [Result(rank=n, title=i.get("title") or "", url=i.get("url", ""), snippet=" ".join(str(i.get("text") or i.get("summary") or "").split())[:300],
+                       date=i.get("publishedDate")) for n, i in enumerate(items, start=1) if i.get("url")]
+
+
+class ExaMcp(Provider):
+    """Exa's free hosted search (no key; third-party service, public queries only). Ideas and the answer format follow Agent-Reach's web channel."""
+    name = "exa_mcp"
+    label = "Exa (free hosted search)"
+    env_var = "EXA_MCP"                 # no key: set EXA_MCP=on (the workflows do) to use it, like any other provider's secret being present
+    base = "https://mcp.exa.ai/mcp"
+
+    def _clean(self, text):
+        return str(text)                # there is no secret to hide, and "on" must not be replaced inside ordinary words
+
+    def search(self, query, *, kind="web", num=10, country=None, recency=None, depth="basic"):
+        body = {"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {"name": "web_search_exa", "arguments": {"query": query, "numResults": min(num, 10)}}}
+        raw = self._call("POST", self.base, json_body=body, headers={"Content-Type": "application/json", "Accept": "application/json, text/event-stream"})
+        msg = raw
+        if isinstance(raw, str):
+            payloads = [ln[5:].strip() for ln in raw.splitlines() if ln.startswith("data:")] or [raw]
+            try:
+                msg = json.loads(payloads[-1])
+            except ValueError:
+                raise ProviderError(f"{self.label}: the answer could not be read") from None
+        if not isinstance(msg, dict):
+            raise ProviderError(f"{self.label}: unexpected answer")
+        if msg.get("error"):
+            text = str((msg["error"] or {}).get("message", msg["error"]))
+            if _EXA_LIMIT.search(text):
+                raise QuotaError(f"{self.label}: its free limit was reached ({self._clean(text)[:120]})")
+            raise ProviderError(f"{self.label}: {self._clean(text)[:200]}")
+        result = msg.get("result") or {}
+        text = "\n".join(c.get("text", "") for c in result.get("content", []) if c.get("type") == "text")
+        if result.get("isError"):
+            if _EXA_LIMIT.search(text):
+                raise QuotaError(f"{self.label}: its free limit was reached")
+            raise ProviderError(f"{self.label}: {self._clean(text)[:200]}")
+        found = parse_exa_blocks(text)
+        if not found:
+            raise ProviderError(f"{self.label}: returned nothing that could be read as search results")
+        return found[:num]
+
+
+PROVIDER_CLASSES = (SerperDev, Tavily, SerpApi, Exa, ExaMcp)
 PROVIDER_NAMES = tuple(c.name for c in PROVIDER_CLASSES)
 
 
