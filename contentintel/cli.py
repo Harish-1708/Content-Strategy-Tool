@@ -205,6 +205,16 @@ def build_parser():
     p.add_argument("--check", action="store_true", help="validate every record and its honesty rules; exit 1 on a problem")
     p.add_argument("--export", default="", help="write the records as JSON lines to this file")
 
+    p = sub.add_parser("observatory", help="the research observatory: plan, monitor, report, history, prune, status (competitor stores, sitemaps, feeds and pages, read politely)")
+    _common(p)
+    p.add_argument("--browser-config", default="browser.yaml")
+    try:
+        from .observatory import commands as _obs_commands            # the arguments live with the command; a missing folder is reported when the command is used
+        _obs_commands.add_arguments(p)
+    except ImportError:
+        p.add_argument("action")
+        p.add_argument("rest", nargs="*")
+
     p = sub.add_parser("ai", help="the AI layer: plan, providers, usage, review, ask, check, eval, smoke (mock unless --live)")
     _common(p)
     p.add_argument("action", choices=["plan", "providers", "usage", "review", "ask", "check", "eval", "smoke"])
@@ -938,6 +948,22 @@ def _youtube_api_probe(key):
     raise Failure(contract_mod.BAD_INPUT, f"the Data API refused the request ({resp.status_code} {reason}). {message}")
 
 
+def _observatory_checks(args, now):
+    """The competitor-route checks, proved on the first brand's own site. A missing folder, a brand without a site or a settings mistake means they cannot be checked here."""
+    try:
+        from .observatory import acceptance_checks as obs_checks
+        from .observatory import config as obs_config
+    except ImportError:
+        return {}
+    try:
+        settings = obs_config.load_settings()
+        slug = args.brand or (list_brand_slugs(args.brands_dir) or [""])[0]
+        contact = (os.environ.get("OBSERVATORY_CONTACT") or settings["politeness"]["contact"]).strip()
+        return obs_checks.make_checks(load_brand(slug, args.brands_dir).domain if slug else "", settings, contact, now)
+    except (BrandError, obs_config.ObservatoryConfigError):
+        return {}
+
+
 def _acceptance_context(args, store, registry, now):
     from .shopify_fetch import fetch_products
     settings = collectors_mod.load_collector_settings(args.research_config)
@@ -982,6 +1008,7 @@ def _acceptance_context(args, store, registry, now):
         found = fetch_products(load_brand(slug, args.brands_dir).domain, max_pages=1, delay=0)
         return len(found.products), f"{slug}: read {len(found.products)} products from the first page of the public feed"
 
+    ctx.observatory_checks = _observatory_checks(args, now)
     ctx.collect_check, ctx.provider_check = collect_check, provider_check
     ctx.claude_check = claude_check if claude is not None else None
     ctx.catalogue_check = catalogue_check
@@ -1075,6 +1102,20 @@ def main(argv=None):
                 print("Error: ask needs --lane and --text")
                 return 1
             return ai_commands.run_ai(args, store, ledger, sync_mod.utc_now())
+        if args.cmd == "observatory":
+            try:
+                from .observatory import commands as obs_commands        # loaded only here: the observatory can never stop collection, research or the sheets
+            except ImportError as exc:
+                print("APPLICATION problem: the observatory's files are missing or incomplete (" + str(exc) + "). Check that the folder contentintel/observatory/ was uploaded "
+                      "in full (see docs/observatory/README.md, 'Checking the upload').")
+                return 1
+            _, ledger = _health(args, store)
+            if ledger is None:
+                print("Error: sources.yaml is needed (the observatory records collector health in the same ledger)")
+                return 1
+            code = obs_commands.run(args, store, ledger, sync_mod.utc_now())
+            _save_health(ledger, store, args)
+            return code
         if args.cmd == "health":
             return _health_cmd(args, store)
         if args.cmd == "acceptance":
