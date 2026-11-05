@@ -2,16 +2,16 @@
  "routes": {
   "claude|api": {
    "acceptance": {
-    "at": "2026-11-03T07:34:12Z",
+    "at": "2026-11-05T14:46:30Z",
     "code": "",
     "items": 1,
     "passed": true,
     "route_hash": "b44667ef1e3b",
-    "run": "8a641a25",
-    "version": "30b21f30b650"
+    "run": "47f4105d",
+    "version": "66312a1afca6"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 1,
+   "consecutive_successes": 2,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -19,10 +19,17 @@
      "items": 1,
      "ms": 1597,
      "ok": true
+    },
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "",
+     "items": 1,
+     "ms": 1426,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-03T07:34:12Z",
+   "last_success": "2026-11-05T14:46:30Z",
    "pause": null,
    "route": "api",
    "source": "claude",
@@ -30,16 +37,16 @@
   },
   "deep_research|browser": {
    "acceptance": {
-    "at": "2026-11-03T09:11:44Z",
-    "code": "",
-    "items": 1,
-    "passed": true,
+    "at": "2026-11-05T14:46:30Z",
+    "code": "NEED_LOGIN",
+    "items": 0,
+    "passed": false,
     "route_hash": "d1811431fafc",
-    "run": "eb332d00",
-    "version": "bad821df5e24"
+    "run": "47f4105d",
+    "version": "66312a1afca6"
    },
-   "consecutive_failures": 0,
-   "consecutive_successes": 1,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -54,31 +61,42 @@
      "items": 1,
      "ms": 16307,
      "ok": true
+    },
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "NEED_LOGIN",
+     "items": 0,
+     "ms": 11473,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-03T07:34:12Z",
+    "at": "2026-11-05T14:46:30Z",
     "code": "NEED_LOGIN",
-    "message": "gemini: not logged in (Gemini shows its Sign in button, so the cookies were not accepted); export fresh cookies into GEMINI_COOKIES. Cookie facts (no values shown): 25 cookies loaded (.google.com x20, .gemini.google.com x5); 3 already expired."
+    "message": "gemini: not logged in (Gemini shows its Sign in button, so the cookies were not accepted); export fresh cookies into GEMINI_COOKIES. Cookie facts (no values shown): 24 cookies loaded (.google.com x19, .gemini.google.com x5); 2 already expired."
    },
    "last_success": "2026-11-03T09:11:44Z",
-   "pause": null,
+   "pause": {
+    "code": "NEED_LOGIN",
+    "message": "gemini: not logged in (Gemini shows its Sign in button, so the cookies were not accepted); export fresh cookies into GEMINI_COOKIES. Cookie facts (no values shown): 24 cookies loaded (.google.com x19, .gemini.google.com x5); 2 already expired.",
+    "until": "2026-11-06T02:46:30Z"
+   },
    "route": "browser",
    "source": "deep_research",
    "state": "healthy"
   },
   "instagram|apify": {
    "acceptance": {
-    "at": "2026-11-03T09:11:44Z",
+    "at": "2026-11-05T14:46:30Z",
     "code": "",
     "items": 3,
     "passed": true,
     "route_hash": "a351da3e38b4",
-    "run": "eb332d00",
-    "version": "bad821df5e24"
+    "run": "47f4105d",
+    "version": "66312a1afca6"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 1,
+   "consecutive_successes": 2,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -93,6 +111,13 @@
      "items": 3,
      "ms": 6020,
      "ok": true
+    },
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "",
+     "items": 3,
+     "ms": 9881,
+     "ok": true
     }
    ],
    "last_error": {
@@ -100,7 +125,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "Apify: HTTP 201: [{\"inputUrl\": \"https://www.instagram.com/explore/tags/overalls\", \"id\": \"4022071767620158918\", \"type\": \"Sidecar\", \"shortCode\": \"DfRRPZ6IIXG\", \"caption\": \"\\u30a2\\u30d5\\u30ea\\u30ab\\u5e03\\u3067\\u30b5\\u30e"
    },
-   "last_success": "2026-11-03T09:11:44Z",
+   "last_success": "2026-11-05T14:46:30Z",
    "pause": null,
    "route": "apify",
    "source": "instagram",
@@ -108,16 +133,16 @@
   },
   "instagram|browser": {
    "acceptance": {
-    "at": "2026-11-03T09:11:44Z",
+    "at": "2026-11-05T14:46:30Z",
     "code": "",
     "items": 3,
     "passed": true,
-    "route_hash": "a4ae8b5ca1c6",
-    "run": "eb332d00",
-    "version": "bad821df5e24"
+    "route_hash": "ced8174ce69c",
+    "run": "47f4105d",
+    "version": "66312a1afca6"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 4,
+   "consecutive_successes": 5,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -153,6 +178,13 @@
      "items": 30,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "",
+     "items": 3,
+     "ms": 45294,
+     "ok": true
     }
    ],
    "last_error": {
@@ -160,7 +192,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "could not find the username box on the login page (the page may have changed: update login_steps in browser.yaml)"
    },
-   "last_success": "2026-11-04T15:45:26Z",
+   "last_success": "2026-11-05T14:46:30Z",
    "pause": null,
    "route": "browser",
    "source": "instagram",
@@ -168,16 +200,16 @@
   },
   "meta_ads|apify": {
    "acceptance": {
-    "at": "2026-11-03T07:34:12Z",
-    "code": "UPSTREAM_BROKEN",
-    "items": 0,
-    "passed": false,
+    "at": "2026-11-05T14:46:30Z",
+    "code": "",
+    "items": 3,
+    "passed": true,
     "route_hash": "dd95d9a5a05e",
-    "run": "8a641a25",
-    "version": "30b21f30b650"
+    "run": "47f4105d",
+    "version": "66312a1afca6"
    },
-   "consecutive_failures": 1,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 1,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -185,6 +217,13 @@
      "items": 0,
      "ms": 12869,
      "ok": false
+    },
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "",
+     "items": 3,
+     "ms": 57108,
+     "ok": true
     }
    ],
    "last_error": {
@@ -192,28 +231,24 @@
     "code": "UPSTREAM_BROKEN",
     "message": "Apify: HTTP 201: [{\"inputUrl\": \"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&q=overalls&search_type=keyword_unordered&media_type=all\", \"pageInfo\": {\"adLibrarySystemStatus\": {\"syste"
    },
-   "last_success": "",
-   "pause": {
-    "code": "UPSTREAM_BROKEN",
-    "message": "Apify: HTTP 201: [{\"inputUrl\": \"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&q=overalls&search_type=keyword_unordered&media_type=all\", \"pageInfo\": {\"adLibrarySystemStatus\": {\"syste",
-    "until": "2026-11-03T07:36:12Z"
-   },
+   "last_success": "2026-11-05T14:46:30Z",
+   "pause": null,
    "route": "apify",
    "source": "meta_ads",
    "state": "healthy"
   },
   "meta_ads|browser": {
    "acceptance": {
-    "at": "2026-11-03T07:34:12Z",
+    "at": "2026-11-05T14:46:30Z",
     "code": "",
     "items": 3,
     "passed": true,
     "route_hash": "c689f4b7d3ac",
-    "run": "8a641a25",
-    "version": "30b21f30b650"
+    "run": "47f4105d",
+    "version": "66312a1afca6"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 11,
+   "consecutive_successes": 12,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -291,10 +326,17 @@
      "items": 30,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "",
+     "items": 3,
+     "ms": 16728,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-04T15:45:26Z",
+   "last_success": "2026-11-05T14:46:30Z",
    "pause": null,
    "route": "browser",
    "source": "meta_ads",
@@ -302,16 +344,16 @@
   },
   "shopify_catalogue|public_json": {
    "acceptance": {
-    "at": "2026-11-03T07:34:12Z",
+    "at": "2026-11-05T14:46:30Z",
     "code": "",
     "items": 7,
     "passed": true,
     "route_hash": "eab194e8386b",
-    "run": "8a641a25",
-    "version": "30b21f30b650"
+    "run": "47f4105d",
+    "version": "66312a1afca6"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 16,
+   "consecutive_successes": 17,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -424,10 +466,17 @@
      "items": 72,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "",
+     "items": 7,
+     "ms": 236,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-05T06:46:33Z",
+   "last_success": "2026-11-05T14:46:30Z",
    "pause": null,
    "route": "public_json",
    "source": "shopify_catalogue",
@@ -467,16 +516,16 @@
   },
   "tiktok|browser": {
    "acceptance": {
-    "at": "2026-11-03T09:11:44Z",
-    "code": "",
-    "items": 3,
-    "passed": true,
-    "route_hash": "512dcb7426a7",
-    "run": "eb332d00",
-    "version": "bad821df5e24"
+    "at": "2026-11-05T14:46:30Z",
+    "code": "UPSTREAM_BROKEN",
+    "items": 0,
+    "passed": false,
+    "route_hash": "2df7590dc4f6",
+    "run": "47f4105d",
+    "version": "66312a1afca6"
    },
-   "consecutive_failures": 0,
-   "consecutive_successes": 4,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -512,15 +561,26 @@
      "items": 30,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 47707,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-03T07:34:12Z",
+    "at": "2026-11-05T14:46:30Z",
     "code": "UPSTREAM_BROKEN",
-    "message": "could not find the username box on the login page (the page may have changed: update login_steps in browser.yaml)"
+    "message": "login ok; 0 items (0 from the site's data, 0 only from page links); nothing could be read (run Recon to see what the site sends)"
    },
    "last_success": "2026-11-04T15:45:26Z",
-   "pause": null,
+   "pause": {
+    "code": "UPSTREAM_BROKEN",
+    "message": "login ok; 0 items (0 from the site's data, 0 only from page links); nothing could be read (run Recon to see what the site sends)",
+    "until": "2026-11-05T14:48:30Z"
+   },
    "route": "browser",
    "source": "tiktok",
    "state": "healthy"
@@ -696,18 +756,53 @@
    "source": "video_tiktok",
    "state": "healthy"
   },
+  "web_search|exa_mcp": {
+   "acceptance": {
+    "at": "2026-11-05T14:46:30Z",
+    "code": "",
+    "items": 2,
+    "passed": true,
+    "route_hash": "1751d5fc0e8b",
+    "run": "47f4105d",
+    "version": "66312a1afca6"
+   },
+   "consecutive_failures": 0,
+   "consecutive_successes": 2,
+   "history": [
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "",
+     "items": 3,
+     "ms": 1263,
+     "ok": true
+    },
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "",
+     "items": 2,
+     "ms": 0,
+     "ok": true
+    }
+   ],
+   "last_error": null,
+   "last_success": "2026-11-05T14:46:30Z",
+   "pause": null,
+   "route": "exa_mcp",
+   "source": "web_search",
+   "state": "healthy"
+  },
   "web_search|serpapi": {
    "acceptance": {
-    "at": "2026-11-03T07:34:12Z",
+    "at": "2026-11-05T14:46:30Z",
     "code": "",
     "items": 10,
     "passed": true,
     "route_hash": "a96d9854bcaf",
-    "run": "8a641a25",
-    "version": "30b21f30b650"
+    "run": "47f4105d",
+    "version": "66312a1afca6"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 2,
+   "consecutive_successes": 4,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -722,10 +817,24 @@
      "items": 10,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "",
+     "items": 8,
+     "ms": 2396,
+     "ok": true
+    },
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "",
+     "items": 10,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-03T07:34:12Z",
+   "last_success": "2026-11-05T14:46:30Z",
    "pause": null,
    "route": "serpapi",
    "source": "web_search",
@@ -733,16 +842,16 @@
   },
   "web_search|serper_dev": {
    "acceptance": {
-    "at": "2026-11-03T07:34:12Z",
+    "at": "2026-11-05T14:46:30Z",
     "code": "",
     "items": 10,
     "passed": true,
     "route_hash": "0b3b9639bac5",
-    "run": "8a641a25",
-    "version": "30b21f30b650"
+    "run": "47f4105d",
+    "version": "66312a1afca6"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 2,
+   "consecutive_successes": 4,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -757,10 +866,24 @@
      "items": 10,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "",
+     "items": 3,
+     "ms": 3429,
+     "ok": true
+    },
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "",
+     "items": 10,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-03T07:34:12Z",
+   "last_success": "2026-11-05T14:46:30Z",
    "pause": null,
    "route": "serper_dev",
    "source": "web_search",
@@ -768,16 +891,16 @@
   },
   "web_search|tavily": {
    "acceptance": {
-    "at": "2026-11-03T07:34:12Z",
+    "at": "2026-11-05T14:46:30Z",
     "code": "",
-    "items": 3,
+    "items": 2,
     "passed": true,
     "route_hash": "620cdae9419e",
-    "run": "8a641a25",
-    "version": "30b21f30b650"
+    "run": "47f4105d",
+    "version": "66312a1afca6"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 2,
+   "consecutive_successes": 4,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -792,10 +915,24 @@
      "items": 3,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "",
+     "items": 3,
+     "ms": 4897,
+     "ok": true
+    },
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "",
+     "items": 2,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-03T07:34:12Z",
+   "last_success": "2026-11-05T14:46:30Z",
    "pause": null,
    "route": "tavily",
    "source": "web_search",
@@ -803,16 +940,16 @@
   },
   "youtube_public|data_api": {
    "acceptance": {
-    "at": "2026-11-03T09:11:44Z",
+    "at": "2026-11-05T14:46:30Z",
     "code": "",
     "items": 1,
     "passed": true,
     "route_hash": "fb56758a33f6",
-    "run": "eb332d00",
-    "version": "bad821df5e24"
+    "run": "47f4105d",
+    "version": "66312a1afca6"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 1,
+   "consecutive_successes": 2,
    "history": [
     {
      "at": "2026-11-03T09:11:44Z",
@@ -820,10 +957,17 @@
      "items": 1,
      "ms": 102,
      "ok": true
+    },
+    {
+     "at": "2026-11-05T14:46:30Z",
+     "code": "",
+     "items": 1,
+     "ms": 75,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-03T09:11:44Z",
+   "last_success": "2026-11-05T14:46:30Z",
    "pause": null,
    "route": "data_api",
    "source": "youtube_public",
