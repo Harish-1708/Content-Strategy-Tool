@@ -5999,7 +5999,7 @@
    "variant_count": 7,
    "variants": [
     {
-     "available": false,
+     "available": true,
      "compare_at_price": 120.0,
      "id": 53166813413487,
      "options": [
@@ -6478,7 +6478,7 @@
    "variant_count": 7,
    "variants": [
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53753477136495,
      "options": [
@@ -6716,7 +6716,7 @@
    "variant_count": 7,
    "variants": [
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53753141919855,
      "options": [
@@ -6824,7 +6824,7 @@
      "title": "3XL / Buffalo Plaid"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53753142116463,
      "options": [
@@ -7471,7 +7471,7 @@
      "title": "M / Dancing Skeletons"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53753349079151,
      "options": [
@@ -7489,7 +7489,7 @@
      "title": "L / Dancing Skeletons"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53753349111919,
      "options": [
@@ -7507,7 +7507,7 @@
      "title": "XL / Dancing Skeletons"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53753349144687,
      "options": [
@@ -7935,7 +7935,7 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
-   "in_stock": false,
+   "in_stock": true,
    "ingredients": "",
    "materials": "cotton 65%; polyester 31%; spandex 4%",
    "missing_expected": [],
@@ -7967,7 +7967,7 @@
    "variant_count": 9,
    "variants": [
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 41347936387183,
      "options": [
@@ -8021,7 +8021,7 @@
      "title": "S / Dino Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 41347936485487,
      "options": [
@@ -8057,7 +8057,7 @@
      "title": "L / Dino Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 41347936551023,
      "options": [
@@ -8111,7 +8111,7 @@
      "title": "3XL / Dino Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 41349780373615,
      "options": [
@@ -8209,7 +8209,7 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FLORA-Image33-4bc502ab.png?v=1767635833",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FLORA-CasualSwoverallsPose-e484bb52.png?v=1767635833"
    ],
-   "in_stock": false,
+   "in_stock": true,
    "ingredients": "",
    "materials": "cotton 65%; polyester 31%; spandex 4%",
    "missing_expected": [
@@ -8245,7 +8245,7 @@
    "variant_count": 9,
    "variants": [
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 43949671448687,
      "options": [
@@ -8299,7 +8299,7 @@
      "title": "S / Dog Days Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 43949671546991,
      "options": [
@@ -8317,7 +8317,7 @@
      "title": "M / Dog Days Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 43949671579759,
      "options": [
@@ -8335,7 +8335,7 @@
      "title": "L / Dog Days Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 43949671612527,
      "options": [
@@ -8371,7 +8371,7 @@
      "title": "2XL / Dog Days Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 43949671678063,
      "options": [
@@ -8389,7 +8389,7 @@
      "title": "3XL / Dog Days Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 43949671710831,
      "options": [
@@ -9007,7 +9007,7 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Aspect_Ratio_Change-3.png?v=1775221120",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Resizing_Request.png?v=1775221120"
    ],
-   "in_stock": false,
+   "in_stock": true,
    "ingredients": "",
    "materials": "cotton 65%; polyester 31%; spandex 4%",
    "missing_expected": [
@@ -9079,7 +9079,7 @@
      "title": "XS / Garden Party"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 52768780976239,
      "options": [
@@ -9115,7 +9115,7 @@
      "title": "M / Garden Party"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 52768781041775,
      "options": [
@@ -9133,7 +9133,7 @@
      "title": "L / Garden Party"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 52768781074543,
      "options": [
@@ -9169,7 +9169,7 @@
      "title": "2XL / Garden Party"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 52768781140079,
      "options": [
@@ -9187,7 +9187,7 @@
      "title": "3XL / Garden Party"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 52768781172847,
      "options": [
@@ -10868,7 +10868,7 @@
    "variant_count": 7,
    "variants": [
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53160030011503,
      "options": [
@@ -10922,7 +10922,7 @@
      "title": "L / Nightshade Plum"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53160030109807,
      "options": [
@@ -11157,7 +11157,7 @@
      "title": "L / Otter Romp"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53753483952239,
      "options": [
@@ -11307,7 +11307,7 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_cat.jpg?v=1793799482",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FLORA-CatPrintJoggers-db9cd1ed.jpg?v=1767635891"
    ],
-   "in_stock": false,
+   "in_stock": true,
    "ingredients": "",
    "materials": "cotton 65%; polyester 31%; spandex 4%",
    "missing_expected": [
@@ -11343,7 +11343,7 @@
    "variant_count": 9,
    "variants": [
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 43949670957167,
      "options": [
@@ -11397,7 +11397,7 @@
      "title": "S / Purr Parade Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 43949671055471,
      "options": [
@@ -11415,7 +11415,7 @@
      "title": "M / Purr Parade Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 43949671088239,
      "options": [
@@ -11487,7 +11487,7 @@
      "title": "3XL / Purr Parade Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 43949671219311,
      "options": [
@@ -11688,7 +11688,7 @@
      "title": "XL / Jammers"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53753433161839,
      "options": [
@@ -12694,7 +12694,7 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
-   "in_stock": false,
+   "in_stock": true,
    "ingredients": "",
    "materials": "cotton 65%; polyester 31%; spandex 4%",
    "missing_expected": [
@@ -12818,7 +12818,7 @@
      "title": "L / Color Riot"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 52831692554351,
      "options": [
@@ -12854,7 +12854,7 @@
      "title": "2XL / Color Riot"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 52831692619887,
      "options": [
@@ -13589,7 +13589,7 @@
      "title": "XS / Garden Party"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 52768781566063,
      "options": [
@@ -14491,7 +14491,7 @@
      "title": "XL / Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 31721259073647,
      "options": [
