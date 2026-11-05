@@ -38,7 +38,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991425135,M / Bordeaux,Size=M; Color=Bordeaux,SWPANTSCORD-781-M,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991457903,L / Bordeaux,Size=L; Color=Bordeaux,SWPANTSCORD-781-L,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991490671,XL / Bordeaux,Size=XL; Color=Bordeaux,SWPANTSCORD-781-XL,129.00,,true
-15347005489263,Corduroy Swoveralls - Bordeaux,53755991523439,2XL / Bordeaux,Size=2XL; Color=Bordeaux,SWPANTSCORD-781-2XL,129.00,,true
+15347005489263,Corduroy Swoveralls - Bordeaux,53755991523439,2XL / Bordeaux,Size=2XL; Color=Bordeaux,SWPANTSCORD-781-2XL,129.00,,false
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991556207,3XL / Bordeaux,Size=3XL; Color=Bordeaux,SWPANTSCORD-781-3XL,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991588975,4XL / Bordeaux,Size=4XL; Color=Bordeaux,SWPANTSCORD-781-4XL,129.00,,true
 15347005325423,Corduroy Swoveralls - Forest Green,53755990311023,S / Forest Green,Size=S; Color=Forest Green,SWPANTSCORD-002-S,129.00,,true
@@ -263,12 +263,12 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 1509945606244,Swoveralls - Forest Green,41054494425199,4XL / Forest Green,Size=4XL; Color=Forest Green,20-4XL-FGRN,99.00,,true
 14917967904879,Swoveralls - Garden Party - Coming Soon!,52768780910703,XXS / Garden Party,Size=XXS; Color=Garden Party,SWPANTS-452-XXS,120.00,,false
 14917967904879,Swoveralls - Garden Party - Coming Soon!,52768780943471,XS / Garden Party,Size=XS; Color=Garden Party,SWPANTS-452-XS,120.00,,false
-14917967904879,Swoveralls - Garden Party - Coming Soon!,52768780976239,S / Garden Party,Size=S; Color=Garden Party,SWPANTS-452-S,120.00,,true
+14917967904879,Swoveralls - Garden Party - Coming Soon!,52768780976239,S / Garden Party,Size=S; Color=Garden Party,SWPANTS-452-S,120.00,,false
 14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781009007,M / Garden Party,Size=M; Color=Garden Party,SWPANTS-452-M,120.00,,false
 14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781041775,L / Garden Party,Size=L; Color=Garden Party,SWPANTS-452-L,120.00,,true
-14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781074543,XL / Garden Party,Size=XL; Color=Garden Party,SWPANTS-452-XL,120.00,,true
+14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781074543,XL / Garden Party,Size=XL; Color=Garden Party,SWPANTS-452-XL,120.00,,false
 14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781107311,2XL / Garden Party,Size=2XL; Color=Garden Party,SWPANTS-452-2XL,120.00,,false
-14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781140079,3XL / Garden Party,Size=3XL; Color=Garden Party,SWPANTS-452-3XL,120.00,,true
+14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781140079,3XL / Garden Party,Size=3XL; Color=Garden Party,SWPANTS-452-3XL,120.00,,false
 14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781172847,4XL / Garden Party,Size=4XL; Color=Garden Party,SWPANTS-452-4XL,120.00,,true
 15114935926895,Swoveralls - GooBle Search,53311680872559,S / GooBle Search,Size=S; Color=GooBle Search,SWPANTSYGG-377-S,89.99,120.00,true
 15114935926895,Swoveralls - GooBle Search,53311680905327,M / GooBle Search,Size=M; Color=GooBle Search,SWPANTSYGG-377-M,89.99,120.00,true
@@ -318,10 +318,10 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 3223501733988,Swoveralls - Navy,26289273241700,2XL / Navy,Size=2XL; Color=Navy,20-2XL-NVY,99.00,,true
 3223501733988,Swoveralls - Navy,26289273307236,3XL / Navy,Size=3XL; Color=Navy,20-3XL-NVY,99.00,,true
 3223501733988,Swoveralls - Navy,40858868875375,4XL / Navy,Size=4XL; Color=Navy,20-4XL-NVY,99.00,,true
-15022560804975,Swoveralls - Nightshade Plum,53160030011503,S / Nightshade Plum,Size=S; Color=Nightshade Plum,SWPANTS-066-S,120.00,,true
+15022560804975,Swoveralls - Nightshade Plum,53160030011503,S / Nightshade Plum,Size=S; Color=Nightshade Plum,SWPANTS-066-S,120.00,,false
 15022560804975,Swoveralls - Nightshade Plum,53160030044271,M / Nightshade Plum,Size=M; Color=Nightshade Plum,SWPANTS-066-M,120.00,,true
 15022560804975,Swoveralls - Nightshade Plum,53160030077039,L / Nightshade Plum,Size=L; Color=Nightshade Plum,SWPANTS-066-L,120.00,,true
-15022560804975,Swoveralls - Nightshade Plum,53160030109807,XL / Nightshade Plum,Size=XL; Color=Nightshade Plum,SWPANTS-066-XL,120.00,,true
+15022560804975,Swoveralls - Nightshade Plum,53160030109807,XL / Nightshade Plum,Size=XL; Color=Nightshade Plum,SWPANTS-066-XL,120.00,,false
 15022560804975,Swoveralls - Nightshade Plum,53160030142575,2XL / Nightshade Plum,Size=2XL; Color=Nightshade Plum,SWPANTS-066-2XL,120.00,,false
 15022560804975,Swoveralls - Nightshade Plum,53160030175343,3XL / Nightshade Plum,Size=3XL; Color=Nightshade Plum,SWPANTS-066-3XL,120.00,,true
 15022560804975,Swoveralls - Nightshade Plum,53160030208111,4XL / Nightshade Plum,Size=4XL; Color=Nightshade Plum,SWPANTS-066-4XL,120.00,,true
@@ -382,7 +382,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 14938100531311,Swovie Shorts - Color Riot - Coming Soon!,52831692521583,L / Color Riot,Size=L; Color=Color Riot,SWSHORTS-RWP-L,99.99,,false
 14938100531311,Swovie Shorts - Color Riot - Coming Soon!,52831692554351,XL / Color Riot,Size=XL; Color=Color Riot,SWSHORTS-RWP-XL,99.99,,true
 14938100531311,Swovie Shorts - Color Riot - Coming Soon!,52831692587119,2XL / Color Riot,Size=2XL; Color=Color Riot,SWSHORTS-RWP-2XL,99.99,,false
-14938100531311,Swovie Shorts - Color Riot - Coming Soon!,52831692619887,3XL / Color Riot,Size=3XL; Color=Color Riot,SWSHORTS-RWP-3XL,99.99,,true
+14938100531311,Swovie Shorts - Color Riot - Coming Soon!,52831692619887,3XL / Color Riot,Size=3XL; Color=Color Riot,SWSHORTS-RWP-3XL,99.99,,false
 14938100531311,Swovie Shorts - Color Riot - Coming Soon!,52831692652655,4XL / Color Riot,Size=4XL; Color=Color Riot,SWSHORTS-RWP-4XL,99.99,,false
 4483781623919,Swovie Shorts - Dark Athletic Grey,39352118247535,XXS / Dark Athletic Grey,Size=XXS; Color=Dark Athletic Grey,S20-XXS-DGRY,89.00,,true
 4483781623919,Swovie Shorts - Dark Athletic Grey,31721332899951,XS / Dark Athletic Grey,Size=XS; Color=Dark Athletic Grey,S20-XS-DGRY,89.00,,true

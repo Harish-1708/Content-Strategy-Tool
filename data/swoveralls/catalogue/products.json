@@ -1432,7 +1432,7 @@
      "title": "XL / Bordeaux"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53755991523439,
      "options": [
@@ -9079,7 +9079,7 @@
      "title": "XS / Garden Party"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 52768780976239,
      "options": [
@@ -9133,7 +9133,7 @@
      "title": "L / Garden Party"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 52768781074543,
      "options": [
@@ -9169,7 +9169,7 @@
      "title": "2XL / Garden Party"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 52768781140079,
      "options": [
@@ -10868,7 +10868,7 @@
    "variant_count": 7,
    "variants": [
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53160030011503,
      "options": [
@@ -10922,7 +10922,7 @@
      "title": "L / Nightshade Plum"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53160030109807,
      "options": [
@@ -12854,7 +12854,7 @@
      "title": "2XL / Color Riot"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 52831692619887,
      "options": [
