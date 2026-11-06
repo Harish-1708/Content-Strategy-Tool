@@ -7471,7 +7471,7 @@
      "title": "M / Dancing Skeletons"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753349079151,
      "options": [
@@ -11415,7 +11415,7 @@
      "title": "M / Purr Parade Navy"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 43949671088239,
      "options": [
@@ -12818,7 +12818,7 @@
      "title": "L / Color Riot"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 52831692554351,
      "options": [
