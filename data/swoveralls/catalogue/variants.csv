@@ -183,7 +183,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15346069864559,Swoveralls - Black/White Stripes,53753457999983,2XL / Black/White,Size=2XL; Color=Black/White,SWPANTS-686-2XL,120.00,,true
 15346069864559,Swoveralls - Black/White Stripes,53753458032751,3XL / Black/White,Size=3XL; Color=Black/White,SWPANTS-686-3XL,120.00,,true
 15346069864559,Swoveralls - Black/White Stripes,53753458065519,4XL / Black/White,Size=4XL; Color=Black/White,SWPANTS-686-4XL,120.00,,true
-15346078810223,Swoveralls - Boobies,53753477136495,S / Boobies,Size=S; Color=Boobies,SWPANTS-467-S,120.00,,true
+15346078810223,Swoveralls - Boobies,53753477136495,S / Boobies,Size=S; Color=Boobies,SWPANTS-467-S,120.00,,false
 15346078810223,Swoveralls - Boobies,53753477169263,M / Boobies,Size=M; Color=Boobies,SWPANTS-467-M,120.00,,true
 15346078810223,Swoveralls - Boobies,53753477202031,L / Boobies,Size=L; Color=Boobies,SWPANTS-467-L,120.00,,true
 15346078810223,Swoveralls - Boobies,53753477234799,XL / Boobies,Size=XL; Color=Boobies,SWPANTS-467-XL,120.00,,true
@@ -214,7 +214,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15346022973551,Swoveralls - Dancing Skeletons,53753349013615,S / Dancing Skeletons,Size=S; Color=Dancing Skeletons,SWPANTS-BKX-S,120.00,,false
 15346022973551,Swoveralls - Dancing Skeletons,53753349046383,M / Dancing Skeletons,Size=M; Color=Dancing Skeletons,SWPANTS-BKX-M,120.00,,true
 15346022973551,Swoveralls - Dancing Skeletons,53753349079151,L / Dancing Skeletons,Size=L; Color=Dancing Skeletons,SWPANTS-BKX-L,120.00,,false
-15346022973551,Swoveralls - Dancing Skeletons,53753349111919,XL / Dancing Skeletons,Size=XL; Color=Dancing Skeletons,SWPANTS-BKX-XL,120.00,,true
+15346022973551,Swoveralls - Dancing Skeletons,53753349111919,XL / Dancing Skeletons,Size=XL; Color=Dancing Skeletons,SWPANTS-BKX-XL,120.00,,false
 15346022973551,Swoveralls - Dancing Skeletons,53753349144687,2XL / Dancing Skeletons,Size=2XL; Color=Dancing Skeletons,SWPANTS-BKX-2XL,120.00,,false
 15346022973551,Swoveralls - Dancing Skeletons,53753349177455,3XL / Dancing Skeletons,Size=3XL; Color=Dancing Skeletons,SWPANTS-BKX-3XL,120.00,,false
 15346022973551,Swoveralls - Dancing Skeletons,53753349210223,4XL / Dancing Skeletons,Size=4XL; Color=Dancing Skeletons,SWPANTS-BKX-4XL,120.00,,true
