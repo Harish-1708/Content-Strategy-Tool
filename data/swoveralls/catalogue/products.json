@@ -1432,7 +1432,7 @@
      "title": "XL / Bordeaux"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53755991523439,
      "options": [
@@ -8371,7 +8371,7 @@
      "title": "2XL / Dog Days Navy"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 43949671678063,
      "options": [
@@ -9115,7 +9115,7 @@
      "title": "M / Garden Party"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 52768781041775,
      "options": [
@@ -13938,7 +13938,7 @@
      "title": "XL / Light Heather Grey"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 31721363374191,
      "options": [
@@ -14491,7 +14491,7 @@
      "title": "XL / Navy"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 31721259073647,
      "options": [

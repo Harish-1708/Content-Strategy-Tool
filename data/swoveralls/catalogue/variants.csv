@@ -38,7 +38,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991425135,M / Bordeaux,Size=M; Color=Bordeaux,SWPANTSCORD-781-M,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991457903,L / Bordeaux,Size=L; Color=Bordeaux,SWPANTSCORD-781-L,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991490671,XL / Bordeaux,Size=XL; Color=Bordeaux,SWPANTSCORD-781-XL,129.00,,true
-15347005489263,Corduroy Swoveralls - Bordeaux,53755991523439,2XL / Bordeaux,Size=2XL; Color=Bordeaux,SWPANTSCORD-781-2XL,129.00,,false
+15347005489263,Corduroy Swoveralls - Bordeaux,53755991523439,2XL / Bordeaux,Size=2XL; Color=Bordeaux,SWPANTSCORD-781-2XL,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991556207,3XL / Bordeaux,Size=3XL; Color=Bordeaux,SWPANTSCORD-781-3XL,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991588975,4XL / Bordeaux,Size=4XL; Color=Bordeaux,SWPANTSCORD-781-4XL,129.00,,true
 15347005325423,Corduroy Swoveralls - Forest Green,53755990311023,S / Forest Green,Size=S; Color=Forest Green,SWPANTSCORD-002-S,129.00,,true
@@ -243,7 +243,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671579759,L / Dog Days Navy,Size=L; Color=Dog Days Navy,SWPANTS-BMF-L,120.00,,true
 7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671612527,XL / Dog Days Navy,Size=XL; Color=Dog Days Navy,SWPANTS-BMF-XL,120.00,,true
 7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671645295,2XL / Dog Days Navy,Size=2XL; Color=Dog Days Navy,SWPANTS-BMF-2XL,120.00,,false
-7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671678063,3XL / Dog Days Navy,Size=3XL; Color=Dog Days Navy,SWPANTS-BMF-3XL,120.00,,true
+7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671678063,3XL / Dog Days Navy,Size=3XL; Color=Dog Days Navy,SWPANTS-BMF-3XL,120.00,,false
 7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671710831,4XL / Dog Days Navy,Size=4XL; Color=Dog Days Navy,SWPANTS-BMF-4XL,120.00,,true
 15346055970927,Swoveralls - Duck Camo,53753418645615,S / Duck Camo,Size=S; Color=Duck Camo,SWPANTS-341-S,120.00,,true
 15346055970927,Swoveralls - Duck Camo,53753418678383,M / Duck Camo,Size=M; Color=Duck Camo,SWPANTS-341-M,120.00,,true
@@ -265,7 +265,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 14917967904879,Swoveralls - Garden Party - Coming Soon!,52768780943471,XS / Garden Party,Size=XS; Color=Garden Party,SWPANTS-452-XS,120.00,,false
 14917967904879,Swoveralls - Garden Party - Coming Soon!,52768780976239,S / Garden Party,Size=S; Color=Garden Party,SWPANTS-452-S,120.00,,false
 14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781009007,M / Garden Party,Size=M; Color=Garden Party,SWPANTS-452-M,120.00,,false
-14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781041775,L / Garden Party,Size=L; Color=Garden Party,SWPANTS-452-L,120.00,,true
+14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781041775,L / Garden Party,Size=L; Color=Garden Party,SWPANTS-452-L,120.00,,false
 14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781074543,XL / Garden Party,Size=XL; Color=Garden Party,SWPANTS-452-XL,120.00,,false
 14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781107311,2XL / Garden Party,Size=2XL; Color=Garden Party,SWPANTS-452-2XL,120.00,,false
 14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781140079,3XL / Garden Party,Size=3XL; Color=Garden Party,SWPANTS-452-3XL,120.00,,false
@@ -417,7 +417,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 4483784441967,Swovie Shorts - Light Heather Grey,31721363210351,M / Light Heather Grey,Size=M; Color=Light Heather Grey,S20-MED-HGRY,89.00,,true
 4483784441967,Swovie Shorts - Light Heather Grey,31721363243119,L / Light Heather Grey,Size=L; Color=Light Heather Grey,S20-LRG-HGRY,89.00,,true
 4483784441967,Swovie Shorts - Light Heather Grey,31721363308655,XL / Light Heather Grey,Size=XL; Color=Light Heather Grey,S20-XL-HGRY,89.00,,true
-4483784441967,Swovie Shorts - Light Heather Grey,31721363374191,2XL / Light Heather Grey,Size=2XL; Color=Light Heather Grey,S20-2XL-HGRY,89.00,,true
+4483784441967,Swovie Shorts - Light Heather Grey,31721363374191,2XL / Light Heather Grey,Size=2XL; Color=Light Heather Grey,S20-2XL-HGRY,89.00,,false
 4483784441967,Swovie Shorts - Light Heather Grey,31721363439727,3XL / Light Heather Grey,Size=3XL; Color=Light Heather Grey,S20-3XL-HGRY,89.00,,true
 4483784441967,Swovie Shorts - Light Heather Grey,40871850606703,4XL / Light Heather Grey,Size=4XL; Color=Light Heather Grey,S20-4XL-HGRY,89.00,,true
 4483733913711,Swovie Shorts - Midnight Black,39352119656559,XXS / Midnight Black,Size=XXS; Color=Midnight Black,S20-XXS-BLK,89.00,,true
@@ -435,7 +435,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 4483773431919,Swovie Shorts - Navy,31721258975343,M / Navy,Size=M; Color=Navy,S20-MED-NVY,89.00,,true
 4483773431919,Swovie Shorts - Navy,31721259008111,L / Navy,Size=L; Color=Navy,S20-LRG-NVY,89.00,,false
 4483773431919,Swovie Shorts - Navy,31721259040879,XL / Navy,Size=XL; Color=Navy,S20-XL-NVY,89.00,,false
-4483773431919,Swovie Shorts - Navy,31721259073647,2XL / Navy,Size=2XL; Color=Navy,S20-2XL-NVY,89.00,,true
+4483773431919,Swovie Shorts - Navy,31721259073647,2XL / Navy,Size=2XL; Color=Navy,S20-2XL-NVY,89.00,,false
 4483773431919,Swovie Shorts - Navy,31721259106415,3XL / Navy,Size=3XL; Color=Navy,S20-3XL-NVY,89.00,,false
 4483773431919,Swovie Shorts - Navy,40871848542319,4XL / Navy,Size=4XL; Color=Navy,S20-4XL-NVY,89.00,,false
 15560986067055,The Free Your Waistband Beanie - Black,67613030908015,Black,Color=Black,GB521-B00003-006,36.00,,true
