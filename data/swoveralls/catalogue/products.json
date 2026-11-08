@@ -11343,7 +11343,7 @@
    "variant_count": 9,
    "variants": [
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 43949670957167,
      "options": [
