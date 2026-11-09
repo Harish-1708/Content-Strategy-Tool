@@ -1,0 +1,14 @@
+# Services and purposes added to the platform without writing code. Another repository, or you from the GitHub page, can declare them here. Each one then appears in observatory.yaml's services: block
+# (validated), in the Controls tab and in `observatory controls`, with a master switch, a switch for each purpose and, if you list them, for each channel. See docs/platform/adding-a-service.md.
+#
+# purposes:                      # a kind of work another repository does; every shared service gets a switch for it
+#   - outreach
+#   - {name: reporting, ai_route: true}      # ai_route: true lets the AI Gateway take its language-model calls too
+# services:
+#   - name: firecrawl
+#     label: Firecrawl (page reading)
+#     channels: [scrape, crawl]
+#     purposes: [content_research, outreach]  # leave out to cover every purpose
+#     routes: {purposes: [content_research], choices: [old, new], default: old}
+purposes: []
+services: []

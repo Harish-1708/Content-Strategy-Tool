@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "contentintel"
+version = "0.40.0"
+description = "Kelson Agency content strategy tool: shared collection, research and AI services for brands"
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.31",
+    "PyYAML>=6.0.1",
+    "gspread>=6.1,<7",
+    "python-docx>=1.1",
+    "Pillow>=10.0",
+    "yt-dlp>=2025.1.15",
+    "protego>=0.4",
+    "defusedxml>=0.7",
+]
+
+[tool.setuptools.packages.find]
+include = ["contentintel*"]
+
+[tool.setuptools.package-data]
+"contentintel.observatory" = ["data/*"]
