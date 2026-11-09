@@ -74,6 +74,7 @@ sources:
     limitations:
       - a dummy account can be warned
       - posts only; no private analytics
+      - the Agent-Reach route needs OpenCLI and a logged-in browser on a machine you control, and is not live-verified
     routes:
       browser: {tier: session_based, access_type: site_data, login: dummy_account}
       apify: {tier: third_party_service, access_type: site_data, login: none}
@@ -81,12 +82,12 @@ sources:
         tier: session_based
         access_type: site_data
         login: dummy_account
-        enabled: false
         experimental: true
         note: >-
-          Agent-Reach's only Instagram route drives a logged-in stealth browser and is marked experimental
-          by its authors. It is not wired in and stays off. It would be judged against the existing route on
-          unique usable items, completeness and failure rate before it could be enabled.
+          Agent-Reach's Instagram route reads through OpenCLI in a browser a person has logged in to, and its authors mark it experimental.
+          It runs beside the existing route (observatory instagram collect), merges with it without overwriting it, and is judged against it on
+          unique usable items, completeness and failure rate (observatory instagram compare). It needs OpenCLI and a logged-in browser on a machine
+          you control and never runs on a GitHub-hosted runner, so no Instagram cookie or password is ever given to one.
 
   deep_research:
     kind: collector
@@ -113,6 +114,8 @@ sources:
       serpapi: {tier: third_party_service, access_type: search_snippet, login: api_key}
       exa: {tier: third_party_service, access_type: search_snippet, login: api_key}
       exa_mcp: {tier: third_party_service, access_type: search_snippet, login: none}
+      agent_reach_reddit: {tier: session_based, access_type: search_snippet, login: dummy_account, experimental: true, note: "Reddit search through Agent-Reach (OpenCLI); on in the workflows (AGENT_REACH_SEARCH=on) but only runs where OpenCLI and a logged-in browser are, never on a hosted runner"}
+      agent_reach_youtube: {tier: third_party_service, access_type: search_snippet, login: none, experimental: true, note: "YouTube search through Agent-Reach (yt-dlp, no login); on in the workflows (AGENT_REACH_SEARCH=on), last in the web search order"}
 
   shopify_catalogue:
     kind: catalogue
@@ -193,6 +196,109 @@ sources:
       - built in Stage 3; public search and permitted public pages only
     routes:
       public_web: {tier: public_polite, access_type: page_text, login: none}
+
+  reddit:
+    kind: collector
+    label: Reddit posts (official API and Agent-Reach)
+    platform: reddit
+    status: experimental
+    capabilities: [posts, scores, comment counts, communities]
+    limitations:
+      - the official API route runs only with a recorded approval from Reddit (free is non-commercial only; commercial needs a contract) and is not live-verified
+      - the Agent-Reach route needs OpenCLI and a logged-in browser on a machine you control, never a hosted runner, and is not live-verified
+      - posts only; comment threads are not read
+    routes:
+      api: {tier: official_api, access_type: site_data, login: api_key}
+      agent_reach:
+        tier: session_based
+        access_type: site_data
+        login: dummy_account
+        experimental: true
+        note: >-
+          Reddit through OpenCLI in a browser a person has logged in to; complements the official API route and fills its gaps without overwriting it.
+
+  agent_reach_research:
+    kind: collector
+    label: Agent-Reach research (search, read and profiles across its channels)
+    platform: web
+    status: experimental
+    capabilities: [search results, pages and posts, profiles, subtitles, repositories, job postings]
+    limitations:
+      - Instagram, Reddit, X (Twitter), Facebook, LinkedIn, Xiaohongshu and Boss need OpenCLI and a browser logged in to the site, on a machine you control, never a hosted runner
+      - YouTube runs on yt-dlp with no login; YouTube may bot-check data-centre addresses (reported, not worked around)
+      - GitHub uses the public REST API with no login (60 requests an hour; GITHUB_TOKEN raises it)
+      - not live-verified; OpenCLI's output field names are read through generic mappings
+    routes:
+      youtube:
+        tier: third_party_service
+        access_type: site_data
+        login: none
+        experimental: true
+        note: >-
+          YouTube searches, pages and subtitles through yt-dlp (Agent-Reach's YouTube implementation); complements the official YouTube Data API route, which stays the main one.
+      github:
+        tier: official_api
+        access_type: site_data
+        login: none
+        experimental: true
+        note: >-
+          Repository search, README and issue reading through GitHub's public REST API.
+      web:
+        tier: third_party_service
+        access_type: page_text
+        login: none
+        experimental: true
+        note: >-
+          Pages read through the platform's shared page readers (Scrapling, Jina Reader, built-in); recorded under the reader's own routes.
+      instagram:
+        tier: session_based
+        access_type: site_data
+        login: dummy_account
+        experimental: true
+        note: >-
+          Instagram searches, profiles and posts through OpenCLI in a logged-in browser on a machine you control.
+      reddit:
+        tier: session_based
+        access_type: site_data
+        login: dummy_account
+        experimental: true
+        note: >-
+          Reddit searches, posts and subreddits through OpenCLI in a logged-in browser on a machine you control.
+      twitter:
+        tier: session_based
+        access_type: site_data
+        login: dummy_account
+        experimental: true
+        note: >-
+          X (Twitter) searches, profiles, posts and threads through OpenCLI in a logged-in browser on a machine you control.
+      facebook:
+        tier: session_based
+        access_type: site_data
+        login: dummy_account
+        experimental: true
+        note: >-
+          Facebook searches and profiles through OpenCLI in a logged-in browser on a machine you control.
+      linkedin:
+        tier: session_based
+        access_type: site_data
+        login: dummy_account
+        experimental: true
+        note: >-
+          LinkedIn job postings through OpenCLI in a logged-in browser on a machine you control.
+      xiaohongshu:
+        tier: session_based
+        access_type: site_data
+        login: dummy_account
+        experimental: true
+        note: >-
+          Xiaohongshu searches and notes through OpenCLI in a logged-in browser on a machine you control.
+      boss:
+        tier: session_based
+        access_type: site_data
+        login: dummy_account
+        experimental: true
+        note: >-
+          Boss job searches through OpenCLI in a logged-in browser on a machine you control.
 
   competitor_stores:
     kind: collector
