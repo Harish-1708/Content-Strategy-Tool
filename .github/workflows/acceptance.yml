@@ -119,6 +119,7 @@ jobs:
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
           EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
           EXA_MCP: "on"
+          AGENT_REACH_SEARCH: "on"
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
           set +e
