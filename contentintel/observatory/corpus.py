@@ -82,6 +82,70 @@ def outliers(videos, formulas, *, min_videos=4, min_multiple=2.0):
     return {"outliers": rows, "thin_channels": thin, "channels": channels, "formulas_among_outliers": dict(sorted(counts.items(), key=lambda kv: -kv[1]))}
 
 
+def _when(text):
+    try:
+        return datetime.strptime(str(text)[:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+
+
+def velocity(videos, now, *, window_days=7, min_hours=12, min_multiple=2.0):
+    """How fast each video is gaining views, against how fast the same channel's videos usually gain them: the trend a single count cannot show.
+
+    A video's speed is the views it gained per day between its first and latest stored reading inside the window (needs at least `min_hours` between them). A video read only once
+    has no history, so a recent one (published inside the window) is estimated as views divided by its age and says so; an older one with a single reading is left out, since its
+    lifetime average says nothing about now. The baseline is the channel's median speed over three or more videos; the multiple is speed over that baseline.
+    Views that went down between readings (YouTube corrects counts) give no speed."""
+    end = _when(now)
+    rows, by_channel = [], {}
+    for v in videos:
+        pts = sorted((p for p in v.get("history", []) if isinstance(p.get("views"), int) and _when(p.get("at"))), key=lambda p: p["at"])
+        recent = [p for p in pts if (end - _when(p["at"])).total_seconds() <= window_days * 86400]
+        speed, basis = None, ""
+        if len(recent) >= 2:
+            hours = (_when(recent[-1]["at"]) - _when(recent[0]["at"])).total_seconds() / 3600
+            gain = recent[-1]["views"] - recent[0]["views"]
+            if hours >= min_hours and gain >= 0:
+                speed, basis = gain / (hours / 24), f"{len(recent)} readings over {hours / 24:.1f} days"
+        if speed is None and len(recent) < 2 and isinstance(v.get("views"), int):
+            published = _when(v.get("published_at"))
+            if published:
+                age = (end - published).total_seconds() / 86400
+                if 0 < age <= window_days:
+                    speed, basis = v["views"] / max(age, 0.5), f"estimated from age ({age:.1f} days, one reading)"
+        if speed is not None:
+            rec = {"video_id": v["id"], "channel_id": v.get("channel_id") or v.get("channel_title") or "?", "channel": v.get("channel_title", ""), "title": v.get("title", ""),
+                   "views": v.get("views"), "per_day": round(speed, 1), "basis": basis, "url": v.get("url", ""), "shorts_class": v.get("shorts_class", "")}
+            rows.append(rec)
+            by_channel.setdefault(rec["channel_id"], []).append(rec)
+    out, thin = [], []
+    for cid, recs in by_channel.items():
+        if len(recs) < 3:
+            thin.append({"channel": recs[0]["channel"] or cid, "videos": len(recs)})
+            continue
+        baseline = statistics.median(r["per_day"] for r in recs)
+        for r in recs:
+            r["baseline_per_day"] = round(baseline, 1)
+            r["multiple"] = round(r["per_day"] / baseline, 2) if baseline > 0 else None
+            if r["multiple"] is not None and r["multiple"] >= min_multiple:
+                out.append(r)
+    out.sort(key=lambda r: (-r["multiple"], r["video_id"]))
+    return {"trending": out, "thin_channels": thin, "evaluated": len(rows)}
+
+
+def trending_report_text(result, brand_name, now):
+    lines = [f"YouTube videos gaining views fastest for {brand_name} (prepared {now[:10]})", "",
+             "Speed is views gained per day, set against the usual speed of the same channel's videos. A video read only once is an estimate from its age and is marked as one.", ""]
+    if not result["trending"]:
+        lines.append("Nothing is gaining faster than its channel's usual pace. Speed needs the same videos read on more than one day (collect again later), "
+                     "or new videos on channels with at least three of them.")
+    for r in result["trending"][:25]:
+        lines.append(f"{r['multiple']:5.2f}x  {r['per_day']:>9,.0f}/day vs {r['baseline_per_day']:>8,.0f} usual  {r['channel'][:22]:<22} {r['title'][:55]}  ({r['basis']})")
+    if result["thin_channels"]:
+        lines += ["", "Left out (fewer than three videos with a speed, so there is no usual pace): " + ", ".join(f"{t['channel']} ({t['videos']})" for t in result["thin_channels"][:8])]
+    return "\n".join(lines) + "\n"
+
+
 def duration_seconds(iso):
     m = re.fullmatch(r"P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?", str(iso or ""))
     if not m:
@@ -313,9 +377,26 @@ def discover_channels(api, queries, limit):
     return found
 
 
+def channels_from_rows(rows, queries_by_row=None):
+    """[(channel reference, channel title, query)] from search rows that name a channel (id or @handle), once each. The reference is what the Data API accepts: a UC... id, or an @handle."""
+    found, seen = [], set()
+    for query, row in rows:
+        cid = str(row.get("channel_id") or "")
+        handle = str(row.get("uploader_id") or "")
+        if not cid.startswith("UC"):
+            m = re.search(r"/channel/(UC[A-Za-z0-9_\-]{22})|/(@[A-Za-z0-9_.\-]{2,60})", str(row.get("channel_url") or ""))
+            cid = (m.group(1) or "") if m else ""
+            handle = handle or ((m.group(2) or "") if m else "")
+        ref = cid if cid.startswith("UC") else handle
+        if ref and ref.lower() not in seen:
+            seen.add(ref.lower())
+            found.append((ref, clean_text(str(row.get("channel", ""))).strip(), query))
+    return found
+
+
 # ---- evidence ---------------------------------------------------------------------------------------------------------------------------------
 
-def evidence_for_video(rec, registry, now, multiple=None, formulas=None):
+def evidence_for_video(rec, registry, now, multiple=None, formulas=None, trend=None):
     route = registry.route(SOURCE, ROUTE)
     metrics = []
     for field, name in (("views", "views"), ("likes", "likes"), ("comments", "comments")):
@@ -325,6 +406,12 @@ def evidence_for_video(rec, registry, now, multiple=None, formulas=None):
     if multiple:
         metrics.append({"name": "outlier_multiple", "value": multiple["multiple"], "unit": "ratio", "denominator": multiple["median"], "window": "views against the channel's own median",
                         "captured_at": rec["captured_at"], "platform": "youtube", "source": SOURCE, "kind": "proxy"})
+    if trend:
+        metrics.append({"name": "views_per_day", "value": trend["per_day"], "unit": "count_per_day", "denominator": None, "window": trend["basis"], "captured_at": rec["captured_at"],
+                        "platform": "youtube", "source": SOURCE, "kind": "proxy"})
+        if trend.get("multiple") is not None:
+            metrics.append({"name": "trend_multiple", "value": trend["multiple"], "unit": "ratio", "denominator": trend["baseline_per_day"], "window": "speed against the channel's usual speed",
+                            "captured_at": rec["captured_at"], "platform": "youtube", "source": SOURCE, "kind": "proxy"})
     missing = ["transcript"] + [f for f in ("views", "likes", "comments") if rec.get(f) is None]
     observed = [f for f in ("title", "published_at", "duration_s", "views", "likes", "comments", "thumbnail") if rec.get(f) not in (None, "")]
     hist = rec.get("history") or [{"at": rec["captured_at"]}]
@@ -367,6 +454,16 @@ def build_documents(store, snaps, slug, registry, now, site_ids=()):
                 continue
             docs.append({"id": "read:" + page.get("url", ""), "source": "competitor_pages", "kind": "page", "title": page.get("title", ""), "text": page.get("text", ""),
                          "url": page.get("url", ""), "when": page.get("captured_at", "")})
+    about = store.dir(slug, create=False) / "corpus" / "channel_pages.jsonl"
+    if about.is_file():                                                    # YouTube channel About pages and the accounts they link to
+        for line in about.read_text(encoding="utf-8").splitlines():
+            try:
+                page = json.loads(line)
+            except ValueError:
+                continue
+            linked = " ".join(f"{k} {v}" for k, v in sorted((page.get("social") or {}).items()))
+            docs.append({"id": "channel:" + page.get("url", ""), "source": SOURCE, "kind": "channel_page", "title": page.get("title", ""), "text": (page.get("text", "") + " " + linked).strip(),
+                         "url": page.get("url", ""), "when": page.get("captured_at", "")})
     for sid in site_ids:
         for kind in snaps.kinds(sid):
             _, snap = snaps.latest(sid, kind)
@@ -382,7 +479,7 @@ def build_documents(store, snaps, slug, registry, now, site_ids=()):
     return docs
 
 
-def search(docs, query, limit=10, k1=1.5, b=0.75):
+def search(docs, query, limit=10, k1=1.5, b=0.75, snippet_chars=160):
     """BM25 over title (counted three times) and text. Returns [{...doc, score, snippet}] best first; no match, no result."""
     q = _terms(query)
     if not q or not docs:
@@ -401,7 +498,7 @@ def search(docs, query, limit=10, k1=1.5, b=0.75):
         if score > 0:
             body = " ".join(str(d["text"] or d["title"]).split())
             pos = min((body.lower().find(w) for w in q if w in body.lower()), default=0)
-            out.append({**d, "score": round(score, 3), "snippet": body[max(0, pos - 40):pos + 160]})
+            out.append({**d, "score": round(score, 3), "snippet": body[max(0, pos - 40):pos + snippet_chars]})
     out.sort(key=lambda r: (-r["score"], r["id"]))
     return out[:limit]
 
