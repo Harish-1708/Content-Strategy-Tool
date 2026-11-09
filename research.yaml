@@ -20,13 +20,17 @@ providers:
     keep_free: 20
   exa:                      # Exa's search API: new accounts get free credits and the free tier renews monthly; when they end it stops (402). Add no card.
     monthly_cap: 200
+  agent_reach_reddit:       # Reddit search through Agent-Reach (needs OpenCLI and a logged-in browser on a machine you control, so it answers only there; on in the workflows through AGENT_REACH_SEARCH=on, and listed last in web routing below). #
+    monthly_cap: 300
+  agent_reach_youtube:      # YouTube search through Agent-Reach, the same way
+    monthly_cap: 300
   exa_mcp:                  # Exa's free hosted search, no key; a third-party service, so public queries only; its own limit is not published
     monthly_cap: 150
 
 # The first provider in each list that still has credits takes the search; the next one is the
 # fallback. News searches go to Tavily first because it renews monthly and dates its results.
 routing:
-  web: [serper_dev, tavily, serpapi, exa, exa_mcp]
+  web: [serper_dev, tavily, serpapi, exa, exa_mcp, agent_reach_youtube, agent_reach_reddit]     # Agent-Reach last: it answers only when the others cannot (and only where it can run)
   news: [tavily, serper_dev, serpapi, exa, exa_mcp]
 
 defaults:
