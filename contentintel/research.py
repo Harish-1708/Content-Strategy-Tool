@@ -46,9 +46,11 @@ DEFAULTS = {
         "serpapi": {"monthly_cap": 100, "lifetime_cap": None, "keep_free": 20},
         "exa": {"monthly_cap": 200, "lifetime_cap": None, "keep_free": 0},
         "exa_mcp": {"monthly_cap": 150, "lifetime_cap": None, "keep_free": 0},
+        "agent_reach_reddit": {"monthly_cap": 300, "lifetime_cap": None, "keep_free": 0},        # Agent-Reach channels offered as search providers; they run only when AGENT_REACH_SEARCH=on, never on a hosted runner,
+        "agent_reach_youtube": {"monthly_cap": 300, "lifetime_cap": None, "keep_free": 0},       # and only research.yaml's routing decides whether a query goes to them (not by default)
     },
     "routing": {
-        "web": ["serper_dev", "tavily", "serpapi", "exa", "exa_mcp"],
+        "web": ["serper_dev", "tavily", "serpapi", "exa", "exa_mcp", "agent_reach_youtube", "agent_reach_reddit"],       # the Agent-Reach channels last: they answer only when the others cannot
         "news": ["tavily", "serper_dev", "serpapi", "exa", "exa_mcp"],
     },
     "defaults": {"results_per_query": 10, "cache_days": 7, "max_queries_per_run": 30,
