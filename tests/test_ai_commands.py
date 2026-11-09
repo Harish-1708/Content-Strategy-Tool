@@ -442,8 +442,8 @@ def test_the_cli_module_does_not_import_the_ai_package_at_start_up():
 
 def test_the_shipped_providers_command_shows_the_rolled_out_providers_with_their_recorded_decision(ai):
     code, out = ai("providers", providers=ROOT / "ai_providers.yaml")
-    assert code == 0 and "86 providers in the registry, 6 enabled" in out
-    for pid in ("github", "google", "groq", "mistral", "openrouter"):
+    assert code == 0 and "86 providers in the registry, 7 enabled" in out
+    for pid in ("cloudflare", "github", "google", "groq", "mistral", "openrouter"):
         line = next(l for l in out.splitlines() if l.strip().startswith(pid + " "))
         assert "ON" in line and "internal*" in line and "public,internal" in line, line         # * = raised by a recorded owner decision
     assert "restricted" in next(l for l in out.splitlines() if l.strip().startswith("claude "))
