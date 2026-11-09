@@ -8,6 +8,16 @@ https://github.com/Panniantong/Agent-Reach, MIT licence, copyright (c) 2025 Agen
 
 Used as a pattern: the shared result envelope and the eight error codes with the rule that some are final (`contentintel/contract.py`); the address safety check, the secret scrubber and the login-wall idea (`contentintel/safety.py`); the persistent rest after a rate limit or a failing route (`contentintel/health.py`); and the ledger of real per-action results with failures kept (`contentintel/acceptance.py`). Stage 3 adds: the free hosted Exa search route and the way its answers are read (`contentintel/providers.py`, class `ExaMcp`), and the Jina Reader route with its test for bot-check pages (`contentintel/observatory/readers.py`). Not adopted: its browser-based Reddit and Instagram routes (they need a separate browser program and a person logged in to it, which a hosted runner does not have), and its transcription script.
 
+Also used from Agent-Reach, as a pattern and a way of calling an external program: the OpenCLI wrapper for Instagram and Reddit (`contentintel/agent_reach_instagram.py`, `contentintel/reddit_routes.py`), including its error classification and its refusal to run on a hosted runner. Agent-Reach itself is not bundled or installed by this tool. Agent-Reach has no TikTok route, so none is used.
+
+## OpenCLI
+
+Not bundled and not installed by this tool. The Agent-Reach routes for Instagram and Reddit run the `opencli` program, if you install it yourself, on a machine you control and with a browser a person has logged in to. Its licence and terms are its own; check them before installing. The output field names the tool reads from it are generic mappings that were not verified against the real program.
+
+## Reddit Data API
+
+Not a software dependency. The official Reddit API route calls Reddit's service under Reddit's terms. Reddit's free access is for approved non-commercial use only and commercial use needs a contract; the tool therefore makes no request until the owner has recorded Reddit's approval. The terms summary in `docs/observatory/README.md` comes from secondary reports and should be confirmed with Reddit.
+
 ## Scrapling
 
 https://github.com/D4Vinci/Scrapling, BSD 3-Clause licence, copyright (c) 2024 Karim Shoair.
@@ -43,3 +53,11 @@ Used at run time, not copied: version 0.16.17 is fetched from GitHub by the AI w
 https://github.com/Vincentwei1021/video-shotcraft (Apache License 2.0 for its code; Remotion and the audio it bundles carry separate licences).
 
 Nothing is used yet. It is planned for a later stage and will be listed here, with any change made to it, when it is added.
+
+## GitHub REST API (Agent-Reach's GitHub channel)
+
+The platform's GitHub channel (`contentintel/github_reach.py`) reads repositories, READMEs, issues and pull requests through GitHub's public REST API, as Agent-Reach's own GitHub channel does. It needs no login; without a token GitHub allows 60 requests an hour per address. `GITHUB_TOKEN`, when set, is sent only to api.github.com and only raises that limit. Use is subject to GitHub's Terms of Service and API rate limits.
+
+## Scrapling
+
+Scrapling (BSD-3-Clause) is used through an isolated worker process: HTTP and browser fetching, link extraction, and parser tools (css, xpath, text, regex and similar-element search). Its Spider engine is not used.
