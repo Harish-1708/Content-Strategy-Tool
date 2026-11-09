@@ -24,7 +24,7 @@ on:
       action:
         description: "What to do"
         type: choice
-        options: [plan, discover, decide, monitor, corpus, report, status, history, prune]
+        options: [plan, discover, decide, judge, monitor, corpus, instagram, reddit, agentreach, reliability, controls, report, status, history, prune]
         default: plan
       brand:
         description: "Brand (blank: every brand)"
@@ -44,10 +44,50 @@ on:
         options: [monitor, stop, reset]
         default: monitor
       what:
-        description: "corpus: what to do"
+        description: "corpus, instagram, reddit, judge, agentreach, controls: what to do (each action uses the ones that apply to it and falls back to its usual default for the rest)"
         type: choice
-        options: [youtube, outliers, search, stats, read]
+        options: [youtube, outliers, search, stats, read, deepread, channelpages, crawl, feeds, trending, collect, compare, check, run, list, approve, reject, show, set, reset, subtitle, profile, posts, tweets, thread, jobs, subreddit]
         default: youtube
+      route:
+        description: "reddit: which route (all, api, agent_reach)"
+        type: choice
+        options: [all, api, agent_reach]
+        default: all
+      subreddit:
+        description: "reddit: extra communities (comma-separated)"
+        required: false
+        default: ""
+      ar_channel:
+        description: "agentreach: the Agent-Reach channel. youtube, github and web run anywhere; the others need OpenCLI and a logged-in browser on a machine you control, never a hosted runner"
+        type: choice
+        options: [instagram, reddit, youtube, twitter, facebook, linkedin, xiaohongshu, boss, github, web]
+        default: youtube
+      engine:
+        description: "corpus read, deepread, channelpages: the page reader (central: whatever the Controls say for that purpose)"
+        type: choice
+        options: [central, jina, core, scrapling, auto]
+        default: central
+      top:
+        description: "corpus deepread: how many search-result pages to read; corpus crawl: how many pages at most (the crawl.max_pages setting is the limit when blank)"
+        required: false
+        default: "5"
+      extra:
+        description: "agentreach: extra inputs as name=value, separated by semicolons (location=Austin for LinkedIn jobs, city=Shanghai for Boss); corpus crawl: depth=N (how many links deep), sitemap=true, resume=true, extract=name=css:.selector (css, xpath, text, regex or similar)"
+        required: false
+        default: ""
+      key:
+        description: "controls set/reset: the control's key (run controls first to list them)"
+        required: false
+        default: ""
+      value:
+        description: "controls set: the new value (on, off, a number, text or a choice)"
+        required: false
+        default: ""
+      platform:
+        description: "reliability: instagram, tiktok or reddit"
+        type: choice
+        options: [instagram, tiktok, reddit]
+        default: instagram
       query:
         description: "corpus search: the words to look for"
         required: false
@@ -77,7 +117,7 @@ on:
         type: boolean
         default: false
       browsers:
-        description: "Also download Scrapling's browsers (only for sites we own or are authorised to use that need them)"
+        description: "Also download Scrapling's browsers (needed by any competitor or setting that uses the browser)"
         type: boolean
         default: false
 
@@ -145,6 +185,15 @@ jobs:
           SITE: ${{ inputs.site }}
           PRODUCT: ${{ inputs.product }}
           SCRAPLING: ${{ inputs.scrapling }}
+          ROUTE: ${{ inputs.route }}
+          SUBREDDIT: ${{ inputs.subreddit }}
+          AR_CHANNEL: ${{ inputs.ar_channel }}
+          ENGINE: ${{ inputs.engine }}
+          KEY: ${{ inputs.key }}
+          VALUE: ${{ inputs.value }}
+          TOP: ${{ inputs.top }}
+          EXTRA: ${{ inputs.extra }}
+          PLATFORM: ${{ inputs.platform }}
           OBSERVATORY_CONTACT: ${{ secrets.OBSERVATORY_CONTACT }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
@@ -153,8 +202,12 @@ jobs:
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
           EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
           EXA_MCP: "on"
-          # For a site we own or are authorised to use (listed under authorised_access in observatory.yaml), pass its proxy address or account cookies here,
-          # one line per secret, under the secret's own name. docs/observatory/README.md ("Advanced access") shows the exact lines.
+          AGENT_REACH_SEARCH: "on"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}           # only raises GitHub's public-API limit for Agent-Reach's GitHub channel; the client sends it to api.github.com and nowhere else
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          # A proxy address or account cookies for any competitor (advanced.proxy, advanced.cookies_env in its brand file), or central defaults and overrides (services: in observatory.yaml),
+          # are passed here, one line per secret, under the secret's own name. docs/observatory/README.md ("Request controls") shows the exact lines.
         run: |
           set +e
           args=("$ACTION")
@@ -167,7 +220,39 @@ jobs:
             if [ -n "$URL" ]; then args+=(--url "$URL"); fi
             if [ -n "$CHANNELS" ]; then args+=(--channel "$CHANNELS"); fi
             if [ "$FIND" = "true" ]; then args+=(--find-channels); fi
+            if [ "$ENGINE" != "central" ]; then args+=(--engine "$ENGINE"); fi
+            if [ "$WHAT" = "deepread" ]; then args+=(--top "$TOP"); fi
+            if [ "$WHAT" = "crawl" ]; then
+              args+=(--max-pages "$TOP")
+              IFS=';' read -ra parts <<< "$EXTRA"
+              for part in "${parts[@]}"; do
+                case "$part" in
+                  depth=*) args+=(--depth "${part#depth=}") ;;
+                  sitemap=true) args+=(--sitemap) ;;
+                  resume=true) args+=(--resume) ;;
+                  extract=*) args+=(--extract "${part#extract=}") ;;
+                esac
+              done
+            fi
           fi
+          case "$ACTION" in instagram|reddit|judge|agentreach|controls) args+=(--what "$WHAT") ;; esac
+          if [ "$ACTION" = "reddit" ]; then
+            args+=(--route "$ROUTE")
+            if [ -n "$SUBREDDIT" ]; then args+=(--subreddit "$SUBREDDIT"); fi
+            if [ -n "$QUERY" ]; then args+=(--query "$QUERY"); fi
+          fi
+          if [ "$ACTION" = "agentreach" ]; then
+            args+=(--ar-channel "$AR_CHANNEL")
+            if [ -n "$QUERY" ]; then args+=(--query "$QUERY"); fi
+            if [ -n "$URL" ]; then args+=(--url "$URL"); fi
+            IFS=';' read -ra parts <<< "$EXTRA"
+            for part in "${parts[@]}"; do if [ -n "$part" ]; then args+=(--param "$part"); fi; done
+          fi
+          if [ "$ACTION" = "controls" ]; then
+            if [ -n "$KEY" ]; then args+=(--key "$KEY"); fi
+            if [ -n "$VALUE" ]; then args+=(--value "$VALUE"); fi
+          fi
+          if [ "$ACTION" = "reliability" ]; then args+=(--platform "$PLATFORM"); fi
           if [ "$ACTION" = "decide" ]; then args+=(--decision "$DECISION"); fi
           if [ "$ACTION" = "history" ]; then
             if [ -n "$SITE" ]; then args+=(--site "$SITE"); fi
