@@ -190,6 +190,19 @@ class SnapshotStore:
             data = {}
         return data if isinstance(data, dict) else {}
 
+    def read_social(self, site):
+        """The accounts (instagram, tiktok, youtube) found on a site's own pages, {} when none have been found."""
+        try:
+            data = json.loads((self.site_dir(site) / "social.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return {}
+        return {k: v for k, v in data.items() if k in ("instagram", "tiktok", "youtube") and isinstance(v, str) and v}
+
+    def write_social(self, site, social, now):
+        data = {k: v for k, v in social.items() if k in ("instagram", "tiktok", "youtube") and v}
+        data["found_at"] = now
+        _atomic(self.site_dir(site) / "social.json", json.dumps(data, indent=1, sort_keys=True).encode("utf-8"))
+
     def save_state(self, site, state):
         _atomic(self.site_dir(site) / "state.json", json.dumps(state, indent=1, sort_keys=True).encode("utf-8"))
 
