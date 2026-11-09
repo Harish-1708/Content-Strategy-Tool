@@ -47,6 +47,10 @@ on:
         description: "Prove each ticked service works: one web and one news search each, a few credits. Ignores Dry run"
         type: boolean
         default: false
+      read_pages:
+        description: "After the search, read the pages behind this many of the new results through the platform's page readers (0 = do not). Needs the OBSERVATORY_CONTACT secret; which reader is used is the owner's choice in the Controls tab"
+        required: false
+        default: "0"
       dry_run:
         description: "Show the plan and spend nothing"
         type: boolean
@@ -94,6 +98,7 @@ jobs:
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
           EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
           EXA_MCP: "on"
+          AGENT_REACH_SEARCH: "on"
         run: |
           set +e
           args=(--all)
@@ -117,6 +122,26 @@ jobs:
           fi
           { echo "### Research"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           python -m contentintel research "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Read the pages behind the results
+        id: readpages
+        if: inputs.dry_run != true && inputs.provider_check != true && inputs.read_pages != '0' && inputs.read_pages != ''
+        continue-on-error: true
+        shell: bash
+        env:
+          BRAND: ${{ inputs.brand }}
+          READ_PAGES: ${{ inputs.read_pages }}
+          OBSERVATORY_CONTACT: ${{ secrets.OBSERVATORY_CONTACT }}
+          JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
+        run: |
+          set +e
+          args=(corpus --what deepread --top "$READ_PAGES")
+          if [ -n "$BRAND" ] && [ "$BRAND" != "all" ]; then args+=(--brand "$BRAND"); else args+=(--all); fi
+          { echo "### Pages read"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel observatory "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           code=${PIPESTATUS[0]}
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           exit "$code"
