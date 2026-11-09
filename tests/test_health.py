@@ -197,7 +197,8 @@ def test_degraded_state_from_ordinary_runs_shows_even_when_verified(tmp_path):
 def test_planned_and_disabled_routes_are_never_trusted(tmp_path):
     led = ledger(tmp_path)
     assert led.status("reddit_public", "public_web", NOW) == "planned"
-    assert led.status("instagram", "agent_reach", NOW) == "disabled"
+    assert led.status("youtube_public", "yt_dlp", NOW) == "disabled"
+    assert led.status("instagram", "agent_reach", NOW) == "unverified"                     # declared on since Stage 3, but never proved live, so never trusted
     assert not led.scoring_ready("reddit_public", NOW)
 
 
@@ -266,13 +267,13 @@ def test_every_declared_route_has_a_row_with_every_column(tmp_path):
     passing(led, source="meta_ads", route="browser")
     fail(led, K.RATE_LIMITED)
     rows = led.rows(NOW)
-    assert len(rows) == 25 and all(list(r) == H.SHEET_COLUMNS for r in rows)
+    assert len(rows) == 39 and all(list(r) == H.SHEET_COLUMNS for r in rows)
     by = {r["route_key"]: r for r in rows}
     assert by["meta_ads|browser"]["status"] == "healthy" and by["meta_ads|browser"]["verified"] == "yes" and by["meta_ads|browser"]["acceptance_result"] == "pass"
     t = by["tiktok|browser"]
     assert t["status"] == "paused" and t["error_code"] == K.RATE_LIMITED and t["pause_until"] == at(NOW, hours=1) and t["verified"] == "no"
     assert t["tier"] == "session_based" and t["access_type"] == "site_data" and "refused video downloads" in t["limits"]
-    assert by["instagram|agent_reach"]["status"] == "disabled" and "stealth" in by["instagram|agent_reach"]["limits"]
+    assert by["instagram|agent_reach"]["status"] == "unverified" and "OpenCLI" in by["instagram|agent_reach"]["limits"]
     assert by["reddit_public|public_web"]["status"] == "planned" and by["youtube_public|data_api"]["status"] == "unverified" and by["youtube_public|yt_dlp"]["status"] == "disabled"
     assert by["claude|api"]["route_hash"] == led.route_hash("claude", "api")
 
@@ -286,5 +287,5 @@ def test_the_printed_report_and_matrix_say_what_matters(tmp_path):
     assert "meta_ads / browser" in report and "healthy" in report and "resting until" in report and "last error PLATFORM_BLOCKED" in report
     assert "acceptance pass 2026-11-02" in report
     matrix = H.format_matrix(reg, rows)
-    assert "instagram: Instagram [established]" in matrix and "route agent_reach: session_based, site_data, login dummy_account OFF EXPERIMENTAL -> disabled" in matrix
+    assert "instagram: Instagram [established]" in matrix and "route agent_reach: session_based, site_data, login dummy_account EXPERIMENTAL -> unverified" in matrix
     assert "gives:  posts; captions" in matrix and "cannot: " in matrix and "reddit_public: Reddit and community discussions [planned]" in matrix
