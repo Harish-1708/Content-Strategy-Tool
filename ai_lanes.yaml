@@ -17,6 +17,7 @@ lanes:
       - {provider: mistral, model: mistral-small-latest}
       - {provider: openrouter, model: "openai/gpt-oss-120b:free"}
       - {provider: github, model: openai/gpt-4.1-mini}
+      - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
     output: {format: json, schema: {type: object, required: [items], properties: {items: {type: array, minItems: 1}}}}
     max_tokens: 1500
@@ -28,6 +29,7 @@ lanes:
       - {provider: groq, model: llama-3.3-70b-versatile}
       - {provider: mistral, model: mistral-small-latest}
       - {provider: github, model: openai/gpt-4.1-mini}
+      - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
     output: {format: json, schema: {type: object, required: [competitors], properties: {competitors: {type: array}}}}
     review: required
@@ -40,6 +42,7 @@ lanes:
       - {provider: mistral, model: mistral-small-latest}
       - {provider: groq, model: llama-3.3-70b-versatile}
       - {provider: github, model: openai/gpt-4.1-mini}
+      - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
     output: {format: json, schema: {type: object, required: [themes], properties: {themes: {type: array, minItems: 1}}}}
     review_sample_every: 5
@@ -52,6 +55,7 @@ lanes:
       - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: mistral, model: mistral-large-latest}
       - {provider: github, model: openai/gpt-4.1-mini}
+      - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
     output: {format: json, schema: {type: object, required: [formula, confidence], properties: {formula: {type: string, minLength: 2}, confidence: {type: number, minimum: 0, maximum: 1}}}}
     min_confidence: 0.4
@@ -64,6 +68,7 @@ lanes:
       - {provider: mistral, model: mistral-large-latest}
       - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: github, model: openai/gpt-4.1-mini}
+      - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
     output: {format: json, schema: {type: object, required: [opportunities], properties: {opportunities: {type: array, minItems: 1}}}}
     review: required
@@ -88,6 +93,7 @@ lanes:
       - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: google, model: gemini-2.5-flash}
       - {provider: github, model: openai/gpt-4.1-mini}
+      - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
     output: {format: json, schema: {type: object, required: [ideas], properties: {ideas: {type: array, minItems: 3}}}}
     forbid: [guaranteed results, clinically proven, 100% safe]
@@ -112,6 +118,7 @@ lanes:
       - {provider: groq, model: llama-3.3-70b-versatile}
       - {provider: mistral, model: mistral-small-latest}
       - {provider: github, model: openai/gpt-4.1-mini}
+      - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
     output: {format: text, min_chars: 40}
     review_sample_every: 5
@@ -125,3 +132,31 @@ lanes:
     claude_leads: true
     output: {format: json, schema: {type: object, required: [verdict, issues], properties: {verdict: {type: string, enum: [pass, fail, unsure]}, issues: {type: array}}}}
     max_tokens: 1200
+
+  # The two lanes the platform's modules reach through the AI Gateway adapter (services.ai_client) when the owner routes a purpose gateway_first. They carry Internal data at most and need no review:
+  # the module's own checks (claims, schemas, rules) still run on whatever comes back, exactly as they do on Claude's answer.
+  general_text:
+    description: Plain-text language-model task for any module (seed words and the like), when routed through the gateway.
+    max_data_class: internal
+    chain:
+      - {provider: groq, model: llama-3.3-70b-versatile}
+      - {provider: mistral, model: mistral-small-latest}
+      - {provider: openrouter, model: "openai/gpt-oss-120b:free"}
+      - {provider: github, model: openai/gpt-4.1-mini}
+      - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
+    claude_fallback: false      # the module that asked falls back to its own Claude client, under its own spending cap, when this lane has no answer
+    output: {format: text, min_chars: 1}
+    max_tokens: 2000
+
+  general_json:
+    description: JSON language-model task for any module (idea scoring, planning, briefs, deep checks), when routed through the gateway.
+    max_data_class: internal
+    chain:
+      - {provider: groq, model: llama-3.3-70b-versatile}
+      - {provider: mistral, model: mistral-small-latest}
+      - {provider: openrouter, model: "openai/gpt-oss-120b:free"}
+      - {provider: github, model: openai/gpt-4.1-mini}
+      - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
+    claude_fallback: false      # the module that asked falls back to its own Claude client, under its own spending cap, when this lane has no answer
+    output: {format: json, schema: {type: object}}
+    max_tokens: 2500
