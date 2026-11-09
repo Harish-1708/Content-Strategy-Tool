@@ -35,6 +35,8 @@ def rows(registry, usage, health_state, now):
             note.append("paid provider: spending counts against the caps")
         else:
             note.append("free plan: when the quota runs out this provider stops until it renews; nothing is bought or upgraded")
+            if daily is None:
+                note.append("free quota not known: no request ceiling is set here, and the provider stops by itself when it runs out")
         if p.direct:
             note.append("called directly, not through the gateway")
         if resting:
@@ -55,4 +57,3 @@ def tab(registry, usage, health_state, now):
         return None
     data = rows(registry, usage, health_state, now)
     return {"title": TAB, "columns": COLUMNS, "rows_by_key": data, "key_col": "provider", "starter_manual": []} if data else None
-
