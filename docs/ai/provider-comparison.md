@@ -117,7 +117,9 @@ Create nothing until approved.
 | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` (optional) | Cloudflare dashboard > Workers AI |
 | `ANTHROPIC_API_KEY` (exists) | console.anthropic.com; separate from claude.ai billing |
 
-## 8. Recommended initial allowlist (all disabled until you approve)
+## 8. Recommended initial allowlist, and what is switched on
+
+**Switched on at present (read from `ai_providers.yaml`): cloudflare, github, google, groq, mistral, openrouter, and claude.** Everything else is off. The six free providers receive Public and Internal data under the owner's recorded decision of 2026-11-03; Restricted data goes to Claude only. The list below was the original recommendation and is kept for the reasoning; where it says Public only, the owner's decision since then allows Internal.
 
 1. **Groq**: first candidate for bulk classification and summarisation of public text.
 2. **Mistral**: second; Public only because it trains on prompts.
