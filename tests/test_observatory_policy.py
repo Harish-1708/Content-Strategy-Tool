@@ -1,9 +1,9 @@
-"""The crawl policy, the recorded overrides and the authorised-access gate."""
+"""The crawl policy, the recorded overrides and the owner's request controls (every one a setting, none behind an approval)."""
 import pytest
 import yaml
 
 from contentintel import contract as K
-from contentintel.observatory import access as AC
+from contentintel.observatory import gatecheck as GC
 from contentintel.observatory import config as OC
 from observatory_helpers import Web, client, reply, settings
 
@@ -25,7 +25,7 @@ REC = {"host": "shop.example", "basis": "owner", "approved_by": "Harish", "date"
 def test_the_defaults_obey_robots_for_the_crawler_and_treat_it_as_advice_for_readers_and_authorise_nothing():
     s = OC.load_settings("missing.yaml")
     assert s["crawl_policy"] == {"robots": "obey", "reader_robots": "advisory", "basis": "", "overrides": []}
-    assert s["authorised_access"] == {"hosts": []} and s["advanced"] == {"proxies": [], "rotate": "none"} and s["readers"]["jina"] is True and s["readers"]["exa"] is True
+    assert "authorised_access" not in s and s["advanced"] == {"proxies": [], "rotate": "none"} and s["readers"]["jina"] is True and s["readers"]["exa"] is True
     assert s["discovery"]["auto_monitor_max"] == 6 and s["discovery"]["max_monitored"] == 10                         # the confirmed allocation
 
 
@@ -54,15 +54,6 @@ def test_a_valid_override_and_duplicates(tmp_path):
         load(tmp_path, {"crawl_policy": {"overrides": [REC | {"basis": "owner_decision"}, REC | {"basis": "owner_decision"}]}})
 
 
-@pytest.mark.parametrize("entry, fragment", [
-    ({**REC}, "methods must list"), ({**REC, "methods": []}, "methods must list"), ({**REC, "methods": ["magic"]}, "methods must list"),
-    ({**REC, "methods": ["stealth"], "basis": "public_page_reader"}, "basis must be one of owner, client_authorised, written_permission"),
-    ({**REC, "methods": ["stealth"], "date": ""}, "needs date")])
-def test_authorised_access_needs_methods_and_a_real_basis(tmp_path, entry, fragment):
-    with pytest.raises(OC.ObservatoryConfigError, match=fragment):
-        load(tmp_path, {"authorised_access": {"hosts": [entry]}})
-
-
 def test_proxy_addresses_never_live_in_the_file(tmp_path):
     ok = load(tmp_path, {"advanced": {"proxies": ["eu1", "us_2"], "rotate": "sequential"}})
     assert ok["advanced"] == {"proxies": ["eu1", "us_2"], "rotate": "sequential"}
@@ -74,34 +65,53 @@ def test_proxy_addresses_never_live_in_the_file(tmp_path):
         load(tmp_path, {"engine": {"pages": "magic"}})
 
 
-# ---- the gate ---------------------------------------------------------------------------------------------------------------------------------
+# ---- the owner's request controls (there is no host list and no approval step) ---------------------------------------------------------------------
 
-def gate(tmp_path, *methods, host="shop.example", **extra):
-    return AC.Gate(load(tmp_path, {"authorised_access": {"hosts": [{**REC, "host": host, "methods": list(methods) or ["stealth"], **extra}]}}))
-
-
-def test_nothing_advanced_is_allowed_for_any_host_by_default():
-    g = AC.Gate(OC.load_settings("missing.yaml"))
-    for method in OC.ACCESS_METHODS:
-        ok, why = g.allows("competitor.example", method)
-        assert ok is False and "not listed under authorised_access" in why
-    with pytest.raises(K.Failure) as seen:
-        g.require("competitor.example", "stealth")
-    assert seen.value.code == K.BAD_INPUT and "authorised_access" in seen.value.hint
+def test_there_is_no_host_list_any_more_and_a_file_that_still_has_one_is_told_so(tmp_path):
+    with pytest.raises(OC.ObservatoryConfigError, match="unknown setting 'authorised_access'"):
+        load(tmp_path, {"authorised_access": {"hosts": []}})
 
 
-def test_a_listed_host_gets_exactly_the_listed_methods_and_its_subdomains_but_not_look_alikes(tmp_path):
-    g = gate(tmp_path, "stealth", "proxy")
-    assert g.allows("shop.example", "stealth")[0] and g.allows("www.shop.example", "proxy")[0] and g.allows("eu.shop.example", "stealth")[0]
-    ok, why = g.allows("shop.example", "challenge")
-    assert not ok and "authorised for proxy, stealth, not for challenge" in why
-    for other in ("notshop.example", "shop.example.evil.test", "example", "shop.exampl"):
-        assert g.allows(other, "stealth")[0] is False, other
-    assert g.allows("shop.example", "nonsense")[0] is False
-    assert g.require("shop.example", "stealth", "proxy") == "owner: approved by Harish on 2026-11-03"
-    with pytest.raises(K.Failure):
-        g.require("shop.example", "stealth", "challenge")                        # all methods asked for must be allowed
-    assert g.listing() == [{"host": "shop.example", "methods": ["proxy", "stealth"], "basis": "owner", "approved_by": "Harish", "date": "2026-11-03"}]
+def advanced_of(tmp_path, adv):
+    root = tmp_path / "brands" / "b"
+    root.mkdir(parents=True, exist_ok=True)
+    (root / "observatory.yaml").write_text(yaml.safe_dump({"competitors": [{"name": "C", "domain": "c.example", "advanced": adv}]}), encoding="utf-8")
+    return OC.load_brand_file("b", str(tmp_path / "brands"))["competitors"][0]["advanced"]
+
+
+ALL = {"browser": True, "impersonate": True, "hide_canvas": True, "block_webrtc": True, "humanize": True, "solve_challenges": True, "locale": "de-DE", "timezone": "Europe/Berlin", "cookies_env": "OBSERVATORY_COOKIES_X",
+       "proxy": True, "rotate": "random", "session": True, "identity": "Kelson/2.0", "headers": {"X-A": "b"}, "accept_language": "de-DE", "delay": 20, "rest_hours": 12, "network_idle": True,
+       "disable_resources": True, "wait_selector": "#app", "headless": False}
+
+
+def test_every_capability_is_a_plain_setting_on_any_competitor_with_no_approval_or_record(tmp_path):
+    assert advanced_of(tmp_path, ALL) == ALL
+
+
+def test_the_older_names_are_still_accepted_and_mean_the_same(tmp_path):
+    got = advanced_of(tmp_path, {"fingerprint": True, "solve_cloudflare": True, "impersonate": True})
+    assert got == {"impersonate": True, "hide_canvas": True, "block_webrtc": True, "solve_challenges": True}
+    assert advanced_of(tmp_path, {"fingerprint": False}) == {}
+
+
+def test_the_approval_record_is_gone_and_a_file_that_still_has_one_is_told_so(tmp_path):
+    with pytest.raises(OC.ObservatoryConfigError, match="unknown setting 'evasion'"):
+        advanced_of(tmp_path, {"evasion": {"basis": "owner", "approved_by": "H", "date": "2026-11-04", "impersonate": True}})
+
+
+@pytest.mark.parametrize("adv, fragment", [({"locale": "english"}, "en-GB or de-DE"), ({"timezone": "London"}, "timezone name"), ({"rest_hours": 0}, "between 1 and 168"), ({"rest_hours": 500}, "between 1 and 168"),
+                                           ({"browser": "yes"}, "true or false"), ({"disable_resources": 1}, "true or false"), ({"impersonate": "yes"}, "true or false"), ({"humanize": 1}, "true or false"),
+                                           ({"solve_challenges": "on"}, "true or false"), ({"hide_canvas": None}, "true or false")])
+def test_the_settings_are_validated_so_a_typo_is_refused_not_ignored(tmp_path, adv, fragment):
+    with pytest.raises(OC.ObservatoryConfigError, match=fragment):
+        advanced_of(tmp_path, adv)
+
+
+def test_the_shared_helpers_name_the_options_and_normalise_hosts():
+    assert GC.flags_requested({"impersonate": True, "proxy_envs": ["X"], "cookies_env": "Y", "stealth": True, "session": True}) == ["impersonate"] and GC.flags_requested({}) == []
+    assert GC.flags_requested({"fingerprint": True, "solve_cloudflare": True, "humanize": True}) == ["fingerprint", "solve_cloudflare", "humanize"]
+    assert GC.host_only("https://www.Shop.example:8080/x") == "shop.example"
+    assert not hasattr(GC, "record_problem") and not hasattr(GC, "BASES")                       # there is no approval step to check
 
 
 # ---- the polite fetcher under the policy -----------------------------------------------------------------------------------------------------
@@ -166,7 +176,50 @@ def test_a_real_access_restriction_is_never_bypassed_even_when_robots_is_ignored
     assert seen.value.code in (K.PLATFORM_BLOCKED, K.RATE_LIMITED) and w.count(SHOP + "/private/page") == 1
 
 
-def test_the_unbuilt_ai_judge_setting_is_refused_not_silently_ignored(tmp_path):
-    assert OC.load_settings("missing.yaml")["discovery"]["use_ai"] is False
-    with pytest.raises(OC.ObservatoryConfigError, match="not built yet"):
+def test_the_ai_judge_and_enrichment_settings_exist_with_safe_defaults_and_the_old_flag_is_gone(tmp_path):
+    d = OC.load_settings("missing.yaml")["discovery"]
+    assert (d["judge"], d["enrich"], d["min_confidence"], d["judge_max"], d["enrich_max"], d["agent_reach_calls"]) == (True, True, 0.7, 16, 8, 12)
+    with pytest.raises(OC.ObservatoryConfigError, match="unknown setting 'use_ai'"):
         load(tmp_path, {"discovery": {"use_ai": True}})
+    with pytest.raises(OC.ObservatoryConfigError, match="min_confidence"):
+        load(tmp_path, {"discovery": {"min_confidence": 0.1}})
+    assert OC.load_settings(__import__("pathlib").Path(__file__).resolve().parents[1] / "observatory.yaml")["discovery"]["judge"] is True      # the shipped file loads
+
+
+
+# ---- request controls for any host, and what stays gated --------------------------------------------------------------------------------------
+
+def competitor_file(tmp_path, advanced):
+    root = tmp_path / "brands" / "b"
+    root.mkdir(parents=True, exist_ok=True)
+    (root / "observatory.yaml").write_text(yaml.safe_dump({"competitors": [{"name": "C", "domain": "c.example", "advanced": advanced}]}), encoding="utf-8")
+    return OC.load_brand_file("b", str(tmp_path / "brands"))["competitors"][0]["advanced"]
+
+
+def test_identity_headers_language_session_and_delay_are_accepted_on_any_competitor(tmp_path):
+    adv = {"identity": "Kelson-Research/2.0 (+https://kelson.example)", "headers": {"X-Campaign": "q4"}, "accept_language": "en-GB", "session": True, "delay": 12, "proxy": True, "rotate": "random"}
+    assert competitor_file(tmp_path, adv) == adv
+
+
+@pytest.mark.parametrize("name", ["Cookie", "authorization", "Proxy-Authorization", "X-Forwarded-For", "Forwarded", "Via", "Client-IP", "X-Real-IP", "True-Client-IP", "Host", "User-Agent", "From", "Content-Length"])
+def test_headers_that_carry_credentials_or_falsify_where_a_request_comes_from_cannot_be_set(tmp_path, name):
+    with pytest.raises(OC.ObservatoryConfigError, match="cannot be set here"):
+        competitor_file(tmp_path, {"headers": {name: "x"}})
+
+
+@pytest.mark.parametrize("adv, fragment", [({"identity": "two\nlines"}, "one line"), ({"identity": ""}, "short piece of text"), ({"identity": "x" * 201}, "short piece of text"),
+                                           ({"headers": {"X-A": "b\r\nInjected: 1"}}, "one line"), ({"headers": {"bad name": "x"}}, "cannot be set here"), ({"delay": -1}, "between 0 and 3600"),
+                                           ({"delay": True}, "between 0 and 3600"), ({"session": "yes"}, "true or false"), ({"headers": {f"X-{n}": "v" for n in range(13)}}, "at most 12")])
+def test_the_new_options_are_strictly_validated(tmp_path, adv, fragment):
+    with pytest.raises(OC.ObservatoryConfigError, match=fragment):
+        competitor_file(tmp_path, adv)
+
+
+def test_global_switches_default_to_available_and_accept_only_booleans(tmp_path):
+    every = {"custom_identity": True, "proxy": True, "session": True, "browser": True, "account_cookies": True, "evasion": True}
+    assert OC.load_settings("missing.yaml")["access_controls"] == every
+    assert load(tmp_path, {"access_controls": {"proxy": False}})["access_controls"] == {**every, "proxy": False}
+    with pytest.raises(OC.ObservatoryConfigError, match="must be true or false"):
+        load(tmp_path, {"access_controls": {"proxy": "no"}})
+    with pytest.raises(OC.ObservatoryConfigError, match="unknown setting"):
+        load(tmp_path, {"access_controls": {"stealth": True}})                    # only the six named switches exist
