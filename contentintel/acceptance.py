@@ -53,7 +53,7 @@ class Context:
 
 
 _OBSERVATORY_ACTIONS = {("competitor_stores", "public_json"): "catalogue_walk", ("competitor_stores", "sitemap"): "read_sitemap", ("competitor_pages", "static_fetch"): "read_page",
-                        ("competitor_pages", "feed"): "read_feed", ("competitor_pages", "reader"): "read_via_reader"}
+                        ("competitor_pages", "feed"): "read_feed", ("competitor_pages", "reader"): "read_via_reader", ("reddit", "api"): "read_subreddit", ("reddit", "agent_reach"): "read_subreddit", ("agent_reach_research", "youtube"): "search_youtube"}
 
 
 def row_result(row):
@@ -82,7 +82,9 @@ def build_probes(ctx, wanted=None):
                 probes.append(Probe(src.id, "check", rt.name, None if skip else (lambda s=src.id, b=backend: row_result(ctx.collect_check(s, b))), skip))
             elif src.id == "web_search":
                 for kind in KINDS:
-                    reason = skip or ("" if rt.name in ctx.providers else "no API key for this service")
+                    missing = ("Agent-Reach search is off here: set AGENT_REACH_SEARCH=on on a machine you control (it never runs on a hosted runner)" if rt.name.startswith("agent_reach")
+                               else "no API key for this service")
+                    reason = skip or ("" if rt.name in ctx.providers else missing)
                     if ctx.provider_check is None:
                         reason = reason or "no search check on this machine"
                     probes.append(Probe(src.id, f"search_{kind}", rt.name, None if reason else
@@ -96,7 +98,7 @@ def build_probes(ctx, wanted=None):
             elif src.id == "youtube_public":
                 skip = skip or ("" if ctx.youtube_check else "no yt-dlp on this machine")
                 probes.append(Probe(src.id, "metadata", rt.name, None if skip else ctx.youtube_check, skip))
-            elif src.id in ("competitor_stores", "competitor_pages"):
+            elif src.id in ("competitor_stores", "competitor_pages", "reddit", "agent_reach_research"):
                 action = _OBSERVATORY_ACTIONS.get(key, "check")
                 fn = ctx.observatory_checks.get(key)
                 skip = skip or ("" if fn else "no contact address or no brand website: set OBSERVATORY_CONTACT")
