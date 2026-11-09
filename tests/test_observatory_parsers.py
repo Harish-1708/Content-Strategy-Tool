@@ -306,3 +306,42 @@ def test_product_text_is_cleaned_and_odd_shapes_do_not_crash():
     assert bare["variants"] == [] and bare["price_min"] is None and bare["available"] is False and bare["url"] == ""
     weird = S.normalize_product({"id": 2, "handle": "a b", "variants": [{"id": 1, "price": "abc", "compare_at_price": "0.00"}], "images": [None]}, BASE)
     assert weird["price_min"] is None and weird["url"].endswith("/products/a%20b")
+
+
+# ---- the accounts a page links to -------------------------------------------------------------------------------------------------------------
+
+from contentintel.observatory import htmlx as HX  # noqa: E402
+
+
+def L(*urls):
+    return [{"href": u, "text": ""} for u in urls]
+
+
+def test_social_accounts_are_read_from_links_and_the_most_linked_account_wins():
+    got = HX.social_links(L("https://www.instagram.com/graza/", "https://instagram.com/graza?hl=en", "https://www.instagram.com/shareaccount/", "https://www.tiktok.com/@graza.co",
+                            "https://www.youtube.com/@GrazaOil/videos", "https://shop.example/about"))
+    assert got == {"instagram": "graza", "tiktok": "graza.co", "youtube": "@GrazaOil"}
+    assert HX.social_links(L("https://www.instagram.com/a/", "https://www.instagram.com/b/", "https://www.instagram.com/b/"))["instagram"] == "b"
+
+
+def test_posts_share_buttons_instagram_sections_legacy_youtube_urls_and_lookalikes_are_not_accounts():
+    junk = L("https://www.instagram.com/p/ABC123/", "https://www.instagram.com/reel/XYZ/", "https://www.instagram.com/reels/XYZ/", "https://www.instagram.com/tv/ABC123/", "https://www.instagram.com/stories/someone/123/",
+             "https://www.instagram.com/directory/", "https://www.instagram.com/about/",
+             "https://www.instagram.com/tv/", "https://www.instagram.com/reels/", "https://www.instagram.com/explore/", "https://www.instagram.com/p/", "https://www.instagram.com/stories/", "https://www.instagram.com/explore/tags/food/", "https://www.instagram.com/accounts/login/",
+             "https://www.instagram.com/share?url=x", "https://www.tiktok.com/discover", "https://www.tiktok.com/@", "https://www.youtube.com/c/OldName", "https://www.youtube.com/user/legacy",
+             "https://www.youtube.com/watch?v=abc", "https://notinstagram.com/graza", "https://instagram.com.evil.test/graza", "mailto:x@y.z", "")
+    assert HX.social_links(junk) == {}
+
+
+def test_channel_ids_and_structured_data_sameAs_are_understood():
+    ld = [{"@type": "Organization", "sameAs": ["https://www.instagram.com/elev8foods/", "https://www.youtube.com/channel/UCabcdefghijklmnopqrstuv", "not a url", 5]},
+          {"@graph": [{"@type": "WebSite", "sameAs": "https://www.tiktok.com/@elev8foods"}]}]
+    assert HX.social_links([], ld) == {"instagram": "elev8foods", "tiktok": "elev8foods", "youtube": "UCabcdefghijklmnopqrstuv"}
+    assert HX.social_links([], None or []) == {} and HX.social_links(L("https://www.youtube.com/channel/UCshort")) == {}
+
+
+def test_parse_page_feeds_it_end_to_end():
+    html = ('<html><head><script type="application/ld+json">{"@type":"Organization","sameAs":["https://www.instagram.com/brandx/"]}</script></head>'
+            '<body><a href="https://www.tiktok.com/@brandx">TikTok</a><h1>Hi</h1></body></html>')
+    page = HX.parse_page(html, "https://brandx.example/")
+    assert HX.social_links(page["links"], page["jsonld"]) == {"instagram": "brandx", "tiktok": "brandx"}
