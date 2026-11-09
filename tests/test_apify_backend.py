@@ -518,6 +518,6 @@ def test_the_readme_documents_every_secret_and_lists_none_that_do_not_exist():
     section = readme[readme.index("## Secrets"):]
     section = section[:section.index("\n## ", 5)] if "\n## " in section[5:] else section
     documented = set(re.findall(r"`([A-Z][A-Z0-9_]{3,})`", section)) - {"GITHUB_TOKEN"}
-    used = set(workflow_secrets())
+    used = set(workflow_secrets()) - {"GITHUB_TOKEN"}                    # GitHub's own automatic token is not a secret to set up (the README row for it says so)
     assert used <= documented, f"not documented: {sorted(used - documented)}"
     assert documented <= used, f"documented but nothing uses them: {sorted(documented - used)}"
