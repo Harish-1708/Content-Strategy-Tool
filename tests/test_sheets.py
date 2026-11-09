@@ -1,4 +1,5 @@
 import copy
+from contentintel import services  # noqa: E402
 import inspect
 import json
 
@@ -84,7 +85,7 @@ def test_first_run_creates_the_spreadsheet_tabs_headers_and_rows(swov, store):
     (sp,) = client.created
     assert "Swoveralls" in sp.title
     assert sp.shares == [(EMAIL, "user", "writer", False)]
-    assert [w.title for w in sp.worksheets()] == ["Products", "Variants", "Changes", "Status"]
+    assert [w.title for w in sp.worksheets()] == ["Products", "Variants", "Changes", "Controls", "Status"]
     info = store.load_sheet_info("swoveralls")
     assert info == {"spreadsheet_id": sp.id, "url": sp.url, "created_by_tool": True,
                     "shared_with": [EMAIL]}
@@ -110,8 +111,8 @@ def test_first_run_creates_the_spreadsheet_tabs_headers_and_rows(swov, store):
     assert status["Brand"] == "Swoveralls" and status["Catalogue usable for generation"] == "Yes"
     assert status["Products in catalogue"] == "72" and status["This sheet updated (UTC)"] == NOW
 
-    assert report.tabs_created == ["Products", "Variants", "Changes", "Status"]
-    assert report.rows_added == 72 + 462 and report.events_added == 0 and report.created_spreadsheet
+    assert report.tabs_created == ["Products", "Variants", "Changes", "Controls", "Status"]
+    assert report.rows_added == 72 + 462 + len(services.CONTROLS) and report.events_added == 0 and report.created_spreadsheet
 
 
 def test_new_tabs_get_a_frozen_bold_header_row(swov, store):
@@ -314,7 +315,7 @@ def test_an_existing_blank_spreadsheet_is_reused_and_its_starter_tab_renamed(dud
     client = FakeClient([sp])
     report, error = one(dude, store, client, config={"duderobe": "abc123"})
     assert error is None and client.created == [] and sp.shares == []
-    assert [w.title for w in sp.worksheets()] == ["Products", "Variants", "Changes", "Status"]
+    assert [w.title for w in sp.worksheets()] == ["Products", "Variants", "Changes", "Controls", "Status"]
     assert store.load_sheet_info("duderobe") == {
         "spreadsheet_id": "abc123", "url": sp.url, "created_by_tool": False}
     assert report.url == sp.url
@@ -325,7 +326,7 @@ def test_a_starter_tab_that_already_has_content_is_left_alone(dude, store):
     sp = FakeSpreadsheet("abc123")
     sp.worksheets()[0].cells[(1, 1)] = "my own notes"
     one(dude, store, FakeClient([sp]), config={"duderobe": "abc123"})
-    assert [w.title for w in sp.worksheets()] == ["Sheet1", "Products", "Variants", "Changes", "Status"]
+    assert [w.title for w in sp.worksheets()] == ["Sheet1", "Products", "Variants", "Changes", "Controls", "Status"]
     assert sp.worksheet("Sheet1").cells == {(1, 1): "my own notes"}
 
 
@@ -375,8 +376,8 @@ def test_dry_run_on_an_existing_sheet_writes_nothing_but_reports_the_plan(dude, 
     report, error = one(dude, store, client, config={"duderobe": "abc123"}, dry_run=True)
     assert error is None
     assert [w.title for w in sp.worksheets()] == ["Sheet1"] and sp.worksheets()[0].write_calls == []
-    assert report.tabs_created == ["Products", "Variants", "Changes", "Status"]
-    assert report.rows_added == 25 + 176 and store.load_sheet_info("duderobe") is None
+    assert report.tabs_created == ["Products", "Variants", "Changes", "Controls", "Status"]
+    assert report.rows_added == 25 + 176 + len(services.CONTROLS) and store.load_sheet_info("duderobe") is None
 
 
 def test_dry_run_after_a_real_run_shows_pending_changes_without_writing(swov, store):
@@ -426,7 +427,7 @@ def test_a_failed_share_is_remembered_and_retried_on_the_next_run(dude, store):
     assert error is None and second.created == []
     assert sp.shares == [(EMAIL, "user", "writer", False)]
     assert store.load_sheet_info("duderobe")["shared_with"] == [EMAIL]
-    assert [w.title for w in sp.worksheets()] == ["Products", "Variants", "Changes", "Status"]
+    assert [w.title for w in sp.worksheets()] == ["Products", "Variants", "Changes", "Controls", "Status"]
 
 
 def test_sharing_is_not_repeated_once_done(dude, store):
@@ -912,12 +913,12 @@ def test_dry_run_wording_reads_as_plain_english(swov, store):
     baselined(swov, store, "swoveralls_full_72.json", 72)
     report, _ = one(swov, store, FakeClient(), dry_run=True)
     text = "\n".join(report.lines())
-    assert "would create tabs: Products, Variants, Changes, Status" in text
-    assert "would update 0 rows (0 cells), add 534 rows" in text and "would updated" not in text
+    assert "would create tabs: Products, Variants, Changes, Controls, Status" in text
+    assert f"would update 0 rows (0 cells), add {534 + len(services.CONTROLS)} rows" in text and "would updated" not in text
     client = FakeClient()
     done, _ = one(swov, store, client)
     done_text = "\n".join(done.lines())
-    assert "created tabs:" in done_text and "added 534 rows" in done_text and "would" not in done_text
+    assert "created tabs:" in done_text and f"added {534 + len(services.CONTROLS)} rows" in done_text and "would" not in done_text
 
 
 # --- the Research tab -------------------------------------------------------------------------
@@ -940,7 +941,7 @@ def test_there_is_no_research_tab_until_there_are_findings(swov, store):
     baselined(swov, store, "swoveralls_full_72.json", 72)
     client = FakeClient()
     one(swov, store, client)
-    assert titles_of(client.created[0]) == ["Products", "Variants", "Changes", "Status"]
+    assert titles_of(client.created[0]) == ["Products", "Variants", "Changes", "Controls", "Status"]
 
 
 def test_findings_get_a_research_tab_placed_before_status(swov, store):
@@ -949,7 +950,7 @@ def test_findings_get_a_research_tab_placed_before_status(swov, store):
     client = FakeClient()
     report, error = one(swov, store, client)
     assert error is None and titles_of(client.created[0]) == [
-        "Products", "Variants", "Changes", "Research", "Status"]
+        "Products", "Variants", "Changes", "Research", "Controls", "Status"]
     header, rows = read(tabs(client.created[0])["Research"])
     assert header == sheets.RESEARCH_COLUMNS + ["Review"] and len(rows) == 2
     by = {r["url"]: r for r in rows}
@@ -1051,7 +1052,7 @@ def test_collected_items_get_their_own_tab_before_status(swov, store):
     store.append_collected("swoveralls", collected(T0, post(1), post(2, likes=None)))
     client = FakeClient()
     report, error = one(swov, store, client)
-    assert error is None and titles_of(client.created[0]) == ["Products", "Variants", "Changes", "Collected", "Status"]
+    assert error is None and titles_of(client.created[0]) == ["Products", "Variants", "Changes", "Collected", "Controls", "Status"]
     header, rows = read(tabs(client.created[0])["Collected"])
     assert header == sheets.COLLECTED_COLUMNS + ["Review"] and len(rows) == 2
     by = {r["item_id"]: r for r in rows}
@@ -1120,7 +1121,7 @@ def test_benchmark_decisions_get_a_tab_before_status_with_the_candidates_to_choo
     store.write_benchmarks("swoveralls", benchmark_state(("Gymshark", RESOLVED), ("Oodie", AMBIGUOUS)))
     client = FakeClient()
     report, error = one(swov, store, client)
-    assert error is None and titles_of(client.created[0]) == ["Products", "Variants", "Changes", "Benchmarks", "Status"]
+    assert error is None and titles_of(client.created[0]) == ["Products", "Variants", "Changes", "Benchmarks", "Controls", "Status"]
     header, rows = read(tabs(client.created[0])["Benchmarks"])
     assert header == sheets.BENCHMARK_COLUMNS + ["Review"]
     by = {r["name"]: r for r in rows}
