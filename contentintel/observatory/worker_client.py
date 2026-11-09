@@ -1,9 +1,8 @@
 """Running the isolated Scrapling worker from the main tool.
 
 The worker lives in its own Python environment (see docs/observatory/README.md). It is started as a separate process, given a job file and nothing
-else from this environment: no API keys, no cookies, only the named secrets the job needs (a proxy address or an account's cookies, for a host that is
-listed under authorised_access). It writes a result file and exits. The core checks the authorised-access list before building the job, and the worker
-checks it again for every request.
+else from this environment: no API keys, no cookies, only the named secrets the job needs (a proxy address or an account's cookies). It writes a result file and
+exits. The core checks the owner's switches before building the job, and the worker checks them again for every request.
 """
 import hashlib
 import json
@@ -13,7 +12,6 @@ import tempfile
 from pathlib import Path
 
 from .. import contract as K
-from . import access
 from .config import USER_AGENT_TOKEN
 
 EXPECTED_VERSION = "0.5"
@@ -26,19 +24,30 @@ def proxy_env_names(settings):
     return [f"OBSERVATORY_PROXY_{p.upper()}" for p in settings["advanced"]["proxies"]]
 
 
-def advanced_for(comp, settings, gate):
-    """The advanced options for a competitor's requests, or {}. Refuses (BAD_INPUT) when the site is not authorised for what is asked: it never quietly does less or more."""
+def advanced_for(comp, settings):
+    """The request options for a competitor, or {}. Every option is the owner's to set on any host. The switches in access_controls can turn each kind off (the core refuses to build a job for
+    something that is switched off, never quietly doing less), and the methods that exist to get past bot detection are included only with the competitor's own recorded decision."""
     adv = dict(comp.get("advanced") or {})
     if not adv:
         return {}
+    controls = settings["access_controls"]
+    for key, switch in (("identity", "custom_identity"), ("headers", "custom_identity"), ("accept_language", "custom_identity"), ("session", "session"), ("proxy", "proxy"), ("browser", "browser"),
+                        ("stealth", "browser"), ("cookies_env", "account_cookies")):
+        if adv.get(key) and not controls[switch]:
+            raise K.Failure(K.BAD_INPUT, f"advanced.{key} is set for {comp['domain']} but access_controls.{switch} is switched off in observatory.yaml")
     options = {}
-    for key in ("stealth", "solve_cloudflare", "impersonate", "fingerprint", "headless", "network_idle"):
+    if adv.get("browser") or adv.get("stealth"):
+        options["stealth"] = True
+    for key in ("headless", "network_idle", "session", "disable_resources"):
         if adv.get(key):
             options[key] = True
+    for key in ("identity", "headers", "accept_language", "locale", "timezone", "wait_selector"):
+        if adv.get(key):
+            options[key] = adv[key]
+    if adv.get("delay"):
+        options["delay"] = max(float(adv["delay"]), float(settings["politeness"]["min_delay_seconds"]))          # only slower than the standing pause, never faster
     if adv.get("headless") is False:
         options["headless"] = False
-    if adv.get("wait_selector"):
-        options["wait_selector"] = adv["wait_selector"]
     if adv.get("proxy"):
         names = proxy_env_names(settings)
         if not names:
@@ -48,18 +57,26 @@ def advanced_for(comp, settings, gate):
         options["rotate"] = adv.get("rotate") or default
     if adv.get("cookies_env"):
         options["cookies_env"] = adv["cookies_env"]
-    from .scrapling_worker import required_methods
-    need = required_methods(options)
-    if need:
-        gate.require(comp["domain"], *need)
+    asked = [k for k in ("impersonate", "hide_canvas", "block_webrtc", "humanize", "solve_challenges") if adv.get(k)]
+    if asked and not controls["evasion"]:
+        raise K.Failure(K.BAD_INPUT, f"advanced.{asked[0]} is set for {comp['domain']} but access_controls.evasion is switched off in observatory.yaml")
+    if adv.get("impersonate"):
+        options["impersonate"] = True
+    if adv.get("hide_canvas") or adv.get("block_webrtc"):
+        options["fingerprint"] = True
+        options["hide_canvas"], options["block_webrtc"] = bool(adv.get("hide_canvas")), bool(adv.get("block_webrtc"))
+    if adv.get("solve_challenges"):
+        options["solve_cloudflare"] = True
+    if adv.get("humanize"):
+        options["humanize"] = True
     return options
 
 
 def build_job(items, settings, contact, *, selectors=None, adaptive_db=""):
     pol = settings["crawl_policy"]
-    return {"expected_version": EXPECTED_VERSION, "user_agent": f"{USER_AGENT_TOKEN}/1.0 (research; contact: {contact})", "delay": settings["politeness"]["min_delay_seconds"],
+    return {"expected_version": EXPECTED_VERSION, "user_agent": f"{USER_AGENT_TOKEN}/1.0 (research; contact: {contact})", "contact": contact, "controls": settings["access_controls"], "delay": settings["politeness"]["min_delay_seconds"],
             "max_delay": settings["politeness"]["max_delay_seconds"], "timeout": settings["politeness"]["timeout_seconds"], "max_chars": settings["pages"]["max_text_chars"],
-            "robots": {"mode": pol["robots"], "basis": pol["basis"], "overrides": pol["overrides"]}, "authorisations": settings["authorised_access"]["hosts"], "items": items,
+            "robots": {"mode": pol["robots"], "basis": pol["basis"], "overrides": pol["overrides"]}, "items": items,
             "selectors": selectors or {}, "adaptive_db": adaptive_db}
 
 
@@ -123,29 +140,94 @@ def page_snapshot(result, settings, comp):
     announcements = [adaptive["announcement"]] if adaptive.get("announcement") else result.get("announcements", [])
     return {"kind": "page", "schema": 1, "url": result["url"], "final_url": result.get("final_url", result["url"]), "captured_at": "", "complete": True, "status": result.get("status", 200),
             "title": result.get("title", ""), "description": result.get("description", ""), "canonical": "", "h1": h1, "headings": result.get("headings", []), "announcements": announcements,
-            "offers": result.get("offers", []), "products": result.get("products", []), "alternates": result.get("alternates", []), "text": text,
+            "offers": result.get("offers", []), "products": result.get("products", []), "alternates": result.get("alternates", []), "social": result.get("social", {}), "text": text,
             "text_hash": hashlib.sha1(text.encode("utf-8", errors="replace")).hexdigest()[:16], "text_truncated": len(result.get("markdown") or "") > keep, "chars": result.get("chars", len(text)),
             "engine": "scrapling", "advanced_used": result.get("advanced_used", []), "authorised_by": result.get("authorised_by", ""), "robots_note": result.get("robots_note", "")}
+
+
+def remember_rests(got, pauses, comp, settings, now):
+    """What the worker met is remembered between runs, exactly as the built-in reader does: a host that refused rests, for at least the configured time (longer if the owner asked)."""
+    if not pauses:
+        return
+    for host, info in (got.get("hosts") or {}).items():
+        if info.get("rest"):
+            code = K.RATE_LIMITED if "slow down" in info["rest"] else K.PLATFORM_BLOCKED
+            longer = float((comp.get("advanced") or {}).get("rest_hours") or 0) * 3600           # the owner may make a host rest longer, never shorter
+            pauses.pause(host, max(settings["politeness"]["rate_limit_pause_seconds"], longer), info["rest"], now, code)
+
+
+def crawl_site(comp, url, settings, contact, python, *, max_pages, depth, environ=None, runner=subprocess.run, pauses=None, now="", sitemap=False, resume=None, extract=None):
+    """A polite crawl of one site through the worker: {"pages": [...], "skipped": [...], "stopped": reason}. A resting site is not asked at all; a refusal during the crawl stops it and rests the site."""
+    if pauses:
+        rest = pauses.paused(comp["domain"], now)
+        if rest:
+            raise K.Failure(K.RATE_LIMITED if rest[2] != K.PLATFORM_BLOCKED else K.PLATFORM_BLOCKED, f"{comp['domain']} is resting until {rest[1][:16].replace('T', ' ')} UTC ({rest[0]})")
+    max_pages, depth = max(1, min(int(max_pages), 200)), max(0, min(int(depth), 6))
+    crawl = {"max_pages": max_pages, "depth": depth, "sitemap": bool(sitemap)}
+    if resume:
+        crawl["resume"] = resume
+    job = build_job([{"url": url, "advanced": advanced_for(comp, settings), "crawl": crawl, "extract": list(extract or [])[:20]}], settings, contact)
+    per_page = float(settings["politeness"]["timeout_seconds"]) + float(job.get("delay", 5))
+    got = run_worker(job, python, timeout=max(600, int(max_pages * per_page * 2)), environ=environ, runner=runner)
+    result = got["results"][0]
+    remember_rests(got, pauses, comp, settings, now)
+    if not result.get("ok"):
+        raise failure_from(result)
+    return {"pages": result["pages"], "skipped": result["skipped"], "stopped": result["stopped"], "scrapling_version": got.get("scrapling_version", ""), "state": result.get("state"),
+            "sitemap": result.get("sitemap")}
+
+
+def discover_feeds(comp, url, settings, contact, python, *, guesses=(), environ=None, runner=subprocess.run, pauses=None, now=""):
+    """Feeds a site advertises (links in the page) and feeds at the usual addresses that really answer with a feed: [{"url", "how"}]. One page and a few guesses, through the same guarded fetch."""
+    import re
+    from urllib.parse import urljoin
+    if pauses:
+        rest = pauses.paused(comp["domain"], now)
+        if rest:
+            raise K.Failure(K.RATE_LIMITED if rest[2] != K.PLATFORM_BLOCKED else K.PLATFORM_BLOCKED, f"{comp['domain']} is resting until {rest[1][:16].replace('T', ' ')} UTC ({rest[0]})")
+    adv = advanced_for(comp, settings)
+    items = [{"url": url, "advanced": adv}] + [{"url": g, "advanced": adv, "raw": True} for g in list(guesses)[:8]]
+    got = run_worker(build_job(items, settings, contact), python, timeout=max(600, 120 * len(items)), environ=environ, runner=runner)
+    remember_rests(got, pauses, comp, settings, now)
+    page, probes = got["results"][0], got["results"][1:]
+    if not page.get("ok") and not any(p.get("ok") for p in probes):
+        raise failure_from(page)
+    found, seen = [], set()
+    for link in page.get("alternates") or []:
+        target = urljoin(page.get("final_url") or url, link.get("href", "")) if isinstance(link, dict) else ""
+        if target and target not in seen:
+            seen.add(target)
+            found.append({"url": target, "how": "linked from the page"})
+    for probe in probes:
+        if probe.get("ok") and re.search(r"<(rss|feed|rdf:rdf)\b", (probe.get("raw") or "")[:3000], re.I) and probe["url"] not in seen:
+            seen.add(probe["url"])
+            found.append({"url": probe["url"], "how": "found at a usual address"})
+    return found
 
 
 class WorkerPages:
     """Reads a competitor's pages through the worker in one batch the first time one is asked for, then hands each back as a snapshot or its failure."""
 
-    def __init__(self, comp, urls, settings, contact, python, snaps, *, environ=None, runner=subprocess.run, job_extra=None):
+    def __init__(self, comp, urls, settings, contact, python, snaps, *, environ=None, runner=subprocess.run, job_extra=None, pauses=None, now=""):
         self.comp, self.urls, self.settings, self.job_extra = comp, list(urls), settings, job_extra or {}
+        self.pauses, self.now = pauses, now
         self.contact, self.python, self.environ, self.runner = contact, python, environ, runner
         self.adaptive_db = str(snaps.site_dir(comp["id"]) / "adaptive.db")
         self.results = None
 
     def _load(self):
-        gate = access.Gate(self.settings)
-        adv = advanced_for(self.comp, self.settings, gate)
+        if self.pauses:                                   # a site that is resting (from this reader or the built-in one) is not asked at all
+            rest = self.pauses.paused(self.comp["domain"], self.now)
+            if rest:
+                raise K.Failure(K.RATE_LIMITED if rest[2] != K.PLATFORM_BLOCKED else K.PLATFORM_BLOCKED, f"{self.comp['domain']} is resting until {rest[1][:16].replace('T', ' ')} UTC ({rest[0]})")
+        adv = advanced_for(self.comp, self.settings)
         items = [{"url": u, "advanced": adv} for u in self.urls]
         Path(self.adaptive_db).parent.mkdir(parents=True, exist_ok=True)
         job = build_job(items, self.settings, self.contact, selectors=self.comp.get("selectors"), adaptive_db=self.adaptive_db)
         job.update(self.job_extra)
         got = run_worker(job, self.python, environ=self.environ, runner=self.runner)
         self.results = {r["url"]: r for r in got["results"]}
+        remember_rests(got, self.pauses, self.comp, self.settings, self.now)
 
     def get(self, url):
         if self.results is None:
@@ -156,4 +238,3 @@ class WorkerPages:
         if not result.get("ok"):
             raise failure_from(result)
         return page_snapshot(result, self.settings, self.comp)
-
