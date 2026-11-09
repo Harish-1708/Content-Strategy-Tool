@@ -7,11 +7,12 @@ import json
 from pathlib import Path
 
 from .. import health
+from . import judge as judge_mod
 from . import shopify as S
 
 EVENT_COLUMNS = ["event_id", "at", "competitor", "severity", "type", "summary", "url", "suggested_action"]
-COMPETITOR_COLUMNS = ["site_id", "name", "domain", "status", "origin", "platform", "products", "collections", "on_sale_products", "events_7d", "last_read", "stale", "note"]
-CORPUS_COLUMNS = ["video_id", "channel", "title", "views", "median", "multiple", "formula", "format", "published", "url"]
+COMPETITOR_COLUMNS = ["site_id", "name", "domain", "status", "origin", "platform", "products", "collections", "on_sale_products", "events_7d", "instagram", "instagram_confidence", "match_sources", "request_controls", "tiktok", "youtube", "last_read", "stale", "note"]
+CORPUS_COLUMNS = ["video_id", "channel", "title", "views", "median", "multiple", "views_per_day", "trend_multiple", "trend_basis", "formula", "format", "published", "url"]
 TAB_CORPUS = "Public Corpus"
 PRODUCT_COLUMNS = ["key", "competitor", "title", "price", "compare_at_price", "on_sale", "available", "collections", "published", "last_change", "url"]
 TAB_EVENTS, TAB_COMPETITORS, TAB_PRODUCTS = "Observatory Events", "Competitors", "Competitor Products"
@@ -81,6 +82,28 @@ def write_discovery(store, slug, book, now):
     tmp.replace(path)
 
 
+def controls_summary(adv):
+    """The request controls switched on for a competitor, in words, for the sheet and the controls command. Secrets appear by name only; nothing here is a secret."""
+    if not adv:
+        return ""
+    parts = []
+    if adv.get("browser") or adv.get("stealth"):
+        parts.append("browser" + (f" ({adv['locale']}, {adv['timezone']})" if adv.get("locale") and adv.get("timezone") else f" ({adv.get('locale') or adv.get('timezone')})" if (adv.get("locale") or adv.get("timezone")) else ""))
+    for key, label in (("identity", "identity"), ("accept_language", "language"), ("session", "session"), ("proxy", "proxy"), ("impersonate", "TLS impersonation"), ("hide_canvas", "canvas change"),
+                       ("block_webrtc", "WebRTC block"), ("humanize", "cursor simulation"), ("solve_challenges", "challenge solving"), ("disable_resources", "no images or fonts")):
+        if adv.get(key):
+            parts.append(label + (f" ({adv[key]})" if key == "identity" else ""))
+    if adv.get("headers"):
+        parts.append("headers: " + ", ".join(sorted(adv["headers"])))
+    if adv.get("cookies_env"):
+        parts.append(f"account cookies (secret {adv['cookies_env']})")
+    if adv.get("delay"):
+        parts.append(f"pace {adv['delay']:g}s")
+    if adv.get("rest_hours"):
+        parts.append(f"rests {adv['rest_hours']:g}h after a refusal")
+    return "; ".join(parts)
+
+
 def discovered_competitors(store, slug):
     """Competitors discovery has accepted (automatically or by a person) as competitor dicts the monitor can use."""
     from . import config as OC
@@ -90,6 +113,7 @@ def discovered_competitors(store, slug):
             continue
         out.append({"id": OC.competitor_id(c["domain"]), "name": c.get("name") or c["domain"], "domain": OC.host_of(c["domain"]), "kind": "store", "pages": [], "blog": "", "feeds": [], "advanced": {}, "selectors": {},
                     "youtube": "", "instagram": c.get("instagram", ""), "tiktok": c.get("tiktok", ""), "origin": "discovery",
+                    "ai_summary": judge_mod.summary(c), "match": {"instagram_confidence": c.get("instagram_confidence"), "sources": sorted({e["source"] for k in ("instagram_evidence", "domain_evidence") for e in c.get(k, [])})},
                     "monitor": {"shopify": "auto", "sitemap": True, "feeds": True, "pages": True}})
     return [c for c in out if c["domain"]]
 
@@ -159,9 +183,22 @@ def sheet_tabs(brand, store, snaps, now, settings):
     if stored["videos"]:
         yt = settings["youtube"]
         res = corpus_mod.outliers(list(stored["videos"].values()), corpus_mod.load_formulas(), min_videos=yt["min_videos_for_median"], min_multiple=yt["outlier_min_multiple"])
-        rows = {r["video_id"]: {"video_id": r["video_id"], "channel": r["channel"], "title": r["title"], "views": r["views"], "median": r["median"], "multiple": r["multiple"],
-                                "formula": r["formula"], "format": r["shorts_class"], "published": (stored["videos"][r["video_id"]].get("published_at") or "")[:10], "url": r["url"]}
-                for r in res["outliers"][:settings["corpus"]["max_items_in_sheet"]]}
+        trend = corpus_mod.velocity(list(stored["videos"].values()), now, window_days=yt["trend_window_days"], min_hours=yt["trend_min_hours"], min_multiple=yt["trend_min_multiple"])
+        speed = {t["video_id"]: t for t in trend["trending"]}
+        limit = settings["corpus"]["max_items_in_sheet"]
+        formulas = corpus_mod.load_formulas()
+        rows = {}
+        for r in res["outliers"][:limit]:
+            t = speed.get(r["video_id"], {})
+            rows[r["video_id"]] = {"video_id": r["video_id"], "channel": r["channel"], "title": r["title"], "views": r["views"], "median": r["median"], "multiple": r["multiple"],
+                                   "views_per_day": t.get("per_day"), "trend_multiple": t.get("multiple"), "trend_basis": t.get("basis", ""), "formula": r["formula"], "format": r["shorts_class"],
+                                   "published": (stored["videos"][r["video_id"]].get("published_at") or "")[:10], "url": r["url"]}
+        for t in trend["trending"][:limit]:                                   # fast risers that are not outliers by total views yet
+            if t["video_id"] not in rows and len(rows) < limit * 2:
+                v = stored["videos"][t["video_id"]]
+                rows[t["video_id"]] = {"video_id": t["video_id"], "channel": t["channel"], "title": t["title"], "views": t["views"], "median": None, "multiple": None, "views_per_day": t["per_day"],
+                                       "trend_multiple": t["multiple"], "trend_basis": t["basis"], "formula": corpus_mod.classify(t["title"], formulas)[1], "format": t["shorts_class"],
+                                       "published": (v.get("published_at") or "")[:10], "url": t["url"]}
         tabs.append({"title": TAB_CORPUS, "columns": CORPUS_COLUMNS, "rows_by_key": rows, "key_col": "video_id", "starter_manual": ["Notes"]})
     sites = read_brand_sites(store, brand.slug)
     cfg = settings["sheet"]
@@ -172,8 +209,11 @@ def sheet_tabs(brand, store, snaps, now, settings):
             continue
         decided = c.get("decided_by") == "person"
         comp_rows["candidate:" + c["key"]] = {"site_id": "candidate:" + c["key"], "name": c["name"], "domain": c.get("domain") or "", "status": c["status"] + (" (your decision)" if decided else ""),
-                                              "origin": "discovery", "platform": "", "products": None, "collections": None, "on_sale_products": None, "events_7d": 0,
-                                              "last_read": "", "stale": "", "note": f"score {c.get('score', 0)}: " + "; ".join(c.get("reasons", [])[:3]) + ("" if c.get("domain") else "; its website is not known yet")}
+                                              "origin": "discovery", "platform": "", "products": None, "collections": None, "on_sale_products": None, "events_7d": 0, "instagram": c.get("instagram", ""), "instagram_confidence": c.get("instagram_confidence"),
+                                              "match_sources": ", ".join(sorted({e["source"] for k in ("instagram_evidence", "domain_evidence") for e in c.get(k, [])})), "tiktok": c.get("tiktok", ""), "youtube": "",
+                                              "last_read": "", "stale": "", "note": f"score {c.get('score', 0)}: " + "; ".join(c.get("reasons", [])[:3]) + ("" if c.get("domain") else "; its website is not known yet")
+                                                      + ((". " + judge_mod.summary(c)) if c.get("ai") else "")
+                                                      + (f". Possible Instagram @{c['instagram_possible']['handle']} ({c['instagram_possible']['confidence']:.2f} sure, not recorded)" if c.get("instagram_possible") else "")}
     if not sites:
         return tabs + ([{"title": TAB_COMPETITORS, "columns": COMPETITOR_COLUMNS, "rows_by_key": comp_rows, "key_col": "site_id", "starter_manual": ["Decision", "Notes"]}] if comp_rows else [])
     all_events = []
@@ -187,8 +227,9 @@ def sheet_tabs(brand, store, snaps, now, settings):
         kinds = snaps.kinds(s["id"])
         comp_rows[s["id"]] = {"site_id": s["id"], "name": s["name"], "domain": s["domain"], "status": "monitoring" if kinds else "waiting for first reading", "origin": s.get("origin", ""),
                               "platform": "shopify" if cat else ("" if not kinds else "website"), "products": sm.get("products"), "collections": sm.get("collections"),
-                              "on_sale_products": sm.get("on_sale"), "events_7d": len(recent7), "last_read": max((snaps.entries(s["id"], k)[-1]["confirmed_at"] for k in kinds), default=""),
-                              "stale": ", ".join(r["kind"] for r in stale), "note": "" if (cat or {}).get("complete", True) else "the last catalogue reading was incomplete"}
+                              "on_sale_products": sm.get("on_sale"), "events_7d": len(recent7), "instagram": s.get("instagram", ""), "instagram_confidence": (s.get("match") or {}).get("instagram_confidence"),
+                              "match_sources": ", ".join((s.get("match") or {}).get("sources", [])), "request_controls": s.get("request_controls") or controls_summary(s.get("advanced") or {}), "tiktok": s.get("tiktok", ""), "youtube": s.get("youtube", ""), "last_read": max((snaps.entries(s["id"], k)[-1]["confirmed_at"] for k in kinds), default=""),
+                              "stale": ", ".join(r["kind"] for r in stale), "note": " ".join(x for x in ["" if (cat or {}).get("complete", True) else "the last catalogue reading was incomplete.", s.get("ai_summary", "")] if x)}
         if cat:
             changed = {}
             for e in snaps.read_events(s["id"]):
