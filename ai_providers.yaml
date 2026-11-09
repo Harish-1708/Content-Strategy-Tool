@@ -1,4 +1,5 @@
-# AI providers: every platform in the pinned FreeLLMAPI v0.16.17 (84 ids), plus Claude.
+# AI providers: every platform in the pinned FreeLLMAPI v0.16.17 (84 ids), GitHub Models (called directly), and Claude: 86 in all.
+# Switched on at present: cloudflare, github, google, groq, mistral, openrouter and claude. A test keeps this line equal to the enabled flags below.
 #
 # NOTHING is on unless it says enabled: true. A provider carries the terms found when it was checked (terms.status says
 # how well: verified = the provider's own page; verified_secondary = quoted by other sites; upstream_documented = the gateway
@@ -1301,22 +1302,32 @@ providers:
       note: declared by the upstream project only; not checked against the provider
   cloudflare:
     label: Cloudflare Workers AI
-    enabled: false
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-03'
+      reason: 'Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent.'
     credentials:
       env:
       - CLOUDFLARE_ACCOUNT_ID
       - CLOUDFLARE_API_TOKEN
     gateway_platform: cloudflare
     terms:
-      status: declared_only
+      status: verified_secondary
       date: '2026-11-03'
-      note: not verified by us; needs an account id and an API token (stored as account_id:token); verify the free daily allocation before use
+      trains_on_data: no (Cloudflare's documentation says it does not use Customer Content processed by Workers AI to train models or improve services)
+      retention: not confirmed
+      business_use: 'Workers Free includes 10,000 Neurons a day, resetting at 00:00 UTC; no card is needed. Past the allowance the Free plan answers error 3036 (HTTP 429) and stops; it is charged only if someone upgrades to Workers Paid, which must not be done. A few newer models need Workers Paid or prepaid credits and are not approved here'
+      note: 'checked 2026-11-03 against Cloudflare''s own pricing and terms pages as returned by search (not fetched in full). QUOTA UNKNOWN until verified live: the free allowance is stated in Neurons (10,000 a day), which cost different amounts per model, so how many requests that is has not been established and no request ceiling is set here. Cloudflare itself stops the Free plan at the allowance (error 3036, HTTP 429), which the router treats as a rest, not a charge'
     models:
     - id: '@cf/meta/llama-3.3-70b-instruct-fp8-fast'
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
