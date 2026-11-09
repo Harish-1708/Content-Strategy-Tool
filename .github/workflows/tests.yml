@@ -47,6 +47,22 @@ jobs:
           "$RUNNER_TEMP/scrapling-env/bin/pip" install -q -r requirements-scrapling.txt
           echo "SCRAPLING_PYTHON=$RUNNER_TEMP/scrapling-env/bin/python" >> "$GITHUB_ENV"
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Build the pinned gateway (so the two tests that need the real gateway run instead of being skipped)
+        run: |
+          commit=$(python -c "import json;print(json.load(open('ai/gateway.lock.json'))['gateway']['commit'])")
+          mkdir "$RUNNER_TEMP/freellmapi" && cd "$RUNNER_TEMP/freellmapi"
+          git init -q
+          git remote add origin https://github.com/tashfeenahmed/freellmapi
+          git fetch --depth 1 origin "$commit"
+          git checkout --quiet FETCH_HEAD
+          npm ci --workspace=shared --workspace=server --include-workspace-root --no-audit --no-fund
+          npm run build -w server
+          echo "FREEAPI_GATEWAY_DIR=$RUNNER_TEMP/freellmapi" >> "$GITHUB_ENV"
+
       - name: Tests
         run: python -m pytest -q
 
