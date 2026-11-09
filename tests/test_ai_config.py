@@ -170,13 +170,13 @@ def test_missing_lanes_file_is_refused(tmp_path):
 
 # ---- the shipped files -----------------------------------------------------------------------------------------------------------
 
-ROLLED_OUT = ["github", "google", "groq", "mistral", "openrouter"]        # the providers whose terms have been checked and which the owner has approved
+ROLLED_OUT = ["cloudflare", "github", "google", "groq", "mistral", "openrouter"]        # the providers whose terms have been checked and which the owner has approved
 
 
 def test_the_shipped_registry_enables_only_checked_providers_and_claude():
     reg = R.load_registry(SHIPPED_P)
     assert len(reg.providers) == 86
-    assert [p.id for p in reg.providers.values() if p.enabled] == ROLLED_OUT + ["claude"]
+    assert sorted(p.id for p in reg.providers.values() if p.enabled) == sorted(ROLLED_OUT + ["claude"])
     for p in reg.providers.values():
         if p.id not in ROLLED_OUT + ["claude"]:
             assert not p.enabled and p.approved_classes == () and p.effective_ceiling == "public" and not p.override and not p.paid, p.id
@@ -242,11 +242,13 @@ def test_the_registry_allowlist_is_a_subset_of_the_models_the_pinned_gateway_shi
     assert sum(len(p.models) for p in reg.providers.values() if p.id != "claude" and not p.direct) == 108
 
 
-def test_the_shipped_lanes_load_against_the_allowlist_and_cover_the_ten_kinds_of_work():
+def test_the_shipped_lanes_load_against_the_allowlist_and_cover_the_ten_kinds_of_work_and_the_two_platform_lanes():
     reg = R.load_registry(SHIPPED_P)
     got = L.load_lanes(SHIPPED_L, reg)
     assert list(got) == ["research_extraction", "competitor_intelligence", "audience_voice", "formula_analysis", "trend_opportunity", "strategic_reasoning",
-                         "content_ideation", "brief_generation", "production_support", "validation_qa"]
+                         "content_ideation", "brief_generation", "production_support", "validation_qa", "general_text", "general_json"]       # the ten kinds of work, then the two platform lanes
+    assert got["general_text"].max_data_class == "internal" and got["general_json"].max_data_class == "internal" and not got["general_text"].claude_fallback and not got["general_json"].claude_fallback
+    assert got["general_text"].review == "none" and got["general_json"].review == "none" and all(r["provider"] != "claude" for r in got["general_text"].chain + got["general_json"].chain)
     for lane in got.values():
         for r in lane.chain:
             assert reg.model_ok(r["provider"], r["model"]), (lane.name, r)
@@ -291,3 +293,18 @@ def test_a_lane_that_says_nothing_may_carry_public_data_only(tmp_path):
     bare = L.load_lanes(l, R.load_registry(p))["bare"]
     assert bare.max_data_class == "public" and bare.review == "none" and not bare.claude_fallback and not bare.claude_leads and bare.output == {"format": "text"}
     assert bare.max_tokens == 1200 and bare.min_confidence == 0 and bare.forbid == () and bare.review_sample_every == 0
+
+
+def test_the_documents_and_the_file_header_name_exactly_the_providers_that_are_switched_on():
+    """Regression: the comparison document said 'all disabled' and the README said 84 platforms while five providers were on."""
+    import re
+    reg = R.load_registry(SHIPPED_P)
+    on = sorted(p.id for p in reg.providers.values() if p.enabled)
+    for path, marker in (("ai_providers.yaml", r"# Switched on at present: ([a-z0-9, ]+?)\.? A test"), ("docs/ai/provider-comparison.md", r"\*\*Switched on at present \(read from `ai_providers.yaml`\): ([a-z0-9, ]+?)\.\*\*")):
+        text = open(ROOT / path, encoding="utf-8").read()
+        found = re.search(marker, text)
+        assert found, path
+        named = sorted(x.strip() for x in re.split(r",| and ", found.group(1)) if x.strip())
+        assert named == on, (path, named, on)
+    assert f"{len(reg.providers)} in all" in open(ROOT / "README.md", encoding="utf-8").read()
+    assert "all disabled until you approve" not in open(ROOT / "docs/ai/provider-comparison.md", encoding="utf-8").read()
