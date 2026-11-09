@@ -12,6 +12,94 @@ import yaml
 DEFAULT_PATH = "observatory.yaml"
 USER_AGENT_TOKEN = "KelsonResearchBot"
 
+# What the platform's shared services are used for. A module asks for a service with one of these purposes, and the owner can switch each service on or off per purpose.
+PURPOSES = ("competitors", "discovery", "social_discovery", "content_research", "youtube_research", "general_research", "idea_bank", "planning", "brief", "deep_check", "autoseeds", "collectors")
+from .. import agent_reach_catalog as _AR_CATALOG
+AR_CHANNELS = _AR_CATALOG.integrated()          # every Agent-Reach channel the platform runs (the catalogue says how, and why any other is not)
+SEARCH_PROVIDERS = ("serper_dev", "tavily", "serpapi", "exa", "exa_mcp", "agent_reach_reddit", "agent_reach_youtube")
+AI_PURPOSES = ("general_research", "idea_bank", "planning", "brief", "deep_check", "autoseeds", "collectors")        # the purposes whose language-model calls the AI Gateway can take
+PAGE_ENGINES = ("jina", "core", "scrapling", "auto")
+PAGE_ENGINE_DEFAULTS = {}                       # every purpose defaults to auto: Scrapling first when its worker is installed, then Jina Reader, then the built-in reader
+
+# The service registry. A service declares its switches once and everything else follows from it: validation, defaults, the Controls tab, the `controls` command. A future repository adds its service
+# with register_service() and gets all of that without new plumbing. channels: named switches (providers, sites). routes: a choice per purpose (the engine that reads pages, or whether the AI Gateway is
+# tried first). options: central request options and target overrides (Scrapling).
+SERVICE_REGISTRY = {}
+
+
+def register_purpose(name, *, ai_route=False):
+    """Add a kind of work (a purpose) to the platform, so every shared service gets a switch for it. A repository registers its own (for example 'outreach'); ai_route=True also lets the AI Gateway take its
+    language-model calls. Registering one that exists changes nothing."""
+    global PURPOSES, AI_PURPOSES
+    if not re.fullmatch(r"[a-z][a-z0-9_]{1,40}", name):
+        raise ValueError(f"a purpose name is lowercase letters, digits and underscores: {name!r}")
+    if name not in PURPOSES:
+        PURPOSES = PURPOSES + (name,)
+    if ai_route and name not in AI_PURPOSES:
+        AI_PURPOSES = AI_PURPOSES + (name,)
+
+
+BUILT_IN_PURPOSES = PURPOSES
+
+
+def unregister_purpose(name):
+    """Remove a purpose added with register_purpose (for tests, and for a repository that is taken out). The built-in purposes cannot be removed."""
+    global PURPOSES, AI_PURPOSES
+    if name in BUILT_IN_PURPOSES:
+        raise ValueError(f"{name} is a built-in purpose")
+    PURPOSES = tuple(p for p in PURPOSES if p != name)
+    AI_PURPOSES = tuple(p for p in AI_PURPOSES if p != name)
+
+
+def spec_purposes(spec):
+    """The purposes a service has switches for: every purpose there is (including ones registered later) unless the service named its own."""
+    return tuple(PURPOSES) if spec.get("all_purposes") else spec["purposes"]
+
+
+def route_purposes(spec):
+    p = spec["routes"]["purposes"]
+    return tuple(PURPOSES) if p == "all" else tuple(AI_PURPOSES) if p == "ai" else tuple(p)
+
+
+def route_default_for(spec, purpose):
+    default = spec["routes"]["default"]
+    return default.get(purpose, default.get("*")) if isinstance(default, dict) else default
+
+
+def register_service(name, *, label="", channels=(), purposes=None, routes=None, options=False):
+    """Add a shared service. purposes: None means every purpose, now and later. routes is {'purposes': 'all' | 'ai' | (...), 'choices': (...), 'default': value or {purpose: value, '*': fallback}} or None.
+    Registering the same name again replaces it (so a repository can refine its entry)."""
+    if not re.fullmatch(r"[a-z][a-z0-9_]{1,40}", name):
+        raise ValueError(f"a service name is lowercase letters, digits and underscores: {name!r}")
+    SERVICE_REGISTRY[name] = {"label": label or name, "channels": tuple(channels), "purposes": tuple(purposes) if purposes is not None else (), "all_purposes": purposes is None, "routes": routes, "options": bool(options)}
+
+
+register_service("scrapling", label="Scrapling (page reading, browser, request controls)", options=True)
+register_service("agent_reach", label="Agent-Reach (social and research channels through OpenCLI)", channels=AR_CHANNELS)
+register_service("search", label="Web search (Google-backed providers)", channels=SEARCH_PROVIDERS)
+GATEWAY_PROVIDERS = ("cloudflare", "github", "google", "groq", "mistral", "openrouter")          # the external free providers enabled in ai_providers.yaml (a test keeps this equal); Claude is the fallback and has no switch here
+register_service("ai_gateway", label="AI Gateway (free-provider routing with Claude as fallback)", channels=GATEWAY_PROVIDERS, routes={"purposes": "ai", "choices": ("claude", "gateway_first"), "default": "gateway_first"})
+register_service("page_readers", label="Page readers (built-in, Jina Reader, Scrapling)", routes={"purposes": "all", "choices": PAGE_ENGINES, "default": {**PAGE_ENGINE_DEFAULTS, "*": "auto"}})
+
+
+# Scrapling's per-request options that are central defaults, all ON: the owner turns one off by setting it false (Controls tab, `observatory controls`, or services.scrapling.defaults in observatory.yaml).
+SCRAPLING_ON_DEFAULTS = {"browser": True, "session": True, "proxy": True, "impersonate": True, "hide_canvas": True, "block_webrtc": True, "humanize": True, "solve_challenges": True,
+                         "disable_resources": True}
+
+
+def service_defaults():
+    """The default settings for every registered service."""
+    out = {}
+    for name, spec in SERVICE_REGISTRY.items():
+        entry = {"enabled": True, "use_for": {p: True for p in spec_purposes(spec)}}
+        if spec["channels"]:
+            entry["channels"] = {c: True for c in spec["channels"]}
+        if spec["routes"]:
+            entry["routes"] = {p: route_default_for(spec, p) for p in route_purposes(spec)}
+        if spec["options"]:
+            entry["defaults"], entry["overrides"] = dict(SCRAPLING_ON_DEFAULTS), []
+        out[name] = entry
+    return out
 DEFAULTS = {
     "version": 1,
     "politeness": {
@@ -23,13 +111,12 @@ DEFAULTS = {
         "max_redirects": 3,
         "max_requests_per_domain": 80,      # a hard ceiling per site per run
         "retries": 2,                       # for a server error only
-        "max_wait_seconds": 120,            # a Retry-After longer than this stops the site for the run instead of waiting
         "rate_limit_pause_seconds": 3600,   # how long a site that rate-limited us rests (survives between runs)
         "error_pause_seconds": 90,          # how long a site that keeps erroring rests
         "cache_minutes": 360,               # a page fetched again within this time is answered from memory
         "robots_cache_minutes": 1440,
     },
-    "retention": {"daily_days": 7, "weekly_weeks": 8, "monthly_months": 12, "always_keep_latest": 3},
+    "retention": {"auto_prune": True, "daily_days": 7, "weekly_weeks": 8, "monthly_months": 12, "always_keep_latest": 3},
     "changes": {
         "removal_confirm_runs": 2,          # a product must be missing this many runs in a row before it counts as removed
         "price_change_min_pct": 0.5,        # smaller price moves are ignored as noise
@@ -42,27 +129,36 @@ DEFAULTS = {
     "sitemaps": {"max_urls": 50000, "max_child_sitemaps": 25, "max_decompressed_bytes": 25_000_000},
     "pages": {"max_per_competitor": 12, "max_text_chars": 20000, "keep_text_chars": 6000},
     "feeds": {"max_items": 500},
+    "crawl": {"max_pages": 25, "depth": 2},                     # a site crawl through Scrapling (SV.scrapling_crawl, corpus --what crawl): pages at most (1-200) and links deep at most (0-6)
     "discovery": {
         "enabled": True, "min_score": 40, "auto_monitor_score": 65, "auto_monitor_max": 6, "max_monitored": 10, "probe_max": 8,
-        "use_ai": False, "min_appearances": 1, "lookup_max": 8,
+        "min_appearances": 1, "lookup_max": 8,
+        # who a candidate is, from several sources, and an AI second opinion beside the rubric (a person reviews every verdict)
+        "enrich": True, "enrich_max": 8, "min_confidence": 0.7, "agent_reach_calls": 12, "judge": True, "judge_max": 16,
     },
     "youtube": {"daily_unit_cap": 3000, "max_channels": 25, "videos_per_channel": 50, "search_calls_per_run": 2, "min_videos_for_median": 4,
-                "outlier_min_multiple": 2.0},
+                "outlier_min_multiple": 2.0, "trend_window_days": 7, "trend_min_hours": 12, "trend_min_multiple": 2.0},
     "corpus": {"max_items_in_sheet": 150, "snippet_max_chars": 600},
     "sheet": {"max_events": 400, "max_products_per_competitor": 150},
     "readers": {"jina": True, "exa": True, "jina_per_minute": 15, "max_chars": 20000},
+    "reddit": {"posts_per_target": 25, "max_targets": 20, "timeout_seconds": 90, "api_approval": {}},     # the official API route runs only with a recorded approval from Reddit
+    "services": {},                 # built from the service registry when the settings are loaded (see register_service)
+    "instagram": {"max_handles": 15, "posts_per_handle": 12, "timeout_seconds": 90},         # the Agent-Reach route that runs beside the existing collector
     "engine": {"pages": "core"},                   # core (the built-in reader) or scrapling (the isolated worker); the worker needs its own environment
     # lists are validated by the functions below, not by _RANGES
     "crawl_policy": {"robots": "obey", "reader_robots": "advisory", "basis": "", "overrides": []},
-    "authorised_access": {"hosts": []},
     "advanced": {"proxies": [], "rotate": "none"},
+    # the owner's switches for each kind of request control; every one is on by default and can be turned off here (evasion is also recorded per competitor)
+    "access_controls": {"custom_identity": True, "proxy": True, "session": True, "browser": True, "account_cookies": True, "evasion": True},
 }
 
 _RANGES = {   # (section, key): (minimum, maximum)
     ("readers", "jina_per_minute"): (1, 60), ("readers", "max_chars"): (1000, 200_000),
+    ("reddit", "posts_per_target"): (1, 100), ("reddit", "max_targets"): (1, 100), ("reddit", "timeout_seconds"): (10, 600),
+    ("instagram", "max_handles"): (1, 60), ("instagram", "posts_per_handle"): (1, 50), ("instagram", "timeout_seconds"): (10, 600),
     ("politeness", "min_delay_seconds"): (1, 120), ("politeness", "max_delay_seconds"): (5, 600), ("politeness", "timeout_seconds"): (3, 120),
     ("politeness", "max_bytes"): (10_000, 50_000_000), ("politeness", "max_redirects"): (0, 8), ("politeness", "max_requests_per_domain"): (1, 2000),
-    ("politeness", "retries"): (0, 5), ("politeness", "max_wait_seconds"): (0, 900), ("politeness", "rate_limit_pause_seconds"): (60, 86400),
+    ("politeness", "retries"): (0, 5), ("politeness", "rate_limit_pause_seconds"): (60, 86400),
     ("politeness", "error_pause_seconds"): (10, 3600), ("politeness", "cache_minutes"): (0, 10080), ("politeness", "robots_cache_minutes"): (0, 10080),
     ("retention", "daily_days"): (1, 90), ("retention", "weekly_weeks"): (0, 104), ("retention", "monthly_months"): (0, 60), ("retention", "always_keep_latest"): (2, 20),
     ("changes", "removal_confirm_runs"): (1, 10), ("changes", "price_change_min_pct"): (0, 100), ("changes", "collection_move_min_positions"): (1, 1000),
@@ -70,11 +166,13 @@ _RANGES = {   # (section, key): (minimum, maximum)
     ("shopify", "max_products"): (1, 20000), ("shopify", "max_collections"): (1, 500), ("shopify", "max_pages_per_collection"): (1, 40), ("shopify", "per_page"): (10, 250),
     ("sitemaps", "max_urls"): (100, 200000), ("sitemaps", "max_child_sitemaps"): (1, 200), ("sitemaps", "max_decompressed_bytes"): (100_000, 100_000_000),
     ("pages", "max_per_competitor"): (0, 100), ("pages", "max_text_chars"): (500, 200_000), ("pages", "keep_text_chars"): (200, 50_000),
-    ("feeds", "max_items"): (10, 5000),
+    ("feeds", "max_items"): (10, 5000), ("crawl", "max_pages"): (1, 200), ("crawl", "depth"): (0, 6),
     ("discovery", "min_score"): (0, 100), ("discovery", "auto_monitor_score"): (0, 100), ("discovery", "auto_monitor_max"): (0, 50),
     ("discovery", "max_monitored"): (1, 100), ("discovery", "probe_max"): (0, 50), ("discovery", "lookup_max"): (0, 50), ("discovery", "min_appearances"): (1, 100),
+    ("discovery", "enrich_max"): (0, 30), ("discovery", "min_confidence"): (0.3, 0.99), ("discovery", "agent_reach_calls"): (0, 60), ("discovery", "judge_max"): (0, 50),
     ("youtube", "daily_unit_cap"): (0, 10000), ("youtube", "max_channels"): (0, 200), ("youtube", "videos_per_channel"): (4, 500),
     ("youtube", "search_calls_per_run"): (0, 20), ("youtube", "min_videos_for_median"): (4, 50), ("youtube", "outlier_min_multiple"): (1, 20),
+    ("youtube", "trend_window_days"): (1, 60), ("youtube", "trend_min_hours"): (1, 168), ("youtube", "trend_min_multiple"): (1, 100),
     ("corpus", "max_items_in_sheet"): (10, 2000), ("corpus", "snippet_max_chars"): (100, 5000),
     ("sheet", "max_events"): (10, 5000), ("sheet", "max_products_per_competitor"): (10, 2000),
 }
@@ -82,8 +180,6 @@ _RANGES = {   # (section, key): (minimum, maximum)
 
 ROBOTS_MODES = ("obey", "advisory")
 ROBOTS_BASES = ("owner", "client_authorised", "written_permission", "public_page_reader", "owner_decision")
-ACCESS_BASES = ("owner", "client_authorised", "written_permission")
-ACCESS_METHODS = ("stealth", "challenge", "fingerprint", "proxy", "logged_in_browser")
 ENGINES = ("core", "scrapling")
 
 
@@ -140,21 +236,65 @@ def _crawl_policy(given, where):
     return base
 
 
-def _authorised(given, where):
-    _only(given, DEFAULTS["authorised_access"], f"{where} authorised_access")
-    seen, out = set(), []
-    for n, entry in enumerate(given.get("hosts") or [], start=1):
-        host = _record(entry, f"{where} authorised_access.hosts[{n}]", ACCESS_BASES)
-        _only(entry, ("host", "basis", "approved_by", "date", "methods", "note"), f"{where} authorised_access.hosts[{n}]")
-        methods = entry.get("methods")
-        if not isinstance(methods, list) or not methods or any(m not in ACCESS_METHODS for m in methods):
-            raise ObservatoryConfigError(f"{where} authorised_access.hosts[{n}]: methods must list at least one of {', '.join(ACCESS_METHODS)}")
-        if host in seen:
-            raise ObservatoryConfigError(f"{where} authorised_access.hosts: {host} is listed twice")
-        seen.add(host)
-        out.append({"host": host, "basis": entry["basis"], "approved_by": str(entry["approved_by"]).strip(), "date": str(entry["date"]), "methods": sorted(set(methods)),
-                    "note": str(entry.get("note", ""))})
-    return {"hosts": out}
+def _bools(given, allowed, where):
+    if not isinstance(given, dict):
+        raise ObservatoryConfigError(f"{where} must be name: true/false settings")
+    _only(given, allowed, where)
+    for key, value in given.items():
+        if not isinstance(value, bool):
+            raise ObservatoryConfigError(f"{where}.{key} must be true or false")
+    return dict(given)
+
+
+def _match_ok(text):
+    t = str(text).strip().lower()
+    if t == "all":
+        return True
+    if t.startswith("purpose:"):
+        return t.split(":", 1)[1] in PURPOSES
+    return bool(re.fullmatch(r"(?:\*\.)?[a-z0-9][a-z0-9.\-]*\.[a-z]{2,}", t))
+
+
+def _services(given, where):
+    """The shared services' settings, validated from the service registry (so a newly registered service is validated too), with a competitor's own request-option rules for the Scrapling options."""
+    out = service_defaults()
+    _only(given, tuple(SERVICE_REGISTRY), f"{where} services")
+    for name, section in given.items():
+        spec, here = SERVICE_REGISTRY[name], f"{where} services.{name}"
+        if section is None:
+            continue
+        if not isinstance(section, dict):
+            raise ObservatoryConfigError(f"{here} must be name: value settings")
+        allowed = ["enabled", "use_for"] + (["channels"] if spec["channels"] else []) + (["routes"] if spec["routes"] else []) + (["defaults", "overrides"] if spec["options"] else [])
+        _only(section, tuple(allowed), here)
+        if "enabled" in section:
+            if not isinstance(section["enabled"], bool):
+                raise ObservatoryConfigError(f"{here}.enabled must be true or false")
+            out[name]["enabled"] = section["enabled"]
+        out[name]["use_for"].update(_bools(section.get("use_for") or {}, spec_purposes(spec), f"{here}.use_for"))
+        if spec["channels"]:
+            out[name]["channels"].update(_bools(section.get("channels") or {}, spec["channels"], f"{here}.channels"))
+        if spec["routes"]:
+            routes = section.get("routes") or {}
+            if not isinstance(routes, dict):
+                raise ObservatoryConfigError(f"{here}.routes must be purpose: choice settings")
+            _only(routes, route_purposes(spec), f"{here}.routes")
+            for purpose, choice in routes.items():
+                if choice not in spec["routes"]["choices"]:
+                    raise ObservatoryConfigError(f"{here}.routes.{purpose} must be one of {', '.join(spec['routes']['choices'])}")
+                out[name]["routes"][purpose] = choice
+        if spec["options"]:
+            out[name]["defaults"] = {**SCRAPLING_ON_DEFAULTS, **_advanced_options(section.get("defaults") or {}, f"{here}.defaults")}
+            overrides = section.get("overrides") or []
+            if not isinstance(overrides, list):
+                raise ObservatoryConfigError(f"{here}.overrides must be a list")
+            for n, item in enumerate(overrides, start=1):
+                label = f"{here}.overrides[{n}]"
+                if not isinstance(item, dict) or not _match_ok(item.get("match", "")):
+                    raise ObservatoryConfigError(f"{label} needs match: a site such as example.com or *.example.com, purpose:discovery (or any other purpose), or all")
+                rest = {k: v for k, v in item.items() if k != "match"}
+                out[name]["overrides"].append({"match": str(item["match"]).strip().lower(), **_advanced_options(rest, label)})
+    return out
 
 
 def _advanced(given, where):
@@ -201,13 +341,42 @@ def load_settings(path=DEFAULT_PATH):
     if data.get("version", 1) != 1:
         raise ObservatoryConfigError(f"{path}: version must be 1")
     out = copy.deepcopy(DEFAULTS)
+    out["services"] = service_defaults()
     for section, given in data.items():
         if section == "version":
             continue
         if not isinstance(given, dict):
             raise ObservatoryConfigError(f"{path} {section} must be name: value settings")
-        if section in ("crawl_policy", "authorised_access", "advanced"):
-            out[section] = {"crawl_policy": _crawl_policy, "authorised_access": _authorised, "advanced": _advanced}[section](given, str(path))
+        if section == "reddit":
+            _only(given, DEFAULTS["reddit"], f"{path} reddit")
+            for key, value in given.items():
+                if key == "api_approval":
+                    approval = value or {}
+                    if approval:
+                        if not isinstance(approval, dict):
+                            raise ObservatoryConfigError(f"{path} reddit.api_approval must be name: value settings")
+                        _only(approval, ("basis", "approved_by", "date", "reference"), f"{path} reddit.api_approval")
+                        for need in ("basis", "approved_by", "date"):
+                            if not str(approval.get(need, "")).strip():
+                                raise ObservatoryConfigError(f"{path} reddit.api_approval needs {need}: the official API route runs only on a recorded approval from Reddit")
+                        if approval["basis"] not in ("non_commercial_approved", "commercial_contract"):
+                            raise ObservatoryConfigError(f"{path} reddit.api_approval.basis must be non_commercial_approved or commercial_contract")
+                        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(approval["date"])):
+                            raise ObservatoryConfigError(f"{path} reddit.api_approval.date must look like 2026-11-03")
+                        out[section]["api_approval"] = {k: str(approval.get(k, "")).strip() for k in ("basis", "approved_by", "date", "reference")}
+                else:
+                    _check(section, key, value, path)
+                    out[section][key] = value
+            continue
+        if section == "access_controls":
+            _only(given, DEFAULTS[section], f"{path} access_controls")
+            for key, value in given.items():
+                if not isinstance(value, bool):
+                    raise ObservatoryConfigError(f"{path} access_controls.{key} must be true or false")
+                out[section][key] = value
+            continue
+        if section in ("crawl_policy", "advanced", "services"):
+            out[section] = {"crawl_policy": _crawl_policy, "advanced": _advanced, "services": _services}[section](given, str(path))
             continue
         _only(given, DEFAULTS[section], f"{path} {section}")
         if section == "engine":
@@ -225,8 +394,6 @@ def load_settings(path=DEFAULT_PATH):
         raise ObservatoryConfigError(f"{path} discovery.auto_monitor_score cannot be below min_score")
     if out["retention"]["monthly_months"] and out["retention"]["weekly_weeks"] == 0 and out["retention"]["daily_days"] < 1:
         raise ObservatoryConfigError(f"{path} retention needs at least one daily day")
-    if out["discovery"]["use_ai"]:
-        raise ObservatoryConfigError(f"{path} discovery.use_ai: the AI judge for discovery is not built yet, so the setting is refused rather than ignored; candidates are scored by the rubric")
     return out
 
 
@@ -234,9 +401,15 @@ def load_settings(path=DEFAULT_PATH):
 
 _HOST = re.compile(r"^[a-z0-9]([a-z0-9\-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9\-]*[a-z0-9])?)+$")
 _COMPETITOR_KEYS = ("name", "domain", "kind", "pages", "blog", "feeds", "youtube", "instagram", "tiktok", "monitor", "advanced", "selectors")
-_ADVANCED_KEYS = ("stealth", "solve_cloudflare", "impersonate", "fingerprint", "proxy", "cookies_env", "rotate", "headless", "network_idle", "wait_selector")
+_ADVANCED_KEYS = ("browser", "stealth", "proxy", "rotate", "cookies_env", "session", "identity", "headers", "accept_language", "delay", "headless", "network_idle", "wait_selector",
+                  "locale", "timezone", "disable_resources", "rest_hours",
+                  "impersonate", "hide_canvas", "block_webrtc", "humanize", "solve_challenges",           # how a request presents itself to a site's bot detection; the owner's choice, on any competitor
+                  "fingerprint", "solve_cloudflare")                                                      # older names for hide_canvas + block_webrtc and for solve_challenges, still accepted
+# headers a person may not set: credentials (they belong to accounts we own and go through cookies_env on a listed host) and anything that falsifies where a request comes from
+_FORBIDDEN_HEADERS = {"cookie", "authorization", "proxy-authorization", "x-forwarded-for", "forwarded", "via", "client-ip", "x-real-ip", "true-client-ip", "x-originating-ip", "host",
+                      "user-agent", "from", "content-length", "transfer-encoding", "connection"}
 _MONITOR_KEYS = ("shopify", "sitemap", "feeds", "pages")
-BRAND_KEYS = ("competitors", "discovery", "youtube", "exclude_domains", "ignore")
+BRAND_KEYS = ("competitors", "discovery", "youtube", "reddit", "exclude_domains", "ignore")
 
 
 def host_of(value):
@@ -265,6 +438,57 @@ def _urls(value, where):
     return [v.strip() for v in value]
 
 
+def _advanced_options(adv_in, label):
+    """Validate request options (identity, headers, proxy, session, browser, cookies, fingerprint, challenge handling, pace, rest) and return them in their standard form. Used for a competitor,
+    for the central defaults and for target-specific overrides alike, so every place that can set them follows the same rules."""
+    if not isinstance(adv_in, dict):
+        raise ObservatoryConfigError(f"{label} must be name: value settings")
+    _only(adv_in, _ADVANCED_KEYS, f"{label}")
+    advanced = {}
+    for key, value in adv_in.items():
+        here = f"{label}.{key}"
+        if key == "cookies_env":
+            if not re.fullmatch(r"[A-Z][A-Z0-9_]{2,60}", str(value)):
+                raise ObservatoryConfigError(f"{here} must be the NAME of a secret, such as OBSERVATORY_COOKIES_SHOP; the cookies themselves never go in a file")
+        elif key == "rotate":
+            if value not in ("sequential", "random"):
+                raise ObservatoryConfigError(f"{here} must be sequential or random")
+        elif key == "wait_selector":
+            if not isinstance(value, str):
+                raise ObservatoryConfigError(f"{here} must be a CSS selector")
+        elif key in ("identity", "accept_language"):
+            if not isinstance(value, str) or not value.strip() or len(value) > 200 or re.search(r"[\x00-\x1f]", value):
+                raise ObservatoryConfigError(f"{here} must be a short piece of text on one line")
+        elif key == "locale":
+            if not isinstance(value, str) or not re.fullmatch(r"[a-z]{2,3}(-[A-Z]{2})?", value):
+                raise ObservatoryConfigError(f"{here} must look like en-GB or de-DE")
+        elif key == "timezone":
+            if not isinstance(value, str) or not re.fullmatch(r"UTC|[A-Za-z]+(/[A-Za-z_\-]+){1,2}", value):
+                raise ObservatoryConfigError(f"{here} must be a timezone name such as Europe/London")
+        elif key == "headers":
+            if not isinstance(value, dict) or len(value) > 12:
+                raise ObservatoryConfigError(f"{here} must be name: value pairs (at most 12)")
+            for name, text in value.items():
+                if not re.fullmatch(r"[A-Za-z][A-Za-z0-9\-]{0,40}", str(name)) or str(name).lower() in _FORBIDDEN_HEADERS:
+                    raise ObservatoryConfigError(f"{here}: {name!r} cannot be set here (account cookies go through cookies_env, and identity headers are set with identity)")
+                if not isinstance(text, str) or len(text) > 200 or re.search(r"[\x00-\x1f]", text):
+                    raise ObservatoryConfigError(f"{here}.{name} must be short text on one line")
+        elif key == "delay":
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not 0 <= value <= 3600:
+                raise ObservatoryConfigError(f"{here} must be a number of seconds between 0 and 3600 (it can only slow requests down, never go below the site's own wishes)")
+        elif key == "rest_hours":
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not 1 <= value <= 168:
+                raise ObservatoryConfigError(f"{here} must be a number of hours between 1 and 168: how long a host rests after a challenge, refusal or rate limit (never shorter than the standing rest)")
+        elif not isinstance(value, bool):
+            raise ObservatoryConfigError(f"{here} must be true or false")
+        advanced[key] = value
+    if advanced.pop("fingerprint", False):                           # the older names mean these
+        advanced["hide_canvas"] = advanced["block_webrtc"] = True
+    if advanced.pop("solve_cloudflare", False):
+        advanced["solve_challenges"] = True
+    return advanced
+
+
 def _competitor(item, n, where):
     if isinstance(item, str):
         item = {"name": item, "domain": item} if host_of(item) else {"name": item}
@@ -291,24 +515,7 @@ def _competitor(item, n, where):
         if key != "shopify" and not isinstance(value, bool):
             raise ObservatoryConfigError(f"{where} competitor {n} monitor.{key} must be true or false")
         monitor[key] = value
-    adv_in = item.get("advanced") or {}
-    if not isinstance(adv_in, dict):
-        raise ObservatoryConfigError(f"{where} competitor {n} advanced must be name: value settings")
-    _only(adv_in, _ADVANCED_KEYS, f"{where} competitor {n} advanced")
-    advanced = {}
-    for key, value in adv_in.items():
-        if key in ("cookies_env",):
-            if not re.fullmatch(r"[A-Z][A-Z0-9_]{2,60}", str(value)):
-                raise ObservatoryConfigError(f"{where} competitor {n} advanced.cookies_env must be the NAME of a secret, such as OBSERVATORY_COOKIES_SHOP; the cookies themselves never go in a file")
-        elif key == "rotate":
-            if value not in ("sequential", "random"):
-                raise ObservatoryConfigError(f"{where} competitor {n} advanced.rotate must be sequential or random")
-        elif key == "wait_selector":
-            if not isinstance(value, str):
-                raise ObservatoryConfigError(f"{where} competitor {n} advanced.wait_selector must be a CSS selector")
-        elif not isinstance(value, bool):
-            raise ObservatoryConfigError(f"{where} competitor {n} advanced.{key} must be true or false")
-        advanced[key] = value
+    advanced = _advanced_options(item.get("advanced") or {}, f"{where} competitor {n} advanced")
     if advanced and not host:
         raise ObservatoryConfigError(f"{where} competitor {n}: advanced methods need the site's domain")
     selectors_in = item.get("selectors") or {}
@@ -356,6 +563,14 @@ def load_brand_file(slug, root="brands"):
     for label, items in (("channels", channels), ("queries", queries)):
         if not isinstance(items, list) or any(not isinstance(v, str) or not v.strip() for v in items):
             raise ObservatoryConfigError(f"{where} youtube.{label} must be a list of text values")
+    rd = data.get("reddit") or {}
+    if not isinstance(rd, dict):
+        raise ObservatoryConfigError(f"{where} reddit must be name: value settings")
+    _only(rd, ("subreddits", "queries"), f"{where} reddit")
+    for label in ("subreddits", "queries"):
+        items = rd.get(label) or []
+        if not isinstance(items, list) or any(not isinstance(v, str) or not v.strip() for v in items):
+            raise ObservatoryConfigError(f"{where} reddit.{label} must be a list of text values")
     excluded = []
     for key in ("exclude_domains", "ignore"):
         for value in data.get(key) or []:
@@ -364,7 +579,8 @@ def load_brand_file(slug, root="brands"):
                 raise ObservatoryConfigError(f"{where} {key}: {value!r} is not a web site name such as example.com")
             excluded.append(host.removeprefix("www."))
     return {"competitors": competitors, "discovery": disc, "youtube": {"channels": [c.strip() for c in channels], "queries": [q.strip() for q in queries],
-            "max_videos_per_channel": yt.get("max_videos_per_channel")}, "exclude_domains": sorted(set(excluded))}
+            "max_videos_per_channel": yt.get("max_videos_per_channel")},
+            "reddit": {"subreddits": [x.strip().removeprefix("r/") for x in (rd.get("subreddits") or [])], "queries": [x.strip() for x in (rd.get("queries") or [])]}, "exclude_domains": sorted(set(excluded))}
 
 
 def research_seeds(brand, root="brands"):
