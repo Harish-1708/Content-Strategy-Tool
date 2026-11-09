@@ -17,6 +17,7 @@ from collections import defaultdict
 from .. import benchmarks as BM
 from .. import health
 from . import config as OC
+from . import judge
 
 NOISE_DOMAINS = frozenset("""
 facebook.com fb.com instagram.com threads.net tiktok.com youtube.com youtu.be x.com twitter.com pinterest.com reddit.com linkedin.com snapchat.com whatsapp.com
@@ -277,17 +278,20 @@ def merge(book, entities, scores, settings, now, *, probes=None, judged=None, mo
             c["domain"] = e["domain"]
         c["instagram"] = c["instagram"] or e["instagram"]
         c["tiktok"] = c["tiktok"] or e["tiktok"]
+        for extra in ("instagram_confidence", "instagram_evidence", "instagram_possible", "instagram_checked_at", "domain_confidence", "domain_evidence"):
+            if extra in e:                                   # who this is and how sure we are, kept with the sources that said so
+                c[extra] = e[extra]
         if key in probes:
             c["shopify"], c["shopify_note"] = probes[key]
-        if key in judged:
+        if key in judged and (c.get("ai") or {}).get("review") != "approved":      # an approved verdict stands until a person approves a newer one
             c["ai"] = judged[key]
     watching = monitored_elsewhere + sum(1 for c in book["candidates"] if c["status"] == "monitoring")
     auto = sum(1 for c in book["candidates"] if c["status"] == "monitoring" and c.get("decided_by") == "auto")
     for c in sorted(book["candidates"], key=lambda c: -c["score"]):
         if c.get("decided_by") == "person":
             continue                                                  # a person's choice is final
-        ai = c.get("ai") or {}
-        if ai.get("relevant") is False and c["status"] != "monitoring":
+        blocked = judge.blocks_auto_add(c)                          # a confident, not-rejected "not a competitor" from the AI judge (it can stop an addition, never cause one)
+        if blocked and c["status"] != "monitoring":
             c["status"] = "weak"
         elif c["status"] == "monitoring" and c.get("decided_by") == "auto":
             continue                                                  # earlier automatic choices stand until a person changes them
@@ -295,7 +299,7 @@ def merge(book, entities, scores, settings, now, *, probes=None, judged=None, mo
             c["status"] = "weak"
         else:
             c["status"] = "candidate"
-            if (cfg["auto_monitor_max"] and c["score"] >= cfg["auto_monitor_score"] and c["domain"] and c.get("shopify") is not None and ai.get("relevant", True)
+            if (cfg["auto_monitor_max"] and c["score"] >= cfg["auto_monitor_score"] and c["domain"] and c.get("shopify") is not None and not blocked
                     and auto < cfg["auto_monitor_max"] and watching < cfg["max_monitored"]):
                 c.update(status="monitoring", decided_by="auto", decided_at=now)
                 auto += 1
