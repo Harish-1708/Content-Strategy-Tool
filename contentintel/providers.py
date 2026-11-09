@@ -319,7 +319,59 @@ class ExaMcp(Provider):
         return found[:num]
 
 
-PROVIDER_CLASSES = (SerperDev, Tavily, SerpApi, Exa, ExaMcp)
+class AgentReachSearch(Provider):
+    """Search on one Agent-Reach channel offered to general research like any other search provider. Reddit goes through OpenCLI and a browser a person has logged in to, on a machine the owner controls, so it
+    is built only when AGENT_REACH_SEARCH is on and the run is not on a hosted runner. YouTube goes through yt-dlp, which needs no login, so it is built wherever AGENT_REACH_SEARCH is on (YouTube may bot-check a
+    data-centre address; that is reported, not worked around). Keyless: there is no secret to hide."""
+    channel = ""
+    needs_browser = True                 # Reddit goes through OpenCLI and a logged-in browser; YouTube (yt-dlp) does not
+    env_var = "AGENT_REACH_SEARCH"
+    kinds = ("web",)
+
+    def __init__(self, api_key="on", http=None, sleep=None, cli=None):
+        super().__init__(api_key, http=http, sleep=sleep)
+        self.cli = cli
+
+    def _clean(self, text):
+        return str(text)
+
+    def search(self, query, *, kind="web", num=10, country=None, recency=None, depth="basic"):
+        import os
+
+        from . import agent_reach_instagram as AR
+        from . import contract as K
+        if self.cli is not None:
+            cli = self.cli
+        elif self.channel == "youtube":                                  # Agent-Reach's YouTube channel is yt-dlp
+            from .ytdlp_youtube import YtDlpYouTube
+            cli = YtDlpYouTube()
+        else:
+            cli = AR.OpenCLI(os.environ.get("OPENCLI_BIN", "opencli"), site=self.channel, environ=os.environ)
+        try:
+            rows = AR.rows_from(cli.call(["search", query, "--limit", num]))
+        except K.Failure as exc:
+            cls = AuthError if exc.code == K.NEED_LOGIN else ProviderError
+            raise cls(f"{self.label}: {exc.code}: {exc}") from None
+        out = []
+        for raw in rows[:num]:
+            url = str(AR._pick(raw, "url", "link", "webpage_url") or "")
+            title = str(AR._pick(raw, "title", "name", "text") or "")
+            if url.startswith("http") and (title or url):
+                out.append(Result(rank=len(out) + 1, title=title[:200], url=url, snippet=str(AR._pick(raw, "description", "content", "selftext", "body", "text") or "")[:400]))
+        self.last_note = f"{len(out)} result(s) through {self.channel}"
+        return out
+
+
+class AgentReachReddit(AgentReachSearch):
+    name, label, channel = "agent_reach_reddit", "Reddit search (Agent-Reach)", "reddit"
+
+
+class AgentReachYouTube(AgentReachSearch):
+    name, label, channel = "agent_reach_youtube", "YouTube search (Agent-Reach, yt-dlp)", "youtube"
+    needs_browser = False
+
+
+PROVIDER_CLASSES = (SerperDev, Tavily, SerpApi, Exa, ExaMcp, AgentReachReddit, AgentReachYouTube)
 PROVIDER_NAMES = tuple(c.name for c in PROVIDER_CLASSES)
 
 
@@ -328,6 +380,10 @@ def build_providers(env, http=None, sleep=None):
     found = {}
     for cls in PROVIDER_CLASSES:
         key = (env.get(cls.env_var) or "").strip()
-        if key:
+        if issubclass(cls, AgentReachSearch):
+            from .agent_reach_instagram import hosted_runner
+            if key.lower() in ("on", "1", "true", "yes") and not (cls.needs_browser and hosted_runner(env)):      # the owner's opt-in; the browser-based channel never on a hosted runner
+                found[cls.name] = cls(key, http=http, sleep=sleep)
+        elif key:
             found[cls.name] = cls(key, http=http, sleep=sleep)
     return found
