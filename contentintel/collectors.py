@@ -463,6 +463,13 @@ def _clip(text):
     return " ".join(clean_text(text or "").split())[:TEXT_LIMIT]          # invisible and control characters never enter collected text
 
 
+def _for_purpose(claude, purpose):
+    """The Claude client for one purpose, when the caller gave it a way to make one (cli does, so the owner's AI Gateway route for that purpose applies); otherwise the client itself."""
+    import inspect
+    make = getattr(claude, "for_purpose", None)
+    return make(purpose) if inspect.isfunction(make) else claude
+
+
 def _row(source, ident, **fields):
     row = {"item_id": f"{source}:{ident}", "source": source, "handle": "", "title": "", "text": "",
            "url": "", "posted_at": "", "likes": None, "comments": None, "shares": None, "views": None,
@@ -1153,7 +1160,7 @@ def collect_deep_research(browser, question, site_cfg, *, claude=None, context="
     prompt = question
     if claude is not None and prepare_prompt and claude_budget >= 1:
         try:
-            prompt = claude.prepare_prompt(question, context)
+            prompt = _for_purpose(claude, "collectors").prepare_prompt(question, context)
             calls += 1
         except (AuthError, QuotaError, ProviderError) as exc:
             notes.append(f"Claude could not prepare the prompt ({exc}); the question was sent as written")
@@ -1192,7 +1199,7 @@ def collect_deep_research(browser, question, site_cfg, *, claude=None, context="
             raise BrowserError("gemini: asked a question after Claude's answer limit was reached. "
                                f"Gemini said: {_snip(text)}")
         try:
-            reply = claude.answer(prompt, context, text)
+            reply = _for_purpose(claude, "collectors").answer(prompt, context, text)
             calls += 1
         except (AuthError, QuotaError, ProviderError) as exc:
             browser.screenshot("gemini-question-unanswered")
@@ -1249,7 +1256,7 @@ def collect_deep_research(browser, question, site_cfg, *, claude=None, context="
                 notes.append("the check of the report was skipped: Claude's call limit is reached")
                 break
             try:
-                verdict = deepcheck.review_report(claude, question, prompt, deepcheck.join_report(text, followups), found, round_no)
+                verdict = deepcheck.review_report(_for_purpose(claude, "deep_check"), question, prompt, deepcheck.join_report(text, followups), found, round_no)
                 calls += 1
             except (AuthError, QuotaError, ProviderError) as exc:
                 notes.append(f"Claude could not check the report ({exc}); it stands as it is")
