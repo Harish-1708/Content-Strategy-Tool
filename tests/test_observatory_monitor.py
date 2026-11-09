@@ -256,3 +256,59 @@ def test_the_stale_report_says_how_old_each_reading_is(env):
     assert rows["catalogue"]["age_days"] == 19.0 and rows["catalogue"]["stale"] is True
     fresh = {r["kind"]: r for r in MO.stale_report(env.snaps, "shop-example", "2026-11-03T10:00:00Z", env.cfg)}
     assert fresh["catalogue"]["stale"] is False and json.dumps(fresh)
+
+
+# ---- accounts a competitor links to are found, remembered, announced once and handed on ------------------------------------------------------
+
+SOCIAL_HOME = ('<html><head><title>Shop</title></head><body><a href="https://www.instagram.com/shopbars/">IG</a> <a href="https://www.youtube.com/@ShopBars">YT</a>'
+               '<a href="https://www.tiktok.com/@shopbars">TT</a><div class="announcement-bar">Free shipping on orders over $50</div><h1>Real chocolate</h1>'
+               '<p>We make bars from cacao beans in small batches, by hand, every single week of the year.</p></body></html>')
+
+
+def social_world():
+    web = world(1)
+    web.on(BASE + "/", reply(200, SOCIAL_HOME, {"content-type": "text/html"}))
+    return web
+
+
+def run_site(tmp_path, web, comp_extra=None, at=T1):
+    from contentintel import health as HL
+    from contentintel import sources as SRC
+    from contentintel.observatory import monitor as MO
+    from contentintel.observatory import snapshots as SN
+    from contentintel.store import Store
+    from conftest import ROOT
+    snaps = SN.SnapshotStore(tmp_path)
+    hl = HL.HealthLedger.load(Store(tmp_path), SRC.load_sources(ROOT / "sources.yaml"))
+    comp = {**COMP, **(comp_extra or {})}
+    return snaps, MO.monitor_site(comp, client=client(web, settings()), snaps=snaps, settings=settings(), hl=hl, now=at, only=["pages"])
+
+
+def test_accounts_on_the_home_page_are_remembered_and_announced_once(tmp_path):
+    snaps, res = run_site(tmp_path, social_world())
+    assert snaps.read_social(res["site"]) == {"instagram": "shopbars", "tiktok": "shopbars", "youtube": "@ShopBars"}
+    found = [e for e in res["events"] if e["type"] == "social_found"]
+    assert len(found) == 1 and "instagram @shopbars" in found[0]["summary"] and found[0]["severity"] == "info" and found[0]["after"]["youtube"] == "@ShopBars"
+    _, again = run_site(tmp_path, social_world(), at=T2)
+    assert not [e for e in again["events"] if e["type"] == "social_found"]                    # known now: nothing to announce a second time
+
+
+def test_an_account_already_given_in_the_file_is_not_announced_and_is_not_overwritten(tmp_path):
+    snaps, res = run_site(tmp_path, social_world(), {"instagram": "official_handle", "youtube": "@ShopBars", "tiktok": "shopbars"})
+    assert not [e for e in res["events"] if e["type"] == "social_found"] and snaps.read_social(res["site"]) == {}           # the file's values win; nothing is stored beside them
+    snaps, res = run_site(tmp_path / "two", social_world(), {"instagram": "official_handle"})
+    assert snaps.read_social(res["site"]) == {"tiktok": "shopbars", "youtube": "@ShopBars"}                                  # only the gaps are filled from the page
+
+
+def test_a_page_with_no_accounts_changes_nothing(tmp_path):
+    snaps, res = run_site(tmp_path, world(1))
+    assert snaps.read_social(res["site"]) == {} and not [e for e in res["events"] if e["type"] == "social_found"]
+
+
+def test_a_stored_account_survives_a_damaged_file_as_nothing_not_a_crash(tmp_path):
+    from contentintel.observatory import snapshots as SN
+    snaps = SN.SnapshotStore(tmp_path)
+    snaps.write_social("shop-example", {"instagram": "x", "other": "ignored"}, T1)
+    assert snaps.read_social("shop-example") == {"instagram": "x"}
+    (snaps.site_dir("shop-example") / "social.json").write_text("{broken")
+    assert snaps.read_social("shop-example") == {} and snaps.read_social("never-seen") == {}
