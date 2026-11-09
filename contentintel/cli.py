@@ -307,6 +307,42 @@ def _claude(settings, model=None):
                   prompt_max_tokens=settings.claude_prompt_max_tokens) if key else None
 
 
+def _hub_settings(args):
+    """The platform's shared-service settings (observatory.yaml plus the owner's control changes), or None when they cannot be read: a broken observatory.yaml must never stop an unrelated command."""
+    try:
+        from . import services
+        return services.load_settings(None, getattr(args, "data_dir", "data"))
+    except Exception:                                   # noqa: BLE001
+        return None
+
+
+def _routed(claude, purpose, args, store):
+    """The module's Claude client, or an adapter that tries the AI Gateway first when the owner routed this purpose there (services.ai_gateway.routes.<purpose> = gateway_first). Unchanged by default."""
+    hub = _hub_settings(args) if claude is not None else None
+    if hub is None:
+        return claude
+    from . import services
+
+    def stack():
+        _, ledger = _health(args, store)
+        router, _usage, _review, side, _notes, finish = services.ai_stack(store, ledger, os.environ, settings=hub)
+        if not any(name != "claude" for name in getattr(router, "clients", {})):          # no free provider has a credential here: nothing to try first, Claude answers as it always did (and nothing is written)
+            if side is not None:
+                side.stop()
+            return None
+        return router, finish
+    return services.ai_client(hub, purpose, claude, stack_factory=stack, now_fn=sync_mod.utc_now)
+
+
+def _search_providers(args, purpose):
+    """The search providers a purpose may use, under the owner's switches (services.search). If the settings cannot be read the providers are built as they always were."""
+    hub = _hub_settings(args)
+    if hub is None:
+        return providers_mod.build_providers(os.environ)
+    from . import services
+    return services.search_providers(hub, purpose, os.environ)
+
+
 def _drive():
     """A Drive client for the Idea Bank folder, or None (with the reason) when the secrets are not set."""
     key, raw = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", ""), os.environ.get("IDEA_BANK_FOLDER_ID", "")
@@ -432,7 +468,7 @@ def _ideabank(args, store):
     if drive is None:
         print(f"Files will not be saved in Drive: the {missing} secret is not set.")
     now = sync_mod.utc_now()
-    claude = _claude(csettings)
+    claude = _routed(_claude(csettings), "idea_bank", args, store)
     budget = ib_mod.ClaudeBudget(store, now, settings.claude_monthly_calls) if claude else None
     registry, ledger = _health(args, store)
     for slug in list_brand_slugs(args.brands_dir) if args.all else [args.brand]:
@@ -453,7 +489,7 @@ def _request(args, store):
     settings = ib_mod.load_settings(args.research_config)
     csettings = collectors_mod.load_collector_settings(args.research_config)
     now = sync_mod.utc_now()
-    claude = _claude(csettings)
+    claude = _routed(_claude(csettings), "planning", args, store)
     budget = ib_mod.ClaudeBudget(store, now, settings.claude_monthly_calls)
     context = ib_mod.brand_context(brand, store)
     try:
@@ -502,7 +538,7 @@ def _run_request(args, store, brand, request, settings, csettings, claude, budge
         return [f"{r.source} {r.status}: {r.detail}"[:160] for r in result.brands.get(brand.slug, [])]
 
     def research_runner(queries):
-        providers = providers_mod.build_providers(os.environ)
+        providers = _search_providers(args, "general_research")
         if not providers:
             raise RuntimeError("no search API key is set (TAVILY_API_KEY, SERPER_API_KEY, SERPAPI_API_KEY)")
         base = copy.deepcopy(research_mod.load_brand_research(brand, args.brands_dir))
@@ -564,7 +600,7 @@ def _brief(args, store):
             print(f"Pictures will not be placed in the brief and the file will not be saved in Drive: the {missing} secret is not set.")
         record = brief_mod.make_brief(
             brand, store, brief_name=args.brief, ask=args.ask, ruleset=ruleset, decisions=decisions,
-            claude_for=lambda model: _claude(csettings, model), settings=settings,
+            claude_for=lambda model: _routed(_claude(csettings, model), "brief", args, store), settings=settings,
             budget=ib_mod.ClaudeBudget(store, now, settings.claude_monthly_calls), now=now, drive=drive,
             include_maybe=args.include_maybe, request_id=args.request.strip())
     except (brief_mod.BriefError, drive_mod.DriveError, sheets_mod.SheetsError) as exc:
@@ -614,7 +650,7 @@ def _research(args, store):
         print(f"Error: unknown provider {', '.join(unknown)} "
               f"(choose from {', '.join(providers_mod.PROVIDER_NAMES)})")
         return 1
-    available = providers_mod.build_providers(os.environ)
+    available = _search_providers(args, "general_research")
     for name in wanted:
         if name not in available:
             print(f"::warning::{name} was asked for but its API key is not set; leaving it out")
@@ -706,8 +742,10 @@ def _collect(args, store):
     creds = _site_creds(browser_cfg, os.environ)
     apify_token, claude_key = (os.environ.get("APIFY_TOKEN") or "").strip(), (os.environ.get("ANTHROPIC_API_KEY") or "").strip()
     apify = Apify(apify_token) if apify_token else None
-    claude = Claude(claude_key, model=settings.claude_model, max_tokens=settings.claude_max_tokens,
-                    prompt_max_tokens=settings.claude_prompt_max_tokens) if claude_key else None
+    plain = Claude(claude_key, model=settings.claude_model, max_tokens=settings.claude_max_tokens, prompt_max_tokens=settings.claude_prompt_max_tokens) if claude_key else None
+    if plain is not None:                                  # each purpose has its own switch: seed words are one, the deep check of a research report is another
+        plain.for_purpose = lambda purpose: _routed(plain, purpose, args, store)
+    claude = _routed(plain, "autoseeds", args, store)
     backend = collectors_mod.effective_backend(args.backend, settings)
     print("Secrets this run can see (names only; values are never shown):")
     for name, state in _secrets_status(browser_cfg, os.environ):
@@ -956,10 +994,13 @@ def _observatory_checks(args, now):
     except ImportError:
         return {}
     try:
-        settings = obs_config.load_settings()
+        from . import services as _services
+        settings = _services.load_settings(None, getattr(args, "data_dir", "data"))
         slug = args.brand or (list_brand_slugs(args.brands_dir) or [""])[0]
         contact = (os.environ.get("OBSERVATORY_CONTACT") or settings["politeness"]["contact"]).strip()
-        return obs_checks.make_checks(load_brand(slug, args.brands_dir).domain if slug else "", settings, contact, now)
+        checks = obs_checks.make_checks(load_brand(slug, args.brands_dir).domain if slug else "", settings, contact, now)
+        checks.update(obs_checks.reddit_checks(settings, contact))
+        return checks
     except (BrandError, obs_config.ObservatoryConfigError):
         return {}
 
@@ -981,9 +1022,17 @@ def _acceptance_context(args, store, registry, now):
             ctx.missing[(source, "browser")] = collectors_mod.missing_access_message(browser_cfg["sites"][site])
         if apify is None:
             ctx.missing[(source, "apify")] = "no key: set APIFY_TOKEN"
+    from . import agent_reach_instagram as ar_probe
+    if ar_probe.hosted_runner():
+        ctx.missing[("instagram", "agent_reach")] = "cannot run on a GitHub-hosted runner: it needs a browser logged in to Instagram, which must stay on a machine you control"
+    elif not ar_probe.OpenCLI(os.environ.get("OPENCLI_BIN", "opencli")).available():
+        ctx.missing[("instagram", "agent_reach")] = "cannot run: OpenCLI is not installed on this machine"
     state = {}
 
     def collect_check(source, backend):
+        if backend == "agent_reach":                         # OpenCLI in a logged-in browser: only on a machine that has both, never on a hosted runner
+            from . import agent_reach_instagram as ar_mod
+            return {"source": source, **ar_mod.check_row(ar_mod.OpenCLI(os.environ.get("OPENCLI_BIN", "opencli")), os.environ.get("INSTAGRAM_CHECK_HANDLE", "instagram"))}
         if "factory" not in state:
             state["factory"] = (_BROWSER_FACTORY or _real_factory)(browser_cfg, creds, args.debug_dir)
         rows = collectors_mod.check_collectors(state["factory"], creds, settings, browser_cfg, store, research_mod.Ledger, now, [source],
@@ -1009,6 +1058,15 @@ def _acceptance_context(args, store, registry, now):
         return len(found.products), f"{slug}: read {len(found.products)} products from the first page of the public feed"
 
     ctx.observatory_checks = _observatory_checks(args, now)
+    try:                                                         # why a Reddit route cannot be checked here, in plain words (never a failure)
+        from .observatory import acceptance_checks as _oc
+        from .observatory import config as _ocfg
+        from . import services as _services2
+        _s = _services2.load_settings(None, getattr(args, "data_dir", "data"))
+        for key, reason in _oc.reddit_missing(_s, (os.environ.get("OBSERVATORY_CONTACT") or _s["politeness"]["contact"]).strip()).items():
+            ctx.missing.setdefault(key, reason)
+    except (ImportError, _ocfg.ObservatoryConfigError):
+        pass
     ctx.collect_check, ctx.provider_check = collect_check, provider_check
     ctx.claude_check = claude_check if claude is not None else None
     ctx.catalogue_check = catalogue_check
