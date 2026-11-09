@@ -80,7 +80,7 @@ def _snapshot_page(client, url, settings):
     offers = H.extract_offers(parsed["text"], " ".join(parsed["announcements"]))
     return {"kind": "page", "schema": 1, "url": url, "final_url": got.final_url, "captured_at": "", "complete": True, "status": got.status, "title": parsed["title"],
             "description": parsed["description"], "canonical": parsed["canonical"], "h1": parsed["h1"], "headings": parsed["headings"][:25], "announcements": parsed["announcements"],
-            "offers": offers, "products": H.jsonld_products(parsed["jsonld"]), "alternates": parsed["alternates"][:8], "text": text,
+            "offers": offers, "products": H.jsonld_products(parsed["jsonld"]), "alternates": parsed["alternates"][:8], "social": H.social_links(parsed["links"], parsed["jsonld"]), "text": text,
             "text_hash": hashlib.sha1(text.encode("utf-8", errors="replace")).hexdigest()[:16], "text_truncated": parsed["chars"] > keep, "chars": parsed["chars"]}
 
 
@@ -157,6 +157,24 @@ def _count(snapshot):
     return 1
 
 
+def _record_social(run, found, snaps, now):
+    """Remember the accounts the home page links to, but only those the file and discovery did not already give (what a person wrote always wins), and raise one event when an
+    account appears that was not known. An account the site later changes to is updated quietly."""
+    own = {k: run.comp.get(k, "") for k in ("instagram", "tiktok", "youtube")}
+    wanted = {k: v for k, v in found.items() if v and not own.get(k)}
+    if not wanted:
+        return
+    stored = snaps.read_social(run.site)
+    new = {k: v for k, v in wanted.items() if not stored.get(k)}
+    changed = {k: v for k, v in wanted.items() if stored.get(k) and stored[k].lstrip("@").lower() != v.lstrip("@").lower()}
+    if new or changed:
+        snaps.write_social(run.site, {**stored, **new, **changed}, now)
+    if new:
+        text = ", ".join(f"{k} {v if (k == 'youtube' and v.startswith('UC')) else '@' + v.lstrip('@')}" for k, v in new.items())
+        run.events.append(CH.event(run.site, "page", "social_found", f"{run.comp['name']} links to its own {text}", at=now, severity="info", subject={"kind": "site", "id": run.site},
+                                   after=new, tier="public_polite", access="page_text"))
+
+
 def monitor_site(comp, *, client, snaps, settings, hl, now, only=None, page_reader=None):
     """Run every enabled part for one competitor. Returns {'site', 'domain', 'parts', 'events', 'stopped'}."""
     run = _Run(comp, client, snaps, settings, hl, now)
@@ -177,6 +195,8 @@ def monitor_site(comp, *, client, snaps, settings, hl, now, only=None, page_read
             if snap is None:
                 continue
             discovered_feeds.extend(a["href"] for a in snap["alternates"])
+            if url == run.base + "/":
+                _record_social(run, snap.get("social") or {}, snaps, now)
             run.keep("pages", page_kind(url), snap, lambda old, new: CH.diff_page(run.site, old, new, settings, now), label=url)
 
     if "feeds" in want and mon.get("feeds", True) and not run.stopped:
@@ -278,4 +298,3 @@ def stale_report(snaps, site, now, settings, stale_after_days=14):
         out.append({"kind": kind, "captured_at": last["captured_at"], "confirmed_at": last["confirmed_at"], "age_days": round(age, 1) if age is not None else None,
                     "stale": age is None or age > stale_after_days, "complete": last.get("complete", True)})
     return out
-
