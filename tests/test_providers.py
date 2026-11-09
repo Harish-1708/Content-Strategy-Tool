@@ -221,10 +221,63 @@ def test_only_providers_with_a_key_are_built():
 
 def test_each_provider_reads_its_own_secret_name():
     assert {c.name: c.env_var for c in P.PROVIDER_CLASSES} == {
-        "serper_dev": "SERPER_API_KEY", "tavily": "TAVILY_API_KEY", "serpapi": "SERPAPI_API_KEY", "exa": "EXA_API_KEY", "exa_mcp": "EXA_MCP"}
+        "serper_dev": "SERPER_API_KEY", "tavily": "TAVILY_API_KEY", "serpapi": "SERPAPI_API_KEY", "exa": "EXA_API_KEY", "exa_mcp": "EXA_MCP",
+        "agent_reach_reddit": "AGENT_REACH_SEARCH", "agent_reach_youtube": "AGENT_REACH_SEARCH"}
 
 
 def test_results_become_plain_dicts_for_saving():
     r = P.Result(rank=2, title="T", url="https://x.example.com", snippet="S", date=None)
     assert r.to_dict() == {"rank": 2, "title": "T", "url": "https://x.example.com",
                            "snippet": "S", "date": None}
+
+
+# ---- Agent-Reach channels offered to general research as search providers ----------------------------------------------------------------------------
+
+class FakeOpenCLI:
+    def __init__(self, rows=None, error=None):
+        self.rows, self.error, self.calls = rows or [], error, []
+
+    def call(self, args):
+        self.calls.append(list(args))
+        if self.error:
+            raise self.error
+        return self.rows
+
+
+def test_agent_reach_search_providers_exist_only_when_the_owner_opts_in_and_never_on_a_hosted_runner():
+    assert not [n for n in P.build_providers({"SERPER_API_KEY": "k-12345678"}) if n.startswith("agent_reach")]
+    on = P.build_providers({"AGENT_REACH_SEARCH": "on"})
+    assert sorted(on) == ["agent_reach_reddit", "agent_reach_youtube"] and on["agent_reach_reddit"].channel == "reddit" and on["agent_reach_youtube"].channel == "youtube"
+    for off in ("off", "0", "no", "false", ""):
+        assert not P.build_providers({"AGENT_REACH_SEARCH": off})
+    hosted = P.build_providers({"AGENT_REACH_SEARCH": "on", "RUNNER_ENVIRONMENT": "github-hosted"})
+    assert sorted(hosted) == ["agent_reach_youtube"]          # Reddit needs a logged-in browser, so it never runs on a hosted runner; YouTube goes through yt-dlp, which needs no login
+
+
+def test_an_agent_reach_search_returns_the_shared_result_type_and_skips_rows_without_a_link():
+    from contentintel import agent_reach_instagram as AR
+    rows = [{"title": "Snack thread", "url": "https://www.reddit.com/r/snacks/comments/abc12/x/", "selftext": "chewy bars"}, {"title": "no link"}, {"name": "Video", "link": "https://www.youtube.com/watch?v=1"}]
+    cli = FakeOpenCLI(rows=rows)
+    provider = P.AgentReachReddit("on", cli=cli)
+    out = provider.search("protein bar", num=5)
+    assert out == [P.Result(rank=1, title="Snack thread", url="https://www.reddit.com/r/snacks/comments/abc12/x/", snippet="chewy bars"), P.Result(rank=2, title="Video", url="https://www.youtube.com/watch?v=1", snippet="")]
+    assert cli.calls == [["search", "protein bar", "--limit", 5]] and provider.last_note == "2 result(s) through reddit" and AR.rows_from is not None
+    assert provider.cost() == 1 and provider.remaining() is None and provider.kinds == ("web",)
+
+
+def test_an_agent_reach_failure_is_classified_like_any_other_providers():
+    from contentintel import contract as K
+    login = P.AgentReachYouTube("on", cli=FakeOpenCLI(error=K.Failure(K.NEED_LOGIN, "log in")))
+    with pytest.raises(P.AuthError, match="NEED_LOGIN"):
+        login.search("q")
+    other = P.AgentReachYouTube("on", cli=FakeOpenCLI(error=K.Failure(K.UPSTREAM_BROKEN, "broke")))
+    with pytest.raises(P.ProviderError, match="UPSTREAM_BROKEN"):
+        other.search("q")
+
+
+def test_research_routes_to_the_agent_reach_providers_last_for_web_search_only():
+    from contentintel import research as R
+    s = R.load_settings("does-not-exist.yaml")
+    assert s.routing["web"][-2:] == ["agent_reach_youtube", "agent_reach_reddit"] and "agent_reach_reddit" not in s.routing["news"] and set(s.caps) >= {"agent_reach_reddit", "agent_reach_youtube"}
+    assert R.load_settings("research.yaml").routing["web"][-2:] == ["agent_reach_youtube", "agent_reach_reddit"]
+    assert R.load_settings("research.yaml").caps["agent_reach_reddit"].monthly_cap == 300
