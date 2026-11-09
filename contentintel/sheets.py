@@ -58,7 +58,7 @@ STARTER_MANUAL = {PRODUCTS: ["Notes"], RESEARCH: ["Review"], COLLECTED: ["Review
                   IDEABANK: ["Decision", "Notes"], REQUESTS: ["Changes"], BRIEFS: ["Feedback"], REJECTED: ["Rescue"]}   # added only when a tab is brand new
 STAMP = "last_updated"                          # when the tool last changed that row
 
-NUMERIC = {"price_min", "price_max", "price", "compare_at_price", "engagement_pct", "success_rate_7d", "avg_items", "multiple", "spend_this_month_usd"}
+NUMERIC = {"price_min", "price_max", "price", "compare_at_price", "engagement_pct", "success_rate_7d", "avg_items", "multiple", "trend_multiple", "views_per_day", "spend_this_month_usd"}
 INTEGER = {"variant_count", "image_count", "times_seen", "best_rank", "likes", "comments", "shares", "attempts_7d", "acceptance_items",
            "views", "saves", "reach", "days_running", "variants", "page_followers", "score", "fit", "idea", "assets", "violations", "items_added",
            "products", "collections", "on_sale_products", "events_7d", "median", "approved_models", "requests_today", "daily_limit", "left_today", "requests_this_month",
@@ -226,10 +226,10 @@ def _plain(value):
 def _observatory_tabs(brand, store, now, report):
     """The competitor tabs, or none. A problem here is written in the run's notes and never stops the rest of the sheet."""
     try:
-        from .observatory import config as obs_config
         from .observatory import report as obs_report
         from .observatory.snapshots import SnapshotStore
-        return obs_report.sheet_tabs(brand, store, SnapshotStore(store.data_dir), now, obs_config.load_settings())
+        from . import services
+        return obs_report.sheet_tabs(brand, store, SnapshotStore(store.data_dir), now, services.load_settings(None, store.data_dir))
     except ImportError:
         return []
     except Exception as exc:
@@ -251,6 +251,34 @@ def _read_competitor_decisions(spreadsheet, brand, store, now, report, dry_run):
             report.notes.append(f"Competitor decisions read from the sheet: {n}")
     except Exception as exc:
         report.notes.append(f"Competitor decisions not read: {exc}")
+
+
+def _read_controls(spreadsheet, brand, store, now, report, dry_run):
+    """Read the values a person changed in the Controls tab (on/off, numbers, text) and record them, before the tab is rewritten. Never stops the sheet update."""
+    if spreadsheet is None:                                      # a dry run for a sheet that does not exist yet has nothing to read
+        return
+    try:
+        from . import services
+        if services.CONTROLS_TAB not in [w.title for w in spreadsheet.worksheets()]:
+            return
+        settings = services.load_settings(None, store.data_dir)
+        changes, problems = services.apply_sheet_controls(spreadsheet.worksheet(services.CONTROLS_TAB).get_all_values(), settings, store.data_dir, now, save=not dry_run, sheet_id=brand.slug)
+        if changes:
+            report.notes.append("Controls changed in the sheet: " + "; ".join(changes))
+        for p in problems:
+            report.notes.append(f"Controls: {p}; the value was left as it was")
+    except Exception as exc:
+        report.notes.append(f"Controls not read: {exc}")
+
+
+def _controls_tabs(brand, store, now, report):
+    """The Controls tab: the platform's shared-service settings, editable in the sheet. Never stops the rest of the sheet."""
+    try:
+        from . import services
+        return [services.sheet_tab(services.load_settings(None, store.data_dir), store.data_dir, now, sheet_id=brand.slug)]
+    except Exception as exc:
+        report.notes.append(f"Controls tab skipped: {exc}")
+        return []
 
 
 def _ai_tabs(store, now, report):
@@ -736,7 +764,8 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
         _sync_table(ws, tab=COLLECTOR_HEALTH, columns=health_mod.SHEET_COLUMNS, rows_by_key=rows, key_col="route_key", report=report, dry_run=dry_run)
 
     _read_competitor_decisions(spreadsheet, brand, store, now, report, dry_run)
-    for tab in _observatory_tabs(brand, store, now, report) + _ai_tabs(store, now, report):     # what the competitor observatory has found, and how the AI providers are doing
+    _read_controls(spreadsheet, brand, store, now, report, dry_run)
+    for tab in _observatory_tabs(brand, store, now, report) + _controls_tabs(brand, store, now, report) + _ai_tabs(store, now, report):     # what the competitor observatory has found, and how the AI providers are doing
         ws = _ensure_tab(spreadsheet, tab["title"], report, dry_run, created)
         rows = {key: {c: _typed(c, _plain(row.get(c))) for c in tab["columns"]} for key, row in tab["rows_by_key"].items()}
         _sync_table(ws, tab=tab["title"], columns=tab["columns"], rows_by_key=rows, key_col=tab["key_col"], report=report, dry_run=dry_run,
