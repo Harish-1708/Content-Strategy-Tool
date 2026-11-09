@@ -206,3 +206,56 @@ def jsonld_products(blocks):
                 walk(node["item"])
     walk(blocks)
     return out[:50]
+
+
+# ---- the accounts a site links to ------------------------------------------------------------------------------------------------------------
+
+_IG = re.compile(r"^https?://(?:www\.)?instagram\.com/([A-Za-z0-9_.]{1,30})/?(?:[?#].*)?$", re.I)
+_IG_RESERVED = {"p", "reel", "reels", "tv", "explore", "accounts", "stories", "direct", "about", "developer", "legal", "web", "share", "privacy", "directory", "challenge", "emails"}
+_TT = re.compile(r"^https?://(?:www\.)?tiktok\.com/@([A-Za-z0-9_.]{2,24})/?(?:[?#].*)?$", re.I)
+_YT_HANDLE = re.compile(r"^https?://(?:www\.|m\.)?youtube\.com/@([A-Za-z0-9_.\-]{3,30})/?(?:[/?#].*)?$", re.I)
+_YT_ID = re.compile(r"^https?://(?:www\.|m\.)?youtube\.com/channel/(UC[0-9A-Za-z_\-]{22})/?(?:[/?#].*)?$", re.I)
+
+
+def _same_as(jsonld):
+    out = []
+
+    def walk(node):
+        if isinstance(node, list):
+            for item in node:
+                walk(item)
+        elif isinstance(node, dict):
+            same = node.get("sameAs")
+            for url in (same if isinstance(same, list) else [same] if same else []):
+                if isinstance(url, str):
+                    out.append(url)
+            for value in node.values():
+                if isinstance(value, (list, dict)):
+                    walk(value)
+    walk(jsonld)
+    return out
+
+
+def social_links(links, jsonld=()):
+    """The Instagram, TikTok and YouTube accounts a page links to or declares in its structured data (sameAs): {'instagram': 'handle', 'tiktok': 'handle', 'youtube': '@handle' or 'UC...'}.
+    The account linked most often wins; links to single posts, share buttons and Instagram's own sections are not accounts. Legacy YouTube /c/ and /user/ links are left out: the API cannot resolve them."""
+    from collections import Counter
+    urls = [str(link.get("href", "")) if isinstance(link, dict) else str(link) for link in links] + _same_as(jsonld)
+    found = {"instagram": Counter(), "tiktok": Counter(), "youtube": Counter()}
+    for url in urls:
+        m = _IG.match(url)
+        if m and m.group(1).lower() not in _IG_RESERVED:
+            found["instagram"][m.group(1).lower()] += 1
+            continue
+        m = _TT.match(url)
+        if m:
+            found["tiktok"][m.group(1).lower()] += 1
+            continue
+        m = _YT_HANDLE.match(url)
+        if m:
+            found["youtube"]["@" + m.group(1)] += 1
+            continue
+        m = _YT_ID.match(url)
+        if m:
+            found["youtube"][m.group(1)] += 1
+    return {k: c.most_common(1)[0][0] for k, c in found.items() if c}
