@@ -1450,7 +1450,7 @@
      "title": "2XL / Bordeaux"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53755991556207,
      "options": [
@@ -11688,7 +11688,7 @@
      "title": "XL / Jammers"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753433161839,
      "options": [

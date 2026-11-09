@@ -39,7 +39,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991457903,L / Bordeaux,Size=L; Color=Bordeaux,SWPANTSCORD-781-L,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991490671,XL / Bordeaux,Size=XL; Color=Bordeaux,SWPANTSCORD-781-XL,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991523439,2XL / Bordeaux,Size=2XL; Color=Bordeaux,SWPANTSCORD-781-2XL,129.00,,true
-15347005489263,Corduroy Swoveralls - Bordeaux,53755991556207,3XL / Bordeaux,Size=3XL; Color=Bordeaux,SWPANTSCORD-781-3XL,129.00,,true
+15347005489263,Corduroy Swoveralls - Bordeaux,53755991556207,3XL / Bordeaux,Size=3XL; Color=Bordeaux,SWPANTSCORD-781-3XL,129.00,,false
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991588975,4XL / Bordeaux,Size=4XL; Color=Bordeaux,SWPANTSCORD-781-4XL,129.00,,true
 15347005325423,Corduroy Swoveralls - Forest Green,53755990311023,S / Forest Green,Size=S; Color=Forest Green,SWPANTSCORD-002-S,129.00,,true
 15347005325423,Corduroy Swoveralls - Forest Green,53755990343791,M / Forest Green,Size=M; Color=Forest Green,SWPANTSCORD-002-M,129.00,,true
@@ -345,7 +345,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15346061738095,Swoveralls - Something 90s,53753433063535,M / Jammers,Size=M; Color=Jammers,SWPANTS-ZOF-M,120.00,,true
 15346061738095,Swoveralls - Something 90s,53753433096303,L / Jammers,Size=L; Color=Jammers,SWPANTS-ZOF-L,120.00,,true
 15346061738095,Swoveralls - Something 90s,53753433129071,XL / Jammers,Size=XL; Color=Jammers,SWPANTS-ZOF-XL,120.00,,true
-15346061738095,Swoveralls - Something 90s,53753433161839,2XL / Jammers,Size=2XL; Color=Jammers,SWPANTS-ZOF-2XL,120.00,,true
+15346061738095,Swoveralls - Something 90s,53753433161839,2XL / Jammers,Size=2XL; Color=Jammers,SWPANTS-ZOF-2XL,120.00,,false
 15346061738095,Swoveralls - Something 90s,53753433194607,3XL / Jammers,Size=3XL; Color=Jammers,SWPANTS-ZOF-3XL,120.00,,true
 15346061738095,Swoveralls - Something 90s,53753433227375,4XL / Jammers,Size=4XL; Color=Jammers,SWPANTS-ZOF-4XL,120.00,,true
 15023423979631,Swoveralls - Stripes Blue/White,53166816165999,S / Blue/White,Size=S; Color=Blue/White,SWPANTS-NVW-S,95.99,120.00,true

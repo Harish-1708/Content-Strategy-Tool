@@ -1555,7 +1555,7 @@
      "title": "Grey / Youth (5-9 Year Old)"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 47532988727582,
      "options": [
@@ -2678,7 +2678,7 @@
      "title": "Navy / 2XL-3XL"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 50216131952926,
      "options": [
@@ -3149,7 +3149,7 @@
      "title": "Navy / 2XL-3XL"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 47315794952478,
      "options": [
