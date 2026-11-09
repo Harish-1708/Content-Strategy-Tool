@@ -190,7 +190,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15346078810223,Swoveralls - Boobies,53753477267567,2XL / Boobies,Size=2XL; Color=Boobies,SWPANTS-467-2XL,120.00,,true
 15346078810223,Swoveralls - Boobies,53753477300335,3XL / Boobies,Size=3XL; Color=Boobies,SWPANTS-467-3XL,120.00,,true
 15346078810223,Swoveralls - Boobies,53753477333103,4XL / Boobies,Size=4XL; Color=Boobies,SWPANTS-467-4XL,120.00,,true
-15345957273711,Swoveralls - Buffalo Plaid,53753141919855,S / Buffalo Plaid,Size=S; Color=Buffalo Plaid,SWPANTS-Z05-S,120.00,,true
+15345957273711,Swoveralls - Buffalo Plaid,53753141919855,S / Buffalo Plaid,Size=S; Color=Buffalo Plaid,SWPANTS-Z05-S,120.00,,false
 15345957273711,Swoveralls - Buffalo Plaid,53753141952623,M / Buffalo Plaid,Size=M; Color=Buffalo Plaid,SWPANTS-Z05-M,120.00,,true
 15345957273711,Swoveralls - Buffalo Plaid,53753141985391,L / Buffalo Plaid,Size=L; Color=Buffalo Plaid,SWPANTS-Z05-L,120.00,,true
 15345957273711,Swoveralls - Buffalo Plaid,53753142018159,XL / Buffalo Plaid,Size=XL; Color=Buffalo Plaid,SWPANTS-Z05-XL,120.00,,false
@@ -240,7 +240,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671481455,XS / Dog Days Navy,Size=XS; Color=Dog Days Navy,SWPANTS-BMF-XS,120.00,,false
 7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671514223,S / Dog Days Navy,Size=S; Color=Dog Days Navy,SWPANTS-BMF-S,120.00,,false
 7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671546991,M / Dog Days Navy,Size=M; Color=Dog Days Navy,SWPANTS-BMF-M,120.00,,true
-7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671579759,L / Dog Days Navy,Size=L; Color=Dog Days Navy,SWPANTS-BMF-L,120.00,,true
+7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671579759,L / Dog Days Navy,Size=L; Color=Dog Days Navy,SWPANTS-BMF-L,120.00,,false
 7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671612527,XL / Dog Days Navy,Size=XL; Color=Dog Days Navy,SWPANTS-BMF-XL,120.00,,true
 7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671645295,2XL / Dog Days Navy,Size=2XL; Color=Dog Days Navy,SWPANTS-BMF-2XL,120.00,,false
 7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671678063,3XL / Dog Days Navy,Size=3XL; Color=Dog Days Navy,SWPANTS-BMF-3XL,120.00,,false
@@ -404,7 +404,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 7208669970543,Swovie Shorts - Forest Green,41308459204719,4XL / Forest Green,Size=4XL; Color=Forest Green,S20-4XL-FGRN,89.00,,true
 14917967970415,Swovie Shorts - Garden Party - Coming Soon!,52768781500527,XXS / Garden Party,Size=XXS; Color=Garden Party,SWSHORTS-452-XXS,98.00,,true
 14917967970415,Swovie Shorts - Garden Party - Coming Soon!,52768781533295,XS / Garden Party,Size=XS; Color=Garden Party,SWSHORTS-452-XS,98.00,,false
-14917967970415,Swovie Shorts - Garden Party - Coming Soon!,52768781566063,S / Garden Party,Size=S; Color=Garden Party,SWSHORTS-452-S,98.00,,true
+14917967970415,Swovie Shorts - Garden Party - Coming Soon!,52768781566063,S / Garden Party,Size=S; Color=Garden Party,SWSHORTS-452-S,98.00,,false
 14917967970415,Swovie Shorts - Garden Party - Coming Soon!,52768781598831,M / Garden Party,Size=M; Color=Garden Party,SWSHORTS-452-M,98.00,,false
 14917967970415,Swovie Shorts - Garden Party - Coming Soon!,52768781631599,L / Garden Party,Size=L; Color=Garden Party,SWSHORTS-452-L,98.00,,false
 14917967970415,Swovie Shorts - Garden Party - Coming Soon!,52768781664367,XL / Garden Party,Size=XL; Color=Garden Party,SWSHORTS-452-XL,98.00,,false

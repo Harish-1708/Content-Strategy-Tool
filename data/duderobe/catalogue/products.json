@@ -1458,15 +1458,16 @@
      "source": "catalogue_images",
      "status": "stated",
      "value": {
-      "count": 8
+      "count": 9
      }
     }
    },
    "family": "Kids DudeRobe",
    "flags": [],
    "handle": "kids-hooded-bathrobe",
-   "image_count": 8,
+   "image_count": 9,
    "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/kids-duderobe-navy-pdp-white-square.png?v=1794262462",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/kids-duderobe-best-seller-boys-hooded-bathrobe-childrens-robes-cozy-loungewear.png?v=1773394128",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/kids-duderobe-family-photo-boys-bathrobes-hooded-robes-5-star-review.png?v=1776160420",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/kids-duderobe-boys-bathrobes-modern-hooded-robes-for-children-lounging-and-play.jpg?v=1776160420",
@@ -1487,7 +1488,7 @@
    "pocket_claims": "",
    "price_max": 68.0,
    "price_min": 68.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/kids-duderobe-best-seller-boys-hooded-bathrobe-childrens-robes-cozy-loungewear.png?v=1773394128",
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/kids-duderobe-navy-pdp-white-square.png?v=1794262462",
    "product_id": "8927175672094",
    "readiness": "ready",
    "status": "active",
@@ -1519,7 +1520,7 @@
      "title": "Navy / Youth (5-9 Year Old)"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 47532988760350,
      "options": [
@@ -2263,7 +2264,7 @@
    "variant_count": 14,
    "variants": [
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 50541308870942,
      "options": [
@@ -2606,7 +2607,7 @@
    "variant_count": 8,
    "variants": [
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 50216131821854,
      "options": [
@@ -3077,7 +3078,7 @@
    "variant_count": 16,
    "variants": [
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 47315787940126,
      "options": [
