@@ -18,18 +18,53 @@ crawl_policy:
   overrides: []                 # per site, for example:
   # - {host: example.com, robots: obey, basis: owner_decision, approved_by: Harish, date: "2026-11-03", note: "asked us to stay away"}
 
-# Sites and accounts we own or are explicitly authorised to access may use the advanced methods (stealth, challenge, fingerprint, proxy, logged_in_browser). Nothing is listed
-# by default, so nothing advanced runs. An entry is a recorded decision. See docs/observatory/README.md, "Advanced access".
-authorised_access:
-  hosts: []
-  # - {host: ourstore.com, basis: owner, approved_by: Harish, date: "2026-11-03", methods: [fingerprint, proxy], note: "our own store behind a bot shield"}
-
 advanced:
   proxies: []                   # names only (for example eu1); the address is the secret OBSERVATORY_PROXY_EU1
   rotate: none
 
+# The owner's switches for each kind of request control. Every one is on by default; turn one off and a competitor that asks for it is refused with a message, never quietly changed.
+# The controls themselves are chosen per competitor in brands/<brand>/observatory.yaml under advanced:, for any website, with no list of hosts and no approval step:
+#   custom_identity: identity, headers, accept_language       proxy: proxy, rotate               session: session
+#   browser: browser/stealth, locale, timezone, wait_selector account_cookies: cookies_env        evasion: impersonate, hide_canvas, block_webrtc, humanize, solve_challenges
+# Nothing can retry past a refusal: a challenge, 401/403 or 429 rests the host whatever is set. Run `observatory controls` to see what is on. See docs/observatory/README.md.
+access_controls:
+  custom_identity: true
+  proxy: true
+  session: true
+  browser: true
+  account_cookies: true
+  evasion: true
+
+# Shared services for the whole platform: Scrapling, Agent-Reach, web search, the AI Gateway and the page readers. Every module asks them with a purpose, and you control them here, in the Controls tab of any
+# brand sheet, or with `observatory controls`. These are the initial defaults: everything supported is ON for every purpose and channel, the AI Gateway is tried first (Claude when no free provider can answer) and pages are read with auto (Scrapling, then Jina, then the built-in reader). Turn any single service, purpose or channel off, or choose another route, whenever you like.
+# use_for switches a service on or off for one kind of work. Scrapling's defaults/overrides set request options centrally (overrides match a site such as *.example.com, or purpose:discovery);
+# a competitor's own advanced: block still wins. routes pick the engine that reads pages for a purpose (jina, core, scrapling, auto) and whether a purpose's language-model calls try the AI Gateway first
+# (claude, or gateway_first). See
+services:
+  scrapling:
+    enabled: true
+    use_for: {competitors: true, discovery: true, social_discovery: true, content_research: true, youtube_research: true, general_research: true, idea_bank: true, planning: true, brief: true, deep_check: true, autoseeds: true, collectors: true}
+    defaults: {browser: true, session: true, proxy: true, impersonate: true, hide_canvas: true, block_webrtc: true, humanize: true, solve_challenges: true, disable_resources: true}     # all on; set one to false to turn it off. Also e.g. identity: "Kelson-Research/2.0", locale: en-GB
+    overrides: []                # e.g. - {match: "*.example.com", delay: 30}   or   - {match: "purpose:discovery", humanize: true}
+  agent_reach:
+    enabled: true
+    use_for: {competitors: true, discovery: true, social_discovery: true, content_research: true, youtube_research: true, general_research: true, idea_bank: true, planning: true, brief: true, deep_check: true, autoseeds: true, collectors: true}
+    channels: {instagram: true, reddit: true, youtube: true}
+  search:
+    enabled: true
+    use_for: {competitors: true, discovery: true, social_discovery: true, content_research: true, youtube_research: true, general_research: true, idea_bank: true, planning: true, brief: true, deep_check: true, autoseeds: true, collectors: true}
+    channels: {serper_dev: true, tavily: true, serpapi: true, exa: true, exa_mcp: true, agent_reach_reddit: true, agent_reach_youtube: true}
+  ai_gateway:
+    enabled: true
+    use_for: {competitors: true, discovery: true, social_discovery: true, content_research: true, youtube_research: true, general_research: true, idea_bank: true, planning: true, brief: true, deep_check: true, autoseeds: true, collectors: true}
+    routes: {general_research: gateway_first, idea_bank: gateway_first, planning: gateway_first, brief: gateway_first, deep_check: gateway_first, autoseeds: gateway_first, collectors: gateway_first}
+  page_readers:
+    enabled: true
+    use_for: {competitors: true, discovery: true, social_discovery: true, content_research: true, youtube_research: true, general_research: true, idea_bank: true, planning: true, brief: true, deep_check: true, autoseeds: true, collectors: true}
+    routes: {competitors: auto, discovery: auto, social_discovery: auto, content_research: auto, youtube_research: auto, general_research: auto, idea_bank: auto, planning: auto, brief: auto, deep_check: auto, autoseeds: auto, collectors: auto}
+
 engine:
-  pages: core                   # core, or scrapling (the isolated worker; needs SCRAPLING_PYTHON, which the workflow's "scrapling" box creates)
+  pages: core                   # the older single switch: scrapling makes Scrapling the only reader for competitor and discovery pages while their route is auto (page_readers routes above are the full control)
 
 readers:
   jina: true
@@ -42,7 +77,16 @@ discovery:
   auto_monitor_score: 65        # at or above this a competitor is monitored automatically
   auto_monitor_max: 6           # at most this many are added automatically
   max_monitored: 10             # at most this many competitors are monitored per brand in total
-  use_ai: false                 # the AI judge is not built yet; turning this on is refused
+  enrich: true                  # find each strong candidate's Instagram account (and website) from several sources, with a confidence
+  enrich_max: 8                 # candidates enriched per run
+  min_confidence: 0.7           # a match below this is kept as a "possible", not written to the competitor record
+  agent_reach_calls: 12         # Instagram account searches and profile reads through OpenCLI per run (it runs only on a machine you control)
+  judge: true                   # ask the AI for a second opinion on each candidate; every verdict waits for your review
+  judge_max: 16                 # candidates judged per run
+
+crawl:                          # a polite site crawl through Scrapling (corpus --what crawl; any module through SV.scrapling_crawl)
+  max_pages: 25                 # pages at most, 1 to 200
+  depth: 2                      # links deep at most, 0 to 6; it stays on the start site and stops at the first block or rate limit
 
 youtube:
   daily_unit_cap: 3000          # the tool's own ceiling, well under YouTube's free 10,000 a day
