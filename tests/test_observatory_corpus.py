@@ -316,3 +316,77 @@ def test_documents_are_gathered_from_collected_data_videos_and_competitor_pages(
     assert {d["source"] for d in docs} >= {"youtube_public", "competitor_pages"} and len(docs) >= 4
     hits = CP.search(docs, "protein")
     assert {"youtube_public", "competitor_pages"} <= {h["source"] for h in hits} and json.dumps(hits)
+
+
+# ---- trend speed: how fast a video gains views against its own channel's usual pace --------------------------------------------------------------
+
+def stored(vid_id, channel, points, published="2026-10-01T00:00:00Z", views=None):
+    """A stored video with its view history [(time, views), ...]."""
+    return {"id": vid_id, "channel_id": channel, "channel_title": channel.title(), "title": f"Title {vid_id}", "views": views if views is not None else points[-1][1], "published_at": published,
+            "url": f"https://youtu.be/{vid_id}", "shorts_class": "short", "history": [{"at": t, "views": v, "likes": None, "comments": None} for t, v in points]}
+
+
+D1, D2, D3 = "2026-11-01T12:00:00Z", "2026-11-02T12:00:00Z", "2026-11-03T12:00:00Z"
+NOW3 = "2026-11-03T12:00:00Z"
+
+
+def test_speed_is_views_gained_per_day_between_readings_and_a_riser_beats_its_channels_usual_pace():
+    vids = [stored("a", "chan", [(D1, 1000), (D3, 1200)]), stored("b", "chan", [(D1, 500), (D3, 700)]), stored("c", "chan", [(D1, 800), (D3, 1000)]),
+            stored("hot", "chan", [(D1, 900), (D3, 2900)])]
+    res = CP.velocity(vids, NOW3)
+    assert [r["video_id"] for r in res["trending"]] == ["hot"]
+    hot = res["trending"][0]
+    assert hot["per_day"] == 1000.0 and hot["baseline_per_day"] == 100.0 and hot["multiple"] == 10.0 and hot["basis"] == "2 readings over 2.0 days" and res["evaluated"] == 4
+
+
+def test_a_video_read_only_once_is_estimated_from_its_age_but_only_if_it_is_recent():
+    fresh = stored("fresh", "chan", [(D3, 4000)], published="2026-11-01T12:00:00Z")           # 2 days old: 2,000 a day
+    old = stored("old", "chan", [(D3, 900000)], published="2025-01-01T00:00:00Z")             # a lifetime average says nothing about now
+    peers = [stored(f"p{n}", "chan", [(D3, 400)], published="2026-11-01T12:00:00Z") for n in range(3)]
+    res = CP.velocity([fresh, old] + peers, NOW3)
+    assert res["evaluated"] == 4 and [r["video_id"] for r in res["trending"]] == ["fresh"]
+    assert res["trending"][0]["basis"].startswith("estimated from age (2.0 days, one reading)") and res["trending"][0]["per_day"] == 2000.0
+
+
+def test_readings_too_close_together_falling_counts_and_old_readings_give_no_speed():
+    close = stored("close", "chan", [("2026-11-03T06:00:00Z", 100), ("2026-11-03T10:00:00Z", 900)])          # only 4 hours apart
+    fell = stored("fell", "chan", [(D1, 900), (D3, 800)])                                                    # YouTube corrected the count downwards
+    stale = stored("stale", "chan", [("2026-10-01T00:00:00Z", 10), ("2026-10-05T00:00:00Z", 9999)])        # readings outside the 7-day window
+    for v in (close, fell, stale):
+        v["published_at"] = "2020-01-01T00:00:00Z"
+    assert CP.velocity([close, fell, stale], NOW3)["evaluated"] == 0
+    assert CP.velocity([close], NOW3, min_hours=2)["evaluated"] == 1
+
+
+def test_a_channel_with_fewer_than_three_speeds_has_no_usual_pace_so_nothing_is_ranked():
+    pair = [stored("a", "tiny", [(D1, 100), (D3, 5000)]), stored("b", "tiny", [(D1, 100), (D3, 150)])]
+    res = CP.velocity(pair, NOW3)
+    assert res["trending"] == [] and res["thin_channels"] == [{"channel": "Tiny", "videos": 2}]
+
+
+def test_a_zero_baseline_threshold_and_ordering_are_handled():
+    flat = [stored(n, "chan", [(D1, 100), (D3, 100)]) for n in "abc"] + [stored("up", "chan", [(D1, 100), (D3, 300)])]
+    assert CP.velocity(flat, NOW3)["trending"] == []                                          # a median speed of zero gives no multiple to rank by
+    vids = [stored("x", "c", [(D1, 0), (D3, 200)]), stored("y", "c", [(D1, 0), (D3, 400)]), stored("z", "c", [(D1, 0), (D3, 1200)]), stored("w", "c", [(D1, 0), (D3, 800)])]
+    ids = [r["video_id"] for r in CP.velocity(vids, NOW3, min_multiple=1.2)["trending"]]
+    assert ids == ["z", "w"] and CP.velocity(vids, NOW3, min_multiple=5)["trending"] == []
+
+
+def test_the_trending_report_is_plain_marks_estimates_and_says_what_is_missing():
+    vids = [stored("a", "chan", [(D1, 1000), (D3, 1200)]), stored("b", "chan", [(D1, 500), (D3, 700)]), stored("c", "chan", [(D1, 800), (D3, 1000)]), stored("hot", "chan", [(D1, 900), (D3, 2900)])]
+    text = CP.trending_report_text(CP.velocity(vids, NOW3), "Defi", NOW3)
+    assert "10.00x" in text and "1,000/day vs      100 usual" in text and "2 readings over 2.0 days" in text and "Speed is views gained per day" in text
+    assert "Nothing is gaining faster" in CP.trending_report_text(CP.velocity([], NOW3), "Defi", NOW3)
+
+
+def test_trend_metrics_join_the_evidence_record_and_it_still_validates():
+    registry = SRC.load_sources(ROOT / "sources.yaml")
+    vids = [stored("a", "chan", [(D1, 1000), (D3, 1200)]), stored("b", "chan", [(D1, 500), (D3, 700)]), stored("c", "chan", [(D1, 800), (D3, 1000)]), stored("hot", "chan", [(D1, 900), (D3, 2900)])]
+    for v in vids:
+        v.update(captured_at=NOW3, first_seen=D1, last_seen=NOW3, description_line="d", thumbnail="")
+    trend = CP.velocity(vids, NOW3)["trending"][0]
+    rec = CP.evidence_for_video(vids[3], registry, NOW3, trend=trend)
+    assert E.validate_evidence(rec, registry, NOW3) == []
+    by = {m["name"]: m for m in rec["metrics"]}
+    assert by["views_per_day"]["value"] == 1000.0 and by["views_per_day"]["kind"] == "proxy" and by["trend_multiple"]["denominator"] == 100.0 and by["trend_multiple"]["unit"] == "ratio"
+    assert "views_per_day" not in {m["name"] for m in CP.evidence_for_video(vids[0], registry, NOW3)["metrics"]}
