@@ -24,7 +24,7 @@ def load(tmp_path, data):
 
 def test_the_shipped_file_loads_and_every_value_is_in_its_vocabulary():
     reg = shipped()
-    assert len(reg.sources) == 13 and sum(len(s.routes) for s in reg.sources.values()) == 25
+    assert len(reg.sources) == 15 and sum(len(s.routes) for s in reg.sources.values()) == 39
     for src in reg.sources.values():
         assert src.kind in S.KINDS and src.status in S.STATUSES and src.stale_after_days >= 1
         assert src.capabilities and src.limitations, f"{src.id} must say what it gives and what it cannot"
@@ -51,10 +51,10 @@ def test_what_each_route_returns_is_labelled_honestly():
     assert reg.route("video_tiktok", "layered").access_type == "media_file"
 
 
-def test_the_agent_reach_instagram_route_is_declared_but_off_and_experimental():
+def test_the_agent_reach_instagram_route_is_declared_on_beside_the_others_and_still_experimental():
     rt = shipped().route("instagram", "agent_reach")
-    assert rt.enabled is False and rt.experimental is True and "stealth" in rt.note
-    assert [r.name for r in shipped().source("instagram").enabled_routes()] == ["browser", "apify"]
+    assert rt.enabled is True and rt.experimental is True and "OpenCLI" in rt.note and "never runs on a GitHub-hosted runner" in rt.note
+    assert [r.name for r in shipped().source("instagram").enabled_routes()] == ["browser", "apify", "agent_reach"]
 
 
 def test_planned_sources_are_declared_but_not_established():
@@ -141,7 +141,7 @@ def test_two_routes_declared_alike_still_have_different_fingerprints_and_switchi
     assert S.route_hash(reg, "tiktok", "browser") != S.route_hash(reg, "tiktok", "second")
     off = shipped()
     data = copy.deepcopy(raw())
-    data["sources"]["instagram"]["routes"]["agent_reach"]["enabled"] = True
+    data["sources"]["instagram"]["routes"]["agent_reach"]["enabled"] = False
     assert S.route_hash(load(tmp_path, data), "instagram", "agent_reach") != S.route_hash(off, "instagram", "agent_reach")
     data = copy.deepcopy(raw())
     data["sources"]["instagram"]["routes"]["agent_reach"]["experimental"] = False
