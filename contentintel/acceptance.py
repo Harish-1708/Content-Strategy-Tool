@@ -82,7 +82,7 @@ def build_probes(ctx, wanted=None):
                 probes.append(Probe(src.id, "check", rt.name, None if skip else (lambda s=src.id, b=backend: row_result(ctx.collect_check(s, b))), skip))
             elif src.id == "web_search":
                 for kind in KINDS:
-                    missing = ("Agent-Reach search is off here: set AGENT_REACH_SEARCH=on on a machine you control (it never runs on a hosted runner)" if rt.name.startswith("agent_reach")
+                    missing = ("Agent-Reach search is off here: set AGENT_REACH_SEARCH=on (the workflows set it)" if rt.name.startswith("agent_reach")
                                else "no API key for this service")
                     reason = skip or ("" if rt.name in ctx.providers else missing)
                     if ctx.provider_check is None:
