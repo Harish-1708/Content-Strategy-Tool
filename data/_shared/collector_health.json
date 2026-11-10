@@ -59,6 +59,30 @@
    "source": "ai:github",
    "state": "healthy"
   },
+  "ai:google|gateway": {
+   "acceptance": null,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-10T09:17:16Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-10T09:17:16Z",
+    "code": "UPSTREAM_BROKEN",
+    "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: google/gemini-2.5-flash key1: model_not_found. Last error: Google API error 404: This model models/gemi"
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "gateway",
+   "source": "ai:google",
+   "state": "healthy"
+  },
   "ai:groq|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
