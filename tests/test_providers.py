@@ -1,4 +1,5 @@
 import pytest
+from conftest import ROOT
 
 from contentintel import providers as P
 
@@ -244,14 +245,65 @@ class FakeOpenCLI:
         return self.rows
 
 
-def test_agent_reach_search_providers_exist_only_when_the_owner_opts_in_and_never_on_a_hosted_runner():
+def test_agent_reach_search_providers_exist_only_when_the_owner_opts_in_and_the_channel_can_run_here():
+    have = lambda b: "/bin/opencli"                                                              # noqa: E731
+    none = lambda b: None                                                                        # noqa: E731
     assert not [n for n in P.build_providers({"SERPER_API_KEY": "k-12345678"}) if n.startswith("agent_reach")]
-    on = P.build_providers({"AGENT_REACH_SEARCH": "on"})
+    on = P.build_providers({"AGENT_REACH_SEARCH": "on"}, which=have)
     assert sorted(on) == ["agent_reach_reddit", "agent_reach_youtube"] and on["agent_reach_reddit"].channel == "reddit" and on["agent_reach_youtube"].channel == "youtube"
     for off in ("off", "0", "no", "false", ""):
-        assert not P.build_providers({"AGENT_REACH_SEARCH": off})
-    hosted = P.build_providers({"AGENT_REACH_SEARCH": "on", "RUNNER_ENVIRONMENT": "github-hosted"})
-    assert sorted(hosted) == ["agent_reach_youtube"]          # Reddit needs a logged-in browser, so it never runs on a hosted runner; YouTube goes through yt-dlp, which needs no login
+        assert not P.build_providers({"AGENT_REACH_SEARCH": off}, which=have)
+    assert sorted(P.build_providers({"AGENT_REACH_SEARCH": "on"}, which=none)) == ["agent_reach_youtube"]                # no OpenCLI here: Reddit is not built (YouTube goes through yt-dlp, which needs no login)
+    from contentintel import guards
+    hosted = {"AGENT_REACH_SEARCH": "on", "RUNNER_ENVIRONMENT": "github-hosted"}
+    guards.configure({g: g == "hosted_runner_block" for g in guards.GUARDS})
+    assert sorted(P.build_providers(hosted, which=have)) == ["agent_reach_youtube"]                                         # the owner turned the hosted-runner guard ON
+    guards.configure({g: False for g in guards.GUARDS})
+    assert sorted(P.build_providers(hosted, which=have)) == ["agent_reach_reddit", "agent_reach_youtube"]                  # guard OFF (the default) and OpenCLI present: it is tried
+
+
+def test_an_opted_in_reddit_search_that_cannot_run_here_gets_the_true_reason_naming_reddit():
+    env = {"AGENT_REACH_SEARCH": "on"}
+    built = P.build_providers(env, which=lambda b: None)
+    missing = P.agent_reach_search_missing(env, built, which=lambda b: None)
+    assert missing == {("web_search", "agent_reach_reddit"): "cannot run: OpenCLI is not installed on this machine (it needs a browser logged in to Reddit, on a machine you control)"}
+    assert P.agent_reach_search_missing(env, P.build_providers(env, which=lambda b: "/bin/opencli"), which=lambda b: "/bin/opencli") == {}      # it can run: nothing to explain
+    assert P.agent_reach_search_missing({"AGENT_REACH_SEARCH": "off"}, {}, which=lambda b: None) == {}                                        # not opted in: a different message, from the acceptance run itself
+    from contentintel import guards
+    guards.configure({g: g == "hosted_runner_block" for g in guards.GUARDS})
+    why = P.agent_reach_search_missing({"AGENT_REACH_SEARCH": "on", "RUNNER_ENVIRONMENT": "github-hosted"}, {}, which=lambda b: "/bin/opencli")[("web_search", "agent_reach_reddit")]
+    assert why.startswith("cannot run on a GitHub-hosted runner") and "logged in to Reddit" in why
+
+
+def test_the_missing_opencli_message_names_the_site_it_is_for_not_instagram():
+    from contentintel import agent_reach_instagram as AR
+    from contentintel import contract as K
+    for site, name in (("reddit", "Reddit"), ("twitter", "X"), ("instagram", "Instagram"), ("linkedin", "LinkedIn")):
+        with pytest.raises(K.Failure) as seen:
+            AR.OpenCLI("opencli", which=lambda b: None, site=site, environ={}).call(["search", "x"])
+        assert seen.value.code == K.NEED_SETUP and f"logged in to {name}" in str(seen.value) and (name == "Instagram" or "Instagram" not in str(seen.value))
+
+
+def test_in_an_acceptance_run_without_opencli_the_reddit_search_is_skipped_with_that_reason_never_failed(tmp_path):
+    from contentintel import acceptance as A
+    from contentintel import health as HL
+    from contentintel import sources as SRC
+    from contentintel.store import Store
+    reg = SRC.load_sources(ROOT / "sources.yaml")
+    env = {"AGENT_REACH_SEARCH": "on"}
+    built = P.build_providers(env, which=lambda b: None)
+    ctx = A.Context(registry=reg, providers=tuple(sorted(built)))
+    ctx.provider_check = lambda name, kind: {"ok": True, "items": 1, "detail": "found one"}
+    ctx.missing.update(P.agent_reach_search_missing(env, built, which=lambda b: None))
+    probes = [p for p in A.build_probes(ctx) if p.source == "web_search" and p.route.startswith("agent_reach")]
+    store = Store(str(tmp_path))
+    results = A.run_acceptance(probes, health=HL.HealthLedger.load(store, reg), store=store, now="2026-11-10T12:00:00Z", version="t", run_id="r", platform="other")
+    by = {(r["route"], r["action"]): r for r in results}
+    for action in ("search_web", "search_news"):
+        r = by[("agent_reach_reddit", action)]
+        assert r["status"] == "skipped" and "OpenCLI is not installed" in r["detail"] and "Reddit" in r["detail"]
+        assert by[("agent_reach_youtube", action)]["status"] == "passed"
+    assert not [r for r in results if r["status"] == "failed"]
 
 
 def test_an_agent_reach_search_returns_the_shared_result_type_and_skips_rows_without_a_link():
