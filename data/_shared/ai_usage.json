@@ -20,7 +20,7 @@
     "by_lane": {
      "canary": {
       "cost_usd": 0.0,
-      "requests": 1,
+      "requests": 2,
       "tokens": 0
      },
      "competitor_intelligence": {
@@ -30,9 +30,9 @@
      }
     },
     "cost_usd": 0.0,
-    "failures": 15,
+    "failures": 16,
     "latency_ms": 0,
-    "requests": 15,
+    "requests": 16,
     "tokens_in": 0,
     "tokens_out": 0
    },
