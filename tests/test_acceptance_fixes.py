@@ -541,6 +541,18 @@ def test_a_site_scroll_wait_must_be_a_number(tmp_path):
 def test_the_cli_plan_says_the_reddit_search_cannot_run_without_opencli_and_does_not_blame_the_contact_or_instagram(run_cli, capsys, monkeypatch):
     monkeypatch.setenv("AGENT_REACH_SEARCH", "on")
     monkeypatch.setenv("OPENCLI_BIN", "/no/such/opencli-program")
+    monkeypatch.delenv("RUNNER_ENVIRONMENT", raising=False)                                       # this test is about a machine that is not a hosted runner, whatever runs the tests
     assert run_cli("acceptance", "--only", "web_search", "--plan") == 0
     lines = [x for x in capsys.readouterr().out.splitlines() if "agent_reach_reddit" in x]
     assert len(lines) == 2 and all("OpenCLI is not installed on this machine" in x and "logged in to Reddit" in x and "Instagram" not in x and "OBSERVATORY_CONTACT" not in x for x in lines)
+    assert all("cannot run: cannot run" not in x for x in lines)                                  # the plan does not say it twice
+
+
+def test_the_cli_plan_names_the_hosted_runner_when_the_owner_turned_that_guard_on(run_cli, capsys, monkeypatch):
+    from contentintel import guards
+    monkeypatch.setenv("AGENT_REACH_SEARCH", "on")
+    monkeypatch.setenv("RUNNER_ENVIRONMENT", "github-hosted")
+    guards.configure({g: g == "hosted_runner_block" for g in guards.GUARDS})
+    assert run_cli("acceptance", "--only", "web_search", "--plan") == 0
+    lines = [x for x in capsys.readouterr().out.splitlines() if "agent_reach_reddit" in x]
+    assert len(lines) == 2 and all("cannot run on a GitHub-hosted runner" in x and "logged in to Reddit" in x and "cannot run: cannot run" not in x for x in lines)
