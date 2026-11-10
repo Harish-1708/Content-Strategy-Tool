@@ -92,11 +92,16 @@
     "at": "2026-11-10T15:19:14Z",
     "ms": 0,
     "ok": true
+   },
+   {
+    "at": "2026-11-10T15:27:50Z",
+    "ms": 0,
+    "ok": true
    }
   ],
   "builtin_used": 0,
   "last_error": null,
-  "last_success": "2026-11-10T15:19:14Z"
+  "last_success": "2026-11-10T15:27:50Z"
  },
  "scrapling": {
   "attempts": [

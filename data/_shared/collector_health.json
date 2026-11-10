@@ -323,7 +323,7 @@
   },
   "ai:google|gateway": {
    "acceptance": null,
-   "consecutive_failures": 1,
+   "consecutive_failures": 2,
    "consecutive_successes": 0,
    "history": [
     {
@@ -332,12 +332,19 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-10T15:28:10Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-10T09:17:16Z",
+    "at": "2026-11-10T15:28:10Z",
     "code": "UPSTREAM_BROKEN",
-    "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: google/gemini-2.5-flash key1: model_not_found. Last error: Google API error 404: This model models/gemi"
+    "message": "All 1 routed attempt(s) failed with upstream provider errors (empty_completion ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: google/gemini-3.5-flash key1: empty_completion. Last error: empty completion from Gemini 3.5 Flash"
    },
    "last_success": "",
    "pause": null,
