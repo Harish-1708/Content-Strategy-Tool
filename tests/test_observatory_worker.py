@@ -895,3 +895,40 @@ def test_when_no_browser_is_installed_the_page_is_read_over_plain_http_and_the_r
     fake.stealth_get = lambda url, **kw: (_ for _ in ()).throw(RuntimeError("something else broke"))
     res, _ = drive(stub_job(["https://shop.example/"], adv={"stealth": True}), fake)
     assert not res[0]["ok"] and "browser_note" not in res[0]                                                               # any other failure is reported, never hidden by the fallback
+
+
+# ---- guards in the worker process: the owner's switches arrive with the job ------------------------------------------------------------------------
+
+def _with_guards(j, **on):
+    from contentintel import guards as G
+    j["guards"] = {g: on.get(g, False) for g in G.GUARDS}
+    return j
+
+
+@real
+def test_with_the_robots_guard_off_the_worker_reads_a_disallowed_page_without_asking_for_robots_txt(site):
+    site.routes["/private/x"] = (200, "text/html", _p("Secret"), {})
+    res = run_real(_with_guards(job(site, ["/private/x"])))["results"][0]
+    assert res["ok"] and "/robots.txt" not in site.paths()
+    res = run_real(_with_guards(job(site, ["/private/x"]), robots_txt=True))["results"][0]
+    assert not res["ok"] and res["error"]["code"] == "PLATFORM_BLOCKED" and "/robots.txt" in site.paths()
+
+
+@real
+def test_with_the_rest_guard_off_the_worker_tries_a_refusing_page_again_then_marks_it_failed_and_reads_the_next_one(site):
+    j = _with_guards(job(site, ["/limited", "/other"]))
+    j["retry"] = {"attempts": 3, "backoff_seconds": 0}
+    res = run_real(j)
+    limited, after = res["results"]
+    assert limited["error"]["code"] == "RATE_LIMITED" and "still refused after 3 attempt(s)" in limited["error"]["message"] and site.paths().count("/limited") == 3
+    assert after["ok"] and not any(h.get("rest") for h in res["hosts"].values())                          # no rest, so the next address is read
+
+
+@real
+def test_with_the_private_address_guard_off_the_worker_reads_a_local_address_and_with_it_on_refuses(site):
+    j = _with_guards(job(site, ["/other"]))
+    j["allow_private_for_tests"] = False
+    assert run_real(j)["results"][0]["ok"]
+    j = _with_guards(job(site, ["/other"]), private_address_block=True)
+    j["allow_private_for_tests"] = False
+    assert run_real(j)["results"][0]["error"]["code"] == "BAD_INPUT"
