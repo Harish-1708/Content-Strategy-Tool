@@ -13,7 +13,7 @@ Everything runs from **Actions > Observatory** in GitHub. Nothing needs to be in
 
 **Nothing in Stage 3 is live-verified yet.** The Acceptance workflow now has a check for every route; each route becomes trusted only when its check passes there, and the Collector Health tab shows which have. Until then treat every route as built but unproven.
 
-Tested with the real library: robots.txt checked under the honest identity, robots.txt handling, pauses and rests, Markdown without hidden text, adaptive selectors, impersonation, cookies, proxy use and rotation, and the refusals when an owner switch is off or a host has refused us.
+Tested with the real library: the honest identity when no other is chosen, pacing, Markdown without hidden text, adaptive selectors, impersonation, cookies, proxy use and rotation, and the refusals when an owner switch is off. robots.txt, the private-address block, the rests after a refusal and the hosted-runner block are **guards**: owner switches that are OFF by default and never block unless you turn them on (see Guards below).
 Mock-tested only: the stealth browser and challenge handling (a browser cannot be installed in the build environment; the call is checked against a stand-in), Jina Reader, Exa, the YouTube Data API, GitHub Models, the Reddit API route, the Agent-Reach routes (Instagram, Reddit), the AI competitor judge, multi-source account discovery, every sheet tab.
 
 ## First run
@@ -45,6 +45,21 @@ youtube:
   channels: ["@elev8foods"]
   queries: ["protein snacks"]        # used only with --find-channels; each search costs 100 of the free 10,000 daily units
 ```
+
+## Guards and connections (Update 41)
+
+**Guards.** Every protection that could stop or slow a request is an owner switch, and none acts unless you turn it ON (Controls tab, `observatory controls`, or `services.guards.channels` in observatory.yaml). `CONTENTINTEL_LEGACY_GUARDS=1` starts them all ON, as Updates 1 to 40 behaved.
+
+| Guard | When ON it | When OFF (the default) |
+|---|---|---|
+| `robots_txt` | obeys each site's robots.txt (`crawl_policy` applies) | robots.txt is not requested |
+| `private_address_block` | refuses addresses inside a private network and internal host names | any address is fetched |
+| `rest_after_refusal` | rests a site, account or route for hours or days after a refusal, rate limit or account warning, and ends the reader chain at a refusal | tries a refusing site again (`retry:`, 3 attempts by default), marks it failed, moves on, and lets the next reader try |
+| `hosted_runner_block` | refuses browser-login channels on a GitHub-hosted runner | tries anyway |
+| `reddit_approval_required` | requires a recorded Reddit approval before the official API route runs | runs whenever the credentials exist |
+
+**Connections.** The platform runs the six repositories themselves (Agent-Reach, Scrapling, FreeLLMAPI, the Instagram and YouTube skills, Video Shotcraft) and keeps its own versions as the backup. Each connection has four owner controls (ON/OFF, route, version, secrets) and a health score. The full guide is `docs/platform/connections.md`.
+
 
 ## Politeness, and what "robots.txt" means here
 
@@ -100,7 +115,7 @@ The 12 purposes are competitors, discovery, social discovery, content research, 
 
 ## Request controls (Scrapling): every capability is an owner setting
 
-**All of these options are ON by default** (browser, session, proxy, TLS impersonation, canvas and WebRTC changes, cursor simulation, challenge solving, skipping images and fonts), as central defaults under `services.scrapling.defaults` that apply to every competitor, discovery and research read. Only you turn one off: set it to `false` there, in the Controls tab, or with `observatory controls`, and a competitor's own `advanced:` block or a matching override still wins for that target. Two degrade gracefully instead of failing: with no proxy listed the proxy default does nothing, and with no browser installed the page is read over plain HTTP (the result says so). If you switch a permission in `access_controls` off, the defaults that need it are skipped quietly, while an explicit request for it is refused with the reason. What this means in practice: pages read in the browser no longer announce our honest identity, so a site cannot tell who is reading it. robots.txt is still checked under our honest name, a refusal still rests the host with no retry, and private addresses are never read. Using these options can breach a site's terms, and that is your responsibility.
+**All of these options are ON by default** (browser, session, proxy, TLS impersonation, canvas and WebRTC changes, cursor simulation, challenge solving, skipping images and fonts), as central defaults under `services.scrapling.defaults` that apply to every competitor, discovery and research read. Only you turn one off: set it to `false` there, in the Controls tab, or with `observatory controls`, and a competitor's own `advanced:` block or a matching override still wins for that target. Two degrade gracefully instead of failing: with no proxy listed the proxy default does nothing, and with no browser installed the page is read over plain HTTP (the result says so). If you switch a permission in `access_controls` off, the defaults that need it are skipped quietly, while an explicit request for it is refused with the reason. What this means in practice: pages read in the browser no longer announce our honest identity. Whether robots.txt is consulted, whether private addresses are refused and whether a refusing site rests are separate **guards**, all OFF by default, so by default none of them blocks anything. Using these options can breach a site's terms, and that is your responsibility.
 
 **There is no list of allowed hosts and no approval step.** Every control below is a plain setting you choose, for any website, on that competitor's own entry in `brands/<brand>/observatory.yaml` under `advanced:`. Nothing existing was removed. In `observatory.yaml`, `access_controls:` holds one on/off switch per kind of control (all on by default); switch one off and a competitor that asks for it is refused with a message, never quietly changed. To see what is switched on right now, run `observatory controls` (every competitor, every setting, secrets by name only) or look at the **request_controls** column of the Competitors tab.
 
@@ -119,7 +134,7 @@ The 12 purposes are competitors, discovery, social discovery, content research, 
 | Pace | `delay: 20` | slower than the standing pause; never faster than the site's own Crawl-delay or the tool's minimum | none |
 | Adaptive selectors | `selectors: {announcement: ".promo"}` | finds the element again after a redesign | none |
 
-A `From:` header naming us is always sent, whatever the identity. robots.txt is read for the identity actually used, so a declared identity cannot dodge rules written for it.
+A `From:` header naming us is always sent, whatever the identity. With the robots guard ON, robots.txt is read for the identity actually used, so a declared identity cannot dodge rules written for it.
 
 ```yaml
 competitors:
@@ -145,7 +160,7 @@ Scrapling 0.5, pinned in `requirements-scrapling.txt`, in its own environment (t
 ### Limitations and risks, stated plainly
 
 - **Not live-verified.** The browser path (browser profile, challenge solving, canvas and WebRTC changes, cursor simulation, cookies and proxy in the browser) is checked against a stand-in, not a real browser, because a browser cannot be installed in the build environment. HTTP behaviour (identity, headers, TLS impersonation, session, cookies, proxy rotation, pace) is tested with the real library against a local test server.
-- **Nothing can retry past a refusal.** A challenge page, a 401/403 or a 429 rests that host for the run whatever options are set, and the rest is remembered between runs (`rest_hours` can lengthen it). Changing identity, rotating proxies or switching on any option above does not lift it. This is a technical safeguard in the worker, not an approval step.
+- **Refusals are handled by the rest guard.** With the guard OFF (the default) a refusing site (a challenge page, 401/403 or 429) is tried again a few times (`retry:` in observatory.yaml, 3 by default), then marked failed, and the run moves on to the next address. With the guard ON, that host rests for the run, the rest is remembered between runs (`rest_hours`), and nothing retries past it.
 - **Challenge solving and fingerprint changes can fail.** They depend on the site and on Scrapling; a site can change its checks at any time. A failed solve ends in the same rest as any refusal.
 - **Your responsibility.** Getting past a site's bot detection, using another party's account, or ignoring robots.txt can breach that site's terms of use and, depending on the place and the data, the law. The tool does not check any of it and no setting here records anyone's approval. Decide per competitor, and keep a note of why (a comment in the file is enough).
 - **Scrapling's browser** is itself built with anti-detection patches that cannot be switched off; the tool adds the further changes above only when you set them.
@@ -231,8 +246,8 @@ The existing TikTok collectors (browser and Apify) are unchanged. **Agent-Reach 
 | Restriction | Where it is enforced |
 |---|---|
 | Every request control is the owner's setting; `access_controls` switches (identity, proxy, session, browser, account_cookies, evasion) turn each kind off, and a switched-off control is refused with a message | job builder and worker |
-| A challenge, 401/403 or 429 rests the host; no change of identity, proxy or option retries it | worker (this run) and the pause ledger (between runs) |
-| robots.txt is read for the identity actually used; `crawl_policy` can set it to advisory only with a recorded basis | worker and polite client |
+| With the rest guard ON: a challenge, 401/403 or 429 rests the host and nothing retries it; with it OFF (default): retried a few times, then marked failed and skipped | worker (this run) and the pause ledger (between runs) |
+| With the robots guard ON: robots.txt is read for the identity actually used, and `crawl_policy` can set it to advisory only with a recorded basis. OFF (default): robots.txt is not requested | worker and polite client |
 | A pace can only be slower than the site's Crawl-delay or the tool's minimum | job builder and worker |
 | Headers that carry credentials or falsify origin (Cookie, Authorization, Via, X-Forwarded-For, Host and similar) cannot be set | settings reader |
 | Proxy addresses and cookies come only from named secrets, never a file, and never appear in results or logs | job builder and worker |
