@@ -1101,7 +1101,7 @@ def _acceptance_cmd(args, store):
     if args.plan:
         print("Acceptance plan (no call is made):")
         for p in probes:
-            print(f"  {p.source} / {p.route} / {p.action}: " + (f"cannot run: {p.skip}" if p.skip else "will run"))
+            print(f"  {p.source} / {p.route} / {p.action}: " + ((p.skip if p.skip.startswith("cannot run") else f"cannot run: {p.skip}") if p.skip else "will run"))
         return 0
     version = (os.environ.get("GITHUB_SHA") or "dev")[:12]
     results = acceptance_mod.run_acceptance(probes, health=ledger, store=store, now=now, version=version, run_id=secrets.token_hex(4))
