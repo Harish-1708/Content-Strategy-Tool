@@ -1,6 +1,21 @@
 {
  "days": {
   "2026-11-10": {
+   "cloudflare": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 44
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 347,
+    "requests": 1,
+    "tokens_in": 42,
+    "tokens_out": 2
+   },
    "github": {
     "by_lane": {
      "canary": {
