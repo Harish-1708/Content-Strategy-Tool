@@ -123,6 +123,27 @@ class Sidecar:
         status, rows, _ = self.http("GET", self.base_url + "/api/models", headers={"Authorization": "Bearer " + body["token"]}, body=None, timeout=20)
         return rows if isinstance(rows, list) else []
 
+    def isolate_models(self, password):
+        """Make every enabled model its own group in the gateway. The gateway groups the same model across providers (gpt-oss-120b at Groq and at OpenRouter) and, when the provider asked first fails,
+        quietly answers from another provider in the group, which this platform then has to refuse. Splitting each platform:model into its own group makes a request go to exactly that provider, so
+        a failure shows its real error. Returns (ok, message); a gateway that does not offer this is not an error (the approval check still refuses a different provider)."""
+        try:
+            status, body, _ = self.http("POST", self.base_url + "/api/auth/login", headers={"Content-Type": "application/json"}, body={"email": ADMIN_EMAIL, "password": password}, timeout=20)
+            token = body.get("token") if isinstance(body, dict) else None
+            if status != 200 or not token:
+                return False, f"the admin login failed ({status})"
+            auth = {"Authorization": "Bearer " + token, "Content-Type": "application/json"}
+            status, rows, _ = self.http("GET", self.base_url + "/api/models", headers=auth, body=None, timeout=20)
+            members = sorted({f"{r['platform']}:{r.get('model_id') or r.get('modelId')}" for r in (rows if isinstance(rows, list) else []) if r.get("platform") and r.get("platform") != "custom" and (r.get("model_id") or r.get("modelId")) and r.get("enabled")})
+            if status != 200 or not members:
+                return False, f"no enabled models were listed ({status})"
+            status, body, _ = self.http("PUT", self.base_url + "/api/settings/unify", headers=auth, body={"enabled": False, "overrides": {"merges": [], "splits": [{"member": m} for m in members]}}, timeout=20)
+            if status != 200:
+                return False, f"the gateway did not accept the grouping change ({status})"
+            return True, f"{len(members)} model(s) are each their own group"
+        except Exception as exc:                                  # noqa: BLE001 - never stops a run
+            return False, f"{exc.__class__.__name__}: {str(exc)[:120]}"
+
     def log_tail(self, lines=12):
         try:
             return redact_log("".join(self.log_path.read_text(encoding="utf-8", errors="replace").splitlines(True)[-lines:]))[:1500]
