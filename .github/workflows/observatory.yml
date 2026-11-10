@@ -24,7 +24,7 @@ on:
       action:
         description: "What to do"
         type: choice
-        options: [plan, discover, decide, judge, monitor, corpus, instagram, reddit, agentreach, reliability, controls, report, status, history, prune]
+        options: [plan, discover, decide, judge, monitor, corpus, instagram, reddit, agentreach, reliability, controls, connections, report, status, history, prune]
         default: plan
       brand:
         description: "Brand (blank: every brand)"
@@ -46,7 +46,7 @@ on:
       what:
         description: "corpus, instagram, reddit, judge, agentreach, controls: what to do (each action uses the ones that apply to it and falls back to its usual default for the rest)"
         type: choice
-        options: [youtube, outliers, search, stats, read, deepread, channelpages, crawl, feeds, trending, collect, compare, check, run, list, approve, reject, show, set, reset, subtitle, profile, posts, tweets, thread, jobs, subreddit]
+        options: [youtube, outliers, search, stats, read, deepread, channelpages, crawl, feeds, trending, collect, compare, check, run, list, approve, reject, show, set, reset, subtitle, profile, posts, tweets, thread, jobs, subreddit, health, install]
         default: youtube
       route:
         description: "reddit: which route (all, api, agent_reach)"
@@ -156,12 +156,24 @@ jobs:
             exit 1
           fi
 
+      - name: Install or update the Agent-Reach connection (the repository itself)
+        if: ${{ inputs.action == 'agentreach' }}
+        continue-on-error: true
+        shell: bash
+        run: |
+          python -m contentintel observatory connections --all --what install --key agent_reach 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+
       - name: Install the isolated Scrapling environment
         if: ${{ inputs.scrapling || inputs.browsers }}
         shell: bash
         run: |
-          python -m venv "$RUNNER_TEMP/scrapling-env"
-          "$RUNNER_TEMP/scrapling-env/bin/pip" install -q -r requirements-scrapling.txt
+          export CONTENTINTEL_EXTERNAL_DIR="$RUNNER_TEMP"
+          # the Scrapling connection: the newest version by default (the owner can pin it); the recorded version is the fallback if that cannot be installed
+          python -m contentintel observatory connections --all --what install --key scrapling || true
+          if [ ! -x "$RUNNER_TEMP/scrapling-env/bin/python" ]; then
+            python -m venv "$RUNNER_TEMP/scrapling-env"
+            "$RUNNER_TEMP/scrapling-env/bin/pip" install -q -r requirements-scrapling.txt
+          fi
           echo "SCRAPLING_PYTHON=$RUNNER_TEMP/scrapling-env/bin/python" >> "$GITHUB_ENV"
           if [ "${{ inputs.browsers }}" = "true" ]; then
             "$RUNNER_TEMP/scrapling-env/bin/python" -m playwright install --with-deps chromium
