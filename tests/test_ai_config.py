@@ -308,3 +308,19 @@ def test_the_documents_and_the_file_header_name_exactly_the_providers_that_are_s
         assert named == on, (path, named, on)
     assert f"{len(reg.providers)} in all" in open(ROOT / "README.md", encoding="utf-8").read()
     assert "all disabled until you approve" not in open(ROOT / "docs/ai/provider-comparison.md", encoding="utf-8").read()
+
+
+# ---- the shipped catalogue never approves or routes to a model its provider has retired --------------------------------------------------------------
+
+RETIRED = {("groq", "llama-3.3-70b-versatile"), ("groq", "llama-3.1-8b-instant"), ("groq", "qwen/qwen3-32b"), ("groq", "meta-llama/llama-4-scout-17b-16e-instruct"), ("google", "gemini-2.5-flash")}
+
+
+def test_no_retired_model_is_approved_and_every_lane_route_uses_an_approved_model():
+    import yaml
+    providers = yaml.safe_load(open(ROOT / "ai_providers.yaml", encoding="utf-8"))["providers"]
+    lanes = yaml.safe_load(open(ROOT / "ai_lanes.yaml", encoding="utf-8"))["lanes"]
+    approved = {(pid, m["id"]) for pid, p in providers.items() for m in (p.get("models") or []) if m.get("approved")}
+    assert not RETIRED & approved                                                           # a provider that has shut a model down is never offered it
+    used = {(r["provider"], r["model"]) for lane in lanes.values() for r in lane.get("chain", [])}
+    assert not RETIRED & used and used <= approved                                          # and no lane routes to a model nobody approved
+    assert {("groq", "openai/gpt-oss-120b"), ("groq", "openai/gpt-oss-20b"), ("google", "gemini-3.5-flash")} <= approved
