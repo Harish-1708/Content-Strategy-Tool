@@ -29,7 +29,9 @@ SETUP_WORDS = ("browser bridge", "extension", "daemon is not", "no browser", "no
 def hosted_runner(environ=None):
     """True on a GitHub-hosted runner. The route never runs there: the logged-in browser's cookies must stay on a machine you control."""
     import os
-    return (environ if environ is not None else os.environ).get("RUNNER_ENVIRONMENT", "") == "github-hosted"
+
+    from . import guards
+    return guards.on("hosted_runner_block") and (environ if environ is not None else os.environ).get("RUNNER_ENVIRONMENT", "") == "github-hosted"
 
 
 class OpenCLI:
