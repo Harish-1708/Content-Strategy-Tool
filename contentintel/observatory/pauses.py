@@ -6,7 +6,7 @@ not to any brand. It also remembers the delay the throttle had learned, so the n
 import json
 from pathlib import Path
 
-from .. import health
+from .. import guards, health
 
 _FILE = "pauses.json"
 _KEEP_DAYS = 30
@@ -27,6 +27,8 @@ class PauseLedger:
 
     def paused(self, host, now):
         """(reason, until) while the site rests, else None."""
+        if not guards.on("rest_after_refusal"):                  # the owner has not asked sites to rest: never blocks
+            return None
         entry = self.data.get(host)
         if not entry or not entry.get("until"):
             return None
@@ -36,6 +38,8 @@ class PauseLedger:
         return entry.get("reason", ""), entry["until"], entry.get("code", "")
 
     def pause(self, host, seconds, reason, now, code="RATE_LIMITED"):
+        if not guards.on("rest_after_refusal"):
+            return
         entry = self.data.setdefault(host, {})
         entry.update(until=health.add_seconds(now, seconds), reason=reason[:200], code=code, updated=now)
         self.dirty = True
