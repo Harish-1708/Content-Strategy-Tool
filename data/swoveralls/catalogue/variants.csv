@@ -38,7 +38,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991425135,M / Bordeaux,Size=M; Color=Bordeaux,SWPANTSCORD-781-M,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991457903,L / Bordeaux,Size=L; Color=Bordeaux,SWPANTSCORD-781-L,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991490671,XL / Bordeaux,Size=XL; Color=Bordeaux,SWPANTSCORD-781-XL,129.00,,true
-15347005489263,Corduroy Swoveralls - Bordeaux,53755991523439,2XL / Bordeaux,Size=2XL; Color=Bordeaux,SWPANTSCORD-781-2XL,129.00,,true
+15347005489263,Corduroy Swoveralls - Bordeaux,53755991523439,2XL / Bordeaux,Size=2XL; Color=Bordeaux,SWPANTSCORD-781-2XL,129.00,,false
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991556207,3XL / Bordeaux,Size=3XL; Color=Bordeaux,SWPANTSCORD-781-3XL,129.00,,false
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991588975,4XL / Bordeaux,Size=4XL; Color=Bordeaux,SWPANTSCORD-781-4XL,129.00,,true
 15347005325423,Corduroy Swoveralls - Forest Green,53755990311023,S / Forest Green,Size=S; Color=Forest Green,SWPANTSCORD-002-S,129.00,,true
@@ -231,11 +231,11 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936419951,XS / Dino Navy,Size=XS; Color=Dino Navy,1038-XS-DINO,120.00,,false
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936452719,S / Dino Navy,Size=S; Color=Dino Navy,1038-S-DINO,120.00,,false
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936485487,M / Dino Navy,Size=M; Color=Dino Navy,1038-M-DINO,120.00,,true
-7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936518255,L / Dino Navy,Size=L; Color=Dino Navy,1038-L-DINO,120.00,,false
+7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936518255,L / Dino Navy,Size=L; Color=Dino Navy,1038-L-DINO,120.00,,true
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936551023,XL / Dino Navy,Size=XL; Color=Dino Navy,1038-XL-DINO,120.00,,false
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936583791,2XL / Dino Navy,Size=2XL; Color=Dino Navy,1038-2XL-DINO,120.00,,false
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936616559,3XL / Dino Navy,Size=3XL; Color=Dino Navy,1038-3XL-DINO,120.00,,false
-7215056781423,Swoveralls - Dino Navy - Coming Soon!,41349780373615,4XL / Dino Navy,Size=4XL; Color=Dino Navy,1038-4XL-DINO,120.00,,true
+7215056781423,Swoveralls - Dino Navy - Coming Soon!,41349780373615,4XL / Dino Navy,Size=4XL; Color=Dino Navy,1038-4XL-DINO,120.00,,false
 7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671448687,XXS / Dog Days Navy,Size=XXS; Color=Dog Days Navy,SWPANTS-BMF-XXS,120.00,,true
 7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671481455,XS / Dog Days Navy,Size=XS; Color=Dog Days Navy,SWPANTS-BMF-XS,120.00,,false
 7969918091375,Swoveralls - Dog Days - Coming Soon!,43949671514223,S / Dog Days Navy,Size=S; Color=Dog Days Navy,SWPANTS-BMF-S,120.00,,false

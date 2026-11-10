@@ -1432,7 +1432,7 @@
      "title": "XL / Bordeaux"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53755991523439,
      "options": [
@@ -8039,7 +8039,7 @@
      "title": "M / Dino Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 41347936518255,
      "options": [
@@ -8111,7 +8111,7 @@
      "title": "3XL / Dino Navy"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 41349780373615,
      "options": [
