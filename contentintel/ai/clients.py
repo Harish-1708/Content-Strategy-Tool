@@ -29,7 +29,11 @@ def default_http(method, url, *, headers, body, timeout):
     req = urllib.request.Request(url, method=method, data=None if body is None else json.dumps(body).encode("utf-8"), headers=headers)
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
-            return r.status, json.loads(r.read() or b"{}"), dict(r.headers)
+            raw = r.read() or b"{}"
+            try:
+                return r.status, json.loads(raw), dict(r.headers)
+            except ValueError:                                           # an answer that is not JSON: keep a short look at it, so the failure can say what the server actually returned
+                return r.status, {"_not_json": raw[:300].decode("utf-8", "replace"), "_content_type": r.headers.get("Content-Type", "")}, dict(r.headers)
     except urllib.error.HTTPError as exc:
         raw = exc.read() or b""
         try:
@@ -70,6 +74,8 @@ class GatewayClient:
             raise Failure(contract.BAD_INPUT, text_error or "the gateway refused the request")
         if status >= 500 or status != 200:
             raise Failure(contract.UPSTREAM_BROKEN, text_error or f"the gateway answered {status}")
+        if isinstance(body, dict) and "_not_json" in body:
+            raise Failure(contract.UPSTREAM_BROKEN, f"the gateway answered {status} with something that is not JSON ({body.get('_content_type') or 'no content type'}): {body['_not_json'][:200]!r}")
         if expect_platform:
             used = (body.get("_routed_via") or {}).get("platform")
             if used != expect_platform:
@@ -115,6 +121,8 @@ class DirectClient:
             raise Failure(contract.BAD_INPUT, text_error or "the provider refused the request (often: more than its per-request token limit)")
         if status != 200:
             raise Failure(contract.UPSTREAM_BROKEN, text_error or f"the provider answered {status}")
+        if isinstance(body, dict) and "_not_json" in body:                 # what GitHub Models (or any direct provider) really sent back, with the token hidden
+            raise Failure(contract.UPSTREAM_BROKEN, self._clean(f"the provider answered {status} with something that is not JSON ({body.get('_content_type') or 'no content type'}): {body['_not_json'][:200]!r}"))
         try:
             choice = body["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError):
