@@ -22,7 +22,7 @@ from .snapshots import SnapshotError, SnapshotStore
 
 from .. import agent_reach_catalog as CAT
 
-ACTIONS = ("plan", "discover", "decide", "judge", "monitor", "corpus", "instagram", "reddit", "agentreach", "reliability", "controls", "report", "history", "prune", "status")
+ACTIONS = ("plan", "discover", "decide", "judge", "monitor", "corpus", "instagram", "reddit", "agentreach", "reliability", "controls", "connections", "report", "history", "prune", "status")
 JUDGE_ROUTER = None               # tests replace this: () -> (router, usage, review, side); None means the real AI layer
 HOMEPAGE_SOCIAL = None            # tests replace this: (domain) -> {instagram, tiktok, youtube}; None means read the site
 REDDIT_HTTP = None                # tests replace this: the HTTP function the Reddit API route uses; None means the real one
@@ -49,7 +49,7 @@ def add_arguments(p):
     p.add_argument("--json", action="store_true")
     p.add_argument("--dry-run", action="store_true", help="monitor: show what would be read and make no request")
     p.add_argument("--decision", default="", choices=("", "monitor", "stop", "reset"), help="decide: monitor or stop a discovered competitor, or reset it to the rubric")
-    p.add_argument("--what", default="youtube", choices=("youtube", "outliers", "search", "stats", "read", "trending", "collect", "compare", "check", "run", "list", "approve", "reject", "show", "set", "reset", "subtitle", "deepread", "channelpages", "crawl", "feeds", "profile", "posts", "tweets", "thread", "jobs", "subreddit"),
+    p.add_argument("--what", default="youtube", choices=("youtube", "outliers", "search", "stats", "read", "trending", "collect", "compare", "check", "run", "list", "approve", "reject", "show", "set", "reset", "subtitle", "deepread", "channelpages", "crawl", "feeds", "health", "install", "profile", "posts", "tweets", "thread", "jobs", "subreddit"),
                    help="corpus: youtube, outliers, trending, search, stats or read; instagram: collect, compare or check")
     p.add_argument("--source", default="", help="corpus search: only these sources (youtube_public, meta_ads, instagram, competitor_pages, web_search...), comma-separated")
     p.add_argument("--since", default="", help="corpus search: only items captured on or after this date (YYYY-MM-DD)")
@@ -136,6 +136,8 @@ def run(args, store, ledger, now):
             return _agentreach(args, store, ledger, settings, brands, now)
         if args.action == "controls":
             return _controls(args, store, settings, brands, now)
+        if args.action == "connections":
+            return _connections(args, settings, now)
         if args.action == "monitor":
             return _monitor(args, store, ledger, settings, brands, snaps, now)
         if args.action == "report":
@@ -706,6 +708,33 @@ def _reddit(args, store, ledger, settings, brands, now):
     return worst
 
 
+def _connections(args, settings, now):
+    """The external connections: list or health (the owner's switches and the health score), check (a real probe of each), install (install or update each per its version mode)."""
+    from .. import connections as CONN
+    what = args.what if args.what in ("list", "health", "check", "install") else "list"
+    ids = [args.key] if args.key else list(CONN.CONNECTIONS)
+    if args.key and args.key not in CONN.CONNECTIONS:
+        print(f"Error: no connection called {args.key!r}; the connections are {', '.join(CONN.CONNECTIONS)}")
+        return 1
+    led = CONN.ConnectionHealth()
+    if what == "install":
+        for cid in ids:
+            ok, message = CONN.install(settings, cid)
+            print(("installed: " if ok else "NOT installed: ") + message)
+    if what in ("check", "install"):
+        for cid in ids:
+            if CONN.decide(settings, cid)["on"]:
+                ok, message = CONN.probe(settings, cid, now=now, ledger=led)
+                print(("ok: " if ok else "not working: ") + message)
+        led.save()
+    print("External connections (the repositories themselves; the platform's own version is the backup). Change any of these with `controls --what set --key services.<service>.<...>`.")
+    print(f"{'connection':17} {'on':4} {'health':8} {'state':9} {'route':15} {'version':8} {'secrets':8} backup")
+    for r in CONN.rows(settings, led, now):
+        if r["connection"] in ids:
+            print(f"{r['connection']:17} {r['on']:4} {str(r['health_score'] if r['health_score'] != '' else '-'):8} {r['state']:9} {r['route']:15} {r['version']:8} {r['secrets_handed_over']:8} {r['fallback'][:60]}")
+    return 0
+
+
 def _controls(args, store, settings, brands, now):
     """The platform's shared-service controls: show them (with their initial defaults and where each value comes from), set or reset one, and what every competitor ends up with. Nothing is a
     secret here: cookies and proxies show as the secret's name."""
@@ -793,7 +822,8 @@ def _agentreach(args, store, ledger, settings, brands, now):
     for brand in brands:
         def fetch():
             rows = []
-            for raw in AR.rows_from(cli.call(argv if argv is not None else [what, target] + (["--limit", clean["limit"]] if what == "search" else [])))[:25]:
+            for raw in AR.rows_from((cli.call_action(args.ar_channel, what, clean, argv, [what, target] + (["--limit", clean["limit"]] if what == "search" else [])) if hasattr(cli, "call_action")
+                                                    else cli.call(argv if argv is not None else [what, target] + (["--limit", clean["limit"]] if what == "search" else []))))[:25]:
                 url = str(AR._pick(raw, "url", "link", "webpage_url") or "")
                 title = str(AR._pick(raw, "title", "name", "text") or "")
                 if not (url or title):
