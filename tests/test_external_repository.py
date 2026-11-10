@@ -159,7 +159,7 @@ def test_a_missing_or_broken_declaration_file_never_stops_the_platform(tmp_path,
     assert SV.load_declared() == [] and "not read" in SV.NOTES[0]
     broken.write_text("- a list\n- not a mapping\n")
     assert SV.load_declared() == [] and "must contain name: value settings" in SV.NOTES[-1]
-    assert sorted(SV.load_settings(None, tmp_path / "d")["services"]) == ["agent_reach", "ai_gateway", "page_readers", "scrapling", "search"]
+    assert sorted(SV.load_settings(None, tmp_path / "d")["services"]) == ["agent_reach", "ai_gateway", "connection_routes", "connection_secrets", "connection_versions", "connections", "guards", "page_readers", "scrapling", "search"]
     assert (ROOT / "services_extra.yaml").is_file() and SV.load_declared(str(ROOT / "services_extra.yaml")) == []        # the shipped file declares nothing, so it changes nothing
 
 
@@ -212,7 +212,7 @@ def test_the_package_builds_into_a_wheel_that_a_clean_environment_can_install_an
     """)
     ran = subprocess.run([sys.executable, "-c", code, str(site)], cwd=work, env={"PATH": "/usr/bin:/bin", "PYTHONPATH": str(site)}, capture_output=True, text=True, timeout=120)
     assert ran.returncode == 0, ran.stderr[-400:]
-    assert ran.stdout.strip() == f"True ['agent_reach', 'ai_gateway', 'page_readers', 'scrapling', 'search'] {len(SV.CONTROLS)}"
+    assert ran.stdout.strip() == f"True ['agent_reach', 'ai_gateway', 'connection_routes', 'connection_secrets', 'connection_versions', 'connections', 'guards', 'page_readers', 'scrapling', 'search'] {len(SV.CONTROLS)}"
 
 
 def test_reading_the_settings_itself_applies_every_repositorys_registrations_with_nothing_registered_beforehand(other_repo, tmp_path, monkeypatch):
