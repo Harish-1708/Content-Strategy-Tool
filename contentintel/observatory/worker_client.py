@@ -11,7 +11,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from .. import contract as K
+from .. import guards, contract as K
 from .config import USER_AGENT_TOKEN
 
 EXPECTED_VERSION = "0.5"
@@ -74,9 +74,9 @@ def advanced_for(comp, settings):
 
 def build_job(items, settings, contact, *, selectors=None, adaptive_db=""):
     pol = settings["crawl_policy"]
-    return {"expected_version": EXPECTED_VERSION, "user_agent": f"{USER_AGENT_TOKEN}/1.0 (research; contact: {contact})", "contact": contact, "controls": settings["access_controls"], "delay": settings["politeness"]["min_delay_seconds"],
+    return {"expected_version": EXPECTED_VERSION if ((settings["services"].get("connection_versions") or {}).get("routes") or {}).get("scrapling", "latest") == "pinned" else "", "user_agent": f"{USER_AGENT_TOKEN}/1.0 (research; contact: {contact})", "contact": contact, "controls": settings["access_controls"], "delay": settings["politeness"]["min_delay_seconds"],
             "max_delay": settings["politeness"]["max_delay_seconds"], "timeout": settings["politeness"]["timeout_seconds"], "max_chars": settings["pages"]["max_text_chars"],
-            "robots": {"mode": pol["robots"], "basis": pol["basis"], "overrides": pol["overrides"]}, "items": items,
+            "robots": {"mode": pol["robots"], "basis": pol["basis"], "overrides": pol["overrides"]}, "guards": guards.snapshot(), "retry": settings.get("retry") or {"attempts": 3, "backoff_seconds": 2}, "items": items,
             "selectors": selectors or {}, "adaptive_db": adaptive_db}
 
 
