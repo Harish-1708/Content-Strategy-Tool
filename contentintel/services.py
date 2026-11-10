@@ -16,7 +16,9 @@ import os
 import re
 from pathlib import Path
 
+from . import connections as CONN
 from . import contract as K
+from . import guards as _GUARDS
 from .observatory import config as OC
 
 # ---- the controls the owner can see and change (Controls tab, `observatory controls`) -----------------------------------------------------------
@@ -31,7 +33,9 @@ _OPTION_CONTROLS = (       # central request defaults for Scrapling: (option, ki
 
 _OPTION_CONTROLS = tuple((opt, kind, OC.SCRAPLING_ON_DEFAULTS.get(opt, unset) if kind == "bool" else unset, text) for opt, kind, unset, text in _OPTION_CONTROLS)      # the on/off ones default ON
 
-_ROUTE_TEXT = {"ai_gateway": "language-model calls for {p}: gateway_first (try the free providers, fall back to Claude) or claude (Claude only)",
+_ROUTE_TEXT = {"connection_routes": "which route the {p} connection tries first: external_first (the repository itself, then the platform's own version), builtin_first, external_only or builtin_only",
+               "connection_versions": "which version of the {p} repository is used: latest (always the newest) or pinned",
+               "ai_gateway": "language-model calls for {p}: gateway_first (try the free providers, fall back to Claude) or claude (Claude only)",
                "page_readers": "the reader used for pages in {p}: auto (Scrapling, then Jina, then built-in; never another engine after a refusal), jina, core (built-in) or scrapling"}
 
 
@@ -47,7 +51,14 @@ def _build():
         for p in OC.spec_purposes(spec):
             add(f"services.{name}.use_for.{p}", "bool", True, f"{p.replace('_', ' ')} may use {label}", label)
         for c in spec["channels"]:
-            add(f"services.{name}.channels.{c}", "bool", True, f"the {c} {'channel' if name == 'agent_reach' else 'provider'} may be used", label)
+            if name == "guards":
+                add(f"services.{name}.channels.{c}", "bool", spec.get("channel_default", True), f"guard {c}: {_GUARDS.GUARDS[c]}", label)
+            elif name == "connection_secrets":
+                add(f"services.{name}.channels.{c}", "bool", True, f"the secrets the {c} repository declares it needs are handed to it (every other secret is withheld)", label)
+            elif name == "connections":
+                add(f"services.{name}.channels.{c}", "bool", True, f"the {c} repository is connected (OFF: it is never run)", label)
+            else:
+                add(f"services.{name}.channels.{c}", "bool", spec.get("channel_default", True), f"the {c} {'channel' if name == 'agent_reach' else 'provider'} may be used", label)
         if spec["routes"]:
             for p in OC.route_purposes(spec):
                 add(f"services.{name}.routes.{p}", "choice", OC.route_default_for(spec, p), _ROUTE_TEXT.get(name, "route for {p}").format(p=p.replace("_", " ")), label, spec["routes"]["choices"])
@@ -275,6 +286,21 @@ def agent_reach_allowed(settings, channel, purpose):
 
 
 def agent_reach_client(settings, channel, purpose, *, environ, timeout=90, factory=None):
+    """The client for an Agent-Reach channel. When the Agent-Reach repository is installed here, connected, and the owner's route allows it, the client runs Agent-Reach itself first and the platform's own
+    adapter is the backup (the owner's route for the agent_reach connection decides the order); otherwise it is the platform's own adapter, exactly as before."""
+    builtin = _builtin_agent_reach_client(settings, channel, purpose, environ=environ, timeout=timeout, factory=factory)
+    if factory:
+        return builtin
+    from . import agent_reach_external as ARX
+    from . import connections as CONN
+    d = CONN.decide(settings, "agent_reach")
+    exe = CONN.binary_path("agent_reach") if d["on"] and d["route"] != "builtin_only" else ""
+    if not exe:
+        return builtin
+    return ARX.RoutedAgentReach(settings, ARX.ExternalAgentReach(settings, binary=exe, environ=environ, timeout=timeout), builtin)
+
+
+def _builtin_agent_reach_client(settings, channel, purpose, *, environ, timeout=90, factory=None):
     """A client for an Agent-Reach channel, or Failure(NEED_SETUP) naming the switch that is off. Instagram and Reddit use OpenCLI in a logged-in browser, and their client refuses to run on a hosted runner;
     YouTube uses yt-dlp, which needs no login and so has no such refusal (YouTube's own bot checks of data-centre addresses apply). `factory` replaces the real program in tests."""
     ok, why = agent_reach_allowed(settings, channel, purpose)
@@ -684,6 +710,11 @@ def effective_engine(settings, purpose, *, scrapling_installed):
 REFUSALS = (K.PLATFORM_BLOCKED, K.RATE_LIMITED, K.NOT_FOUND)         # after one of these no other engine is tried: a refusal is never a reason to escalate
 
 
+def _utc_now():
+    from datetime import datetime, timezone
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def read_page(settings, url, purpose, engines, *, engine=None):
     """One page through the owner's chosen reader for the purpose: jina, core (built-in), scrapling, or auto (Scrapling, then Jina, then built-in). `engines` is {name: callable(url) -> page} supplied by the
     module (it has the contact address, the polite client and the data folder), so every module and repository shares the same choice, switches and rules while keeping its own plumbing. In auto, an engine
@@ -694,8 +725,14 @@ def read_page(settings, url, purpose, engines, *, engine=None):
     choice = engine or route_for(settings, "page_readers", purpose)
     if choice not in OC.PAGE_ENGINES:
         raise K.Failure(K.BAD_INPUT, f"the page reader {choice!r} is not one of {', '.join(OC.PAGE_ENGINES)}")
-    order = ["scrapling", "jina", "core"] if choice == "auto" else [choice]
+    order = [choice]
     skipped, last = [], None
+    if choice == "auto":                                    # the owner's choices for the Scrapling connection: on or off, and which route first
+        conn = CONN.decide(settings, "scrapling")
+        order = {"external_first": ["scrapling", "jina", "core"], "builtin_first": ["core", "jina", "scrapling"], "external_only": ["scrapling"], "builtin_only": ["jina", "core"]}[conn["route"]]
+        if not conn["on"]:
+            skipped.append("scrapling: the Scrapling connection is switched off (services.connections.channels.scrapling)")
+            order = [n for n in order if n != "scrapling"]
     for name in order:
         fn = engines.get(name)
         if fn is None:
@@ -709,11 +746,15 @@ def read_page(settings, url, purpose, engines, *, engine=None):
         try:
             page = dict(fn(url))
         except K.Failure as exc:
-            if choice != "auto" or exc.code in REFUSALS:
+            if name == "scrapling" and exc.code not in REFUSALS:                         # a site's refusal is not the repository failing; anything else is
+                CONN.note(settings, "scrapling", False, _utc_now(), code=exc.code, message=str(exc))
+            if choice != "auto" or (exc.code in REFUSALS and _GUARDS.on("rest_after_refusal")):        # the rest guard: a refusal ends the chain; with it off the next reader gets a go
                 raise
             skipped.append(f"{name}: {exc.code}")
             last = exc
             continue
+        if name == "scrapling":
+            CONN.note(settings, "scrapling", True, _utc_now())
         page.setdefault("title", "")
         page.setdefault("text", "")
         page.setdefault("social", {})
