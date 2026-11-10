@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OBS, AI = "contentintel/observatory/", "contentintel/ai/"
-TESTS = ["tests/test_observatory_*.py", "tests/test_services.py", "tests/test_ytdlp_youtube.py", "tests/test_external_repository.py", "tests/test_platform_wiring.py", "tests/test_platform_matrix.py", "tests/test_reddit_routes.py", "tests/test_agent_reach_instagram.py", "tests/test_ai_github.py", "tests/test_ai_health_tab.py", "tests/test_ai_config.py", "tests/test_providers.py", "tests/test_agent_reach_catalog.py", "tests/test_owner_defaults.py", "tests/test_capability_matrix.py", "tests/test_research.py", "tests/test_sources.py", "tests/test_guards.py", "tests/test_connections.py", "tests/test_sheets.py", "tests/test_health.py", "tests/test_acceptance.py"]
+TESTS = ["tests/test_observatory_*.py", "tests/test_services.py", "tests/test_ytdlp_youtube.py", "tests/test_external_repository.py", "tests/test_platform_wiring.py", "tests/test_platform_matrix.py", "tests/test_reddit_routes.py", "tests/test_agent_reach_instagram.py", "tests/test_ai_github.py", "tests/test_ai_health_tab.py", "tests/test_ai_config.py", "tests/test_providers.py", "tests/test_agent_reach_catalog.py", "tests/test_owner_defaults.py", "tests/test_capability_matrix.py", "tests/test_research.py", "tests/test_sources.py", "tests/test_guards.py", "tests/test_connections.py", "tests/test_sheets.py", "tests/test_health.py", "tests/test_acceptance.py", "tests/test_acceptance_agent_reach.py"]
 
 # (id, file, text found exactly once, replacement, what the bug simulates)
 MUTATIONS = [
@@ -391,6 +391,24 @@ U42 = [   # update 42: the Acceptance workflow passes the contact address
     ('acceptance-workflow-no-reddit-secret', '.github/workflows/acceptance.yml', 'REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}', 'REDDIT_CLIENT_SECRET_UNUSED: ${{ secrets.REDDIT_CLIENT_SECRET }}', 'the Acceptance workflow does not pass a documented secret the Reddit check reads'),
 ]
 MUTATIONS.extend(U42)
+
+U43 = [   # update 43: the Agent-Reach acceptance checks and true skip reasons, and the feed check
+    ('ar-check-github-dropped', 'contentintel/observatory/acceptance_checks.py', '    if SV.agent_reach_allowed(settings, "github", "general_research")[0]:\n        def github_check', '    if False:\n        def github_check', 'the GitHub channel has no acceptance check'),
+    ('ar-check-web-without-contact', 'contentintel/observatory/acceptance_checks.py', '    if contact and SV.agent_reach_allowed(settings, "web", "general_research")[0]:', '    if SV.agent_reach_allowed(settings, "web", "general_research")[0]:', 'the web check runs with no contact address'),
+    ('ar-check-hosted-runner-ignored', 'contentintel/observatory/acceptance_checks.py', 'or AR.hosted_runner(environ) or not client.available():', 'or not client.available():', 'a browser channel is checked on a hosted runner although the guard says not to'),
+    ('ar-check-opencli-unavailable-ignored', 'contentintel/observatory/acceptance_checks.py', 'or AR.hosted_runner(environ) or not client.available():', 'or AR.hosted_runner(environ) or False:', 'a browser channel is checked although OpenCLI is not installed'),
+    ('ar-check-empty-answer-passes', 'contentintel/observatory/acceptance_checks.py', '            if not rows:\n                raise K.Failure(K.UPSTREAM_BROKEN, f"the {ch} {act}', '            if False:\n                raise K.Failure(K.UPSTREAM_BROKEN, f"the {ch} {act}', 'a channel that returns nothing passes'),
+    ('ar-check-limit', 'contentintel/observatory/acceptance_checks.py', '"marketing")}, limit=2)', '"marketing")}, limit=20)', 'the check asks for 20 results instead of a small sample'),
+    ('ar-reason-is-the-contact-message', 'contentintel/observatory/acceptance_checks.py', 'out[key] = f"cannot run: OpenCLI is not installed on this machine (it needs a browser logged in to {site}, on a machine you control)"', 'out[key] = "no contact address or no brand website: set OBSERVATORY_CONTACT"', 'a channel that cannot run blames the contact address'),
+    ('ar-reason-switched-off-lost', 'contentintel/observatory/acceptance_checks.py', '            out[key] = f"switched off: {why}"\n        elif channel == "web"', '            pass\n        elif channel == "web"', 'a switched-off channel has no reason'),
+    ('ar-reason-hosted-runner-lost', 'contentintel/observatory/acceptance_checks.py', '            if AR.hosted_runner(environ):\n                out[key]', '            if False:\n                out[key]', 'a hosted runner is not named as the reason'),
+    ('feed-no-feed-fails', 'contentintel/observatory/acceptance_checks.py', 'raise Skipped(f"no feed to read:', 'raise K.Failure(K.NOT_FOUND, f"no feed to read:', 'a site with no feed fails the route'),
+    ('feed-first-brand-only', 'contentintel/observatory/acceptance_checks.py', 'for n, dom in enumerate([domain, *other_domains]):', 'for n, dom in enumerate([domain]):', 'the feed is only ever tried on the first brand'),
+    ('feed-unreadable-other-site-aborts', 'contentintel/observatory/acceptance_checks.py', '                if n == 0:\n                    raise\n                continue', '                raise', "another brand's unreadable site stops the feed check"),
+    ('cli-agent-reach-checks-not-added', 'contentintel/cli.py', '        checks.update(obs_checks.agent_reach_checks(settings, contact, now))\n', '', 'the Agent-Reach checks are never added to the acceptance run'),
+    ('cli-agent-reach-reasons-not-wired', 'contentintel/cli.py', '{**_oc.reddit_missing(_s, _contact), **_oc.agent_reach_missing(_s, _contact)}', '_oc.reddit_missing(_s, _contact)', 'the reasons for the Agent-Reach channels never reach the run'),
+]
+MUTATIONS.extend(U43)
 
 def run_tests(workdir):
     env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}
