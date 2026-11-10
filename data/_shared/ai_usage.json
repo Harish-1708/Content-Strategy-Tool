@@ -1,0 +1,21 @@
+{
+ "days": {
+  "2026-11-10": {
+   "groq": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 102
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 1,
+    "latency_ms": 292,
+    "requests": 2,
+    "tokens_in": 78,
+    "tokens_out": 24
+   }
+  }
+ }
+}
