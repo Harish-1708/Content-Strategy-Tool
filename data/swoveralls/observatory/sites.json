@@ -1,0 +1,21 @@
+{
+ "sites": [
+  {
+   "domain": "madepants.com",
+   "id": "madepants-com",
+   "kind": "store",
+   "name": "Madepants",
+   "origin": "discovery",
+   "request_controls": "browser; session; TLS impersonation; canvas change; WebRTC block; cursor simulation; challenge solving; no images or fonts"
+  },
+  {
+   "domain": "theoodie.com",
+   "id": "theoodie-com",
+   "kind": "store",
+   "name": "The Oodie",
+   "origin": "discovery",
+   "request_controls": "browser; session; TLS impersonation; canvas change; WebRTC block; cursor simulation; challenge solving; no images or fonts"
+  }
+ ],
+ "updated_at": "2026-11-10T09:53:04Z"
+}
