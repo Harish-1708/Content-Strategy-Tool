@@ -15,7 +15,7 @@ NEEDS = {("competitor_stores", "public_json"): "catalogue_walk", ("competitor_st
          ("competitor_pages", "feed"): "read_feed", ("competitor_pages", "reader"): "read_via_reader"}
 
 
-def make_checks(domain, settings, contact, now, *, client=None, reader_http=None):
+def make_checks(domain, settings, contact, now, *, client=None, reader_http=None, other_domains=()):
     """{(source, route): callable}. Empty when there is nothing to check against."""
     if not domain or not contact:
         return {}
@@ -45,16 +45,27 @@ def make_checks(domain, settings, contact, now, *, client=None, reader_http=None
         return 1, f"read the home page of {domain} ({snap['title'][:40]!r}, {snap['chars']} characters)"
 
     def feed():
+        """Proves the feed reader on the first site that has a feed: the brand's own, then the other brands'. A site with no feed is not a failure of the route; if none has one the check is skipped."""
+        from ..acceptance import Skipped
         c = get_client()
-        snap_page = monitor._snapshot_page(c, base + "/", cfg)
-        for url in [a["href"] for a in snap_page["alternates"]] + F.guess_feed_urls(base)[:2]:
+        tried = []
+        for n, dom in enumerate([domain, *other_domains]):
+            b = S.base_url(dom)
+            tried.append(dom)
             try:
-                snap = monitor._snapshot_feed(c, url, cfg)
-                return len(snap["items"]), f"read {len(snap['items'])} item(s) of a {snap['format']} feed of {domain}"
-            except K.Failure as exc:
-                if polite.is_fatal(exc):
+                snap_page = monitor._snapshot_page(c, b + "/", cfg)
+            except K.Failure:
+                if n == 0:
                     raise
-        raise K.Failure(K.NOT_FOUND, f"{domain} advertises no feed and has none at the usual addresses, so this route has nothing to read there")
+                continue                                                                  # another brand's site that cannot be read is simply not the one to prove it on
+            for url in [a["href"] for a in snap_page["alternates"]] + F.guess_feed_urls(b)[:2]:
+                try:
+                    snap = monitor._snapshot_feed(c, url, cfg)
+                    return len(snap["items"]), f"read {len(snap['items'])} item(s) of a {snap['format']} feed of {dom}"
+                except K.Failure as exc:
+                    if n == 0 and polite.is_fatal(exc):
+                        raise
+        raise Skipped(f"no feed to read: {', '.join(tried)} {'advertises' if len(tried) == 1 else 'advertise'} none and {'has' if len(tried) == 1 else 'have'} none at the usual addresses, so this route could not be proved on {'it' if len(tried) == 1 else 'them'}")
 
     def reader():
         r = readers.JinaReader(cfg, get_client(), **({"http": reader_http} if reader_http else {}))
@@ -62,6 +73,82 @@ def make_checks(domain, settings, contact, now, *, client=None, reader_http=None
         return 1, f"read the home page of {domain} through the reader ({len(got['text'])} characters)"
     return {("competitor_stores", "public_json"): store, ("competitor_stores", "sitemap"): sitemap, ("competitor_pages", "static_fetch"): page,
             ("competitor_pages", "feed"): feed, ("competitor_pages", "reader"): reader}
+
+
+# The Agent-Reach research channels the acceptance run proves, each with the one small thing it tries. The first seven need OpenCLI and a browser logged in to the site.
+OPENCLI_CHANNELS = {"instagram": ("search", "Instagram"), "reddit": ("search", "Reddit"), "twitter": ("search", "X"), "facebook": ("search", "Facebook"), "linkedin": ("jobs", "LinkedIn"),
+                    "xiaohongshu": ("search", "Xiaohongshu"), "boss": ("search", "Boss")}
+AGENT_REACH_CHANNELS = tuple(OPENCLI_CHANNELS) + ("github", "web")
+
+
+def agent_reach_checks(settings, contact, now, *, environ=None, cli=None, github=None, web_client=None):
+    """{('agent_reach_research', channel): callable} for the channels that can be proved here: GitHub (its public API) and web (the polite reader on a public page, which needs the contact address),
+    and the OpenCLI channels only where OpenCLI is installed and the owner's guards allow it. `cli` may be a function from a channel to an OpenCLI client (for tests). The rest show as skipped with the reason."""
+    import os
+
+    from .. import agent_reach_catalog as CAT
+    from .. import agent_reach_instagram as AR
+    from .. import services as SV
+    environ = environ if environ is not None else os.environ
+    out = {}
+    for channel, (action, _site) in OPENCLI_CHANNELS.items():
+        client = cli(channel) if cli else AR.OpenCLI(environ.get("OPENCLI_BIN", "opencli"), site=channel, environ=environ)
+        if not SV.agent_reach_allowed(settings, channel, CAT.purpose_for(channel))[0] or AR.hosted_runner(environ) or not client.available():
+            continue
+
+        def run(ch=channel, act=action, c=client):
+            argv, _clean = CAT.prepare(ch, act, {"query": environ.get("AGENT_REACH_CHECK_QUERY", "marketing")}, limit=2)
+            rows = AR.rows_from(c.call(argv))
+            if not rows:
+                raise K.Failure(K.UPSTREAM_BROKEN, f"the {ch} {act} through Agent-Reach returned nothing")
+            return len(rows), f"read {len(rows)} {ch} result(s) through Agent-Reach (OpenCLI)"
+        out[("agent_reach_research", channel)] = run
+    if SV.agent_reach_allowed(settings, "github", "general_research")[0]:
+        def github_check():
+            client = github or SV.agent_reach_client(settings, "github", "general_research", environ=environ)
+            neutral = ["search", environ.get("GITHUB_CHECK_QUERY", "agent reach"), "--limit", 2]
+            rows = AR.rows_from(client.call_action("github", "search", {"query": neutral[1], "limit": "2"}, None, neutral) if hasattr(client, "call_action") else client.call(neutral))
+            if not rows:
+                raise K.Failure(K.UPSTREAM_BROKEN, "the GitHub search through Agent-Reach returned nothing")
+            return len(rows), f"read {len(rows)} GitHub repositor(ies) through the public API"
+        out[("agent_reach_research", "github")] = github_check
+    if contact and SV.agent_reach_allowed(settings, "web", "general_research")[0]:
+        def web_check():
+            from . import polite
+            c = web_client or polite.PoliteClient(settings, contact=contact, now_fn=lambda: now)
+            got = c.get(environ.get("WEB_CHECK_URL", "https://example.com/"))
+            if not getattr(got, "body", b""):
+                raise K.Failure(K.UPSTREAM_BROKEN, "the page came back empty")
+            return 1, f"read a public page through the shared page reader ({len(got.body)} bytes)"
+        out[("agent_reach_research", "web")] = web_check
+    return out
+
+
+def agent_reach_missing(settings, contact, environ=None, cli=None):
+    """{('agent_reach_research', channel): the true reason it cannot be proved here}, for the channels agent_reach_checks leaves out."""
+    import os
+
+    from .. import agent_reach_catalog as CAT
+    from .. import agent_reach_instagram as AR
+    from .. import services as SV
+    environ = environ if environ is not None else os.environ
+    out = {}
+    for channel in AGENT_REACH_CHANNELS:
+        allowed, why = SV.agent_reach_allowed(settings, channel, CAT.purpose_for(channel) if channel != "web" else "general_research")
+        key = ("agent_reach_research", channel)
+        if not allowed:
+            out[key] = f"switched off: {why}"
+        elif channel == "web" and not contact:
+            out[key] = "no contact address: set OBSERVATORY_CONTACT (the polite reader puts it in the request)"
+        elif channel in OPENCLI_CHANNELS:
+            site = OPENCLI_CHANNELS[channel][1]
+            if AR.hosted_runner(environ):
+                out[key] = f"cannot run on a GitHub-hosted runner: it needs OpenCLI and a browser logged in to {site}, which must stay on a machine you control"
+            else:
+                client = cli(channel) if cli else AR.OpenCLI(environ.get("OPENCLI_BIN", "opencli"), site=channel, environ=environ)
+                if not client.available():
+                    out[key] = f"cannot run: OpenCLI is not installed on this machine (it needs a browser logged in to {site}, on a machine you control)"
+    return out
 
 
 def reddit_checks(settings, contact, *, environ=None, http=None, cli=None):
