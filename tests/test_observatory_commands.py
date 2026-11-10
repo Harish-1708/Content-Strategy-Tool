@@ -1699,7 +1699,7 @@ def test_every_external_free_provider_has_its_own_owner_switch_that_removes_only
     assert "github" in router.clients and not [n for n in notes if "switched off by the owner" in n]
     settings["services"]["ai_gateway"]["channels"]["github"] = False
     router, *_rest, notes, finish = SVC.ai_stack(env.store, ledger, {"GITHUB_TOKEN": "tok"}, settings=settings, **kw)
-    assert "github" not in router.clients and any("services.ai_gateway.channels.github" in n for n in notes)
+    assert "github" not in router.clients and any(n.startswith("SKIPPED: github: switched off by the owner") and "services.ai_gateway.channels.github" in n for n in notes)
     settings["services"]["ai_gateway"]["channels"]["github"] = True
     router, *_rest, notes, finish = SVC.ai_stack(env.store, ledger, {"GITHUB_TOKEN": "tok"}, settings=settings, **kw)
     assert "github" in router.clients                                                                  # turning it back on restores it
