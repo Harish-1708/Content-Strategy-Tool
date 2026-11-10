@@ -1030,6 +1030,7 @@ def _acceptance_context(args, store, registry, now):
             ctx.missing[(source, "browser")] = collectors_mod.missing_access_message(browser_cfg["sites"][site])
         if apify is None:
             ctx.missing[(source, "apify")] = "no key: set APIFY_TOKEN"
+    ctx.missing.update(providers_mod.agent_reach_search_missing(os.environ, providers))               # an opted-in Agent-Reach search that cannot run here is skipped with its true reason
     from . import agent_reach_instagram as ar_probe
     if ar_probe.hosted_runner():
         ctx.missing[("instagram", "agent_reach")] = "cannot run on a GitHub-hosted runner: it needs a browser logged in to Instagram, which must stay on a machine you control"
