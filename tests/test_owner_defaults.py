@@ -3,7 +3,7 @@ import pytest
 
 from contentintel import services as SV
 
-SWITCHES = [c for c in SV.CONTROLS if c["kind"] == "bool" and c["key"].startswith("services.") and ".defaults." not in c["key"]]       # permissions; the .defaults. entries are per-request tuning, below
+SWITCHES = [c for c in SV.CONTROLS if c["kind"] == "bool" and c["key"].startswith("services.") and ".defaults." not in c["key"] and not c["key"].startswith(("services.guards.", "services.connection_secrets.", "services.connection_routes.", "services.connection_versions."))]       # permissions; the .defaults. entries are per-request tuning, below
 
 
 def test_the_shipped_observatory_yaml_agrees_with_every_default_in_the_code():
@@ -14,13 +14,14 @@ def test_the_shipped_observatory_yaml_agrees_with_every_default_in_the_code():
 
 
 def test_every_on_off_control_in_the_registry_is_on_by_default_and_every_route_defaults_to_the_most_capable_choice():
-    off = [c["key"] for c in SV.CONTROLS if c["kind"] == "bool" and c["default"] is not True and ".defaults." not in c["key"]]
+    off = [c["key"] for c in SV.CONTROLS if c["kind"] == "bool" and c["default"] is not True and ".defaults." not in c["key"] and not c["key"].startswith("services.guards.")]      # guards are the one family that starts OFF: see tests/test_guards.py
     assert off == [] and len(SWITCHES) > 70
     assert {c["key"] for c in SV.CONTROLS if c["key"].startswith("access_controls.")} == {f"access_controls.{k}" for k in ("custom_identity", "proxy", "session", "browser", "account_cookies", "evasion")}
     tuning = [c for c in SV.CONTROLS if ".defaults." in c["key"]]
     assert tuning and all(c["default"] is True for c in tuning if c["kind"] == "bool") and all(c["default"] in (0, "") for c in tuning if c["kind"] != "bool")          # every on/off request option is ON, including solve_challenges; the numbers and texts are unset
     routes = {c["key"]: c["default"] for c in SV.CONTROLS if c["kind"] == "choice" and c["key"].startswith("services.")}
-    assert routes and all(v == ("gateway_first" if ".ai_gateway." in k else "auto") for k, v in routes.items())
+    expected = lambda k: "gateway_first" if ".ai_gateway." in k else "external_first" if ".connection_routes." in k else "latest" if ".connection_versions." in k else "auto"      # noqa: E731
+    assert routes and all(v == expected(k) for k, v in routes.items())
     s = SV.load_settings("observatory.yaml", "no-such-data-dir")["services"]
     assert s["scrapling"]["enabled"] and s["agent_reach"]["enabled"] and s["search"]["enabled"] and s["ai_gateway"]["enabled"] and s["page_readers"]["enabled"]
     assert all(s["agent_reach"]["channels"].values()) and all(s["search"]["channels"].values()) and s["search"]["channels"]["serper_dev"]       # Google search (Serper) included
