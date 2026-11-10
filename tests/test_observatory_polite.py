@@ -333,3 +333,48 @@ def test_text_and_json_decode_by_the_declared_charset_with_a_bom_tolerated():
     assert f.text() == "café"
     j = P.Fetched("u", "u", 200, {}, b"\xef\xbb\xbf" + b'{"a": 1}')
     assert j.json() == {"a": 1}
+
+
+# ---- guards: nothing blocks unless the owner turned the guard ON ---------------------------------------------------------------------------------
+
+def _guards(**on):
+    from contentintel import guards as G
+    G.configure({g: on.get(g, False) for g in G.GUARDS})
+
+
+def test_with_the_robots_guard_off_a_disallowed_page_is_fetched_and_robots_txt_is_never_asked_for():
+    web = Web({SHOP + "/cart": reply(200, "cart")}, robots=OPEN)
+    _guards()
+    assert client(web).get(SHOP + "/cart").status == 200 and web.log == [SHOP + "/cart"]
+    web = Web({SHOP + "/cart": reply(200, "cart")}, robots=OPEN)
+    _guards(robots_txt=True)
+    fails(web, SHOP + "/cart", K.PLATFORM_BLOCKED)
+
+
+def test_with_the_private_address_guard_off_any_address_is_fetched_and_with_it_on_it_is_refused():
+    web = Web({SHOP + "/a": reply(200, "ok")}, robots=OPEN)
+    _guards()
+    assert client(web, resolver=PRIVATE).get(SHOP + "/a").status == 200
+    _guards(private_address_block=True)
+    fails(Web({SHOP + "/a": reply(200, "ok")}, robots=OPEN), SHOP + "/a", K.BAD_INPUT, resolver=PRIVATE)
+
+
+def test_with_the_rest_guard_off_a_refusing_site_is_tried_a_few_times_then_marked_failed_with_no_rest_and_the_run_moves_on(tmp_path):
+    web = Web({SHOP + "/a": reply(429, "slow down"), SHOP + "/b": reply(200, "ok")}, robots=OPEN)
+    _guards()
+    led = PauseLedger(tmp_path)
+    failure, c = fails(web, SHOP + "/a", K.RATE_LIMITED, ledger=led)
+    assert web.log.count(SHOP + "/a") == 3 and "still refused after 3 attempts" in str(failure) and "moved on" in str(failure)
+    assert led.paused("shop.example", NOW) is None and c.get(SHOP + "/b").status == 200                 # nothing rests, and the next page is read
+    cfg = settings(retry__attempts=5)
+    web = Web({SHOP + "/a": reply(403, "no")}, robots=OPEN)
+    fails(web, SHOP + "/a", K.PLATFORM_BLOCKED, cfg=cfg)
+    assert web.log.count(SHOP + "/a") == 5                                                                 # the owner's own number of tries
+
+
+def test_with_the_rest_guard_on_a_refusal_is_not_retried_and_the_site_rests(tmp_path):
+    web = Web({SHOP + "/a": reply(429, "slow down")}, robots=OPEN)
+    _guards(rest_after_refusal=True)
+    led = PauseLedger(tmp_path)
+    fails(web, SHOP + "/a", K.RATE_LIMITED, ledger=led)
+    assert web.log.count(SHOP + "/a") == 1 and led.paused("shop.example", NOW)
