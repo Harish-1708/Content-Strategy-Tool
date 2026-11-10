@@ -22,6 +22,7 @@ from urllib.parse import parse_qs, quote, quote_plus, unquote, urlsplit
 
 import yaml
 
+from . import guards
 from . import benchmarks as bench
 from . import contract
 from . import deepcheck
@@ -798,8 +799,10 @@ def check_warning(browser, site, site_cfg):
 
 
 def active_cooldowns(data, now):
-    """site -> entry for the accounts still resting at `now`."""
+    """site -> entry for the accounts still resting at `now` (none unless the owner turned the rest guard ON)."""
     out = {}
+    if not guards.on("rest_after_refusal"):
+        return out
     for site, entry in (data if isinstance(data, dict) else {}).items():
         try:
             if isinstance(entry, dict) and _parse(entry["until"]) > _parse(now):
@@ -1533,7 +1536,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
         if not isinstance(exc, AccountWarning):
             return ""
         days = settings.cooldown_days.get(site, 0)
-        if days <= 0 or dry_run:
+        if days <= 0 or dry_run or not guards.on("rest_after_refusal"):
             return " It will not be used again in this run."
         entry = {"until": rest_until(now, days), "at": now, "reason": exc.reason[:200]}
         cooldowns[site] = entry
