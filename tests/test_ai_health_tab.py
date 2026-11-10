@@ -37,7 +37,7 @@ def test_each_enabled_provider_has_a_row_with_free_quota_used_failures_and_rest(
     assert rows["mistral"]["status"] == "resting" and rows["mistral"]["resting_until"] == "2026-11-03T13:00:00Z" and "429 daily limit" in rows["mistral"]["note"]
     gh = rows["github"]
     assert gh["requests_today"] == 0 and gh["requests_this_month"] == 1 and "called directly" in gh["note"] and gh["terms"] == "verified_secondary"
-    assert rows["google"]["data_classes"] == "public, internal" and rows["groq"]["approved_models"] == 3
+    assert rows["google"]["data_classes"] == "public, internal" and rows["groq"]["approved_models"] == 2
 
 
 def test_claude_shows_its_spend_against_both_caps(tmp_path):
