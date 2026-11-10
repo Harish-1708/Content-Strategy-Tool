@@ -177,7 +177,7 @@ def test_plan_explains_every_lane_makes_no_call_and_writes_nothing(ai):
     assert code == 0 and "no call is made" in out
     for lane in SHIPPED_LANES:
         assert lane in out
-    assert "groq / llama-3.3-70b-versatile: disabled (a person has not approved it)" in out and "nothing can run: the task would be deferred" in out
+    assert "groq / openai/gpt-oss-120b: disabled (a person has not approved it)" in out and "nothing can run: the task would be deferred" in out
     assert not (ai.tmp / "data").exists()
 
 
@@ -240,7 +240,7 @@ def test_a_mock_run_never_touches_the_real_spending_ledger_or_health_records(ai)
 def test_check_in_mock_mode_says_it_proves_nothing_about_providers(ai):
     code, out = ai("check")
     assert code == 0 and "AI check, MOCK" in out and "scripted stand-in" in out and "NOTE: a mock pass is not proof" in out and "LIVE" not in out.replace("--live", "")
-    assert "MOCK  ok        claude/claude-sonnet-5-5" in out and "skipped   groq/llama-3.3-70b-versatile: disabled" in out
+    assert "MOCK  ok        claude/claude-sonnet-5-5" in out and "skipped   groq/openai/gpt-oss-120b: disabled" in out
 
 
 def test_eval_in_mock_mode_is_labelled_as_testing_the_harness(ai):
@@ -451,11 +451,47 @@ def test_the_shipped_providers_command_shows_the_rolled_out_providers_with_their
 
 def test_with_the_real_files_a_provider_without_a_key_is_waiting_not_used_and_restricted_data_still_reaches_only_claude(ai, monkeypatch):
     code, out = ai("plan", "--data-class", "internal", providers=ROOT / "ai_providers.yaml")
-    assert code == 0 and "groq / llama-3.3-70b-versatile" in out and "ready   groq" not in out        # enabled, but no GROQ_API_KEY here, so never ready
+    assert code == 0 and "groq / openai/gpt-oss-120b" in out and "ready   groq" not in out        # enabled, but no GROQ_API_KEY here, so never ready
     code, out = ai("plan", "--data-class", "restricted", providers=ROOT / "ai_providers.yaml")
     assert "groq" not in out.split("strategic_reasoning")[1].split("content_ideation")[0]
     monkeypatch.setenv("GROQ_API_KEY", "gsk_" + "a" * 40)
     code, out = ai("plan", "--data-class", "internal", providers=ROOT / "ai_providers.yaml")
-    assert "ready   groq / llama-3.3-70b-versatile" in out
+    assert "ready   groq / openai/gpt-oss-120b" in out
     code, out = ai("plan", "--data-class", "restricted", providers=ROOT / "ai_providers.yaml")
     assert "ready   groq" not in out
+
+
+# ---- a provider with no credential on purpose is a skip, not a failure -----------------------------------------------------------------------------
+
+def _live_with_skips(monkeypatch, notes_to_add):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-fake")
+    FakeAnthropic.answers = [C.Completion(text="OK", tokens_in=20, tokens_out=2, latency_ms=120, model="claude-haiku-5-5")]
+    monkeypatch.setattr(CM.cl, "AnthropicClient", FakeAnthropic)
+    real = CM.live_clients
+
+    def live(registry, environ, gateway_dir, workdir, notes):
+        clients, side = real(registry, environ, gateway_dir, workdir, notes)
+        notes.extend(notes_to_add)
+        return clients, side
+    monkeypatch.setattr(CM, "live_clients", live)
+
+
+SKIP_MISTRAL = "SKIPPED: mistral: no credential in the environment (MISTRAL_API_KEY), so it is not tried; add the secret or switch the provider off to remove this line"
+
+
+def test_a_skipped_provider_never_turns_a_run_red_and_is_only_mentioned_in_a_run_that_includes_it(ai, monkeypatch):
+    _live_with_skips(monkeypatch, [SKIP_MISTRAL])
+    code, out = ai("check", "--live", "--only", "claude")
+    assert code == 0 and "mistral" not in out and "0 application problem(s)" in out                         # a run of another provider is not cluttered, and stays green
+    FakeAnthropic.answers = [C.Completion(text="OK", tokens_in=20, tokens_out=2, latency_ms=120, model="claude-haiku-5-5")]
+    code, out = ai("check", "--live")
+    assert code == 0 and "SKIPPED: mistral: no credential" in out and "0 application problem(s)" in out                    # the whole-catalogue run says it, and it is still not a problem
+    FakeAnthropic.answers = [C.Completion(text="OK", tokens_in=20, tokens_out=2, latency_ms=120, model="claude-haiku-5-5")]
+    code, out = ai("check", "--live", "--only", "mistral")
+    assert "SKIPPED: mistral: no credential" in out and "0 application problem(s)" in out
+
+
+def test_a_real_application_problem_still_turns_the_run_red(ai, monkeypatch):
+    _live_with_skips(monkeypatch, ["APPLICATION: the gateway is not built at gateway-src"])
+    code, out = ai("check", "--live", "--only", "claude")
+    assert code == 1 and "1 application problem(s)" in out
