@@ -2,16 +2,16 @@
  "routes": {
   "agent_reach_research|youtube": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "",
     "items": 2,
     "passed": true,
     "route_hash": "36e19a705283",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 1,
+   "consecutive_successes": 2,
    "history": [
     {
      "at": "2026-11-10T07:30:10Z",
@@ -19,10 +19,17 @@
      "items": 2,
      "ms": 1015,
      "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 2,
+     "ms": 1317,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-10T07:30:10Z",
+   "last_success": "2026-11-10T08:40:20Z",
    "pause": null,
    "route": "youtube",
    "source": "agent_reach_research",
@@ -30,16 +37,16 @@
   },
   "claude|api": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "",
     "items": 1,
     "passed": true,
     "route_hash": "b44667ef1e3b",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 3,
+   "consecutive_successes": 4,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -61,27 +68,174 @@
      "items": 1,
      "ms": 1097,
      "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 1,
+     "ms": 1086,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-10T07:30:10Z",
+   "last_success": "2026-11-10T08:40:20Z",
    "pause": null,
    "route": "api",
    "source": "claude",
    "state": "healthy"
   },
-  "deep_research|browser": {
+  "competitor_pages|feed": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
-    "code": "NEED_LOGIN",
+    "at": "2026-11-10T08:40:20Z",
+    "code": "NOT_FOUND",
     "items": 0,
     "passed": false,
-    "route_hash": "d1811431fafc",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "route_hash": "68389e2ec994",
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
-   "consecutive_failures": 2,
+   "consecutive_failures": 0,
    "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 10357,
+     "ok": null
+    }
+   ],
+   "last_error": null,
+   "last_success": "",
+   "pause": null,
+   "route": "feed",
+   "source": "competitor_pages",
+   "state": "healthy"
+  },
+  "competitor_pages|reader": {
+   "acceptance": {
+    "at": "2026-11-10T08:40:20Z",
+    "code": "",
+    "items": 1,
+    "passed": true,
+    "route_hash": "fe9963ca8115",
+    "run": "04f6a550",
+    "version": "30419462889f"
+   },
+   "consecutive_failures": 0,
+   "consecutive_successes": 1,
+   "history": [
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 1,
+     "ms": 15089,
+     "ok": true
+    }
+   ],
+   "last_error": null,
+   "last_success": "2026-11-10T08:40:20Z",
+   "pause": null,
+   "route": "reader",
+   "source": "competitor_pages",
+   "state": "healthy"
+  },
+  "competitor_pages|static_fetch": {
+   "acceptance": {
+    "at": "2026-11-10T08:40:20Z",
+    "code": "",
+    "items": 1,
+    "passed": true,
+    "route_hash": "6296f0307457",
+    "run": "04f6a550",
+    "version": "30419462889f"
+   },
+   "consecutive_failures": 0,
+   "consecutive_successes": 1,
+   "history": [
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 1,
+     "ms": 5358,
+     "ok": true
+    }
+   ],
+   "last_error": null,
+   "last_success": "2026-11-10T08:40:20Z",
+   "pause": null,
+   "route": "static_fetch",
+   "source": "competitor_pages",
+   "state": "healthy"
+  },
+  "competitor_stores|public_json": {
+   "acceptance": {
+    "at": "2026-11-10T08:40:20Z",
+    "code": "",
+    "items": 7,
+    "passed": true,
+    "route_hash": "5ce2837fdc77",
+    "run": "04f6a550",
+    "version": "30419462889f"
+   },
+   "consecutive_failures": 0,
+   "consecutive_successes": 1,
+   "history": [
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 7,
+     "ms": 20630,
+     "ok": true
+    }
+   ],
+   "last_error": null,
+   "last_success": "2026-11-10T08:40:20Z",
+   "pause": null,
+   "route": "public_json",
+   "source": "competitor_stores",
+   "state": "healthy"
+  },
+  "competitor_stores|sitemap": {
+   "acceptance": {
+    "at": "2026-11-10T08:40:20Z",
+    "code": "",
+    "items": 1,
+    "passed": true,
+    "route_hash": "39f3e6285060",
+    "run": "04f6a550",
+    "version": "30419462889f"
+   },
+   "consecutive_failures": 0,
+   "consecutive_successes": 1,
+   "history": [
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 1,
+     "ms": 15553,
+     "ok": true
+    }
+   ],
+   "last_error": null,
+   "last_success": "2026-11-10T08:40:20Z",
+   "pause": null,
+   "route": "sitemap",
+   "source": "competitor_stores",
+   "state": "healthy"
+  },
+  "deep_research|browser": {
+   "acceptance": {
+    "at": "2026-11-10T08:40:20Z",
+    "code": "",
+    "items": 1,
+    "passed": true,
+    "route_hash": "d1811431fafc",
+    "run": "04f6a550",
+    "version": "30419462889f"
+   },
+   "consecutive_failures": 0,
+   "consecutive_successes": 1,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -110,6 +264,13 @@
      "items": 0,
      "ms": 12421,
      "ok": false
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 1,
+     "ms": 16642,
+     "ok": true
     }
    ],
    "last_error": {
@@ -117,28 +278,24 @@
     "code": "NEED_LOGIN",
     "message": "gemini: not logged in (Gemini shows its Sign in button, so the cookies were not accepted); export fresh cookies into GEMINI_COOKIES. Cookie facts (no values shown): 24 cookies loaded (.google.com x19, .gemini.google.com x5); 2 already expired."
    },
-   "last_success": "2026-11-03T09:11:44Z",
-   "pause": {
-    "code": "NEED_LOGIN",
-    "message": "gemini: not logged in (Gemini shows its Sign in button, so the cookies were not accepted); export fresh cookies into GEMINI_COOKIES. Cookie facts (no values shown): 24 cookies loaded (.google.com x19, .gemini.google.com x5); 2 already expired.",
-    "until": "2026-11-06T02:46:30Z"
-   },
+   "last_success": "2026-11-10T08:40:20Z",
+   "pause": null,
    "route": "browser",
    "source": "deep_research",
    "state": "healthy"
   },
   "instagram|apify": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "",
     "items": 3,
     "passed": true,
     "route_hash": "a351da3e38b4",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 3,
+   "consecutive_successes": 4,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -167,6 +324,13 @@
      "items": 3,
      "ms": 5850,
      "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 3,
+     "ms": 5621,
+     "ok": true
     }
    ],
    "last_error": {
@@ -174,7 +338,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "Apify: HTTP 201: [{\"inputUrl\": \"https://www.instagram.com/explore/tags/overalls\", \"id\": \"4022071767620158918\", \"type\": \"Sidecar\", \"shortCode\": \"DfRRPZ6IIXG\", \"caption\": \"\\u30a2\\u30d5\\u30ea\\u30ab\\u5e03\\u3067\\u30b5\\u30e"
    },
-   "last_success": "2026-11-10T07:30:10Z",
+   "last_success": "2026-11-10T08:40:20Z",
    "pause": null,
    "route": "apify",
    "source": "instagram",
@@ -182,16 +346,16 @@
   },
   "instagram|browser": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "",
     "items": 3,
     "passed": true,
     "route_hash": "ced8174ce69c",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 6,
+   "consecutive_successes": 7,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -241,6 +405,13 @@
      "items": 3,
      "ms": 37441,
      "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 3,
+     "ms": 43875,
+     "ok": true
     }
    ],
    "last_error": {
@@ -248,7 +419,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "could not find the username box on the login page (the page may have changed: update login_steps in browser.yaml)"
    },
-   "last_success": "2026-11-10T07:30:10Z",
+   "last_success": "2026-11-10T08:40:20Z",
    "pause": null,
    "route": "browser",
    "source": "instagram",
@@ -256,16 +427,16 @@
   },
   "meta_ads|apify": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "",
     "items": 3,
     "passed": true,
     "route_hash": "dd95d9a5a05e",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 2,
+   "consecutive_successes": 3,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -287,6 +458,13 @@
      "items": 3,
      "ms": 10266,
      "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 3,
+     "ms": 22777,
+     "ok": true
     }
    ],
    "last_error": {
@@ -294,7 +472,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "Apify: HTTP 201: [{\"inputUrl\": \"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&q=overalls&search_type=keyword_unordered&media_type=all\", \"pageInfo\": {\"adLibrarySystemStatus\": {\"syste"
    },
-   "last_success": "2026-11-10T07:30:10Z",
+   "last_success": "2026-11-10T08:40:20Z",
    "pause": null,
    "route": "apify",
    "source": "meta_ads",
@@ -302,16 +480,16 @@
   },
   "meta_ads|browser": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "",
     "items": 3,
     "passed": true,
     "route_hash": "c689f4b7d3ac",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 13,
+   "consecutive_successes": 14,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -403,10 +581,17 @@
      "items": 3,
      "ms": 13918,
      "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 3,
+     "ms": 16460,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-10T07:30:10Z",
+   "last_success": "2026-11-10T08:40:20Z",
    "pause": null,
    "route": "browser",
    "source": "meta_ads",
@@ -414,16 +599,16 @@
   },
   "shopify_catalogue|public_json": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "",
     "items": 7,
     "passed": true,
     "route_hash": "eab194e8386b",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 54,
+   "consecutive_successes": 55,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -802,10 +987,17 @@
      "items": 7,
      "ms": 186,
      "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 7,
+     "ms": 221,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-10T07:30:10Z",
+   "last_success": "2026-11-10T08:40:20Z",
    "pause": null,
    "route": "public_json",
    "source": "shopify_catalogue",
@@ -845,16 +1037,16 @@
   },
   "tiktok|browser": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "",
     "items": 3,
     "passed": true,
     "route_hash": "2df7590dc4f6",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 1,
+   "consecutive_successes": 2,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -904,6 +1096,13 @@
      "items": 3,
      "ms": 52463,
      "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 3,
+     "ms": 55268,
+     "ok": true
     }
    ],
    "last_error": {
@@ -911,7 +1110,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "login ok; 0 items (0 from the site's data, 0 only from page links); nothing could be read (run Recon to see what the site sends)"
    },
-   "last_success": "2026-11-10T07:30:10Z",
+   "last_success": "2026-11-10T08:40:20Z",
    "pause": null,
    "route": "browser",
    "source": "tiktok",
@@ -1090,15 +1289,15 @@
   },
   "web_search|agent_reach_reddit": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "NEED_SETUP",
     "items": 0,
     "passed": false,
     "route_hash": "df92206bbe28",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
-   "consecutive_failures": 2,
+   "consecutive_failures": 4,
    "consecutive_successes": 0,
    "history": [
     {
@@ -1114,10 +1313,24 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "NEED_SETUP",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "NEED_SETUP",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "NEED_SETUP",
     "message": "Reddit search (Agent-Reach): NEED_SETUP: opencli is not installed on this machine. This route needs the OpenCLI program and a browser logged in to Instagram, which a hosted runner does not have"
    },
@@ -1125,20 +1338,20 @@
    "pause": null,
    "route": "agent_reach_reddit",
    "source": "web_search",
-   "state": "healthy"
+   "state": "degraded"
   },
   "web_search|agent_reach_youtube": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "",
     "items": 3,
     "passed": true,
     "route_hash": "1f0d94a2e072",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 2,
+   "consecutive_successes": 4,
    "history": [
     {
      "at": "2026-11-10T07:30:10Z",
@@ -1153,10 +1366,24 @@
      "items": 3,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 3,
+     "ms": 2426,
+     "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 3,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-10T07:30:10Z",
+   "last_success": "2026-11-10T08:40:20Z",
    "pause": null,
    "route": "agent_reach_youtube",
    "source": "web_search",
@@ -1164,16 +1391,16 @@
   },
   "web_search|exa": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "",
     "items": 3,
     "passed": true,
     "route_hash": "87f0d0d6e3b8",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 2,
+   "consecutive_successes": 4,
    "history": [
     {
      "at": "2026-11-10T07:30:10Z",
@@ -1188,10 +1415,24 @@
      "items": 3,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 3,
+     "ms": 5039,
+     "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 3,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-10T07:30:10Z",
+   "last_success": "2026-11-10T08:40:20Z",
    "pause": null,
    "route": "exa",
    "source": "web_search",
@@ -1199,16 +1440,16 @@
   },
   "web_search|exa_mcp": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "",
     "items": 3,
     "passed": true,
     "route_hash": "1751d5fc0e8b",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 4,
+   "consecutive_successes": 6,
    "history": [
     {
      "at": "2026-11-05T14:46:30Z",
@@ -1237,10 +1478,24 @@
      "items": 3,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 3,
+     "ms": 720,
+     "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 3,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-10T07:30:10Z",
+   "last_success": "2026-11-10T08:40:20Z",
    "pause": null,
    "route": "exa_mcp",
    "source": "web_search",
@@ -1248,16 +1503,16 @@
   },
   "web_search|serpapi": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "",
     "items": 10,
     "passed": true,
     "route_hash": "a96d9854bcaf",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 6,
+   "consecutive_successes": 8,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -1300,10 +1555,24 @@
      "items": 10,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 8,
+     "ms": 1446,
+     "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 10,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-10T07:30:10Z",
+   "last_success": "2026-11-10T08:40:20Z",
    "pause": null,
    "route": "serpapi",
    "source": "web_search",
@@ -1311,16 +1580,16 @@
   },
   "web_search|serper_dev": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "",
     "items": 10,
     "passed": true,
     "route_hash": "0b3b9639bac5",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 15,
+   "consecutive_successes": 17,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -1426,10 +1695,24 @@
      "items": 10,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 3,
+     "ms": 3253,
+     "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 10,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-10T07:30:10Z",
+   "last_success": "2026-11-10T08:40:20Z",
    "pause": null,
    "route": "serper_dev",
    "source": "web_search",
@@ -1437,16 +1720,16 @@
   },
   "web_search|tavily": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "",
-    "items": 3,
+    "items": 2,
     "passed": true,
     "route_hash": "620cdae9419e",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 6,
+   "consecutive_successes": 8,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -1489,10 +1772,24 @@
      "items": 3,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 3,
+     "ms": 3735,
+     "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 2,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-10T07:30:10Z",
+   "last_success": "2026-11-10T08:40:20Z",
    "pause": null,
    "route": "tavily",
    "source": "web_search",
@@ -1500,16 +1797,16 @@
   },
   "youtube_public|data_api": {
    "acceptance": {
-    "at": "2026-11-10T07:30:10Z",
+    "at": "2026-11-10T08:40:20Z",
     "code": "",
     "items": 1,
     "passed": true,
     "route_hash": "fb56758a33f6",
-    "run": "0788d5ae",
-    "version": "21c8002626cb"
+    "run": "04f6a550",
+    "version": "30419462889f"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 3,
+   "consecutive_successes": 4,
    "history": [
     {
      "at": "2026-11-03T09:11:44Z",
@@ -1531,10 +1828,17 @@
      "items": 1,
      "ms": 85,
      "ok": true
+    },
+    {
+     "at": "2026-11-10T08:40:20Z",
+     "code": "",
+     "items": 1,
+     "ms": 96,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-10T07:30:10Z",
+   "last_success": "2026-11-10T08:40:20Z",
    "pause": null,
    "route": "data_api",
    "source": "youtube_public",
