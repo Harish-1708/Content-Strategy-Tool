@@ -101,7 +101,7 @@ def live_clients(registry, environ, gateway_dir, workdir, notes):
             if token:
                 clients[p.id] = cl.DirectClient(p.direct["base_url"], token)
             else:
-                notes.append("APPLICATION: " + p.id + ": enabled, but no credential in the environment: " + ", ".join(p.credential_env))
+                notes.append("SKIPPED: " + p.id + ": no credential in the environment (" + ", ".join(p.credential_env) + "), so it is not tried; add the secret or switch the provider off to remove this line")
     if "ANTHROPIC_API_KEY" in environ and environ["ANTHROPIC_API_KEY"].strip() and registry.providers["claude"].enabled:
         clients["claude"] = cl.AnthropicClient(environ["ANTHROPIC_API_KEY"].strip())
     elif registry.providers["claude"].enabled:
@@ -114,13 +114,16 @@ def live_clients(registry, environ, gateway_dir, workdir, notes):
         else:
             lock = gw.load_lock()
             config, report = gw.build_config(registry, environ, gw.baseline_from_inventory())
-            notes.extend("APPLICATION: " + s["provider"] + ": " + s["reason"] for s in report["skipped"])
+            notes.extend("SKIPPED: " + s["provider"] + ": no credential in the environment (" + s["reason"].split(": ", 1)[-1] + "), so it is not tried; add the secret or switch the provider off to remove this line" for s in report["skipped"])
             if report["keys"]:
                 port = gw.free_port()
                 side = gw.Sidecar(gateway_dir, lock)
                 side.start(gw.gateway_env(lock, environ, port=port, db_path=Path(workdir) / "gateway.db", config=config), port, Path(workdir) / "gateway.log")
                 side.wait_ready()
                 client = cl.GatewayClient(side.base_url, side.bootstrap(environ["FREEAPI_ADMIN_PASSWORD"]))
+                isolated, why = side.isolate_models(environ["FREEAPI_ADMIN_PASSWORD"])
+                if not isolated:
+                    notes.append("NOTE: could not make each provider's model its own group in the gateway (" + why + "); a call that falls back to another provider is refused, not accepted")
                 for p in gateway_providers:
                     if p.gateway_platform in report["keys"] or not p.credential_env:
                         clients[p.id] = client
@@ -240,6 +243,9 @@ def _check(args, registry, lanes, router, usage, review, health, store, now, mod
     only = {x.strip() for x in args.only.split(",") if x.strip()}
     print(f"AI check, {mode.upper()} ({'a scripted stand-in answers: this proves our code only' if mode == 'mock' else 'real calls to real providers'}):")
     for n in notes:
+        skipped_for = n.split(":")[1].strip() if n.startswith("SKIPPED:") else ""
+        if skipped_for and only and skipped_for not in only:                  # a provider that is not being tried in this run does not clutter it
+            continue
         print("  " + n)
         app_fail += n.startswith("APPLICATION")
     targets = []
