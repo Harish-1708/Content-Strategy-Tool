@@ -444,6 +444,11 @@ U45 = [   # update 44, later: the Reddit search is skipped, not failed, where Op
 ]
 MUTATIONS.extend(U45)
 
+U46 = [   # update 45: the plan wording
+    ('plan-says-cannot-run-twice', 'contentintel/cli.py', '((p.skip if p.skip.startswith("cannot run") else f"cannot run: {p.skip}") if p.skip else "will run")', '(f"cannot run: {p.skip}" if p.skip else "will run")', 'the plan says cannot run twice'),
+]
+MUTATIONS.extend(U46)
+
 def run_tests(workdir):
     env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}
     patterns = os.environ.get("SABOTAGE_TESTS", "").split() or TESTS                # SABOTAGE_TESTS narrows the run to chosen test files, for a slow machine
