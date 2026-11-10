@@ -1,0 +1,7915 @@
+{
+ "candidates": [
+  {
+   "ai": null,
+   "decided_at": "2026-11-10T09:49:03Z",
+   "decided_by": "auto",
+   "domain": "madepants.com",
+   "domain_confidence": 0.7,
+   "domain_evidence": [
+    {
+     "detail": "a web search for \"Madepants official website\" found madepants.com",
+     "source": "search",
+     "weight": 0.6
+    },
+    {
+     "detail": "meta.json says it is a Shopify store",
+     "source": "store_check",
+     "weight": 0.25
+    }
+   ],
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "madepants",
+   "instagram_checked_at": "2026-11-10T09:49:03Z",
+   "instagram_confidence": 0.96,
+   "instagram_evidence": [
+    {
+     "detail": "madepants.com's own site links to this account",
+     "source": "homepage",
+     "weight": 0.9
+    },
+    {
+     "detail": "search result 1: Madepants Boutique (@madepants) \u2022 Instagram photos and videos",
+     "source": "search",
+     "weight": 0.6
+    }
+   ],
+   "key": "madepants",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Madepants",
+   "reasons": [
+    "2 of its items were judged relevant for this brand (average relevance 54)",
+    "it is one of the brand's benchmark names",
+    "an ad of theirs has run 1068 days (longevity is a proxy for what works, not a measurement)",
+    "9 variants of an ad were found",
+    "it shows up in several places: benchmarks, meta_ads"
+   ],
+   "score": 96,
+   "shopify": true,
+   "shopify_note": "meta.json says it is a Shopify store",
+   "signals": {
+    "ads": 40.0,
+    "benchmark": 1,
+    "kept_items": 2.0,
+    "max_days": 1068.0,
+    "max_variants": 9.0,
+    "posts": 0.0,
+    "relevance_sum": 108.0,
+    "removed_items": 8.0
+   },
+   "sources": [
+    "benchmarks",
+    "meta_ads"
+   ],
+   "status": "monitoring",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_at": "2026-11-10T09:49:03Z",
+   "decided_by": "auto",
+   "domain": "theoodie.com",
+   "domain_confidence": 0.7,
+   "domain_evidence": [
+    {
+     "detail": "a web search for \"The Oodie official website\" found theoodie.com",
+     "source": "search",
+     "weight": 0.6
+    },
+    {
+     "detail": "meta.json says it is a Shopify store",
+     "source": "store_check",
+     "weight": 0.25
+    }
+   ],
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "the_oodie",
+   "instagram_checked_at": "2026-11-10T09:49:03Z",
+   "instagram_confidence": 0.96,
+   "instagram_evidence": [
+    {
+     "detail": "theoodie.com's own site links to this account",
+     "source": "homepage",
+     "weight": 0.9
+    },
+    {
+     "detail": "search result 1: The Oodie\u2122 (@the_oodie) \u2022 Instagram photos and videos",
+     "source": "search",
+     "weight": 0.6
+    }
+   ],
+   "key": "theoodie",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "The Oodie",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 54)",
+    "it is one of the brand's benchmark names",
+    "an ad of theirs has run 135 days (longevity is a proxy for what works, not a measurement)",
+    "it shows up in several places: benchmarks, meta_ads"
+   ],
+   "score": 86,
+   "shopify": true,
+   "shopify_note": "meta.json says it is a Shopify store",
+   "signals": {
+    "ads": 33.0,
+    "benchmark": 1,
+    "kept_items": 1.0,
+    "max_days": 135.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "relevance_sum": 54.0,
+    "removed_items": 15.0
+   },
+   "sources": [
+    "benchmarks",
+    "meta_ads"
+   ],
+   "status": "monitoring",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "instagram_checked_at": "2026-11-10T09:49:03Z",
+   "instagram_confidence": 0.0,
+   "instagram_evidence": [],
+   "key": "instagramcom",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "instagram.com",
+   "reasons": [
+    "6 of its items were judged relevant for this brand (average relevance 64)",
+    "its wording overlaps the brand's market words (gift, shorts)"
+   ],
+   "score": 56,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "kept_items": 6.0,
+    "posts": 0.0,
+    "relevance_sum": 381.0,
+    "removed_items": 39.0
+   },
+   "sources": [
+    "web"
+   ],
+   "status": "candidate",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "instagram_checked_at": "2026-11-10T09:49:03Z",
+   "instagram_confidence": 0.6,
+   "instagram_evidence": [
+    {
+     "detail": "search result 1: TikTok (@tiktok) \u2022 Instagram photos and videos",
+     "source": "search",
+     "weight": 0.6
+    }
+   ],
+   "instagram_possible": {
+    "confidence": 0.6,
+    "evidence": [
+     {
+      "detail": "search result 1: TikTok (@tiktok) \u2022 Instagram photos and videos",
+      "source": "search",
+      "weight": 0.6
+     }
+    ],
+    "handle": "tiktok"
+   },
+   "key": "tiktokcom",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "tiktok.com",
+   "reasons": [
+    "3 of its items were judged relevant for this brand (average relevance 62)",
+    "its wording overlaps the brand's market words (card, gift, hat, shirt)"
+   ],
+   "score": 54,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "kept_items": 3.0,
+    "posts": 0.0,
+    "relevance_sum": 186.0,
+    "removed_items": 37.0
+   },
+   "sources": [
+    "web"
+   ],
+   "status": "candidate",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "emmafy.com",
+   "domain_confidence": 0.7,
+   "domain_evidence": [
+    {
+     "detail": "a web search for \"Emmafy official website\" found emmafy.com",
+     "source": "search",
+     "weight": 0.6
+    },
+    {
+     "detail": "meta.json says it is a Shopify store",
+     "source": "store_check",
+     "weight": 0.25
+    }
+   ],
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "instagram_checked_at": "2026-11-10T09:49:03Z",
+   "instagram_confidence": 0.0,
+   "instagram_evidence": [],
+   "key": "emmafy",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Emmafy",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 60)",
+    "an ad of theirs has run 49 days",
+    "3 variants of an ad were found"
+   ],
+   "score": 52,
+   "shopify": true,
+   "shopify_note": "meta.json says it is a Shopify store",
+   "signals": {
+    "ads": 9.0,
+    "kept_items": 1.0,
+    "max_days": 49.0,
+    "max_variants": 3.0,
+    "posts": 0.0,
+    "relevance_sum": 60.0,
+    "removed_items": 2.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "candidate",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "freethesheep.com",
+   "domain_confidence": 0.7,
+   "domain_evidence": [
+    {
+     "detail": "a web search for \"Free the Sheep official website\" found freethesheep.com",
+     "source": "search",
+     "weight": 0.6
+    },
+    {
+     "detail": "meta.json says it is a Shopify store",
+     "source": "store_check",
+     "weight": 0.25
+    }
+   ],
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "freethesheepco",
+   "instagram_checked_at": "2026-11-10T09:49:03Z",
+   "instagram_confidence": 0.96,
+   "instagram_evidence": [
+    {
+     "detail": "freethesheep.com's own site links to this account",
+     "source": "homepage",
+     "weight": 0.9
+    },
+    {
+     "detail": "search result 1: Free The Sheep Co. (@freethesheepco)",
+     "source": "search",
+     "weight": 0.6
+    }
+   ],
+   "key": "freethesheep",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Free the Sheep",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 59)",
+    "an ad of theirs has run 35 days",
+    "4 variants of an ad were found"
+   ],
+   "score": 52,
+   "shopify": true,
+   "shopify_note": "meta.json says it is a Shopify store",
+   "signals": {
+    "ads": 6.0,
+    "kept_items": 1.0,
+    "max_days": 35.0,
+    "max_variants": 4.0,
+    "posts": 0.0,
+    "relevance_sum": 59.0,
+    "removed_items": 2.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "candidate",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "instagram_checked_at": "2026-11-10T09:49:03Z",
+   "instagram_confidence": 0.6,
+   "instagram_evidence": [
+    {
+     "detail": "search result 1: kayarize.com \ud83d\udc47\ud83c\udffdShop our feed.",
+     "source": "search",
+     "weight": 0.6
+    }
+   ],
+   "instagram_possible": {
+    "confidence": 0.6,
+    "evidence": [
+     {
+      "detail": "search result 1: kayarize.com \ud83d\udc47\ud83c\udffdShop our feed.",
+      "source": "search",
+      "weight": 0.6
+     }
+    ],
+    "handle": "kayarize"
+   },
+   "key": "kayarize",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Kayarize",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 61)",
+    "an ad of theirs has run 275 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 52,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 1.0,
+    "max_days": 275.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "relevance_sum": 61.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "candidate",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "swoveralls.tenereteam.com",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "swoveralls_",
+   "instagram_checked_at": "2026-11-10T09:49:03Z",
+   "instagram_confidence": 0.94,
+   "instagram_evidence": [
+    {
+     "detail": "an Instagram post from this account was collected by the existing collector",
+     "source": "collector",
+     "weight": 0.85
+    },
+    {
+     "detail": "search result 1: SWOVERALLS (@swoveralls_) \u2022 Instagram photos and ...",
+     "source": "search",
+     "weight": 0.6
+    }
+   ],
+   "instagram_possible": {
+    "confidence": 0.94,
+    "evidence": [
+     {
+      "detail": "an Instagram post from this account was collected by the existing collector",
+      "source": "collector",
+      "weight": 0.85
+     },
+     {
+      "detail": "search result 1: SWOVERALLS (@swoveralls_) \u2022 Instagram photos and ...",
+      "source": "search",
+      "weight": 0.6
+     }
+    ],
+    "handle": "swoveralls_"
+   },
+   "key": "swoveralls",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Swoveralls",
+   "reasons": [
+    "its items were judged not relevant",
+    "it is one of the brand's benchmark names",
+    "an ad of theirs has run 129 days (longevity is a proxy for what works, not a measurement)",
+    "22 variants of an ad were found",
+    "it appears in a research search",
+    "it shows up in several places: benchmarks, instagram, meta_ads, tiktok, web_search",
+    "its wording overlaps the brand's market words (comfyalls, swoveralls)"
+   ],
+   "score": 51,
+   "shopify": false,
+   "shopify_note": "no public product data",
+   "signals": {
+    "ads": 71.0,
+    "benchmark": 1,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "max_days": 129.0,
+    "max_variants": 22.0,
+    "posts": 5.0,
+    "removed_items": 7.0,
+    "search_queries": 1
+   },
+   "sources": [
+    "benchmarks",
+    "instagram",
+    "meta_ads",
+    "tiktok",
+    "web_search"
+   ],
+   "status": "candidate",
+   "tiktok": "swoveralls"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "musthavefinds",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Must Have Finds",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 62)",
+    "an ad of theirs has run 53 days"
+   ],
+   "score": 47,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 1.0,
+    "max_days": 53.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "relevance_sum": 62.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "candidate",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "kortneyandkarlee",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Kortney and Karlee",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 52)",
+    "an ad of theirs has run 45 days"
+   ],
+   "score": 45,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 3.0,
+    "kept_items": 1.0,
+    "max_days": 45.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "relevance_sum": 52.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "candidate",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "cotopaxi.com",
+   "domain_confidence": 0.6,
+   "domain_evidence": [
+    {
+     "detail": "a web search for \"Cotopaxi official website\" found cotopaxi.com",
+     "source": "search",
+     "weight": 0.6
+    }
+   ],
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "cotopaxi",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Cotopaxi",
+   "reasons": [
+    "its items were judged not relevant",
+    "it is one of the brand's benchmark names",
+    "an ad of theirs has run 147 days (longevity is a proxy for what works, not a measurement)",
+    "3 variants of an ad were found",
+    "it shows up in several places: benchmarks, meta_ads"
+   ],
+   "score": 40,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 9.0,
+    "benchmark": 1,
+    "kept_items": 0.0,
+    "max_days": 147.0,
+    "max_variants": 3.0,
+    "posts": 0.0,
+    "removed_items": 9.0
+   },
+   "sources": [
+    "benchmarks",
+    "meta_ads"
+   ],
+   "status": "candidate",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "gymshark.com",
+   "domain_confidence": 0.7,
+   "domain_evidence": [
+    {
+     "detail": "a web search for \"Gymshark official website\" found gymshark.com",
+     "source": "search",
+     "weight": 0.6
+    },
+    {
+     "detail": "meta.json says it is a Shopify store",
+     "source": "store_check",
+     "weight": 0.25
+    }
+   ],
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "gymshark",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Gymshark",
+   "reasons": [
+    "its items were judged not relevant",
+    "it is one of the brand's benchmark names",
+    "an ad of theirs has run 126 days (longevity is a proxy for what works, not a measurement)",
+    "5 variants of an ad were found",
+    "it shows up in several places: benchmarks, meta_ads"
+   ],
+   "score": 40,
+   "shopify": true,
+   "shopify_note": "meta.json says it is a Shopify store",
+   "signals": {
+    "ads": 22.0,
+    "benchmark": 1,
+    "kept_items": 0.0,
+    "max_days": 126.0,
+    "max_variants": 5.0,
+    "posts": 0.0,
+    "removed_items": 11.0
+   },
+   "sources": [
+    "benchmarks",
+    "meta_ads"
+   ],
+   "status": "candidate",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "liquiddeath.com",
+   "domain_confidence": 0.7,
+   "domain_evidence": [
+    {
+     "detail": "a web search for \"Liquid Death official website\" found liquiddeath.com",
+     "source": "search",
+     "weight": 0.6
+    },
+    {
+     "detail": "meta.json says it is a Shopify store",
+     "source": "store_check",
+     "weight": 0.25
+    }
+   ],
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "liquiddeath",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Liquid Death",
+   "reasons": [
+    "its items were judged not relevant",
+    "it is one of the brand's benchmark names",
+    "an ad of theirs has run 181 days (longevity is a proxy for what works, not a measurement)",
+    "4 variants of an ad were found",
+    "it shows up in several places: benchmarks, meta_ads"
+   ],
+   "score": 40,
+   "shopify": true,
+   "shopify_note": "meta.json says it is a Shopify store",
+   "signals": {
+    "ads": 4.0,
+    "benchmark": 1,
+    "kept_items": 0.0,
+    "max_days": 181.0,
+    "max_variants": 4.0,
+    "posts": 0.0,
+    "removed_items": 4.0
+   },
+   "sources": [
+    "benchmarks",
+    "meta_ads"
+   ],
+   "status": "candidate",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "skims.com",
+   "domain_confidence": 0.6,
+   "domain_evidence": [
+    {
+     "detail": "a web search for \"SKIMS official website\" found skims.com",
+     "source": "search",
+     "weight": 0.6
+    }
+   ],
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "skims",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "SKIMS",
+   "reasons": [
+    "its items were judged not relevant",
+    "it is one of the brand's benchmark names",
+    "an ad of theirs has run 188 days (longevity is a proxy for what works, not a measurement)",
+    "3 variants of an ad were found",
+    "it shows up in several places: benchmarks, meta_ads"
+   ],
+   "score": 40,
+   "shopify": false,
+   "shopify_note": "no public product data",
+   "signals": {
+    "ads": 15.0,
+    "benchmark": 1,
+    "kept_items": 0.0,
+    "max_days": 188.0,
+    "max_variants": 3.0,
+    "posts": 0.0,
+    "removed_items": 8.0
+   },
+   "sources": [
+    "benchmarks",
+    "meta_ads"
+   ],
+   "status": "candidate",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "1821manmade",
+   "key": "1821manmade",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "1821manmade",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 52)",
+    "its wording overlaps the brand's market words (card, gift)"
+   ],
+   "score": 39,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 1.0,
+    "relevance_sum": 52.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "k.ityee",
+   "key": "kityee",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "k.ityee",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 72)"
+   ],
+   "score": 39,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 1.0,
+    "relevance_sum": 72.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "arshii.muse_07",
+   "key": "arshiimuse07",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "arshii.muse_07",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 61)"
+   ],
+   "score": 37,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 1.0,
+    "relevance_sum": 61.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "flipdaddie",
+   "key": "flipdaddie",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "flipdaddie",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 59)"
+   ],
+   "score": 37,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 2.0,
+    "relevance_sum": 59.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "gilletteindia",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Gillette India",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 59)"
+   ],
+   "score": 37,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 4.0,
+    "kept_items": 1.0,
+    "max_days": 21.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "relevance_sum": 59.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "kikalateefff",
+   "key": "kikalateefff",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "kikalateefff",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 58)"
+   ],
+   "score": 37,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 1.0,
+    "relevance_sum": 58.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "madymotherhood",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "mady.motherhood",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 59)"
+   ],
+   "score": 37,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 1.0,
+    "relevance_sum": 59.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "mady.motherhood"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "mizzenandmaincom",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "mizzenandmain.com",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 58)"
+   ],
+   "score": 37,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "kept_items": 1.0,
+    "posts": 0.0,
+    "relevance_sum": 58.0
+   },
+   "sources": [
+    "web"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "solevarelief",
+   "key": "solevarelief",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "solevarelief",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 61)"
+   ],
+   "score": 37,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 1.0,
+    "relevance_sum": 61.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "atelierbuba",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "atelier.buba",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 57)"
+   ],
+   "score": 36,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 1.0,
+    "relevance_sum": 57.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "atelier.buba"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "barringtonmireille",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "barringtonmireille",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 54)"
+   ],
+   "score": 36,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 1.0,
+    "relevance_sum": 54.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "barringtonmireille"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "cannguyen3326",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "cannguyen3326",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 54)"
+   ],
+   "score": 36,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 1.0,
+    "relevance_sum": 54.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "cannguyen3326"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "chloeapproved",
+   "key": "chloeapproved",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "chloeapproved",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 55)"
+   ],
+   "score": 36,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 1.0,
+    "relevance_sum": 55.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "cosyvera",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "cosyvera",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 53)"
+   ],
+   "score": 36,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 1.0,
+    "relevance_sum": 53.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "cosyvera"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "cutterbuckcom",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "cutterbuck.com",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 54)"
+   ],
+   "score": 36,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "kept_items": 1.0,
+    "posts": 0.0,
+    "relevance_sum": 54.0
+   },
+   "sources": [
+    "web"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "giftideaswithglory",
+   "key": "giftideaswithglory",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "giftideaswithglory",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 54)"
+   ],
+   "score": 36,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 2.0,
+    "relevance_sum": 54.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "husbandfinds",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "husbandfinds",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 55)"
+   ],
+   "score": 36,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 1.0,
+    "relevance_sum": 55.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "husbandfinds"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "marieloulou_official",
+   "key": "marieloulouofficial",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "marieloulou_official",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 53)"
+   ],
+   "score": 36,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 3.0,
+    "relevance_sum": 53.0,
+    "removed_items": 2.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "nescaf",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "NESCAF\u00c9",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 55)"
+   ],
+   "score": 36,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 1.0,
+    "max_days": 15.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "relevance_sum": 55.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "roamory",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "roamory",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 56)"
+   ],
+   "score": 36,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 1.0,
+    "relevance_sum": 56.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "roamory"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "siwusus",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "siwusu_s",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 55)"
+   ],
+   "score": 36,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 1.0,
+    "relevance_sum": 55.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "siwusu_s"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "sugaricedtea",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "sugaricedtea",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 53)"
+   ],
+   "score": 36,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 2.0,
+    "relevance_sum": 53.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "sugaricedtea"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "taylorstitchcom",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "taylorstitch.com",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 53)"
+   ],
+   "score": 36,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "kept_items": 1.0,
+    "posts": 0.0,
+    "relevance_sum": 53.0
+   },
+   "sources": [
+    "web"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "veicoloagencycom",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "veicolo-agency.com",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 55)"
+   ],
+   "score": 36,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "kept_items": 1.0,
+    "posts": 0.0,
+    "relevance_sum": 55.0
+   },
+   "sources": [
+    "web"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "gqcom",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "gq.com",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 50)"
+   ],
+   "score": 35,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "kept_items": 1.0,
+    "posts": 0.0,
+    "relevance_sum": 50.0
+   },
+   "sources": [
+    "web"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "gracemweston",
+   "key": "gracemweston",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "gracemweston",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 52)"
+   ],
+   "score": 35,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 1.0,
+    "relevance_sum": 52.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "ssums10",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "ssums10",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 50)"
+   ],
+   "score": 35,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 1.0,
+    "relevance_sum": 50.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "ssums10"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "talonkrebs",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "talon.krebs",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 51)"
+   ],
+   "score": 35,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 1.0,
+    "posts": 2.0,
+    "relevance_sum": 51.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "talon.krebs"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "themomeditcom",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "themomedit.com",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 52)"
+   ],
+   "score": 35,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "kept_items": 1.0,
+    "posts": 0.0,
+    "relevance_sum": 52.0
+   },
+   "sources": [
+    "web"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "dollarshaveclub",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Dollar Shave Club",
+   "reasons": [
+    "its items were judged not relevant",
+    "it is one of the brand's benchmark names",
+    "an ad of theirs has run 57 days",
+    "it shows up in several places: benchmarks, meta_ads"
+   ],
+   "score": 30,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 9.0,
+    "benchmark": 1,
+    "kept_items": 0.0,
+    "max_days": 57.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "removed_items": 7.0
+   },
+   "sources": [
+    "benchmarks",
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "allbirdsme",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Allbirds ME",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 194 days (longevity is a proxy for what works, not a measurement)",
+    "3 variants of an ad were found"
+   ],
+   "score": 5,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 6.0,
+    "kept_items": 0.0,
+    "max_days": 194.0,
+    "max_variants": 3.0,
+    "posts": 0.0,
+    "removed_items": 6.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "beautywellness",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Beauty & Wellness",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 205 days (longevity is a proxy for what works, not a measurement)",
+    "6 variants of an ad were found"
+   ],
+   "score": 5,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 6.0,
+    "kept_items": 0.0,
+    "max_days": 205.0,
+    "max_variants": 6.0,
+    "posts": 0.0,
+    "removed_items": 3.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "choiceglobal",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Choice Global",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 139 days (longevity is a proxy for what works, not a measurement)",
+    "4 variants of an ad were found"
+   ],
+   "score": 5,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 8.0,
+    "kept_items": 0.0,
+    "max_days": 139.0,
+    "max_variants": 4.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "shein",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "SHEIN",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 103 days (longevity is a proxy for what works, not a measurement)",
+    "its wording overlaps the brand's market words (shirt, shorts)"
+   ],
+   "score": 3,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 13.0,
+    "kept_items": 0.0,
+    "max_days": 103.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 6.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "9nmin_won",
+   "key": "9nminwon",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "9nmin_won",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "aasaelisabeth",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "aasaelisabeth",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "aasaelisabeth"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "abhishek_hairartist",
+   "key": "abhishekhairartist",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "abhishek_hairartist",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "admee01",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "AdMee01",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 98 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 98.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "adobeacrobat",
+   "key": "adobeacrobat",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "adobeacrobat",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "aesthetic.all.over",
+   "key": "aestheticallover",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "aesthetic.all.over",
+   "reasons": [],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "agroorgnico",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Agro Org\u00e1nico",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 736 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 736.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "alibabacom",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Alibaba.com",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 316 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 316.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "alzheimerssociety",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Alzheimer's Society",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 35 days",
+    "5 variants of an ad were found"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 35.0,
+    "max_variants": 5.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "amolya.co",
+   "key": "amolyaco",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "amolya.co",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "anveshana",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Anveshana",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 162 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 162.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "ashantihie9",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "ashantihie9",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "ashantihie9"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "asiansports",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Asian Sports",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 113 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 113.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "babel.audio.official",
+   "key": "babelaudioofficial",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "babel.audio.official",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "battlebeamtoys",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "battlebeamtoys",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "battlebeamtoys"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "bellaloves4",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "bellaloves4",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "bellaloves4"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "bretengemann",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "bretengemann",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "bretengemann"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "buggin4bread",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "buggin4bread",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "buggin4bread"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "_canvas.of.life",
+   "key": "canvasoflife",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "_canvas.of.life",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "charitywater",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "charity: water",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 252 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 252.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "charsrecoveryjourney",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "chars_recovery_journey",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "chars_recovery_journey"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "chatgpt",
+   "key": "chatgpt",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "chatgpt",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "chicme",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "ChicMe",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 227 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 5.0,
+    "kept_items": 0.0,
+    "max_days": 227.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 3.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "chiefgrunto",
+   "key": "chiefgrunto",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "chiefgrunto",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "chrisandmelisdesignerdecordealsfurniturefinds",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Chris and Melis - Designer Decor Deals & Furniture Finds",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 78 days"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 78.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "cloudnine",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Cloud Nine",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 138 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 138.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "coofandyshop",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "coofandy.shop",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 69 days"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 69.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "coveusa",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Cove USA",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 20.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "cozykindus",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "cozykind.us",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "cozykind.us"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "cozytwn",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "cozytwn",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "cozytwn"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "creatorfindsiq",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Creator Finds IQ",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 91 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 91.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "cruisecup",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "cruisecup",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "cruisecup"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "davidburke674",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "david.burke674",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "david.burke674"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "davidmiller",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "David Miller",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 47 days",
+    "5 variants of an ad were found"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 47.0,
+    "max_variants": 5.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "daviefogarty",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Davie Fogarty",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 40 days"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 5.0,
+    "kept_items": 0.0,
+    "max_days": 40.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "removed_items": 3.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "dollarshaveclubaustralia",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Dollar Shave Club Australia",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 277 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 277.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "easygiftly",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "easy.giftly",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "easy.giftly"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "echoment",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Echoment",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 65 days"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 6.0,
+    "kept_items": 0.0,
+    "max_days": 65.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "removed_items": 2.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "elevatelifewithlauren",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Elevate Life With Lauren",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 43 days"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 43.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "elysianliving",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "elysian.living",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "elysian.living"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "emelieolson",
+   "key": "emelieolson",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "emelieolson",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "emilybeaversugc",
+   "key": "emilybeaversugc",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "emilybeaversugc",
+   "reasons": [],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "emilyloxtercamp",
+   "key": "emilyloxtercamp",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "emilyloxtercamp",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "familypuzzleart",
+   "key": "familypuzzleart",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "familypuzzleart",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "fashionbyfairry",
+   "key": "fashionbyfairry",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "fashionbyfairry",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "fitfinds__",
+   "key": "fitfinds",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "fitfinds__",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "fitness19palosverdes",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Fitness 19 Palos Verdes",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 939 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 939.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "fitsbyishaani",
+   "key": "fitsbyishaani",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "fitsbyishaani",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 2.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "flagnorfail",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "FLAG NOR FAIL",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 0.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "fontes_four_pack",
+   "key": "fontesfourpack",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "fontes_four_pack",
+   "reasons": [],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "foreverfrenchbaby",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Foreverfrenchbaby",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 18.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 2.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "fundingrockcom",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "FundingRock.com",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 10.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "_gemmalouisemiles",
+   "key": "gemmalouisemiles",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "_gemmalouisemiles",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "gifts_and_grab",
+   "key": "giftsandgrab",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "gifts_and_grab",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "giftscom",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Gifts.com",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 736 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 736.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "gloryday.craft",
+   "key": "glorydaycraft",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "gloryday.craft",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "godsloveovercomes",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "God's Love Overcomes",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 106 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 106.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "googlecloud",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Google Cloud",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 9.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "gracekeegann",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "gracekeegann",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "gracekeegann"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "greenpowermobilityscooters",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Green Power - Mobility Scooters",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 1148 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 1148.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "gymsharkwomen",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Gymshark Women",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 21.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "havjoy",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Hav-Joy",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 169 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 169.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "heidddiixmiller",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "heidddiixmiller",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "heidddiixmiller"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "house_of_elorra",
+   "key": "houseofelorra",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "house_of_elorra",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "httydtoasty",
+   "key": "httydtoasty",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "httydtoasty",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "hyojo",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Hyojo",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 87 days"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 87.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "ijustshowthings",
+   "key": "ijustshowthings",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "ijustshowthings",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "imdanielsimmons",
+   "key": "imdanielsimmons",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "imdanielsimmons",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "indisparkes",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "indisparkes",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "indisparkes"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "internationaljazzday",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "International Jazz Day",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 167 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 167.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "invifestbyaastha",
+   "key": "invifestbyaastha",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "invifestbyaastha",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "iryankiddiescloset",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Iryan Kiddies Closet",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 6.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "isabellatts0",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "isabellatts0",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "isabellatts0"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "itsbabytj",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "its_babytj",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "its_babytj"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "jaya_s_artistry_vibes",
+   "key": "jayasartistryvibes",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "jaya_s_artistry_vibes",
+   "reasons": [
+    "its items were judged not relevant",
+    "its wording overlaps the brand's market words (card, gift)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "jessicarachellel1",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "jessicarachellel1",
+   "reasons": [],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "jessicarachellel1"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "jessmoore",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Jess Moore",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 32 days"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 5.0,
+    "kept_items": 0.0,
+    "max_days": 32.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "removed_items": 2.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "jingledrop.us",
+   "key": "jingledropus",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "jingledrop.us",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 2.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "joanna.ae_",
+   "key": "joannaae",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "joanna.ae_",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "jockey",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Jockey",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 7.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "joejo30",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "joe.jo30",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "joe.jo30"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "juliastxl",
+   "key": "juliastxl",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "juliastxl",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "justbecausegiftbooks",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "justbecausegiftbooks",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "justbecausegiftbooks"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "justjordddy",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "justjordddy",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "justjordddy"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "kanicamaheshwari",
+   "key": "kanicamaheshwari",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "kanicamaheshwari",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "kashishsingh_ks",
+   "key": "kashishsinghks",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "kashishsingh_ks",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "katerenko",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "katerenko",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "katerenko"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "kathrynzoe",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "kathrynzoe",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "kathrynzoe"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "kaylaannuncensored",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "kaylaannuncensored",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "kaylaannuncensored"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "kbblackwell",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "kb.blackwell",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "kb.blackwell"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "khazanaypakistan",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Khazanay Pakistan",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 469 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 4.0,
+    "kept_items": 0.0,
+    "max_days": 469.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "removed_items": 4.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "kidoriman",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Kidoriman",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 0.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "kyteliving",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Kyte Living",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 90 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 90.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "laughsnippet1",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "laughsnippet1",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "laughsnippet1"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "leonfinds",
+   "key": "leonfinds",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "leonfinds",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "lewisjenniferwzky7",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "lewisjenniferwzky7",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "lewisjenniferwzky7"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "lifeinmonogram",
+   "key": "lifeinmonogram",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "lifeinmonogram",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "lilorsworld",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Lilor\u2019s World",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 13.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "lisacjensen",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "lisacjensen",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "lisacjensen"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "litbhomebestseller",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "LITB Home Bestseller",
+   "reasons": [
+    "its items were judged not relevant",
+    "6 variants of an ad were found"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 4.0,
+    "kept_items": 0.0,
+    "max_days": 21.0,
+    "max_variants": 6.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "littlemisshappyy",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "little_miss_happyy",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "little_miss_happyy"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "losts_and_founds",
+   "key": "lostsandfounds",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "losts_and_founds",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "lover__143__yadav",
+   "key": "lover143yadav",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "lover__143__yadav",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "lovevibes103",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "lovevibes103",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "lovevibes103"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "luckyfours",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Lucky Fours",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 143 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 4.0,
+    "kept_items": 0.0,
+    "max_days": 143.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "removed_items": 2.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "luhxe",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Luhxe",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 5.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "lululemon",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "lululemon",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 72 days"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 6.0,
+    "kept_items": 0.0,
+    "max_days": 72.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 5.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "macustom.co",
+   "key": "macustomco",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "macustom.co",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "magficfanspage",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Magfic - fans page",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 30 days"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 30.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "mariaroberts",
+   "key": "mariaroberts",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "mariaroberts",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "markablecreators",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Markable Creators",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 179 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 3.0,
+    "kept_items": 0.0,
+    "max_days": 179.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 2.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "matteson_brands",
+   "key": "mattesonbrands",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "matteson_brands",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "melolofreedramaph",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Melolo Freedrama-PH",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 31 days"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 31.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "methodproducts",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "method products",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 27.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "modesees",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Modesees",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 358 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 358.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "mommakeoveredit",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Mom Makeover Edit",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 15.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "monika_tirthani",
+   "key": "monikatirthani",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "monika_tirthani",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "mrloganporter",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "mrloganporter",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "mrloganporter"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "ms.nuclear",
+   "key": "msnuclear",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "ms.nuclear",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "muffs044",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "muffs044",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "muffs044"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "musthavetoolsstore",
+   "key": "musthavetoolsstore",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "musthavetoolsstore",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "mycomfypajamas",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "My Comfy Pajamas",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 100 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 100.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "mylattesnap",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "mylattesnap",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "mylattesnap"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "my.lavender.life",
+   "key": "mylavenderlife",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "my.lavender.life",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "mythfar8386",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "mythfar8386",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "mythfar8386"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "next",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Next",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 9.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "nicolecarter",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Nicole Carter",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 170 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 170.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "nicoletiktokshopfinds",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "nicoletiktokshopfinds",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "nicoletiktokshopfinds"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "noahshopdeals",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "noahshopdeals",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "noahshopdeals"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "norsely",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Norsely",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 0.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "olagie",
+   "key": "olagie",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "olagie",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "oliviaarndt",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "olivia..arndt",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "olivia..arndt"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "outfitsbyfionaa",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "outfitsbyfionaa",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "outfitsbyfionaa"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "oye_happy",
+   "key": "oyehappy",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "oye_happy",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "paige1aura",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "paige1aura",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "paige1aura"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "pantproject",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Pant Project",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 331 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 331.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "petitlem",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "petit lem",
+   "reasons": [
+    "its items were judged not relevant",
+    "4 variants of an ad were found"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 22.0,
+    "max_variants": 4.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "photoshop",
+   "key": "photoshop",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "photoshop",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "pixelhive.in",
+   "key": "pixelhivein",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "pixelhive.in",
+   "reasons": [
+    "its items were judged not relevant",
+    "its wording overlaps the brand's market words (gift, hidden)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "pixorakrafts.3d",
+   "key": "pixorakrafts3d",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "pixorakrafts.3d",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "pizzaqueensam",
+   "key": "pizzaqueensam",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "pizzaqueensam",
+   "reasons": [],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "pocketfmstories",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Pocket FM Stories",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 107 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 12.0,
+    "kept_items": 0.0,
+    "max_days": 107.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 6.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "pooja_janrao_official",
+   "key": "poojajanraoofficial",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "pooja_janrao_official",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "prankhaus",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "PrankHaus",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 67 days"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 67.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "prettythanglounge",
+   "key": "prettythanglounge",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "prettythanglounge",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "qiulehui123",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "qiulehui123",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "qiulehui123"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "quince",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Quince",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 0.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "quinns_arte",
+   "key": "quinnsarte",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "quinns_arte",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 3.0,
+    "removed_items": 2.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "ramtek.shop",
+   "key": "ramtekshop",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "ramtek.shop",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "ranasfinds",
+   "key": "ranasfinds",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "ranasfinds",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "rebabeba",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "rebabeba",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "rebabeba"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "rebelbabe",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Rebel Babe",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 3.0,
+    "kept_items": 0.0,
+    "max_days": 0.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "redgypsyarts",
+   "key": "redgypsyarts",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "redgypsyarts",
+   "reasons": [],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "relivo.health",
+   "key": "relivohealth",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "relivo.health",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "revicedenim",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "revicedenim",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "revicedenim"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "rhoback",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Rhoback",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 73 days"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 3.0,
+    "kept_items": 0.0,
+    "max_days": 73.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "removed_items": 2.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "richellezh",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "richelle_zh",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "richelle_zh"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "riyakarda10",
+   "key": "riyakarda10",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "riyakarda10",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "samira.sfiii",
+   "key": "samirasfiii",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "samira.sfiii",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "samxshea",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "samxshea",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "samxshea"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "sanah_kainat",
+   "key": "sanahkainat",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "sanah_kainat",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "satshyaa",
+   "key": "satshyaa",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "satshyaa",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "scarlettchalk02",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "scarlettchalk02",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "scarlettchalk02"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "seure",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Seure",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 500 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 500.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "shabnamlayek2003",
+   "key": "shabnamlayek2003",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "shabnamlayek2003",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 5.0,
+    "removed_items": 5.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "shagun.chawlaa",
+   "key": "shagunchawlaa",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "shagun.chawlaa",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "sheincurve",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "SHEIN CURVE",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 79 days"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 79.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "sheinkids",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "SHEIN KIDS",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 46 days"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 46.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "shoemart",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Shoemart",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 1.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "sholum_closet",
+   "key": "sholumcloset",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "sholum_closet",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "shopify1percent",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Shopify1Percent",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 198 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 198.0,
+    "max_variants": 2.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "shrishtitheartlover",
+   "key": "shrishtitheartlover",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "shrishtitheartlover",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "simonyabooks",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Simonyabooks",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 38 days"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 38.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "simplyleonfinds",
+   "key": "simplyleonfinds",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "simplyleonfinds",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "simplyshreya_",
+   "key": "simplyshreya",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "simplyshreya_",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "sixt",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Sixt",
+   "reasons": [
+    "its items were judged not relevant",
+    "3 variants of an ad were found"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 7.0,
+    "max_variants": 3.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "slttly",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "slttly",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "slttly"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "snitch",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Snitch",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 232 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 232.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "soldiersforjesusministries",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Soldiers for Jesus Ministries",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 303 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 303.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "southernbellringer",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "southernbellringer",
+   "reasons": [],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "southernbellringer"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "sowmya_sathyaraj",
+   "key": "sowmyasathyaraj",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "sowmya_sathyaraj",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "spearshops",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "spearshops",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "spearshops"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "stacyht",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "stacy.ht_",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "stacy.ht_"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "stefanlalchev",
+   "key": "stefanlalchev",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "stefanlalchev",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "steffy",
+   "key": "steffy",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "steffy",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "stone43211",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "stone43211",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "stone43211"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "_studio_timess",
+   "key": "studiotimess",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "_studio_timess",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "styledbylilea",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "styledbylilea",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "styledbylilea"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "sunainabhagi",
+   "key": "sunainabhagi",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "sunainabhagi",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "superdwde",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Superdw-DE",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 93 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 5.0,
+    "kept_items": 0.0,
+    "max_days": 93.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 3.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "svcuratedhampers",
+   "key": "svcuratedhampers",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "svcuratedhampers",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "tailorse",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Tailorse",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 5.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "taylorross",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "taylor__ross",
+   "reasons": [],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "taylor__ross"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "temu",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Temu",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 14.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "thatcove",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "ThatCove",
+   "reasons": [
+    "its items were judged not relevant",
+    "an ad of theirs has run 548 days (longevity is a proxy for what works, not a measurement)"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 548.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "_thatfashion.girl",
+   "key": "thatfashiongirl",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "_thatfashion.girl",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "thatfreedlife",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "that_freed_life",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "that_freed_life"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "thebaldcomb",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "thebaldcomb",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "thebaldcomb"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "theblackboxco_official",
+   "key": "theblackboxcoofficial",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "theblackboxco_official",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "thegiftstagram",
+   "key": "thegiftstagram",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "thegiftstagram",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 2.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "theguycodehq",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "theguycodehq",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "theguycodehq"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "theinspo4you",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "theinspo4you",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "theinspo4you"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "theoutfitdropinspo",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "theoutfitdropinspo",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "theoutfitdropinspo"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "theprink.in",
+   "key": "theprinkin",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "theprink.in",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "thetoveysjourney",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "thetoveysjourney",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "thetoveysjourney"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "tiktokdad78",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "tiktok.dad78",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "tiktok.dad78"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "tooletries",
+   "key": "tooletries",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "tooletries",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "toolgokit",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "toolgokit",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "toolgokit"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "trivaze.back.relief",
+   "key": "trivazebackrelief",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "trivaze.back.relief",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "tuxy",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Tuxy",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 9.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "uliceuyb8hc",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "uliceuyb8hc",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "uliceuyb8hc"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "unwrapmee",
+   "key": "unwrapmee",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "unwrapmee",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "velourgarmentssl",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Velour Garments, SL.",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 2.0,
+    "kept_items": 0.0,
+    "max_days": 0.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 2.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "victoiregdr",
+   "key": "victoiregdr",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "victoiregdr",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "vvi.nessa",
+   "key": "vvinessa",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "vvi.nessa",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "warmbuck.co",
+   "key": "warmbuckco",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "warmbuck.co",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 2.0,
+    "removed_items": 2.0
+   },
+   "sources": [
+    "instagram"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "wendy93379",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "wendy93379",
+   "reasons": [],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "wendy93379"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "windynest",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "Windy Nest",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 1.0,
+    "kept_items": 0.0,
+    "max_days": 0.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "meta_ads"
+   ],
+   "status": "weak",
+   "tiktok": ""
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "yscozyvibe",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "ys.cozy.vibe",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "ys.cozy.vibe"
+  },
+  {
+   "ai": null,
+   "decided_by": "",
+   "domain": "",
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "",
+   "key": "zacaffleckk",
+   "last_seen": "2026-11-10T09:49:03Z",
+   "name": "zacaffleckk",
+   "reasons": [
+    "its items were judged not relevant"
+   ],
+   "score": 0,
+   "shopify": null,
+   "shopify_note": "",
+   "signals": {
+    "ads": 0.0,
+    "engagement": 0.0,
+    "kept_items": 0.0,
+    "posts": 1.0,
+    "removed_items": 1.0
+   },
+   "sources": [
+    "tiktok"
+   ],
+   "status": "weak",
+   "tiktok": "zacaffleckk"
+  }
+ ],
+ "updated_at": "2026-11-10T09:49:03Z"
+}

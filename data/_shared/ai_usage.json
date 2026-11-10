@@ -22,12 +22,17 @@
       "cost_usd": 0.0,
       "requests": 1,
       "tokens": 0
+     },
+     "competitor_intelligence": {
+      "cost_usd": 0.0,
+      "requests": 14,
+      "tokens": 0
      }
     },
     "cost_usd": 0.0,
-    "failures": 1,
+    "failures": 15,
     "latency_ms": 0,
-    "requests": 1,
+    "requests": 15,
     "tokens_in": 0,
     "tokens_out": 0
    },
