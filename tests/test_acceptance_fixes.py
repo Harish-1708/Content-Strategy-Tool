@@ -536,3 +536,11 @@ def test_a_site_scroll_wait_must_be_a_number(tmp_path):
         path.write_text(yaml.safe_dump(raw))
         with pytest.raises(B.BrowserError, match="scroll_pause_seconds must be a number"):
             B.load_browser_settings(str(path))
+
+
+def test_the_cli_plan_says_the_reddit_search_cannot_run_without_opencli_and_does_not_blame_the_contact_or_instagram(run_cli, capsys, monkeypatch):
+    monkeypatch.setenv("AGENT_REACH_SEARCH", "on")
+    monkeypatch.setenv("OPENCLI_BIN", "/no/such/opencli-program")
+    assert run_cli("acceptance", "--only", "web_search", "--plan") == 0
+    lines = [x for x in capsys.readouterr().out.splitlines() if "agent_reach_reddit" in x]
+    assert len(lines) == 2 and all("OpenCLI is not installed on this machine" in x and "logged in to Reddit" in x and "Instagram" not in x and "OBSERVATORY_CONTACT" not in x for x in lines)
