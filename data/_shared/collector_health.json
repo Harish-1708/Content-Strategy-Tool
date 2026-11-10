@@ -371,7 +371,7 @@
   },
   "ai:openrouter|gateway": {
    "acceptance": null,
-   "consecutive_failures": 0,
+   "consecutive_failures": 1,
    "consecutive_successes": 0,
    "history": [
     {
@@ -380,9 +380,20 @@
      "items": 0,
      "ms": 0,
      "ok": null
+    },
+    {
+     "at": "2026-11-10T14:46:49Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
-   "last_error": null,
+   "last_error": {
+    "at": "2026-11-10T14:46:49Z",
+    "code": "UPSTREAM_BROKEN",
+    "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: openrouter/openai/gpt-oss-120b:free key1: model_not_found. Last error: OpenRouter API error 404: This m"
+   },
    "last_success": "",
    "pause": null,
    "route": "gateway",
