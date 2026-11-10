@@ -46,6 +46,23 @@ def _literal_ip(host):
         return None
 
 
+def normalize_fetch_url(url):
+    """Used when the owner has the private-address guard OFF: any well-formed http(s) address is accepted (no check of where it points), but it must still be an address and not text."""
+    candidate = str(url or "").strip()
+    if not candidate or any(c.isspace() or ord(c) < 0x20 or ord(c) == 0x7F for c in candidate):
+        raise UnsafeURL("only http(s) addresses are allowed")
+    if "://" not in candidate:
+        candidate = f"https://{candidate}"
+    try:
+        parsed = urlsplit(candidate)
+        _ = parsed.port
+    except (TypeError, ValueError):
+        raise UnsafeURL("only http(s) addresses are allowed") from None
+    if parsed.scheme.lower() not in ("http", "https") or not parsed.hostname:
+        raise UnsafeURL("only http(s) addresses are allowed")
+    return candidate
+
+
 def normalize_public_url(url):
     """The address cleaned up, or UnsafeURL when it is not a clearly public http(s) address.
 
