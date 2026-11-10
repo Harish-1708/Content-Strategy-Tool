@@ -26,6 +26,9 @@ APPROVAL_BASES = ("non_commercial_approved", "commercial_contract")
 
 def approval_problem(approval):
     """'' when a usable approval record is present, else the plain-words reason the official API route will not run."""
+    from . import guards
+    if not guards.on("reddit_approval_required"):                  # the owner has not asked for the approval gate: the route runs whenever credentials exist
+        return ""
     if not approval or not all(str(approval.get(k, "")).strip() for k in ("basis", "approved_by", "date")):
         return ("the Reddit API route needs a recorded approval from Reddit before it will run: set reddit.api_approval in observatory.yaml (basis, approved_by, date, reference). "
                 "Reddit's free API is for approved non-commercial use only, and commercial use needs a paid contract. No request was made")
