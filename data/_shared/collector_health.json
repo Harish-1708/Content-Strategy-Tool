@@ -35,6 +35,30 @@
    "source": "agent_reach_research",
    "state": "healthy"
   },
+  "ai:github|gateway": {
+   "acceptance": null,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-10T09:07:29Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-10T09:07:29Z",
+    "code": "UPSTREAM_BROKEN",
+    "message": "the provider could not be reached: Expecting value: line 1 column 1 (char 0)"
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "gateway",
+   "source": "ai:github",
+   "state": "healthy"
+  },
   "ai:groq|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
