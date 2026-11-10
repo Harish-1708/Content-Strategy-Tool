@@ -63,15 +63,21 @@ jobs:
       - name: Fetch and build the pinned gateway
         shell: bash
         run: |
-          commit=$(python -c "import json;print(json.load(open('ai/gateway.lock.json'))['gateway']['commit'])")
-          mkdir gateway-src && cd gateway-src
-          git init --quiet
-          git remote add origin https://github.com/tashfeenahmed/freellmapi
-          git fetch --quiet --depth 1 origin "$commit"
-          git checkout --quiet FETCH_HEAD
-          test "$(git rev-parse HEAD)" = "$commit" || { echo "::error::The fetched gateway is not the pinned commit"; exit 1; }
-          npm ci --workspace=shared --workspace=server --include-workspace-root --no-audit --no-fund
-          npm run build -w server
+          # the FreeLLMAPI connection: the newest release by default (the owner can pin it); the recorded commit is the fallback if that cannot be built
+          export CONTENTINTEL_GATEWAY_DIR=gateway-src
+          if ! python -m contentintel observatory connections --all --what install --key freellmapi; then
+            echo "::warning::The newest gateway could not be built here; using the recorded one"
+            rm -rf gateway-src
+            commit=$(python -c "import json;print(json.load(open('ai/gateway.lock.json'))['gateway']['commit'])")
+            mkdir gateway-src && cd gateway-src
+            git init --quiet
+            git remote add origin https://github.com/tashfeenahmed/freellmapi
+            git fetch --quiet --depth 1 origin "$commit"
+            git checkout --quiet FETCH_HEAD
+            test "$(git rev-parse HEAD)" = "$commit" || { echo "::error::The fetched gateway is not the pinned commit"; exit 1; }
+            npm ci --workspace=shared --workspace=server --include-workspace-root --no-audit --no-fund
+            npm run build -w server
+          fi
 
       - name: Real gateway, fake model (MOCK-PROVIDER result)
         shell: bash
@@ -121,15 +127,21 @@ jobs:
       - name: Fetch and build the pinned gateway
         shell: bash
         run: |
-          commit=$(python -c "import json;print(json.load(open('ai/gateway.lock.json'))['gateway']['commit'])")
-          mkdir gateway-src && cd gateway-src
-          git init --quiet
-          git remote add origin https://github.com/tashfeenahmed/freellmapi
-          git fetch --quiet --depth 1 origin "$commit"
-          git checkout --quiet FETCH_HEAD
-          test "$(git rev-parse HEAD)" = "$commit" || { echo "::error::The fetched gateway is not the pinned commit"; exit 1; }
-          npm ci --workspace=shared --workspace=server --include-workspace-root --no-audit --no-fund
-          npm run build -w server
+          # the FreeLLMAPI connection: the newest release by default (the owner can pin it); the recorded commit is the fallback if that cannot be built
+          export CONTENTINTEL_GATEWAY_DIR=gateway-src
+          if ! python -m contentintel observatory connections --all --what install --key freellmapi; then
+            echo "::warning::The newest gateway could not be built here; using the recorded one"
+            rm -rf gateway-src
+            commit=$(python -c "import json;print(json.load(open('ai/gateway.lock.json'))['gateway']['commit'])")
+            mkdir gateway-src && cd gateway-src
+            git init --quiet
+            git remote add origin https://github.com/tashfeenahmed/freellmapi
+            git fetch --quiet --depth 1 origin "$commit"
+            git checkout --quiet FETCH_HEAD
+            test "$(git rev-parse HEAD)" = "$commit" || { echo "::error::The fetched gateway is not the pinned commit"; exit 1; }
+            npm ci --workspace=shared --workspace=server --include-workspace-root --no-audit --no-fund
+            npm run build -w server
+          fi
 
       - name: What is switched on, and what would run
         shell: bash
