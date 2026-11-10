@@ -27,7 +27,7 @@ import time
 from collections import deque
 from urllib.parse import urljoin, urlsplit, urlunsplit
 
-from contentintel import safety
+from contentintel import guards, safety
 from contentintel.observatory import gatecheck, htmlx, signals
 
 PINNED = "0.5"
@@ -121,6 +121,9 @@ class Worker:
         self.controls = {"custom_identity": True, "proxy": True, "session": True, "browser": True, "account_cookies": True, "evasion": True, **(job.get("controls") or {})}
         self.contact = job.get("contact", "")
         self._want_links = False
+        if "guards" in job:                                                                    # the owner's guard switches, sent with the job (this is a separate process)
+            guards.configure(job["guards"])
+        self.retry = {"attempts": 3, "backoff_seconds": 2, **(job.get("retry") or {})}
         self.autothrottle = bool(job.get("autothrottle", True))          # pace follows how fast the site answers (a site that slows down is asked less often), never faster than the configured pace
         self._t0 = None
         self._extract = []
@@ -151,11 +154,11 @@ class Worker:
 
     def _guard(self, url):
         try:
-            clean = safety.normalize_public_url(url) if not self.private_ok else url
+            clean = url if self.private_ok else (safety.normalize_public_url(url) if guards.on("private_address_block") else safety.normalize_fetch_url(url))
         except safety.UnsafeURL:
-            raise _Refused("BAD_INPUT", "only public http(s) web addresses are fetched") from None
+            raise _Refused("BAD_INPUT", "only public http(s) web addresses are fetched" if guards.on("private_address_block") else "only http(s) addresses are fetched") from None
         host = urlsplit(clean).hostname or ""
-        if not self.private_ok and not safety.resolves_public(host):
+        if guards.on("private_address_block") and not self.private_ok and not safety.resolves_public(host):
             raise _Refused("BAD_INPUT", f"{host} does not point to a public address")
         return clean, host
 
@@ -256,11 +259,14 @@ class Worker:
                 raise _Refused("RATE_LIMITED", f"{host} is resting this run ({site['rest']})")
             proxy = self._proxy_for(adv)
             agent = self._agent_for(adv)
-            parser, closed, note = self._robots_for(clean, proxy, agent)
-            mode, basis = self._robots_mode(host)
+            if guards.on("robots_txt"):
+                parser, closed, note = self._robots_for(clean, proxy, agent)
+                mode, basis = self._robots_mode(host)
+            else:                                                                                  # the owner has not asked for robots.txt to be consulted
+                parser, closed, note, mode, basis = None, False, "", "ignore", ""
             if adv.get("delay"):
                 site["delay"] = max(site["delay"], min(float(adv["delay"]), self.max_delay))      # a person may only slow the pace
-            if (closed or not parser.can_fetch(clean, self._token(agent))):
+            if parser is not None and (closed or not parser.can_fetch(clean, self._token(agent))):
                 if mode == "obey":
                     raise _Refused("PLATFORM_BLOCKED", f"{clean} was not fetched: " + (note if closed else "robots.txt does not allow this address"), robots_path=not closed)
                 out["robots_note"] = (note if closed else "robots.txt does not allow this address") + f"; read under crawl policy '{mode}'" + (f" ({basis})" if basis else "")
@@ -410,7 +416,7 @@ class Worker:
         return out
 
     def _request(self, url, host, adv, out, proxy=None):
-        hops, current = 0, url
+        hops, current, tries = 0, url, 0
         while True:
             current, host = self._guard(current)
             self._wait(host)
@@ -472,15 +478,20 @@ class Worker:
                     raise _Refused("UPSTREAM_BROKEN", "too many redirects, or one without a destination")
                 current = urljoin(current, target)
                 continue
-            if signals.looks_like_challenge(status, heads, bytes(resp.body or b"")):
-                self._site(host)["rest"] = "a bot-check or challenge page was shown"
-                raise _Refused("PLATFORM_BLOCKED", f"{host} showed a challenge or bot-check page" + ("" if adv.get("solve_cloudflare") else "; it was not worked around"))
-            if status == 429:
-                self._site(host)["rest"] = "asked us to slow down"
-                raise _Refused("RATE_LIMITED", f"{host} asked us to slow down (429)")
-            if status in (401, 403):
-                self._site(host)["rest"] = f"refused the request ({status})"      # no second try with another identity or proxy in this run
-                raise _Refused("PLATFORM_BLOCKED", f"{host} refused the request ({status}); it rests and is not tried again with another identity or proxy")
+            refused = ("PLATFORM_BLOCKED", "a bot-check or challenge page was shown", f"{host} showed a challenge or bot-check page" + ("" if adv.get("solve_cloudflare") else "; it was not worked around")) \
+                if signals.looks_like_challenge(status, heads, bytes(resp.body or b"")) else \
+                ("RATE_LIMITED", "asked us to slow down", f"{host} asked us to slow down (429)") if status == 429 else \
+                ("PLATFORM_BLOCKED", f"refused the request ({status})", f"{host} refused the request ({status}); it rests and is not tried again with another identity or proxy") if status in (401, 403) else None
+            if refused:
+                code, why, message = refused
+                if guards.on("rest_after_refusal"):                                          # the owner's rest guard: the host rests, nothing is retried
+                    self._site(host)["rest"] = why
+                    raise _Refused(code, message)
+                tries += 1                                                                   # guard OFF: try again a few times, then mark it failed and move on to the next address
+                if tries < int(self.retry["attempts"]):
+                    self.sleep(float(self.retry["backoff_seconds"]) * tries)
+                    continue
+                raise _Refused(code, f"{host} still refused after {tries} attempt(s) ({why}); marked failed and moved on")
             if status in (404, 410):
                 raise _Refused("NOT_FOUND", f"{current} does not exist ({status})")
             if status >= 400:
