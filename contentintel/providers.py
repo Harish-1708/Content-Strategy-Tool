@@ -332,6 +332,20 @@ class AgentReachSearch(Provider):
         super().__init__(api_key, http=http, sleep=sleep)
         self.cli = cli
 
+    @classmethod
+    def unavailable_reason(cls, env, which=None):
+        """Why this channel cannot run on this machine, in plain words ('' when it can). The browser-based channel needs OpenCLI installed (and, if the owner turned that guard on, not a hosted runner)."""
+        if not cls.needs_browser:
+            return ""
+        import shutil
+
+        from . import agent_reach_instagram as AR
+        if AR.hosted_runner(env):
+            return f"cannot run on a GitHub-hosted runner: it needs OpenCLI and a browser logged in to {AR.site_name(cls.channel)}, which must stay on a machine you control"
+        if not (which or shutil.which)(env.get("OPENCLI_BIN", "opencli")):
+            return f"cannot run: OpenCLI is not installed on this machine (it needs a browser logged in to {AR.site_name(cls.channel)}, on a machine you control)"
+        return ""
+
     def _clean(self, text):
         return str(text)
 
@@ -375,14 +389,24 @@ PROVIDER_CLASSES = (SerperDev, Tavily, SerpApi, Exa, ExaMcp, AgentReachReddit, A
 PROVIDER_NAMES = tuple(c.name for c in PROVIDER_CLASSES)
 
 
-def build_providers(env, http=None, sleep=None):
-    """Providers whose API key is present in `env` (a mapping such as os.environ)."""
+def agent_reach_search_missing(env, built, which=None):
+    """{('web_search', name): the true reason} for an Agent-Reach search provider the owner opted in to that cannot run here, so an acceptance run skips it with that reason instead of failing it."""
+    out = {}
+    for cls in PROVIDER_CLASSES:
+        if issubclass(cls, AgentReachSearch) and cls.name not in built and (env.get(cls.env_var) or "").strip().lower() in ("on", "1", "true", "yes"):
+            reason = cls.unavailable_reason(env, which)
+            if reason:
+                out[("web_search", cls.name)] = reason
+    return out
+
+
+def build_providers(env, http=None, sleep=None, which=None):
+    """Providers whose API key is present in `env` (a mapping such as os.environ). An Agent-Reach channel is built only when the owner opted in AND it can run here (the browser-based one needs OpenCLI)."""
     found = {}
     for cls in PROVIDER_CLASSES:
         key = (env.get(cls.env_var) or "").strip()
         if issubclass(cls, AgentReachSearch):
-            from .agent_reach_instagram import hosted_runner
-            if key.lower() in ("on", "1", "true", "yes") and not (cls.needs_browser and hosted_runner(env)):      # the owner's opt-in; the browser-based channel never on a hosted runner
+            if key.lower() in ("on", "1", "true", "yes") and not cls.unavailable_reason(env, which):
                 found[cls.name] = cls(key, http=http, sleep=sleep)
         elif key:
             found[cls.name] = cls(key, http=http, sleep=sleep)
