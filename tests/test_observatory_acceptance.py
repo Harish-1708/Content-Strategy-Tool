@@ -48,13 +48,13 @@ def test_nothing_can_be_checked_without_a_site_or_a_contact_address():
     assert AK.make_checks("", cfg, "a@b.example", NOW) == {} and AK.make_checks("shop.example", cfg, "", NOW) == {}
 
 
-def test_a_site_with_no_feed_is_reported_as_not_found_not_as_a_pass():
+def test_a_site_with_no_feed_is_skipped_not_failed_and_never_a_pass():
     web = good_web()
     web.routes.pop(BASE + "/blogs/news.atom")
     web.on(BASE + "/", reply(200, homepage().replace('<link rel="alternate" type="application/atom+xml" href="https://shop.example/blogs/news.atom">', ""), {"content-type": "text/html"}))
-    with pytest.raises(K.Failure) as seen:
+    with pytest.raises(A.Skipped) as seen:                                                         # a site with no feed is nothing to read, not a failed route
         checks(web)[("competitor_pages", "feed")]()
-    assert seen.value.code == K.NOT_FOUND and "advertises no feed" in str(seen.value)
+    assert "no feed to read: shop.example advertises none and has none at the usual addresses" in str(seen.value)
 
 
 def test_a_block_is_a_failure_with_its_real_code():
@@ -90,3 +90,40 @@ def test_a_passing_probe_earns_the_route_trust_and_a_failing_one_does_not(tmp_pa
     bad = [p for p in A.build_probes(ctx(checks(web))) if p.route == "static_fetch"]
     res = A.run_acceptance(bad, health=hl, store=store, now=NOW, version="abc", run_id="r2")
     assert res[0]["status"] == "failed" and res[0]["code"] == K.PLATFORM_BLOCKED
+
+
+OTHER = "https://other.example"
+
+
+def _two_sites(first_has_feed, second_has_feed):
+    web = good_web()
+    if not first_has_feed:
+        web.routes.pop(BASE + "/blogs/news.atom")
+        web.on(BASE + "/", reply(200, homepage().replace('<link rel="alternate" type="application/atom+xml" href="https://shop.example/blogs/news.atom">', ""), {"content-type": "text/html"}))
+    web.on(OTHER + "/", reply(200, homepage().replace(BASE, OTHER), {"content-type": "text/html"}))
+    if second_has_feed:
+        web.on(OTHER + "/blogs/news.atom", reply(200, atom(["One", "Two", "Three"]).replace(BASE, OTHER), {"content-type": "application/atom+xml"}))
+    cfg = settings()
+    return AK.make_checks("shop.example", cfg, "research@kelson.example", NOW, client=client(web, cfg), other_domains=["other.example"])[("competitor_pages", "feed")]
+
+
+def test_the_feed_check_is_proved_on_the_first_brand_with_a_feed_and_skipped_only_when_none_has_one():
+    items, detail = _two_sites(True, True)()
+    assert items == 2 and "feed of shop.example" in detail                                       # the brand's own site first
+    items, detail = _two_sites(False, True)()
+    assert items == 3 and "feed of other.example" in detail                                      # otherwise another brand's
+    with pytest.raises(A.Skipped) as seen:
+        _two_sites(False, False)()
+    assert "shop.example, other.example advertise none and have none" in str(seen.value)
+    web = good_web()
+    cfg = settings()
+    c = AK.make_checks("shop.example", cfg, "research@kelson.example", NOW, client=client(web, cfg), other_domains=["unreachable.example"])
+    assert c[("competitor_pages", "feed")]()[0] == 2                                              # a second site that cannot be read does not matter when the first has a feed
+    web = good_web()
+    web.routes.pop(BASE + "/blogs/news.atom")
+    web.on(BASE + "/", reply(200, homepage().replace('<link rel="alternate" type="application/atom+xml" href="https://shop.example/blogs/news.atom">', ""), {"content-type": "text/html"}))
+    web.on(OTHER + "/", reply(200, homepage().replace(BASE, OTHER), {"content-type": "text/html"}))
+    web.on(OTHER + "/blogs/news.atom", reply(200, atom(["One", "Two", "Three"]).replace(BASE, OTHER), {"content-type": "application/atom+xml"}))
+    c = AK.make_checks("shop.example", cfg, "research@kelson.example", NOW, client=client(web, cfg), other_domains=["unreachable.example", "other.example"])
+    items, detail = c[("competitor_pages", "feed")]()
+    assert items == 3 and "feed of other.example" in detail                                      # the first site has no feed, the second cannot be read, the third has one: still proved
