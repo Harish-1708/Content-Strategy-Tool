@@ -13,7 +13,7 @@ lanes:
     description: Pull structured facts out of collected public pages, ads and search results.
     max_data_class: internal
     chain:
-      - {provider: groq, model: llama-3.3-70b-versatile}
+      - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: mistral, model: mistral-small-latest}
       - {provider: openrouter, model: "openai/gpt-oss-120b:free"}
       - {provider: github, model: openai/gpt-4.1-mini}
@@ -26,7 +26,7 @@ lanes:
     description: Classify and summarise competitor activity (products, offers, messaging).
     max_data_class: internal
     chain:
-      - {provider: groq, model: llama-3.3-70b-versatile}
+      - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: mistral, model: mistral-small-latest}
       - {provider: github, model: openai/gpt-4.1-mini}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
@@ -40,7 +40,7 @@ lanes:
     max_data_class: internal
     chain:
       - {provider: mistral, model: mistral-small-latest}
-      - {provider: groq, model: llama-3.3-70b-versatile}
+      - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: github, model: openai/gpt-4.1-mini}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
@@ -91,7 +91,7 @@ lanes:
     chain:
       - {provider: mistral, model: mistral-large-latest}
       - {provider: groq, model: openai/gpt-oss-120b}
-      - {provider: google, model: gemini-2.5-flash}
+      - {provider: google, model: gemini-3.5-flash}
       - {provider: github, model: openai/gpt-4.1-mini}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
@@ -115,7 +115,7 @@ lanes:
     description: Shot lists, captions and on-screen text drafts for the studio.
     max_data_class: internal
     chain:
-      - {provider: groq, model: llama-3.3-70b-versatile}
+      - {provider: groq, model: openai/gpt-oss-20b}
       - {provider: mistral, model: mistral-small-latest}
       - {provider: github, model: openai/gpt-4.1-mini}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
@@ -139,7 +139,7 @@ lanes:
     description: Plain-text language-model task for any module (seed words and the like), when routed through the gateway.
     max_data_class: internal
     chain:
-      - {provider: groq, model: llama-3.3-70b-versatile}
+      - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: mistral, model: mistral-small-latest}
       - {provider: openrouter, model: "openai/gpt-oss-120b:free"}
       - {provider: github, model: openai/gpt-4.1-mini}
@@ -152,7 +152,7 @@ lanes:
     description: JSON language-model task for any module (idea scoring, planning, briefs, deep checks), when routed through the gateway.
     max_data_class: internal
     chain:
-      - {provider: groq, model: llama-3.3-70b-versatile}
+      - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: mistral, model: mistral-small-latest}
       - {provider: openrouter, model: "openai/gpt-oss-120b:free"}
       - {provider: github, model: openai/gpt-4.1-mini}
