@@ -1,4 +1,5 @@
 import copy
+import os
 import json
 import sys
 from pathlib import Path
@@ -6,6 +7,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
+os.environ.setdefault("CONTENTINTEL_LEGACY_GUARDS", "1")       # the existing tests were written for the guards-on behaviour; tests of the shipped (OFF) default run in a clean process
 sys.path.insert(0, str(ROOT))
 
 from contentintel.brands import load_all  # noqa: E402
@@ -145,3 +147,12 @@ def fresh_sheet_write_pacer(monkeypatch):
     from contentintel import sheets
     monkeypatch.setattr(sheets, "_PACER", sheets.WritePacer())
     monkeypatch.setattr(sheets, "_SLEEP", lambda seconds: None)           # no test really waits; a test that checks the waits records them itself
+
+
+@pytest.fixture(autouse=True)
+def _reset_guards():
+    """Guard switches are process-wide: every test starts from the environment's default and leaves nothing behind."""
+    from contentintel import guards
+    guards.configure(None)
+    yield
+    guards.configure(None)
