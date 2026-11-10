@@ -13,6 +13,7 @@ A route is "healthy" only when a live acceptance run has passed recently for the
 Without that it is "unverified", however many ordinary runs have worked, and nothing that scores or ranks may
 depend on it. Pausing and the final-error rule follow Agent-Reach's channel health (MIT; see THIRD_PARTY_NOTICES.md).
 """
+from . import guards
 from datetime import datetime, timedelta, timezone
 
 from . import contract
@@ -117,7 +118,7 @@ class HealthLedger:
         if entry["state"] == "healthy" and entry["consecutive_failures"] >= self.registry.degrade_after_failures:
             entry["state"] = "degraded"
         seconds = self.registry.pause_for(code)
-        if seconds > 0:
+        if seconds > 0 and guards.on("rest_after_refusal"):
             until = add_seconds(now, seconds)
             current = (entry["pause"] or {}).get("until", "")
             if until > current:                       # a longer rest is never shortened by a later, milder failure
@@ -149,7 +150,7 @@ class HealthLedger:
     def is_paused(self, source, route, now):
         entry = self.state["routes"].get(f"{source}|{route}")
         pause = (entry or {}).get("pause")
-        if not pause or not pause.get("until") or pause["until"] <= now:
+        if not guards.on("rest_after_refusal") or not pause or not pause.get("until") or pause["until"] <= now:
             return None
         left = (_parse(pause["until"]) - _parse(now)).total_seconds()
         return {"code": pause["code"], "until": pause["until"], "retry_after_seconds": max(1, int(left)),
