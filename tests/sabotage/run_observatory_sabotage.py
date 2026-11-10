@@ -16,16 +16,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OBS, AI = "contentintel/observatory/", "contentintel/ai/"
-TESTS = ["tests/test_observatory_*.py", "tests/test_services.py", "tests/test_ytdlp_youtube.py", "tests/test_external_repository.py", "tests/test_platform_wiring.py", "tests/test_platform_matrix.py", "tests/test_reddit_routes.py", "tests/test_agent_reach_instagram.py", "tests/test_ai_github.py", "tests/test_ai_health_tab.py", "tests/test_ai_config.py", "tests/test_providers.py", "tests/test_agent_reach_catalog.py", "tests/test_owner_defaults.py", "tests/test_capability_matrix.py", "tests/test_research.py", "tests/test_sources.py"]
+TESTS = ["tests/test_observatory_*.py", "tests/test_services.py", "tests/test_ytdlp_youtube.py", "tests/test_external_repository.py", "tests/test_platform_wiring.py", "tests/test_platform_matrix.py", "tests/test_reddit_routes.py", "tests/test_agent_reach_instagram.py", "tests/test_ai_github.py", "tests/test_ai_health_tab.py", "tests/test_ai_config.py", "tests/test_providers.py", "tests/test_agent_reach_catalog.py", "tests/test_owner_defaults.py", "tests/test_capability_matrix.py", "tests/test_research.py", "tests/test_sources.py", "tests/test_guards.py", "tests/test_connections.py", "tests/test_sheets.py", "tests/test_health.py"]
 
 # (id, file, text found exactly once, replacement, what the bug simulates)
 MUTATIONS = [
     ("worker-google-referer", OBS + "scrapling_worker.py", '"google_search": False', '"google_search": True', "the stealth browser sets a Google referer"),
     ("worker-ignores-robots", OBS + "scrapling_worker.py", '                if mode == "obey":', "                if False:", "robots.txt is ignored under the default policy"),
-    ("worker-keeps-hammering-after-challenge", OBS + "scrapling_worker.py", '                self._site(host)["rest"] = "a bot-check or challenge page was shown"', "                pass",
+    ("worker-keeps-hammering-after-challenge", OBS + "scrapling_worker.py", '                    self._site(host)["rest"] = why', "                    pass",
      "the site is not rested after a bot check"),
     ("worker-robots-around-the-proxy", OBS + "scrapling_worker.py", '**({"proxy": proxy} if proxy else {}))', "**{})", "robots.txt is fetched directly while the page goes through the proxy"),
-    ("worker-private-addresses", OBS + "scrapling_worker.py", "        if not self.private_ok and not safety.resolves_public(host):", "        if False:", "a name that points inside our network is fetched"),
+    ("worker-private-addresses", OBS + "scrapling_worker.py", '        if guards.on("private_address_block") and not self.private_ok and not safety.resolves_public(host):', "        if False:", "a name that points inside our network is fetched"),
     ("client-leaks-environment", OBS + "worker_client.py", "    names = set(_PASS)", "    names = set(_PASS) | set(environ)", "the worker receives every secret of the main tool"),
     ("client-job-world-readable", OBS + "worker_client.py", "        job_path.chmod(0o600)", "        pass", "the job file is readable by other users"),
     ("polite-obeys-nothing", OBS + "polite.py", '                if mode == "obey":\n                    failure', '                if False:\n                    failure', "robots.txt is ignored by the default crawler"),
@@ -133,7 +133,7 @@ MUTATIONS = [
     ('commands-central-settings-not-applied', OBS + "commands.py", '            slot["comp"]["advanced"] = SV.resolve_scrapling(settings, slot["comp"]["domain"], "competitors", slot["comp"].get("advanced"))', '            pass', 'central defaults and overrides do not reach competitors'),
     ('commands-enrich-wrong-purpose', OBS + "commands.py", 'SV.agent_reach_client(settings, "instagram", "social_discovery",', 'SV.agent_reach_client(settings, "instagram", "competitors",', 'social discovery is governed by the competitors switch'),
     ('sheets-controls-not-read', 'contentintel/sheets.py', '    _read_controls(spreadsheet, brand, store, now, report, dry_run)', '    pass', 'edits in the Controls tab are ignored'),
-    ('sheets-controls-tab-missing', 'contentintel/sheets.py', ' + _controls_tabs(brand, store, now, report) + _ai_tabs', ' + _ai_tabs', 'the Controls tab is not written'),
+    ('sheets-controls-tab-missing', 'contentintel/sheets.py', ' + _controls_tabs(brand, store, now, report) + _connection_tabs(store, now, report)', ' + _connection_tabs(store, now, report)', 'the Controls tab is not written'),
     ('acceptance-agent-reach-switch-ignored', OBS + "acceptance_checks.py", 'and SV.agent_reach_allowed(settings, "reddit", "content_research")[0]:', 'and True:', 'an acceptance check runs for a route the owner switched off'),
     # ---- the platform-wide shared interfaces and their connections ----
     ('hub-allowed-ignores-master', 'contentintel/services.py', '    if not sec["enabled"]:\n        return False, f"{OC.SERVICE_REGISTRY', '    if False:\n        return False, f"{OC.SERVICE_REGISTRY', "a service's master switch does nothing"),
@@ -147,8 +147,8 @@ MUTATIONS = [
     ('hub-ai-wrong-data-class', 'contentintel/services.py', 'data_class="internal", instructions=user, system=system, now=self._now(), item_ids=(self.purpose,))', 'data_class="restricted", instructions=user, system=system, now=self._now(), item_ids=(self.purpose,))', 'module data is sent at the wrong data class'),
     ('hub-ai-gateway-error-escapes', 'contentintel/services.py', '            except Exception as exc:                # noqa: BLE001  (the gateway is an extra; the module must go on without it)', '            except KeyError as exc:', 'a gateway that cannot start stops the module'),
     ('hub-ai-no-question-rule-lost', 'contentintel/services.py', '            return "" if res["text"].strip().upper().startswith(NO_QUESTION) else res["text"]', '            return res["text"]', 'a reply to Gemini is sent when nothing was asked'),
-    ('hub-page-refusal-escalates', 'contentintel/services.py', '            if choice != "auto" or exc.code in REFUSALS:', '            if choice != "auto":', 'another reader is tried after a site refused'),
-    ('hub-page-auto-order', 'contentintel/services.py', '    order = ["scrapling", "jina", "core"] if choice == "auto" else [choice]', '    order = ["core", "jina", "scrapling"] if choice == "auto" else [choice]', 'auto tries the readers in the wrong order'),
+    ('hub-page-refusal-escalates', 'contentintel/services.py', '            if choice != "auto" or (exc.code in REFUSALS and _GUARDS.on("rest_after_refusal")):', '            if choice != "auto":', 'another reader is tried after a site refused'),
+    ('hub-page-auto-order', 'contentintel/services.py', '"external_first": ["scrapling", "jina", "core"],', '"external_first": ["core", "jina", "scrapling"],', 'auto tries the readers in the wrong order'),
     ('hub-page-scrapling-switch-ignored', 'contentintel/services.py', '            if not ok:\n                skipped.append(f"scrapling: {why}")', '            if False:\n                skipped.append(f"scrapling: {why}")', 'Scrapling is used inside auto although switched off'),
     ('hub-page-purpose-switch-ignored', 'contentintel/services.py', '    ok, why = allowed(settings, "page_readers", purpose)\n    if not ok:\n        raise K.Failure(K.BAD_INPUT, why)', '    ok, why = True, ""\n    if not ok:\n        raise K.Failure(K.BAD_INPUT, why)', 'pages are read for a purpose the readers are switched off for'),
     ('hub-engine-legacy-switch-everywhere', 'contentintel/services.py', ' and purpose in _PAGE_PURPOSES_OLD_ENGINE and scrapling_installed:', ' and scrapling_installed:', "the older switch changes every purpose's reader"),
@@ -212,7 +212,7 @@ NEW = [   # update 40: request controls, the Instagram route, social links, tren
     ("worker-declared-identity-ignored", OBS + "scrapling_worker.py", 'return adv.get("identity") if adv.get("identity") and not adv.get("impersonate") else self.agent', "return self.agent", "a declared identity is never sent"),
     ("worker-from-header-dropped", OBS + "scrapling_worker.py", '        headers = {"User-Agent": self._agent_for(adv)}\n        if self.contact:', '        headers = {"User-Agent": self._agent_for(adv)}\n        if False:', "the From header naming us disappears when an identity is declared"),
     ("worker-robots-for-wrong-identity", OBS + "scrapling_worker.py", "parser.can_fetch(clean, self._token(agent))", 'parser.can_fetch(clean, "KelsonResearchBot")', "robots.txt is checked for our honest name while another identity is used"),
-    ("worker-refusal-does-not-rest-the-host", OBS + "scrapling_worker.py", 'self._site(host)["rest"] = f"refused the request ({status})"      # no second try with another identity or proxy in this run', "pass",
+    ("worker-refusal-does-not-rest-the-host", OBS + "scrapling_worker.py", 'raise _Refused(code, f"{host} still refused after {tries} attempt(s) ({why}); marked failed and moved on")', 'raise _Refused(code, "refused")',
      "a 403 can be retried with another identity in the same run"),
     ("worker-switches-ignored", OBS + "scrapling_worker.py", '                if adv.get(flag) and not self.controls.get(control):', "                if False:", "the global access_controls switches do nothing"),
     ("worker-session-forgets-cookies", OBS + "scrapling_worker.py", "        held = self.sessions.get(key)\n        if held is None:", "        held = None\n        if held is None:", "a session starts afresh on every request"),
@@ -334,6 +334,57 @@ U40D = [   # update 40, final: every per-request Scrapling option on by default,
     ('controls-default-off', 'contentintel/services.py', 'OC.SCRAPLING_ON_DEFAULTS.get(opt, unset) if kind == "bool" else unset', 'unset', 'the Controls tab shows the options as off'),
 ]
 MUTATIONS.extend(U40D)
+
+U41 = [   # update 41: guards as owner switches, the connections layer, the external Agent-Reach client
+    ('g-master-ignored', 'contentintel/guards.py', '_state = {g: bool(master and channels.get(g, legacy())) for g in GUARDS}', '_state = {g: bool(channels.get(g, legacy())) for g in GUARDS}', 'the master guard switch does nothing'),
+    ('g-unknown-guard-on', 'contentintel/guards.py', '    if name not in GUARDS:\n        return False', '    if name not in GUARDS:\n        return True', 'an unknown guard name blocks'),
+    ('g-default-flipped', 'contentintel/guards.py', 'os.environ.get("CONTENTINTEL_LEGACY_GUARDS", "") == "1"', 'os.environ.get("CONTENTINTEL_LEGACY_GUARDS", "") != "1"', 'guards start ON when they should start OFF'),
+    ('g-dict-default-on', 'contentintel/guards.py', '_state = {g: bool(source.get(g, legacy())) for g in GUARDS}', '_state = {g: bool(source.get(g, True)) for g in GUARDS}', 'a guard the worker was not told about is ON'),
+    ('g-snapshot-all-off', 'contentintel/guards.py', 'return {g: on(g) for g in GUARDS}', 'return {g: False for g in GUARDS}', "the worker is never told the owner's guards"),
+    ('cfg-guard-default-on', 'contentintel/observatory/config.py', 'channel_default=_GUARDS.legacy())', 'channel_default=True)', 'the Controls tab shows every guard ON by default'),
+    ('pause-read-guard', 'contentintel/observatory/pauses.py', '        if not guards.on("rest_after_refusal"):                  # the owner has not asked sites to rest: never blocks\n            return None', '        if False:                  # the owner has not asked sites to rest: never blocks\n            return None', 'a site written down as resting blocks even with the guard off'),
+    ('pause-write-guard', 'contentintel/observatory/pauses.py', '        if not guards.on("rest_after_refusal"):\n            return\n', '        if False:\n            return\n', 'a site is rested with the guard off'),
+    ('health-pause-set-guard', 'contentintel/health.py', 'if seconds > 0 and guards.on("rest_after_refusal"):', 'if seconds > 0:', 'a route is paused after failures with the guard off'),
+    ('health-pause-read-guard', 'contentintel/health.py', 'if not guards.on("rest_after_refusal") or not pause or', 'if not pause or', 'a paused route blocks with the guard off'),
+    ('cooldown-guard', 'contentintel/collectors.py', '    if not guards.on("rest_after_refusal"):\n        return out', '    if False:\n        return out', 'an account rested earlier still blocks with the guard off'),
+    ('hosted-runner-guard', 'contentintel/agent_reach_instagram.py', 'return guards.on("hosted_runner_block") and (', 'return (', 'browser channels refuse a hosted runner with the guard off'),
+    ('reddit-approval-guard', 'contentintel/reddit_routes.py', '    if not guards.on("reddit_approval_required"):', '    if False:', 'the Reddit approval gate blocks with the guard off'),
+    ('safety-fetch-scheme', 'contentintel/safety.py', '    if parsed.scheme.lower() not in ("http", "https") or not parsed.hostname:\n        raise UnsafeURL("only http(s) addresses are allowed")\n    return candidate', '    if not parsed.hostname:\n        raise UnsafeURL("only http(s) addresses are allowed")\n    return candidate', 'any scheme is fetched when the private-address guard is off'),
+    ('w-robots-guard', 'contentintel/observatory/scrapling_worker.py', '            if guards.on("robots_txt"):\n                parser, closed, note', '            if True:\n                parser, closed, note', 'robots.txt is consulted with the guard off'),
+    ('w-private-guard', 'contentintel/observatory/scrapling_worker.py', 'if guards.on("private_address_block") and not self.private_ok and not safety.resolves_public(host):', 'if not self.private_ok and not safety.resolves_public(host):', 'local addresses are refused with the guard off'),
+    ('w-rest-guard', 'contentintel/observatory/scrapling_worker.py', '                if guards.on("rest_after_refusal"):                                          # the owner\'s rest guard', "                if True:                                          # the owner's rest guard", 'a refusing host rests with the guard off'),
+    ('w-no-retry', 'contentintel/observatory/scrapling_worker.py', 'if tries < int(self.retry["attempts"]):', 'if tries < 1:', 'a refusing site is not retried'),
+    ('w-guards-from-job-ignored', 'contentintel/observatory/scrapling_worker.py', '        if "guards" in job:', '        if False:', "the worker ignores the owner's guards"),
+    ('p-robots-guard', 'contentintel/observatory/polite.py', 'rb = self._robots_for(current) if guards.on("robots_txt") else None', 'rb = self._robots_for(current)', 'the polite reader asks for robots.txt with the guard off'),
+    ('p-no-retry', 'contentintel/observatory/polite.py', 'attempts = 1 if guards.on("rest_after_refusal") else max(1, int(self.retry["attempts"]))', 'attempts = 1', 'the polite reader never retries a refusing site'),
+    ('p-private-guard', 'contentintel/observatory/polite.py', 'if guards.on("private_address_block") and not site.public:', 'if not site.public:', 'the polite reader refuses a private address with the guard off'),
+    ('c-secrets-switch', 'contentintel/connections.py', '    if decide(settings, conn_id)["secrets"]:\n        for name in', '    if True:\n        for name in', 'declared secrets are handed over although the owner withheld them'),
+    ('c-secrets-everything', 'contentintel/connections.py', '        for name in CONNECTIONS[conn_id]["secrets"]:', '        for name in environ:', 'every secret is handed to the repository'),
+    ('c-score-unweighted', 'contentintel/connections.py', 'weights = list(range(1, len(window) + 1))', 'weights = [1] * len(window)', 'old attempts count as much as recent ones'),
+    ('c-down-threshold', 'contentintel/connections.py', '"degraded" if score >= 40', '"degraded" if score >= 30', 'a failing connection is called degraded, not down'),
+    ('c-backup-counted-as-attempt', 'contentintel/connections.py', '            entry["builtin_used"] = entry.get("builtin_used", 0) + 1\n            return', '            entry["builtin_used"] = entry.get("builtin_used", 0) + 1', 'using the backup is scored as a repository attempt'),
+    ('c-off-still-runs', 'contentintel/connections.py', '    if not d["on"]:\n        order = tuple(r for r in order if r == "builtin")', '    if False:\n        order = tuple(r for r in order if r == "builtin")', 'a switched-off connection is still run'),
+    ('c-builtin-first-order', 'contentintel/connections.py', '"builtin_first": ("builtin", "external")', '"builtin_first": ("external", "builtin")', 'builtin_first runs the repository first'),
+    ('c-external-only-falls-back', 'contentintel/connections.py', '"external_only": ("external",)', '"external_only": ("external", "builtin")', 'external_only quietly uses the backup'),
+    ('c-failure-not-recorded', 'contentintel/connections.py', '                note(settings, conn_id, False, now, code=getattr(exc, "code", "UPSTREAM_BROKEN"), message=str(exc), ledger=ledger)', '                pass', 'a repository failure never lowers its health'),
+    ('c-install-off', 'contentintel/connections.py', '    if not d["on"]:\n        return False, f"{conn_id}: switched off, nothing installed"', '    if False:\n        return False, f"{conn_id}: switched off, nothing installed"', 'a switched-off connection is installed'),
+    ('c-install-not-latest', 'contentintel/connections.py', 'sh([pip, "install", "-q", "--upgrade", spec["pip"], *spec.get("pip_extra", ())])', 'sh([pip, "install", "-q", spec["pip"], *spec.get("pip_extra", ())])', 'latest does not upgrade'),
+    ('c-node-not-newest-tag', 'contentintel/connections.py', 'ref = tags[0] if tags else "HEAD"', 'ref = "HEAD"', 'latest does not pick the newest release'),
+    ('c-probe-success-not-recorded', 'contentintel/connections.py', '    note(settings, conn_id, True, now, ledger=ledger)\n    return True, f"{conn_id}: {message}"', '    return True, f"{conn_id}: {message}"', 'a working probe is not recorded'),
+    ('arx-code-lost', 'contentintel/agent_reach_external.py', 'code if code in K.CODES else K.UPSTREAM_BROKEN', 'K.UPSTREAM_BROKEN', "Agent-Reach's error codes are all reported as broken"),
+    ('arx-optional-dropped', 'contentintel/agent_reach_external.py', '            if name in OPTIONAL and values.get(name):', '            if False:', '--limit and the other options are never sent'),
+    ('arx-env-leak', 'contentintel/agent_reach_external.py', 'env=CONN.external_env(self.settings, "agent_reach", self.environ)', 'env=self.environ', 'every secret is handed to Agent-Reach'),
+    ('sv-ar-always-builtin', 'contentintel/services.py', '    if not exe:\n        return builtin\n    return ARX.RoutedAgentReach', '    if False:\n        return builtin\n    return ARX.RoutedAgentReach', 'Agent-Reach is run although it is not installed'),
+    ('sv-ar-builtin-only-ignored', 'contentintel/services.py', 'exe = CONN.binary_path("agent_reach") if d["on"] and d["route"] != "builtin_only" else ""', 'exe = CONN.binary_path("agent_reach") if d["on"] else ""', 'builtin_only still runs the repository'),
+    ('sv-chain-refusal-guard', 'contentintel/services.py', '(exc.code in REFUSALS and _GUARDS.on("rest_after_refusal"))', 'exc.code in REFUSALS', 'a refusal ends the reader chain with the guard off'),
+    ('sv-scrapling-off-ignored', 'contentintel/services.py', '        if not conn["on"]:\n            skipped.append("scrapling: the Scrapling connection', '        if False:\n            skipped.append("scrapling: the Scrapling connection', 'a switched-off Scrapling connection is still used'),
+    ('sv-refusal-counts-against-scrapling', 'contentintel/services.py', 'if name == "scrapling" and exc.code not in REFUSALS:', 'if name == "scrapling":', "a site's refusal lowers Scrapling's health"),
+    ('sv-builtin-first-chain', 'contentintel/services.py', '"builtin_first": ["core", "jina", "scrapling"]', '"builtin_first": ["scrapling", "jina", "core"]', 'builtin_first still reads with Scrapling first'),
+    ('wc-version-pin-swapped', 'contentintel/observatory/worker_client.py', '.get("scrapling", "latest") == "pinned" else ""', '.get("scrapling", "latest") == "latest" else ""', 'latest pins the version and pinned does not'),
+    ('cmd-connections-bad-key', 'contentintel/observatory/commands.py', '    if args.key and args.key not in CONN.CONNECTIONS:', '    if False:', 'a mistyped connection name is accepted'),
+    ('sheets-connections-tab', 'contentintel/sheets.py', '+ _connection_tabs(store, now, report) + _ai_tabs(store, now, report):', '+ _ai_tabs(store, now, report):', 'the Connections Health tab is not written'),
+]
+MUTATIONS.extend(U41)
 
 def run_tests(workdir):
     env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}
