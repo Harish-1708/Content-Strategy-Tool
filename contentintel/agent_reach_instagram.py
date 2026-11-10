@@ -34,6 +34,14 @@ def hosted_runner(environ=None):
     return guards.on("hosted_runner_block") and (environ if environ is not None else os.environ).get("RUNNER_ENVIRONMENT", "") == "github-hosted"
 
 
+SITE_NAMES = {"instagram": "Instagram", "reddit": "Reddit", "twitter": "X", "facebook": "Facebook", "linkedin": "LinkedIn", "xiaohongshu": "Xiaohongshu", "boss": "Boss"}
+
+
+def site_name(site):
+    """The site's name as a person writes it (OpenCLI's site words are lower case)."""
+    return SITE_NAMES.get(site, str(site).capitalize())
+
+
 class OpenCLI:
     def __init__(self, binary="opencli", *, run=subprocess.run, which=shutil.which, timeout=90, environ=None, site="instagram"):
         self.binary, self.run, self.which, self.timeout, self.environ, self.site = binary, run, which, timeout, environ, site
@@ -47,7 +55,7 @@ class OpenCLI:
             raise K.Failure(K.NEED_SETUP, f"this route does not run on a GitHub-hosted runner: it needs a browser logged in to {self.site.capitalize()}, and that login must stay on a machine you control "
                             f"(a self-hosted runner, or run it by hand there). No {self.site.capitalize()} cookie or password is ever passed to a hosted runner")
         if not self.available():
-            raise K.Failure(K.NEED_SETUP, f"{self.binary} is not installed on this machine. This route needs the OpenCLI program and a browser logged in to Instagram, which a hosted runner does not have")
+            raise K.Failure(K.NEED_SETUP, f"{self.binary} is not installed on this machine. This route needs the OpenCLI program and a browser logged in to {site_name(self.site)}, which a hosted runner does not have")
         argv = [self.binary, self.site, *map(str, args), "-f", "json"]
         try:
             done = self.run(argv, capture_output=True, text=True, timeout=self.timeout)
