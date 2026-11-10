@@ -66,12 +66,12 @@ def route_default_for(spec, purpose):
     return default.get(purpose, default.get("*")) if isinstance(default, dict) else default
 
 
-def register_service(name, *, label="", channels=(), purposes=None, routes=None, options=False):
+def register_service(name, *, label="", channels=(), purposes=None, routes=None, options=False, channel_default=True):
     """Add a shared service. purposes: None means every purpose, now and later. routes is {'purposes': 'all' | 'ai' | (...), 'choices': (...), 'default': value or {purpose: value, '*': fallback}} or None.
     Registering the same name again replaces it (so a repository can refine its entry)."""
     if not re.fullmatch(r"[a-z][a-z0-9_]{1,40}", name):
         raise ValueError(f"a service name is lowercase letters, digits and underscores: {name!r}")
-    SERVICE_REGISTRY[name] = {"label": label or name, "channels": tuple(channels), "purposes": tuple(purposes) if purposes is not None else (), "all_purposes": purposes is None, "routes": routes, "options": bool(options)}
+    SERVICE_REGISTRY[name] = {"label": label or name, "channels": tuple(channels), "purposes": tuple(purposes) if purposes is not None else (), "all_purposes": purposes is None, "routes": routes, "options": bool(options), "channel_default": bool(channel_default)}
 
 
 register_service("scrapling", label="Scrapling (page reading, browser, request controls)", options=True)
@@ -79,6 +79,14 @@ register_service("agent_reach", label="Agent-Reach (social and research channels
 register_service("search", label="Web search (Google-backed providers)", channels=SEARCH_PROVIDERS)
 GATEWAY_PROVIDERS = ("cloudflare", "github", "google", "groq", "mistral", "openrouter")          # the external free providers enabled in ai_providers.yaml (a test keeps this equal); Claude is the fallback and has no switch here
 register_service("ai_gateway", label="AI Gateway (free-provider routing with Claude as fallback)", channels=GATEWAY_PROVIDERS, routes={"purposes": "ai", "choices": ("claude", "gateway_first"), "default": "gateway_first"})
+from .. import connections as _CONN
+from .. import guards as _GUARDS
+register_service("guards", label="Guards (each protection that could stop a request; OFF never blocks)", channels=tuple(_GUARDS.GUARDS), purposes=(), channel_default=_GUARDS.legacy())
+_CONN.load_declared()                                  # connections declared in connections_extra.yaml join the registry before the controls are generated
+register_service("connections", label="External connections (the repositories themselves)", channels=tuple(_CONN.CONNECTIONS))
+register_service("connection_routes", label="External connections: which route first", purposes=(), routes={"purposes": tuple(_CONN.CONNECTIONS), "choices": _CONN.ROUTES, "default": "external_first"})
+register_service("connection_versions", label="External connections: which version", purposes=(), routes={"purposes": tuple(_CONN.CONNECTIONS), "choices": _CONN.VERSIONS, "default": "latest"})
+register_service("connection_secrets", label="External connections: secrets handed over", channels=tuple(_CONN.CONNECTIONS), purposes=())
 register_service("page_readers", label="Page readers (built-in, Jina Reader, Scrapling)", routes={"purposes": "all", "choices": PAGE_ENGINES, "default": {**PAGE_ENGINE_DEFAULTS, "*": "auto"}})
 
 
@@ -93,7 +101,7 @@ def service_defaults():
     for name, spec in SERVICE_REGISTRY.items():
         entry = {"enabled": True, "use_for": {p: True for p in spec_purposes(spec)}}
         if spec["channels"]:
-            entry["channels"] = {c: True for c in spec["channels"]}
+            entry["channels"] = {c: spec.get("channel_default", True) for c in spec["channels"]}
         if spec["routes"]:
             entry["routes"] = {p: route_default_for(spec, p) for p in route_purposes(spec)}
         if spec["options"]:
@@ -129,6 +137,7 @@ DEFAULTS = {
     "sitemaps": {"max_urls": 50000, "max_child_sitemaps": 25, "max_decompressed_bytes": 25_000_000},
     "pages": {"max_per_competitor": 12, "max_text_chars": 20000, "keep_text_chars": 6000},
     "feeds": {"max_items": 500},
+    "retry": {"attempts": 3, "backoff_seconds": 2},          # with the rest guard OFF: how many times a refusing site is tried, and the pause (seconds) that grows with each try, before it is marked failed and the run moves on
     "crawl": {"max_pages": 25, "depth": 2},                     # a site crawl through Scrapling (SV.scrapling_crawl, corpus --what crawl): pages at most (1-200) and links deep at most (0-6)
     "discovery": {
         "enabled": True, "min_score": 40, "auto_monitor_score": 65, "auto_monitor_max": 6, "max_monitored": 10, "probe_max": 8,
@@ -166,7 +175,7 @@ _RANGES = {   # (section, key): (minimum, maximum)
     ("shopify", "max_products"): (1, 20000), ("shopify", "max_collections"): (1, 500), ("shopify", "max_pages_per_collection"): (1, 40), ("shopify", "per_page"): (10, 250),
     ("sitemaps", "max_urls"): (100, 200000), ("sitemaps", "max_child_sitemaps"): (1, 200), ("sitemaps", "max_decompressed_bytes"): (100_000, 100_000_000),
     ("pages", "max_per_competitor"): (0, 100), ("pages", "max_text_chars"): (500, 200_000), ("pages", "keep_text_chars"): (200, 50_000),
-    ("feeds", "max_items"): (10, 5000), ("crawl", "max_pages"): (1, 200), ("crawl", "depth"): (0, 6),
+    ("feeds", "max_items"): (10, 5000), ("retry", "attempts"): (1, 10), ("retry", "backoff_seconds"): (0, 60), ("crawl", "max_pages"): (1, 200), ("crawl", "depth"): (0, 6),
     ("discovery", "min_score"): (0, 100), ("discovery", "auto_monitor_score"): (0, 100), ("discovery", "auto_monitor_max"): (0, 50),
     ("discovery", "max_monitored"): (1, 100), ("discovery", "probe_max"): (0, 50), ("discovery", "lookup_max"): (0, 50), ("discovery", "min_appearances"): (1, 100),
     ("discovery", "enrich_max"): (0, 30), ("discovery", "min_confidence"): (0.3, 0.99), ("discovery", "agent_reach_calls"): (0, 60), ("discovery", "judge_max"): (0, 50),
