@@ -103,7 +103,7 @@ How to read the **Default** column. *On* means the capability is on by default: 
 
 ## Owner-control defaults (verified from the registry, not assumed)
 
-`tests/test_owner_defaults.py` checks every line below against the code and the shipped `observatory.yaml`, and checks that turning each of the 81 permission switches off blocks exactly that capability and turning it back on restores it.
+`tests/test_owner_defaults.py` checks every line below against the code and the shipped `observatory.yaml`, and checks that turning each of the 107 permission switches off blocks exactly that capability and turning it back on restores it.
 
 | Control | Default |
 |---|---|
@@ -121,6 +121,19 @@ How to read the **Default** column. *On* means the capability is on by default: 
 
 Every module reads these through the shared interfaces, so a setting changed once applies to competitor monitoring, discovery, general and content research, YouTube, the social channels and any other repository that installs the package. A module-specific override (a competitor's own `advanced:` block, or an `overrides:` entry matched by purpose or host) is optional and, when given, wins for that target only.
 
+## Connections and guards (Update 41)
+
+The six repositories are connected as themselves, with the platform's own versions as the backup (full guide: `connections.md`). Every connection defaults to ON, `external_first`, `latest`, secrets handed over (only the ones it declares).
+
+| Connection | Runs as | Backup | Health |
+|---|---|---|---|
+| agent_reach | its own command line (`contentintel/agent_reach_external.py::ExternalAgentReach`) | the platform's adapters | scored per attempt |
+| scrapling | the library in its own environment | the built-in polite reader | scored from page reads |
+| freellmapi | built from the newest release in each job | Claude only | probed |
+| instagram_skill, youtube_skill, video_shotcraft | cloned from the repository | the platform's own labels and scoring | probed |
+
+Guards (`contentintel/guards.py::on`) are owner switches that are all **OFF by default**, so nothing blocks unless the owner turns it on: robots.txt, the private-address block, resting after a refusal, the hosted-runner block and the Reddit approval gate. With the rest guard OFF a refusing site is tried again (3 attempts by default), marked failed, and the run moves on.
+
 ## Owner decision recorded
 
-The owner decided that Scrapling's `solve_cloudflare` option (the `solve_challenges` control) stays, and that every feature is on by default, with only the owner turning anything off. With browser identity options on, a browser-read page no longer announces our honest identity, so a site cannot see who is reading it; robots.txt is still checked under our honest name, a refusal still rests the host with no retry, and the tool still refuses private addresses. Using these options against a site can breach its terms, and that is the owner's responsibility.
+The owner decided that Scrapling's `solve_cloudflare` option (the `solve_challenges` control) stays, that every feature is on by default, and that no guard blocks unless the owner turns it on. With browser identity options on, a browser-read page no longer announces our honest identity, so a site cannot see who is reading it; robots.txt, the private-address block and resting after a refusal are guards that are OFF by default. Using these options against a site can breach its terms, and that is the owner's responsibility.
