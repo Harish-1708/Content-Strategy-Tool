@@ -116,12 +116,12 @@ providers:
       - tools
       note: present in the gateway baseline; not approved
     - id: gemini-2.5-flash
-      approved: true
+      approved: false
       capabilities:
       - text
       - vision
       - tools
-      note: proposed starter approval; review before enabling
+      note: "no longer available to new keys (Google answered no-longer-available-to-new-users live 2026-11-10) and its requests move to gemini-3.8-flash on 2026-12-01; replaced by gemini-3.5-flash"
     - id: gemini-2.5-flash-lite
       approved: true
       capabilities:
@@ -151,12 +151,12 @@ providers:
       - tools
       note: present in the gateway baseline; not approved
     - id: gemini-3.5-flash
-      approved: false
+      approved: true
       capabilities:
       - text
       - vision
       - tools
-      note: present in the gateway baseline; not approved
+      note: "approved 2026-11-10 as the Google model the gateway knows: Google routes requests to gemini-3.5-flash to its current flash model; gemini-3.8-flash is newer but is not in the pinned gateway catalogue, so it cannot be used through it"
     - id: gemma-4-31b-it
       approved: false
       capabilities:
@@ -196,11 +196,11 @@ providers:
       tokens_per_day: 200000
     models:
     - id: llama-3.3-70b-versatile
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: proposed starter approval; review before enabling
+      note: "retired for free and developer keys: Groq lists it as Enterprise-only (a free key gets does-not-exist-or-no-access, seen live 2026-11-10); replaced by openai/gpt-oss-120b"
     - id: meta-llama/llama-4-scout-17b-16e-instruct
       approved: false
       capabilities:
@@ -215,11 +215,11 @@ providers:
       - tools
       note: proposed starter approval; review before enabling
     - id: openai/gpt-oss-20b
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: "approved 2026-11-10 as the light Groq model: listed as a production model on the Groq model page that day, and named by Groq as the replacement for the retired Llama models"
     - id: qwen/qwen3-32b
       approved: false
       capabilities:
@@ -227,11 +227,11 @@ providers:
       - tools
       note: present in the gateway baseline; not approved
     - id: llama-3.1-8b-instant
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: proposed starter approval; review before enabling
+      note: "retired for free and developer keys: Groq lists it as Enterprise-only and shut it down on 2026-08-16; use openai/gpt-oss-20b"
     - id: groq/compound
       approved: false
       capabilities:
