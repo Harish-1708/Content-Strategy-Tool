@@ -281,6 +281,18 @@ def _controls_tabs(brand, store, now, report):
         return []
 
 
+def _connection_tabs(store, now, report):
+    """The Connections Health tab. Never stops the rest of the sheet."""
+    try:
+        from . import connections, services
+        import os as _os
+        _os.environ.setdefault("CONTENTINTEL_DATA_DIR", str(store.data_dir))
+        return [connections.sheet_tab(services.load_settings(None, store.data_dir), now)]
+    except Exception as exc:
+        report.notes.append(f"Connections Health tab skipped: {exc}")
+        return []
+
+
 def _ai_tabs(store, now, report):
     """The AI Gateway Health tab, or none (no AI layer files, or nothing switched on or used). Never stops the rest of the sheet."""
     try:
@@ -765,7 +777,7 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
 
     _read_competitor_decisions(spreadsheet, brand, store, now, report, dry_run)
     _read_controls(spreadsheet, brand, store, now, report, dry_run)
-    for tab in _observatory_tabs(brand, store, now, report) + _controls_tabs(brand, store, now, report) + _ai_tabs(store, now, report):     # what the competitor observatory has found, and how the AI providers are doing
+    for tab in _observatory_tabs(brand, store, now, report) + _controls_tabs(brand, store, now, report) + _connection_tabs(store, now, report) + _ai_tabs(store, now, report):     # what the competitor observatory has found, and how the AI providers are doing
         ws = _ensure_tab(spreadsheet, tab["title"], report, dry_run, created)
         rows = {key: {c: _typed(c, _plain(row.get(c))) for c in tab["columns"]} for key, row in tab["rows_by_key"].items()}
         _sync_table(ws, tab=tab["title"], columns=tab["columns"], rows_by_key=rows, key_col=tab["key_col"], report=report, dry_run=dry_run,
