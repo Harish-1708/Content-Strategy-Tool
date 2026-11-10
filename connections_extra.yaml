@@ -1,0 +1,15 @@
+# Add more repositories as connections without writing code (Stage B). Each entry becomes a connection with the same four owner controls (ON/OFF, route, version, secrets)
+# and a health score. Entries that are wrong are skipped and reported; the rest still load. Example (remove the leading # to use it):
+#
+# connections:
+#   - id: my_tool                                   # lowercase letters, digits and underscores
+#     label: My tool
+#     repo: https://github.com/example/my-tool
+#     kind: pip_cli                                 # pip_cli (a package with a command line), pip_lib, node_server or git_data (templates and data)
+#     binary: my-tool                               # pip_cli only: the command it installs
+#     pip: git+https://github.com/example/my-tool   # optional; this is the default
+#     probe: [--version]                            # pip_cli only: a cheap command that proves it works
+#     secrets: [MY_TOOL_API_KEY]                    # the ONLY secrets it is handed (and only if you allow it); every other secret is withheld
+#     fallback: our own version of this             # what runs when the repository fails
+#     needs: an account or a key, if any
+connections: []
