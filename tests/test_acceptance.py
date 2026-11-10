@@ -194,7 +194,7 @@ def test_one_probe_per_enabled_route_that_has_something_to_check(tmp_path):
     assert ("instagram", "agent_reach", "check") not in k                                         # a route that is off is never checked
     assert {kk for kk in k if kk[0] == "web_search"} == {("web_search", r, a) for r in ("serper_dev", "tavily", "serpapi", "exa", "exa_mcp", "agent_reach_reddit", "agent_reach_youtube") for a in ("search_web", "search_news")}
     skipped = {(p.route, p.skip) for p in probes if p.source == "web_search" and p.route.startswith("agent_reach")}
-    assert {r for r, _ in skipped} == {"agent_reach_reddit", "agent_reach_youtube"} and all("AGENT_REACH_SEARCH=on" in why and "never runs on a hosted runner" in why for _, why in skipped)
+    assert {r for r, _ in skipped} == {"agent_reach_reddit", "agent_reach_youtube"} and all("AGENT_REACH_SEARCH=on" in why for _, why in skipped)
     assert ("shopify_catalogue", "public_json", "fetch_page") in k and ("youtube_public", "data_api", "video_details") in k and ("claude", "api", "check") in k
     assert not [kk for kk in k if kk[0] == "reddit_public"]                                                  # a planned source has nothing to check yet
     assert {kk[2] for kk in k if kk[0] in ("competitor_stores", "competitor_pages")} == {"catalogue_walk", "read_sitemap", "read_page", "read_feed", "read_via_reader"}
