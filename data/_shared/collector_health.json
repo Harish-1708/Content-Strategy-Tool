@@ -187,7 +187,7 @@
   },
   "ai:github|gateway": {
    "acceptance": null,
-   "consecutive_failures": 16,
+   "consecutive_failures": 17,
    "consecutive_successes": 0,
    "history": [
     {
@@ -301,12 +301,19 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-10T15:19:39Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-10T11:46:36Z",
+    "at": "2026-11-10T15:19:39Z",
     "code": "UPSTREAM_BROKEN",
-    "message": "the provider could not be reached: Expecting value: line 1 column 1 (char 0)"
+    "message": "the provider answered 200 with something that is not JSON (text/plain): 'OK\\r\\n'"
    },
    "last_success": "",
    "pause": null,
