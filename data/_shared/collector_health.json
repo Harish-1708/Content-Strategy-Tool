@@ -90,6 +90,26 @@
    "source": "ai:groq",
    "state": "healthy"
   },
+  "ai:openrouter|gateway": {
+   "acceptance": null,
+   "consecutive_failures": 0,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-10T09:13:15Z",
+     "code": "BAD_INPUT",
+     "items": 0,
+     "ms": 0,
+     "ok": null
+    }
+   ],
+   "last_error": null,
+   "last_success": "",
+   "pause": null,
+   "route": "gateway",
+   "source": "ai:openrouter",
+   "state": "healthy"
+  },
   "claude|api": {
    "acceptance": {
     "at": "2026-11-10T08:40:20Z",
