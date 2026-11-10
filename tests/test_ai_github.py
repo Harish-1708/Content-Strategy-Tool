@@ -117,7 +117,7 @@ def test_a_direct_client_is_made_only_when_the_token_is_present_and_without_star
     assert isinstance(clients["github"], C.DirectClient) and side is None and "github" in clients
     notes = []
     clients, _ = CM.live_clients(reg, {}, None, "/tmp", notes)
-    assert "github" not in clients and any("github: enabled, but no credential" in n and "GITHUB_TOKEN" in n for n in notes)
+    assert "github" not in clients and any(n.startswith("SKIPPED: github: no credential") and "GITHUB_TOKEN" in n for n in notes)
     notes = []
     clients, _ = CM.live_clients(reg, {"GITHUB_TOKEN": "   "}, None, "/tmp", notes)
     assert "github" not in clients
@@ -162,3 +162,49 @@ def test_the_health_tab_says_the_quota_is_not_known_instead_of_leaving_it_blank(
     row = SR.rows(reg, ledger, {}, "2026-11-04T10:00:00Z")["cloudflare"]
     assert row["daily_limit"] is None and row["left_today"] is None and "free quota not known" in row["note"]
     assert SR.rows(reg, ledger, {}, "2026-11-04T10:00:00Z")["github"]["daily_limit"] == 150            # a provider with a known limit still shows it
+
+
+class FakeSidecar:
+    made = []
+
+    def __init__(self, gateway_dir, lock):
+        self.isolated, self.base_url, self.result = [], "http://127.0.0.1:1", (True, "3 model(s) are each their own group")
+        FakeSidecar.made.append(self)
+
+    def start(self, env, port, log):
+        pass
+
+    def wait_ready(self):
+        pass
+
+    def bootstrap(self, password):
+        return "unified-key"
+
+    def isolate_models(self, password):
+        self.isolated.append(password)
+        return self.result
+
+    def stop(self):
+        pass
+
+
+def _gateway_env(tmp_path):
+    (tmp_path / "gw" / "server" / "dist").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "gw" / "server" / "dist" / "index.js").write_text("")
+    return {"FREEAPI_ENCRYPTION_KEY": "ab" * 32, "FREEAPI_ADMIN_PASSWORD": "long-enough-password", "GROQ_API_KEY": "gsk_" + "b" * 30}
+
+
+def test_a_live_run_makes_each_providers_model_its_own_group_and_a_gateway_that_cannot_is_a_note_not_a_failure(tmp_path, monkeypatch):
+    monkeypatch.setattr(CM.gw, "Sidecar", FakeSidecar)
+    reg = R.load_registry(ROOT / "ai_providers.yaml")
+    FakeSidecar.made.clear()
+    notes = []
+    clients, side = CM.live_clients(reg, _gateway_env(tmp_path), str(tmp_path / "gw"), str(tmp_path / "work"), notes)
+    assert side is FakeSidecar.made[0] and side.isolated == ["long-enough-password"] and "groq" in clients
+    assert any(n.startswith("SKIPPED: mistral: no credential") for n in notes) and not any(n.startswith("APPLICATION: mistral") for n in notes)        # no key on purpose: a skip, never a problem
+    assert not [n for n in notes if "own group" in n]                                    # nothing to report when it worked (the Claude-key note is a different matter)
+    FakeSidecar.made.clear()
+    monkeypatch.setattr(FakeSidecar, "isolate_models", lambda self, pw: (False, "the gateway did not accept the grouping change (404)"))
+    notes = []
+    clients, _ = CM.live_clients(reg, _gateway_env(tmp_path), str(tmp_path / "gw"), str(tmp_path / "work"), notes)
+    assert "groq" in clients and any(n.startswith("NOTE: could not make each provider") and "(404)" in n for n in notes) and not any("could not make each provider" in n and n.startswith("APPLICATION") for n in notes)        # a note, never an application problem
