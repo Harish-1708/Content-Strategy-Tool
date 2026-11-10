@@ -9,7 +9,7 @@ politeness:
   max_requests_per_domain: 80   # a hard ceiling per site per run
   cache_minutes: 360
 
-# robots.txt is a crawler preference, not an access control. For the tool's own crawler the default is to obey it. For public pages read through Jina Reader the default
+# These crawl_policy settings apply only while the robots_txt guard is ON (services.guards.channels.robots_txt; OFF by default, so robots.txt is not consulted). robots.txt is a crawler preference, not an access control. When the guard is ON, for the tool's own crawler the default is to obey it.
 # is to read and say that robots.txt asked otherwise. Either can be changed; an exception always names who decided and why.
 crawl_policy:
   robots: obey                  # obey, or advisory (advisory needs a written basis below)
@@ -26,7 +26,7 @@ advanced:
 # The controls themselves are chosen per competitor in brands/<brand>/observatory.yaml under advanced:, for any website, with no list of hosts and no approval step:
 #   custom_identity: identity, headers, accept_language       proxy: proxy, rotate               session: session
 #   browser: browser/stealth, locale, timezone, wait_selector account_cookies: cookies_env        evasion: impersonate, hide_canvas, block_webrtc, humanize, solve_challenges
-# Nothing can retry past a refusal: a challenge, 401/403 or 429 rests the host whatever is set. Run `observatory controls` to see what is on. See docs/observatory/README.md.
+# Refusals: with the rest guard OFF (the default) a refusing site is retried a few times (see retry: below) and then marked failed; with it ON the host rests and nothing retries it. Run `observatory controls` to see what is on. See docs/observatory/README.md.
 access_controls:
   custom_identity: true
   proxy: true
@@ -83,6 +83,10 @@ discovery:
   agent_reach_calls: 12         # Instagram account searches and profile reads through OpenCLI per run (it runs only on a machine you control)
   judge: true                   # ask the AI for a second opinion on each candidate; every verdict waits for your review
   judge_max: 16                 # candidates judged per run
+
+retry:                          # with the rest guard OFF (the default): how many times a refusing site is tried before it is marked failed and the run moves on
+  attempts: 3                   # 1 to 10
+  backoff_seconds: 2            # 0 to 60; the pause grows with each try
 
 crawl:                          # a polite site crawl through Scrapling (corpus --what crawl; any module through SV.scrapling_crawl)
   max_pages: 25                 # pages at most, 1 to 200
