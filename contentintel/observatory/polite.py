@@ -23,7 +23,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from urllib.parse import urljoin, urlsplit
 
-from .. import contract as K
+from .. import guards, contract as K
 from .. import safety
 from .config import USER_AGENT_TOKEN
 from . import signals
@@ -114,6 +114,7 @@ class PoliteClient:
             raise K.Failure(K.NEED_SETUP, "the robots.txt reader is not installed (pip install protego)")
         self.cfg = settings["politeness"]
         self.policy = settings.get("crawl_policy") or {"robots": "obey", "basis": "", "overrides": []}
+        self.retry = {"attempts": 3, "backoff_seconds": 2, **(settings.get("retry") or {})}
         contact = (contact or self.cfg.get("contact") or "").strip()
         if not contact:
             raise K.Failure(K.NEED_SETUP, "no contact address for the identifying user agent: set OBSERVATORY_CONTACT (an email address or web page "
@@ -147,19 +148,19 @@ class PoliteClient:
 
     def _guard(self, url):
         try:
-            clean = safety.normalize_public_url(url)
+            clean = safety.normalize_public_url(url) if guards.on("private_address_block") else safety.normalize_fetch_url(url)
         except safety.UnsafeURL:
             raise K.Failure(K.BAD_INPUT, "only public http(s) web addresses are fetched") from None
         host = urlsplit(clean).hostname
         site = self._site(host)
-        if site.public is None:
+        if guards.on("private_address_block") and site.public is None:
             site.public = safety.resolves_public(host, self.resolver) if self.resolver else safety.resolves_public(host)
-        if not site.public:
+        if guards.on("private_address_block") and not site.public:
             raise K.Failure(K.BAD_INPUT, f"{host} does not point to a public address")
         return clean, host
 
     def _check_pause(self, host):
-        if self.ledger:
+        if self.ledger and guards.on("rest_after_refusal"):
             rest = self.ledger.paused(host, self.now_fn())
             if rest:
                 code = rest[2] if rest[2] in K.CODES else K.RATE_LIMITED
@@ -203,6 +204,8 @@ class PoliteClient:
         return self.policy.get("robots", "obey"), self.policy.get("basis", "")
 
     def robots_allows(self, url):
+        if not guards.on("robots_txt"):
+            return True
         clean, _ = self._guard(url)
         rb = self._robots_for(clean)
         return (not rb.closed) and bool(rb.parser.can_fetch(clean, USER_AGENT_TOKEN))
@@ -262,21 +265,31 @@ class PoliteClient:
             failure.budget = True                       # our own ceiling, not the site's doing: a caller can stop gracefully and say what is left
             raise failure
         limit = max_bytes or self.cfg["max_bytes"]
-        self._wait_turn(host, parser)
-        headers = {"User-Agent": self.user_agent, "Accept": accept, "Accept-Encoding": "gzip, deflate"}
-        try:
-            status, got_headers, body = self.http("GET", clean, headers, self.cfg["timeout_seconds"], limit)
-        except TimeoutError:
-            self._after(host, 0, {}, ok=False)
-            raise _transient(K.TIMEOUT, f"{host} did not answer within {self.cfg['timeout_seconds']} seconds") from None
-        except OSError as exc:
-            self._after(host, 0, {}, ok=False)
-            raise _transient(K.UPSTREAM_BROKEN, f"{host} could not be reached ({exc.__class__.__name__})") from None
-        if len(body) > limit:
-            self._after(host, status, got_headers, ok=False)
-            raise K.Failure(K.UPSTREAM_BROKEN, f"the answer from {host} is larger than the allowed {limit} bytes and was not read")
-        self._classify(host, clean, status, got_headers, body)
-        return Fetched(clean, clean, status, got_headers, body)
+        attempts = 1 if guards.on("rest_after_refusal") else max(1, int(self.retry["attempts"]))
+        for attempt in range(attempts):
+            self._wait_turn(host, parser)
+            headers = {"User-Agent": self.user_agent, "Accept": accept, "Accept-Encoding": "gzip, deflate"}
+            try:
+                status, got_headers, body = self.http("GET", clean, headers, self.cfg["timeout_seconds"], limit)
+            except TimeoutError:
+                self._after(host, 0, {}, ok=False)
+                raise _transient(K.TIMEOUT, f"{host} did not answer within {self.cfg['timeout_seconds']} seconds") from None
+            except OSError as exc:
+                self._after(host, 0, {}, ok=False)
+                raise _transient(K.UPSTREAM_BROKEN, f"{host} could not be reached ({exc.__class__.__name__})") from None
+            if len(body) > limit:
+                self._after(host, status, got_headers, ok=False)
+                raise K.Failure(K.UPSTREAM_BROKEN, f"the answer from {host} is larger than the allowed {limit} bytes and was not read")
+            try:
+                self._classify(host, clean, status, got_headers, body)
+            except K.Failure as exc:
+                if exc.code in (K.RATE_LIMITED, K.PLATFORM_BLOCKED) and attempt + 1 < attempts:        # the rest guard is OFF: try again a few times
+                    self.sleep(float(self.retry["backoff_seconds"]) * (attempt + 1))
+                    continue
+                if attempts > 1 and exc.code in (K.RATE_LIMITED, K.PLATFORM_BLOCKED):
+                    raise K.Failure(exc.code, f"{exc} (still refused after {attempts} attempts; marked failed and moved on)", retry_after=getattr(exc, "retry_after", None)) from None
+                raise
+            return Fetched(clean, clean, status, got_headers, body)
 
     def _classify(self, host, url, status, headers, body):
         """Turn a response into success or the right failure, updating the throttle and the resting ledger."""
@@ -307,6 +320,8 @@ class PoliteClient:
         self._after(host, status, headers, ok=True)
 
     def _rest(self, host, seconds, reason, code):
+        if not guards.on("rest_after_refusal"):
+            return
         if self.ledger:
             self.ledger.pause(host, seconds, reason, self.now_fn(), code)
         self.events.append(f"{host}: resting for {int(seconds)} seconds ({reason})")
@@ -340,9 +355,9 @@ class PoliteClient:
         while True:
             current, host = self._guard(current)
             self._check_pause(host)
-            rb = self._robots_for(current)
+            rb = self._robots_for(current) if guards.on("robots_txt") else None          # the owner has not asked for robots.txt to be consulted: it is not even requested
             robots_note = ""
-            if rb.closed or not rb.parser.can_fetch(current, USER_AGENT_TOKEN):
+            if rb is not None and (rb.closed or not rb.parser.can_fetch(current, USER_AGENT_TOKEN)):
                 why = rb.note if rb.closed else "robots.txt does not allow this address"
                 mode, basis = self.robots_mode(host)
                 if mode == "obey":
@@ -352,7 +367,7 @@ class PoliteClient:
                 # robots.txt is a crawler preference, not an access control: under an advisory policy or a recorded override the page is read and the fact is recorded
                 robots_note = f"{why}; read under crawl policy '{mode}'" + (f" ({basis})" if basis else "")
                 self.events.append(f"{host}: {robots_note}")
-            fetched = self._request_with_retries(current, max_bytes=max_bytes, accept=accept, parser=rb.parser)
+            fetched = self._request_with_retries(current, max_bytes=max_bytes, accept=accept, parser=rb.parser if rb is not None else None)
             if fetched.status in (301, 302, 303, 307, 308):
                 target = fetched.headers.get("location", "")
                 hops += 1
