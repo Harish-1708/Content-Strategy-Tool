@@ -998,8 +998,16 @@ def _observatory_checks(args, now):
         settings = _services.load_settings(None, getattr(args, "data_dir", "data"))
         slug = args.brand or (list_brand_slugs(args.brands_dir) or [""])[0]
         contact = (os.environ.get("OBSERVATORY_CONTACT") or settings["politeness"]["contact"]).strip()
-        checks = obs_checks.make_checks(load_brand(slug, args.brands_dir).domain if slug else "", settings, contact, now)
+        others = []
+        for other in list_brand_slugs(args.brands_dir):
+            if other != slug:
+                try:
+                    others.append(load_brand(other, args.brands_dir).domain)
+                except BrandError:
+                    pass
+        checks = obs_checks.make_checks(load_brand(slug, args.brands_dir).domain if slug else "", settings, contact, now, other_domains=[d for d in others if d])
         checks.update(obs_checks.reddit_checks(settings, contact))
+        checks.update(obs_checks.agent_reach_checks(settings, contact, now))
         return checks
     except (BrandError, obs_config.ObservatoryConfigError):
         return {}
@@ -1063,7 +1071,8 @@ def _acceptance_context(args, store, registry, now):
         from .observatory import config as _ocfg
         from . import services as _services2
         _s = _services2.load_settings(None, getattr(args, "data_dir", "data"))
-        for key, reason in _oc.reddit_missing(_s, (os.environ.get("OBSERVATORY_CONTACT") or _s["politeness"]["contact"]).strip()).items():
+        _contact = (os.environ.get("OBSERVATORY_CONTACT") or _s["politeness"]["contact"]).strip()
+        for key, reason in {**_oc.reddit_missing(_s, _contact), **_oc.agent_reach_missing(_s, _contact)}.items():
             ctx.missing.setdefault(key, reason)
     except (ImportError, _ocfg.ObservatoryConfigError):
         pass
