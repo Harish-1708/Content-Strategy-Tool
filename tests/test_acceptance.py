@@ -277,3 +277,29 @@ def test_a_secret_in_what_a_passing_probe_says_never_reaches_the_ledger(world):
     go([probe(fn=lambda: (1, "read it with key sk-ant-api03-ABCDEFGHIJKLMNOPQRSTUV and APIFY_TOKEN=apify_api_SECRETSECRETSECRET1"))], world)
     text = json.dumps(store.read_acceptance()) + json.dumps(ledger.state)
     assert "sk-ant" not in text and "SECRETSECRET" not in text and store.read_acceptance()[0]["passed"] is True
+
+
+# ---- the workflow hands the checks every secret they read ----------------------------------------------------------------------------------------
+
+def _route_step_env():
+    wf = yaml.safe_load(open(".github/workflows/acceptance.yml", encoding="utf-8"))
+    step = next(s for s in wf["jobs"]["acceptance"]["steps"] if s.get("name") == "Check each route") if "acceptance" in wf["jobs"] else \
+        next(s for job in wf["jobs"].values() for s in job["steps"] if s.get("name") == "Check each route")
+    return step["env"]
+
+
+def test_the_acceptance_workflow_passes_the_contact_address_and_every_documented_secret_the_checks_read():
+    import re
+    env = _route_step_env()
+    assert env["OBSERVATORY_CONTACT"] == "${{ secrets.OBSERVATORY_CONTACT }}"                       # without it the competitor, Agent-Reach and Reddit checks all skip
+    readme = open("README.md", encoding="utf-8").read()
+    section = readme[readme.index("## Secrets"):]
+    section = section[:section.index("\n## ", 5)] if "\n## " in section[5:] else section
+    documented = set(re.findall(r"`([A-Z][A-Z0-9_]{3,})`", section)) - {"GITHUB_TOKEN"}
+    read = set()
+    for path in ("contentintel/acceptance.py", "contentintel/observatory/acceptance_checks.py"):
+        read |= set(re.findall(r'environ(?:\.get\(|\[)\s*"([A-Z][A-Z0-9_]{3,})"', open(path, encoding="utf-8").read()))
+    must = (read & documented) | {"OBSERVATORY_CONTACT"}                                       # the contact address is read through the observatory settings, not by name here
+    assert {"REDDIT_CLIENT_ID", "REDDIT_CLIENT_SECRET"} <= must
+    missing = sorted(n for n in must if env.get(n) != "${{ secrets." + n + " }}")
+    assert not missing, f"the Acceptance workflow's Check each route step does not pass: {missing}"
