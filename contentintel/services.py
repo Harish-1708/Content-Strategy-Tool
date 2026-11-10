@@ -588,7 +588,7 @@ def ai_stack(store, ledger, environ, *, providers_config="ai_providers.yaml", la
             provider = registry.providers.get(pid)
             if not on and provider is not None and provider.enabled:
                 registry.providers[pid] = dataclasses.replace(provider, enabled=False)
-                notes.append(f"APPLICATION: {pid}: switched off by the owner (services.ai_gateway.channels.{pid})")
+                notes.append(f"SKIPPED: {pid}: switched off by the owner (services.ai_gateway.channels.{pid})")
     clients, side = aic.live_clients(registry, environ, ns.gateway_dir, workdir, notes)
     _, _, usage, review, router = aic.build_stack(ns, store, ledger, mode="live", clients=clients)
 
