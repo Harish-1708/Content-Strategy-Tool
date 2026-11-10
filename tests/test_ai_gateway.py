@@ -395,3 +395,61 @@ def test_the_gateway_is_always_given_an_absolute_database_path_because_it_runs_i
     assert os.path.isabs(env["FREEAPI_DB_PATH"]) and env["FREEAPI_DB_PATH"] == str((tmp_path / "ai-work" / "gateway.db").resolve())
     env = G.gateway_env(lock, {"FREEAPI_ENCRYPTION_KEY": "ab" * 32}, port=1234, db_path=tmp_path / "x" / "gateway.db", config={})
     assert env["FREEAPI_DB_PATH"] == str((tmp_path / "x" / "gateway.db").resolve())
+
+
+# ---- an answer that is not JSON says what it was; each provider's model is its own group -----------------------------------------------------------
+
+def test_a_successful_answer_that_is_not_json_is_kept_so_the_failure_can_say_what_the_server_returned():
+    import threading
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_POST(self):
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html")
+            self.end_headers()
+            self.wfile.write(b"<html>please sign in to continue</html>")
+
+        def log_message(self, *a):
+            pass
+    server = HTTPServer(("127.0.0.1", 0), Handler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    try:
+        status, body, headers = C.default_http("POST", f"http://127.0.0.1:{server.server_port}/x", headers={}, body={"a": 1}, timeout=10)
+    finally:
+        server.shutdown()
+    assert status == 200 and body["_not_json"] == "<html>please sign in to continue</html>" and body["_content_type"] == "text/html"
+
+
+def test_both_clients_turn_a_non_json_answer_into_a_failure_that_shows_it_and_never_shows_the_token():
+    odd = (200, {"_not_json": "<html>sign in ghp_SECRET1234 please</html>", "_content_type": "text/html"}, {})
+    direct = C.DirectClient("https://models.github.ai/inference", "ghp_SECRET1234", Http(odd))
+    with pytest.raises(Failure) as seen:
+        direct.complete({"provider": "github", "model": "openai/gpt-4.1-mini", "gateway_model": "x"}, "", "hi", 10)
+    assert seen.value.code == K.UPSTREAM_BROKEN and "not JSON (text/html)" in str(seen.value) and "sign in" in str(seen.value) and "ghp_SECRET1234" not in str(seen.value)
+    with pytest.raises(Failure) as seen:
+        C.GatewayClient("http://127.0.0.1:3001", "key", Http(odd)).complete(ROUTE, "", "hi", 10)
+    assert seen.value.code == K.UPSTREAM_BROKEN and "not JSON (text/html)" in str(seen.value)
+
+
+ADMIN_ROWS = [{"platform": "groq", "model_id": "openai/gpt-oss-120b", "enabled": 1}, {"platform": "openrouter", "model_id": "openai/gpt-oss-120b:free", "enabled": 1},
+              {"platform": "groq", "model_id": "qwen/qwen3-32b", "enabled": 0}, {"platform": "custom", "model_id": "mine", "enabled": 1}, {"platform": "github", "modelId": "openai/gpt-4.1-mini", "enabled": True}]
+
+
+def test_every_enabled_model_is_made_its_own_group_so_a_failed_provider_cannot_be_answered_by_another(tmp_path):
+    http = Http((200, {"token": "t"}, {}), (200, ADMIN_ROWS, {}), (200, {"enabled": False}, {}))
+    s, _ = sidecar(tmp_path, http)
+    ok, message = s.isolate_models("long-enough-password")
+    assert ok and message == "3 model(s) are each their own group"
+    login, models, put = http.calls
+    assert login["url"].endswith("/api/auth/login") and models["url"].endswith("/api/models") and models["headers"]["Authorization"] == "Bearer t"
+    assert put["method"] == "PUT" and put["url"].endswith("/api/settings/unify") and put["body"]["enabled"] is False
+    assert put["body"]["overrides"] == {"merges": [], "splits": [{"member": "github:openai/gpt-4.1-mini"}, {"member": "groq:openai/gpt-oss-120b"}, {"member": "openrouter:openai/gpt-oss-120b:free"}]}   # not the disabled one, not the custom one
+
+
+@pytest.mark.parametrize("answers, expect", [([(401, {}, {})], "admin login failed (401)"), ([(200, {"token": "t"}, {}), (200, [], {})], "no enabled models were listed"),
+                                              ([(200, {"token": "t"}, {}), (200, ADMIN_ROWS, {}), (404, {}, {})], "did not accept the grouping change (404)"), ([ConnectionError("down")], "ConnectionError")])
+def test_a_gateway_that_cannot_isolate_models_is_reported_never_raised(tmp_path, answers, expect):
+    s, _ = sidecar(tmp_path, Http(*answers))
+    ok, message = s.isolate_models("long-enough-password")
+    assert not ok and expect in message
