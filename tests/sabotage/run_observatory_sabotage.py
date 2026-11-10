@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OBS, AI = "contentintel/observatory/", "contentintel/ai/"
-TESTS = ["tests/test_observatory_*.py", "tests/test_services.py", "tests/test_ytdlp_youtube.py", "tests/test_external_repository.py", "tests/test_platform_wiring.py", "tests/test_platform_matrix.py", "tests/test_reddit_routes.py", "tests/test_agent_reach_instagram.py", "tests/test_ai_github.py", "tests/test_ai_health_tab.py", "tests/test_ai_config.py", "tests/test_providers.py", "tests/test_agent_reach_catalog.py", "tests/test_owner_defaults.py", "tests/test_capability_matrix.py", "tests/test_research.py", "tests/test_sources.py", "tests/test_guards.py", "tests/test_connections.py", "tests/test_sheets.py", "tests/test_health.py"]
+TESTS = ["tests/test_observatory_*.py", "tests/test_services.py", "tests/test_ytdlp_youtube.py", "tests/test_external_repository.py", "tests/test_platform_wiring.py", "tests/test_platform_matrix.py", "tests/test_reddit_routes.py", "tests/test_agent_reach_instagram.py", "tests/test_ai_github.py", "tests/test_ai_health_tab.py", "tests/test_ai_config.py", "tests/test_providers.py", "tests/test_agent_reach_catalog.py", "tests/test_owner_defaults.py", "tests/test_capability_matrix.py", "tests/test_research.py", "tests/test_sources.py", "tests/test_guards.py", "tests/test_connections.py", "tests/test_sheets.py", "tests/test_health.py", "tests/test_acceptance.py"]
 
 # (id, file, text found exactly once, replacement, what the bug simulates)
 MUTATIONS = [
@@ -385,6 +385,12 @@ U41 = [   # update 41: guards as owner switches, the connections layer, the exte
     ('sheets-connections-tab', 'contentintel/sheets.py', '+ _connection_tabs(store, now, report) + _ai_tabs(store, now, report):', '+ _ai_tabs(store, now, report):', 'the Connections Health tab is not written'),
 ]
 MUTATIONS.extend(U41)
+
+U42 = [   # update 42: the Acceptance workflow passes the contact address
+    ('acceptance-workflow-no-contact', '.github/workflows/acceptance.yml', 'OBSERVATORY_CONTACT: ${{ secrets.OBSERVATORY_CONTACT }}', 'OBSERVATORY_CONTACT_UNUSED: ${{ secrets.OBSERVATORY_CONTACT }}', 'the Acceptance workflow does not pass the contact address, so 14 checks skip'),
+    ('acceptance-workflow-no-reddit-secret', '.github/workflows/acceptance.yml', 'REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}', 'REDDIT_CLIENT_SECRET_UNUSED: ${{ secrets.REDDIT_CLIENT_SECRET }}', 'the Acceptance workflow does not pass a documented secret the Reddit check reads'),
+]
+MUTATIONS.extend(U42)
 
 def run_tests(workdir):
     env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}
