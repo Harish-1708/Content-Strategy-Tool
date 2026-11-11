@@ -46,6 +46,9 @@ providers:
     gateway_platform: github
     direct:
       base_url: https://models.github.ai/inference
+      api_versions:
+      - '2026-03-10'
+      - '2022-11-28'
     terms:
       status: verified_secondary
       date: '2026-11-03'
@@ -1020,11 +1023,11 @@ providers:
       - tools
       note: proposed starter approval; review before enabling
     - id: openai/gpt-oss-120b:free
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: proposed starter approval; review before enabling
+      note: "retired on OpenRouter: it answered 404 this model is unavailable for free (seen live 2026-11-10); the paid slug is not used"
     - id: meta-llama/llama-3.3-70b-instruct:free
       approved: false
       capabilities:
