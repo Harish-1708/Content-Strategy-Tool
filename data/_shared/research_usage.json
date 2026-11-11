@@ -8,7 +8,7 @@
   "exa": 12,
   "exa_mcp": 14,
   "serpapi": 22,
-  "serper_dev": 93,
+  "serper_dev": 94,
   "tavily": 22
  },
  "months": {
@@ -28,7 +28,7 @@
    "exa": 12,
    "exa_mcp": 14,
    "serpapi": 16,
-   "serper_dev": 54,
+   "serper_dev": 55,
    "tavily": 16
   }
  }

@@ -1,7 +1,21 @@
 {
  "candidates": [
   {
-   "ai": null,
+   "ai": {
+    "at": "2026-11-11T11:11:57Z",
+    "confidence": 0.85,
+    "evidence": [
+     "\"Duck Bib Overalls Canvas Workwear Dungarees\"",
+     "\"US Military OG-107 Fatigue Pants\""
+    ],
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq",
+    "reason": "Madepants offers overalls and workwear similar to Swoveralls, making it a direct competitor.",
+    "relevant": true,
+    "review": "pending",
+    "review_id": "AR-0001",
+    "suitability": "direct"
+   },
    "decided_at": "2026-11-10T09:49:03Z",
    "decided_by": "auto",
    "domain": "madepants.com",
@@ -20,7 +34,7 @@
    ],
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "madepants",
-   "instagram_checked_at": "2026-11-11T04:34:22Z",
+   "instagram_checked_at": "2026-11-11T11:11:57Z",
    "instagram_confidence": 0.96,
    "instagram_evidence": [
     {
@@ -35,7 +49,7 @@
     }
    ],
    "key": "madepants",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Madepants",
    "reasons": [
     "2 of its items were judged relevant for this brand (average relevance 54)",
@@ -68,7 +82,21 @@
    "tiktok": ""
   },
   {
-   "ai": null,
+   "ai": {
+    "at": "2026-11-11T11:11:57Z",
+    "confidence": 0.85,
+    "evidence": [
+     "Public snippets describe The Oodie as a \"blanket hoodie\" for lounging, sleeping, binge\u2011watching",
+     "No mention of overalls or similar apparel that Swoveralls offers"
+    ],
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq",
+    "reason": "The Oodie sells blanket hoodies, which are unrelated to the overalls focus of Swoveralls, making it not a competitor.",
+    "relevant": false,
+    "review": "pending",
+    "review_id": "AR-0002",
+    "suitability": "not_competitor"
+   },
    "decided_at": "2026-11-10T09:49:03Z",
    "decided_by": "auto",
    "domain": "theoodie.com",
@@ -87,7 +115,7 @@
    ],
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "the_oodie",
-   "instagram_checked_at": "2026-11-11T04:34:22Z",
+   "instagram_checked_at": "2026-11-11T11:11:57Z",
    "instagram_confidence": 0.96,
    "instagram_evidence": [
     {
@@ -102,7 +130,7 @@
     }
    ],
    "key": "theoodie",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "The Oodie",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 54)",
@@ -134,7 +162,21 @@
    "tiktok": ""
   },
   {
-   "ai": null,
+   "ai": {
+    "at": "2026-11-11T11:11:57Z",
+    "confidence": 0.85,
+    "evidence": [
+     "public snippets: \"Bib Overalls That Feel Like a Day Off The Corduroy Overalls...\"",
+     "rubric score: 77 with relevance_sum=60 indicating at least one item judged relevant for this brand"
+    ],
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq",
+    "reason": "Emmafy sells bib overalls, which are the same product category as Swoveralls, making it a direct competitor.",
+    "relevant": true,
+    "review": "pending",
+    "review_id": "AR-0003",
+    "suitability": "direct"
+   },
    "decided_at": "2026-11-11T04:34:22Z",
    "decided_by": "auto",
    "domain": "emmafy.com",
@@ -153,11 +195,11 @@
    ],
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
-   "instagram_checked_at": "2026-11-11T04:34:22Z",
+   "instagram_checked_at": "2026-11-11T11:11:57Z",
    "instagram_confidence": 0.0,
    "instagram_evidence": [],
    "key": "emmafy",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Emmafy",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 60)",
@@ -187,7 +229,21 @@
    "tiktok": ""
   },
   {
-   "ai": null,
+   "ai": {
+    "at": "2026-11-11T11:11:57Z",
+    "confidence": 0.62,
+    "evidence": [
+     "1 of its items were judged relevant for this brand (average relevance 59)",
+     "Eden Hoodie is an oversized, sensory\u2011friendly faux\u2011fur hoodie"
+    ],
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq",
+    "reason": "Free the Sheep sells apparel that overlaps with Swoveralls' clothing market, though not the same product type, making it an adjacent competitor.",
+    "relevant": true,
+    "review": "pending",
+    "review_id": "AR-0004",
+    "suitability": "adjacent"
+   },
    "decided_at": "2026-11-11T04:34:22Z",
    "decided_by": "auto",
    "domain": "freethesheep.com",
@@ -206,7 +262,7 @@
    ],
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "freethesheepco",
-   "instagram_checked_at": "2026-11-11T04:34:22Z",
+   "instagram_checked_at": "2026-11-11T11:11:57Z",
    "instagram_confidence": 0.96,
    "instagram_evidence": [
     {
@@ -221,7 +277,7 @@
     }
    ],
    "key": "freethesheep",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Free the Sheep",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 59)",
@@ -251,13 +307,27 @@
    "tiktok": ""
   },
   {
-   "ai": null,
+   "ai": {
+    "at": "2026-11-11T11:11:57Z",
+    "confidence": 0.42,
+    "evidence": [
+     "Kay arize Black Queen Things is made for women ... Every piece honors where we come from \u2014 and how we choose to show up to",
+     "rubric score: 70, ads run 275 days, appears in research search"
+    ],
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq",
+    "reason": "Kayarize appears to be a women\u2019s apparel brand, which makes it an adjacent competitor to Swoveralls, though no specific evidence links it to overalls.",
+    "relevant": true,
+    "review": "pending",
+    "review_id": "AR-0005",
+    "suitability": "adjacent"
+   },
    "decided_at": "2026-11-11T04:34:22Z",
    "decided_by": "auto",
    "domain": "kayarize.com",
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
-   "instagram_checked_at": "2026-11-11T04:34:22Z",
+   "instagram_checked_at": "2026-11-11T11:11:57Z",
    "instagram_confidence": 0.6,
    "instagram_evidence": [
     {
@@ -278,7 +348,7 @@
     "handle": "kayarize"
    },
    "key": "kayarize",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Kayarize",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 61)",
@@ -306,16 +376,103 @@
    "tiktok": ""
   },
   {
-   "ai": null,
+   "ai": {
+    "at": "2026-11-11T11:11:57Z",
+    "confidence": 0.62,
+    "evidence": [
+     "rubric score: 63",
+     "1 of its items were judged relevant for this brand (average relevance 52)",
+     "public snippets mention \"Throw On & Go Outfits\" and \"loungewear\""
+    ],
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq",
+    "reason": "The company sells casual throw\u2011on outfits and loungewear, which overlap with Swoveralls' apparel category but are not the same product type, making it an adjacent competitor.",
+    "relevant": true,
+    "review": "pending",
+    "review_id": "AR-0006",
+    "suitability": "adjacent"
+   },
+   "decided_by": "",
+   "domain": "kortneyandkarlee.com",
+   "domain_confidence": 0.6,
+   "domain_evidence": [
+    {
+     "detail": "a web search for \"Kortney and Karlee official website\" found kortneyandkarlee.com",
+     "source": "search",
+     "weight": 0.6
+    }
+   ],
+   "first_seen": "2026-11-10T09:49:03Z",
+   "instagram": "kortneyandkarlee",
+   "instagram_checked_at": "2026-11-11T11:11:57Z",
+   "instagram_confidence": 0.96,
+   "instagram_evidence": [
+    {
+     "detail": "kortneyandkarlee.com's own site links to this account",
+     "source": "homepage",
+     "weight": 0.9
+    },
+    {
+     "detail": "search result 1: Kortney and Karlee (@kortneyandkarlee)",
+     "source": "search",
+     "weight": 0.6
+    }
+   ],
+   "key": "kortneyandkarlee",
+   "last_seen": "2026-11-11T11:11:57Z",
+   "name": "Kortney and Karlee",
+   "reasons": [
+    "1 of its items were judged relevant for this brand (average relevance 52)",
+    "an ad of theirs has run 45 days",
+    "it appears in a research search",
+    "it shows up in several places: meta_ads, web_search"
+   ],
+   "score": 63,
+   "shopify": false,
+   "shopify_note": "no public product data",
+   "signals": {
+    "ads": 3.0,
+    "kept_items": 1.0,
+    "max_days": 45.0,
+    "max_variants": 0.0,
+    "posts": 0.0,
+    "relevance_sum": 52.0,
+    "removed_items": 1.0,
+    "search_queries": 1
+   },
+   "sources": [
+    "meta_ads",
+    "web_search"
+   ],
+   "status": "candidate",
+   "tiktok": ""
+  },
+  {
+   "ai": {
+    "at": "2026-11-11T11:11:57Z",
+    "confidence": 0.92,
+    "evidence": [
+     "name: instagram.com",
+     "website: not known",
+     "signals: ads=0.0, kept_items=6.0, posts=0.0"
+    ],
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq",
+    "reason": "Instagram is a social media platform, not a retailer of clothing or workwear, so it does not compete with Swoveralls.",
+    "relevant": false,
+    "review": "pending",
+    "review_id": "AR-0007",
+    "suitability": "not_competitor"
+   },
    "decided_by": "",
    "domain": "",
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
-   "instagram_checked_at": "2026-11-11T04:34:22Z",
+   "instagram_checked_at": "2026-11-11T11:11:57Z",
    "instagram_confidence": 0.0,
    "instagram_evidence": [],
    "key": "instagramcom",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "lookup_failed_at": "2026-11-11T04:34:22Z",
    "name": "instagram.com",
    "reasons": [
@@ -335,16 +492,31 @@
    "sources": [
     "web"
    ],
-   "status": "candidate",
+   "status": "weak",
    "tiktok": ""
   },
   {
-   "ai": null,
+   "ai": {
+    "at": "2026-11-11T11:11:57Z",
+    "confidence": 0.2,
+    "evidence": [
+     "website: not known",
+     "public snippets mention gifts and shirts but no indication of selling clothing",
+     "rubric score 54 with relevance words overlapping brand market words"
+    ],
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq",
+    "reason": "TikTok is a social media platform, not a retailer of overalls or similar apparel, so it is not a competitor to Swoveralls.",
+    "relevant": false,
+    "review": "pending",
+    "review_id": "AR-0008",
+    "suitability": "not_competitor"
+   },
    "decided_by": "",
    "domain": "",
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
-   "instagram_checked_at": "2026-11-11T04:34:22Z",
+   "instagram_checked_at": "2026-11-11T11:11:57Z",
    "instagram_confidence": 0.6,
    "instagram_evidence": [
     {
@@ -365,7 +537,7 @@
     "handle": "tiktok"
    },
    "key": "tiktokcom",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "lookup_failed_at": "2026-11-11T04:34:22Z",
    "name": "tiktok.com",
    "reasons": [
@@ -389,7 +561,21 @@
    "tiktok": ""
   },
   {
-   "ai": null,
+   "ai": {
+    "at": "2026-11-11T11:11:57Z",
+    "confidence": 0.0,
+    "evidence": [
+     "its items were judged not relevant",
+     "it is one of the brand's benchmark names"
+    ],
+    "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "provider": "cloudflare",
+    "reason": "The company is the brand itself, listed as a benchmark name and its items were judged not relevant.",
+    "relevant": false,
+    "review": "pending",
+    "review_id": "AR-0009",
+    "suitability": "not_competitor"
+   },
    "decided_by": "",
    "domain": "swoveralls.tenereteam.com",
    "first_seen": "2026-11-10T09:49:03Z",
@@ -425,7 +611,7 @@
     "handle": "swoveralls_"
    },
    "key": "swoveralls",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Swoveralls",
    "reasons": [
     "its items were judged not relevant",
@@ -462,7 +648,21 @@
    "tiktok": "swoveralls"
   },
   {
-   "ai": null,
+   "ai": {
+    "at": "2026-11-11T11:11:57Z",
+    "confidence": 0.8,
+    "evidence": [
+     "its items were judged not relevant",
+     "New Coraza Luggage | The Perfect 2-in-1 Pack Cotopaxi"
+    ],
+    "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "provider": "cloudflare",
+    "reason": "Cotopaxi's products and advertisements do not appear to be directly related to Swoveralls' offerings, suggesting they are not a direct competitor.",
+    "relevant": false,
+    "review": "pending",
+    "review_id": "AR-0013",
+    "suitability": "not_competitor"
+   },
    "decided_by": "",
    "domain": "cotopaxi.com",
    "domain_confidence": 0.6,
@@ -476,7 +676,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "cotopaxi",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Cotopaxi",
    "reasons": [
     "its items were judged not relevant",
@@ -504,11 +704,25 @@
     "meta_ads",
     "web_search"
    ],
-   "status": "candidate",
+   "status": "weak",
    "tiktok": ""
   },
   {
-   "ai": null,
+   "ai": {
+    "at": "2026-11-11T11:11:57Z",
+    "confidence": 0.6,
+    "evidence": [
+     "its items were judged not relevant",
+     "rubric score: 48"
+    ],
+    "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "provider": "cloudflare",
+    "reason": "Gymshark is not considered a competitor due to its low rubric score and items being judged not relevant, despite being a benchmark name.",
+    "relevant": false,
+    "review": "pending",
+    "review_id": "AR-0010",
+    "suitability": "not_competitor"
+   },
    "decided_by": "",
    "domain": "gymshark.com",
    "domain_confidence": 0.7,
@@ -527,7 +741,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "gymshark",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Gymshark",
    "reasons": [
     "its items were judged not relevant",
@@ -555,11 +769,26 @@
     "meta_ads",
     "web_search"
    ],
-   "status": "candidate",
+   "status": "weak",
    "tiktok": ""
   },
   {
-   "ai": null,
+   "ai": {
+    "at": "2026-11-11T11:11:57Z",
+    "confidence": 0.2,
+    "evidence": [
+     "its items were judged not relevant",
+     "it is one of the brand's benchmark names",
+     "public snippets: \"You won't believe it's not soda.\" | \"90% less sugar than top sodas (non-diet)*\""
+    ],
+    "model": "claude-haiku-5-5",
+    "provider": "claude",
+    "reason": "The supplied facts show Liquid Death's own ads are beverage-focused and that the earlier rubric judged its items not relevant, but they say nothing about what Swoveralls sells, so the match is undetermined and only leans negative.",
+    "relevant": false,
+    "review": "pending",
+    "review_id": "AR-0012",
+    "suitability": "not_competitor"
+   },
    "decided_by": "",
    "domain": "liquiddeath.com",
    "domain_confidence": 0.7,
@@ -578,7 +807,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "liquiddeath",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Liquid Death",
    "reasons": [
     "its items were judged not relevant",
@@ -610,7 +839,22 @@
    "tiktok": ""
   },
   {
-   "ai": null,
+   "ai": {
+    "at": "2026-11-11T11:11:57Z",
+    "confidence": 0.8,
+    "evidence": [
+     "SKIMS Mens",
+     "SKIMS Men Underwear",
+     "SKIMS panties"
+    ],
+    "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "provider": "cloudflare",
+    "reason": "SKIMS offers similar products such as mens underwear and panties, which are also offered by Swoveralls, indicating a direct competition.",
+    "relevant": true,
+    "review": "pending",
+    "review_id": "AR-0011",
+    "suitability": "direct"
+   },
    "decided_by": "",
    "domain": "skims.com",
    "domain_confidence": 0.6,
@@ -624,7 +868,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "skims",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "SKIMS",
    "reasons": [
     "its items were judged not relevant",
@@ -656,13 +900,28 @@
    "tiktok": ""
   },
   {
-   "ai": null,
+   "ai": {
+    "at": "2026-11-11T11:11:57Z",
+    "confidence": 0.8,
+    "evidence": [
+     "Overalls She'll Wear on Repeat All Fall",
+     "The Corduroy Overalls",
+     "1 of its items were judged relevant for this brand"
+    ],
+    "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "provider": "cloudflare",
+    "reason": "The company has advertised overalls, a product similar to Swoveralls, and has had an ad running for 53 days with a high relevance score.",
+    "relevant": true,
+    "review": "pending",
+    "review_id": "AR-0014",
+    "suitability": "direct"
+   },
    "decided_by": "",
    "domain": "",
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "musthavefinds",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "lookup_failed_at": "2026-11-11T04:34:22Z",
    "name": "Must Have Finds",
    "reasons": [
@@ -689,50 +948,11 @@
   {
    "ai": null,
    "decided_by": "",
-   "domain": "kortneyandkarlee.com",
-   "domain_confidence": 0.6,
-   "domain_evidence": [
-    {
-     "detail": "a web search for \"Kortney and Karlee official website\" found kortneyandkarlee.com",
-     "source": "search",
-     "weight": 0.6
-    }
-   ],
-   "first_seen": "2026-11-10T09:49:03Z",
-   "instagram": "",
-   "key": "kortneyandkarlee",
-   "last_seen": "2026-11-11T04:34:22Z",
-   "name": "Kortney and Karlee",
-   "reasons": [
-    "1 of its items were judged relevant for this brand (average relevance 52)",
-    "an ad of theirs has run 45 days"
-   ],
-   "score": 45,
-   "shopify": false,
-   "shopify_note": "no public product data",
-   "signals": {
-    "ads": 3.0,
-    "kept_items": 1.0,
-    "max_days": 45.0,
-    "max_variants": 0.0,
-    "posts": 0.0,
-    "relevance_sum": 52.0,
-    "removed_items": 1.0
-   },
-   "sources": [
-    "meta_ads"
-   ],
-   "status": "candidate",
-   "tiktok": ""
-  },
-  {
-   "ai": null,
-   "decided_by": "",
    "domain": "",
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "1821manmade",
    "key": "1821manmade",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "1821manmade",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 52)",
@@ -761,7 +981,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "k.ityee",
    "key": "kityee",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "k.ityee",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 72)"
@@ -789,7 +1009,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "arshii.muse_07",
    "key": "arshiimuse07",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "arshii.muse_07",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 61)"
@@ -817,7 +1037,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "flipdaddie",
    "key": "flipdaddie",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "flipdaddie",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 59)"
@@ -845,7 +1065,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "gilletteindia",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Gillette India",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 59)"
@@ -874,7 +1094,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "kikalateefff",
    "key": "kikalateefff",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "kikalateefff",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 58)"
@@ -902,7 +1122,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "madymotherhood",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "mady.motherhood",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 59)"
@@ -930,7 +1150,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "mizzenandmaincom",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "mizzenandmain.com",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 58)"
@@ -957,7 +1177,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "solevarelief",
    "key": "solevarelief",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "solevarelief",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 61)"
@@ -985,7 +1205,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "atelierbuba",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "atelier.buba",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 57)"
@@ -1013,7 +1233,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "barringtonmireille",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "barringtonmireille",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 54)"
@@ -1041,7 +1261,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "cannguyen3326",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "cannguyen3326",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 54)"
@@ -1069,7 +1289,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "chloeapproved",
    "key": "chloeapproved",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "chloeapproved",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 55)"
@@ -1097,7 +1317,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "cosyvera",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "cosyvera",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 53)"
@@ -1125,7 +1345,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "cutterbuckcom",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "cutterbuck.com",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 54)"
@@ -1152,7 +1372,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "giftideaswithglory",
    "key": "giftideaswithglory",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "giftideaswithglory",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 54)"
@@ -1180,7 +1400,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "husbandfinds",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "husbandfinds",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 55)"
@@ -1208,7 +1428,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "marieloulou_official",
    "key": "marieloulouofficial",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "marieloulou_official",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 53)"
@@ -1237,7 +1457,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "nescaf",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "NESCAF\u00c9",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 55)"
@@ -1266,7 +1486,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "roamory",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "roamory",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 56)"
@@ -1294,7 +1514,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "siwusus",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "siwusu_s",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 55)"
@@ -1322,7 +1542,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "sugaricedtea",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "sugaricedtea",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 53)"
@@ -1350,7 +1570,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "taylorstitchcom",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "taylorstitch.com",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 53)"
@@ -1377,7 +1597,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "veicoloagencycom",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "veicolo-agency.com",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 55)"
@@ -1404,7 +1624,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "gqcom",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "gq.com",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 50)"
@@ -1431,7 +1651,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "gracemweston",
    "key": "gracemweston",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "gracemweston",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 52)"
@@ -1459,7 +1679,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "ssums10",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "ssums10",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 50)"
@@ -1487,7 +1707,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "talonkrebs",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "talon.krebs",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 51)"
@@ -1515,7 +1735,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "themomeditcom",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "themomedit.com",
    "reasons": [
     "1 of its items were judged relevant for this brand (average relevance 52)"
@@ -1542,7 +1762,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "dollarshaveclub",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Dollar Shave Club",
    "reasons": [
     "its items were judged not relevant",
@@ -1576,7 +1796,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "allbirdsme",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Allbirds ME",
    "reasons": [
     "its items were judged not relevant",
@@ -1607,7 +1827,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "beautywellness",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Beauty & Wellness",
    "reasons": [
     "its items were judged not relevant",
@@ -1638,7 +1858,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "choiceglobal",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Choice Global",
    "reasons": [
     "its items were judged not relevant",
@@ -1669,7 +1889,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "shein",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "SHEIN",
    "reasons": [
     "its items were judged not relevant",
@@ -1700,7 +1920,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "9nmin_won",
    "key": "9nminwon",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "9nmin_won",
    "reasons": [
     "its items were judged not relevant"
@@ -1728,7 +1948,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "aasaelisabeth",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "aasaelisabeth",
    "reasons": [
     "its items were judged not relevant"
@@ -1756,7 +1976,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "abhishek_hairartist",
    "key": "abhishekhairartist",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "abhishek_hairartist",
    "reasons": [
     "its items were judged not relevant"
@@ -1784,7 +2004,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "admee01",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "AdMee01",
    "reasons": [
     "its items were judged not relevant",
@@ -1814,7 +2034,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "adobeacrobat",
    "key": "adobeacrobat",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "adobeacrobat",
    "reasons": [
     "its items were judged not relevant"
@@ -1842,7 +2062,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "aesthetic.all.over",
    "key": "aestheticallover",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "aesthetic.all.over",
    "reasons": [],
    "score": 0,
@@ -1867,7 +2087,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "agroorgnico",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Agro Org\u00e1nico",
    "reasons": [
     "its items were judged not relevant",
@@ -1897,7 +2117,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "alibabacom",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Alibaba.com",
    "reasons": [
     "its items were judged not relevant",
@@ -1927,7 +2147,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "alzheimerssociety",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Alzheimer's Society",
    "reasons": [
     "its items were judged not relevant",
@@ -1958,7 +2178,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "amolya.co",
    "key": "amolyaco",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "amolya.co",
    "reasons": [
     "its items were judged not relevant"
@@ -1986,7 +2206,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "anveshana",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Anveshana",
    "reasons": [
     "its items were judged not relevant",
@@ -2016,7 +2236,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "ashantihie9",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "ashantihie9",
    "reasons": [
     "its items were judged not relevant"
@@ -2044,7 +2264,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "asiansports",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Asian Sports",
    "reasons": [
     "its items were judged not relevant",
@@ -2074,7 +2294,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "babel.audio.official",
    "key": "babelaudioofficial",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "babel.audio.official",
    "reasons": [
     "its items were judged not relevant"
@@ -2102,7 +2322,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "battlebeamtoys",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "battlebeamtoys",
    "reasons": [
     "its items were judged not relevant"
@@ -2130,7 +2350,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "bellaloves4",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "bellaloves4",
    "reasons": [
     "its items were judged not relevant"
@@ -2158,7 +2378,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "bretengemann",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "bretengemann",
    "reasons": [
     "its items were judged not relevant"
@@ -2186,7 +2406,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "buggin4bread",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "buggin4bread",
    "reasons": [
     "its items were judged not relevant"
@@ -2214,7 +2434,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "_canvas.of.life",
    "key": "canvasoflife",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "_canvas.of.life",
    "reasons": [
     "its items were judged not relevant"
@@ -2242,7 +2462,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "charitywater",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "charity: water",
    "reasons": [
     "its items were judged not relevant",
@@ -2272,7 +2492,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "charsrecoveryjourney",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "chars_recovery_journey",
    "reasons": [
     "its items were judged not relevant"
@@ -2300,7 +2520,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "chatgpt",
    "key": "chatgpt",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "chatgpt",
    "reasons": [
     "its items were judged not relevant"
@@ -2328,7 +2548,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "chicme",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "ChicMe",
    "reasons": [
     "its items were judged not relevant",
@@ -2358,7 +2578,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "chiefgrunto",
    "key": "chiefgrunto",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "chiefgrunto",
    "reasons": [
     "its items were judged not relevant"
@@ -2386,7 +2606,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "chrisandmelisdesignerdecordealsfurniturefinds",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Chris and Melis - Designer Decor Deals & Furniture Finds",
    "reasons": [
     "its items were judged not relevant",
@@ -2416,7 +2636,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "cloudnine",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Cloud Nine",
    "reasons": [
     "its items were judged not relevant",
@@ -2446,7 +2666,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "coofandyshop",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "coofandy.shop",
    "reasons": [
     "its items were judged not relevant",
@@ -2476,7 +2696,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "coveusa",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Cove USA",
    "reasons": [
     "its items were judged not relevant"
@@ -2505,7 +2725,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "cozykindus",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "cozykind.us",
    "reasons": [
     "its items were judged not relevant"
@@ -2533,7 +2753,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "cozytwn",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "cozytwn",
    "reasons": [
     "its items were judged not relevant"
@@ -2561,7 +2781,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "creatorfindsiq",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Creator Finds IQ",
    "reasons": [
     "its items were judged not relevant",
@@ -2591,7 +2811,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "cruisecup",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "cruisecup",
    "reasons": [
     "its items were judged not relevant"
@@ -2619,7 +2839,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "davidburke674",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "david.burke674",
    "reasons": [
     "its items were judged not relevant"
@@ -2647,7 +2867,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "davidmiller",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "David Miller",
    "reasons": [
     "its items were judged not relevant",
@@ -2678,7 +2898,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "daviefogarty",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Davie Fogarty",
    "reasons": [
     "its items were judged not relevant",
@@ -2708,7 +2928,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "dollarshaveclubaustralia",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Dollar Shave Club Australia",
    "reasons": [
     "its items were judged not relevant",
@@ -2738,7 +2958,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "easygiftly",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "easy.giftly",
    "reasons": [
     "its items were judged not relevant"
@@ -2766,7 +2986,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "echoment",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Echoment",
    "reasons": [
     "its items were judged not relevant",
@@ -2796,7 +3016,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "elevatelifewithlauren",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Elevate Life With Lauren",
    "reasons": [
     "its items were judged not relevant",
@@ -2826,7 +3046,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "elysianliving",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "elysian.living",
    "reasons": [
     "its items were judged not relevant"
@@ -2854,7 +3074,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "emelieolson",
    "key": "emelieolson",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "emelieolson",
    "reasons": [
     "its items were judged not relevant"
@@ -2882,7 +3102,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "emilybeaversugc",
    "key": "emilybeaversugc",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "emilybeaversugc",
    "reasons": [],
    "score": 0,
@@ -2907,7 +3127,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "emilyloxtercamp",
    "key": "emilyloxtercamp",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "emilyloxtercamp",
    "reasons": [
     "its items were judged not relevant"
@@ -2935,7 +3155,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "familypuzzleart",
    "key": "familypuzzleart",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "familypuzzleart",
    "reasons": [
     "its items were judged not relevant"
@@ -2963,7 +3183,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "fashionbyfairry",
    "key": "fashionbyfairry",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "fashionbyfairry",
    "reasons": [
     "its items were judged not relevant"
@@ -2991,7 +3211,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "fitfinds__",
    "key": "fitfinds",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "fitfinds__",
    "reasons": [
     "its items were judged not relevant"
@@ -3019,7 +3239,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "fitness19palosverdes",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Fitness 19 Palos Verdes",
    "reasons": [
     "its items were judged not relevant",
@@ -3049,7 +3269,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "fitsbyishaani",
    "key": "fitsbyishaani",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "fitsbyishaani",
    "reasons": [
     "its items were judged not relevant"
@@ -3077,7 +3297,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "flagnorfail",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "FLAG NOR FAIL",
    "reasons": [
     "its items were judged not relevant"
@@ -3106,7 +3326,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "fontes_four_pack",
    "key": "fontesfourpack",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "fontes_four_pack",
    "reasons": [],
    "score": 0,
@@ -3131,7 +3351,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "foreverfrenchbaby",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Foreverfrenchbaby",
    "reasons": [
     "its items were judged not relevant"
@@ -3160,7 +3380,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "fundingrockcom",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "FundingRock.com",
    "reasons": [
     "its items were judged not relevant"
@@ -3189,7 +3409,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "_gemmalouisemiles",
    "key": "gemmalouisemiles",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "_gemmalouisemiles",
    "reasons": [
     "its items were judged not relevant"
@@ -3217,7 +3437,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "gifts_and_grab",
    "key": "giftsandgrab",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "gifts_and_grab",
    "reasons": [
     "its items were judged not relevant"
@@ -3245,7 +3465,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "giftscom",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Gifts.com",
    "reasons": [
     "its items were judged not relevant",
@@ -3275,7 +3495,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "gloryday.craft",
    "key": "glorydaycraft",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "gloryday.craft",
    "reasons": [
     "its items were judged not relevant"
@@ -3303,7 +3523,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "godsloveovercomes",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "God's Love Overcomes",
    "reasons": [
     "its items were judged not relevant",
@@ -3333,7 +3553,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "googlecloud",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Google Cloud",
    "reasons": [
     "its items were judged not relevant"
@@ -3362,7 +3582,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "gracekeegann",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "gracekeegann",
    "reasons": [
     "its items were judged not relevant"
@@ -3390,7 +3610,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "greenpowermobilityscooters",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Green Power - Mobility Scooters",
    "reasons": [
     "its items were judged not relevant",
@@ -3420,7 +3640,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "gymsharkwomen",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Gymshark Women",
    "reasons": [
     "its items were judged not relevant"
@@ -3449,7 +3669,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "havjoy",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Hav-Joy",
    "reasons": [
     "its items were judged not relevant",
@@ -3479,7 +3699,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "heidddiixmiller",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "heidddiixmiller",
    "reasons": [
     "its items were judged not relevant"
@@ -3507,7 +3727,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "house_of_elorra",
    "key": "houseofelorra",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "house_of_elorra",
    "reasons": [
     "its items were judged not relevant"
@@ -3535,7 +3755,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "httydtoasty",
    "key": "httydtoasty",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "httydtoasty",
    "reasons": [
     "its items were judged not relevant"
@@ -3563,7 +3783,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "hyojo",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Hyojo",
    "reasons": [
     "its items were judged not relevant",
@@ -3593,7 +3813,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "ijustshowthings",
    "key": "ijustshowthings",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "ijustshowthings",
    "reasons": [
     "its items were judged not relevant"
@@ -3621,7 +3841,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "imdanielsimmons",
    "key": "imdanielsimmons",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "imdanielsimmons",
    "reasons": [
     "its items were judged not relevant"
@@ -3649,7 +3869,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "indisparkes",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "indisparkes",
    "reasons": [
     "its items were judged not relevant"
@@ -3677,7 +3897,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "internationaljazzday",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "International Jazz Day",
    "reasons": [
     "its items were judged not relevant",
@@ -3707,7 +3927,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "invifestbyaastha",
    "key": "invifestbyaastha",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "invifestbyaastha",
    "reasons": [
     "its items were judged not relevant"
@@ -3735,7 +3955,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "iryankiddiescloset",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Iryan Kiddies Closet",
    "reasons": [
     "its items were judged not relevant"
@@ -3764,7 +3984,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "isabellatts0",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "isabellatts0",
    "reasons": [
     "its items were judged not relevant"
@@ -3792,7 +4012,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "itsbabytj",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "its_babytj",
    "reasons": [
     "its items were judged not relevant"
@@ -3820,7 +4040,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "jaya_s_artistry_vibes",
    "key": "jayasartistryvibes",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "jaya_s_artistry_vibes",
    "reasons": [
     "its items were judged not relevant",
@@ -3849,7 +4069,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "jessicarachellel1",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "jessicarachellel1",
    "reasons": [],
    "score": 0,
@@ -3874,7 +4094,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "jessmoore",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Jess Moore",
    "reasons": [
     "its items were judged not relevant",
@@ -3904,7 +4124,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "jingledrop.us",
    "key": "jingledropus",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "jingledrop.us",
    "reasons": [
     "its items were judged not relevant"
@@ -3932,7 +4152,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "joanna.ae_",
    "key": "joannaae",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "joanna.ae_",
    "reasons": [
     "its items were judged not relevant"
@@ -3960,7 +4180,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "jockey",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Jockey",
    "reasons": [
     "its items were judged not relevant"
@@ -3989,7 +4209,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "joejo30",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "joe.jo30",
    "reasons": [
     "its items were judged not relevant"
@@ -4017,7 +4237,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "juliastxl",
    "key": "juliastxl",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "juliastxl",
    "reasons": [
     "its items were judged not relevant"
@@ -4045,7 +4265,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "justbecausegiftbooks",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "justbecausegiftbooks",
    "reasons": [
     "its items were judged not relevant"
@@ -4073,7 +4293,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "justjordddy",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "justjordddy",
    "reasons": [
     "its items were judged not relevant"
@@ -4101,7 +4321,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "kanicamaheshwari",
    "key": "kanicamaheshwari",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "kanicamaheshwari",
    "reasons": [
     "its items were judged not relevant"
@@ -4129,7 +4349,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "kashishsingh_ks",
    "key": "kashishsinghks",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "kashishsingh_ks",
    "reasons": [
     "its items were judged not relevant"
@@ -4157,7 +4377,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "katerenko",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "katerenko",
    "reasons": [
     "its items were judged not relevant"
@@ -4185,7 +4405,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "kathrynzoe",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "kathrynzoe",
    "reasons": [
     "its items were judged not relevant"
@@ -4213,7 +4433,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "kaylaannuncensored",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "kaylaannuncensored",
    "reasons": [
     "its items were judged not relevant"
@@ -4241,7 +4461,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "kbblackwell",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "kb.blackwell",
    "reasons": [
     "its items were judged not relevant"
@@ -4269,7 +4489,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "khazanaypakistan",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Khazanay Pakistan",
    "reasons": [
     "its items were judged not relevant",
@@ -4299,7 +4519,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "kidoriman",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Kidoriman",
    "reasons": [
     "its items were judged not relevant"
@@ -4328,7 +4548,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "kyteliving",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Kyte Living",
    "reasons": [
     "its items were judged not relevant",
@@ -4358,7 +4578,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "laughsnippet1",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "laughsnippet1",
    "reasons": [
     "its items were judged not relevant"
@@ -4386,7 +4606,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "leonfinds",
    "key": "leonfinds",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "leonfinds",
    "reasons": [
     "its items were judged not relevant"
@@ -4414,7 +4634,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "lewisjenniferwzky7",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "lewisjenniferwzky7",
    "reasons": [
     "its items were judged not relevant"
@@ -4442,7 +4662,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "lifeinmonogram",
    "key": "lifeinmonogram",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "lifeinmonogram",
    "reasons": [
     "its items were judged not relevant"
@@ -4470,7 +4690,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "lilorsworld",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Lilor\u2019s World",
    "reasons": [
     "its items were judged not relevant"
@@ -4499,7 +4719,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "lisacjensen",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "lisacjensen",
    "reasons": [
     "its items were judged not relevant"
@@ -4527,7 +4747,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "litbhomebestseller",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "LITB Home Bestseller",
    "reasons": [
     "its items were judged not relevant",
@@ -4557,7 +4777,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "littlemisshappyy",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "little_miss_happyy",
    "reasons": [
     "its items were judged not relevant"
@@ -4585,7 +4805,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "losts_and_founds",
    "key": "lostsandfounds",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "losts_and_founds",
    "reasons": [
     "its items were judged not relevant"
@@ -4613,7 +4833,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "lover__143__yadav",
    "key": "lover143yadav",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "lover__143__yadav",
    "reasons": [
     "its items were judged not relevant"
@@ -4641,7 +4861,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "lovevibes103",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "lovevibes103",
    "reasons": [
     "its items were judged not relevant"
@@ -4669,7 +4889,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "luckyfours",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Lucky Fours",
    "reasons": [
     "its items were judged not relevant",
@@ -4699,7 +4919,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "luhxe",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Luhxe",
    "reasons": [
     "its items were judged not relevant"
@@ -4728,7 +4948,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "lululemon",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "lululemon",
    "reasons": [
     "its items were judged not relevant",
@@ -4758,7 +4978,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "macustom.co",
    "key": "macustomco",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "macustom.co",
    "reasons": [
     "its items were judged not relevant"
@@ -4786,7 +5006,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "magficfanspage",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Magfic - fans page",
    "reasons": [
     "its items were judged not relevant",
@@ -4816,7 +5036,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "mariaroberts",
    "key": "mariaroberts",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "mariaroberts",
    "reasons": [
     "its items were judged not relevant"
@@ -4844,7 +5064,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "markablecreators",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Markable Creators",
    "reasons": [
     "its items were judged not relevant",
@@ -4874,7 +5094,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "matteson_brands",
    "key": "mattesonbrands",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "matteson_brands",
    "reasons": [
     "its items were judged not relevant"
@@ -4902,7 +5122,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "melolofreedramaph",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Melolo Freedrama-PH",
    "reasons": [
     "its items were judged not relevant",
@@ -4932,7 +5152,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "methodproducts",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "method products",
    "reasons": [
     "its items were judged not relevant"
@@ -4961,7 +5181,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "modesees",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Modesees",
    "reasons": [
     "its items were judged not relevant",
@@ -4991,7 +5211,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "mommakeoveredit",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Mom Makeover Edit",
    "reasons": [
     "its items were judged not relevant"
@@ -5020,7 +5240,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "monika_tirthani",
    "key": "monikatirthani",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "monika_tirthani",
    "reasons": [
     "its items were judged not relevant"
@@ -5048,7 +5268,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "mrloganporter",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "mrloganporter",
    "reasons": [
     "its items were judged not relevant"
@@ -5076,7 +5296,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "ms.nuclear",
    "key": "msnuclear",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "ms.nuclear",
    "reasons": [
     "its items were judged not relevant"
@@ -5104,7 +5324,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "muffs044",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "muffs044",
    "reasons": [
     "its items were judged not relevant"
@@ -5132,7 +5352,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "musthavetoolsstore",
    "key": "musthavetoolsstore",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "musthavetoolsstore",
    "reasons": [
     "its items were judged not relevant"
@@ -5160,7 +5380,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "mycomfypajamas",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "My Comfy Pajamas",
    "reasons": [
     "its items were judged not relevant",
@@ -5190,7 +5410,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "mylattesnap",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "mylattesnap",
    "reasons": [
     "its items were judged not relevant"
@@ -5218,7 +5438,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "my.lavender.life",
    "key": "mylavenderlife",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "my.lavender.life",
    "reasons": [
     "its items were judged not relevant"
@@ -5246,7 +5466,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "mythfar8386",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "mythfar8386",
    "reasons": [
     "its items were judged not relevant"
@@ -5274,7 +5494,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "next",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Next",
    "reasons": [
     "its items were judged not relevant"
@@ -5303,7 +5523,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "nicolecarter",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Nicole Carter",
    "reasons": [
     "its items were judged not relevant",
@@ -5333,7 +5553,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "nicoletiktokshopfinds",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "nicoletiktokshopfinds",
    "reasons": [
     "its items were judged not relevant"
@@ -5361,7 +5581,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "noahshopdeals",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "noahshopdeals",
    "reasons": [
     "its items were judged not relevant"
@@ -5389,7 +5609,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "norsely",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Norsely",
    "reasons": [
     "its items were judged not relevant"
@@ -5418,7 +5638,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "olagie",
    "key": "olagie",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "olagie",
    "reasons": [
     "its items were judged not relevant"
@@ -5446,7 +5666,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "oliviaarndt",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "olivia..arndt",
    "reasons": [
     "its items were judged not relevant"
@@ -5474,7 +5694,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "outfitsbyfionaa",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "outfitsbyfionaa",
    "reasons": [
     "its items were judged not relevant"
@@ -5502,7 +5722,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "oye_happy",
    "key": "oyehappy",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "oye_happy",
    "reasons": [
     "its items were judged not relevant"
@@ -5530,7 +5750,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "paige1aura",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "paige1aura",
    "reasons": [
     "its items were judged not relevant"
@@ -5558,7 +5778,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "pantproject",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Pant Project",
    "reasons": [
     "its items were judged not relevant",
@@ -5588,7 +5808,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "petitlem",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "petit lem",
    "reasons": [
     "its items were judged not relevant",
@@ -5618,7 +5838,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "photoshop",
    "key": "photoshop",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "photoshop",
    "reasons": [
     "its items were judged not relevant"
@@ -5646,7 +5866,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "pixelhive.in",
    "key": "pixelhivein",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "pixelhive.in",
    "reasons": [
     "its items were judged not relevant",
@@ -5675,7 +5895,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "pixorakrafts.3d",
    "key": "pixorakrafts3d",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "pixorakrafts.3d",
    "reasons": [
     "its items were judged not relevant"
@@ -5703,7 +5923,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "pizzaqueensam",
    "key": "pizzaqueensam",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "pizzaqueensam",
    "reasons": [],
    "score": 0,
@@ -5728,7 +5948,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "pocketfmstories",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Pocket FM Stories",
    "reasons": [
     "its items were judged not relevant",
@@ -5758,7 +5978,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "pooja_janrao_official",
    "key": "poojajanraoofficial",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "pooja_janrao_official",
    "reasons": [
     "its items were judged not relevant"
@@ -5786,7 +6006,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "prankhaus",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "PrankHaus",
    "reasons": [
     "its items were judged not relevant",
@@ -5816,7 +6036,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "prettythanglounge",
    "key": "prettythanglounge",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "prettythanglounge",
    "reasons": [
     "its items were judged not relevant"
@@ -5844,7 +6064,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "qiulehui123",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "qiulehui123",
    "reasons": [
     "its items were judged not relevant"
@@ -5872,7 +6092,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "quince",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Quince",
    "reasons": [
     "its items were judged not relevant"
@@ -5901,7 +6121,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "quinns_arte",
    "key": "quinnsarte",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "quinns_arte",
    "reasons": [
     "its items were judged not relevant"
@@ -5929,7 +6149,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "ramtek.shop",
    "key": "ramtekshop",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "ramtek.shop",
    "reasons": [
     "its items were judged not relevant"
@@ -5957,7 +6177,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "ranasfinds",
    "key": "ranasfinds",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "ranasfinds",
    "reasons": [
     "its items were judged not relevant"
@@ -5985,7 +6205,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "rebabeba",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "rebabeba",
    "reasons": [
     "its items were judged not relevant"
@@ -6013,7 +6233,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "rebelbabe",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Rebel Babe",
    "reasons": [
     "its items were judged not relevant"
@@ -6042,7 +6262,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "redgypsyarts",
    "key": "redgypsyarts",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "redgypsyarts",
    "reasons": [],
    "score": 0,
@@ -6067,7 +6287,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "relivo.health",
    "key": "relivohealth",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "relivo.health",
    "reasons": [
     "its items were judged not relevant"
@@ -6095,7 +6315,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "revicedenim",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "revicedenim",
    "reasons": [
     "its items were judged not relevant"
@@ -6123,7 +6343,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "rhoback",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Rhoback",
    "reasons": [
     "its items were judged not relevant",
@@ -6153,7 +6373,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "richellezh",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "richelle_zh",
    "reasons": [
     "its items were judged not relevant"
@@ -6181,7 +6401,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "riyakarda10",
    "key": "riyakarda10",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "riyakarda10",
    "reasons": [
     "its items were judged not relevant"
@@ -6209,7 +6429,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "samira.sfiii",
    "key": "samirasfiii",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "samira.sfiii",
    "reasons": [
     "its items were judged not relevant"
@@ -6237,7 +6457,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "samxshea",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "samxshea",
    "reasons": [
     "its items were judged not relevant"
@@ -6265,7 +6485,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "sanah_kainat",
    "key": "sanahkainat",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "sanah_kainat",
    "reasons": [
     "its items were judged not relevant"
@@ -6293,7 +6513,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "satshyaa",
    "key": "satshyaa",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "satshyaa",
    "reasons": [
     "its items were judged not relevant"
@@ -6321,7 +6541,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "scarlettchalk02",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "scarlettchalk02",
    "reasons": [
     "its items were judged not relevant"
@@ -6349,7 +6569,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "seure",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Seure",
    "reasons": [
     "its items were judged not relevant",
@@ -6379,7 +6599,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "shabnamlayek2003",
    "key": "shabnamlayek2003",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "shabnamlayek2003",
    "reasons": [
     "its items were judged not relevant"
@@ -6407,7 +6627,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "shagun.chawlaa",
    "key": "shagunchawlaa",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "shagun.chawlaa",
    "reasons": [
     "its items were judged not relevant"
@@ -6435,7 +6655,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "sheincurve",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "SHEIN CURVE",
    "reasons": [
     "its items were judged not relevant",
@@ -6465,7 +6685,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "sheinkids",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "SHEIN KIDS",
    "reasons": [
     "its items were judged not relevant",
@@ -6495,7 +6715,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "shoemart",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Shoemart",
    "reasons": [
     "its items were judged not relevant"
@@ -6524,7 +6744,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "sholum_closet",
    "key": "sholumcloset",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "sholum_closet",
    "reasons": [
     "its items were judged not relevant"
@@ -6552,7 +6772,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "shopify1percent",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Shopify1Percent",
    "reasons": [
     "its items were judged not relevant",
@@ -6582,7 +6802,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "shrishtitheartlover",
    "key": "shrishtitheartlover",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "shrishtitheartlover",
    "reasons": [
     "its items were judged not relevant"
@@ -6610,7 +6830,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "simonyabooks",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Simonyabooks",
    "reasons": [
     "its items were judged not relevant",
@@ -6640,7 +6860,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "simplyleonfinds",
    "key": "simplyleonfinds",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "simplyleonfinds",
    "reasons": [
     "its items were judged not relevant"
@@ -6668,7 +6888,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "simplyshreya_",
    "key": "simplyshreya",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "simplyshreya_",
    "reasons": [
     "its items were judged not relevant"
@@ -6696,7 +6916,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "sixt",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Sixt",
    "reasons": [
     "its items were judged not relevant",
@@ -6726,7 +6946,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "slttly",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "slttly",
    "reasons": [
     "its items were judged not relevant"
@@ -6754,7 +6974,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "snitch",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Snitch",
    "reasons": [
     "its items were judged not relevant",
@@ -6784,7 +7004,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "soldiersforjesusministries",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Soldiers for Jesus Ministries",
    "reasons": [
     "its items were judged not relevant",
@@ -6814,7 +7034,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "southernbellringer",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "southernbellringer",
    "reasons": [],
    "score": 0,
@@ -6839,7 +7059,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "sowmya_sathyaraj",
    "key": "sowmyasathyaraj",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "sowmya_sathyaraj",
    "reasons": [
     "its items were judged not relevant"
@@ -6867,7 +7087,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "spearshops",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "spearshops",
    "reasons": [
     "its items were judged not relevant"
@@ -6895,7 +7115,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "stacyht",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "stacy.ht_",
    "reasons": [
     "its items were judged not relevant"
@@ -6923,7 +7143,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "stefanlalchev",
    "key": "stefanlalchev",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "stefanlalchev",
    "reasons": [
     "its items were judged not relevant"
@@ -6951,7 +7171,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "steffy",
    "key": "steffy",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "steffy",
    "reasons": [
     "its items were judged not relevant"
@@ -6979,7 +7199,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "stone43211",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "stone43211",
    "reasons": [
     "its items were judged not relevant"
@@ -7007,7 +7227,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "_studio_timess",
    "key": "studiotimess",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "_studio_timess",
    "reasons": [
     "its items were judged not relevant"
@@ -7035,7 +7255,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "styledbylilea",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "styledbylilea",
    "reasons": [
     "its items were judged not relevant"
@@ -7063,7 +7283,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "sunainabhagi",
    "key": "sunainabhagi",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "sunainabhagi",
    "reasons": [
     "its items were judged not relevant"
@@ -7091,7 +7311,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "superdwde",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Superdw-DE",
    "reasons": [
     "its items were judged not relevant",
@@ -7121,7 +7341,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "svcuratedhampers",
    "key": "svcuratedhampers",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "svcuratedhampers",
    "reasons": [
     "its items were judged not relevant"
@@ -7149,7 +7369,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "tailorse",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Tailorse",
    "reasons": [
     "its items were judged not relevant"
@@ -7178,7 +7398,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "taylorross",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "taylor__ross",
    "reasons": [],
    "score": 0,
@@ -7203,7 +7423,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "temu",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Temu",
    "reasons": [
     "its items were judged not relevant"
@@ -7232,7 +7452,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "thatcove",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "ThatCove",
    "reasons": [
     "its items were judged not relevant",
@@ -7262,7 +7482,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "_thatfashion.girl",
    "key": "thatfashiongirl",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "_thatfashion.girl",
    "reasons": [
     "its items were judged not relevant"
@@ -7290,7 +7510,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "thatfreedlife",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "that_freed_life",
    "reasons": [
     "its items were judged not relevant"
@@ -7318,7 +7538,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "thebaldcomb",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "thebaldcomb",
    "reasons": [
     "its items were judged not relevant"
@@ -7346,7 +7566,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "theblackboxco_official",
    "key": "theblackboxcoofficial",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "theblackboxco_official",
    "reasons": [
     "its items were judged not relevant"
@@ -7374,7 +7594,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "thegiftstagram",
    "key": "thegiftstagram",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "thegiftstagram",
    "reasons": [
     "its items were judged not relevant"
@@ -7402,7 +7622,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "theguycodehq",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "theguycodehq",
    "reasons": [
     "its items were judged not relevant"
@@ -7430,7 +7650,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "theinspo4you",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "theinspo4you",
    "reasons": [
     "its items were judged not relevant"
@@ -7458,7 +7678,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "theoutfitdropinspo",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "theoutfitdropinspo",
    "reasons": [
     "its items were judged not relevant"
@@ -7486,7 +7706,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "theprink.in",
    "key": "theprinkin",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "theprink.in",
    "reasons": [
     "its items were judged not relevant"
@@ -7514,7 +7734,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "thetoveysjourney",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "thetoveysjourney",
    "reasons": [
     "its items were judged not relevant"
@@ -7542,7 +7762,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "tiktokdad78",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "tiktok.dad78",
    "reasons": [
     "its items were judged not relevant"
@@ -7570,7 +7790,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "tooletries",
    "key": "tooletries",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "tooletries",
    "reasons": [
     "its items were judged not relevant"
@@ -7598,7 +7818,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "toolgokit",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "toolgokit",
    "reasons": [
     "its items were judged not relevant"
@@ -7626,7 +7846,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "trivaze.back.relief",
    "key": "trivazebackrelief",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "trivaze.back.relief",
    "reasons": [
     "its items were judged not relevant"
@@ -7654,7 +7874,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "tuxy",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Tuxy",
    "reasons": [
     "its items were judged not relevant"
@@ -7683,7 +7903,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "uliceuyb8hc",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "uliceuyb8hc",
    "reasons": [
     "its items were judged not relevant"
@@ -7711,7 +7931,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "unwrapmee",
    "key": "unwrapmee",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "unwrapmee",
    "reasons": [
     "its items were judged not relevant"
@@ -7739,7 +7959,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "velourgarmentssl",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Velour Garments, SL.",
    "reasons": [
     "its items were judged not relevant"
@@ -7768,7 +7988,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "victoiregdr",
    "key": "victoiregdr",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "victoiregdr",
    "reasons": [
     "its items were judged not relevant"
@@ -7796,7 +8016,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "vvi.nessa",
    "key": "vvinessa",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "vvi.nessa",
    "reasons": [
     "its items were judged not relevant"
@@ -7824,7 +8044,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "warmbuck.co",
    "key": "warmbuckco",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "warmbuck.co",
    "reasons": [
     "its items were judged not relevant"
@@ -7852,7 +8072,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "wendy93379",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "wendy93379",
    "reasons": [],
    "score": 0,
@@ -7877,7 +8097,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "windynest",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "Windy Nest",
    "reasons": [
     "its items were judged not relevant"
@@ -7906,7 +8126,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "yscozyvibe",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "ys.cozy.vibe",
    "reasons": [
     "its items were judged not relevant"
@@ -7934,7 +8154,7 @@
    "first_seen": "2026-11-10T09:49:03Z",
    "instagram": "",
    "key": "zacaffleckk",
-   "last_seen": "2026-11-11T04:34:22Z",
+   "last_seen": "2026-11-11T11:11:57Z",
    "name": "zacaffleckk",
    "reasons": [
     "its items were judged not relevant"
@@ -7956,5 +8176,5 @@
    "tiktok": "zacaffleckk"
   }
  ],
- "updated_at": "2026-11-11T04:34:22Z"
+ "updated_at": "2026-11-11T11:11:57Z"
 }

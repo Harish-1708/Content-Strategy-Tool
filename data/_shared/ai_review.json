@@ -1,4 +1,473 @@
 {
- "items": {},
- "next": 1
+ "items": {
+  "AR-0001": {
+   "created": "2026-11-11T11:11:57Z",
+   "data_class": "internal",
+   "decided_at": "",
+   "decided_by": "",
+   "decision": "",
+   "id": "AR-0001",
+   "item_ids": [
+    "madepants"
+   ],
+   "lane": "competitor_intelligence",
+   "note": "",
+   "output": {
+    "competitors": [
+     {
+      "confidence": 0.85,
+      "evidence": [
+       "\"Duck Bib Overalls Canvas Workwear Dungarees\"",
+       "\"US Military OG-107 Fatigue Pants\""
+      ],
+      "key": "madepants",
+      "reason": "Madepants offers overalls and workwear similar to Swoveralls, making it a direct competitor.",
+      "relevant": true,
+      "suitability": "direct"
+     }
+    ]
+   },
+   "reason": "this lane requires human review",
+   "route": {
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq"
+   }
+  },
+  "AR-0002": {
+   "created": "2026-11-11T11:11:57Z",
+   "data_class": "internal",
+   "decided_at": "",
+   "decided_by": "",
+   "decision": "",
+   "id": "AR-0002",
+   "item_ids": [
+    "theoodie"
+   ],
+   "lane": "competitor_intelligence",
+   "note": "",
+   "output": {
+    "competitors": [
+     {
+      "confidence": 0.85,
+      "evidence": [
+       "Public snippets describe The Oodie as a \"blanket hoodie\" for lounging, sleeping, binge‑watching",
+       "No mention of overalls or similar apparel that Swoveralls offers"
+      ],
+      "key": "theoodie",
+      "reason": "The Oodie sells blanket hoodies, which are unrelated to the overalls focus of Swoveralls, making it not a competitor.",
+      "relevant": false,
+      "suitability": "not_competitor"
+     }
+    ]
+   },
+   "reason": "this lane requires human review",
+   "route": {
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq"
+   }
+  },
+  "AR-0003": {
+   "created": "2026-11-11T11:11:57Z",
+   "data_class": "internal",
+   "decided_at": "",
+   "decided_by": "",
+   "decision": "",
+   "id": "AR-0003",
+   "item_ids": [
+    "emmafy"
+   ],
+   "lane": "competitor_intelligence",
+   "note": "",
+   "output": {
+    "competitors": [
+     {
+      "confidence": 0.85,
+      "evidence": [
+       "public snippets: \"Bib Overalls That Feel Like a Day Off The Corduroy Overalls...\"",
+       "rubric score: 77 with relevance_sum=60 indicating at least one item judged relevant for this brand"
+      ],
+      "key": "emmafy",
+      "reason": "Emmafy sells bib overalls, which are the same product category as Swoveralls, making it a direct competitor.",
+      "relevant": true,
+      "suitability": "direct"
+     }
+    ]
+   },
+   "reason": "this lane requires human review",
+   "route": {
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq"
+   }
+  },
+  "AR-0004": {
+   "created": "2026-11-11T11:11:57Z",
+   "data_class": "internal",
+   "decided_at": "",
+   "decided_by": "",
+   "decision": "",
+   "id": "AR-0004",
+   "item_ids": [
+    "freethesheep"
+   ],
+   "lane": "competitor_intelligence",
+   "note": "",
+   "output": {
+    "competitors": [
+     {
+      "confidence": 0.62,
+      "evidence": [
+       "1 of its items were judged relevant for this brand (average relevance 59)",
+       "Eden Hoodie is an oversized, sensory‑friendly faux‑fur hoodie"
+      ],
+      "key": "freethesheep",
+      "reason": "Free the Sheep sells apparel that overlaps with Swoveralls' clothing market, though not the same product type, making it an adjacent competitor.",
+      "relevant": true,
+      "suitability": "adjacent"
+     }
+    ]
+   },
+   "reason": "this lane requires human review",
+   "route": {
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq"
+   }
+  },
+  "AR-0005": {
+   "created": "2026-11-11T11:11:57Z",
+   "data_class": "internal",
+   "decided_at": "",
+   "decided_by": "",
+   "decision": "",
+   "id": "AR-0005",
+   "item_ids": [
+    "kayarize"
+   ],
+   "lane": "competitor_intelligence",
+   "note": "",
+   "output": {
+    "competitors": [
+     {
+      "confidence": 0.42,
+      "evidence": [
+       "Kay arize Black Queen Things is made for women ... Every piece honors where we come from — and how we choose to show up to",
+       "rubric score: 70, ads run 275 days, appears in research search"
+      ],
+      "key": "kayarize",
+      "reason": "Kayarize appears to be a women’s apparel brand, which makes it an adjacent competitor to Swoveralls, though no specific evidence links it to overalls.",
+      "relevant": true,
+      "suitability": "adjacent"
+     }
+    ]
+   },
+   "reason": "this lane requires human review",
+   "route": {
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq"
+   }
+  },
+  "AR-0006": {
+   "created": "2026-11-11T11:11:57Z",
+   "data_class": "internal",
+   "decided_at": "",
+   "decided_by": "",
+   "decision": "",
+   "id": "AR-0006",
+   "item_ids": [
+    "kortneyandkarlee"
+   ],
+   "lane": "competitor_intelligence",
+   "note": "",
+   "output": {
+    "competitors": [
+     {
+      "confidence": 0.62,
+      "evidence": [
+       "rubric score: 63",
+       "1 of its items were judged relevant for this brand (average relevance 52)",
+       "public snippets mention \"Throw On & Go Outfits\" and \"loungewear\""
+      ],
+      "key": "kortneyandkarlee",
+      "reason": "The company sells casual throw‑on outfits and loungewear, which overlap with Swoveralls' apparel category but are not the same product type, making it an adjacent competitor.",
+      "relevant": true,
+      "suitability": "adjacent"
+     }
+    ]
+   },
+   "reason": "this lane requires human review",
+   "route": {
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq"
+   }
+  },
+  "AR-0007": {
+   "created": "2026-11-11T11:11:57Z",
+   "data_class": "internal",
+   "decided_at": "",
+   "decided_by": "",
+   "decision": "",
+   "id": "AR-0007",
+   "item_ids": [
+    "instagramcom"
+   ],
+   "lane": "competitor_intelligence",
+   "note": "",
+   "output": {
+    "competitors": [
+     {
+      "confidence": 0.92,
+      "evidence": [
+       "name: instagram.com",
+       "website: not known",
+       "signals: ads=0.0, kept_items=6.0, posts=0.0"
+      ],
+      "key": "instagramcom",
+      "reason": "Instagram is a social media platform, not a retailer of clothing or workwear, so it does not compete with Swoveralls.",
+      "relevant": false,
+      "suitability": "not_competitor"
+     }
+    ]
+   },
+   "reason": "this lane requires human review",
+   "route": {
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq"
+   }
+  },
+  "AR-0008": {
+   "created": "2026-11-11T11:11:57Z",
+   "data_class": "internal",
+   "decided_at": "",
+   "decided_by": "",
+   "decision": "",
+   "id": "AR-0008",
+   "item_ids": [
+    "tiktokcom"
+   ],
+   "lane": "competitor_intelligence",
+   "note": "",
+   "output": {
+    "competitors": [
+     {
+      "confidence": 0.2,
+      "evidence": [
+       "website: not known",
+       "public snippets mention gifts and shirts but no indication of selling clothing",
+       "rubric score 54 with relevance words overlapping brand market words"
+      ],
+      "key": "tiktokcom",
+      "reason": "TikTok is a social media platform, not a retailer of overalls or similar apparel, so it is not a competitor to Swoveralls.",
+      "relevant": false,
+      "suitability": "not_competitor"
+     }
+    ]
+   },
+   "reason": "this lane requires human review",
+   "route": {
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq"
+   }
+  },
+  "AR-0009": {
+   "created": "2026-11-11T11:11:57Z",
+   "data_class": "internal",
+   "decided_at": "",
+   "decided_by": "",
+   "decision": "",
+   "id": "AR-0009",
+   "item_ids": [
+    "swoveralls"
+   ],
+   "lane": "competitor_intelligence",
+   "note": "",
+   "output": {
+    "competitors": [
+     {
+      "confidence": 0.0,
+      "evidence": [
+       "its items were judged not relevant",
+       "it is one of the brand's benchmark names"
+      ],
+      "key": "swoveralls",
+      "reason": "The company is the brand itself, listed as a benchmark name and its items were judged not relevant.",
+      "relevant": false,
+      "suitability": "not_competitor"
+     }
+    ]
+   },
+   "reason": "this lane requires human review",
+   "route": {
+    "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "provider": "cloudflare"
+   }
+  },
+  "AR-0010": {
+   "created": "2026-11-11T11:11:57Z",
+   "data_class": "internal",
+   "decided_at": "",
+   "decided_by": "",
+   "decision": "",
+   "id": "AR-0010",
+   "item_ids": [
+    "gymshark"
+   ],
+   "lane": "competitor_intelligence",
+   "note": "",
+   "output": {
+    "competitors": [
+     {
+      "confidence": 0.6,
+      "evidence": [
+       "its items were judged not relevant",
+       "rubric score: 48"
+      ],
+      "key": "gymshark",
+      "reason": "Gymshark is not considered a competitor due to its low rubric score and items being judged not relevant, despite being a benchmark name.",
+      "relevant": false,
+      "suitability": "not_competitor"
+     }
+    ]
+   },
+   "reason": "this lane requires human review",
+   "route": {
+    "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "provider": "cloudflare"
+   }
+  },
+  "AR-0011": {
+   "created": "2026-11-11T11:11:57Z",
+   "data_class": "internal",
+   "decided_at": "",
+   "decided_by": "",
+   "decision": "",
+   "id": "AR-0011",
+   "item_ids": [
+    "skims"
+   ],
+   "lane": "competitor_intelligence",
+   "note": "",
+   "output": {
+    "competitors": [
+     {
+      "confidence": 0.8,
+      "evidence": [
+       "SKIMS Mens",
+       "SKIMS Men Underwear",
+       "SKIMS panties"
+      ],
+      "key": "skims",
+      "reason": "SKIMS offers similar products such as mens underwear and panties, which are also offered by Swoveralls, indicating a direct competition.",
+      "relevant": true,
+      "suitability": "direct"
+     }
+    ]
+   },
+   "reason": "this lane requires human review",
+   "route": {
+    "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "provider": "cloudflare"
+   }
+  },
+  "AR-0012": {
+   "created": "2026-11-11T11:11:57Z",
+   "data_class": "internal",
+   "decided_at": "",
+   "decided_by": "",
+   "decision": "",
+   "id": "AR-0012",
+   "item_ids": [
+    "liquiddeath"
+   ],
+   "lane": "competitor_intelligence",
+   "note": "",
+   "output": {
+    "competitors": [
+     {
+      "confidence": 0.2,
+      "evidence": [
+       "its items were judged not relevant",
+       "it is one of the brand's benchmark names",
+       "public snippets: \"You won't believe it's not soda.\" | \"90% less sugar than top sodas (non-diet)*\""
+      ],
+      "key": "liquiddeath",
+      "reason": "The supplied facts show Liquid Death's own ads are beverage-focused and that the earlier rubric judged its items not relevant, but they say nothing about what Swoveralls sells, so the match is undetermined and only leans negative.",
+      "relevant": false,
+      "suitability": "not_competitor"
+     }
+    ]
+   },
+   "reason": "this lane requires human review",
+   "route": {
+    "model": "claude-haiku-5-5",
+    "provider": "claude"
+   }
+  },
+  "AR-0013": {
+   "created": "2026-11-11T11:11:57Z",
+   "data_class": "internal",
+   "decided_at": "",
+   "decided_by": "",
+   "decision": "",
+   "id": "AR-0013",
+   "item_ids": [
+    "cotopaxi"
+   ],
+   "lane": "competitor_intelligence",
+   "note": "",
+   "output": {
+    "competitors": [
+     {
+      "confidence": 0.8,
+      "evidence": [
+       "its items were judged not relevant",
+       "New Coraza Luggage | The Perfect 2-in-1 Pack Cotopaxi"
+      ],
+      "key": "cotopaxi",
+      "reason": "Cotopaxi's products and advertisements do not appear to be directly related to Swoveralls' offerings, suggesting they are not a direct competitor.",
+      "relevant": false,
+      "suitability": "not_competitor"
+     }
+    ]
+   },
+   "reason": "this lane requires human review",
+   "route": {
+    "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "provider": "cloudflare"
+   }
+  },
+  "AR-0014": {
+   "created": "2026-11-11T11:11:57Z",
+   "data_class": "internal",
+   "decided_at": "",
+   "decided_by": "",
+   "decision": "",
+   "id": "AR-0014",
+   "item_ids": [
+    "musthavefinds"
+   ],
+   "lane": "competitor_intelligence",
+   "note": "",
+   "output": {
+    "competitors": [
+     {
+      "confidence": 0.8,
+      "evidence": [
+       "Overalls She'll Wear on Repeat All Fall",
+       "The Corduroy Overalls",
+       "1 of its items were judged relevant for this brand"
+      ],
+      "key": "musthavefinds",
+      "reason": "The company has advertised overalls, a product similar to Swoveralls, and has had an ad running for 53 days with a high relevance score.",
+      "relevant": true,
+      "suitability": "direct"
+     }
+    ]
+   },
+   "reason": "this lane requires human review",
+   "route": {
+    "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "provider": "cloudflare"
+   }
+  }
+ },
+ "next": 15
 }
