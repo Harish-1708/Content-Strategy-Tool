@@ -194,7 +194,8 @@ def test_degraded_state_from_ordinary_runs_shows_even_when_verified(tmp_path):
     assert led.status(SRC, RT, at(NOW, hours=1)) == "degraded"
 
 
-def test_planned_and_disabled_routes_are_never_trusted(tmp_path):
+def test_planned_and_disabled_routes_are_never_trusted(tmp_path, monkeypatch):
+    monkeypatch.setenv("OPENCLI_BIN", "/bin/sh")                                  # a machine that has OpenCLI: nothing is shown as 'cannot run here' (that case is in test_observatory_fixes47)
     led = ledger(tmp_path)
     assert led.status("reddit_public", "public_web", NOW) == "planned"
     assert led.status("youtube_public", "yt_dlp", NOW) == "disabled"
@@ -262,7 +263,8 @@ def test_a_partial_entry_is_filled_in(tmp_path):
 
 # ---- showing it -------------------------------------------------------------------------------------------------------------
 
-def test_every_declared_route_has_a_row_with_every_column(tmp_path):
+def test_every_declared_route_has_a_row_with_every_column(tmp_path, monkeypatch):
+    monkeypatch.setenv("OPENCLI_BIN", "/bin/sh")                                  # a machine that has OpenCLI: nothing is shown as 'cannot run here' (that case is in test_observatory_fixes47)
     led = ledger(tmp_path)
     passing(led, source="meta_ads", route="browser")
     fail(led, K.RATE_LIMITED)
@@ -278,7 +280,8 @@ def test_every_declared_route_has_a_row_with_every_column(tmp_path):
     assert by["claude|api"]["route_hash"] == led.route_hash("claude", "api")
 
 
-def test_the_printed_report_and_matrix_say_what_matters(tmp_path):
+def test_the_printed_report_and_matrix_say_what_matters(tmp_path, monkeypatch):
+    monkeypatch.setenv("OPENCLI_BIN", "/bin/sh")                                  # a machine that has OpenCLI: nothing is shown as 'cannot run here' (that case is in test_observatory_fixes47)
     led = ledger(tmp_path)
     passing(led, source="meta_ads", route="browser")
     fail(led, K.PLATFORM_BLOCKED)
