@@ -495,10 +495,11 @@ def test_a_redirect_to_the_same_host_is_followed_once_and_any_other_is_reported_
     assert C.DirectClient(GH, "ghp_TOKEN12345", http).complete(GH_ROUTE, "", "hi", 10).text == "OK"
     assert [c["url"] for c in http.calls] == [GH + "/chat/completions", GH + "/v2/chat/completions"] and http.calls[1]["method"] == "POST" and http.calls[1]["body"] == http.calls[0]["body"]
     for status, where in ((307, "https://evil.example/steal"), (302, GH + "/elsewhere"), (301, "")):
-        http = Http((status, {}, {"Location": where}), GH_OK)
+        http = Http((status, {}, {"Location": where}))                                           # the provider keeps redirecting: every variant gets the same answer
         with pytest.raises(Failure) as seen:
             C.DirectClient(GH, "ghp_TOKEN12345", http).complete(GH_ROUTE, "", "hi", 10)
-        assert seen.value.code == K.UPSTREAM_BROKEN and f"redirected the request ({status}) to {where or 'an unknown address'}" in str(seen.value) and len(http.calls) == 1   # the token never went to another host
+        assert seen.value.code == K.UPSTREAM_BROKEN and f"redirected the request ({status}) to {where or 'an unknown address'}" in str(seen.value)
+        assert {c["url"] for c in http.calls} == {GH + "/chat/completions"}                                  # every variant went to the provider's own address: the token never went to another host
 
 
 def test_the_http_helper_hands_back_a_redirect_instead_of_following_it():
@@ -534,3 +535,70 @@ def test_the_provider_file_gives_github_models_both_api_versions_and_the_client_
     assert reg.providers["github"].direct["api_versions"] == ["2026-03-10", "2022-11-28"]
     clients, _ = CM.live_clients(reg, {"GITHUB_TOKEN": "ghp_" + "A" * 36}, None, "/tmp", [])
     assert clients["github"].api_versions == ("2026-03-10", "2022-11-28")
+
+
+# ---- GitHub Models variants and the OpenRouter free client -----------------------------------------------------------------------------------------
+
+def test_github_models_is_tried_with_each_api_version_and_then_a_plain_json_accept_header_and_always_names_itself():
+    http = Http(GH_TEXT, GH_TEXT, GH_OK)
+    done = C.DirectClient(GH, "ghp_TOKEN12345", http, api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
+    assert done.text == "OK" and len(http.calls) == 3
+    assert [(c["headers"].get("X-GitHub-Api-Version"), c["headers"]["Accept"]) for c in http.calls] == [("2026-03-10", "application/vnd.github+json"), ("2022-11-28", "application/vnd.github+json"), ("2022-11-28", "application/json")]
+    assert all(c["headers"]["User-Agent"] == C.USER_AGENT for c in http.calls)                          # urllib's own name is not sent
+
+
+OR = "https://openrouter.ai/api/v1"
+OR_MODELS = (200, {"data": [
+    {"id": "small/free-model:free", "context_length": 8000, "pricing": {"prompt": "0", "completion": "0"}, "architecture": {"output_modalities": ["text"]}},
+    {"id": "big/free-model:free", "context_length": 262144, "pricing": {"prompt": "0", "completion": "0"}, "architecture": {"output_modalities": ["text"]}},
+    {"id": "paid/model", "context_length": 999999, "pricing": {"prompt": "0.000002", "completion": "0.00001"}, "architecture": {"output_modalities": ["text"]}},
+    {"id": "image/maker:free", "context_length": 100000, "pricing": {"prompt": "0", "completion": "0"}, "architecture": {"output_modalities": ["image"]}},
+    {"id": "half/free:free", "context_length": 300000, "pricing": {"prompt": "0", "completion": "0.5"}, "architecture": {"output_modalities": ["text"]}},
+    {"id": "mid/free-model:free", "context_length": 65000, "pricing": {"prompt": "0", "completion": "0"}, "architecture": {"output_modalities": ["text"]}},
+    {"id": "tiny/free-model:free", "context_length": 4000, "pricing": {"prompt": "0", "completion": "0"}},
+    {"id": "zero/price-without-the-free-suffix", "context_length": 900000, "pricing": {"prompt": "0", "completion": "0"}, "architecture": {"output_modalities": ["text"]}}]}, {})
+OR_ROUTE = {"provider": "openrouter", "model": "openrouter/free", "gateway_model": "openrouter/free"}
+
+
+def test_the_openrouter_client_asks_for_the_models_that_are_free_today_and_the_free_router_last_and_never_a_paid_one():
+    http = Http(OR_MODELS, GH_OK)
+    done = C.OpenRouterClient(OR, "sk-or-KEY12345", http).complete(OR_ROUTE, "", "hi", 10)
+    assert done.text == "OK"
+    listing, chat = http.calls
+    assert listing["method"] == "GET" and listing["url"] == OR + "/models"
+    assert chat["url"] == OR + "/chat/completions" and chat["headers"]["Accept"] == "application/json" and "X-GitHub-Api-Version" not in chat["headers"]
+    assert chat["body"]["models"] == ["big/free-model:free", "mid/free-model:free", "small/free-model:free", "openrouter/free"] and chat["body"]["model"] == "big/free-model:free"
+    assert not [m for m in chat["body"]["models"] if m in ("paid/model", "half/free:free", "image/maker:free", "zero/price-without-the-free-suffix")]       # priced, half-priced, image and not-marked-free models are never asked for
+    assert len(http.calls) == 2
+
+
+def test_the_openrouter_client_reads_the_free_list_once_and_asks_the_router_alone_when_the_list_is_unavailable():
+    http = Http(OR_MODELS, GH_OK, GH_OK)
+    client = C.OpenRouterClient(OR, "sk-or-KEY12345", http)
+    client.complete(OR_ROUTE, "", "hi", 10)
+    client.complete(OR_ROUTE, "", "again", 10)
+    assert [c["method"] for c in http.calls] == ["GET", "POST", "POST"]                                  # the list is read once per run
+    http = Http((500, {}, {}), GH_OK)
+    C.OpenRouterClient(OR, "sk-or-KEY12345", http).complete(OR_ROUTE, "", "hi", 10)
+    assert http.calls[1]["body"]["model"] == "openrouter/free" and http.calls[1]["body"]["models"] == ["openrouter/free"]
+    http = Http(ConnectionError("down"), GH_OK)
+    C.OpenRouterClient(OR, "sk-or-KEY12345", http).complete(OR_ROUTE, "", "hi", 10)
+    assert http.calls[1]["body"]["models"] == ["openrouter/free"]
+    http = Http(OR_MODELS, GH_OK)
+    C.OpenRouterClient(OR, "sk-or-KEY12345", http).complete({**OR_ROUTE, "model": "big/free-model:free"}, "", "hi", 10)
+    assert http.calls[1]["body"]["models"] == ["big/free-model:free", "mid/free-model:free", "small/free-model:free", "openrouter/free"]   # a named model leads, the rest follow
+
+
+def test_an_openrouter_model_withdrawn_from_free_use_is_reported_as_gone_not_as_a_key_problem():
+    http = Http(OR_MODELS, (404, {"error": {"message": "This model is unavailable for free. The paid version is available now"}}, {}))
+    with pytest.raises(Failure) as seen:
+        C.OpenRouterClient(OR, "sk-or-KEY12345", http).complete(OR_ROUTE, "", "hi", 10)
+    assert seen.value.code == K.UPSTREAM_BROKEN and "not found or removed upstream" in str(seen.value) and "unavailable for free" in str(seen.value)
+    assert len(http.calls) == 2                                                                           # one variant only: another header would not bring a model back
+
+
+def test_the_live_run_builds_the_openrouter_client_for_the_direct_provider_and_the_github_one_for_github():
+    from contentintel.ai import commands as CM
+    reg = R.load_registry(ROOT / "ai_providers.yaml")
+    clients, _ = CM.live_clients(reg, {"GITHUB_TOKEN": "ghp_" + "A" * 36, "OPENROUTER_API_KEY": "sk-or-" + "b" * 30}, None, "/tmp", [])
+    assert type(clients["openrouter"]) is C.OpenRouterClient and type(clients["github"]) is C.DirectClient and clients["openrouter"].github is False and clients["github"].github is True
