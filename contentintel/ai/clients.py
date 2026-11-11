@@ -142,7 +142,7 @@ class DirectClient:
         """GitHub answered every variant with the plain text OK (the raw probe showed the same for the model catalogue too): that is not a reply from the Models service, so say so and say what to try."""
         if self.github and "something that is not JSON (text/plain): 'OK'" in str(exc) and all("'OK'" in t for t in tried):
             return (" | Every variant, and the model catalogue in the raw probe, got a plain-text OK with no JSON: that is not an answer from the GitHub Models service, so the job's own token is not being "
-                    "accepted for it. Create a fine-grained token with the Models: read permission and save it as the secret GITHUB_MODELS_TOKEN; it is used before the job's token.")
+                    "accepted for it. Create a fine-grained token with the Models: read permission and save it as the secret GH_MODELS_TOKEN; it is used before the job's token.")
         return ""
 
     def _attempt(self, route, messages, max_tokens, timeout, version, accept):
