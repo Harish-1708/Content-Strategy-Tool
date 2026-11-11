@@ -106,11 +106,14 @@ def agent_reach_checks(settings, contact, now, *, environ=None, cli=None, github
     if SV.agent_reach_allowed(settings, "github", "general_research")[0]:
         def github_check():
             client = github or SV.agent_reach_client(settings, "github", "general_research", environ=environ)
-            neutral = ["search", environ.get("GITHUB_CHECK_QUERY", "agent reach"), "--limit", 2]
-            rows = AR.rows_from(client.call_action("github", "search", {"query": neutral[1], "limit": "2"}, None, neutral) if hasattr(client, "call_action") else client.call(neutral))
-            if not rows:
-                raise K.Failure(K.UPSTREAM_BROKEN, "the GitHub search through Agent-Reach returned nothing")
-            return len(rows), f"read {len(rows)} GitHub repositor(ies) through the public API"
+            tried = []
+            for query in (environ.get("GITHUB_CHECK_QUERY", "agent reach"), "python"):               # a broad query: it must match something, or the route is not working
+                neutral = ["search", query, "--limit", 2]
+                rows = AR.rows_from(client.call_action("github", "search", {"query": query, "limit": "2"}, None, neutral) if hasattr(client, "call_action") else client.call(neutral))
+                if rows:
+                    return len(rows), f"read {len(rows)} GitHub repositor(ies) through the public API for {query!r}"
+                tried.append(query)
+            raise K.Failure(K.UPSTREAM_BROKEN, f"GitHub answered but found no repository for {' or '.join(repr(q) for q in tried)}, which always match thousands: most likely GitHub is limiting this machine (the workflow passes GITHUB_TOKEN to lift that) or the Agent-Reach GitHub search is not working")
         out[("agent_reach_research", "github")] = github_check
     if contact and SV.agent_reach_allowed(settings, "web", "general_research")[0]:
         def web_check():
