@@ -498,6 +498,12 @@ def _crawl_state_path(state_dir, url):
     return Path(state_dir) / "_shared" / "crawl_state" / (hashlib.sha1(url.strip().rstrip("/").lower().encode("utf-8")).hexdigest()[:16] + ".json")
 
 
+def _note_scrapling(settings, exc):
+    """Record a Scrapling failure in its health, except what is not the repository's fault: a site's refusal, and a missing environment (that is our setup, not Scrapling failing)."""
+    if exc.code not in REFUSALS and exc.code != K.NEED_SETUP:
+        CONN.note(settings, "scrapling", False, _utc_now(), code=exc.code, message=str(exc))
+
+
 def scrapling_crawl(settings, url, purpose, *, contact, python, max_pages=None, depth=None, target_advanced=None, pauses=None, now="", environ=None, runner=None, sitemap=False, extract=None, state_dir=None, resume=False):
     """A polite crawl of one site through the isolated Scrapling worker, for any purpose and any repository: {"pages": [{url, title, markdown, ...}], "skipped": [...], "stopped": why}. The options are
     resolved exactly as for a single page (central defaults, overrides, the target's own); max_pages and depth default to the owner's crawl settings. Raises Failure for a switched-off service, a
@@ -522,8 +528,14 @@ def scrapling_crawl(settings, url, purpose, *, contact, python, max_pages=None, 
             state = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, ValueError):
             state = None
-    got = wc.crawl_site(comp, url, settings, contact, python, max_pages=max_pages or settings["crawl"]["max_pages"], depth=settings["crawl"]["depth"] if depth is None else depth,
-                        pauses=pauses, now=now, sitemap=sitemap, resume=state, extract=extract, **extra)
+    try:
+        got = wc.crawl_site(comp, url, settings, contact, python, max_pages=max_pages or settings["crawl"]["max_pages"], depth=settings["crawl"]["depth"] if depth is None else depth,
+                            pauses=pauses, now=now, sitemap=sitemap, resume=state, extract=extract, **extra)
+    except K.Failure as exc:
+        _note_scrapling(settings, exc)
+        raise
+    if got.get("pages"):                                                  # pages came back through it: that is Scrapling working, whatever the site did afterwards
+        CONN.note(settings, "scrapling", True, _utc_now())
     got["resumed"], got["state_saved"] = bool(state), False
     if path is not None:
         if got.get("state") and got["stopped"] != "no more pages to follow":                # stopped early (page limit, a refusal): keep what is left for a later run
@@ -553,7 +565,13 @@ def discover_feeds(settings, url, purpose, *, contact, python, target_advanced=N
         extra["environ"] = environ
     if runner is not None:
         extra["runner"] = runner
-    return wc.discover_feeds(comp, url, settings, contact, python, guesses=feeds_mod.guess_feed_urls(f"{parts.scheme}://{parts.netloc}"), pauses=pauses, now=now, **extra)
+    try:
+        found = wc.discover_feeds(comp, url, settings, contact, python, guesses=feeds_mod.guess_feed_urls(f"{parts.scheme}://{parts.netloc}"), pauses=pauses, now=now, **extra)
+    except K.Failure as exc:
+        _note_scrapling(settings, exc)
+        raise
+    CONN.note(settings, "scrapling", True, _utc_now())
+    return found
 
 
 # ---- shared interface: web search ---------------------------------------------------------------------------------------------------------------
@@ -746,8 +764,8 @@ def read_page(settings, url, purpose, engines, *, engine=None):
         try:
             page = dict(fn(url))
         except K.Failure as exc:
-            if name == "scrapling" and exc.code not in REFUSALS:                         # a site's refusal is not the repository failing; anything else is
-                CONN.note(settings, "scrapling", False, _utc_now(), code=exc.code, message=str(exc))
+            if name == "scrapling":                                                     # a site's refusal and a missing environment are not the repository failing; anything else is
+                _note_scrapling(settings, exc)
             if choice != "auto" or (exc.code in REFUSALS and _GUARDS.on("rest_after_refusal")):        # the rest guard: a refusal ends the chain; with it off the next reader gets a go
                 raise
             skipped.append(f"{name}: {exc.code}")
