@@ -317,21 +317,21 @@ def _wf(name):
 def test_the_optional_github_models_token_reaches_every_job_that_uses_the_ai_layer_and_is_documented():
     ai = _wf("ai-gateway.yml")
     envs = [s["env"] for s in ai["jobs"]["live"]["steps"] if "env" in s and "GITHUB_TOKEN" in s["env"]]
-    assert len(envs) >= 3 and all(e.get("GITHUB_MODELS_TOKEN") == "${{ secrets.GITHUB_MODELS_TOKEN }}" for e in envs)         # the live check, the plan, and the raw probe
+    assert len(envs) >= 3 and all(e.get("GH_MODELS_TOKEN") == "${{ secrets.GH_MODELS_TOKEN }}" for e in envs)         # the live check, the plan, and the raw probe
     obs = _wf("observatory.yml")
     run = next(s for s in obs["jobs"]["observatory"]["steps"] if s.get("name") == "Run")
-    assert run["env"]["GITHUB_MODELS_TOKEN"] == "${{ secrets.GITHUB_MODELS_TOKEN }}"
+    assert run["env"]["GH_MODELS_TOKEN"] == "${{ secrets.GH_MODELS_TOKEN }}"
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    row = next(line for line in readme.splitlines() if line.startswith("| `GITHUB_MODELS_TOKEN` |"))                    # the exact secret-table row, not just the words somewhere
+    row = next(line for line in readme.splitlines() if line.startswith("| `GH_MODELS_TOKEN` |"))                    # the exact secret-table row, not just the words somewhere
     assert "Models: read" in row and "| optional |" in row and "no card" in row
 
 
 def test_the_raw_probe_shows_which_token_it_is_the_connection_every_header_and_the_same_request_with_the_models_token():
     steps = _wf("ai-gateway.yml")["jobs"]["live"]["steps"]
     probe = next(s for s in steps if str(s.get("name", "")).startswith("GitHub Models raw probe"))["run"]
-    for needle in ("https://api.github.com/rate_limit", "curl -sS -v", "https://models.github.ai/catalog/models -H \"Accept: application/vnd.github+json\" | head", "GITHUB_MODELS_TOKEN", "openai/gpt-4.1-mini"):
+    for needle in ("https://api.github.com/rate_limit", "curl -sS -v", "https://models.github.ai/catalog/models -H \"Accept: application/vnd.github+json\" | head", "GH_MODELS_TOKEN", "openai/gpt-4.1-mini"):
         assert needle in probe, needle
-    assert probe.count("$GITHUB_TOKEN") >= 3 and "if [ -n \"$GITHUB_MODELS_TOKEN\" ]" in probe
+    assert probe.count("$GITHUB_TOKEN") >= 3 and "if [ -n \"$GH_MODELS_TOKEN\" ]" in probe
 
 
 def test_the_contact_check_does_not_print_a_line_that_looks_like_an_error_annotation_in_the_step_header():
@@ -344,3 +344,17 @@ def test_the_contact_check_does_not_print_a_line_that_looks_like_an_error_annota
 def test_scrapling_is_installed_for_a_connections_check_or_install_so_its_health_can_be_proved():
     cond = next(s for s in _wf("observatory.yml")["jobs"]["observatory"]["steps"] if s.get("name") == "Install the isolated Scrapling environment")["if"]
     assert "inputs.action == 'connections'" in cond and "inputs.what == 'check'" in cond and "inputs.what == 'install'" in cond and "inputs.what == 'crawl'" in cond
+
+
+def test_no_secret_name_starts_with_the_reserved_github_prefix_and_the_models_token_has_its_allowed_name():
+    import re
+    seen = set()
+    for path in (ROOT / ".github" / "workflows").glob("*.yml"):
+        seen |= set(re.findall(r"secrets\.([A-Z0-9_]+)", path.read_text(encoding="utf-8")))
+    assert "GH_MODELS_TOKEN" in seen and "GITHUB_MODELS_TOKEN" not in seen
+    assert not [n for n in seen if n.startswith("GITHUB_") and n != "GITHUB_TOKEN"], "GitHub does not allow a secret name that starts with GITHUB_"       # GITHUB_TOKEN is GitHub's own, automatic one
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    documented = set(re.findall(r"^\| `([A-Z][A-Z0-9_]+)` \|", readme, re.M))
+    assert "GH_MODELS_TOKEN" in documented and not [n for n in documented if n.startswith("GITHUB_") and n != "GITHUB_TOKEN"]
+    providers = (ROOT / "ai_providers.yaml").read_text(encoding="utf-8")
+    assert "- GH_MODELS_TOKEN\n      - GITHUB_TOKEN" in providers and "GITHUB_MODELS_TOKEN" not in providers
