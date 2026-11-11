@@ -204,6 +204,11 @@
     "at": "2026-11-11T04:55:17Z",
     "ms": 0,
     "ok": false
+   },
+   {
+    "at": "2026-11-11T05:00:18Z",
+    "ms": 0,
+    "ok": true
    }
   ],
   "builtin_used": 0,
@@ -212,6 +217,6 @@
    "code": "NEED_SETUP",
    "message": "the Scrapling worker is not installed here (SCRAPLING_PYTHON is not set; the workflow's scrapling box installs it)"
   },
-  "last_success": "2026-11-10T10:41:40Z"
+  "last_success": "2026-11-11T05:00:18Z"
  }
 }
