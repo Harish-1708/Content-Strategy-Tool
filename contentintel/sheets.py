@@ -244,9 +244,9 @@ def _read_competitor_decisions(spreadsheet, brand, store, now, report, dry_run):
     except ImportError:
         return
     try:
-        if "Competitors" not in [w.title for w in spreadsheet.worksheets()]:
+        if "Competitors" not in [w.title for w in _call(spreadsheet.worksheets)]:         # through _call: a refused read (429) is waited out and retried, never given up on
             return
-        n = obs_report.apply_sheet_decisions(spreadsheet.worksheet("Competitors").get_all_values(), store, brand.slug, now, save=not dry_run)
+        n = obs_report.apply_sheet_decisions(_call(_call(spreadsheet.worksheet, "Competitors").get_all_values), store, brand.slug, now, save=not dry_run)
         if n:
             report.notes.append(f"Competitor decisions read from the sheet: {n}")
     except Exception as exc:
@@ -259,10 +259,10 @@ def _read_controls(spreadsheet, brand, store, now, report, dry_run):
         return
     try:
         from . import services
-        if services.CONTROLS_TAB not in [w.title for w in spreadsheet.worksheets()]:
+        if services.CONTROLS_TAB not in [w.title for w in _call(spreadsheet.worksheets)]:
             return
         settings = services.load_settings(None, store.data_dir)
-        changes, problems = services.apply_sheet_controls(spreadsheet.worksheet(services.CONTROLS_TAB).get_all_values(), settings, store.data_dir, now, save=not dry_run, sheet_id=brand.slug)
+        changes, problems = services.apply_sheet_controls(_call(_call(spreadsheet.worksheet, services.CONTROLS_TAB).get_all_values), settings, store.data_dir, now, save=not dry_run, sheet_id=brand.slug)
         if changes:
             report.notes.append("Controls changed in the sheet: " + "; ".join(changes))
         for p in problems:
