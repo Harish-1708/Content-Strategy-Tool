@@ -475,7 +475,7 @@ U48 = [   # update 46: GitHub Models API versions and redirects, the OpenRouter 
     ('u46-gh-redirect-unreported', 'contentintel/ai/clients.py', '        if 300 <= status < 400:\n            raise Failure(contract.UPSTREAM_BROKEN, self._clean(f"the provider redirected', '        if False:\n            raise Failure(contract.UPSTREAM_BROKEN, self._clean(f"the provider redirected', 'a redirect is not reported'),
     ('u46-gh-one-version-only', 'contentintel/ai/clients.py', '        for n, (version, accept) in enumerate(variants):', '        for n, (version, accept) in enumerate(variants[:1]):', 'only the first API version is ever tried'),
     ('u46-gh-retry-on-refusal', 'contentintel/ai/clients.py', 'if exc.code != contract.UPSTREAM_BROKEN or n == len(variants) - 1:', 'if n == len(variants) - 1:', 'a refusal or limit is asked again with another variant'),
-    ('u46-gh-earlier-attempts-lost', 'contentintel/ai/clients.py', '"; ".join(tried)) from None', '"") from None', 'the failure forgets what the earlier version returned'),
+    ('u46-gh-earlier-attempts-lost', 'contentintel/ai/clients.py', '"; ".join(tried) + hint) from None', '"" + hint) from None', 'the failure forgets what the earlier version returned'),
     ('u46-gh-versions-swapped', 'ai_providers.yaml', "      api_versions:\n      - '2026-03-10'\n      - '2022-11-28'", "      api_versions:\n      - '2022-11-28'\n      - '2026-03-10'", 'the old API version is tried first'),
     ('u46-gh-versions-not-passed', 'contentintel/ai/commands.py', ', api_versions=p.direct.get("api_versions") or ("2022-11-28",))', ')', 'the configured API versions never reach the client'),
     ('u46-gh-versions-rejected', 'contentintel/ai/registry.py', '_only(direct, ("base_url", "api_versions"), f"{where}.direct")', '_only(direct, ("base_url",), f"{where}.direct")', 'the provider file cannot list API versions'),
@@ -494,7 +494,7 @@ U50 = [   # update 47: page-read summary, Sheets reads, Scrapling health, cannot
     ('u47-or-paid-completion-allowed', 'contentintel/ai/clients.py', ' and str(price.get("completion", "1")) in ("0", "0.0") and "text" in modalities:', ' and "text" in modalities:', 'a model with a priced completion is treated as free'),
     ('u47-or-image-model-allowed', 'contentintel/ai/clients.py', 'in ("0", "0.0") and str(price.get("completion", "1")) in ("0", "0.0") and "text" in modalities:', 'in ("0", "0.0") and str(price.get("completion", "1")) in ("0", "0.0"):', 'an image model is asked for text'),
     ('u47-or-suffix-ignored', 'contentintel/ai/clients.py', 'if str(m.get("id", "")).endswith(":free") and', 'if True and', 'a model without the free suffix is accepted'),
-    ('u47-or-router-dropped', 'contentintel/ai/clients.py', '[m for m in self.free_models() if m != wanted] + [self.ROUTER]', '[m for m in self.free_models() if m != wanted]', "OpenRouter's own free router is never asked"),
+    ('u47-or-router-dropped', 'contentintel/ai/clients.py', 'chain = lead[: self.MAX_MODELS - 1] + [self.ROUTER]', 'chain = lead[: self.MAX_MODELS - 1]', "OpenRouter's own free router is never asked"),
     ('u47-or-list-read-every-call', 'contentintel/ai/clients.py', '        if self._free is not None:\n            return self._free', '        if False:\n            return self._free', 'the free list is read on every call'),
     ('u47-or-too-many-models', 'contentintel/ai/clients.py', 'sorted(found, reverse=True)[:3]', 'sorted(found, reverse=True)[:10]', 'more than three free models are listed'),
     ('u47-or-smallest-first', 'contentintel/ai/clients.py', 'sorted(found, reverse=True)[:3]', 'sorted(found)[:3]', 'the smallest free models lead'),
@@ -519,7 +519,7 @@ U50 = [   # update 47: page-read summary, Sheets reads, Scrapling health, cannot
     ('u47-acceptance-github-one-query', 'contentintel/observatory/acceptance_checks.py', 'for query in (environ.get("GITHUB_CHECK_QUERY", "agent reach"), "python"):', 'for query in (environ.get("GITHUB_CHECK_QUERY", "agent reach"),):', 'the GitHub check gives up after one query'),
     ('u47-acceptance-github-vague', 'contentintel/observatory/acceptance_checks.py', '(the workflow passes GITHUB_TOKEN to lift that)', '(see the workflow)', 'the GitHub check does not say what to do'),
     ('u47-acceptance-yml-github-token', '.github/workflows/acceptance.yml', '          GITHUB_TOKEN: ${{ github.token }}                  # lifts', '          GITHUB_TOKEN_UNUSED: ${{ github.token }}                  # lifts', "the acceptance run is not given the job's token"),
-    ('u47-ai-yml-probe-blocks', '.github/workflows/ai-gateway.yml', '        continue-on-error: true\n        shell: bash\n        env:\n          GITHUB_TOKEN: ${{ github.token }}\n        run: |\n          # The same request the live check makes', '        shell: bash\n        env:\n          GITHUB_TOKEN: ${{ github.token }}\n        run: |\n          # The same request the live check makes', 'the diagnostic probe can fail the run'),
+    ('u47-ai-yml-probe-blocks', '.github/workflows/ai-gateway.yml', '        continue-on-error: true\n        shell: bash\n        env:\n          GITHUB_TOKEN: ${{ github.token }}\n          GITHUB_MODELS_TOKEN: ${{ secrets.GITHUB_MODELS_TOKEN }}\n        run: |\n          # The same request the live check makes', '        shell: bash\n        env:\n          GITHUB_TOKEN: ${{ github.token }}\n          GITHUB_MODELS_TOKEN: ${{ secrets.GITHUB_MODELS_TOKEN }}\n        run: |\n          # The same request the live check makes', 'the diagnostic probe can fail the run'),
     ('u47-read-printed-per-brand', 'contentintel/observatory/commands.py', '    if page["url"] in shown:', '    if False:', 'the same page is described once per brand'),
     ('u47-read-zero-price-shown', 'contentintel/observatory/commands.py', '            if amount > 0 and len(re.findall', '            if len(re.findall', 'a $0.00 placeholder is shown as a price'),
     ('u47-read-links-kept-in-names', 'contentintel/observatory/commands.py', '    text = re.sub(r"\\[([^\\]]*)\\]\\([^)]*\\)", r"\\1", text)', '    text = text', 'link addresses are read as page text'),
@@ -528,6 +528,32 @@ U50 = [   # update 47: page-read summary, Sheets reads, Scrapling health, cannot
     ('u47-read-store-prices-not-asked', 'contentintel/observatory/commands.py', '        store = _store_prices(page["url"], settings, contact, now)', '        store = None', "the store's real prices are never looked up"),
 ]
 MUTATIONS.extend(U50)
+
+U52 = [   # update 48: OpenRouter cap, GitHub OK hint and Models token, connection health history, read dedupe, Sheets audit lines, workflow wiring
+    ('u48-or-list-uncapped', 'contentintel/ai/clients.py', 'chain = lead[: self.MAX_MODELS - 1] + [self.ROUTER]', 'chain = lead + [self.ROUTER]', 'OpenRouter is sent more than three models'),
+    ('u48-or-router-first', 'contentintel/ai/clients.py', 'chain = lead[: self.MAX_MODELS - 1] + [self.ROUTER]', 'chain = [self.ROUTER] + lead[: self.MAX_MODELS - 1]', 'the free router is asked before the free models'),
+    ('u48-or-max-five', 'contentintel/ai/clients.py', '    MAX_MODELS = 3 ', '    MAX_MODELS = 5 ', 'the cap is raised above what OpenRouter accepts'),
+    ('u48-gh-hint-dropped', 'contentintel/ai/clients.py', 'if self.github and "something that is not JSON (text/plain): \'OK\'" in str(exc) and all("\'OK\'" in t for t in tried):', 'if False:', 'the plain-OK explanation is never given'),
+    ('u48-gh-hint-for-any-failure', 'contentintel/ai/clients.py', ' in str(exc) and all("\'OK\'" in t for t in tried):', ' in str(exc):', 'the plain-OK explanation is given although the variants disagree'),
+    ('u48-gh-hint-without-the-secret-name', 'contentintel/ai/clients.py', 'save it as the secret GITHUB_MODELS_TOKEN; it is used', 'save it as the secret MODELS_TOKEN; it is used', 'the explanation names the wrong secret'),
+    ('u48-yaml-token-order', 'ai_providers.yaml', '      - GITHUB_MODELS_TOKEN\n      - GITHUB_TOKEN\n    gateway_platform: github', '      - GITHUB_TOKEN\n      - GITHUB_MODELS_TOKEN\n    gateway_platform: github', "the job's token is used before the Models token"),
+    ('u48-conn-nonfault-scored', 'contentintel/connections.py', '        if not ok and code in NOT_THE_REPOSITORYS_FAULT:\n            return', '        if False:\n            return', "a missing environment or a refusal lowers a connection's health"),
+    ('u48-conn-ratelimit-scored', 'contentintel/connections.py', '"PLATFORM_BLOCKED", "RATE_LIMITED", "NOT_FOUND", "BAD_INPUT"})', '"PLATFORM_BLOCKED", "NOT_FOUND", "BAD_INPUT"})', "a site's rate limit lowers a connection's health"),
+    ('u48-conn-migration-off', 'contentintel/connections.py', 'if isinstance(entry, dict) and entry.get("v", 1) < HISTORY_VERSION:', 'if False:', 'the old failures stay in the history'),
+    ('u48-conn-migration-drops-successes', 'contentintel/connections.py', 'entry["attempts"] = [a for a in entry.get("attempts") or [] if a.get("ok")]', 'entry["attempts"] = []', 'the cleanup also throws away the successes'),
+    ('u48-conn-migration-every-time', 'contentintel/connections.py', 'entry.get("v", 1) < HISTORY_VERSION', 'entry.get("v", 1) < 99', 'an up-to-date history is cleaned again on every load'),
+    ('u48-conn-new-entry-unversioned', 'contentintel/connections.py', '"builtin_used": 0, "v": HISTORY_VERSION})', '"builtin_used": 0})', 'a new history is not marked up to date'),
+    ('u48-health-no-inline-reason', 'contentintel/health.py', '        if r["status"] == "cannot run here":\n            extra.append(', '        if False:\n            extra.append(', 'cannot run here is shown without its reason'),
+    ('u48-read-not-deduped', 'contentintel/observatory/commands.py', '    if page["url"] in shown:                                                   # several brands read the same address in one run: it is described once, then listed at the end', '    if False:                                                   # several brands read the same address in one run: it is described once, then listed at the end', 'the page is described again for every brand'),
+    ('u48-read-no-recorded-line', 'contentintel/observatory/commands.py', '            if brand is brands[-1]:', '            if False:', 'the brands the page was recorded for are not listed'),
+    ('u48-sheets-decisions-silent', 'contentintel/sheets.py', 'report.notes.append(f"Competitor decisions read from the sheet: {n}', '_ = (f"Competitor decisions read from the sheet: {n}', 'the Competitors tab read leaves no line in the log'),
+    ('u48-sheets-controls-silent', 'contentintel/sheets.py', 'report.notes.append(f"Controls read from the sheet:', '_ = (f"Controls read from the sheet:', 'the Controls tab read leaves no line in the log'),
+    ('u48-wf-models-token-dropped', '.github/workflows/observatory.yml', '          GITHUB_MODELS_TOKEN: ${{ secrets.GITHUB_MODELS_TOKEN }}         # optional: a fine-grained token with Models: read for the AI layer', '          GITHUB_MODELS_TOKEN_UNUSED: ${{ secrets.GITHUB_MODELS_TOKEN }}         # optional: a fine-grained token with Models: read for the AI layer', 'the Observatory job is not given the Models token'),
+    ('u48-wf-contact-annotation', '.github/workflows/observatory.yml', 'echo "::er""ror::The secret OBSERVATORY_CONTACT is missing.', 'echo "::error::The secret OBSERVATORY_CONTACT is missing.', 'the step header prints a line that looks like an error'),
+    ('u48-wf-scrapling-connections', '.github/workflows/observatory.yml', " || (inputs.action == 'connections' && (inputs.what == 'check' || inputs.what == 'install'))", '', 'a connections check does not install Scrapling'),
+    ('u48-readme-token-undocumented', 'README.md', '| `GITHUB_MODELS_TOKEN` | a fine-grained GitHub token', '| `GITHUB_MODELS_TOKEN_X` | a fine-grained GitHub token', 'the new secret is not documented'),
+]
+MUTATIONS.extend(U52)
 
 def run_tests(workdir):
     env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}
