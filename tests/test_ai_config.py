@@ -204,7 +204,7 @@ def test_free_providers_can_only_route_to_models_the_owner_listed_as_free_to_use
         approved = [m.id for m in p.models if m.approved]
         assert approved, pid
         if pid == "openrouter":
-            assert all(m.endswith(":free") for m in approved), approved                  # OpenRouter charges for models without the :free suffix
+            assert all(m.endswith(":free") or m == "openrouter/free" for m in approved), approved                  # OpenRouter charges for models without the :free suffix (its free router is the one exception)
     assert [m.id for m in reg.provider("claude").models if m.approved] == ["claude-haiku-5-5", "claude-sonnet-5-5"]
 
 
@@ -227,7 +227,7 @@ def test_every_platform_in_the_pinned_gateway_is_in_the_registry_and_nowhere_els
     reg = R.load_registry(SHIPPED_P)
     ids = {p["id"] for p in INVENTORY["platforms"]}
     through_gateway = {pid for pid, p in reg.providers.items() if not p.direct}
-    assert len(ids) == 84 and through_gateway == ids | {"claude"} and {pid for pid, p in reg.providers.items() if p.direct} == {"github"}      # GitHub Models is called directly
+    assert len(ids) == 84 and through_gateway == (ids - {"openrouter"}) | {"claude"} and {pid for pid, p in reg.providers.items() if p.direct} == {"github", "openrouter"}      # GitHub Models and OpenRouter are called directly
     for pid in ids:
         assert reg.provider(pid).gateway_platform == pid
 
@@ -239,7 +239,7 @@ def test_the_registry_allowlist_is_a_subset_of_the_models_the_pinned_gateway_shi
         if p.id == "claude" or p.direct:
             continue
         assert {m.id for m in p.models} <= shipped[p.id], p.id
-    assert sum(len(p.models) for p in reg.providers.values() if p.id != "claude" and not p.direct) == 108
+    assert sum(len(p.models) for p in reg.providers.values() if p.id != "claude" and not p.direct) == 85
 
 
 def test_the_shipped_lanes_load_against_the_allowlist_and_cover_the_ten_kinds_of_work_and_the_two_platform_lanes():
@@ -312,7 +312,7 @@ def test_the_documents_and_the_file_header_name_exactly_the_providers_that_are_s
 
 # ---- the shipped catalogue never approves or routes to a model its provider has retired --------------------------------------------------------------
 
-RETIRED = {("groq", "llama-3.3-70b-versatile"), ("groq", "llama-3.1-8b-instant"), ("groq", "qwen/qwen3-32b"), ("groq", "meta-llama/llama-4-scout-17b-16e-instruct"), ("google", "gemini-2.5-flash"), ("openrouter", "openai/gpt-oss-120b:free")}
+RETIRED = {("groq", "llama-3.3-70b-versatile"), ("groq", "llama-3.1-8b-instant"), ("groq", "qwen/qwen3-32b"), ("groq", "meta-llama/llama-4-scout-17b-16e-instruct"), ("google", "gemini-2.5-flash"), ("openrouter", "openai/gpt-oss-120b:free"), ("openrouter", "nvidia/nemotron-3-super-120b-a12b:free"), ("openrouter", "qwen/qwen3-next-80b-a3b-instruct:free")}
 
 
 def test_no_retired_model_is_approved_and_every_lane_route_uses_an_approved_model():
@@ -323,5 +323,5 @@ def test_no_retired_model_is_approved_and_every_lane_route_uses_an_approved_mode
     assert not RETIRED & approved                                                           # a provider that has shut a model down is never offered it
     used = {(r["provider"], r["model"]) for lane in lanes.values() for r in lane.get("chain", [])}
     assert not RETIRED & used and used <= approved                                          # and no lane routes to a model nobody approved
-    assert {("groq", "openai/gpt-oss-120b"), ("groq", "openai/gpt-oss-20b"), ("google", "gemini-3.5-flash"), ("openrouter", "nvidia/nemotron-3-super-120b-a12b:free"), ("openrouter", "qwen/qwen3-next-80b-a3b-instruct:free")} <= approved
-    assert [r["model"] for lane in lanes.values() for r in lane.get("chain", []) if r["provider"] == "openrouter"] == ["nvidia/nemotron-3-super-120b-a12b:free", "qwen/qwen3-next-80b-a3b-instruct:free"] * 3     # two free routes, so one rotating out does not stop the lane
+    assert {("groq", "openai/gpt-oss-120b"), ("groq", "openai/gpt-oss-20b"), ("google", "gemini-3.5-flash"), ("openrouter", "openrouter/free")} <= approved
+    assert [r["model"] for lane in lanes.values() for r in lane.get("chain", []) if r["provider"] == "openrouter"] == ["openrouter/free"] * 3     # OpenRouter free models rotate every few days: the lane asks for the free router and the client picks today's free models
