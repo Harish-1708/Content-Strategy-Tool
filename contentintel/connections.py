@@ -122,6 +122,11 @@ def data_dir():
     return os.environ.get("CONTENTINTEL_DATA_DIR", "data")
 
 
+# A failure that is not the repository's fault never lowers its health: a missing environment or key, a login the site wants, a site's own refusal or limit, a page that is not there, a bad request.
+NOT_THE_REPOSITORYS_FAULT = frozenset({"NEED_SETUP", "NEED_LOGIN", "PLATFORM_BLOCKED", "RATE_LIMITED", "NOT_FOUND", "BAD_INPUT"})
+HISTORY_VERSION = 2
+
+
 class ConnectionHealth:
     """What really happened when each connection was used. Kept between runs in data/_shared/connections_health.json."""
 
@@ -136,9 +141,15 @@ class ConnectionHealth:
                 self.data = loaded if isinstance(loaded, dict) else {}
             except (OSError, ValueError):
                 self.data = {}
+        for entry in self.data.values():                                       # history from before version 2 counted setup failures and refusals as the repository failing: its failures are dropped once
+            if isinstance(entry, dict) and entry.get("v", 1) < HISTORY_VERSION:
+                entry["attempts"] = [a for a in entry.get("attempts") or [] if a.get("ok")]
+                entry["last_error"], entry["v"] = None, HISTORY_VERSION
 
     def record(self, conn_id, ok, now, *, route="external", code="", message="", latency_ms=0):
-        entry = self.data.setdefault(conn_id, {"attempts": [], "last_success": "", "last_error": None, "builtin_used": 0})
+        if not ok and code in NOT_THE_REPOSITORYS_FAULT:
+            return
+        entry = self.data.setdefault(conn_id, {"attempts": [], "last_success": "", "last_error": None, "builtin_used": 0, "v": HISTORY_VERSION})
         if route == "builtin":
             entry["builtin_used"] = entry.get("builtin_used", 0) + 1
             return
