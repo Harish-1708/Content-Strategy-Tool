@@ -72,7 +72,7 @@ def test_monitor_needs_a_contact_and_knows_dry_runs_and_unknown_parts(env, monke
     code, out = env("monitor", "--only", "magic")
     assert code == 1 and "unknown part 'magic'" in out
     code, out = env("monitor", "--competitor", "someone-else")
-    assert code == 0 and "0 site(s)" in out
+    assert code == 1 and "no planned competitor matches 'someone-else'" in out and "Planned:" in out                # a name that matches nothing is an error that lists what is planned, never a quiet "0 site(s)"
 
 
 def test_history_status_prune_and_report_work_on_what_was_stored(env):
@@ -269,7 +269,8 @@ def test_undecided_candidates_are_on_the_competitors_tab_with_their_reasons_and_
     sheets.update_brand_sheet(brands[SLUG], env.store, sp, T1)
     header, rows = read(sp.worksheet("Competitors"))
     by = {r["site_id"]: r for r in rows}
-    assert set(by) == {"candidate:howdysnax", "candidate:mysteryname"} and "Decision" in header and "Notes" in header
+    assert set(by) == {"candidate:howdysnax", "candidate:mysteryname", "candidate:grazaco"} and "Decision" in header and "Notes" in header
+    assert by["candidate:grazaco"]["status"] == "monitoring (waiting for its first reading)"                      # already chosen for monitoring, no monitor run has read it yet: listed, not dropped
     assert by["candidate:howdysnax"]["status"] == "candidate" and by["candidate:howdysnax"]["note"] == "score 70: ran ads for 120 days; 4 ad variants"
     assert "its website is not known yet" in by["candidate:mysteryname"]["note"]
     assert "Competitor Products" not in [w.title for w in sp.worksheets()]                      # nothing is monitored yet, so no empty product tab
@@ -283,7 +284,7 @@ def test_what_a_person_types_in_the_decision_column_is_read_back_applied_and_sho
     header, rows = read(ws)
     col = header.index("Decision") + 1
     for n, r in enumerate(rows, start=2):
-        ws.cells[(n, col)] = {"candidate:howdysnax": "Monitor", "candidate:mysteryname": "stop"}[r["site_id"]]
+        ws.cells[(n, col)] = {"candidate:howdysnax": "Monitor", "candidate:mysteryname": "stop"}.get(r["site_id"], "")
     rep = sheets.update_brand_sheet(brands[SLUG], env.store, sp, T2)
     assert any("Competitor decisions read from the sheet: 2" in n for n in rep.notes)
     assert book_status(env) == {"howdysnax": ("monitoring", "person"), "mysteryname": ("rejected", "person"), "grazaco": ("monitoring", "")}
@@ -1195,7 +1196,10 @@ def test_the_youtube_research_service_obeys_its_purpose_channel_and_hosted_runne
     write_conf(env, services={"agent_reach": {"use_for": {"youtube_research": True}}})
     monkeypatch.setattr(OCMD, "OPENCLI_RUN", lambda: yt_agent([], error=None))
     code, out = env("agentreach", "--ar-channel", "youtube", "--what", "search", "--query", "q")
-    assert code == 1 and "UPSTREAM_BROKEN" in out
+    assert code == 0 and "0 results" in out and "found nothing that matches" in out                                  # a search that matches nothing is a real, empty answer, not a broken route
+    assert not [b for b in env.store.read_collected(SLUG) if b["source"] == "agent_reach_research"]                 # and nothing is recorded for it
+    code, out = env("agentreach", "--ar-channel", "youtube", "--what", "read", "--url", "https://www.youtube.com/watch?v=abc123")
+    assert code == 1 and "UPSTREAM_BROKEN" in out                                                                    # but reading a page that gives nothing is still a failure
     hosted = AR.OpenCLI("opencli", run=lambda *a, **k: None, which=lambda b: "/bin/opencli", environ={"RUNNER_ENVIRONMENT": "github-hosted"}, site="youtube")
     monkeypatch.setattr(OCMD, "OPENCLI_RUN", lambda: hosted)
     for _ in range(2):                                                                         # a hosted-runner refusal is about where it runs, not the route, so the second try is refused the same way
