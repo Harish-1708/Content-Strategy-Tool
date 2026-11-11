@@ -164,7 +164,7 @@ def run_ai(args, store, health, now):
         return 0
     if action == "plan":
         dcl = args.data_class
-        clients = {pid: None for pid, p in registry.providers.items() if p.credential_env and all(os.environ.get(n, "").strip() for n in p.credential_env)}
+        clients = {pid: None for pid, p in registry.providers.items() if p.credential_env and (any if p.direct else all)(os.environ.get(n, "").strip() for n in p.credential_env)}      # a direct provider may list alternative names: the first one that is set is used
         _, lanes2, usage, review, router = build_stack(args, store, health, mode="live", clients=clients)
         print(f"Plan for {dcl} data (no call is made). A route is used only if every check passes:")
         for name in lanes:
