@@ -127,7 +127,7 @@
     "by_lane": {
      "canary": {
       "cost_usd": 0.0,
-      "requests": 2,
+      "requests": 3,
       "tokens": 0
      },
      "competitor_intelligence": {
@@ -137,9 +137,9 @@
      }
     },
     "cost_usd": 0.0,
-    "failures": 8,
+    "failures": 9,
     "latency_ms": 0,
-    "requests": 8,
+    "requests": 9,
     "tokens_in": 0,
     "tokens_out": 0
    },
