@@ -15,7 +15,7 @@ from . import data_class as dc
 
 DEFAULT_PATH = "ai_providers.yaml"
 # endpoints a provider may be called at directly (everything else goes through the local gateway); a prompt is never sent to an address typed into a file
-DIRECT_ENDPOINTS = ("https://models.github.ai/inference",)
+DIRECT_ENDPOINTS = ("https://models.github.ai/inference", "https://openrouter.ai/api/v1")
 TERMS_STATUS = ("verified", "verified_secondary", "upstream_documented", "declared_only", "unverified", "owner_decision")
 CLAUDE = "claude"
 
