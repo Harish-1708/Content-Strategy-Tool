@@ -49,7 +49,7 @@ class Provider:
     limits: dict
     price_per_million: dict
     models: tuple
-    direct: dict = field(default_factory=dict)      # a provider called straight from this tool (not through the gateway): {base_url}
+    direct: dict = field(default_factory=dict)      # a provider called straight from this tool (not through the gateway): {base_url, api_versions (tried in order)}
 
     @property
     def effective_ceiling(self):
@@ -191,7 +191,7 @@ def load_registry(path=DEFAULT_PATH):
             raise RegistryError(f"{where}: a model is listed twice")
         direct = d.get("direct") or {}
         if direct:
-            _only(direct, ("base_url",), f"{where}.direct")
+            _only(direct, ("base_url", "api_versions"), f"{where}.direct")
             base = str(direct.get("base_url", ""))
             if not any(base == ok or base.startswith(ok + "/") for ok in DIRECT_ENDPOINTS):
                 raise RegistryError(f"{where}.direct.base_url must be one of the endpoints this tool knows: {', '.join(DIRECT_ENDPOINTS)}")
