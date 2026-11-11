@@ -495,3 +495,9 @@ def test_a_real_application_problem_still_turns_the_run_red(ai, monkeypatch):
     _live_with_skips(monkeypatch, ["APPLICATION: the gateway is not built at gateway-src"])
     code, out = ai("check", "--live", "--only", "claude")
     assert code == 1 and "1 application problem(s)" in out
+
+
+def test_the_live_check_leaves_a_thinking_model_room_to_think_and_still_answer():
+    lane = CM.canary_lane()
+    assert lane.max_tokens == CM.CANARY_MAX_TOKENS and lane.max_tokens >= 256                              # 24 tokens gave Gemini 3.5 Flash nothing left to answer with: "empty completion"
+    assert lane.max_tokens < 1000                                                                          # still a tiny, free-tier-safe call
