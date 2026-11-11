@@ -86,8 +86,10 @@ def test_a_page_read_for_several_brands_is_described_once(world, monkeypatch, ca
     monkeypatch.setattr(OCMD, "_read_url", lambda *a, **k: (page(), ""))
     assert world("corpus", "--what", "read", "--url", "https://madepants.com/") == 0
     out = capsys.readouterr().out
-    assert out.count("main content (menus and short labels skipped)") == 1 and out.count("characters read through") == 3
-    assert out.count("(the same page as above; recorded for") == 2
+    assert out.count("main content (menus and short labels skipped)") == 1 and out.count("characters read through") == 1          # the page is described once, not once per brand
+    assert "the same page as above" not in out and out.count("recorded in the corpus of:") == 1
+    names = out.split("recorded in the corpus of:")[1].splitlines()[0]
+    assert all(n in names for n in ("Swoveralls", "DudeRobe", "Defi Snacks"))
 
 
 # ---- Sheets reads that wait out a 429 -----------------------------------------------------------------------------------------------------------
@@ -142,7 +144,7 @@ def test_the_competitor_decisions_are_read_even_when_google_refuses_the_first_re
     monkeypatch.setattr(obs_report, "apply_sheet_decisions", lambda values, store, slug, now, save: got.update(values=values) or 1)
     sheet, notes = Sheet(2), Notes()
     sheets._read_competitor_decisions(sheet, type("B", (), {"slug": "swoveralls"})(), None, "2026-11-11T10:00:00Z", notes, dry_run=False)
-    assert got["values"] == [["Name", "Decision"], ["Madepants", "monitor"]] and notes.notes == ["Competitor decisions read from the sheet: 1"]      # no "not read" note
+    assert got["values"] == [["Name", "Decision"], ["Madepants", "monitor"]] and notes.notes == ["Competitor decisions read from the sheet: 1 (Competitors tab: 1 row(s) read)"]      # no "not read" note
     assert waits[:2] == [20, 65] and sheet.listing.calls == 3 and sheet.values.calls == 3                                                          # waited, then read
 
 
@@ -154,7 +156,7 @@ def test_the_controls_are_read_even_when_google_refuses_the_first_reads(monkeypa
     sheet, notes = Sheet(1), Notes()
     sheet.title = SV.CONTROLS_TAB
     sheets._read_controls(sheet, type("B", (), {"slug": "swoveralls"})(), type("S", (), {"data_dir": str(tmp_path)})(), "2026-11-11T10:00:00Z", notes, dry_run=False)
-    assert got["values"] and not notes.notes and waits == [20, 20]                               # the tab list and the tab itself were each refused once
+    assert got["values"] and notes.notes == ["Controls read from the sheet: 0 change(s) (1 row(s) read)"] and waits == [20, 20]                 # each refused once, then read; the note says what was read even when nothing changed
 
 
 def test_a_read_that_stays_refused_is_still_reported_not_raised(monkeypatch):
@@ -303,3 +305,42 @@ def test_a_route_that_needs_opencli_and_has_really_passed_acceptance_is_healthy_
     assert led.status("agent_reach_research", "instagram", "2026-11-02T10:00:00Z") == "cannot run here"
     passing(led, source="agent_reach_research", route="instagram")                                       # a run on the owner's own machine proved it
     assert led.status("agent_reach_research", "instagram", "2026-11-02T10:00:00Z") == "healthy"
+
+
+# ---- Update 48: workflow wiring ---------------------------------------------------------------------------------------------------------------------
+
+def _wf(name):
+    import yaml
+    return yaml.safe_load(open(ROOT / ".github" / "workflows" / name, encoding="utf-8"))
+
+
+def test_the_optional_github_models_token_reaches_every_job_that_uses_the_ai_layer_and_is_documented():
+    ai = _wf("ai-gateway.yml")
+    envs = [s["env"] for s in ai["jobs"]["live"]["steps"] if "env" in s and "GITHUB_TOKEN" in s["env"]]
+    assert len(envs) >= 3 and all(e.get("GITHUB_MODELS_TOKEN") == "${{ secrets.GITHUB_MODELS_TOKEN }}" for e in envs)         # the live check, the plan, and the raw probe
+    obs = _wf("observatory.yml")
+    run = next(s for s in obs["jobs"]["observatory"]["steps"] if s.get("name") == "Run")
+    assert run["env"]["GITHUB_MODELS_TOKEN"] == "${{ secrets.GITHUB_MODELS_TOKEN }}"
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    row = next(line for line in readme.splitlines() if line.startswith("| `GITHUB_MODELS_TOKEN` |"))                    # the exact secret-table row, not just the words somewhere
+    assert "Models: read" in row and "| optional |" in row and "no card" in row
+
+
+def test_the_raw_probe_shows_which_token_it_is_the_connection_every_header_and_the_same_request_with_the_models_token():
+    steps = _wf("ai-gateway.yml")["jobs"]["live"]["steps"]
+    probe = next(s for s in steps if str(s.get("name", "")).startswith("GitHub Models raw probe"))["run"]
+    for needle in ("https://api.github.com/rate_limit", "curl -sS -v", "https://models.github.ai/catalog/models -H \"Accept: application/vnd.github+json\" | head", "GITHUB_MODELS_TOKEN", "openai/gpt-4.1-mini"):
+        assert needle in probe, needle
+    assert probe.count("$GITHUB_TOKEN") >= 3 and "if [ -n \"$GITHUB_MODELS_TOKEN\" ]" in probe
+
+
+def test_the_contact_check_does_not_print_a_line_that_looks_like_an_error_annotation_in_the_step_header():
+    obs = _wf("observatory.yml")
+    check = next(s for s in obs["jobs"]["observatory"]["steps"] if s.get("name") == "Check the required contact secret")
+    assert "::error::" not in check["run"] and 'echo "::er""ror::The secret OBSERVATORY_CONTACT is missing.' in check["run"]            # GitHub prints the script in the log; the message appears only when the secret really is missing
+    assert check["env"]["OBSERVATORY_CONTACT"] == "${{ secrets.OBSERVATORY_CONTACT }}" and 'if [ -z "$OBSERVATORY_CONTACT" ]' in check["run"] and "exit 1" in check["run"]
+
+
+def test_scrapling_is_installed_for_a_connections_check_or_install_so_its_health_can_be_proved():
+    cond = next(s for s in _wf("observatory.yml")["jobs"]["observatory"]["steps"] if s.get("name") == "Install the isolated Scrapling environment")["if"]
+    assert "inputs.action == 'connections'" in cond and "inputs.what == 'check'" in cond and "inputs.what == 'install'" in cond and "inputs.what == 'crawl'" in cond
