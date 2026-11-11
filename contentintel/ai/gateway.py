@@ -88,6 +88,7 @@ class Sidecar:
 
     def start(self, env, port, log_path):
         self.base_url, self.log_path = f"http://127.0.0.1:{port}", Path(log_path)
+        self.log_path.parent.mkdir(parents=True, exist_ok=True)          # the scratch folder (ai-work) may not exist yet: discover starts the gateway without `ai check` having made it
         self.proc = self.popen(["node", "server/dist/index.js"], cwd=self.dir, env=env, stdout=open(self.log_path, "w"), stderr=subprocess.STDOUT)
         return self
 
