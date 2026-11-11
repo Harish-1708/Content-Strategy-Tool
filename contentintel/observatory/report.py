@@ -205,10 +205,11 @@ def sheet_tabs(brand, store, snaps, now, settings):
     comp_rows, event_rows, product_rows = {}, {}, {}
     monitored_domains = {s["domain"] for s in sites}
     for c in read_discovery(store, brand.slug)["candidates"]:           # found by discovery but not (yet) watched: shown so a person can decide, with the reasons
-        if c.get("status") == "monitoring" or (c.get("domain") and c["domain"] in monitored_domains):
+        if c.get("domain") and c["domain"] in monitored_domains:          # already shown as a watched site below
             continue
         decided = c.get("decided_by") == "person"
-        comp_rows["candidate:" + c["key"]] = {"site_id": "candidate:" + c["key"], "name": c["name"], "domain": c.get("domain") or "", "status": c["status"] + (" (your decision)" if decided else ""),
+        waiting = c.get("status") == "monitoring"                       # chosen for monitoring, but no monitor run has finished for it yet: still listed, never dropped
+        comp_rows["candidate:" + c["key"]] = {"site_id": "candidate:" + c["key"], "name": c["name"], "domain": c.get("domain") or "", "status": ("monitoring (waiting for its first reading)" if waiting else c["status"]) + (" (your decision)" if decided else ""),
                                               "origin": "discovery", "platform": "", "products": None, "collections": None, "on_sale_products": None, "events_7d": 0, "instagram": c.get("instagram", ""), "instagram_confidence": c.get("instagram_confidence"),
                                               "match_sources": ", ".join(sorted({e["source"] for k in ("instagram_evidence", "domain_evidence") for e in c.get(k, [])})), "tiktok": c.get("tiktok", ""), "youtube": "",
                                               "last_read": "", "stale": "", "note": f"score {c.get('score', 0)}: " + "; ".join(c.get("reasons", [])[:3]) + ("" if c.get("domain") else "; its website is not known yet")
