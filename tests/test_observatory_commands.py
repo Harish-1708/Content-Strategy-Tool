@@ -292,7 +292,7 @@ def test_what_a_person_types_in_the_decision_column_is_read_back_applied_and_sho
     _, again = read(sp.worksheet("Competitors"))
     assert {r["site_id"]: r["status"] for r in again}["candidate:mysteryname"] == "rejected (your decision)"
     rep = sheets.update_brand_sheet(brands[SLUG], env.store, sp, T2)
-    assert not any("decisions read" in n for n in rep.notes)                                    # nothing new typed, nothing re-applied
+    assert any(n.startswith("Competitor decisions read from the sheet: 0 ") for n in rep.notes)       # nothing new typed, nothing re-applied: and the note says the tab was read
 
 
 def test_a_dry_run_reads_decisions_but_saves_nothing_and_unknown_words_are_ignored(with_candidates, brands):
@@ -317,7 +317,7 @@ def test_a_competitor_listed_in_the_brand_file_is_controlled_by_the_file_not_the
     header, rows = read(ws)
     ws.cells[(2, header.index("Decision") + 1)] = "stop"
     rep = sheets.update_brand_sheet(brands[SLUG], env.store, sp, T2)
-    assert not any("decisions read" in n for n in rep.notes) and [s["domain"] for s in RP.read_brand_sites(env.store, SLUG)] == ["shop.example"]
+    assert any(n.startswith("Competitor decisions read from the sheet: 0 ") for n in rep.notes) and [s["domain"] for s in RP.read_brand_sites(env.store, SLUG)] == ["shop.example"]
 
 
 # ---- settings that must do what they say (found by an audit for settings that nothing read) -------------------------------------------------------
@@ -1252,7 +1252,7 @@ def test_the_controls_tab_round_trips_through_two_brands_sheets_and_a_stale_copy
         if r["key"] == "services.agent_reach.enabled":
             ws.cells[(n, col)] = "maybe"
     rep = sheets.update_brand_sheet(first, env.store, sp_a, T2)
-    assert any("Controls changed in the sheet: services.scrapling.use_for.discovery: on -> off; services.scrapling.defaults.delay: 0 -> 40" in n for n in rep.notes)
+    assert any(n.startswith("Controls read from the sheet: 2 change(s)") and "services.scrapling.use_for.discovery: on -> off; services.scrapling.defaults.delay: 0 -> 40" in n for n in rep.notes)
     assert any("services.agent_reach.enabled must be on or off; the value was left as it was" in n for n in rep.notes)
     assert SVC.load_overrides(env.data) == {"services.scrapling.use_for.discovery": False, "services.scrapling.defaults.delay": 40}
     by = {r["key"]: r for r in read(sp_a.worksheet("Controls"))[1]}
