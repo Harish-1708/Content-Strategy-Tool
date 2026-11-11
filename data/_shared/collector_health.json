@@ -575,6 +575,13 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-11T10:56:59Z",
+     "code": "BAD_INPUT",
+     "items": 0,
+     "ms": 0,
+     "ok": null
     }
    ],
    "last_error": {
