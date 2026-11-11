@@ -169,17 +169,46 @@ def _show_plan(args, store, settings, brands):
     return 0
 
 
+def _resolve_competitors(raw, sites):
+    """({site ids}, [what matched nothing]) for what the owner typed after --competitor: a site id (madepants-com), a domain with or without www (madepants.com), the competitor's name (Madepants, The Oodie)
+    or the bare first word of its domain (madepants). A name that matches nothing is reported, never quietly dropped."""
+    found, unknown = set(), []
+    for word in [w.strip() for w in raw.split(",") if w.strip()]:
+        low = word.lower()
+        host = (OC.host_of(word) or low).removeprefix("www.").lower()
+        hits = set()
+        for sid, slot in sites.items():
+            comp = slot["comp"]
+            dom = str(comp["domain"]).removeprefix("www.").lower()
+            names = {sid.lower(), dom, dom.split(".")[0], str(comp.get("name") or "").lower(), re.sub(r"[^a-z0-9]+", "-", str(comp.get("name") or "").lower()).strip("-")}
+            if low in names or host in names:
+                hits.add(sid)
+        if hits:
+            found |= hits
+        else:
+            unknown.append(word)
+    return found, unknown
+
+
 def _monitor(args, store, ledger, settings, brands, snaps, now):
     sites = _plan(args, store, settings, brands)
-    ids = {s.strip() for s in args.competitor.split(",") if s.strip()}
+    ids, unknown = _resolve_competitors(args.competitor, sites) if args.competitor.strip() else (set(), [])
+    if unknown:
+        planned = ", ".join(f"{sid} ({slot['comp']['domain']})" for sid, slot in sorted(sites.items())) or "none: nothing is planned yet (run: observatory discover, or add competitors to a brand file)"
+        print(f"Error: no planned competitor matches {', '.join(repr(u) for u in unknown)}. Planned: {planned}")
+        return 1
     only = [p.strip() for p in args.only.split(",") if p.strip()] or None
     bad = [p for p in (only or []) if p not in monitor.PARTS]
     if bad:
         print(f"Error: unknown part {bad[0]!r}; choose from {', '.join(monitor.PARTS)}")
         return 1
     contact = (os.environ.get("OBSERVATORY_CONTACT") or settings["politeness"]["contact"]).strip()
-    if args.dry_run or not sites:
+    if args.dry_run:
         return _show_plan(args, store, settings, brands)
+    if not sites:
+        _show_plan(args, store, settings, brands)
+        print("::warning::Nothing was monitored: no competitor is planned. Run `observatory discover`, or add competitors to brands/<brand>/observatory.yaml.")
+        return 1
     if not contact:
         print("Error: no contact address. Set the OBSERVATORY_CONTACT secret (an email address or web page a site owner can write to); the tool identifies itself honestly and will not read without it.")
         return 1
@@ -832,13 +861,16 @@ def _agentreach(args, store, ledger, settings, brands, now):
                                  title=title, text=str(AR._pick(raw, "description", "content", "body", "transcript", "subtitle") or ""), url=url, posted_at=_iso(AR._pick(raw, "published_at", "upload_date", "date")),
                                  likes=AR._count(raw.get("likes"), raw.get("like_count")), comments=AR._count(raw.get("comments"), raw.get("comment_count")), views=AR._count(raw.get("views"), raw.get("view_count")),
                                  details=f"{args.ar_channel} {what}", found_via="agent_reach"))
-            if not rows:
+            if not rows and what != "search":                       # reading a page that gives nothing is a failure; a search that matches nothing is a real, empty answer
                 raise K.Failure(K.UPSTREAM_BROKEN, "Agent-Reach finished but returned nothing usable")
             return rows
-        env = K.run_action("agent_reach_research", what, [(args.ar_channel, fetch)], health=ledger, now=now)
+        env = K.run_action("agent_reach_research", what, [(args.ar_channel, fetch)], health=ledger, now=now, empty_ok=(what == "search"))
         if not env["ok"]:
             print(f"{brand.name}: Agent-Reach {args.ar_channel} {what}: {env['error']['code']}: {env['error']['message']}")
             worst = 1
+            continue
+        if not env["items"]:
+            print(f"=== {brand.name}: Agent-Reach {args.ar_channel} {what} for {target!r}: 0 results ===\n  The {args.ar_channel} channel answered normally and found nothing that matches. Nothing was recorded. Try a broader query (GitHub's search matches repository names and descriptions).")
             continue
         run_id = "obs-" + now
         store.append_collected(brand.slug, {"at": now, "run": run_id, "source": "agent_reach_research", "key": f"{args.ar_channel}:{what}:{target}", "seeds": [target], "via": args.ar_channel, "from_site_data": 0,
@@ -945,6 +977,7 @@ def _corpus(args, store, ledger, settings, brands, snaps, now):
     formulas = corpus_mod.load_formulas()
     cfg = settings["youtube"]
     worst = 0
+    empty_brands = []
     for brand in brands:
         corpus = corpus_mod.load_corpus(store, brand.slug)
         if args.what == "youtube":
@@ -970,7 +1003,8 @@ def _corpus(args, store, ledger, settings, brands, snaps, now):
             if args.find_channels and file["youtube"]["queries"] and cfg["search_calls_per_run"]:        # the same discovery through Agent-Reach's YouTube channel (yt-dlp): no API units spent
                 _discover_with_agent_reach(args, ledger, settings, corpus, refs, file["youtube"]["queries"][:cfg["search_calls_per_run"]], cfg["max_channels"], now)
             if not refs:
-                print(f"{brand.name}: no YouTube channels to read. List them under youtube.channels in brands/{brand.slug}/observatory.yaml, or use --channel @name.")
+                print(f"{brand.name}: no YouTube channels to read. List them under youtube.channels in brands/{brand.slug}/observatory.yaml, use --channel @name, or tick find_channels to search for them.")
+                empty_brands.append(brand.name)
                 continue
             holder = {}
 
@@ -1034,6 +1068,9 @@ def _corpus(args, store, ledger, settings, brands, snaps, now):
             worst = max(worst, _crawl_site(args, store, settings, brand, now))
         elif args.what == "feeds":
             worst = max(worst, _feeds_of(args, settings, brand, now))
+    if args.what == "youtube" and empty_brands and len(empty_brands) == len(brands):
+        print("::warning::No YouTube corpus was built: no brand has any channel to read. Nothing was collected.")
+        worst = max(worst, 1)
     return worst
 
 
@@ -1153,8 +1190,26 @@ def _read_page(args, store, ledger, settings, brand, now):
         print(f"Error: {error}")
         return 1
     print(f"{page['title'] or page['url']}\n  {len(page['text'])} characters read through {_READER_LABEL.get(page['engine'], page['engine'])}" + (f"\n  NOTE: {page['robots_note']}" if page.get("robots_note") else ""))
-    print(page["text"][:600])
+    preview = _main_preview(page["text"])
+    print("  main content (menus and short labels skipped):\n" + (preview or page["text"][:600]))
+    prices = [ln.strip()[:120] for ln in page["text"].splitlines() if re.search(r"[$€£]\s?\d", ln)][:8]
+    if prices:
+        print(f"  prices seen on the page ({len(prices)} shown):\n    " + "\n    ".join(prices))
     return 0
+
+
+def _main_preview(text, limit=600):
+    """The first readable paragraphs of a page: lines of real text, not menu items, short labels or lines that are only links."""
+    keep, size = [], 0
+    for line in str(text).splitlines():
+        s = line.strip()
+        if len(s) < 45 or re.fullmatch(r"(\[[^\]]*\]\([^)]*\)\s*[|•·-]?\s*)+", s):
+            continue
+        keep.append(s)
+        size += len(s)
+        if size >= limit:
+            break
+    return "\n".join(keep)[:limit]
 
 
 def _youtube_about_url(channel):
@@ -1254,8 +1309,10 @@ def _deepread(args, store, ledger, settings, brands, now):
 def _report(args, store, settings, brands, snaps, now):
     for b in brands:
         sites = [{"id": s["id"], "name": s["name"], "domain": s["domain"]} for s in report.read_brand_sites(store, b.slug)]
+        if not sites:                                           # no monitor run has finished yet: report on what the brand file and discovery have chosen to watch, so they are not missing
+            sites = [{"id": c["id"], "name": c["name"], "domain": c["domain"]} for c in _brand_competitors(args, store, settings, b)]
         if not sites:
-            print(f"{b.name}: nothing is watched yet (run: observatory monitor).")
+            print(f"{b.name}: nothing is watched yet (run: observatory discover, then observatory monitor).")
             continue
         text = report.build_report(b.name, sites, snaps, now, days=args.since_days)
         if args.json:
