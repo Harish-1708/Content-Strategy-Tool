@@ -138,6 +138,13 @@ class DirectClient:
     def _body(self, route, messages, max_tokens):
         return {"model": route["model"], "messages": messages, "max_tokens": max_tokens, "temperature": 0}
 
+    def _plain_ok_hint(self, exc, tried):
+        """GitHub answered every variant with the plain text OK (the raw probe showed the same for the model catalogue too): that is not a reply from the Models service, so say so and say what to try."""
+        if self.github and "something that is not JSON (text/plain): 'OK'" in str(exc) and all("'OK'" in t for t in tried):
+            return (" | Every variant, and the model catalogue in the raw probe, got a plain-text OK with no JSON: that is not an answer from the GitHub Models service, so the job's own token is not being "
+                    "accepted for it. Create a fine-grained token with the Models: read permission and save it as the secret GITHUB_MODELS_TOKEN; it is used before the job's token.")
+        return ""
+
     def _attempt(self, route, messages, max_tokens, timeout, version, accept):
         headers = self._headers(version, accept)
         body = self._body(route, messages, max_tokens)
@@ -189,7 +196,8 @@ class DirectClient:
             except Failure as exc:
                 if exc.code != contract.UPSTREAM_BROKEN or n == len(variants) - 1:         # only an unusable answer is worth another variant; a refusal or a limit is final
                     if tried:
-                        raise Failure(exc.code, f"{exc} ({label}); earlier: " + "; ".join(tried)) from None
+                        hint = self._plain_ok_hint(exc, tried)
+                        raise Failure(exc.code, f"{exc} ({label}); earlier: " + "; ".join(tried) + hint) from None
                     raise
                 tried.append(f"{label}: {exc}"[:260])
 
@@ -200,6 +208,7 @@ class OpenRouterClient(DirectClient):
     choice; OpenRouter itself moves on to the next one if one is unavailable. Nothing paid is ever requested: only models whose prompt and completion prices are both zero."""
 
     ROUTER = "openrouter/free"
+    MAX_MODELS = 3                       # the most OpenRouter accepts in one request's `models` list
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -224,7 +233,8 @@ class OpenRouterClient(DirectClient):
     def _body(self, route, messages, max_tokens):
         body = super()._body(route, messages, max_tokens)
         wanted = route["model"]
-        chain = ([] if wanted == self.ROUTER else [wanted]) + [m for m in self.free_models() if m != wanted] + [self.ROUTER]
+        lead = ([] if wanted == self.ROUTER else [wanted]) + [m for m in self.free_models() if m != wanted]
+        chain = lead[: self.MAX_MODELS - 1] + [self.ROUTER]                       # OpenRouter refuses a models list longer than three ("must have 3 items or fewer"); the free router is always the last of them
         body["model"], body["models"] = chain[0], chain
         return body
 
