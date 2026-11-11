@@ -292,3 +292,13 @@ def test_the_printed_report_and_matrix_say_what_matters(tmp_path, monkeypatch):
     matrix = H.format_matrix(reg, rows)
     assert "instagram: Instagram [established]" in matrix and "route agent_reach: session_based, site_data, login dummy_account EXPERIMENTAL -> unverified" in matrix
     assert "gives:  posts; captions" in matrix and "cannot: " in matrix and "reddit_public: Reddit and community discussions [planned]" in matrix
+
+
+def test_the_health_report_gives_the_reason_inline_for_every_cannot_run_here_route(tmp_path, monkeypatch):
+    monkeypatch.setenv("OPENCLI_BIN", "/no/such/opencli")
+    led = ledger(tmp_path)
+    rows = led.rows("2026-11-11T10:00:00Z")
+    lines = H.format_report(rows).splitlines()
+    here = [ln for ln in lines if "cannot run here" in ln]
+    assert len(here) == 10 and all("needs OpenCLI and a browser logged in to the site, on a machine you control" in ln for ln in here)
+    assert not [ln for ln in lines if "cannot run here" not in ln and "needs OpenCLI and a browser" in ln]
