@@ -246,9 +246,9 @@ def _read_competitor_decisions(spreadsheet, brand, store, now, report, dry_run):
     try:
         if "Competitors" not in [w.title for w in _call(spreadsheet.worksheets)]:         # through _call: a refused read (429) is waited out and retried, never given up on
             return
-        n = obs_report.apply_sheet_decisions(_call(_call(spreadsheet.worksheet, "Competitors").get_all_values), store, brand.slug, now, save=not dry_run)
-        if n:
-            report.notes.append(f"Competitor decisions read from the sheet: {n}")
+        values = _call(_call(spreadsheet.worksheet, "Competitors").get_all_values)
+        n = obs_report.apply_sheet_decisions(values, store, brand.slug, now, save=not dry_run)
+        report.notes.append(f"Competitor decisions read from the sheet: {n} (Competitors tab: {max(0, len(values) - 1)} row(s) read)")
     except Exception as exc:
         report.notes.append(f"Competitor decisions not read: {exc}")
 
@@ -262,9 +262,9 @@ def _read_controls(spreadsheet, brand, store, now, report, dry_run):
         if services.CONTROLS_TAB not in [w.title for w in _call(spreadsheet.worksheets)]:
             return
         settings = services.load_settings(None, store.data_dir)
-        changes, problems = services.apply_sheet_controls(_call(_call(spreadsheet.worksheet, services.CONTROLS_TAB).get_all_values), settings, store.data_dir, now, save=not dry_run, sheet_id=brand.slug)
-        if changes:
-            report.notes.append("Controls changed in the sheet: " + "; ".join(changes))
+        values = _call(_call(spreadsheet.worksheet, services.CONTROLS_TAB).get_all_values)
+        changes, problems = services.apply_sheet_controls(values, settings, store.data_dir, now, save=not dry_run, sheet_id=brand.slug)
+        report.notes.append(f"Controls read from the sheet: {len(changes)} change(s) ({max(0, len(values) - 1)} row(s) read)" + (": " + "; ".join(changes) if changes else ""))
         for p in problems:
             report.notes.append(f"Controls: {p}; the value was left as it was")
     except Exception as exc:
