@@ -102,7 +102,8 @@ def live_clients(registry, environ, gateway_dir, workdir, notes):
         if p.enabled and p.direct:
             token = next((environ[n].strip() for n in p.credential_env if environ.get(n, "").strip()), "")
             if token:
-                clients[p.id] = cl.DirectClient(p.direct["base_url"], token, api_versions=p.direct.get("api_versions") or ("2022-11-28",))
+                klass = cl.OpenRouterClient if str(p.direct["base_url"]).startswith("https://openrouter.ai") else cl.DirectClient
+                clients[p.id] = klass(p.direct["base_url"], token, api_versions=p.direct.get("api_versions") or ("2022-11-28",))
             else:
                 notes.append("SKIPPED: " + p.id + ": no credential in the environment (" + ", ".join(p.credential_env) + "), so it is not tried; add the secret or switch the provider off to remove this line")
     if "ANTHROPIC_API_KEY" in environ and environ["ANTHROPIC_API_KEY"].strip() and registry.providers["claude"].enabled:
