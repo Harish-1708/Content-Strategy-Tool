@@ -338,7 +338,8 @@ def test_a_catalogue_that_cannot_be_fetched_is_recorded_with_its_real_reason_and
 
 # ---- the sheet --------------------------------------------------------------------------------------------------------------
 
-def test_the_sheet_gets_a_collector_health_tab_that_updates_in_place(swov, store, ledger):
+def test_the_sheet_gets_a_collector_health_tab_that_updates_in_place(swov, store, ledger, monkeypatch):
+    monkeypatch.setenv("OPENCLI_BIN", "/bin/sh")                                  # a machine that has OpenCLI: nothing is shown as 'cannot run here' (that case is in test_observatory_fixes47)
     ledger.record_acceptance({"at": NOW, "run": "r", "source": "meta_ads", "route": "browser", "items": 4, "passed": True, "code": "", "message": "ok", "version": "abc",
                               "route_hash": ledger.route_hash("meta_ads", "browser")})
     sp = FakeSpreadsheet("sid")
@@ -597,6 +598,7 @@ def test_a_real_collect_run_from_the_command_line_saves_the_ledger_and_the_prove
 
 
 def test_the_sheets_command_puts_the_health_tab_on_the_sheet(tmp_path, monkeypatch, swov):
+    monkeypatch.setenv("OPENCLI_BIN", "/bin/sh")                                  # a machine that has OpenCLI: nothing is shown as 'cannot run here' (that case is in test_observatory_fixes47)
     from test_sheets import BOT, EMAIL, baselined
     from fake_sheets import FakeClient
     data = tmp_path / "data"
