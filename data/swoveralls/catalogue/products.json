@@ -6496,7 +6496,7 @@
      "title": "S / Boobies"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753477169263,
      "options": [
@@ -6806,7 +6806,7 @@
      "title": "2XL / Buffalo Plaid"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753142083695,
      "options": [
@@ -7471,7 +7471,7 @@
      "title": "M / Dancing Skeletons"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53753349079151,
      "options": [
@@ -8039,7 +8039,7 @@
      "title": "M / Dino Navy"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 41347936518255,
      "options": [
@@ -11157,7 +11157,7 @@
      "title": "L / Otter Romp"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753483952239,
      "options": [
@@ -11487,7 +11487,7 @@
      "title": "3XL / Purr Parade Navy"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 43949671219311,
      "options": [

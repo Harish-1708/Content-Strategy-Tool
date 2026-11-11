@@ -184,7 +184,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15346069864559,Swoveralls - Black/White Stripes,53753458032751,3XL / Black/White,Size=3XL; Color=Black/White,SWPANTS-686-3XL,120.00,,true
 15346069864559,Swoveralls - Black/White Stripes,53753458065519,4XL / Black/White,Size=4XL; Color=Black/White,SWPANTS-686-4XL,120.00,,true
 15346078810223,Swoveralls - Boobies,53753477136495,S / Boobies,Size=S; Color=Boobies,SWPANTS-467-S,120.00,,false
-15346078810223,Swoveralls - Boobies,53753477169263,M / Boobies,Size=M; Color=Boobies,SWPANTS-467-M,120.00,,true
+15346078810223,Swoveralls - Boobies,53753477169263,M / Boobies,Size=M; Color=Boobies,SWPANTS-467-M,120.00,,false
 15346078810223,Swoveralls - Boobies,53753477202031,L / Boobies,Size=L; Color=Boobies,SWPANTS-467-L,120.00,,true
 15346078810223,Swoveralls - Boobies,53753477234799,XL / Boobies,Size=XL; Color=Boobies,SWPANTS-467-XL,120.00,,true
 15346078810223,Swoveralls - Boobies,53753477267567,2XL / Boobies,Size=2XL; Color=Boobies,SWPANTS-467-2XL,120.00,,true
@@ -195,7 +195,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15345957273711,Swoveralls - Buffalo Plaid,53753141985391,L / Buffalo Plaid,Size=L; Color=Buffalo Plaid,SWPANTS-Z05-L,120.00,,true
 15345957273711,Swoveralls - Buffalo Plaid,53753142018159,XL / Buffalo Plaid,Size=XL; Color=Buffalo Plaid,SWPANTS-Z05-XL,120.00,,false
 15345957273711,Swoveralls - Buffalo Plaid,53753142050927,2XL / Buffalo Plaid,Size=2XL; Color=Buffalo Plaid,SWPANTS-Z05-2XL,120.00,,false
-15345957273711,Swoveralls - Buffalo Plaid,53753142083695,3XL / Buffalo Plaid,Size=3XL; Color=Buffalo Plaid,SWPANTS-Z05-3XL,120.00,,true
+15345957273711,Swoveralls - Buffalo Plaid,53753142083695,3XL / Buffalo Plaid,Size=3XL; Color=Buffalo Plaid,SWPANTS-Z05-3XL,120.00,,false
 15345957273711,Swoveralls - Buffalo Plaid,53753142116463,4XL / Buffalo Plaid,Size=4XL; Color=Buffalo Plaid,SWPANTS-Z05-4XL,120.00,,false
 15023021490287,Swoveralls - Campfire Rust,53165462716527,S / Campfire,Size=S; Color=Campfire,SWPANTS-199-S,120.00,,true
 15023021490287,Swoveralls - Campfire Rust,53165462749295,M / Campfire,Size=M; Color=Campfire,SWPANTS-199-M,120.00,,true
@@ -213,7 +213,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15345983324271,Swoveralls - Cosmic,53753225609327,4XL / Cosmic,Size=4XL; Color=Cosmic,SWPANTS-BPR-4XL,120.00,,true
 15346022973551,Swoveralls - Dancing Skeletons,53753349013615,S / Dancing Skeletons,Size=S; Color=Dancing Skeletons,SWPANTS-BKX-S,120.00,,false
 15346022973551,Swoveralls - Dancing Skeletons,53753349046383,M / Dancing Skeletons,Size=M; Color=Dancing Skeletons,SWPANTS-BKX-M,120.00,,true
-15346022973551,Swoveralls - Dancing Skeletons,53753349079151,L / Dancing Skeletons,Size=L; Color=Dancing Skeletons,SWPANTS-BKX-L,120.00,,false
+15346022973551,Swoveralls - Dancing Skeletons,53753349079151,L / Dancing Skeletons,Size=L; Color=Dancing Skeletons,SWPANTS-BKX-L,120.00,,true
 15346022973551,Swoveralls - Dancing Skeletons,53753349111919,XL / Dancing Skeletons,Size=XL; Color=Dancing Skeletons,SWPANTS-BKX-XL,120.00,,false
 15346022973551,Swoveralls - Dancing Skeletons,53753349144687,2XL / Dancing Skeletons,Size=2XL; Color=Dancing Skeletons,SWPANTS-BKX-2XL,120.00,,false
 15346022973551,Swoveralls - Dancing Skeletons,53753349177455,3XL / Dancing Skeletons,Size=3XL; Color=Dancing Skeletons,SWPANTS-BKX-3XL,120.00,,false
@@ -231,7 +231,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936419951,XS / Dino Navy,Size=XS; Color=Dino Navy,1038-XS-DINO,120.00,,false
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936452719,S / Dino Navy,Size=S; Color=Dino Navy,1038-S-DINO,120.00,,false
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936485487,M / Dino Navy,Size=M; Color=Dino Navy,1038-M-DINO,120.00,,true
-7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936518255,L / Dino Navy,Size=L; Color=Dino Navy,1038-L-DINO,120.00,,true
+7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936518255,L / Dino Navy,Size=L; Color=Dino Navy,1038-L-DINO,120.00,,false
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936551023,XL / Dino Navy,Size=XL; Color=Dino Navy,1038-XL-DINO,120.00,,false
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936583791,2XL / Dino Navy,Size=2XL; Color=Dino Navy,1038-2XL-DINO,120.00,,false
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936616559,3XL / Dino Navy,Size=3XL; Color=Dino Navy,1038-3XL-DINO,120.00,,false
@@ -328,7 +328,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15346083430511,Swoveralls - Otter Romp,53753483853935,S / Otter Romp,Size=S; Color=Otter Romp,SWPANTS-DHG-S,120.00,,false
 15346083430511,Swoveralls - Otter Romp,53753483886703,M / Otter Romp,Size=M; Color=Otter Romp,SWPANTS-DHG-M,120.00,,true
 15346083430511,Swoveralls - Otter Romp,53753483919471,L / Otter Romp,Size=L; Color=Otter Romp,SWPANTS-DHG-L,120.00,,true
-15346083430511,Swoveralls - Otter Romp,53753483952239,XL / Otter Romp,Size=XL; Color=Otter Romp,SWPANTS-DHG-XL,120.00,,true
+15346083430511,Swoveralls - Otter Romp,53753483952239,XL / Otter Romp,Size=XL; Color=Otter Romp,SWPANTS-DHG-XL,120.00,,false
 15346083430511,Swoveralls - Otter Romp,53753483985007,2XL / Otter Romp,Size=2XL; Color=Otter Romp,SWPANTS-DHG-2XL,120.00,,false
 15346083430511,Swoveralls - Otter Romp,53753484017775,3XL / Otter Romp,Size=3XL; Color=Otter Romp,SWPANTS-DHG-3XL,120.00,,true
 15346083430511,Swoveralls - Otter Romp,53753484050543,4XL / Otter Romp,Size=4XL; Color=Otter Romp,SWPANTS-DHG-4XL,120.00,,true
@@ -340,7 +340,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 7969917927535,Swoveralls - Purr Parade - Coming Soon!,43949671121007,XL / Purr Parade Navy,Size=XL; Color=Purr Parade Navy,SWPANTS-BL4-XL,120.00,,false
 7969917927535,Swoveralls - Purr Parade - Coming Soon!,43949671153775,2XL / Purr Parade Navy,Size=2XL; Color=Purr Parade Navy,SWPANTS-BL4-2XL,120.00,,false
 7969917927535,Swoveralls - Purr Parade - Coming Soon!,43949671186543,3XL / Purr Parade Navy,Size=3XL; Color=Purr Parade Navy,SWPANTS-BL4-3XL,120.00,,false
-7969917927535,Swoveralls - Purr Parade - Coming Soon!,43949671219311,4XL / Purr Parade Navy,Size=4XL; Color=Purr Parade Navy,SWPANTS-BL4-4XL,120.00,,true
+7969917927535,Swoveralls - Purr Parade - Coming Soon!,43949671219311,4XL / Purr Parade Navy,Size=4XL; Color=Purr Parade Navy,SWPANTS-BL4-4XL,120.00,,false
 15346061738095,Swoveralls - Something 90s,53753433030767,S / Jammers,Size=S; Color=Jammers,SWPANTS-ZOF-S,120.00,,true
 15346061738095,Swoveralls - Something 90s,53753433063535,M / Jammers,Size=M; Color=Jammers,SWPANTS-ZOF-M,120.00,,true
 15346061738095,Swoveralls - Something 90s,53753433096303,L / Jammers,Size=L; Color=Jammers,SWPANTS-ZOF-L,120.00,,true
