@@ -153,7 +153,7 @@ jobs:
           OBSERVATORY_CONTACT: ${{ secrets.OBSERVATORY_CONTACT }}
         run: |
           if [ -z "$OBSERVATORY_CONTACT" ]; then
-            echo "::error::The secret OBSERVATORY_CONTACT is missing. Add your business email address or contact-page address under Settings > Secrets and variables > Actions. The tool identifies itself honestly in its requests and will not read without it."
+            echo "::er""ror::The secret OBSERVATORY_CONTACT is missing. Add your business email address or contact-page address under Settings > Secrets and variables > Actions. The tool identifies itself honestly in its requests and will not read without it."
             exit 1
           fi
 
@@ -191,7 +191,7 @@ jobs:
           python -m contentintel observatory connections --all --what install --key agent_reach 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Install the isolated Scrapling environment
-        if: ${{ inputs.scrapling || inputs.browsers || (inputs.action == 'corpus' && (inputs.what == 'crawl' || inputs.what == 'deepread')) }}
+        if: ${{ inputs.scrapling || inputs.browsers || (inputs.action == 'corpus' && (inputs.what == 'crawl' || inputs.what == 'deepread')) || (inputs.action == 'connections' && (inputs.what == 'check' || inputs.what == 'install')) }}
         shell: bash
         run: |
           export CONTENTINTEL_EXTERNAL_DIR="$RUNNER_TEMP"
@@ -252,6 +252,7 @@ jobs:
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          GITHUB_MODELS_TOKEN: ${{ secrets.GITHUB_MODELS_TOKEN }}         # optional: a fine-grained token with Models: read for the AI layer; used before the job's own token
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}           # raises GitHub's public-API limit for Agent-Reach's GitHub channel, and is the credential for GitHub Models in the AI layer (the job has models: read). Only raises GitHub's public-API limit for Agent-Reach's GitHub channel; the client sends it to api.github.com and nowhere else
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
