@@ -1190,26 +1190,91 @@ def _read_page(args, store, ledger, settings, brand, now):
         print(f"Error: {error}")
         return 1
     print(f"{page['title'] or page['url']}\n  {len(page['text'])} characters read through {_READER_LABEL.get(page['engine'], page['engine'])}" + (f"\n  NOTE: {page['robots_note']}" if page.get("robots_note") else ""))
+    shown = args.__dict__.setdefault("_read_shown", set())
+    if page["url"] in shown:                                                   # several brands read the same address in one run: the page is described once
+        print(f"  (the same page as above; recorded for {brand.name} too)")
+        return 0
+    shown.add(page["url"])
     preview = _main_preview(page["text"])
-    print("  main content (menus and short labels skipped):\n" + (preview or page["text"][:600]))
-    prices = [ln.strip()[:120] for ln in page["text"].splitlines() if re.search(r"[$€£]\s?\d", ln)][:8]
+    print("  main content (menus and short labels skipped):\n" + (preview or "  (no running text: the page is mostly menus, links and pictures)"))
+    prices = _price_lines(page["text"])
     if prices:
         print(f"  prices seen on the page ({len(prices)} shown):\n    " + "\n    ".join(prices))
+    elif re.search(r"cdn\.shopify\.com|/cdn/shop/|shopify", page["text"], re.I):         # a Shopify theme that fills prices in with JavaScript: the store's public product list has the real ones
+        store = _store_prices(page["url"], settings, contact, now)
+        if store:
+            print(f"  products and prices from the store's public product list (Shopify; prices are in the shop's own currency; {len(store)} shown):\n    " + "\n    ".join(store))
+        else:
+            print("  no prices in the page text (the theme fills them in with JavaScript) and the store's public product list could not be read")
+    else:
+        print("  no prices in the page text")
     return 0
 
 
+_PRICE = re.compile(r"(?<![\w$€£])[$€£]\s?(\d{1,3}(?:,\d{3})+|\d+)(\.\d{1,2})?")
+
+
+def _visible(line):
+    """What a person sees of one line of the page's text: images dropped, links reduced to their words, list marks and Markdown punctuation removed."""
+    text = re.sub(r"!\[[^\]]*\]\([^)]*\)", " ", str(line))
+    text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)
+    text = re.sub(r"^\s*(?:[*+\-•]|\d+[.)])\s+", "", text)
+    return re.sub(r"\s+", " ", re.sub(r"[#>*_`|]+", " ", text)).strip()
+
+
 def _main_preview(text, limit=600):
-    """The first readable paragraphs of a page: lines of real text, not menu items, short labels or lines that are only links."""
+    """The first readable paragraphs of a page: lines of real running text, not menus (a row of links), short labels, picture links or 'Quick view' buttons."""
     keep, size = [], 0
     for line in str(text).splitlines():
-        s = line.strip()
-        if len(s) < 45 or re.fullmatch(r"(\[[^\]]*\]\([^)]*\)\s*[|•·-]?\s*)+", s):
+        if line.count("](") >= 2:
             continue
-        keep.append(s)
-        size += len(s)
+        seen = _visible(line)
+        if len(seen) < 50 or len(seen.split()) < 8 or seen.lower().startswith("quick view"):
+            continue
+        keep.append(seen)
+        size += len(seen)
         if size >= limit:
             break
     return "\n".join(keep)[:limit]
+
+
+def _price_lines(text, limit=8):
+    """Lines that name something and give a real price: not a placeholder ($0.00), not a picture link, not a price that only appears inside an address."""
+    out = []
+    for line in str(text).splitlines():
+        seen = _visible(line)
+        if "quick view" in seen.lower():
+            continue
+        for m in _PRICE.finditer(seen):
+            amount = float(m.group(1).replace(",", "") + (m.group(2) or ""))
+            name = re.sub(r"\s+", " ", seen[:m.start()] + " " + seen[m.end():]).strip(" -–—:|")
+            if amount > 0 and len(re.findall(r"[A-Za-z]", name)) >= 6:
+                item = f"{name[:80]} {m.group(0)}"
+                if item not in out:
+                    out.append(item)
+                break
+    return out[:limit]
+
+
+def _store_prices(url, settings, contact, now, limit=8):
+    """'name price' for the first products of a Shopify store, from the public product list the store publishes (the same courtesy feed the competitor monitor reads). None when it cannot be read."""
+    from urllib.parse import urlsplit
+
+    from . import shopify
+    base = shopify.base_url(urlsplit(url).netloc)
+    try:
+        client = CLIENT_FACTORY() if CLIENT_FACTORY else polite.PoliteClient(settings, contact=contact, now_fn=lambda: now)
+        data = shopify._json(client, base + f"/products.json?limit={limit}")
+    except Exception:                                                          # a convenience: the page read itself has already succeeded
+        return None
+    out = []
+    for raw in (data.get("products") or [])[:limit]:
+        product = shopify.normalize_product(raw, base)
+        if product["price_min"] is None:
+            continue
+        price = f"{product['price_min']:.2f}" + (f"-{product['price_max']:.2f}" if product["price_max"] and product["price_max"] > product["price_min"] else "")
+        out.append(f"{product['title'][:70]} {price}")
+    return out or None
 
 
 def _youtube_about_url(channel):
