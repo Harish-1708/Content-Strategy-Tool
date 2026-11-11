@@ -259,6 +259,8 @@ def format_report(rows):
     lines = ["Collector health (a route is healthy only after a live acceptance run has passed):"]
     for r in rows:
         extra = []
+        if r["status"] == "cannot run here":
+            extra.append("needs OpenCLI and a browser logged in to the site, on a machine you control")
         if r["pause_until"]:
             extra.append(f"resting until {r['pause_until'][:16].replace('T', ' ')} UTC")
         if r["success_rate_7d"] != "":
