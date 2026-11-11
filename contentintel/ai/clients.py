@@ -24,11 +24,21 @@ class Completion:
     estimated: bool = False
 
 
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    """A redirect is returned as an answer, never followed behind the caller's back (a followed POST silently becomes a GET that answers something else)."""
+
+    def redirect_request(self, *args, **kwargs):
+        return None
+
+
+_OPENER = urllib.request.build_opener(_NoRedirect)
+
+
 def default_http(method, url, *, headers, body, timeout):
-    """(status, parsed body, response headers). Network errors raise; an HTTP error status is returned, not raised."""
+    """(status, parsed body, response headers). Network errors raise; an HTTP error status, including a redirect, is returned, not raised."""
     req = urllib.request.Request(url, method=method, data=None if body is None else json.dumps(body).encode("utf-8"), headers=headers)
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
+        with _OPENER.open(req, timeout=timeout) as r:
             raw = r.read() or b"{}"
             try:
                 return r.status, json.loads(raw), dict(r.headers)
@@ -90,46 +100,75 @@ class GatewayClient:
 
 
 class DirectClient:
-    """A provider with an OpenAI-style endpoint called straight from here (GitHub Models). The token is sent as a header and never appears in a message or a result."""
+    """A provider with an OpenAI-style endpoint called straight from here (GitHub Models). The token is sent as a header and never appears in a message or a result.
 
-    def __init__(self, base_url, token, http=None, clock=time.monotonic):
+    `api_versions` are tried in order (GitHub documents a dated API version header): an answer that is not usable JSON or a redirect moves on to the next version, and if none works the failure says what
+    each one returned. A redirect is never followed behind the scenes; a 307/308 to the same https host is followed once, anything else is reported with where it pointed."""
+
+    def __init__(self, base_url, token, http=None, clock=time.monotonic, api_versions=("2022-11-28",)):
         if not str(base_url).startswith("https://"):
             raise ValueError("a direct provider is only reached over https")
         self.base_url, self.token, self.http, self.clock = str(base_url).rstrip("/"), token, http or default_http, clock
+        self.api_versions = tuple(str(v) for v in (api_versions or ("2022-11-28",)))
 
     def _clean(self, text):
         return str(text).replace(self.token, "***") if self.token else str(text)
 
-    def complete(self, route, system, prompt, max_tokens, timeout=90, expect_platform=None, lane=None):
-        messages = ([{"role": "system", "content": system}] if system else []) + [{"role": "user", "content": prompt}]
+    def _same_host(self, url):
+        from urllib.parse import urlsplit
+        return str(url).startswith("https://") and urlsplit(str(url)).netloc.lower() == urlsplit(self.base_url).netloc.lower()
+
+    def _attempt(self, route, messages, max_tokens, timeout, version):
+        headers = {"Authorization": "Bearer " + self.token, "Content-Type": "application/json", "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": version}
+        body = {"model": route["model"], "messages": messages, "max_tokens": max_tokens, "temperature": 0}
+        url = self.base_url + "/chat/completions"
         t0 = self.clock()
         try:
-            status, body, headers = self.http("POST", self.base_url + "/chat/completions", headers={"Authorization": "Bearer " + self.token, "Content-Type": "application/json",
-                                                                                                   "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"},
-                                              body={"model": route["model"], "messages": messages, "max_tokens": max_tokens, "temperature": 0}, timeout=timeout)
+            for hop in range(2):
+                status, answer, reply = self.http("POST", url, headers=headers, body=body, timeout=timeout)
+                where = reply.get("Location") or reply.get("location") or ""
+                if status in (307, 308) and hop == 0 and self._same_host(where):          # the same request, to the same host: safe to repeat once
+                    url = where
+                    continue
+                break
         except Exception as exc:
             raise Failure(contract.classify_exception(exc)["code"], self._clean(f"the provider could not be reached: {exc}")) from None
         ms = int((self.clock() - t0) * 1000)
-        err = body.get("error") if isinstance(body, dict) else None
+        if 300 <= status < 400:
+            raise Failure(contract.UPSTREAM_BROKEN, self._clean(f"the provider redirected the request ({status}) to {where or 'an unknown address'}"))
+        err = answer.get("error") if isinstance(answer, dict) else None
         text_error = self._clean((err.get("message") if isinstance(err, dict) else err) or "")[:200] if err else ""
         if status in (401, 403):
             raise Failure(contract.NEED_SETUP, "the provider rejected the token (for GitHub Models the job needs the permission models: read)")
         if status in (402, 429):
-            retry = headers.get("Retry-After") or headers.get("retry-after") or ""
+            retry = reply.get("Retry-After") or reply.get("retry-after") or ""
             raise Failure(contract.RATE_LIMITED, text_error or f"the provider answered {status}: its free limit was reached", retry_after=int(retry) if str(retry).isdigit() else None)
         if status in (400, 413, 422):
             raise Failure(contract.BAD_INPUT, text_error or "the provider refused the request (often: more than its per-request token limit)")
         if status != 200:
             raise Failure(contract.UPSTREAM_BROKEN, text_error or f"the provider answered {status}")
-        if isinstance(body, dict) and "_not_json" in body:                 # what GitHub Models (or any direct provider) really sent back, with the token hidden
-            raise Failure(contract.UPSTREAM_BROKEN, self._clean(f"the provider answered {status} with something that is not JSON ({body.get('_content_type') or 'no content type'}): {body['_not_json'][:200]!r}"))
+        if isinstance(answer, dict) and "_not_json" in answer:                 # what GitHub Models (or any direct provider) really sent back, with the token hidden
+            raise Failure(contract.UPSTREAM_BROKEN, self._clean(f"the provider answered {status} with something that is not JSON ({answer.get('_content_type') or 'no content type'}): {answer['_not_json'][:200]!r}"))
         try:
-            choice = body["choices"][0]["message"]["content"]
+            choice = answer["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError):
             raise Failure(contract.UPSTREAM_BROKEN, "the provider's answer had no message") from None
-        usage = body.get("usage") or {}
+        usage = answer.get("usage") or {}
         return Completion(text=choice or "", tokens_in=int(usage.get("prompt_tokens", 0)), tokens_out=int(usage.get("completion_tokens", 0)), latency_ms=ms,
-                          model=str(body.get("model") or route["model"]))
+                          model=str(answer.get("model") or route["model"]))
+
+    def complete(self, route, system, prompt, max_tokens, timeout=90, expect_platform=None, lane=None):
+        messages = ([{"role": "system", "content": system}] if system else []) + [{"role": "user", "content": prompt}]
+        tried = []
+        for version in self.api_versions:
+            try:
+                return self._attempt(route, messages, max_tokens, timeout, version)
+            except Failure as exc:
+                if exc.code != contract.UPSTREAM_BROKEN or version == self.api_versions[-1]:         # only an unusable answer is worth another API version; a refusal or a limit is final
+                    if tried:
+                        raise Failure(exc.code, f"{exc} (API version {version}); earlier: " + "; ".join(tried)) from None
+                    raise
+                tried.append(f"API version {version}: {exc}"[:260])
 
 
 class AnthropicClient:
