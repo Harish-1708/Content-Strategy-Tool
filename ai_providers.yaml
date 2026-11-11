@@ -42,7 +42,7 @@ providers:
       reason: 'Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent.'
     credentials:
       env:
-      - GITHUB_MODELS_TOKEN
+      - GH_MODELS_TOKEN
       - GITHUB_TOKEN
     gateway_platform: github
     direct:
