@@ -376,7 +376,7 @@
   "ai:groq|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 1,
+   "consecutive_successes": 3,
    "history": [
     {
      "at": "2026-11-10T08:54:44Z",
@@ -391,6 +391,20 @@
      "items": 1,
      "ms": 292,
      "ok": true
+    },
+    {
+     "at": "2026-11-11T04:21:15Z",
+     "code": "",
+     "items": 1,
+     "ms": 410,
+     "ok": true
+    },
+    {
+     "at": "2026-11-11T04:21:15Z",
+     "code": "",
+     "items": 1,
+     "ms": 378,
+     "ok": true
     }
    ],
    "last_error": {
@@ -398,7 +412,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: groq/llama-3.3-70b-versatile key1: model_not_found. Last error: Groq API error 404: The model `llama-3."
    },
-   "last_success": "2026-11-10T08:54:44Z",
+   "last_success": "2026-11-11T04:21:15Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:groq",

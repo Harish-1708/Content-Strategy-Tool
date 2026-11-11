@@ -81,6 +81,23 @@
     "tokens_in": 0,
     "tokens_out": 0
    }
+  },
+  "2026-11-11": {
+   "groq": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 226
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 788,
+    "requests": 2,
+    "tokens_in": 156,
+    "tokens_out": 70
+   }
   }
  }
 }
