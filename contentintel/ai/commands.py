@@ -61,9 +61,12 @@ def lane_mock(lanes):
     return cl.MockClient([answer], name="lane-mock")
 
 
+CANARY_MAX_TOKENS = 512          # the tiny live check asks for one word, but a thinking model (Gemini 3.x) spends part of the limit on hidden reasoning: 24 left it nothing to answer with ("empty completion")
+
+
 def canary_lane():
     return Lane(name="canary", description="a tiny live check", max_data_class=dc.PUBLIC, chain=(), claude_fallback=False, claude_model="claude-haiku-5-5", claude_leads=False,
-                output={"format": "text", "min_chars": 1}, forbid=(), review="none", review_sample_every=0, allow_experimental=False, max_tokens=24, min_confidence=0)
+                output={"format": "text", "min_chars": 1}, forbid=(), review="none", review_sample_every=0, allow_experimental=False, max_tokens=CANARY_MAX_TOKENS, min_confidence=0)
 
 
 def load_all(args):
@@ -99,7 +102,7 @@ def live_clients(registry, environ, gateway_dir, workdir, notes):
         if p.enabled and p.direct:
             token = next((environ[n].strip() for n in p.credential_env if environ.get(n, "").strip()), "")
             if token:
-                clients[p.id] = cl.DirectClient(p.direct["base_url"], token)
+                clients[p.id] = cl.DirectClient(p.direct["base_url"], token, api_versions=p.direct.get("api_versions") or ("2022-11-28",))
             else:
                 notes.append("SKIPPED: " + p.id + ": no credential in the environment (" + ", ".join(p.credential_env) + "), so it is not tried; add the secret or switch the provider off to remove this line")
     if "ANTHROPIC_API_KEY" in environ and environ["ANTHROPIC_API_KEY"].strip() and registry.providers["claude"].enabled:
