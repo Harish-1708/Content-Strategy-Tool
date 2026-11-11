@@ -453,3 +453,84 @@ def test_a_gateway_that_cannot_isolate_models_is_reported_never_raised(tmp_path,
     s, _ = sidecar(tmp_path, Http(*answers))
     ok, message = s.isolate_models("long-enough-password")
     assert not ok and expect in message
+
+
+# ---- GitHub Models: API versions, redirects, and what each attempt returned ---------------------------------------------------------------------
+
+GH = "https://models.github.ai/inference"
+GH_ROUTE = {"provider": "github", "model": "openai/gpt-4.1-mini", "gateway_model": "openai/gpt-4.1-mini"}
+GH_OK = (200, {"choices": [{"message": {"role": "assistant", "content": "OK"}}], "usage": {"prompt_tokens": 9, "completion_tokens": 1}, "model": "gpt-4.1-mini"}, {})
+GH_TEXT = (200, {"_not_json": "OK", "_content_type": "text/plain"}, {})
+
+
+def test_github_models_is_asked_with_the_current_api_version_first_and_the_old_one_if_the_answer_is_not_usable():
+    http = Http(GH_TEXT, GH_OK)
+    done = C.DirectClient(GH, "ghp_TOKEN12345", http, api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
+    assert done.text == "OK" and [c["headers"]["X-GitHub-Api-Version"] for c in http.calls] == ["2026-03-10", "2022-11-28"]
+    assert all(c["url"] == GH + "/chat/completions" and c["headers"]["Authorization"] == "Bearer ghp_TOKEN12345" for c in http.calls)
+    http = Http(GH_OK)
+    C.DirectClient(GH, "ghp_TOKEN12345", http, api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
+    assert len(http.calls) == 1                                                                 # a good answer is never asked for twice
+
+
+def test_when_every_api_version_gives_an_unusable_answer_the_failure_says_what_each_returned():
+    http = Http(GH_TEXT, (200, {"_not_json": "<html>blocked ghp_TOKEN12345</html>", "_content_type": "text/html"}, {}))
+    with pytest.raises(Failure) as seen:
+        C.DirectClient(GH, "ghp_TOKEN12345", http, api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
+    text = str(seen.value)
+    assert seen.value.code == K.UPSTREAM_BROKEN and "API version 2026-03-10: the provider answered 200 with something that is not JSON (text/plain): 'OK'" in text
+    assert "(text/html)" in text and "API version 2022-11-28" in text and "ghp_TOKEN12345" not in text
+
+
+@pytest.mark.parametrize("answer, code", [((401, {}, {}), K.NEED_SETUP), ((429, {"error": {"message": "slow down"}}, {}), K.RATE_LIMITED), ((400, {"error": {"message": "bad"}}, {}), K.BAD_INPUT)])
+def test_a_refusal_or_a_limit_is_final_and_is_not_asked_again_with_another_version(answer, code):
+    http = Http(answer, GH_OK)
+    with pytest.raises(Failure) as seen:
+        C.DirectClient(GH, "ghp_TOKEN12345", http, api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
+    assert seen.value.code == code and len(http.calls) == 1
+
+
+def test_a_redirect_to_the_same_host_is_followed_once_and_any_other_is_reported_with_where_it_pointed():
+    http = Http((307, {}, {"Location": GH + "/v2/chat/completions"}), GH_OK)
+    assert C.DirectClient(GH, "ghp_TOKEN12345", http).complete(GH_ROUTE, "", "hi", 10).text == "OK"
+    assert [c["url"] for c in http.calls] == [GH + "/chat/completions", GH + "/v2/chat/completions"] and http.calls[1]["method"] == "POST" and http.calls[1]["body"] == http.calls[0]["body"]
+    for status, where in ((307, "https://evil.example/steal"), (302, GH + "/elsewhere"), (301, "")):
+        http = Http((status, {}, {"Location": where}), GH_OK)
+        with pytest.raises(Failure) as seen:
+            C.DirectClient(GH, "ghp_TOKEN12345", http).complete(GH_ROUTE, "", "hi", 10)
+        assert seen.value.code == K.UPSTREAM_BROKEN and f"redirected the request ({status}) to {where or 'an unknown address'}" in str(seen.value) and len(http.calls) == 1   # the token never went to another host
+
+
+def test_the_http_helper_hands_back_a_redirect_instead_of_following_it():
+    import threading
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_POST(self):
+            self.send_response(302)
+            self.send_header("Location", "/final")
+            self.end_headers()
+
+        def do_GET(self):
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"OK")
+
+        def log_message(self, *a):
+            pass
+    server = HTTPServer(("127.0.0.1", 0), Handler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    try:
+        status, body, headers = C.default_http("POST", f"http://127.0.0.1:{server.server_port}/chat", headers={}, body={"a": 1}, timeout=10)
+    finally:
+        server.shutdown()
+    assert status == 302 and headers.get("Location") == "/final"                               # a followed POST would have become a GET and answered 200 OK
+
+
+def test_the_provider_file_gives_github_models_both_api_versions_and_the_client_uses_them():
+    from contentintel.ai import commands as CM
+    reg = R.load_registry(ROOT / "ai_providers.yaml")
+    assert reg.providers["github"].direct["api_versions"] == ["2026-03-10", "2022-11-28"]
+    clients, _ = CM.live_clients(reg, {"GITHUB_TOKEN": "ghp_" + "A" * 36}, None, "/tmp", [])
+    assert clients["github"].api_versions == ("2026-03-10", "2022-11-28")
