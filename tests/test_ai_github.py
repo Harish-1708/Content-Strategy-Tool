@@ -42,7 +42,7 @@ def test_other_direct_mistakes_are_refused(tmp_path):
 
 def test_github_models_is_a_free_direct_provider_with_the_owners_recorded_decision():
     p = R.load_registry(ROOT / "ai_providers.yaml").provider("github")
-    assert p.enabled and p.direct == {"base_url": "https://models.github.ai/inference"} and not p.paid and p.credential_env == ("GITHUB_TOKEN",)
+    assert p.enabled and p.direct == {"base_url": "https://models.github.ai/inference", "api_versions": ["2026-03-10", "2022-11-28"]} and not p.paid and p.credential_env == ("GITHUB_TOKEN",)
     assert p.approved_classes == ("public", "internal") and p.override["approved_by"] == "Harish" and p.override["date"] == "2026-11-03"
     assert [m.id for m in p.models if m.approved] == ["openai/gpt-4.1-mini", "meta/Llama-3.3-70B-Instruct"]      # only the small-model tier, whose free limits the provider limits describe
     assert p.limits == {"requests_per_day": 150, "requests_per_minute": 15} and "prototyping" in p.terms["business_use"] and "must stay off" in p.terms["business_use"]
