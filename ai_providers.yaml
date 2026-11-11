@@ -987,6 +987,8 @@ providers:
       env:
       - OPENROUTER_API_KEY
     gateway_platform: openrouter
+    direct:
+      base_url: https://openrouter.ai/api/v1
     terms:
       status: verified_secondary
       date: '2026-11-03'
@@ -998,6 +1000,12 @@ providers:
       requests_per_day: 50
       requests_per_minute: 20
     models:
+    - id: openrouter/free
+      approved: true
+      capabilities:
+      - text
+      - tools
+      note: 'OpenRouter free router: this tool asks for the models that are free today (from OpenRouter public model list) and OpenRouter own free router last, so a model leaving the free tier does not stop the lane; nothing paid is ever requested (approved 2026-11-11)'
     - id: qwen/qwen3-coder:free
       approved: true
       capabilities:
@@ -1011,17 +1019,17 @@ providers:
       - tools
       note: proposed starter approval; review before enabling
     - id: nvidia/nemotron-3-super-120b-a12b:free
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: proposed starter approval; review before enabling
+      note: "withdrawn from free use on OpenRouter (404 unavailable-for-free, seen live 2026-11-11); the paid slug is not used"
     - id: qwen/qwen3-next-80b-a3b-instruct:free
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: proposed starter approval; review before enabling
+      note: "withdrawn from free use on OpenRouter (404 unavailable-for-free, seen live 2026-11-11); the paid slug is not used"
     - id: openai/gpt-oss-120b:free
       approved: false
       capabilities:
