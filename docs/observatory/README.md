@@ -61,6 +61,13 @@ youtube:
 **Connections.** The platform runs the six repositories themselves (Agent-Reach, Scrapling, FreeLLMAPI, the Instagram and YouTube skills, Video Shotcraft) and keeps its own versions as the backup. Each connection has four owner controls (ON/OFF, route, version, secrets) and a health score. The full guide is `docs/platform/connections.md`.
 
 
+## Reading results honestly (Update 47)
+
+- **Collector health has a state "cannot run here".** A route that needs OpenCLI and a browser logged in to the site (Instagram, Reddit, X, Facebook, LinkedIn, Xiaohongshu, Boss, the Reddit search) can never be run or verified on a GitHub-hosted runner. Where OpenCLI is not installed it shows as `cannot run here`, with the reason, instead of looking unproven. On a machine that has OpenCLI, a real passing run makes it `healthy` as usual.
+- **`corpus --what read` describes a page once** (not once per brand): the running text of the page, with menus, short labels and picture links left out; any real prices written in the text; and, when a Shopify theme fills prices in with JavaScript, the real product names and prices from the store's public product list.
+- **Scrapling's health** is recorded from page reads, crawls and feed searches. A site's refusal, or a missing Scrapling environment, is not counted against it.
+- **OpenRouter is called directly**, using the models that are free today and OpenRouter's own free router last; a model leaving the free tier no longer breaks the lane. Nothing paid is ever requested.
+
 ## Politeness, and what "robots.txt" means here
 
 By default the tool's own crawler **obeys robots.txt** (and treats an unreadable robots.txt as "closed"), names itself `KelsonResearchBot/1.0 (research; contact: ...)`, pauses at least 5 seconds per site (more if the site asks, doubling after any block), and stops a site for the run when it is rate-limited or shows a bot check.
