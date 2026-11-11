@@ -10,8 +10,8 @@
     "run": "1b7fe843",
     "version": "71425abc76d1"
    },
-   "consecutive_failures": 1,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 3,
    "history": [
     {
      "at": "2026-11-10T09:28:50Z",
@@ -54,6 +54,27 @@
      "items": 0,
      "ms": 2059,
      "ok": false
+    },
+    {
+     "at": "2026-11-11T05:14:19Z",
+     "code": "",
+     "items": 10,
+     "ms": 938,
+     "ok": true
+    },
+    {
+     "at": "2026-11-11T05:14:19Z",
+     "code": "",
+     "items": 10,
+     "ms": 651,
+     "ok": true
+    },
+    {
+     "at": "2026-11-11T05:14:19Z",
+     "code": "",
+     "items": 10,
+     "ms": 749,
+     "ok": true
     }
    ],
    "last_error": {
@@ -61,11 +82,11 @@
     "code": "UPSTREAM_BROKEN",
     "message": "the GitHub search through Agent-Reach returned nothing"
    },
-   "last_success": "2026-11-10T14:31:26Z",
+   "last_success": "2026-11-11T05:14:19Z",
    "pause": null,
    "route": "github",
    "source": "agent_reach_research",
-   "state": "degraded"
+   "state": "healthy"
   },
   "agent_reach_research|web": {
    "acceptance": {
