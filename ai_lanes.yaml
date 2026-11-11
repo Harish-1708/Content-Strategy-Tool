@@ -15,7 +15,8 @@ lanes:
     chain:
       - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: mistral, model: mistral-small-latest}
-      - {provider: openrouter, model: "openai/gpt-oss-120b:free"}
+      - {provider: openrouter, model: "nvidia/nemotron-3-super-120b-a12b:free"}
+      - {provider: openrouter, model: "qwen/qwen3-next-80b-a3b-instruct:free"}
       - {provider: github, model: openai/gpt-4.1-mini}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
@@ -141,7 +142,8 @@ lanes:
     chain:
       - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: mistral, model: mistral-small-latest}
-      - {provider: openrouter, model: "openai/gpt-oss-120b:free"}
+      - {provider: openrouter, model: "nvidia/nemotron-3-super-120b-a12b:free"}
+      - {provider: openrouter, model: "qwen/qwen3-next-80b-a3b-instruct:free"}
       - {provider: github, model: openai/gpt-4.1-mini}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: false      # the module that asked falls back to its own Claude client, under its own spending cap, when this lane has no answer
@@ -154,7 +156,8 @@ lanes:
     chain:
       - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: mistral, model: mistral-small-latest}
-      - {provider: openrouter, model: "openai/gpt-oss-120b:free"}
+      - {provider: openrouter, model: "nvidia/nemotron-3-super-120b-a12b:free"}
+      - {provider: openrouter, model: "qwen/qwen3-next-80b-a3b-instruct:free"}
       - {provider: github, model: openai/gpt-4.1-mini}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: false      # the module that asked falls back to its own Claude client, under its own spending cap, when this lane has no answer
