@@ -1060,6 +1060,9 @@ def _corpus(args, store, ledger, settings, brands, snaps, now):
         elif args.what == "read":
             code = _read_page(args, store, ledger, settings, brand, now)
             worst = max(worst, code)
+            if brand is brands[-1]:                                            # once, after the last brand: where the page was recorded
+                for url, names in args.__dict__.get("_read_shown", {}).items():
+                    print(f"  recorded in the corpus of: {', '.join(names)}")
         elif args.what == "deepread":
             worst = max(worst, _deepread(args, store, ledger, settings, [brand], now))
         elif args.what == "channelpages":
@@ -1189,12 +1192,12 @@ def _read_page(args, store, ledger, settings, brand, now):
     if page is None:
         print(f"Error: {error}")
         return 1
-    print(f"{page['title'] or page['url']}\n  {len(page['text'])} characters read through {_READER_LABEL.get(page['engine'], page['engine'])}" + (f"\n  NOTE: {page['robots_note']}" if page.get("robots_note") else ""))
-    shown = args.__dict__.setdefault("_read_shown", set())
-    if page["url"] in shown:                                                   # several brands read the same address in one run: the page is described once
-        print(f"  (the same page as above; recorded for {brand.name} too)")
+    shown = args.__dict__.setdefault("_read_shown", {})                         # address -> the brands whose corpus it was recorded in
+    if page["url"] in shown:                                                   # several brands read the same address in one run: it is described once, then listed at the end
+        shown[page["url"]].append(brand.name)
         return 0
-    shown.add(page["url"])
+    shown[page["url"]] = [brand.name]
+    print(f"{page['title'] or page['url']}\n  {len(page['text'])} characters read through {_READER_LABEL.get(page['engine'], page['engine'])}" + (f"\n  NOTE: {page['robots_note']}" if page.get("robots_note") else ""))
     preview = _main_preview(page["text"])
     print("  main content (menus and short labels skipped):\n" + (preview or "  (no running text: the page is mostly menus, links and pictures)"))
     prices = _price_lines(page["text"])
