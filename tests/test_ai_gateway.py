@@ -621,11 +621,11 @@ def test_a_github_models_answer_of_plain_ok_on_every_variant_says_it_is_not_a_mo
     with pytest.raises(Failure) as seen:
         C.DirectClient(GH, "ghp_TOKEN12345", http, api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
     text = str(seen.value)
-    assert "is not an answer from the GitHub Models service" in text and "GITHUB_MODELS_TOKEN" in text and "Models: read" in text and "ghp_TOKEN12345" not in text and len(http.calls) == 3
+    assert "is not an answer from the GitHub Models service" in text and "GH_MODELS_TOKEN" in text and "Models: read" in text and "ghp_TOKEN12345" not in text and len(http.calls) == 3
     other = (200, {"_not_json": "<html>sign in</html>", "_content_type": "text/html"}, {})
     with pytest.raises(Failure) as seen:
         C.DirectClient(GH, "ghp_TOKEN12345", Http(other), api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
-    assert "GITHUB_MODELS_TOKEN" not in str(seen.value)                                                  # the hint is for the plain OK only
+    assert "GH_MODELS_TOKEN" not in str(seen.value)                                                  # the hint is for the plain OK only
     with pytest.raises(Failure) as seen:
         C.DirectClient(GH, "ghp_TOKEN12345", Http(other, other, GH_TEXT), api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
-    assert "GITHUB_MODELS_TOKEN" not in str(seen.value) and "(text/plain): 'OK'" in str(seen.value)                    # not when the variants disagree, even though the last one was a plain OK
+    assert "GH_MODELS_TOKEN" not in str(seen.value) and "(text/plain): 'OK'" in str(seen.value)                    # not when the variants disagree, even though the last one was a plain OK
