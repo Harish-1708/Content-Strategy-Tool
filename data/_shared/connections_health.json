@@ -107,11 +107,16 @@
     "at": "2026-11-11T04:24:03Z",
     "ms": 0,
     "ok": true
+   },
+   {
+    "at": "2026-11-11T04:34:01Z",
+    "ms": 0,
+    "ok": true
    }
   ],
   "builtin_used": 0,
   "last_error": null,
-  "last_success": "2026-11-11T04:24:03Z"
+  "last_success": "2026-11-11T04:34:01Z"
  },
  "scrapling": {
   "attempts": [
@@ -159,11 +164,36 @@
     "at": "2026-11-10T10:41:40Z",
     "ms": 0,
     "ok": true
+   },
+   {
+    "at": "2026-11-11T04:34:28Z",
+    "ms": 0,
+    "ok": false
+   },
+   {
+    "at": "2026-11-11T04:34:28Z",
+    "ms": 0,
+    "ok": false
+   },
+   {
+    "at": "2026-11-11T04:34:29Z",
+    "ms": 0,
+    "ok": false
+   },
+   {
+    "at": "2026-11-11T04:34:30Z",
+    "ms": 0,
+    "ok": false
+   },
+   {
+    "at": "2026-11-11T04:34:31Z",
+    "ms": 0,
+    "ok": false
    }
   ],
   "builtin_used": 0,
   "last_error": {
-   "at": "2026-11-10T10:20:18Z",
+   "at": "2026-11-11T04:34:31Z",
    "code": "NEED_SETUP",
    "message": "the Scrapling worker is not installed here (SCRAPLING_PYTHON is not set; the workflow's scrapling box installs it)"
   },

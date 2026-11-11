@@ -2576,7 +2576,7 @@
     "version": "71425abc76d1"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 39,
+   "consecutive_successes": 43,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -2850,10 +2850,38 @@
      "items": 10,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-11T04:34:22Z",
+     "code": "",
+     "items": 10,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-11T04:34:22Z",
+     "code": "",
+     "items": 9,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-11T04:34:22Z",
+     "code": "",
+     "items": 10,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-11T04:34:22Z",
+     "code": "",
+     "items": 10,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-11T04:02:54Z",
+   "last_success": "2026-11-11T04:34:22Z",
    "pause": null,
    "route": "serper_dev",
    "source": "web_search",
