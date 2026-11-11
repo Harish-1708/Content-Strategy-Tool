@@ -413,7 +413,7 @@ MUTATIONS.extend(U43)
 U44 = [   # update 44: non-JSON answers, per-provider routing, skipped providers, the model catalogue
     ('ai-notjson-answer-lost', 'contentintel/ai/clients.py', '            except ValueError:                                           # an answer that is not JSON', '            except KeyError:                                           # an answer that is not JSON', 'an answer that is not JSON crashes instead of being kept'),
     ('ai-gateway-notjson-ignored', 'contentintel/ai/clients.py', '        if isinstance(body, dict) and "_not_json" in body:\n            raise Failure(contract.UPSTREAM_BROKEN, f"the gateway answered', '        if False:\n            raise Failure(contract.UPSTREAM_BROKEN, f"the gateway answered', "the gateway's non-JSON answer is not reported"),
-    ('ai-direct-notjson-ignored', 'contentintel/ai/clients.py', '        if isinstance(body, dict) and "_not_json" in body:                 # what GitHub Models', '        if False:                 # what GitHub Models', "GitHub Models' non-JSON answer is not reported"),
+    ('ai-direct-notjson-ignored', 'contentintel/ai/clients.py', '        if isinstance(answer, dict) and "_not_json" in answer:                 # what GitHub Models', '        if False:                 # what GitHub Models', "GitHub Models' non-JSON answer is not reported"),
     ('ai-direct-notjson-token-shown', 'contentintel/ai/clients.py', 'raise Failure(contract.UPSTREAM_BROKEN, self._clean(f"the provider answered {status} with something that is not JSON', 'raise Failure(contract.UPSTREAM_BROKEN, (f"the provider answered {status} with something that is not JSON', 'the token can appear in the report of a non-JSON answer'),
     ('ai-isolate-includes-disabled', 'contentintel/ai/gateway.py', '(r.get("model_id") or r.get("modelId")) and r.get("enabled")})', '(r.get("model_id") or r.get("modelId")) and True})', 'disabled models are split into groups too'),
     ('ai-isolate-includes-custom', 'contentintel/ai/gateway.py', 'r.get("platform") != "custom" and (r.get("model_id")', 'True and (r.get("model_id")', 'custom endpoints are split into groups too'),
@@ -448,6 +448,45 @@ U46 = [   # update 45: the plan wording
     ('plan-says-cannot-run-twice', 'contentintel/cli.py', '((p.skip if p.skip.startswith("cannot run") else f"cannot run: {p.skip}") if p.skip else "will run")', '(f"cannot run: {p.skip}" if p.skip else "will run")', 'the plan says cannot run twice'),
 ]
 MUTATIONS.extend(U46)
+
+U47 = [   # update 46: competitor filter, empty searches, page-read summary, YouTube corpus, report and tab fallbacks, the Observatory workflow
+    ('u46-filter-id-only', 'contentintel/observatory/commands.py', '            if low in names or host in names:\n                hits.add(sid)', '            if low == sid.lower():\n                hits.add(sid)', 'a competitor can only be named by its internal id'),
+    ('u46-filter-unknown-silent', 'contentintel/observatory/commands.py', '    if unknown:\n        planned = ', '    if False:\n        planned = ', 'a name that matches nothing is quietly dropped'),
+    ('u46-monitor-no-sites-succeeds', 'contentintel/observatory/commands.py', 'brands/<brand>/observatory.yaml.")\n        return 1\n    if not contact:', 'brands/<brand>/observatory.yaml.")\n        return 0\n    if not contact:', 'a monitor run with nothing to monitor is a success'),
+    ('u46-ar-empty-search-fails', 'contentintel/observatory/commands.py', 'empty_ok=(what == "search"))', 'empty_ok=False)', 'a search with no matches is a broken route'),
+    ('u46-ar-empty-search-silent', 'contentintel/observatory/commands.py', '        if not env["items"]:\n            print(f"=== {brand.name}: Agent-Reach', '        if False:\n            print(f"=== {brand.name}: Agent-Reach', 'an empty search is recorded and shown as if it had results'),
+    ('u46-read-menu-shown', 'contentintel/observatory/commands.py', '        if len(s) < 45 or re.fullmatch(', '        if re.fullmatch(', 'short menu labels are shown as page content'),
+    ('u46-read-links-shown', 'contentintel/observatory/commands.py', '        if len(s) < 45 or re.fullmatch(r"(\\[[^\\]]*\\]\\([^)]*\\)\\s*[|•·-]?\\s*)+", s):', '        if len(s) < 45:', 'lines that are only links are shown as page content'),
+    ('u46-read-prices-dropped', 'contentintel/observatory/commands.py', '    if prices:\n        print(f"  prices seen', '    if False:\n        print(f"  prices seen', 'prices on the page are not shown'),
+    ('u46-yt-nothing-succeeds', 'contentintel/observatory/commands.py', '    if args.what == "youtube" and empty_brands and len(empty_brands) == len(brands):', '    if False:', 'a YouTube corpus with no channel anywhere is a success'),
+    ('u46-report-no-fallback', 'contentintel/observatory/commands.py', '        if not sites:                                           # no monitor run has finished yet', '        if False:                                           # no monitor run has finished yet', 'the report ignores the competitors discovery chose'),
+    ('u46-tab-drops-monitoring', 'contentintel/observatory/report.py', '        if c.get("domain") and c["domain"] in monitored_domains:          # already shown', '        if c.get("status") == "monitoring" or (c.get("domain") and c["domain"] in monitored_domains):          # already shown', 'a competitor chosen for monitoring vanishes from the Competitors tab'),
+    ('u46-wf-models-permission', '.github/workflows/observatory.yml', "  models: read               # lets the job's own token", "  checks: read               # lets the job's own token", 'the workflow cannot call GitHub Models'),
+    ('u46-wf-ai-secret-dropped', '.github/workflows/observatory.yml', '          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}           # the AI layer', '          ANTHROPIC_API_KEY_UNUSED: ${{ secrets.ANTHROPIC_API_KEY }}           # the AI layer', 'the workflow does not pass the Claude key'),
+    ('u46-wf-scrapling-crawl', '.github/workflows/observatory.yml', " || (inputs.action == 'corpus' && (inputs.what == 'crawl' || inputs.what == 'deepread'))", '', 'a crawl run does not install Scrapling by itself'),
+    ('u46-wf-gateway-blocks', '.github/workflows/observatory.yml', '        continue-on-error: true\n        shell: bash\n        run: |\n          # the FreeLLMAPI connection: the newest release by default; the recorded', '        shell: bash\n        run: |\n          # the FreeLLMAPI connection: the newest release by default; the recorded', 'a gateway that cannot be built stops the run'),
+    ('u46-wf-gateway-always', '.github/workflows/observatory.yml', "        if: ${{ inputs.action == 'discover' || inputs.action == 'judge' }}\n        continue-on-error: true\n        shell: bash\n        run: |\n          # the FreeLLMAPI", '        if: ${{ true }}\n        continue-on-error: true\n        shell: bash\n        run: |\n          # the FreeLLMAPI', 'the gateway is built for every action'),
+]
+MUTATIONS.extend(U47)
+
+U48 = [   # update 46: GitHub Models API versions and redirects, the OpenRouter catalogue
+    ('u46-gh-follows-redirects', 'contentintel/ai/clients.py', '    def redirect_request(self, *args, **kwargs):\n        return None', '    def redirect_request(self, *args, **kwargs):\n        return super().redirect_request(*args, **kwargs)', "a redirect is followed behind the caller's back"),
+    ('u46-gh-redirect-any-host', 'contentintel/ai/clients.py', 'if status in (307, 308) and hop == 0 and self._same_host(where):', 'if status in (307, 308) and hop == 0:', 'the token is sent to whatever host a redirect names'),
+    ('u46-gh-redirect-unreported', 'contentintel/ai/clients.py', '        if 300 <= status < 400:\n            raise Failure(contract.UPSTREAM_BROKEN, self._clean(f"the provider redirected', '        if False:\n            raise Failure(contract.UPSTREAM_BROKEN, self._clean(f"the provider redirected', 'a redirect is not reported'),
+    ('u46-gh-one-version-only', 'contentintel/ai/clients.py', '        for version in self.api_versions:\n            try:', '        for version in self.api_versions[:1]:\n            try:', 'the second API version is never tried'),
+    ('u46-gh-retry-on-refusal', 'contentintel/ai/clients.py', 'if exc.code != contract.UPSTREAM_BROKEN or version == self.api_versions[-1]:', 'if version == self.api_versions[-1]:', 'a refusal or limit is asked again with another version'),
+    ('u46-gh-earlier-attempts-lost', 'contentintel/ai/clients.py', '"; ".join(tried)) from None', '"") from None', 'the failure forgets what the earlier version returned'),
+    ('u46-gh-versions-swapped', 'ai_providers.yaml', "      api_versions:\n      - '2026-03-10'\n      - '2022-11-28'", "      api_versions:\n      - '2022-11-28'\n      - '2026-03-10'", 'the old API version is tried first'),
+    ('u46-gh-versions-not-passed', 'contentintel/ai/commands.py', ', api_versions=p.direct.get("api_versions") or ("2022-11-28",))', ')', 'the configured API versions never reach the client'),
+    ('u46-gh-versions-rejected', 'contentintel/ai/registry.py', '_only(direct, ("base_url", "api_versions"), f"{where}.direct")', '_only(direct, ("base_url",), f"{where}.direct")', 'the provider file cannot list API versions'),
+    ('u46-or-dead-model-approved', 'ai_providers.yaml', '    - id: openai/gpt-oss-120b:free\n      approved: false', '    - id: openai/gpt-oss-120b:free\n      approved: true', 'the dead OpenRouter free model is approved again'),
+]
+MUTATIONS.extend(U48)
+
+U49 = [   # update 46: the live check's token limit
+    ('u46-canary-too-small', 'contentintel/ai/commands.py', 'CANARY_MAX_TOKENS = 512 ', 'CANARY_MAX_TOKENS = 24 ', 'a thinking model has no room left to answer in the live check'),
+]
+MUTATIONS.extend(U49)
 
 def run_tests(workdir):
     env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}
