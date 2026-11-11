@@ -78,10 +78,10 @@ def test_the_health_score_counts_recent_attempts_more_and_names_the_state(tmp_pa
 
 def test_the_rows_for_the_command_and_the_sheet_carry_the_owners_choices_and_the_health(s, tmp_path):
     led = CONN.ConnectionHealth(tmp_path / "h.json")
-    led.record("agent_reach", False, NOW, code="NEED_SETUP", message="not installed")
+    led.record("agent_reach", False, NOW, code="UPSTREAM_BROKEN", message="not installed")
     s["services"]["connections"]["channels"]["video_shotcraft"] = False
     rows = {r["connection"]: r for r in CONN.rows(s, led)}
-    assert rows["agent_reach"]["health_score"] == 0 and rows["agent_reach"]["state"] == "down" and "NEED_SETUP: not installed" in rows["agent_reach"]["last_error"]
+    assert rows["agent_reach"]["health_score"] == 0 and rows["agent_reach"]["state"] == "down" and "UPSTREAM_BROKEN: not installed" in rows["agent_reach"]["last_error"]
     assert rows["video_shotcraft"]["on"] == "off" and rows["scrapling"]["health_score"] == "" and rows["scrapling"]["state"] == "unknown" and "built-in polite reader" in rows["scrapling"]["fallback"]
     tab = CONN.sheet_tab(s)
     assert tab["title"] == "Connections Health" and set(tab["rows_by_key"]) == set(CONN.CONNECTIONS) and tab["key_col"] == "connection"
@@ -183,14 +183,14 @@ def test_an_install_that_fails_says_so_and_names_the_backup(s, tmp_path):
 def test_a_probe_records_real_health_and_a_missing_install_is_a_recorded_failure(s, tmp_path):
     led = CONN.ConnectionHealth(tmp_path / "h.json")
     ok, msg = CONN.probe(s, "agent_reach", now=NOW, runner=lambda argv, **kw: Done("{}"), root=tmp_path / "none", ledger=led)
-    assert not ok and "not installed" in msg and led.summary("agent_reach")["last_error"]["code"] == "NEED_SETUP"
+    assert not ok and "not installed" in msg and led.summary("agent_reach")["attempts"] == 0 and led.summary("agent_reach")["last_error"] is None      # a missing install is our setup, not the repository failing: it is reported, not scored
     exe = tmp_path / "ext" / "agent_reach-env" / "bin" / "agent-reach"
     exe.parent.mkdir(parents=True)
     exe.write_text("")
     seen = {}
     ok, msg = CONN.probe(s, "agent_reach", now=NOW, runner=lambda argv, **kw: seen.update(argv=argv, env=kw["env"]) or Done("{}"), root=tmp_path / "ext", environ={"PATH": "/bin", "ANTHROPIC_API_KEY": "k"}, ledger=led)
     assert ok and seen["argv"] == [str(exe), "channels"] and "ANTHROPIC_API_KEY" not in seen["env"]
-    assert led.summary("agent_reach")["attempts"] == 2 and led.summary("agent_reach")["last_success"] == NOW                            # the success is recorded too, not only the failure
+    assert led.summary("agent_reach")["attempts"] == 1 and led.summary("agent_reach")["last_success"] == NOW                            # the working probe is recorded; the missing install before it was only reported
     ok, msg = CONN.probe(s, "youtube_skill", now=NOW, runner=lambda argv, **kw: Done("abcdef1234567\tHEAD\n"), ledger=led)
     assert ok and "latest commit abcdef1234" in msg
     assert not CONN.probe(s, "youtube_skill", now=NOW, runner=lambda argv, **kw: Done("", "", 128), ledger=led)[0]
@@ -371,3 +371,39 @@ def test_the_connections_command_lists_checks_and_installs_and_names_a_bad_key(t
     assert cli.main(base + ["--what", "install", "--key", "scrapling"]) == 0
     assert "installed: scrapling: installed" in capsys.readouterr().out
     assert cli.main(base + ["--key", "nonsense"]) == 1 and "no connection called 'nonsense'" in capsys.readouterr().out
+
+
+# ---- what counts toward a connection's health (Update 48) -----------------------------------------------------------------------------------------
+
+def test_a_failure_that_is_not_the_repositorys_fault_is_never_scored_and_a_real_one_is(tmp_path):
+    led = CONN.ConnectionHealth(tmp_path / "h.json")
+    codes = ["BAD_INPUT", "NEED_LOGIN", "NEED_SETUP", "NOT_FOUND", "PLATFORM_BLOCKED", "RATE_LIMITED"]                 # written out, so a code cannot quietly leave the set and the test together
+    assert sorted(CONN.NOT_THE_REPOSITORYS_FAULT) == codes
+    for code in codes:
+        led.record("scrapling", False, NOW, code=code, message="x")
+    assert led.summary("scrapling")["attempts"] == 0 and led.summary("scrapling")["state"] == "unknown" and led.summary("scrapling")["last_error"] is None
+    led.record("scrapling", False, NOW, code="UPSTREAM_BROKEN", message="the library crashed")
+    led.record("scrapling", False, NOW, code="TIMEOUT", message="too slow")
+    assert led.summary("scrapling")["attempts"] == 2 and led.summary("scrapling")["state"] == "down" and led.summary("scrapling")["last_error"]["code"] == "TIMEOUT"
+    led.record("scrapling", True, NOW)
+    assert led.summary("scrapling")["attempts"] == 3
+
+
+def test_history_from_before_version_2_loses_its_failures_once_and_keeps_its_successes(tmp_path):
+    path = tmp_path / "h.json"
+    old = {"scrapling": {"attempts": [{"at": "2026-11-01T00:00:00Z", "ok": False, "ms": 0}] * 14 + [{"at": "2026-11-02T00:00:00Z", "ok": True, "ms": 90}] + [{"at": "2026-11-03T00:00:00Z", "ok": False, "ms": 0}],
+                          "last_success": "2026-11-02T00:00:00Z", "last_error": {"at": "2026-11-03T00:00:00Z", "code": "NEED_SETUP", "message": "no environment"}, "builtin_used": 2}}
+    path.write_text(json.dumps(old))
+    led = CONN.ConnectionHealth(path)
+    first = led.summary("scrapling")
+    assert first["attempts"] == 1 and first["score"] == 100 and first["state"] == "healthy" and first["last_error"] is None and first["builtin_used"] == 2      # 16 / down becomes what it really was
+    led.record("scrapling", False, NOW, code="UPSTREAM_BROKEN", message="real")
+    led.save()
+    again = CONN.ConnectionHealth(path)
+    assert again.summary("scrapling")["attempts"] == 2 and again.data["scrapling"]["v"] == CONN.HISTORY_VERSION                  # a second load changes nothing
+    everything_failed = {"scrapling": {"attempts": [{"at": "2026-11-01T00:00:00Z", "ok": False, "ms": 0}] * 16, "last_success": "", "last_error": None, "builtin_used": 0}}
+    path.write_text(json.dumps(everything_failed))
+    s = CONN.ConnectionHealth(path).summary("scrapling")
+    assert s["attempts"] == 0 and s["state"] == "unknown" and s["score"] is None                                               # not "down": nothing is proved either way
+    path.write_text(json.dumps({"x": "not a dict", "y": {"v": 2, "attempts": [{"at": "a", "ok": False, "ms": 0}], "last_error": {"code": "TIMEOUT"}}}))
+    assert CONN.ConnectionHealth(path).summary("y")["attempts"] == 1                                                            # an up-to-date entry is left alone
