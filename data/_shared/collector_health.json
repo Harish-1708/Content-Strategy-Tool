@@ -745,8 +745,8 @@
   },
   "ai:openrouter|gateway": {
    "acceptance": null,
-   "consecutive_failures": 3,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 1,
    "history": [
     {
      "at": "2026-11-10T09:13:15Z",
@@ -782,6 +782,13 @@
      "items": 0,
      "ms": 0,
      "ok": null
+    },
+    {
+     "at": "2026-11-11T15:50:12Z",
+     "code": "",
+     "items": 1,
+     "ms": 1869,
+     "ok": true
     }
    ],
    "last_error": {
@@ -789,7 +796,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: openrouter/qwen/qwen3-next-80b-a3b-instruct:free key1: model_not_found. Last error: OpenRouter API erro"
    },
-   "last_success": "",
+   "last_success": "2026-11-11T15:50:12Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:openrouter",
