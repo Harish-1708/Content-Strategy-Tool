@@ -179,7 +179,7 @@ class HealthLedger:
                 and acc.get("route_hash") == self._hash_for(source, route))
 
     def status(self, source, route, now):
-        """planned, disabled, paused, unverified, degraded or healthy."""
+        """planned, disabled, paused, cannot run here, unverified, degraded or healthy."""
         src = self.registry.source(source)
         rt = self.registry.route(source, route)
         if src.status == "planned":
@@ -193,6 +193,8 @@ class HealthLedger:
         age = age_days(acc.get("at"), now) if acc else None
         fresh = (age is not None and age <= self.registry.acceptance_max_age_days
                  and acc.get("route_hash") == self._hash_for(source, route))
+        if cannot_run_here(source, route) and not (fresh and acc.get("passed")):
+            return "cannot run here"                    # it needs OpenCLI and a logged-in browser on a machine the owner controls: it can never be proved on a hosted runner, so it is not "unproven"
         if not fresh:
             return "unverified"
         if not acc.get("passed") or entry["state"] == "degraded":
@@ -231,9 +233,25 @@ class HealthLedger:
                     "acceptance_items": acc.get("items", "") if acc else "",
                     "version": acc.get("version", "") if acc else "",
                     "route_hash": self._hash_for(src.id, rt.name),
-                    "limits": "; ".join(src.limitations[:2]) + (f" | {rt.note}" if rt.note else ""),
+                    "limits": "; ".join(src.limitations[:2]) + (f" | {rt.note}" if rt.note else "") + (f" | {NEEDS_YOUR_MACHINE_NOTE}" if cannot_run_here(src.id, rt.name) else ""),
                 })
         return out
+
+
+# Routes that run only through OpenCLI and a browser logged in to the site: on a machine without OpenCLI (a GitHub-hosted runner) they cannot be run or verified at all.
+NEEDS_YOUR_MACHINE = frozenset({("agent_reach_research", c) for c in ("instagram", "reddit", "twitter", "facebook", "linkedin", "xiaohongshu", "boss")}
+                               | {("instagram", "agent_reach"), ("reddit", "agent_reach"), ("web_search", "agent_reach_reddit")})
+NEEDS_YOUR_MACHINE_NOTE = "needs OpenCLI and a browser logged in to the site, on a machine you control; it cannot run or be verified on a GitHub-hosted runner"
+
+
+def cannot_run_here(source, route, environ=None, which=None):
+    """True for a route that needs OpenCLI when OpenCLI is not installed on this machine."""
+    if (source, route) not in NEEDS_YOUR_MACHINE:
+        return False
+    import os
+    import shutil
+    env = os.environ if environ is None else environ
+    return not (which or shutil.which)(env.get("OPENCLI_BIN", "opencli"))
 
 
 def format_report(rows):
@@ -249,7 +267,7 @@ def format_report(rows):
             extra.append(f"last error {r['error_code']}")
         if r["acceptance_result"]:
             extra.append(f"acceptance {r['acceptance_result']} {r['latest_acceptance'][:10]}")
-        lines.append(f"  {r['source'] + ' / ' + r['route']:<34} {r['status']:<11}" + ("; " + "; ".join(extra) if extra else ""))
+        lines.append(f"  {r['source'] + ' / ' + r['route']:<34} {r['status']:<16}" + ("; " + "; ".join(extra) if extra else ""))
     return "\n".join(lines)
 
 
