@@ -117,14 +117,14 @@
     "by_lane": {
      "canary": {
       "cost_usd": 0.0,
-      "requests": 1,
+      "requests": 2,
       "tokens": 0
      }
     },
     "cost_usd": 0.0,
-    "failures": 1,
+    "failures": 2,
     "latency_ms": 0,
-    "requests": 1,
+    "requests": 2,
     "tokens_in": 0,
     "tokens_out": 0
    },

@@ -305,7 +305,7 @@
   },
   "ai:github|gateway": {
    "acceptance": null,
-   "consecutive_failures": 18,
+   "consecutive_failures": 19,
    "consecutive_successes": 0,
    "history": [
     {
@@ -433,12 +433,19 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-11T11:06:25Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-11T04:24:24Z",
+    "at": "2026-11-11T11:06:25Z",
     "code": "UPSTREAM_BROKEN",
-    "message": "the provider answered 200 with something that is not JSON (text/plain): 'OK\\r\\n' (API version 2022-11-28); earlier: API version 2026-03-10: the provider answered 200 with something that is not JSON (text/plain): 'OK\\r\\n'"
+    "message": "the provider answered 200 with something that is not JSON (text/plain): 'OK\\r\\n' (API version 2022-11-28 with Accept application/json); earlier: API version 2026-03-10: the provider answered 200 with something that is not JSON (text/plain): 'OK\\r\\n'; API version 2022-11-28: the provider answered 200"
    },
    "last_success": "",
    "pause": null,
