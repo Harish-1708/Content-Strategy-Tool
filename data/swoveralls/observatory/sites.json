@@ -1,6 +1,30 @@
 {
  "sites": [
   {
+   "domain": "emmafy.com",
+   "id": "emmafy-com",
+   "kind": "store",
+   "name": "Emmafy",
+   "origin": "discovery",
+   "request_controls": "browser; session; TLS impersonation; canvas change; WebRTC block; cursor simulation; challenge solving; no images or fonts"
+  },
+  {
+   "domain": "freethesheep.com",
+   "id": "freethesheep-com",
+   "kind": "store",
+   "name": "Free the Sheep",
+   "origin": "discovery",
+   "request_controls": "browser; session; TLS impersonation; canvas change; WebRTC block; cursor simulation; challenge solving; no images or fonts"
+  },
+  {
+   "domain": "kayarize.com",
+   "id": "kayarize-com",
+   "kind": "store",
+   "name": "Kayarize",
+   "origin": "discovery",
+   "request_controls": "browser; session; TLS impersonation; canvas change; WebRTC block; cursor simulation; challenge solving; no images or fonts"
+  },
+  {
    "domain": "madepants.com",
    "id": "madepants-com",
    "kind": "store",
@@ -17,5 +41,5 @@
    "request_controls": "browser; session; TLS impersonation; canvas change; WebRTC block; cursor simulation; challenge solving; no images or fonts"
   }
  ],
- "updated_at": "2026-11-10T10:02:35Z"
+ "updated_at": "2026-11-11T04:40:42Z"
 }
