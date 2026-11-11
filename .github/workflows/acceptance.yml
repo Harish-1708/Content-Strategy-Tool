@@ -124,6 +124,7 @@ jobs:
           OBSERVATORY_CONTACT: ${{ secrets.OBSERVATORY_CONTACT }}           # the contact address the competitor, Agent-Reach and Reddit checks put in their requests; without it they skip
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}                 # optional: empty while you have not added Reddit's API credentials, and the Reddit API check then skips as before
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          GITHUB_TOKEN: ${{ github.token }}                  # lifts GitHub's anonymous search limit for the Agent-Reach GitHub check (the job's own token, read-only)
         run: |
           set +e
           args=()
