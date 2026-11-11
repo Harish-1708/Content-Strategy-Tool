@@ -99,17 +99,22 @@ class GatewayClient:
                           latency_ms=ms, model=str(body.get("model") or route["model"]))
 
 
-class DirectClient:
-    """A provider with an OpenAI-style endpoint called straight from here (GitHub Models). The token is sent as a header and never appears in a message or a result.
+USER_AGENT = "KelsonResearchBot/1.0"
 
-    `api_versions` are tried in order (GitHub documents a dated API version header): an answer that is not usable JSON or a redirect moves on to the next version, and if none works the failure says what
-    each one returned. A redirect is never followed behind the scenes; a 307/308 to the same https host is followed once, anything else is reported with where it pointed."""
+
+class DirectClient:
+    """A provider with an OpenAI-style endpoint called straight from here (GitHub Models, OpenRouter). The token is sent as a header and never appears in a message or a result.
+
+    For GitHub Models the request is tried with each documented API version and then with a plain JSON Accept header; an answer that is not usable JSON or a redirect moves on to the next variant, and if none
+    works the failure says what each returned. A redirect is never followed behind the scenes; a 307/308 to the same https host is followed once, anything else is reported with where it pointed."""
 
     def __init__(self, base_url, token, http=None, clock=time.monotonic, api_versions=("2022-11-28",)):
+        from urllib.parse import urlsplit
         if not str(base_url).startswith("https://"):
             raise ValueError("a direct provider is only reached over https")
         self.base_url, self.token, self.http, self.clock = str(base_url).rstrip("/"), token, http or default_http, clock
         self.api_versions = tuple(str(v) for v in (api_versions or ("2022-11-28",)))
+        self.github = urlsplit(self.base_url).netloc.lower().endswith("github.ai")
 
     def _clean(self, text):
         return str(text).replace(self.token, "***") if self.token else str(text)
@@ -118,9 +123,24 @@ class DirectClient:
         from urllib.parse import urlsplit
         return str(url).startswith("https://") and urlsplit(str(url)).netloc.lower() == urlsplit(self.base_url).netloc.lower()
 
-    def _attempt(self, route, messages, max_tokens, timeout, version):
-        headers = {"Authorization": "Bearer " + self.token, "Content-Type": "application/json", "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": version}
-        body = {"model": route["model"], "messages": messages, "max_tokens": max_tokens, "temperature": 0}
+    def _variants(self):
+        """(api version, Accept header) pairs, in the order they are tried."""
+        if not self.github:
+            return [(None, "application/json")]
+        return [(v, "application/vnd.github+json") for v in self.api_versions] + [(self.api_versions[-1], "application/json")]
+
+    def _headers(self, version, accept):
+        headers = {"Authorization": "Bearer " + self.token, "Content-Type": "application/json", "Accept": accept, "User-Agent": USER_AGENT}
+        if version:
+            headers["X-GitHub-Api-Version"] = version
+        return headers
+
+    def _body(self, route, messages, max_tokens):
+        return {"model": route["model"], "messages": messages, "max_tokens": max_tokens, "temperature": 0}
+
+    def _attempt(self, route, messages, max_tokens, timeout, version, accept):
+        headers = self._headers(version, accept)
+        body = self._body(route, messages, max_tokens)
         url = self.base_url + "/chat/completions"
         t0 = self.clock()
         try:
@@ -145,9 +165,11 @@ class DirectClient:
             raise Failure(contract.RATE_LIMITED, text_error or f"the provider answered {status}: its free limit was reached", retry_after=int(retry) if str(retry).isdigit() else None)
         if status in (400, 413, 422):
             raise Failure(contract.BAD_INPUT, text_error or "the provider refused the request (often: more than its per-request token limit)")
+        if status == 404 and "free" in text_error.lower():
+            raise Failure(contract.UPSTREAM_BROKEN, "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). " + text_error)
         if status != 200:
             raise Failure(contract.UPSTREAM_BROKEN, text_error or f"the provider answered {status}")
-        if isinstance(answer, dict) and "_not_json" in answer:                 # what GitHub Models (or any direct provider) really sent back, with the token hidden
+        if isinstance(answer, dict) and "_not_json" in answer:                 # what the provider really sent back, with the token hidden
             raise Failure(contract.UPSTREAM_BROKEN, self._clean(f"the provider answered {status} with something that is not JSON ({answer.get('_content_type') or 'no content type'}): {answer['_not_json'][:200]!r}"))
         try:
             choice = answer["choices"][0]["message"]["content"]
@@ -159,16 +181,52 @@ class DirectClient:
 
     def complete(self, route, system, prompt, max_tokens, timeout=90, expect_platform=None, lane=None):
         messages = ([{"role": "system", "content": system}] if system else []) + [{"role": "user", "content": prompt}]
-        tried = []
-        for version in self.api_versions:
+        tried, variants = [], self._variants()
+        for n, (version, accept) in enumerate(variants):
+            label = (f"API version {version}" + ("" if accept.startswith("application/vnd.github") else f" with Accept {accept}")) if version else "this request"
             try:
-                return self._attempt(route, messages, max_tokens, timeout, version)
+                return self._attempt(route, messages, max_tokens, timeout, version, accept)
             except Failure as exc:
-                if exc.code != contract.UPSTREAM_BROKEN or version == self.api_versions[-1]:         # only an unusable answer is worth another API version; a refusal or a limit is final
+                if exc.code != contract.UPSTREAM_BROKEN or n == len(variants) - 1:         # only an unusable answer is worth another variant; a refusal or a limit is final
                     if tried:
-                        raise Failure(exc.code, f"{exc} (API version {version}); earlier: " + "; ".join(tried)) from None
+                        raise Failure(exc.code, f"{exc} ({label}); earlier: " + "; ".join(tried)) from None
                     raise
-                tried.append(f"API version {version}: {exc}"[:260])
+                tried.append(f"{label}: {exc}"[:260])
+
+
+class OpenRouterClient(DirectClient):
+    """OpenRouter's free tier, called directly. Free models are added and withdrawn every few days, so a fixed model name keeps going stale (both gpt-oss-120b:free and the replacements were withdrawn
+    within days). Before the first call it reads OpenRouter's public model list and asks for the models that are free today, newest and largest first, with OpenRouter's own free router as the last
+    choice; OpenRouter itself moves on to the next one if one is unavailable. Nothing paid is ever requested: only models whose prompt and completion prices are both zero."""
+
+    ROUTER = "openrouter/free"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._free = None
+
+    def free_models(self, timeout=20):
+        if self._free is not None:
+            return self._free
+        found = []
+        try:
+            status, data, _ = self.http("GET", self.base_url + "/models", headers={"Accept": "application/json", "User-Agent": USER_AGENT}, body=None, timeout=timeout)
+            for m in (data.get("data") if status == 200 and isinstance(data, dict) else None) or []:
+                price = m.get("pricing") or {}
+                modalities = (m.get("architecture") or {}).get("output_modalities") or ["text"]
+                if str(m.get("id", "")).endswith(":free") and str(price.get("prompt", "1")) in ("0", "0.0") and str(price.get("completion", "1")) in ("0", "0.0") and "text" in modalities:
+                    found.append((int(m.get("context_length") or 0), str(m["id"])))
+        except Exception:                                                  # the list is a convenience: without it the free router is still asked
+            found = []
+        self._free = [mid for _, mid in sorted(found, reverse=True)[:3]]
+        return self._free
+
+    def _body(self, route, messages, max_tokens):
+        body = super()._body(route, messages, max_tokens)
+        wanted = route["model"]
+        chain = ([] if wanted == self.ROUTER else [wanted]) + [m for m in self.free_models() if m != wanted] + [self.ROUTER]
+        body["model"], body["models"] = chain[0], chain
+        return body
 
 
 class AnthropicClient:
