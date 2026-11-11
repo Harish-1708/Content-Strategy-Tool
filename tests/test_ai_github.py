@@ -42,7 +42,7 @@ def test_other_direct_mistakes_are_refused(tmp_path):
 
 def test_github_models_is_a_free_direct_provider_with_the_owners_recorded_decision():
     p = R.load_registry(ROOT / "ai_providers.yaml").provider("github")
-    assert p.enabled and p.direct == {"base_url": "https://models.github.ai/inference", "api_versions": ["2026-03-10", "2022-11-28"]} and not p.paid and p.credential_env == ("GITHUB_MODELS_TOKEN", "GITHUB_TOKEN")
+    assert p.enabled and p.direct == {"base_url": "https://models.github.ai/inference", "api_versions": ["2026-03-10", "2022-11-28"]} and not p.paid and p.credential_env == ("GH_MODELS_TOKEN", "GITHUB_TOKEN")
     assert p.approved_classes == ("public", "internal") and p.override["approved_by"] == "Harish" and p.override["date"] == "2026-11-03"
     assert [m.id for m in p.models if m.approved] == ["openai/gpt-4.1-mini", "meta/Llama-3.3-70B-Instruct"]      # only the small-model tier, whose free limits the provider limits describe
     assert p.limits == {"requests_per_day": 150, "requests_per_minute": 15} and "prototyping" in p.terms["business_use"] and "must stay off" in p.terms["business_use"]
@@ -212,12 +212,12 @@ def test_a_live_run_makes_each_providers_model_its_own_group_and_a_gateway_that_
 
 def test_the_models_token_is_used_before_the_jobs_own_token_and_either_alone_is_enough(tmp_path):
     reg = R.load_registry(ROOT / "ai_providers.yaml")
-    both, _ = CM.live_clients(reg, {"GITHUB_MODELS_TOKEN": "ghp_" + "M" * 36, "GITHUB_TOKEN": "ghs_" + "J" * 36}, None, "/tmp", [])
+    both, _ = CM.live_clients(reg, {"GH_MODELS_TOKEN": "ghp_" + "M" * 36, "GITHUB_TOKEN": "ghs_" + "J" * 36}, None, "/tmp", [])
     assert both["github"].token == "ghp_" + "M" * 36
     only_job, _ = CM.live_clients(reg, {"GITHUB_TOKEN": "ghs_" + "J" * 36}, None, "/tmp", [])
     assert only_job["github"].token == "ghs_" + "J" * 36
-    only_models, _ = CM.live_clients(reg, {"GITHUB_MODELS_TOKEN": "ghp_" + "M" * 36}, None, "/tmp", [])
+    only_models, _ = CM.live_clients(reg, {"GH_MODELS_TOKEN": "ghp_" + "M" * 36}, None, "/tmp", [])
     assert only_models["github"].token == "ghp_" + "M" * 36
     notes = []
     none, _ = CM.live_clients(reg, {}, None, "/tmp", notes)
-    assert "github" not in none and any(n.startswith("SKIPPED: github: no credential") and "GITHUB_MODELS_TOKEN, GITHUB_TOKEN" in n for n in notes)
+    assert "github" not in none and any(n.startswith("SKIPPED: github: no credential") and "GH_MODELS_TOKEN, GITHUB_TOKEN" in n for n in notes)
