@@ -567,7 +567,7 @@ def test_the_openrouter_client_asks_for_the_models_that_are_free_today_and_the_f
     listing, chat = http.calls
     assert listing["method"] == "GET" and listing["url"] == OR + "/models"
     assert chat["url"] == OR + "/chat/completions" and chat["headers"]["Accept"] == "application/json" and "X-GitHub-Api-Version" not in chat["headers"]
-    assert chat["body"]["models"] == ["big/free-model:free", "mid/free-model:free", "small/free-model:free", "openrouter/free"] and chat["body"]["model"] == "big/free-model:free"
+    assert chat["body"]["models"] == ["big/free-model:free", "mid/free-model:free", "openrouter/free"] and chat["body"]["model"] == "big/free-model:free"      # three at most: OpenRouter refuses a longer list
     assert not [m for m in chat["body"]["models"] if m in ("paid/model", "half/free:free", "image/maker:free", "zero/price-without-the-free-suffix")]       # priced, half-priced, image and not-marked-free models are never asked for
     assert len(http.calls) == 2
 
@@ -586,7 +586,7 @@ def test_the_openrouter_client_reads_the_free_list_once_and_asks_the_router_alon
     assert http.calls[1]["body"]["models"] == ["openrouter/free"]
     http = Http(OR_MODELS, GH_OK)
     C.OpenRouterClient(OR, "sk-or-KEY12345", http).complete({**OR_ROUTE, "model": "big/free-model:free"}, "", "hi", 10)
-    assert http.calls[1]["body"]["models"] == ["big/free-model:free", "mid/free-model:free", "small/free-model:free", "openrouter/free"]   # a named model leads, the rest follow
+    assert http.calls[1]["body"]["models"] == ["big/free-model:free", "mid/free-model:free", "openrouter/free"]   # a named model leads, one more follows, the free router is last
 
 
 def test_an_openrouter_model_withdrawn_from_free_use_is_reported_as_gone_not_as_a_key_problem():
@@ -602,3 +602,30 @@ def test_the_live_run_builds_the_openrouter_client_for_the_direct_provider_and_t
     reg = R.load_registry(ROOT / "ai_providers.yaml")
     clients, _ = CM.live_clients(reg, {"GITHUB_TOKEN": "ghp_" + "A" * 36, "OPENROUTER_API_KEY": "sk-or-" + "b" * 30}, None, "/tmp", [])
     assert type(clients["openrouter"]) is C.OpenRouterClient and type(clients["github"]) is C.DirectClient and clients["openrouter"].github is False and clients["github"].github is True
+
+
+def test_openrouter_is_never_sent_more_than_three_models_whatever_the_list_holds_and_the_router_is_always_last():
+    many = (200, {"data": [{"id": f"vendor/m{i}:free", "context_length": 1000 + i, "pricing": {"prompt": "0", "completion": "0"}} for i in range(25)]}, {})
+    listing = C.OpenRouterClient(OR, "sk-or-KEY12345", Http(many)).free_models()
+    assert listing == ["vendor/m24:free", "vendor/m23:free", "vendor/m22:free"]                           # the three largest free models, largest first, out of 25
+    for model in ("openrouter/free", "vendor/m3:free", "vendor/not-in-the-list:free"):
+        http = Http(many, GH_OK)
+        C.OpenRouterClient(OR, "sk-or-KEY12345", http).complete({**OR_ROUTE, "model": model}, "", "hi", 10)
+        listed = http.calls[1]["body"]["models"]
+        assert len(listed) <= C.OpenRouterClient.MAX_MODELS == 3 and listed[-1] == "openrouter/free" and listed[0] == http.calls[1]["body"]["model"] and len(set(listed)) == len(listed)
+        assert (listed[0] == model) == (model != "openrouter/free")                                       # a named model leads; for the router, the largest free model leads
+
+
+def test_a_github_models_answer_of_plain_ok_on_every_variant_says_it_is_not_a_models_reply_and_what_to_try():
+    http = Http(GH_TEXT)
+    with pytest.raises(Failure) as seen:
+        C.DirectClient(GH, "ghp_TOKEN12345", http, api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
+    text = str(seen.value)
+    assert "is not an answer from the GitHub Models service" in text and "GITHUB_MODELS_TOKEN" in text and "Models: read" in text and "ghp_TOKEN12345" not in text and len(http.calls) == 3
+    other = (200, {"_not_json": "<html>sign in</html>", "_content_type": "text/html"}, {})
+    with pytest.raises(Failure) as seen:
+        C.DirectClient(GH, "ghp_TOKEN12345", Http(other), api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
+    assert "GITHUB_MODELS_TOKEN" not in str(seen.value)                                                  # the hint is for the plain OK only
+    with pytest.raises(Failure) as seen:
+        C.DirectClient(GH, "ghp_TOKEN12345", Http(other, other, GH_TEXT), api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
+    assert "GITHUB_MODELS_TOKEN" not in str(seen.value) and "(text/plain): 'OK'" in str(seen.value)                    # not when the variants disagree, even though the last one was a plain OK
