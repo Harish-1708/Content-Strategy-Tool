@@ -51,7 +51,7 @@ def test_the_scrapling_rows_use_only_statuses_the_code_supports_and_the_crawl_ro
     assert challenge[4].startswith("On") and "kept ON by the owner" in challenge[5] and "services.scrapling.defaults.solve_challenges" in challenge[5]
 
 
-@pytest.mark.parametrize("phrase", ["107 permission switches", "gateway_first", "`auto`", "crawl.max_pages", "api_approval"])
+@pytest.mark.parametrize("phrase", ["106 permission switches", "gateway_first", "`auto`", "crawl.max_pages", "api_approval"])
 def test_the_defaults_section_states_the_defaults_that_the_code_has(phrase):
     assert phrase in DOC
 
