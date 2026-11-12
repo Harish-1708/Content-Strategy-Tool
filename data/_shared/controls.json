@@ -1,6 +1,6 @@
 {
  "history": [],
- "updated_at": "2026-11-11T19:35:42Z",
+ "updated_at": "2026-11-12T04:23:51Z",
  "values": {},
  "written": {
   "defi_snacks": {
@@ -35,7 +35,6 @@
    "services.agent_reach.use_for.social_discovery": "on",
    "services.agent_reach.use_for.youtube_research": "on",
    "services.ai_gateway.channels.cloudflare": "on",
-   "services.ai_gateway.channels.github": "on",
    "services.ai_gateway.channels.google": "on",
    "services.ai_gateway.channels.groq": "on",
    "services.ai_gateway.channels.mistral": "on",
@@ -212,7 +211,6 @@
    "services.agent_reach.use_for.social_discovery": "on",
    "services.agent_reach.use_for.youtube_research": "on",
    "services.ai_gateway.channels.cloudflare": "on",
-   "services.ai_gateway.channels.github": "on",
    "services.ai_gateway.channels.google": "on",
    "services.ai_gateway.channels.groq": "on",
    "services.ai_gateway.channels.mistral": "on",
@@ -389,7 +387,6 @@
    "services.agent_reach.use_for.social_discovery": "on",
    "services.agent_reach.use_for.youtube_research": "on",
    "services.ai_gateway.channels.cloudflare": "on",
-   "services.ai_gateway.channels.github": "on",
    "services.ai_gateway.channels.google": "on",
    "services.ai_gateway.channels.groq": "on",
    "services.ai_gateway.channels.mistral": "on",
