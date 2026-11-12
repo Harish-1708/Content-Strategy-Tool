@@ -1699,16 +1699,17 @@ def test_every_external_free_provider_has_its_own_owner_switch_that_removes_only
     ledger = HLTH.HealthLedger.load(env.store, SRCS.load_sources(ROOT / "sources.yaml"))
     kw = dict(providers_config=str(ROOT / "ai_providers.yaml"), lanes_config=str(ROOT / "ai_lanes.yaml"), gateway_dir=str(env.tmp / "no-gateway"), workdir=str(env.tmp / "ai-work"))
     settings = SVC.load_settings(None, str(env.tmp))
-    router, *_rest, notes, finish = SVC.ai_stack(env.store, ledger, {"GITHUB_TOKEN": "tok"}, settings=settings, **kw)
-    assert "github" in router.clients and not [n for n in notes if "switched off by the owner" in n]
-    settings["services"]["ai_gateway"]["channels"]["github"] = False
-    router, *_rest, notes, finish = SVC.ai_stack(env.store, ledger, {"GITHUB_TOKEN": "tok"}, settings=settings, **kw)
-    assert "github" not in router.clients and any(n.startswith("SKIPPED: github: switched off by the owner") and "services.ai_gateway.channels.github" in n for n in notes)
-    settings["services"]["ai_gateway"]["channels"]["github"] = True
-    router, *_rest, notes, finish = SVC.ai_stack(env.store, ledger, {"GITHUB_TOKEN": "tok"}, settings=settings, **kw)
-    assert "github" in router.clients                                                                  # turning it back on restores it
-    router, *_rest, notes, finish = SVC.ai_stack(env.store, ledger, {"GITHUB_TOKEN": "tok", "ANTHROPIC_API_KEY": "k"}, settings={**settings, "services": {**settings["services"], "ai_gateway": {**settings["services"]["ai_gateway"], "channels": {p: False for p in enabled}}}}, **kw)
-    assert "claude" in router.clients and "github" not in router.clients                               # every free provider off: Claude is still there
+    router, *_rest, notes, finish = SVC.ai_stack(env.store, ledger, {"OPENROUTER_API_KEY": "tok", "GITHUB_TOKEN": "tok", "GH_MODELS_TOKEN": "tok"}, settings=settings, **kw)
+    assert "openrouter" in router.clients and "github" not in router.clients and not [n for n in notes if "switched off by the owner" in n]          # the retired provider is not a client whatever secrets exist
+    assert "github" not in settings["services"]["ai_gateway"]["channels"]                                          # and has no owner switch
+    settings["services"]["ai_gateway"]["channels"]["openrouter"] = False
+    router, *_rest, notes, finish = SVC.ai_stack(env.store, ledger, {"OPENROUTER_API_KEY": "tok"}, settings=settings, **kw)
+    assert "openrouter" not in router.clients and any(n.startswith("SKIPPED: openrouter: switched off by the owner") and "services.ai_gateway.channels.openrouter" in n for n in notes)
+    settings["services"]["ai_gateway"]["channels"]["openrouter"] = True
+    router, *_rest, notes, finish = SVC.ai_stack(env.store, ledger, {"OPENROUTER_API_KEY": "tok"}, settings=settings, **kw)
+    assert "openrouter" in router.clients                                                                  # turning it back on restores it
+    router, *_rest, notes, finish = SVC.ai_stack(env.store, ledger, {"OPENROUTER_API_KEY": "tok", "ANTHROPIC_API_KEY": "k"}, settings={**settings, "services": {**settings["services"], "ai_gateway": {**settings["services"]["ai_gateway"], "channels": {p: False for p in enabled}}}}, **kw)
+    assert "claude" in router.clients and "openrouter" not in router.clients                               # every free provider off: Claude is still there
 
 
 def test_the_crawl_command_passes_sitemap_resume_and_extract_and_the_data_folder_and_rejects_a_malformed_extract(env, monkeypatch):
