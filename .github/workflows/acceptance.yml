@@ -159,7 +159,7 @@ jobs:
           if [ -n "$INSTAGRAM_SESSION_B64$X_SESSION_B64$TIKTOK_SESSION_B64$REDDIT_SESSION_B64$FACEBOOK_SESSION_B64$LINKEDIN_SESSION_B64$XIAOHONGSHU_SESSION_B64$BOSS_SESSION_B64" ]; then
             python -m venv "$RUNNER_TEMP/scrapling-env"
             "$RUNNER_TEMP/scrapling-env/bin/pip" install -q -r requirements-scrapling.txt
-            "$RUNNER_TEMP/scrapling-env/bin/python" -m playwright install --with-deps chromium
+            "$RUNNER_TEMP/scrapling-env/bin/python" -m patchright install --with-deps chromium
             export SCRAPLING_PYTHON="$RUNNER_TEMP/scrapling-env/bin/python"
             python -m contentintel observatory sessions --all --what check 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
             code=${PIPESTATUS[0]}
