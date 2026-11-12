@@ -137,6 +137,39 @@ jobs:
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           exit "$code"
 
+      - name: Stored login sessions (live, each platform on its own)
+        id: sessions
+        if: inputs.plan != true
+        continue-on-error: true
+        shell: bash
+        env:
+          OBSERVATORY_CONTACT: ${{ secrets.OBSERVATORY_CONTACT }}
+          # DUMMY accounts only, captured by hand (docs/platform/session-capture-guide.md). A platform without its secret is simply 'not set up': it is not a failure.
+          INSTAGRAM_SESSION_B64: ${{ secrets.INSTAGRAM_SESSION_B64 }}
+          X_SESSION_B64: ${{ secrets.X_SESSION_B64 }}
+          TIKTOK_SESSION_B64: ${{ secrets.TIKTOK_SESSION_B64 }}
+          REDDIT_SESSION_B64: ${{ secrets.REDDIT_SESSION_B64 }}
+          FACEBOOK_SESSION_B64: ${{ secrets.FACEBOOK_SESSION_B64 }}
+          LINKEDIN_SESSION_B64: ${{ secrets.LINKEDIN_SESSION_B64 }}
+          XIAOHONGSHU_SESSION_B64: ${{ secrets.XIAOHONGSHU_SESSION_B64 }}
+          BOSS_SESSION_B64: ${{ secrets.BOSS_SESSION_B64 }}
+        run: |
+          set +e
+          { echo "### Stored login sessions"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$INSTAGRAM_SESSION_B64$X_SESSION_B64$TIKTOK_SESSION_B64$REDDIT_SESSION_B64$FACEBOOK_SESSION_B64$LINKEDIN_SESSION_B64$XIAOHONGSHU_SESSION_B64$BOSS_SESSION_B64" ]; then
+            python -m venv "$RUNNER_TEMP/scrapling-env"
+            "$RUNNER_TEMP/scrapling-env/bin/pip" install -q -r requirements-scrapling.txt
+            "$RUNNER_TEMP/scrapling-env/bin/python" -m playwright install --with-deps chromium
+            export SCRAPLING_PYTHON="$RUNNER_TEMP/scrapling-env/bin/python"
+            python -m contentintel observatory sessions --all --what check 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+            code=${PIPESTATUS[0]}
+          else
+            python -m contentintel observatory sessions --all --what list 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+            code=0
+          fi
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
       - name: Keep the pictures and page samples
         if: always()
         uses: actions/upload-artifact@v4
@@ -187,5 +220,5 @@ jobs:
           fi
 
       - name: Show the run as red when a route failed
-        if: steps.acceptance.outcome == 'failure' || steps.sheets.outcome == 'failure'
+        if: steps.acceptance.outcome == 'failure' || steps.sheets.outcome == 'failure' || steps.sessions.outcome == 'failure'
         run: exit 1
