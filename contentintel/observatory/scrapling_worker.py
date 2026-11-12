@@ -443,6 +443,7 @@ class Worker:
                 except Exception as exc:
                     if _browser_missing(exc):                                                       # no browser installed here: read the page over plain HTTP instead, and say so
                         out["browser_note"] = "no browser is installed here, so the page was read over plain HTTP"
+                        out["browser_error"] = _short_error(exc, [str(c["value"]) for c in kw.get("cookies", [])])       # what the browser library really said, so a wrong or missing browser is never hidden
                         adv = {**adv, "stealth": False}
                         continue
                     raise
@@ -532,6 +533,15 @@ class Worker:
             except Exception as exc:
                 out["adaptive_error"] = f"{exc.__class__.__name__}"
         return out
+
+
+def _short_error(exc, secrets=()):
+    """The first line of an error, 300 characters at most, with any cookie value hidden."""
+    text = " ".join(str(exc).split())
+    for value in secrets:
+        if len(value) >= 6:
+            text = text.replace(value, "***")
+    return text[:300]
 
 
 def _browser_missing(exc):
