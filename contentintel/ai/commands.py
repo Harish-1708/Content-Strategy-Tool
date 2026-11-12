@@ -103,7 +103,7 @@ def live_clients(registry, environ, gateway_dir, workdir, notes):
             token = next((environ[n].strip() for n in p.credential_env if environ.get(n, "").strip()), "")
             if token:
                 klass = cl.OpenRouterClient if str(p.direct["base_url"]).startswith("https://openrouter.ai") else cl.DirectClient
-                clients[p.id] = klass(p.direct["base_url"], token, api_versions=p.direct.get("api_versions") or ("2022-11-28",))
+                clients[p.id] = klass(p.direct["base_url"], token)
             else:
                 notes.append("SKIPPED: " + p.id + ": no credential in the environment (" + ", ".join(p.credential_env) + "), so it is not tried; add the secret or switch the provider off to remove this line")
     if "ANTHROPIC_API_KEY" in environ and environ["ANTHROPIC_API_KEY"].strip() and registry.providers["claude"].enabled:
@@ -155,12 +155,12 @@ def run_ai(args, store, health, now):
         return 1 if failed else 0
     registry, lanes = load_all(args)
     if action == "providers":
-        rows = [{"id": p.id, "on": "ON" if p.enabled else "off", "ceiling": p.effective_ceiling + ("*" if p.override else ""), "classes": ",".join(p.approved_classes) or "-",
+        rows = [{"id": p.id, "on": "RETIRED" if p.retired else ("ON" if p.enabled else "off"), "ceiling": p.effective_ceiling + ("*" if p.override else ""), "classes": ",".join(p.approved_classes) or "-",
                  "terms": p.terms.get("status", "?"), "models": f"{sum(1 for m in p.models if m.approved)}/{len(p.models)}", "exp": "exp" if p.experimental else ""}
-                for p in registry.providers.values() if args.all or p.enabled]
+                for p in registry.providers.values() if args.all or p.enabled or p.retired]
         print("AI providers (* = ceiling raised by a recorded owner decision; models = approved/listed):")
         print(_fmt_rows(rows, ("id", "on", "ceiling", "classes", "terms", "models", "exp")) if rows else "  none enabled")
-        print(f"  {len(registry.providers)} providers in the registry, {sum(1 for p in registry.providers.values() if p.enabled)} enabled")
+        print(f"  {len(registry.providers)} providers in the registry, {sum(1 for p in registry.providers.values() if p.enabled)} enabled, {sum(1 for p in registry.providers.values() if p.retired)} retired (kept as a record, never called)")
         return 0
     if action == "plan":
         dcl = args.data_class
@@ -259,26 +259,65 @@ def _check(args, registry, lanes, router, usage, review, health, store, now, mod
         for r in lane.chain:
             if (r["provider"], r["model"]) not in [(t["provider"], t["model"]) for t in targets] and (not only or r["provider"] in only):
                 targets.append(r)
+    outcome = {}                                    # provider -> {"ok": n, "failed": [codes], "skipped": [reasons]}
     for r in targets:
         res = router.run_route("canary", r, instructions="Reply with the single word OK.", now=now)
+        slot = outcome.setdefault(r["provider"], {"ok": 0, "failed": [], "skipped": []})
         if res["status"] == "ok":
             c = res["completion"]
+            slot["ok"] += 1
             rows.append(f"  {mode.upper():<5} ok        {r['provider']}/{r['model']}  {c.latency_ms} ms, {c.tokens_in}+{c.tokens_out} tokens")
         elif res["status"] == "skipped":
+            slot["skipped"].append(res["reason"])
             rows.append(f"  skipped   {r['provider']}/{r['model']}: {res['reason']}")
         else:
             code = res["reason"] and next((a["result"] for a in reversed(res["attempts"])), "UPSTREAM_BROKEN")
             kind = categorise(code if code in contract.CODES else contract.UPSTREAM_BROKEN)
             app_fail += kind == "APPLICATION"
             ext_fail += kind == "EXTERNAL"
+            slot["failed"].append(code)
             rows.append(f"  {kind:<11} {r['provider']}/{r['model']}: {code}: {res['reason']}")
     print("\n".join(rows) if rows else "  nothing to check")
     ok = sum(1 for x in rows if x.split()[1] == "ok")
     print(f"  {ok} answered ({mode}), {app_fail} application problem(s), {ext_fail} external provider problem(s), {sum(1 for x in rows if x.startswith('  skipped'))} skipped (not enabled or no credential)")
+    print(provider_status_block(registry, outcome, mode, only, notes))
     if mode == "mock":
         print("  NOTE: a mock pass is not proof that any live provider works. Run with --live for that.")
     save_state(usage, review, health, store, mode)
     return 1 if app_fail or (args.strict and ext_fail) else 0
+
+
+def provider_status(provider, outcome, mode, only, switched_off):
+    """(label, detail) for one provider. LIVE only when a real call answered; a scripted stand-in is MOCK, never LIVE. RETIRED and DISABLED are never 'called', whatever else the run shows."""
+    if provider.retired:
+        return "RETIRED", f"{provider.label} was withdrawn by its provider on {provider.retired['date']}; never called"
+    if provider.id in switched_off or not provider.enabled:
+        return "DISABLED", "switched off by the owner"
+    if only and provider.id not in only:
+        return "SKIPPED", f"not in this run (only={','.join(sorted(only))})"
+    slot = outcome.get(provider.id)
+    if slot and slot["ok"]:
+        word = "LIVE" if mode == "live" else "MOCK"
+        return word, f"{slot['ok']} answered" + (f", {len(slot['failed'])} failed ({', '.join(sorted(set(slot['failed'])))})" if slot["failed"] else "") + ("" if mode == "live" else " (a scripted stand-in: not proof the provider works)")
+    if slot and slot["failed"]:
+        return "FAILED", ", ".join(sorted(set(slot["failed"]))) + " (the provider is enabled and was tried)"
+    if slot and slot["skipped"]:
+        return "SKIPPED", slot["skipped"][0]
+    return "SKIPPED", "nothing was tried"
+
+
+def provider_status_block(registry, outcome, mode, only, notes):
+    """The per-provider summary printed at the end of a check: which providers answered, which failed, which were skipped, which the owner switched off and which have been retired."""
+    switched_off = {n.split(":")[1].strip() for n in notes if n.startswith("SKIPPED:") and "switched off by the owner" in n}
+    shown = [p for p in registry.providers.values() if p.enabled or p.retired or p.id in switched_off]
+    order = {"LIVE": 0, "MOCK": 1, "FAILED": 2, "SKIPPED": 3, "DISABLED": 4, "RETIRED": 5}
+    rows = sorted(((provider_status(p, outcome, mode, only, switched_off), p.id) for p in shown), key=lambda x: (order[x[0][0]], x[1]))
+    counts = {}
+    for (label, _), _pid in rows:
+        counts[label] = counts.get(label, 0) + 1
+    lines = ["  Provider status (a green run does not mean a provider is live: read this list):"] + [f"    {label:<8} {pid:<12} {detail}" for (label, detail), pid in rows]
+    lines.append("    " + ", ".join(f"{counts.get(k, 0)} {k}" for k in ("LIVE", "MOCK", "FAILED", "SKIPPED", "DISABLED", "RETIRED") if counts.get(k) or k in ("LIVE", "FAILED", "RETIRED")))
+    return "\n".join(lines)
 
 
 def new_run_id():
