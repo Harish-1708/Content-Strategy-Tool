@@ -502,6 +502,9 @@ class Worker:
     def _read(self, resp, url, out, adv):
         body = bytes(resp.body or b"")
         html = body.decode("utf-8", errors="replace")
+        out["status"] = int(resp.status)
+        if self.job.get("return_html"):                                                    # only a stored-session check asks for the raw page: it judges logged-in markers that are not in the text
+            out["html"] = html[:300000]
         page = htmlx.parse_page(html, out.get("final_url", url), self.job.get("max_chars", 20000))
         if signals.looks_like_login_wall(body, page["title"]):
             out["error"] = {"code": "UPSTREAM_BROKEN", "message": f"{url} shows only a login page", "robots_path": False}
