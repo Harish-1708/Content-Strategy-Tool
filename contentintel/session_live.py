@@ -54,21 +54,25 @@ class SessionLedger:
             except (OSError, ValueError):
                 self.data = {}
 
-    def record(self, platform, state, reason, now):
+    def record(self, platform, state, reason, now, via="browser"):
         entry = self.data.setdefault(platform, {"state": "", "reason": "", "checked_at": "", "proved_on": ""})
         entry.update(state=state, reason=str(reason)[:300], checked_at=now)
         if state == ACCEPTED:
-            entry["proved_on"] = now
+            entry["proved_on"], entry["proved_via"] = now, via
         elif state in CLEARS_PROOF:
-            entry["proved_on"] = ""
+            entry["proved_on"], entry["proved_via"] = "", ""
 
     def proved_on(self, platform):
         return (self.data.get(platform) or {}).get("proved_on", "")
 
-    def proved(self, platform, now):
-        """True only when a live check passed within PROVED_DAYS and nothing since has voided it."""
+    def proved_via(self, platform):
+        return (self.data.get(platform) or {}).get("proved_via", "browser") if self.proved_on(platform) else ""
+
+    def proved(self, platform, now, via="browser"):
+        """True only when a live check passed, the way asked about, within PROVED_DAYS and nothing since has voided it. The fallback chain reads through the BROWSER, so a session that was only
+        proved through twscrape (a different route) is not proof for it."""
         then, here = _parse(self.proved_on(platform)), _parse(_now(now))
-        return bool(then and here and timedelta(0) <= here - then <= timedelta(days=PROVED_DAYS))
+        return bool(then and here and timedelta(0) <= here - then <= timedelta(days=PROVED_DAYS) and self.proved_via(platform) == via)
 
     def save(self):
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -112,6 +116,39 @@ def _worker_page(platform, url, settings, contact, python, environ, runner, *, w
     return results[0]
 
 
+def _evidence(platform, res, session, plain):
+    """What the page showed, from the worker's answer, with no secret: see sessions.page_evidence. Adds how it was fetched and the cookie NAMES sent and sent back."""
+    err = res.get("error") or {}
+    ev = S.page_evidence(platform, res.get("final_url") or "", res.get("html") or "", res.get("status") or 0, res.get("text") or "")
+    ev.update(fetched_with=res.get("fetched_with") or ("plain HTTP" if plain else "browser"), cookies_sent=sorted(session.cookie_jar()), cookies_back=list(res.get("cookie_names_back") or []),
+              worker_error=(f"{err.get('code')}: {err.get('message')}"[:300] if err else ""))
+    return ev
+
+
+TWSCRAPE_SCRIPT = Path(__file__).resolve().parent / "x_twscrape_check.py"
+
+
+def twscrape_layer(session, environ, runner=subprocess.run, timeout=150):
+    """The last resort for X when x.com shows the runner a bot-check: contentintel/x_twscrape_check.py in its own environment (TWSCRAPE_PYTHON). Returns {"state": accepted, rejected or unreachable,
+    "detail": why}. Nothing is installed or run when the environment is not there: that is 'unreachable' with the reason. The program is handed only this one session's cookies."""
+    python = (environ.get("TWSCRAPE_PYTHON") or "").strip()
+    if not python or not Path(python).exists():
+        return {"state": "unreachable", "detail": "the twscrape environment is not installed here (TWSCRAPE_PYTHON), so X's profile interface was not asked"}
+    env = {"X_SESSION_COOKIES": json.dumps(session.cookie_jar(), separators=(",", ":")), "TWS_TELEMETRY": "0", "DO_NOT_TRACK": "1", "PYTHONDONTWRITEBYTECODE": "1",
+           "PATH": environ.get("PATH", "/usr/bin:/bin"), "HOME": environ.get("HOME", "/tmp")}
+    try:
+        done = runner([python, str(TWSCRAPE_SCRIPT)], env=env, capture_output=True, text=True, timeout=timeout)
+    except (OSError, subprocess.SubprocessError) as exc:
+        return {"state": "unreachable", "detail": f"the twscrape check could not be run ({exc.__class__.__name__})"}
+    lines = [ln for ln in (done.stdout or "").splitlines() if ln.strip().startswith("{")]
+    try:
+        got = json.loads(lines[-1])
+        state, detail = str(got["state"]), str(got.get("detail", ""))[:300]
+    except (IndexError, ValueError, KeyError):
+        return {"state": "unreachable", "detail": f"the twscrape check gave no answer (exit {done.returncode})"}
+    return {"state": state if state in ("accepted", "rejected", "unreachable") else "unreachable", "detail": detail}
+
+
 def check_platform(platform, settings, contact, python, *, environ=None, runner=subprocess.run, now="", ledger=None, offline=False):
     """One platform's result as a dict: state (ACCEPTED, REJECTED, EXPIRED, BAD CAPTURE, CANNOT CHECK, UNCONFIRMED, NOT SET UP or OFF), why, expiry and the day it was last proved.
     `offline` makes no request (status only). Never raises."""
@@ -120,12 +157,12 @@ def check_platform(platform, settings, contact, python, *, environ=None, runner=
     spec = S.PLATFORMS[platform]
     row = {"platform": platform, "label": spec["label"], "secret": spec["secret"], "can": spec["can"], "lifetime": spec["lifetime"], "state": "", "reason": "", "expires_on": "", "days_left": "", "proved_on": ""}
 
-    def done(state, reason, record=True):
-        row.update(state=state, reason=reason)
+    def done(state, reason, record=True, via="browser"):
+        row.update(state=state, reason=reason, via=via)
         if ledger is not None:
             if record and not offline:
-                ledger.record(platform, state, reason, now)
-            row["proved_on"] = ledger.proved_on(platform)
+                ledger.record(platform, state, reason, now, via=via)
+            row["proved_on"], row["proved_via"] = ledger.proved_on(platform), ledger.proved_via(platform)
         return row
 
     on, why = switched_on(settings, platform)
@@ -150,14 +187,25 @@ def check_platform(platform, settings, contact, python, *, environ=None, runner=
     plain = bool(res.get("browser_note"))
     why_plain = f"the browser could not be used here ({res.get('browser_error') or 'no reason was given'})"
     err = res.get("error") or {}
+    row["evidence"] = _evidence(platform, res, session, plain)
     if err.get("code") == "PLATFORM_BLOCKED":
-        return done(BLOCKED, f"{spec['label']} showed a bot-check or challenge page to this runner, so the session itself could not be judged"
-                    + (f"; and {why_plain}" if plain else "") + ". This is the platform blocking the runner, not a bad session")
+        blocked = (f"{spec['label']} showed a bot-check or challenge page to this runner, so the session itself could not be judged"
+                   + (f"; and {why_plain}" if plain else "") + ". This is the platform blocking the runner, not a bad session")
+        if platform == "x":                                                              # the approved last resort: ask X's own profile interface, with the two cookies already stored
+            layered = twscrape_layer(session, environ, runner)
+            row["twscrape"] = layered
+            via = "checked through twscrape because x.com's web page showed the runner a challenge"
+            if layered["state"] == "accepted":
+                return done(ACCEPTED, f"{layered['detail']} ({via}; so the browser read of x.com is not proved)", via="twscrape")
+            if layered["state"] == "rejected":
+                return done(REJECTED, f"{layered['detail']} ({via})")
+            blocked += f". The last-resort twscrape check could not judge it either: {layered['detail']}"
+        return done(BLOCKED, blocked)
     if not html:
         if status in (401, 403):
             return done(REJECTED, f"the site answered {status}: either it refused the session or it blocked this runner; capture a new session, and if it repeats the platform blocks runners")
         return done(CANNOT_CHECK, f"the page could not be read ({err.get('code') or status or 'no answer'}): {err.get('message') or 'no page came back'}")
-    ok, reason = S.check_logged_in(platform, final, html, status or 200)
+    ok, reason = S.check_logged_in(platform, final, html, status or 200, text=res.get("text"))
     if ok:
         return done(ACCEPTED, "the platform's own page showed a logged-in state" + (f" (read over plain HTTP because {why_plain})" if plain else ""))
     if plain:
@@ -174,21 +222,51 @@ def check_all(settings, contact, python, *, platforms=None, environ=None, runner
     return rows
 
 
-def format_report(rows, offline=False):
-    """One line per platform and a count line; what ACCEPTED does and does not mean."""
+def evidence_lines(r):
+    """What the page showed, in a few indented lines (none when no page was loaded). An ACCEPTED platform gets one line; every other one gets the full evidence, because that is the one to diagnose."""
+    ev = r.get("evidence")
+    if not ev:
+        return []
+    shown = f"read with the {ev['fetched_with']}; HTTP {ev['status'] or 'no answer'}; landed on {ev['landed'] or 'no address'}; title '{ev['title']}'" if ev["title"] else \
+            f"read with the {ev['fetched_with']}; HTTP {ev['status'] or 'no answer'}; landed on {ev['landed'] or 'no address'}; no title"
+    found = ev["logged_in_found"]
+    markers = f"logged-in markers found: {', '.join(found)}" if found else f"logged-in markers found: none of {len(ev['logged_in_missing'])} ({', '.join(ev['logged_in_missing'])})"
+    if r["state"] == ACCEPTED:
+        return [f"      page: {shown}; {markers}"]
+    out_words = f"logged-out wording in the visible text: {', '.join(ev['logged_out_in_text']) or 'none'}" + (f"; only in the page's code (not counted): {', '.join(ev['logged_out_only_in_code'])}" if ev["logged_out_only_in_code"] else "")
+    lines = [f"      page: {shown}",
+             f"      cookies sent (names): {', '.join(ev['cookies_sent']) or 'none'}; the platform sent back (names): {', '.join(ev['cookies_back']) or 'none'}",
+             f"      {markers}; {out_words}; password field on the page: {'yes' if ev['password_field'] else 'no'}"
+             + (f"; login or challenge word in the address: {ev['login_word_in_address']}" if ev["login_word_in_address"] else "")]
+    if ev["text_starts"]:
+        lines.append(f"      visible text starts: '{ev['text_starts']}'")
+    if ev["worker_error"]:
+        lines.append(f"      the worker said: {ev['worker_error']}")
+    tw = r.get("twscrape")
+    if tw:
+        lines.append(f"      last-resort twscrape check: {tw['state']}: {tw['detail']}")
+    return lines
+
+
+def format_report(rows, offline=False, discovery=""):
+    """One line per platform and a count line; what ACCEPTED does and does not mean. Under each platform that was really checked, what its page showed."""
     width = max(len(r["label"]) for r in rows) if rows else 10
     head = "Stored login sessions: no request was made, each platform shows what is stored" if offline else "Stored login sessions: each platform is judged on its own, live"
     lines = [head + " (a missing secret is not a failure; an expired, refused or unusable one needs a new capture):"]
     for r in rows:
         left = "" if r["days_left"] == "" else (" (less than a day left)" if r["days_left"] == 0 else f" ({r['days_left']} day(s) left)")
         expiry = f"; expires {r['expires_on']}{left}" if r["expires_on"] else ""
-        proof = f"; last proved {r['proved_on'][:10]}" if r.get("proved_on") else ""
+        proof = f"; last proved {r['proved_on'][:10]}" + (f" (through {r['proved_via']}, not the browser)" if r.get("proved_via") == "twscrape" else "") if r.get("proved_on") else ""
         lines.append(f"  {r['label']:<{width}}  {r['state']:<12} {r['reason']}{expiry}{proof}")
+        if not offline:
+            lines.extend(evidence_lines(r))
     counts = {}
     for r in rows:
         counts[r["state"]] = counts.get(r["state"], 0) + 1
     order = [s for s in ("PRESENT", *ORDER) if counts.get(s)]
     lines.append("  " + ", ".join(f"{counts[s]} {s}" for s in order) if order else "  no platform")
+    if discovery:
+        lines.append(f"  If a session fails, a read falls back to discovery (the search layer, no login): {discovery}")
     if not offline:
         lines.append("  ACCEPTED means the platform's own page showed a logged-in state for the stored session from this runner. It does not mean every kind of read works: see each platform's limits in docs/platform/session-capture-guide.md.")
     return "\n".join(lines)
@@ -215,9 +293,55 @@ def _failure_from(res):
     return K.Failure(code, message)
 
 
-def read_page(platform, url, settings, contact, python, *, environ=None, runner=subprocess.run, now="", ledger=None, log=None):
+SEARCH_ORDER = ("exa", "serper_dev", "tavily", "serpapi", "exa_mcp")                 # the discovery layer's providers, in the order they are tried (the first one that has a key is asked)
+
+
+def discovery_providers(environ):
+    """[(name, provider)] for the search providers that have a key in `environ`, in SEARCH_ORDER."""
+    from . import providers as P
+    built = P.build_providers(environ)
+    return [(name, built[name]) for name in SEARCH_ORDER if name in built]
+
+
+def discovery_status(environ):
+    """One sentence for the log: whether the discovery fallback can run here, and through which provider."""
+    try:
+        names = [n for n, _ in discovery_providers(environ)]
+    except Exception:
+        names = []
+    return (f"available here, through {names[0]}" + (f" (then {', '.join(names[1:])})" if len(names) > 1 else "")) if names else \
+        "not available in this run: no search key (EXA_API_KEY, SERPER_API_KEY or TAVILY_API_KEY) is passed to it"
+
+
+def _query_for(url):
+    """The address as words a search engine understands: the site's name as it is, then the path's words."""
+    text = re.sub(r"^https?://(www\.)?", "", str(url).split("?")[0].split("#")[0].lower())
+    host, _, path = text.partition("/")
+    return " ".join([host, *re.sub(r"[/_\-.]+", " ", path).split()])[:120]
+
+
+def discovery_rows(url, environ, providers=None):
+    """The discovery fallback: ONE search about the address through the first search provider that has a key. These are titles and snippets from the search layer, not the page itself, and no login is used."""
+    from . import providers as P
+    found = providers if providers is not None else discovery_providers(environ)
+    if not found:
+        raise K.Failure(K.NEED_SETUP, "no search key is passed to this run (EXA_API_KEY, SERPER_API_KEY or TAVILY_API_KEY), so the discovery fallback has nothing to ask")
+    name, provider = found[0]
+    try:
+        results = provider.search(_query_for(url), kind="web", num=5)
+    except P.AuthError as exc:
+        raise K.Failure(K.NEED_SETUP, str(exc)) from None
+    except P.QuotaError as exc:
+        raise K.Failure(K.RATE_LIMITED, str(exc)) from None
+    except P.ProviderError as exc:
+        raise K.Failure(K.UPSTREAM_BROKEN, str(exc)) from None
+    return [{"url": r.url, "final_url": r.url, "title": r.title, "text": r.snippet or "", "chars": len(r.snippet or ""), "route": "discovery", "provider": name} for r in results if r.snippet or r.title]
+
+
+def read_page(platform, url, settings, contact, python, *, environ=None, runner=subprocess.run, now="", ledger=None, log=None, providers=None):
     """Read one address of the platform: the plain reader first, then the stored session (only on the platform's own hosts, only while the owner has it on and a live check passed in the last
-    PROVED_DAYS), then an honest skip. One attempt each, no retry loop. Returns the chain's result; its rows say which route answered."""
+    PROVED_DAYS), then discovery (the search layer: no login, snippets about the address rather than the page), then an honest skip. One attempt each, no retry loop. Returns the chain's result; its
+    rows say which route answered."""
     environ = os.environ if environ is None else environ
     now = _now(now)
     if platform not in S.PLATFORMS:
@@ -240,4 +364,7 @@ def read_page(platform, url, settings, contact, python, *, environ=None, runner=
 
     proved = ledger.proved(platform, now) if ledger is not None else False
     off = "" if on and proved else (why if not on else f"no live proof yet for {platform}: run the sessions check first (a session is only used after the platform accepted it in the last {PROVED_DAYS} days)")
-    return SC.run_chain(f"{platform} page", [SC.Step("primary", primary), SC.Step("session", session, enabled=on and proved, off_reason=off)], log=log)
+    def discovery():
+        return discovery_rows(url, environ, providers)
+
+    return SC.run_chain(f"{platform} page", [SC.Step("primary", primary), SC.Step("session", session, enabled=on and proved, off_reason=off), SC.Step("discovery", discovery)], log=log)
