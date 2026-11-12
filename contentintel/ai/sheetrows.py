@@ -29,7 +29,9 @@ def rows(registry, usage, health_state, now):
         resting = pause.get("until") if pause.get("until", "") > now else ""
         daily = p.limits.get("requests_per_day")
         note = []
-        if pid == "claude":
+        if p.retired:
+            note.append(f"RETIRED: {p.label} was withdrawn by its provider on {p.retired['date']}; it is never called (history only)")
+        elif pid == "claude":
             note.append(f"spent ${usage.spend(now):.2f} of ${registry.daily_usd:.2f} today and ${usage.spend(now, month=True):.2f} of ${registry.monthly_usd:.2f} this month; a call is refused before it is made if it would cross a cap")
         elif p.paid:
             note.append("paid provider: spending counts against the caps")
@@ -41,7 +43,7 @@ def rows(registry, usage, health_state, now):
             note.append("called directly, not through the gateway")
         if resting:
             note.append("resting: " + str(pause.get("message", ""))[:120])
-        out[pid] = {"provider": pid, "label": p.label, "status": "resting" if resting else ("ready" if p.enabled else "off"), "cost": "paid, capped" if p.paid else "free",
+        out[pid] = {"provider": pid, "label": p.label, "status": "retired" if p.retired else ("resting" if resting else ("ready" if p.enabled else "off")), "cost": "paid, capped" if p.paid else "free",
                     "data_classes": ", ".join(p.approved_classes) or "none", "approved_models": sum(1 for m in p.models if m.approved), "requests_today": today["requests"],
                     "daily_limit": daily, "left_today": (max(0, daily - today["requests"]) if daily is not None else None), "requests_this_month": req_m, "failures_this_month": fail_m,
                     "tokens_today": today["tokens_in"] + today["tokens_out"], "spend_this_month_usd": spend_m, "last_success": entry.get("last_success") or "",
