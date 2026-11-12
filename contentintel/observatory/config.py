@@ -87,6 +87,8 @@ register_service("connections", label="External connections (the repositories th
 register_service("connection_routes", label="External connections: which route first", purposes=(), routes={"purposes": tuple(_CONN.CONNECTIONS), "choices": _CONN.ROUTES, "default": "external_first"})
 register_service("connection_versions", label="External connections: which version", purposes=(), routes={"purposes": tuple(_CONN.CONNECTIONS), "choices": _CONN.VERSIONS, "default": "latest"})
 register_service("connection_secrets", label="External connections: secrets handed over", channels=tuple(_CONN.CONNECTIONS), purposes=())
+from .. import sessions as _SESS
+register_service("stored_sessions", label="Stored login sessions (a logged-in dummy account's cookies, captured by hand)", channels=tuple(_SESS.PLATFORMS), purposes=())
 register_service("page_readers", label="Page readers (built-in, Jina Reader, Scrapling)", routes={"purposes": "all", "choices": PAGE_ENGINES, "default": {**PAGE_ENGINE_DEFAULTS, "*": "auto"}})
 
 
