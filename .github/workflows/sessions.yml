@@ -1,0 +1,102 @@
+name: Stored login sessions
+
+# Check, one platform at a time, that a platform really accepts the login session you stored for it, or read one logged-in page of that platform's own site.
+# DUMMY accounts only, never a main account. A session is captured by hand (docs/platform/session-capture-guide.md) and pasted into a GitHub secret; nothing here logs in, solves a challenge or tries again.
+# Each platform gets its own line in the result: ACCEPTED, REJECTED, EXPIRED, BAD CAPTURE, CANNOT CHECK, UNCONFIRMED, NOT SET UP or OFF. A missing secret is not a failure; a session that was refused, has expired or is
+# unusable turns the run red, because it needs a new capture.
+
+on:
+  workflow_dispatch:
+    inputs:
+      what:
+        description: "check = a live check of each platform that has a stored session; list = what is stored (no request); read = one logged-in page (needs the platform and the address below)"
+        type: choice
+        options: [check, list, read]
+        default: check
+      platform:
+        description: "One platform, or all of them (each is judged on its own either way)"
+        type: choice
+        options: [all, x, instagram, tiktok, reddit, facebook, linkedin, xiaohongshu, boss]
+        default: all
+      url:
+        description: "For read only: the address, on that platform's own site (a session is never sent to another site)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalogue-data
+  cancel-in-progress: false
+
+jobs:
+  sessions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - run: pip install -r requirements.txt
+
+      - name: Install the isolated Scrapling environment and its browser
+        if: ${{ inputs.what != 'list' }}
+        shell: bash
+        run: |
+          python -m venv "$RUNNER_TEMP/scrapling-env"
+          "$RUNNER_TEMP/scrapling-env/bin/pip" install -q -r requirements-scrapling.txt
+          "$RUNNER_TEMP/scrapling-env/bin/python" -m playwright install --with-deps chromium      # a logged-in page is only shown to a browser
+          echo "SCRAPLING_PYTHON=$RUNNER_TEMP/scrapling-env/bin/python" >> "$GITHUB_ENV"
+
+      - name: Stored login sessions
+        id: run
+        continue-on-error: true
+        shell: bash
+        env:
+          WHAT: ${{ inputs.what }}
+          PLATFORM: ${{ inputs.platform }}
+          READ_URL: ${{ inputs.url }}
+          OBSERVATORY_CONTACT: ${{ secrets.OBSERVATORY_CONTACT }}
+          INSTAGRAM_SESSION_B64: ${{ secrets.INSTAGRAM_SESSION_B64 }}
+          X_SESSION_B64: ${{ secrets.X_SESSION_B64 }}
+          TIKTOK_SESSION_B64: ${{ secrets.TIKTOK_SESSION_B64 }}
+          REDDIT_SESSION_B64: ${{ secrets.REDDIT_SESSION_B64 }}
+          FACEBOOK_SESSION_B64: ${{ secrets.FACEBOOK_SESSION_B64 }}
+          LINKEDIN_SESSION_B64: ${{ secrets.LINKEDIN_SESSION_B64 }}
+          XIAOHONGSHU_SESSION_B64: ${{ secrets.XIAOHONGSHU_SESSION_B64 }}
+          BOSS_SESSION_B64: ${{ secrets.BOSS_SESSION_B64 }}
+        run: |
+          set +e
+          args=(observatory sessions --all --what "$WHAT")
+          if [ "$PLATFORM" != "all" ]; then args+=(--key "$PLATFORM"); fi
+          if [ -n "$READ_URL" ]; then args+=(--url "$READ_URL"); fi
+          { echo "### Stored login sessions"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Save what was found (states and dates only, never a secret value)
+        if: ${{ inputs.what == 'check' }}
+        shell: bash
+        run: |
+          git config user.name "stored-sessions"
+          git config user.email "stored-sessions@users.noreply.github.com"
+          git add -f data/_shared/sessions_health.json || true
+          if git diff --cached --quiet; then
+            echo "No changes to save."
+          else
+            git commit -m "Stored login sessions $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase
+            git push
+          fi
+
+      - name: Show the run as red when a stored session needs a new capture
+        if: steps.run.outcome == 'failure'
+        run: exit 1
