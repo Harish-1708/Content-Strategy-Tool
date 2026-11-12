@@ -186,9 +186,9 @@ Scrapling 0.5, pinned in `requirements-scrapling.txt`, in its own environment (t
 
 ## Free AI providers
 
-Enabled, with your recorded Internal-data approval (not secret, may be used by providers' free plans for training; Restricted data, credentials, keys, passwords and tokens are never sent): Google, Groq, Mistral, OpenRouter, and **GitHub Models**.
+Enabled, with your recorded Internal-data approval (not secret, may be used by providers' free plans for training; Restricted data, credentials, keys, passwords and tokens are never sent): Google, Groq, Mistral and OpenRouter.
 
-- **GitHub Models** is free with the workflow's own token (the AI workflow now has `models: read`). Checked 2026-11-03 against GitHub's blog and secondary summaries: no card; small models 15 requests a minute and 150 a day, large models 10 and 50; 8,000 tokens in and 4,000 out per request. Only the two small-tier models are approved. **Paid inference must stay off in GitHub settings.** It is called directly, not through the gateway.
+- **GitHub Models is retired.** GitHub withdrew it for every customer on 30 July 2026 (its inference API and model catalogue no longer exist), so it is not called and the workflows no longer ask for the `models: read` permission or a Models token. The record stays in `ai_providers.yaml` (`retired:`) and in docs/ai/retired-providers.md. The AI check lists it as RETIRED.
 - **Exa** (free hosted search, and an API key with free credits) and **Jina Reader** (free, 20 a minute without a key) are on for research.
 - **Not enabled, with reasons found by checking:** **Brave Search** (its free tier was retired in 2026; a card is required) and **Cerebras** (its no-card free tier ended 2026-07-21; the new credit needs a card). Other providers the gateway knows are still unverified and stay off until checked; the registry refuses to enable an unchecked one.
 - Claude stays capped at **$0.50 a day and $10 a month**, enforced before each call.
