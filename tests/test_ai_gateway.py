@@ -423,9 +423,9 @@ def test_a_successful_answer_that_is_not_json_is_kept_so_the_failure_can_say_wha
 
 def test_both_clients_turn_a_non_json_answer_into_a_failure_that_shows_it_and_never_shows_the_token():
     odd = (200, {"_not_json": "<html>sign in ghp_SECRET1234 please</html>", "_content_type": "text/html"}, {})
-    direct = C.DirectClient("https://models.github.ai/inference", "ghp_SECRET1234", Http(odd))
+    direct = C.DirectClient("https://openrouter.ai/api/v1", "ghp_SECRET1234", Http(odd))
     with pytest.raises(Failure) as seen:
-        direct.complete({"provider": "github", "model": "openai/gpt-4.1-mini", "gateway_model": "x"}, "", "hi", 10)
+        direct.complete({"provider": "openrouter", "model": "vendor/some-model:free", "gateway_model": "x"}, "", "hi", 10)
     assert seen.value.code == K.UPSTREAM_BROKEN and "not JSON (text/html)" in str(seen.value) and "sign in" in str(seen.value) and "ghp_SECRET1234" not in str(seen.value)
     with pytest.raises(Failure) as seen:
         C.GatewayClient("http://127.0.0.1:3001", "key", Http(odd)).complete(ROUTE, "", "hi", 10)
@@ -433,7 +433,7 @@ def test_both_clients_turn_a_non_json_answer_into_a_failure_that_shows_it_and_ne
 
 
 ADMIN_ROWS = [{"platform": "groq", "model_id": "openai/gpt-oss-120b", "enabled": 1}, {"platform": "openrouter", "model_id": "openai/gpt-oss-120b:free", "enabled": 1},
-              {"platform": "groq", "model_id": "qwen/qwen3-32b", "enabled": 0}, {"platform": "custom", "model_id": "mine", "enabled": 1}, {"platform": "github", "modelId": "openai/gpt-4.1-mini", "enabled": True}]
+              {"platform": "groq", "model_id": "qwen/qwen3-32b", "enabled": 0}, {"platform": "custom", "model_id": "mine", "enabled": 1}, {"platform": "cloudflare", "modelId": "@cf/meta/llama-3.3-70b-instruct-fp8-fast", "enabled": True}]
 
 
 def test_every_enabled_model_is_made_its_own_group_so_a_failed_provider_cannot_be_answered_by_another(tmp_path):
@@ -444,7 +444,7 @@ def test_every_enabled_model_is_made_its_own_group_so_a_failed_provider_cannot_b
     login, models, put = http.calls
     assert login["url"].endswith("/api/auth/login") and models["url"].endswith("/api/models") and models["headers"]["Authorization"] == "Bearer t"
     assert put["method"] == "PUT" and put["url"].endswith("/api/settings/unify") and put["body"]["enabled"] is False
-    assert put["body"]["overrides"] == {"merges": [], "splits": [{"member": "github:openai/gpt-4.1-mini"}, {"member": "groq:openai/gpt-oss-120b"}, {"member": "openrouter:openai/gpt-oss-120b:free"}]}   # not the disabled one, not the custom one
+    assert put["body"]["overrides"] == {"merges": [], "splits": [{"member": "cloudflare:@cf/meta/llama-3.3-70b-instruct-fp8-fast"}, {"member": "groq:openai/gpt-oss-120b"}, {"member": "openrouter:openai/gpt-oss-120b:free"}]}   # not the disabled one, not the custom one
 
 
 @pytest.mark.parametrize("answers, expect", [([(401, {}, {})], "admin login failed (401)"), ([(200, {"token": "t"}, {}), (200, [], {})], "no enabled models were listed"),
@@ -455,51 +455,9 @@ def test_a_gateway_that_cannot_isolate_models_is_reported_never_raised(tmp_path,
     assert not ok and expect in message
 
 
-# ---- GitHub Models: API versions, redirects, and what each attempt returned ---------------------------------------------------------------------
+# ---- the direct client: redirects, refusals and what an unusable answer looked like ------------------------------------------------------------------
 
-GH = "https://models.github.ai/inference"
-GH_ROUTE = {"provider": "github", "model": "openai/gpt-4.1-mini", "gateway_model": "openai/gpt-4.1-mini"}
-GH_OK = (200, {"choices": [{"message": {"role": "assistant", "content": "OK"}}], "usage": {"prompt_tokens": 9, "completion_tokens": 1}, "model": "gpt-4.1-mini"}, {})
-GH_TEXT = (200, {"_not_json": "OK", "_content_type": "text/plain"}, {})
-
-
-def test_github_models_is_asked_with_the_current_api_version_first_and_the_old_one_if_the_answer_is_not_usable():
-    http = Http(GH_TEXT, GH_OK)
-    done = C.DirectClient(GH, "ghp_TOKEN12345", http, api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
-    assert done.text == "OK" and [c["headers"]["X-GitHub-Api-Version"] for c in http.calls] == ["2026-03-10", "2022-11-28"]
-    assert all(c["url"] == GH + "/chat/completions" and c["headers"]["Authorization"] == "Bearer ghp_TOKEN12345" for c in http.calls)
-    http = Http(GH_OK)
-    C.DirectClient(GH, "ghp_TOKEN12345", http, api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
-    assert len(http.calls) == 1                                                                 # a good answer is never asked for twice
-
-
-def test_when_every_api_version_gives_an_unusable_answer_the_failure_says_what_each_returned():
-    http = Http(GH_TEXT, (200, {"_not_json": "<html>blocked ghp_TOKEN12345</html>", "_content_type": "text/html"}, {}))
-    with pytest.raises(Failure) as seen:
-        C.DirectClient(GH, "ghp_TOKEN12345", http, api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
-    text = str(seen.value)
-    assert seen.value.code == K.UPSTREAM_BROKEN and "API version 2026-03-10: the provider answered 200 with something that is not JSON (text/plain): 'OK'" in text
-    assert "(text/html)" in text and "API version 2022-11-28" in text and "ghp_TOKEN12345" not in text
-
-
-@pytest.mark.parametrize("answer, code", [((401, {}, {}), K.NEED_SETUP), ((429, {"error": {"message": "slow down"}}, {}), K.RATE_LIMITED), ((400, {"error": {"message": "bad"}}, {}), K.BAD_INPUT)])
-def test_a_refusal_or_a_limit_is_final_and_is_not_asked_again_with_another_version(answer, code):
-    http = Http(answer, GH_OK)
-    with pytest.raises(Failure) as seen:
-        C.DirectClient(GH, "ghp_TOKEN12345", http, api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
-    assert seen.value.code == code and len(http.calls) == 1
-
-
-def test_a_redirect_to_the_same_host_is_followed_once_and_any_other_is_reported_with_where_it_pointed():
-    http = Http((307, {}, {"Location": GH + "/v2/chat/completions"}), GH_OK)
-    assert C.DirectClient(GH, "ghp_TOKEN12345", http).complete(GH_ROUTE, "", "hi", 10).text == "OK"
-    assert [c["url"] for c in http.calls] == [GH + "/chat/completions", GH + "/v2/chat/completions"] and http.calls[1]["method"] == "POST" and http.calls[1]["body"] == http.calls[0]["body"]
-    for status, where in ((307, "https://evil.example/steal"), (302, GH + "/elsewhere"), (301, "")):
-        http = Http((status, {}, {"Location": where}))                                           # the provider keeps redirecting: every variant gets the same answer
-        with pytest.raises(Failure) as seen:
-            C.DirectClient(GH, "ghp_TOKEN12345", http).complete(GH_ROUTE, "", "hi", 10)
-        assert seen.value.code == K.UPSTREAM_BROKEN and f"redirected the request ({status}) to {where or 'an unknown address'}" in str(seen.value)
-        assert {c["url"] for c in http.calls} == {GH + "/chat/completions"}                                  # every variant went to the provider's own address: the token never went to another host
+CHAT_OK = (200, {"choices": [{"message": {"role": "assistant", "content": "OK"}}], "usage": {"prompt_tokens": 9, "completion_tokens": 1}, "model": "gpt-4.1-mini"}, {})
 
 
 def test_the_http_helper_hands_back_a_redirect_instead_of_following_it():
@@ -529,23 +487,7 @@ def test_the_http_helper_hands_back_a_redirect_instead_of_following_it():
     assert status == 302 and headers.get("Location") == "/final"                               # a followed POST would have become a GET and answered 200 OK
 
 
-def test_the_provider_file_gives_github_models_both_api_versions_and_the_client_uses_them():
-    from contentintel.ai import commands as CM
-    reg = R.load_registry(ROOT / "ai_providers.yaml")
-    assert reg.providers["github"].direct["api_versions"] == ["2026-03-10", "2022-11-28"]
-    clients, _ = CM.live_clients(reg, {"GITHUB_TOKEN": "ghp_" + "A" * 36}, None, "/tmp", [])
-    assert clients["github"].api_versions == ("2026-03-10", "2022-11-28")
-
-
-# ---- GitHub Models variants and the OpenRouter free client -----------------------------------------------------------------------------------------
-
-def test_github_models_is_tried_with_each_api_version_and_then_a_plain_json_accept_header_and_always_names_itself():
-    http = Http(GH_TEXT, GH_TEXT, GH_OK)
-    done = C.DirectClient(GH, "ghp_TOKEN12345", http, api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
-    assert done.text == "OK" and len(http.calls) == 3
-    assert [(c["headers"].get("X-GitHub-Api-Version"), c["headers"]["Accept"]) for c in http.calls] == [("2026-03-10", "application/vnd.github+json"), ("2022-11-28", "application/vnd.github+json"), ("2022-11-28", "application/json")]
-    assert all(c["headers"]["User-Agent"] == C.USER_AGENT for c in http.calls)                          # urllib's own name is not sent
-
+# ---- the OpenRouter free client ---------------------------------------------------------------------------------------------------------------------
 
 OR = "https://openrouter.ai/api/v1"
 OR_MODELS = (200, {"data": [
@@ -561,7 +503,7 @@ OR_ROUTE = {"provider": "openrouter", "model": "openrouter/free", "gateway_model
 
 
 def test_the_openrouter_client_asks_for_the_models_that_are_free_today_and_the_free_router_last_and_never_a_paid_one():
-    http = Http(OR_MODELS, GH_OK)
+    http = Http(OR_MODELS, CHAT_OK)
     done = C.OpenRouterClient(OR, "sk-or-KEY12345", http).complete(OR_ROUTE, "", "hi", 10)
     assert done.text == "OK"
     listing, chat = http.calls
@@ -573,18 +515,18 @@ def test_the_openrouter_client_asks_for_the_models_that_are_free_today_and_the_f
 
 
 def test_the_openrouter_client_reads_the_free_list_once_and_asks_the_router_alone_when_the_list_is_unavailable():
-    http = Http(OR_MODELS, GH_OK, GH_OK)
+    http = Http(OR_MODELS, CHAT_OK, CHAT_OK)
     client = C.OpenRouterClient(OR, "sk-or-KEY12345", http)
     client.complete(OR_ROUTE, "", "hi", 10)
     client.complete(OR_ROUTE, "", "again", 10)
     assert [c["method"] for c in http.calls] == ["GET", "POST", "POST"]                                  # the list is read once per run
-    http = Http((500, {}, {}), GH_OK)
+    http = Http((500, {}, {}), CHAT_OK)
     C.OpenRouterClient(OR, "sk-or-KEY12345", http).complete(OR_ROUTE, "", "hi", 10)
     assert http.calls[1]["body"]["model"] == "openrouter/free" and http.calls[1]["body"]["models"] == ["openrouter/free"]
-    http = Http(ConnectionError("down"), GH_OK)
+    http = Http(ConnectionError("down"), CHAT_OK)
     C.OpenRouterClient(OR, "sk-or-KEY12345", http).complete(OR_ROUTE, "", "hi", 10)
     assert http.calls[1]["body"]["models"] == ["openrouter/free"]
-    http = Http(OR_MODELS, GH_OK)
+    http = Http(OR_MODELS, CHAT_OK)
     C.OpenRouterClient(OR, "sk-or-KEY12345", http).complete({**OR_ROUTE, "model": "big/free-model:free"}, "", "hi", 10)
     assert http.calls[1]["body"]["models"] == ["big/free-model:free", "mid/free-model:free", "openrouter/free"]   # a named model leads, one more follows, the free router is last
 
@@ -597,35 +539,39 @@ def test_an_openrouter_model_withdrawn_from_free_use_is_reported_as_gone_not_as_
     assert len(http.calls) == 2                                                                           # one variant only: another header would not bring a model back
 
 
-def test_the_live_run_builds_the_openrouter_client_for_the_direct_provider_and_the_github_one_for_github():
-    from contentintel.ai import commands as CM
-    reg = R.load_registry(ROOT / "ai_providers.yaml")
-    clients, _ = CM.live_clients(reg, {"GITHUB_TOKEN": "ghp_" + "A" * 36, "OPENROUTER_API_KEY": "sk-or-" + "b" * 30}, None, "/tmp", [])
-    assert type(clients["openrouter"]) is C.OpenRouterClient and type(clients["github"]) is C.DirectClient and clients["openrouter"].github is False and clients["github"].github is True
-
-
 def test_openrouter_is_never_sent_more_than_three_models_whatever_the_list_holds_and_the_router_is_always_last():
     many = (200, {"data": [{"id": f"vendor/m{i}:free", "context_length": 1000 + i, "pricing": {"prompt": "0", "completion": "0"}} for i in range(25)]}, {})
     listing = C.OpenRouterClient(OR, "sk-or-KEY12345", Http(many)).free_models()
     assert listing == ["vendor/m24:free", "vendor/m23:free", "vendor/m22:free"]                           # the three largest free models, largest first, out of 25
     for model in ("openrouter/free", "vendor/m3:free", "vendor/not-in-the-list:free"):
-        http = Http(many, GH_OK)
+        http = Http(many, CHAT_OK)
         C.OpenRouterClient(OR, "sk-or-KEY12345", http).complete({**OR_ROUTE, "model": model}, "", "hi", 10)
         listed = http.calls[1]["body"]["models"]
         assert len(listed) <= C.OpenRouterClient.MAX_MODELS == 3 and listed[-1] == "openrouter/free" and listed[0] == http.calls[1]["body"]["model"] and len(set(listed)) == len(listed)
         assert (listed[0] == model) == (model != "openrouter/free")                                       # a named model leads; for the router, the largest free model leads
 
 
-def test_a_github_models_answer_of_plain_ok_on_every_variant_says_it_is_not_a_models_reply_and_what_to_try():
-    http = Http(GH_TEXT)
-    with pytest.raises(Failure) as seen:
-        C.DirectClient(GH, "ghp_TOKEN12345", http, api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
-    text = str(seen.value)
-    assert "is not an answer from the GitHub Models service" in text and "GH_MODELS_TOKEN" in text and "Models: read" in text and "ghp_TOKEN12345" not in text and len(http.calls) == 3
-    other = (200, {"_not_json": "<html>sign in</html>", "_content_type": "text/html"}, {})
-    with pytest.raises(Failure) as seen:
-        C.DirectClient(GH, "ghp_TOKEN12345", Http(other), api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
-    assert "GH_MODELS_TOKEN" not in str(seen.value)                                                  # the hint is for the plain OK only
-    with pytest.raises(Failure) as seen:
-        C.DirectClient(GH, "ghp_TOKEN12345", Http(other, other, GH_TEXT), api_versions=("2026-03-10", "2022-11-28")).complete(GH_ROUTE, "", "hi", 10)
-    assert "GH_MODELS_TOKEN" not in str(seen.value) and "(text/plain): 'OK'" in str(seen.value)                    # not when the variants disagree, even though the last one was a plain OK
+
+
+def test_a_refusal_or_a_limit_is_reported_once_and_never_asked_again_and_a_redirect_never_carries_the_token_to_another_host():
+    for answer, code in (((401, {}, {}), K.NEED_SETUP), ((429, {"error": {"message": "slow down"}}, {}), K.RATE_LIMITED), ((400, {"error": {"message": "bad"}}, {}), K.BAD_INPUT)):
+        http = Http(answer, CHAT_OK)
+        with pytest.raises(Failure) as seen:
+            C.DirectClient(OR, "sk-or-TOKEN12345", http).complete(OR_ROUTE, "", "hi", 10)
+        assert seen.value.code == code and len(http.calls) == 1
+    http = Http((307, {}, {"Location": OR + "/v2/chat/completions"}), CHAT_OK)
+    assert C.DirectClient(OR, "sk-or-TOKEN12345", http).complete(OR_ROUTE, "", "hi", 10).text == "OK"                     # the same host: followed once, as the same POST
+    assert [c["url"] for c in http.calls] == [OR + "/chat/completions", OR + "/v2/chat/completions"] and http.calls[1]["method"] == "POST" and http.calls[1]["body"] == http.calls[0]["body"]
+    for status, where in ((307, "https://evil.example/steal"), (302, OR + "/elsewhere"), (301, "")):
+        http = Http((status, {}, {"Location": where}), CHAT_OK)
+        with pytest.raises(Failure) as seen:
+            C.DirectClient(OR, "sk-or-TOKEN12345", http).complete(OR_ROUTE, "", "hi", 10)
+        assert seen.value.code == K.UPSTREAM_BROKEN and f"redirected the request ({status}) to {where or 'an unknown address'}" in str(seen.value)
+        assert [c["url"] for c in http.calls] == [OR + "/chat/completions"]                                          # one request, to the provider's own address: nothing was sent elsewhere
+
+
+def test_the_live_run_builds_the_openrouter_client_for_the_direct_provider_and_no_client_for_the_retired_one():
+    from contentintel.ai import commands as CM
+    reg = R.load_registry(ROOT / "ai_providers.yaml")
+    clients, _ = CM.live_clients(reg, {"GITHUB_TOKEN": "ghp_" + "A" * 36, "OPENROUTER_API_KEY": "sk-or-" + "b" * 30}, None, "/tmp", [])
+    assert type(clients["openrouter"]) is C.OpenRouterClient and "github" not in clients
