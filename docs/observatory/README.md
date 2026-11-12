@@ -238,6 +238,10 @@ It also needs the secrets `REDDIT_CLIENT_ID` and `REDDIT_CLIENT_SECRET` (an app 
 
 The existing TikTok collectors (browser and Apify) are unchanged. **Agent-Reach currently has no TikTok route** (its channels are Bilibili, Boss, Facebook, GitHub, Instagram, LinkedIn, Reddit, Twitter, V2EX, web, Xiaohongshu, Xiaoyuzhou, Xueqiu and YouTube), so there is nothing to integrate for TikTok. `observatory reliability --platform tiktok` still compares the existing routes.
 
+## Stored login sessions
+
+For the platforms that only show their content to a logged-in account (X, Instagram, TikTok, Reddit, Facebook, LinkedIn, Xiaohongshu, Boss) the tool can use a session you captured by hand from a **dummy** account. `observatory sessions` has three actions: `--what list` (what is stored, no request), `--what check` (a live check of each platform that has a stored session, each reported on its own) and `--what read --key <platform> --url <address>` (one logged-in page through the chain: plain reader, then the stored session, then an honest skip). Run it from **Actions > Stored login sessions**; Acceptance also runs the check. Nine owner controls (`services.stored_sessions.enabled` and one per platform) switch it off. Full guide: docs/platform/session-capture-guide.md.
+
 ## Route reliability
 
 `observatory reliability --platform instagram | tiktok | reddit` writes `<platform>-reliability.md`: for each route, the posts it collected, how many are usable, how complete the records are, what only that route found, and its success rate over 7 days. It says which route has been most reliable and which needs attention. It is advice only; no route is switched on or off.
