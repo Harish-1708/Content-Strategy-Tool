@@ -123,7 +123,6 @@ on:
 
 permissions:
   contents: write
-  models: read               # lets the job's own token call GitHub Models (free, no card) for the AI layer; nothing else is granted
 
 concurrency:
   group: catalogue-data
@@ -242,7 +241,7 @@ jobs:
           EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
           EXA_MCP: "on"
           AGENT_REACH_SEARCH: "on"
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}           # the AI layer (discover and judge): Claude, the free gateway providers and GitHub Models
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}           # the AI layer (discover and judge): Claude and the free gateway providers
           FREEAPI_ENCRYPTION_KEY: ${{ secrets.FREEAPI_ENCRYPTION_KEY }}
           FREEAPI_ADMIN_PASSWORD: ${{ secrets.FREEAPI_ADMIN_PASSWORD }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
@@ -252,8 +251,7 @@ jobs:
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          GH_MODELS_TOKEN: ${{ secrets.GH_MODELS_TOKEN }}         # optional: a fine-grained token with Models: read for the AI layer; used before the job's own token
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}           # raises GitHub's public-API limit for Agent-Reach's GitHub channel, and is the credential for GitHub Models in the AI layer (the job has models: read). Only raises GitHub's public-API limit for Agent-Reach's GitHub channel; the client sends it to api.github.com and nowhere else
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}           # GitHub's own automatic token: it only raises the public GitHub API limit for Agent-Reach's GitHub search (that is a different service from the retired GitHub Models)
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
           # A proxy address or account cookies for any competitor (advanced.proxy, advanced.cookies_env in its brand file), or central defaults and overrides (services: in observatory.yaml),
