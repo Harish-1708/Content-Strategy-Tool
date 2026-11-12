@@ -170,7 +170,7 @@ def test_missing_lanes_file_is_refused(tmp_path):
 
 # ---- the shipped files -----------------------------------------------------------------------------------------------------------
 
-ROLLED_OUT = ["cloudflare", "github", "google", "groq", "mistral", "openrouter"]        # the providers whose terms have been checked and which the owner has approved
+ROLLED_OUT = ["cloudflare", "google", "groq", "mistral", "openrouter"]        # the providers whose terms have been checked and which the owner has approved
 
 
 def test_the_shipped_registry_enables_only_checked_providers_and_claude():
@@ -178,7 +178,9 @@ def test_the_shipped_registry_enables_only_checked_providers_and_claude():
     assert len(reg.providers) == 86
     assert sorted(p.id for p in reg.providers.values() if p.enabled) == sorted(ROLLED_OUT + ["claude"])
     for p in reg.providers.values():
-        if p.id not in ROLLED_OUT + ["claude"]:
+        if p.retired:
+            assert p.id == "github" and not p.enabled and not p.direct and not p.credential_env, p.id                 # the record keeps its history (approved classes, owner decision); nothing is switched on
+        elif p.id not in ROLLED_OUT + ["claude"]:
             assert not p.enabled and p.approved_classes == () and p.effective_ceiling == "public" and not p.override and not p.paid, p.id
         if p.enabled:
             assert p.terms.get("status") not in ("unverified", "declared_only"), p.id        # the registry itself refuses otherwise
@@ -226,8 +228,8 @@ def test_claude_is_the_only_provider_that_may_receive_restricted_data_and_unappr
 def test_every_platform_in_the_pinned_gateway_is_in_the_registry_and_nowhere_else():
     reg = R.load_registry(SHIPPED_P)
     ids = {p["id"] for p in INVENTORY["platforms"]}
-    through_gateway = {pid for pid, p in reg.providers.items() if not p.direct}
-    assert len(ids) == 84 and through_gateway == (ids - {"openrouter"}) | {"claude"} and {pid for pid, p in reg.providers.items() if p.direct} == {"github", "openrouter"}      # GitHub Models and OpenRouter are called directly
+    through_gateway = {pid for pid, p in reg.providers.items() if not p.direct and not p.retired}
+    assert len(ids) == 84 and through_gateway == (ids - {"openrouter"}) | {"claude"} and {pid for pid, p in reg.providers.items() if p.direct} == {"openrouter"}      # OpenRouter is called directly (GitHub Models, retired, has no endpoint)
     for pid in ids:
         assert reg.provider(pid).gateway_platform == pid
 
@@ -236,10 +238,10 @@ def test_the_registry_allowlist_is_a_subset_of_the_models_the_pinned_gateway_shi
     reg = R.load_registry(SHIPPED_P)
     shipped = {p["id"]: {m["modelId"] for m in p["models"]} for p in INVENTORY["platforms"]}
     for p in reg.providers.values():
-        if p.id == "claude" or p.direct:
+        if p.id == "claude" or p.direct or p.retired:                                       # a retired provider is a record: the pinned gateway no longer ships it
             continue
         assert {m.id for m in p.models} <= shipped[p.id], p.id
-    assert sum(len(p.models) for p in reg.providers.values() if p.id != "claude" and not p.direct) == 85
+    assert sum(len(p.models) for p in reg.providers.values() if p.id != "claude" and not p.direct and not p.retired) == 85
 
 
 def test_the_shipped_lanes_load_against_the_allowlist_and_cover_the_ten_kinds_of_work_and_the_two_platform_lanes():
