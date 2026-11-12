@@ -286,18 +286,6 @@ def test_the_acceptance_workflow_passes_the_jobs_own_github_token():
     assert step["env"]["GITHUB_TOKEN"] == "${{ github.token }}"
 
 
-def test_the_ai_workflow_prints_the_raw_github_models_answer_before_the_live_check_and_never_fails_the_run_for_it():
-    import yaml
-    wf = yaml.safe_load(open(ROOT / ".github" / "workflows" / "ai-gateway.yml", encoding="utf-8"))
-    steps = wf["jobs"]["live"]["steps"]
-    names = [s.get("name", "") for s in steps]
-    probe = steps[names.index("GitHub Models raw probe (diagnostic, shows exactly what GitHub answers)")]
-    assert names.index(probe["name"]) < names.index("Live check (LIVE result)") and probe["continue-on-error"] is True
-    assert "'github'" in probe["if"] and probe["env"]["GITHUB_TOKEN"] == "${{ github.token }}"
-    run = probe["run"]
-    assert "curl -sS -i" in run and "https://models.github.ai/inference/chat/completions" in run and "2026-03-10 2022-11-28" in run and "https://models.github.ai/catalog/models" in run and "openai/gpt-4.1-mini" in run
-
-
 def test_a_route_that_needs_opencli_and_has_really_passed_acceptance_is_healthy_even_here(monkeypatch, tmp_path):
     from test_health import ledger, passing
     monkeypatch.setenv("OPENCLI_BIN", "/no/such/opencli")
@@ -314,26 +302,6 @@ def _wf(name):
     return yaml.safe_load(open(ROOT / ".github" / "workflows" / name, encoding="utf-8"))
 
 
-def test_the_optional_github_models_token_reaches_every_job_that_uses_the_ai_layer_and_is_documented():
-    ai = _wf("ai-gateway.yml")
-    envs = [s["env"] for s in ai["jobs"]["live"]["steps"] if "env" in s and "GITHUB_TOKEN" in s["env"]]
-    assert len(envs) >= 3 and all(e.get("GH_MODELS_TOKEN") == "${{ secrets.GH_MODELS_TOKEN }}" for e in envs)         # the live check, the plan, and the raw probe
-    obs = _wf("observatory.yml")
-    run = next(s for s in obs["jobs"]["observatory"]["steps"] if s.get("name") == "Run")
-    assert run["env"]["GH_MODELS_TOKEN"] == "${{ secrets.GH_MODELS_TOKEN }}"
-    readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    row = next(line for line in readme.splitlines() if line.startswith("| `GH_MODELS_TOKEN` |"))                    # the exact secret-table row, not just the words somewhere
-    assert "Models: read" in row and "| optional |" in row and "no card" in row
-
-
-def test_the_raw_probe_shows_which_token_it_is_the_connection_every_header_and_the_same_request_with_the_models_token():
-    steps = _wf("ai-gateway.yml")["jobs"]["live"]["steps"]
-    probe = next(s for s in steps if str(s.get("name", "")).startswith("GitHub Models raw probe"))["run"]
-    for needle in ("https://api.github.com/rate_limit", "curl -sS -v", "https://models.github.ai/catalog/models -H \"Accept: application/vnd.github+json\" | head", "GH_MODELS_TOKEN", "openai/gpt-4.1-mini"):
-        assert needle in probe, needle
-    assert probe.count("$GITHUB_TOKEN") >= 3 and "if [ -n \"$GH_MODELS_TOKEN\" ]" in probe
-
-
 def test_the_contact_check_does_not_print_a_line_that_looks_like_an_error_annotation_in_the_step_header():
     obs = _wf("observatory.yml")
     check = next(s for s in obs["jobs"]["observatory"]["steps"] if s.get("name") == "Check the required contact secret")
@@ -346,15 +314,50 @@ def test_scrapling_is_installed_for_a_connections_check_or_install_so_its_health
     assert "inputs.action == 'connections'" in cond and "inputs.what == 'check'" in cond and "inputs.what == 'install'" in cond and "inputs.what == 'crawl'" in cond
 
 
-def test_no_secret_name_starts_with_the_reserved_github_prefix_and_the_models_token_has_its_allowed_name():
+def test_no_secret_name_starts_with_the_reserved_github_prefix_and_the_retired_models_secret_is_gone():
     import re
     seen = set()
     for path in (ROOT / ".github" / "workflows").glob("*.yml"):
         seen |= set(re.findall(r"secrets\.([A-Z0-9_]+)", path.read_text(encoding="utf-8")))
-    assert "GH_MODELS_TOKEN" in seen and "GITHUB_MODELS_TOKEN" not in seen
     assert not [n for n in seen if n.startswith("GITHUB_") and n != "GITHUB_TOKEN"], "GitHub does not allow a secret name that starts with GITHUB_"       # GITHUB_TOKEN is GitHub's own, automatic one
+    assert not {"GH_MODELS_TOKEN", "GITHUB_MODELS_TOKEN"} & seen
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     documented = set(re.findall(r"^\| `([A-Z][A-Z0-9_]+)` \|", readme, re.M))
-    assert "GH_MODELS_TOKEN" in documented and not [n for n in documented if n.startswith("GITHUB_") and n != "GITHUB_TOKEN"]
-    providers = (ROOT / "ai_providers.yaml").read_text(encoding="utf-8")
-    assert "- GH_MODELS_TOKEN\n      - GITHUB_TOKEN" in providers and "GITHUB_MODELS_TOKEN" not in providers
+    assert not [n for n in documented if n.startswith("GITHUB_") and n != "GITHUB_TOKEN"] and "GH_MODELS_TOKEN" not in documented
+
+
+def test_the_ai_workflow_asks_for_no_models_permission_and_has_no_github_models_probe_and_still_passes_the_live_providers_secrets():
+    ai = _wf("ai-gateway.yml")
+    assert ai["permissions"] == {"contents": "write"}
+    names = [s.get("name", "") for s in ai["jobs"]["live"]["steps"]]
+    assert not [n for n in names if "GitHub Models" in n or "raw probe" in n]
+    live = next(s for s in ai["jobs"]["live"]["steps"] if s.get("name") == "Live check (LIVE result)")["env"]
+    for name in ("GROQ_API_KEY", "MISTRAL_API_KEY", "OPENROUTER_API_KEY", "GEMINI_API_KEY", "CLOUDFLARE_API_TOKEN", "ANTHROPIC_API_KEY", "FREEAPI_ENCRYPTION_KEY"):
+        assert live[name] == "${{ secrets." + name + " }}", name
+    assert "GITHUB_TOKEN" not in live                                                                   # it was only there for GitHub Models
+
+
+# ---- Update 49: every sheet says what its two reads found, also when the tab is not there yet -------------------------------------------------------
+
+class SheetWithoutTabs(Sheet):
+    def __init__(self):
+        super().__init__(0)
+        self.title = "Ideas"                                                                       # a sheet for a brand with no competitors found yet: no Competitors or Controls tab
+
+    def worksheet(self, name):
+        raise AssertionError("a tab that is not there must never be opened")
+
+
+def test_a_sheet_without_the_competitors_or_controls_tab_still_logs_both_reads_so_every_brand_prints_a_line(monkeypatch, tmp_path):
+    from contentintel.observatory import report as obs_report
+    monkeypatch.setattr(obs_report, "apply_sheet_decisions", lambda *a, **k: (_ for _ in ()).throw(AssertionError("nothing to apply")))
+    monkeypatch.setattr(SV, "apply_sheet_controls", lambda *a, **k: (_ for _ in ()).throw(AssertionError("nothing to apply")))
+    brand = type("B", (), {"slug": "defi_snacks"})()
+    notes = Notes()
+    sheets._read_competitor_decisions(SheetWithoutTabs(), brand, None, "2026-11-11T10:00:00Z", notes, dry_run=False)
+    sheets._read_controls(SheetWithoutTabs(), brand, type("S", (), {"data_dir": str(tmp_path)})(), "2026-11-11T10:00:00Z", notes, dry_run=False)
+    assert notes.notes == ["Competitor decisions read from the sheet: 0 (no Competitors tab in this sheet yet: nothing to read, no competitor has been found for this brand)",
+                           "Controls read from the sheet: 0 change(s) (no Controls tab in this sheet yet: nothing to read)"]
+    none = Notes()
+    sheets._read_controls(None, brand, None, "2026-11-11T10:00:00Z", none, dry_run=True)                # a dry run for a sheet that does not exist yet has nothing at all to read
+    assert none.notes == []
