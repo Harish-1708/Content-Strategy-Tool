@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OBS, AI = "contentintel/observatory/", "contentintel/ai/"
-TESTS = ["tests/test_observatory_*.py", "tests/test_contract.py", "tests/test_services.py", "tests/test_ytdlp_youtube.py", "tests/test_external_repository.py", "tests/test_platform_wiring.py", "tests/test_platform_matrix.py", "tests/test_reddit_routes.py", "tests/test_agent_reach_instagram.py", "tests/test_ai_github.py", "tests/test_ai_health_tab.py", "tests/test_ai_config.py", "tests/test_providers.py", "tests/test_agent_reach_catalog.py", "tests/test_owner_defaults.py", "tests/test_capability_matrix.py", "tests/test_research.py", "tests/test_sources.py", "tests/test_guards.py", "tests/test_connections.py", "tests/test_sheets.py", "tests/test_health.py", "tests/test_acceptance.py", "tests/test_acceptance_agent_reach.py", "tests/test_acceptance_fixes.py", "tests/test_ai_gateway.py", "tests/test_ai_commands.py", "tests/test_ai_github.py", "tests/test_ai_config.py", "tests/test_ai_health_tab.py"]
+TESTS = ["tests/test_observatory_*.py", "tests/test_sessions.py", "tests/test_session_live.py", "tests/test_contract.py", "tests/test_services.py", "tests/test_ytdlp_youtube.py", "tests/test_external_repository.py", "tests/test_platform_wiring.py", "tests/test_platform_matrix.py", "tests/test_reddit_routes.py", "tests/test_agent_reach_instagram.py", "tests/test_ai_github.py", "tests/test_ai_health_tab.py", "tests/test_ai_config.py", "tests/test_providers.py", "tests/test_agent_reach_catalog.py", "tests/test_owner_defaults.py", "tests/test_capability_matrix.py", "tests/test_research.py", "tests/test_sources.py", "tests/test_guards.py", "tests/test_connections.py", "tests/test_sheets.py", "tests/test_health.py", "tests/test_acceptance.py", "tests/test_acceptance_agent_reach.py", "tests/test_acceptance_fixes.py", "tests/test_ai_gateway.py", "tests/test_ai_commands.py", "tests/test_ai_github.py", "tests/test_ai_config.py", "tests/test_ai_health_tab.py"]
 
 # (id, file, text found exactly once, replacement, what the bug simulates)
 MUTATIONS = [
@@ -386,7 +386,7 @@ U41 = [   # update 41: guards as owner switches, the connections layer, the exte
 MUTATIONS.extend(U41)
 
 U42 = [   # update 42: the Acceptance workflow passes the contact address
-    ('acceptance-workflow-no-contact', '.github/workflows/acceptance.yml', 'OBSERVATORY_CONTACT: ${{ secrets.OBSERVATORY_CONTACT }}', 'OBSERVATORY_CONTACT_UNUSED: ${{ secrets.OBSERVATORY_CONTACT }}', 'the Acceptance workflow does not pass the contact address, so 14 checks skip'),
+    ('acceptance-workflow-no-contact', '.github/workflows/acceptance.yml', 'OBSERVATORY_CONTACT: ${{ secrets.OBSERVATORY_CONTACT }}           # the contact address', 'OBSERVATORY_CONTACT_UNUSED: ${{ secrets.OBSERVATORY_CONTACT }}           # the contact address', 'the Acceptance workflow does not pass the contact address, so 14 checks skip'),
     ('acceptance-workflow-no-reddit-secret', '.github/workflows/acceptance.yml', 'REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}', 'REDDIT_CLIENT_SECRET_UNUSED: ${{ secrets.REDDIT_CLIENT_SECRET }}', 'the Acceptance workflow does not pass a documented secret the Reddit check reads'),
 ]
 MUTATIONS.extend(U42)
@@ -576,6 +576,72 @@ U55 = [   # update 49: a line for every brand even without the tabs
     ('u49-sheets-no-controls-tab-silent', 'contentintel/sheets.py', '            report.notes.append("Controls read from the sheet: 0 change(s) (no Controls tab', '            _ = ("Controls read from the sheet: 0 change(s) (no Controls tab', 'a brand with no Controls tab prints no line for the read'),
 ]
 MUTATIONS.extend(U55)
+
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parent))
+from session_mutations import U51 as _U51                                  # the stored-session code's own checks (Update 48), wired in now that the code is
+MUTATIONS.extend(_U51)
+
+U56 = [   # update 50: stored sessions in use
+    ('u50-live-proof-days', 'contentintel/session_live.py', 'PROVED_DAYS = 14 ', 'PROVED_DAYS = 4000 ', 'a check stays live proof for ever'),
+    ('u50-live-proof-from-the-future', 'contentintel/session_live.py', 'timedelta(0) <= here - then <= timedelta(days=PROVED_DAYS)', 'here - then <= timedelta(days=PROVED_DAYS)', 'a check that has not happened yet counts as proof'),
+    ('u50-live-rejected-keeps-proof', 'contentintel/session_live.py', 'CLEARS_PROOF = (REJECTED, EXPIRED, BAD_CAPTURE, NOT_SET_UP)', 'CLEARS_PROOF = (EXPIRED, BAD_CAPTURE, NOT_SET_UP)', 'a refusal does not void the earlier proof'),
+    ('u50-live-cannot-check-voids-proof', 'contentintel/session_live.py', 'CLEARS_PROOF = (REJECTED, EXPIRED, BAD_CAPTURE, NOT_SET_UP)', 'CLEARS_PROOF = (REJECTED, EXPIRED, BAD_CAPTURE, NOT_SET_UP, CANNOT_CHECK)', 'a check that could not be made voids the proof'),
+    ('u50-live-bad-capture-not-red', 'contentintel/session_live.py', 'OWNER_ACTION = (REJECTED, EXPIRED, BAD_CAPTURE)', 'OWNER_ACTION = (REJECTED, EXPIRED)', 'an unusable secret does not turn the run red'),
+    ('u50-live-not-set-up-red', 'contentintel/session_live.py', 'OWNER_ACTION = (REJECTED, EXPIRED, BAD_CAPTURE)', 'OWNER_ACTION = (REJECTED, EXPIRED, BAD_CAPTURE, NOT_SET_UP)', 'a missing secret turns the run red'),
+    ('u50-live-off-still-checked', 'contentintel/session_live.py', '    if not on:\n        return done(OFF, why, record=False)', '    if False:\n        return done(OFF, why, record=False)', 'a platform the owner switched off is still loaded and checked'),
+    ('u50-live-off-recorded', 'contentintel/session_live.py', 'return done(OFF, why, record=False)', 'return done(OFF, why, record=True)', 'a platform that is switched off is recorded as a result'),
+    ('u50-live-master-switch-ignored', 'contentintel/session_live.py', '    if not sec.get("enabled", True):', '    if False:', 'the master switch does nothing'),
+    ('u50-live-expired-as-bad-capture', 'contentintel/session_live.py', 'return done(EXPIRED if exc.code == K.NEED_LOGIN else BAD_CAPTURE, text)', 'return done(BAD_CAPTURE, text)', 'an expired session is reported as a bad capture'),
+    ('u50-live-not-set-up-undetected', 'contentintel/session_live.py', '        if "is not set" in text:', '        if False:', 'a missing secret is reported as a bad capture'),
+    ('u50-live-offline-requests', 'contentintel/session_live.py', '    if offline:\n        proof = f', '    if False:\n        proof = f', 'the offline status makes a live request'),
+    ('u50-live-plain-http-is-refusal', 'contentintel/session_live.py', '    if plain:\n        return done(UNCONFIRMED,', '    if False:\n        return done(UNCONFIRMED,', 'a page read over plain HTTP is called a refusal'),
+    ('u50-live-403-not-refused', 'contentintel/session_live.py', '        if status in (401, 403):\n            return done(REJECTED,', '        if False:\n            return done(REJECTED,', 'a 403 is not reported as a refusal'),
+    ('u50-live-no-raw-page', 'contentintel/session_live.py', 'job["return_html"] = True', 'job["return_html"] = False', 'the raw page is not asked for'),
+    ('u50-live-wrong-secret-name', 'contentintel/session_live.py', 'adv["cookies_env"] = name', 'adv["cookies_env"] = "SESSION_COOKIES"', 'the worker is told a secret name that holds nothing'),
+    ('u50-live-primary-uses-session', 'contentintel/session_live.py', 'with_session=False)\n        if not res.get("ok"):', 'with_session=True)\n        if not res.get("ok"):', 'the plain reader already sends the session'),
+    ('u50-live-session-always-on', 'contentintel/session_live.py', 'enabled=on and proved, off_reason=off', 'enabled=True, off_reason=off', 'the session is used whatever the owner switch and the proof say'),
+    ('u50-live-session-unproved', 'contentintel/session_live.py', 'enabled=on and proved, off_reason=off', 'enabled=on, off_reason=off', 'the session is used without a live proof'),
+    ('u50-live-session-ignores-switch', 'contentintel/session_live.py', 'enabled=on and proved, off_reason=off', 'enabled=proved, off_reason=off', 'the session is used although the owner switched it off'),
+    ('u50-live-other-hosts', 'contentintel/session_live.py', '    if not _host_ok(platform, url):', '    if False:', 'a session can be sent to another site'),
+    ('u50-live-host-suffix', 'contentintel/session_live.py', 'return any(host == h or host.endswith("." + h) for h in S.PLATFORMS[platform]["hosts"])', 'return any(host.endswith(h) for h in S.PLATFORMS[platform]["hosts"])', 'a site whose name merely ends the same way receives the session'),
+    ('u50-live-wall-not-login', 'contentintel/session_live.py', '    if WALL.search(message):\n        code = K.NEED_LOGIN', '    if False:\n        code = K.NEED_LOGIN', 'a login wall is reported as an ordinary failure'),
+    ('u50-live-unknown-platform', 'contentintel/session_live.py', '    if platform not in S.PLATFORMS:', '    if False:', 'an unknown platform is not refused with a reason'),
+    ('u50-live-count-order', 'contentintel/session_live.py', 'order = [s for s in ("PRESENT", *ORDER) if counts.get(s)]', 'order = [s for s in (*ORDER, "PRESENT") if counts.get(s)]', 'the count line is in the wrong order'),
+    ('u50-live-ledger-keeps-junk', 'contentintel/session_live.py', 'if k in S.PLATFORMS and isinstance(v, dict)', 'if isinstance(v, dict)', 'a damaged ledger keeps entries for platforms that do not exist'),
+    ('u50-live-report-no-caveat', 'contentintel/session_live.py', '    if not offline:\n        lines.append("  ACCEPTED means', '    if False:\n        lines.append("  ACCEPTED means', 'the report does not say what ACCEPTED does not mean'),
+    ('u50-sess-jar-is-a-list', 'contentintel/sessions.py', 'return {c["name"]: c["value"] for c in self._cookies()}', 'return [dict(c) for c in self._cookies()]', 'the worker is handed a list it cannot read'),
+    ('u50-worker-html-always', 'contentintel/observatory/scrapling_worker.py', '        if self.job.get("return_html"):', '        if True:', 'every page read hands back its raw page'),
+    ('u50-worker-html-unbounded', 'contentintel/observatory/scrapling_worker.py', 'out["html"] = html[:300000]', 'out["html"] = html', 'the raw page is not bounded'),
+    ('u50-worker-status-late', 'contentintel/observatory/scrapling_worker.py', '        out["status"] = int(resp.status)\n        if self.job.get("return_html"):', '        if self.job.get("return_html"):', 'a refused page loses its status'),
+    ('u50-cfg-sessions-unregistered', 'contentintel/observatory/config.py', 'register_service("stored_sessions", label=', 'register_service("stored_sessions_off", label=', 'the owner has no switches for the stored sessions'),
+    ('u50-cfg-sessions-default-off', 'contentintel/services.py', '"bool", True, f"the stored {c} session may be loaded', '"bool", False, f"the stored {c} session may be loaded', 'every stored session starts switched off'),
+    ('u50-cmd-check-never-red', 'contentintel/observatory/commands.py', 'return SL.exit_code(rows) if what == "check" else 0', 'return 0', 'an expired or refused session never turns the run red'),
+    ('u50-cmd-key-unchecked', 'contentintel/observatory/commands.py', '    if args.key and args.key not in S.PLATFORMS:', '    if False:', 'an unknown platform is not refused'),
+    ('u50-cmd-read-unchecked', 'contentintel/observatory/commands.py', '        if len(platforms) != 1 or not args.url:', '        if False:', 'a read without a platform or an address is attempted'),
+    ('u50-wf-sessions-secret-dropped', '.github/workflows/sessions.yml', '          X_SESSION_B64: ${{ secrets.X_SESSION_B64 }}', '          X_SESSION_B64_UNUSED: ${{ secrets.X_SESSION_B64 }}', 'the sessions workflow is not given the X session'),
+    ('u50-wf-sessions-input-inline', '.github/workflows/sessions.yml', 'args+=(--url "$READ_URL")', 'args+=(--url "${{ inputs.url }}")', 'the typed address is pasted into the script'),
+    ('u50-wf-sessions-no-browser', '.github/workflows/sessions.yml', "if: ${{ inputs.what != 'list' }}", "if: ${{ inputs.what == 'read' }}", 'a live check runs without the browser'),
+    ('u50-wf-sessions-never-red', '.github/workflows/sessions.yml', "        if: steps.run.outcome == 'failure'\n        run: exit 1", '        if: false\n        run: exit 1', 'a session that needs capturing never turns the run red'),
+    ('u50-wf-acc-sessions-never-red', '.github/workflows/acceptance.yml', " || steps.sessions.outcome == 'failure'", '', 'Acceptance ignores a session that needs capturing'),
+    ('u50-wf-acc-secret-dropped', '.github/workflows/acceptance.yml', '          BOSS_SESSION_B64: ${{ secrets.BOSS_SESSION_B64 }}', '          BOSS_SESSION_B64_UNUSED: ${{ secrets.BOSS_SESSION_B64 }}', 'Acceptance is not given the Boss session'),
+    ('u50-wf-observatory-gets-a-session', '.github/workflows/observatory.yml', '          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}\n', '          INSTAGRAM_SESSION_B64: ${{ secrets.INSTAGRAM_SESSION_B64 }}\n          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}\n', 'the Observatory workflow is handed an Instagram login'),
+    ('u50-readme-session-undocumented', 'README.md', '| `BOSS_SESSION_B64` |', '| `BOSS_SESSION_B64_X` |', 'a stored-session secret is not documented'),
+]
+MUTATIONS.extend(U56)
+
+U57 = [   # update 50: a stale Controls row is removed
+    ('u50-ctl-tidy-off', 'contentintel/sheets.py', '        if tab.get("drop_unknown") and ws is not None and not dry_run:', '        if False:', 'a stale row for a removed control stays in the Controls tab'),
+    ('u50-ctl-tidy-on-dry-run', 'contentintel/sheets.py', '        if tab.get("drop_unknown") and ws is not None and not dry_run:', '        if tab.get("drop_unknown") and ws is not None:', 'a dry run deletes rows'),
+    ('u50-ctl-tidy-every-tab', 'contentintel/sheets.py', '        if tab.get("drop_unknown") and ws is not None and not dry_run:', '        if True and ws is not None and not dry_run:', 'every tab loses rows the tool does not know, including ones a person wrote'),
+    ('u50-ctl-tidy-keyless-rows', 'contentintel/sheets.py', '        if key and key not in known_keys:', '        if key not in known_keys:', 'a row with no key is deleted'),
+    ('u50-ctl-tidy-empty-known', 'contentintel/sheets.py', '    if not known_keys:\n        return []', '    if False:\n        return []', 'a tab is emptied when the tool knows no keys'),
+    ('u50-ctl-tidy-missing-column', 'contentintel/sheets.py', '    if key_col not in header:\n        return []\n    key_at = header.index(key_col)\n    doomed, dropped = [], []', '    if False:\n        return []\n    key_at = header.index(key_col)\n    doomed, dropped = [], []', 'a tab without the key column breaks the sheet update'),
+    ('u50-ctl-tidy-silent', 'contentintel/sheets.py', 'report.notes.append(f"{tab[\'title\']}: removed {len(dropped)} row(s)', '_ = (f"{tab[\'title\']}: removed {len(dropped)} row(s)', 'the rows that were removed are not mentioned'),
+    ('u50-ctl-tidy-failure-stops', 'contentintel/sheets.py', '            except Exception as exc:                                       # a tidy that fails never stops the sheet', '            except KeyError as exc:                                       # a tidy that fails never stops the sheet', 'a failed tidy stops the whole sheet update'),
+    ('u50-ctl-flag-dropped', 'contentintel/services.py', '"starter_manual": [], "drop_unknown": True}', '"starter_manual": []}', 'the Controls tab is not tidied'),
+]
+MUTATIONS.extend(U57)
 
 def run_tests(workdir):
     env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}
