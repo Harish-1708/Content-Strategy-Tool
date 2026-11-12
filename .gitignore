@@ -3,3 +3,11 @@ __pycache__/
 .pytest_cache/
 *.pyc
 .env
+
+# stored login sessions: captured by hand, pasted into GitHub Secrets, never committed
+*_session.json
+*_session.json.b64.txt
+*_b64.txt
+session_b64.txt
+*_cookies.txt
+*_cookies.json
