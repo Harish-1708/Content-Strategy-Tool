@@ -12,7 +12,7 @@
     "state": "ACCEPTED"
   },
   "instagram": {
-    "checked_at": "2026-11-12T12:55:36Z",
+    "checked_at": "2026-11-12T13:06:48Z",
     "proved_on": "",
     "reason": "no sign of being logged in was found on the page (any doubt counts as not logged in): the stored session was not accepted; capture a new one",
     "state": "REJECTED"
