@@ -70,7 +70,8 @@ The result for each platform is one of:
 | Result | Meaning | Does it turn the run red? |
 |---|---|---|
 | ACCEPTED | the platform's own page showed a logged-in state | no |
-| UNCONFIRMED | no browser was installed, so the page was read over plain HTTP and this platform may only show its logged-in state in a browser | no |
+| UNCONFIRMED | the browser could not be used, so the page was read over plain HTTP and this platform may only show its logged-in state in a browser. The line gives the browser library's own reason | no |
+| BLOCKED | the platform showed the runner a bot-check or challenge page, even with the stored session, so the session itself could not be judged. The session is asked for **once only**, never again after a challenge. This is the platform blocking the runner, not a bad session | no |
 | REJECTED | the platform showed a login or checkpoint page, the wrong site, or answered 401/403: capture a new session (a repeat means the platform blocks runners) | **yes** |
 | EXPIRED | a cookie that matters has passed its date: capture a new session | **yes** |
 | BAD CAPTURE | the secret is not a usable session (wrong site, not logged in, damaged): capture again | **yes** |
