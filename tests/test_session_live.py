@@ -207,7 +207,7 @@ def test_the_report_has_one_line_per_platform_a_count_line_and_says_what_accepte
     rows = SL.check_all(settings, "owner@example.com", sys.executable, environ=environ("x", "instagram"), runner=worker, now=NOW, ledger=ledger)
     text = SL.format_report(rows)
     lines = text.splitlines()
-    assert lines[0].startswith("Stored login sessions: each platform is judged on its own, live") and len(lines) == 8 + 3
+    assert lines[0].startswith("Stored login sessions: each platform is judged on its own, live") and len([ln for ln in lines if not ln.startswith("      ")]) == 8 + 3          # the evidence lines are indented further
     by = {r["label"]: next(ln for ln in lines if ln.strip().startswith(r["label"])) for r in rows}
     assert "ACCEPTED" in by["X (Twitter)"] and "expires 2027-01-20" in by["X (Twitter)"] and "last proved 2026-11-11" in by["X (Twitter)"]
     assert "REJECTED" in by["Instagram"] and "NOT SET UP" in by["Boss (Zhipin)"] and "INSTAGRAM_SESSION_B64" not in by["Instagram"] and "BOSS_SESSION_B64" in by["Boss (Zhipin)"]
@@ -249,7 +249,7 @@ WALL = {"ok": False, "status": 200, "url": URL, "final_url": "https://x.com/i/fl
 def test_a_login_wall_sends_the_read_to_the_session_only_after_a_live_check_passed(settings, ledger):
     worker = Worker(page_for(PAGE, WALL))
     unproved = read(settings, ledger, worker)
-    assert unproved.skipped and unproved.route == "" and [t[:2] for t in unproved.trail] == [("primary", K.NEED_LOGIN), ("session", "off")]
+    assert unproved.skipped and unproved.route == "" and [t[:2] for t in unproved.trail] == [("primary", K.NEED_LOGIN), ("session", "off"), ("discovery", K.NEED_SETUP)]
     assert "run the sessions check first" in unproved.reason and len(worker.jobs) == 1                                        # never tried with the session
     check("x", settings, ledger, Worker(lambda item: logged_in_page("x")))
     worker = Worker(page_for(PAGE, WALL))
@@ -293,8 +293,8 @@ def test_a_failing_primary_and_a_failing_session_end_in_an_honest_skip_with_both
     gone = {"ok": False, "status": 404, "url": URL, "error": {"code": "NOT_FOUND", "message": f"{URL} does not exist (404)"}}
     worker = Worker(page_for(WALL, gone))
     got = read(settings, ledger, worker)
-    assert got.skipped and len(worker.jobs) == 2 and [t[1] for t in got.trail] == [K.NOT_FOUND, K.NEED_LOGIN]
-    assert "primary: NOT_FOUND" in got.reason and "session: NEED_LOGIN" in got.reason and VALUE not in got.reason
+    assert got.skipped and len(worker.jobs) == 2 and [t[1] for t in got.trail] == [K.NOT_FOUND, K.NEED_LOGIN, K.NEED_SETUP]
+    assert "primary: NOT_FOUND" in got.reason and "session: NEED_LOGIN" in got.reason and "discovery: NEED_SETUP" in got.reason and VALUE not in got.reason
     empty = {"ok": True, "status": 200, "url": URL, "final_url": URL, "title": "", "text": ""}
     got = read(settings, ledger, Worker(page_for(empty, empty)))
     assert not got.skipped and got.route == "" and "found nothing" in got.reason                                              # an empty page is an answer, not a failure
@@ -402,3 +402,327 @@ def test_every_workflow_that_installs_scrapling_s_browser_does_it_through_patchr
     assert "from scrapling.fetchers import StealthyFetcher" in worker
     pin = (ROOT / "requirements-scrapling.txt").read_text(encoding="utf-8")
     assert re.search(r"^scrapling\[fetchers\]==0\.5$", pin, re.M)                                                              # the version whose stealth fetcher imports patchright: a new one is checked before it is adopted
+
+
+# ---- Update 52: what each page showed, the visible-text rule, the last resort for X, and discovery ----------------------------------------------------
+
+def page_with(platform, **over):
+    base = {"ok": False, "status": 200, "final_url": S.PLATFORMS[platform]["login_url"] + "?next=%2F&token=SECRETQUERYVALUE#frag", "title": "Log in",
+            "html": '<html><head><title> Log in  </title></head><body><form><input type="password"></form>' + "x " * 120 + "</body></html>",
+            "text": "Log in to continue. " + "word " * 80, "fetched_with": "browser", "cookie_names_back": ["csrftoken", "mid"],
+            "error": {"code": "UPSTREAM_BROKEN", "message": "https://x.example/ shows only a login page"}}
+    return {**base, **over}
+
+
+def test_a_platform_that_was_really_checked_shows_what_its_page_showed_and_never_a_secret_or_a_query(settings, ledger):
+    wall = page_with("instagram")
+    row = check("instagram", settings, ledger, Worker(lambda item: wall))
+    ev = row["evidence"]
+    assert row["state"] == SL.REJECTED and ev["fetched_with"] == "browser" and ev["status"] == 200 and ev["title"] == "Log in" and ev["landed"] == "https://www.instagram.com/accounts/login/"
+    assert ev["password_field"] is True and ev["login_word_in_address"] == "login" and ev["cookies_back"] == ["csrftoken", "mid"] and ev["cookies_sent"] == ["csrftoken", "sessionid"]
+    assert ev["logged_in_found"] == [] and len(ev["logged_in_missing"]) == 4 and len(ev["text_starts"]) <= 240 and ev["text_starts"].startswith("Log in to continue.")
+    lines = SL.evidence_lines(row)
+    assert lines[0] == "      page: read with the browser; HTTP 200; landed on https://www.instagram.com/accounts/login/; title 'Log in'"
+    assert lines[1] == "      cookies sent (names): csrftoken, sessionid; the platform sent back (names): csrftoken, mid"
+    assert lines[2].startswith("      logged-in markers found: none of 4 (") and "password field on the page: yes; login or challenge word in the address: login" in lines[2]
+    assert lines[3].startswith("      visible text starts: 'Log in to continue.") and lines[4] == "      the worker said: UPSTREAM_BROKEN: https://x.example/ shows only a login page"
+    text = "\n".join(lines) + json.dumps(row)
+    assert "SECRETQUERYVALUE" not in text and "frag" not in ev["landed"] and "?" not in ev["landed"] and VALUE not in text and secret("instagram") not in text          # no query, no fragment, no cookie value
+    good = check("x", settings, ledger, Worker(lambda item: logged_in_page("x")))
+    one = SL.evidence_lines(good)
+    assert len(one) == 1 and one[0].startswith("      page: read with the browser; HTTP 200; landed on https://x.com/home; title '") or one[0].startswith("      page: read with the browser; HTTP 200; landed on https://x.com/home; no title")
+    assert "logged-in markers found: " in one[0] and "visible text" not in one[0] and "cookies sent" not in one[0]                                          # an ACCEPTED platform gets one line
+    assert SL.evidence_lines({"state": SL.NOT_SET_UP}) == []                                                                                              # nothing was loaded: nothing to show
+
+
+def test_the_report_prints_the_evidence_under_each_platform_that_was_checked_and_not_under_the_offline_list(settings, ledger):
+    worker = Worker(lambda item: page_with("instagram") if platform_of(item) == "instagram" else logged_in_page("x"))
+    rows = SL.check_all(settings, "owner@example.com", sys.executable, environ=environ("instagram", "x"), runner=worker, now=NOW, ledger=ledger)
+    live = SL.format_report(rows).splitlines()
+    at = next(i for i, ln in enumerate(live) if ln.strip().startswith("Instagram"))
+    assert live[at + 1].startswith("      page: read with the browser") and live[at + 3].startswith("      logged-in markers found: none of")
+    offline = SL.format_report(SL.check_all(settings, "", "", environ=environ("x"), now=NOW, ledger=ledger, offline=True), offline=True)
+    assert "      page:" not in offline
+    assert "If a session fails, a read falls back to discovery (the search layer, no login): not available in this run" in SL.format_report(rows, discovery=SL.discovery_status({}))
+
+
+def test_the_logged_out_wording_counts_only_in_the_visible_text_not_in_the_pages_translations():
+    html = '<html><title>TikTok</title><script>{"i18n":{"login":"Log in to TikTok"}}</script><div data-e2e="profile-icon">x</div>' + "filler " * 60 + "</html>"
+    assert S.check_logged_in("tiktok", "https://www.tiktok.com/", html, 200)[0] is False                                    # no visible text given: the old rule, the whole page
+    assert S.check_logged_in("tiktok", "https://www.tiktok.com/", html, 200, text="For You Following Upload Messages") == (True, "logged in")
+    assert S.check_logged_in("tiktok", "https://www.tiktok.com/", html, 200, text="Log in to TikTok  Manage your account") == (False, "the page shows the logged-out state")
+    assert S.check_logged_in("tiktok", "https://www.tiktok.com/", html, 200, text="  LOG IN   to   tiktok ")[0] is False                     # case and spacing do not hide it
+    assert S.check_logged_in("tiktok", "https://www.tiktok.com/", html.replace('data-e2e="profile-icon"', "x"), 200, text="For You")[0] is False  # no logged-in marker at all is still not logged in
+    ev = S.page_evidence("tiktok", "https://user:pw@www.tiktok.com/login?token=SECRET#frag", html, 200, "Log in to TikTok  Manage")
+    assert ev["logged_out_in_text"] == ["log in to tiktok"] and ev["logged_out_only_in_code"] == [] and ev["landed"] == "https://www.tiktok.com/login" and "pw" not in ev["landed"]
+    ev = S.page_evidence("tiktok", "https://www.tiktok.com/", html, 200, "For You")
+    assert ev["logged_out_in_text"] == [] and ev["logged_out_only_in_code"] == ["log in to tiktok"] and ev["logged_in_found"] == ['data-e2e="profile-icon"'] and ev["login_word_in_address"] == ""
+
+
+def test_the_worker_is_asked_for_the_visible_text_and_a_logged_in_page_with_wording_only_in_its_code_is_accepted(settings, ledger):
+    page = dict(logged_in_page("tiktok"), html=logged_in_page("tiktok")["html"] + ' {"i18n":"Log in to TikTok"}', text="For You Following Upload")
+    assert check("tiktok", settings, ledger, Worker(lambda item: page))["state"] == SL.ACCEPTED
+    wall = dict(page, text="Log in to TikTok Use phone / email / username")
+    assert check("tiktok", settings, ledger, Worker(lambda item: wall))["state"] == SL.REJECTED
+
+
+# ---- the last resort for X ---------------------------------------------------------------------------------------------------------------------------
+
+BLOCKED_X = {"ok": False, "status": 0, "html": "", "fetched_with": "browser", "error": {"code": "PLATFORM_BLOCKED", "message": "x.com showed a challenge or bot-check page"}}
+
+
+def tw_python(tmp_path):
+    path = tmp_path / "twscrape-python"
+    path.write_text("#!/bin/sh\n")
+    return str(path)
+
+
+class TwRunner:
+    """A stand-in for running the checker: records the command and the environment it was given, and answers with the given standard output."""
+
+    def __init__(self, answer, code=0):
+        self.answer, self.code, self.calls = answer, code, []
+
+    def __call__(self, argv, env=None, **kw):
+        self.calls.append((list(argv), dict(env or {}), kw))
+        return subprocess.CompletedProcess(argv, self.code, self.answer, "log line on stderr")
+
+
+def with_tw(worker, tw, tmp_path, **more):
+    def run(argv, env=None, **kw):
+        return tw(argv, env=env, **kw) if str(argv[0]) == tw_python(tmp_path) else worker(argv, env=env, **kw)
+    return run, {**environ("x"), "TWSCRAPE_PYTHON": tw_python(tmp_path), "ANTHROPIC_API_KEY": "sk-ant-NOT-FOR-IT", **more}
+
+
+def x_row(settings, ledger, tmp_path, answer, **kw):
+    tw = TwRunner(answer, **kw)
+    runner, env = with_tw(Worker(lambda item: BLOCKED_X), tw, tmp_path)
+    row = SL.check_platform("x", settings, "owner@example.com", sys.executable, environ=env, runner=runner, now=NOW, ledger=ledger)
+    return row, tw
+
+
+def test_when_x_shows_a_challenge_its_own_profile_interface_is_asked_with_the_stored_cookies_alone_and_a_good_answer_is_accepted(settings, ledger, tmp_path):
+    row, tw = x_row(settings, ledger, tmp_path, json.dumps({"state": "accepted", "detail": "the profile of account id 123456789 was read through X's own interface with the stored cookies"}) + "\n")
+    assert row["state"] == SL.ACCEPTED and row["via"] == "twscrape" and "so the browser read of x.com is not proved" in row["reason"] and "checked through twscrape because x.com's web page showed the runner a challenge" in row["reason"]
+    argv, env, kw = tw.calls[0]
+    assert argv == [tw_python(tmp_path), str(SL.TWSCRAPE_SCRIPT)] and SL.TWSCRAPE_SCRIPT.name == "x_twscrape_check.py" and kw["timeout"] == 150
+    assert sorted(env) == ["DO_NOT_TRACK", "HOME", "PATH", "PYTHONDONTWRITEBYTECODE", "TWS_TELEMETRY", "X_SESSION_COOKIES"] and env["TWS_TELEMETRY"] == "0" and env["DO_NOT_TRACK"] == "1"           # one session's cookies, telemetry off, nothing else of ours
+    assert json.loads(env["X_SESSION_COOKIES"]) == {n: VALUE + n for n in S.PLATFORMS["x"]["required"]} and "ANTHROPIC_API_KEY" not in env
+    assert ledger.proved_via("x") == "twscrape" and ledger.proved_on("x") == NOW
+    assert not ledger.proved("x", NOW) and ledger.proved("x", NOW, via="twscrape")                                              # a different route's proof is not proof for the browser read
+    assert "last proved 2026-11-11 (through twscrape, not the browser)" in SL.format_report([row])
+    assert SL.exit_code([row]) == 0
+
+
+def test_a_rejection_from_x_voids_the_proof_and_turns_the_run_red_while_anything_that_judges_nothing_keeps_the_block(settings, ledger, tmp_path):
+    reasons = {"rejected": "X did not accept the two cookies (error 32, could not authenticate you): the session has expired or was ended"}
+    row, _ = x_row(settings, ledger, tmp_path, json.dumps({"state": "rejected", "detail": reasons["rejected"]}))
+    assert row["state"] == SL.REJECTED and "error 32" in row["reason"] and "(checked through twscrape" in row["reason"] and row["proved_on"] == "" and SL.exit_code([row]) == 1
+    for answer in (json.dumps({"state": "unreachable", "detail": "NoAccountError: No account available for queue UserByRestId"}), "not json at all", "", json.dumps({"state": "weird", "detail": "x"})):
+        row, _ = x_row(settings, ledger, tmp_path, answer)
+        assert row["state"] == SL.BLOCKED and "not a bad session" in row["reason"] and "The last-resort twscrape check could not judge it either:" in row["reason"] and SL.exit_code([row]) == 0
+    row, _ = x_row(settings, ledger, tmp_path, "", code=3)
+    assert "gave no answer (exit 3)" in row["reason"] and row["state"] == SL.BLOCKED
+    class Dies(TwRunner):
+        def __call__(self, argv, env=None, **kw):
+            raise subprocess.TimeoutExpired(argv, 150)
+    runner, env = with_tw(Worker(lambda item: BLOCKED_X), Dies(""), tmp_path)
+    row = SL.check_platform("x", settings, "o@example.com", sys.executable, environ=env, runner=runner, now=NOW, ledger=ledger)
+    assert row["state"] == SL.BLOCKED and "could not be run (TimeoutExpired)" in row["reason"]
+    row = SL.check_platform("x", settings, "o@example.com", sys.executable, environ=environ("x"), runner=Worker(lambda item: BLOCKED_X), now=NOW, ledger=ledger)
+    assert row["state"] == SL.BLOCKED and "the twscrape environment is not installed here (TWSCRAPE_PYTHON), so X's profile interface was not asked" in row["reason"]      # nothing is installed or run when it is not there
+
+
+def test_only_x_gets_the_last_resort_and_only_when_the_browser_was_blocked(settings, ledger, tmp_path):
+    tw = TwRunner(json.dumps({"state": "accepted", "detail": "ok"}))
+    runner, env = with_tw(Worker(lambda item: dict(BLOCKED_X)), tw, tmp_path)
+    env = {**env, **environ("instagram")}
+    row = SL.check_platform("instagram", settings, "o@example.com", sys.executable, environ=env, runner=runner, now=NOW, ledger=ledger)
+    assert row["state"] == SL.BLOCKED and tw.calls == [] and "twscrape" not in row["reason"]                                    # another platform is never sent to it
+    runner, env = with_tw(Worker(lambda item: login_wall("x")), tw, tmp_path)
+    assert SL.check_platform("x", settings, "o@example.com", sys.executable, environ=env, runner=runner, now=NOW, ledger=ledger)["state"] == SL.REJECTED and tw.calls == []       # a page that was loaded and said logged out is not second-guessed
+    runner, env = with_tw(Worker(lambda item: logged_in_page("x")), tw, tmp_path)
+    assert SL.check_platform("x", settings, "o@example.com", sys.executable, environ=env, runner=runner, now=NOW, ledger=ledger)["via"] == "browser" and tw.calls == []
+    sec = settings["services"]["stored_sessions"]
+    off = {**settings, "services": {**settings["services"], "stored_sessions": {**sec, "channels": {**sec["channels"], "x": False}}}}
+    runner, env = with_tw(Worker(lambda item: dict(BLOCKED_X)), tw, tmp_path)
+    assert SL.check_platform("x", off, "o@example.com", sys.executable, environ=env, runner=runner, now=NOW, ledger=ledger)["state"] == SL.OFF and tw.calls == []
+
+
+# ---- the program that asks X (it runs in its own environment; here a stand-in for twscrape) ---------------------------------------------------------
+
+from contentintel import x_twscrape_check as XT        # noqa: E402
+
+AUTH, CT0, TWID = "AUTHTOKENVALUE0123456789", "CTZEROVALUE0123456789", "u%3D1234567890"
+JAR = {"auth_token": AUTH, "ct0": CT0, "twid": TWID, "kdt": "ignored-cookie-value"}
+
+
+class FakePool:
+    def __init__(self, error_msg=None, active=True, fail_add=False):
+        self.added, self.error_msg, self.active, self.fail_add = [], error_msg, active, fail_add
+
+    async def add_account_cookies(self, name, header):
+        if self.fail_add:
+            raise RuntimeError("cannot add " + header)
+        self.added.append((name, header))
+
+    async def get_all(self):
+        return [type("Account", (), {"error_msg": self.error_msg, "active": self.active})()]
+
+
+class FakeApi:
+    def __init__(self, user=None, pool=None, raises=None, slow=False):
+        self.user, self.pool, self.raises, self.slow, self.asked = user, pool or FakePool(), raises, slow, []
+
+    async def user_by_id(self, uid):
+        self.asked.append(uid)
+        if self.slow:
+            import asyncio
+            await asyncio.sleep(5)
+        if self.raises:
+            raise self.raises
+        return self.user
+
+
+def run_check(jar, api, timeout=60):
+    import asyncio
+    return asyncio.run(XT.check(jar, api_factory=lambda path: api, timeout=timeout))
+
+
+def test_the_x_program_reads_one_profile_with_the_two_cookies_and_calls_a_returned_profile_accepted():
+    api = FakeApi(user=object())
+    got = run_check(JAR, api)
+    assert got == {"state": "accepted", "detail": "the profile of account id 1234567890 was read through X's own interface with the stored cookies"}
+    assert api.asked == [1234567890] and api.pool.added == [("session-check", f"auth_token={AUTH}; ct0={CT0}; twid={TWID}")]          # one profile; only the cookies it needs
+    assert "ignored-cookie-value" not in json.dumps(api.pool.added)
+
+
+def test_the_x_program_reports_what_x_said_about_the_account_and_never_guesses():
+    cases = [("(32) Could not authenticate you", True, "rejected", "error 32"), ("(326) Authorization: Denied by access control: To protect our users ... this account is temporarily locked", True, "rejected", "error 326"),
+             ("(88) Rate limit exceeded", True, "rejected", "error 88"), (None, False, "rejected", "answered 403")]
+    for msg, active, state, word in cases:
+        got = run_check(JAR, FakeApi(pool=FakePool(msg, active)))
+        assert got["state"] == state and word in got["detail"], msg
+    nothing = run_check(JAR, FakeApi(pool=FakePool(None, True)))
+    assert nothing["state"] == "unreachable" and "a bot-check, a block or a network problem" in nothing["detail"]                 # no profile and no word from X: nothing is judged
+    assert run_check(JAR, FakeApi(slow=True), timeout=0.05) == {"state": "unreachable", "detail": "the profile read timed out"}
+    boom = run_check(JAR, FakeApi(raises=RuntimeError(f"connection broke while sending {AUTH} and {CT0}")))
+    assert boom["state"] == "unreachable" and AUTH not in boom["detail"] and CT0 not in boom["detail"] and "RuntimeError: connection broke while sending *** and ***" == boom["detail"]
+    fail = run_check(JAR, FakeApi(pool=FakePool(fail_add=True)))
+    assert fail["state"] == "unreachable" and AUTH not in fail["detail"]
+
+
+def test_the_x_program_needs_the_cookies_and_the_profile_id_and_says_so_without_asking_x_anything():
+    api = FakeApi(user=object())
+    for jar, word in (({"ct0": CT0, "twid": TWID}, "auth_token"), ({"auth_token": AUTH, "twid": TWID}, "ct0"), ({"auth_token": AUTH, "ct0": CT0}, "twid"), ({}, "auth_token or ct0")):
+        got = run_check(jar, api)
+        assert got["state"] == "unreachable" and word in got["detail"]
+    assert api.asked == [] and api.pool.added == []
+    assert [XT.user_id_from({"twid": v}) for v in ("u%3D1234567890", "u=1234567890", '"u=1234567890"', "1234567890", "u%3D12", "", "garbage")] == ["1234567890", "1234567890", "1234567890", "1234567890", "", "", ""]
+    assert XT.explain(None, None) is None and XT.explain("", True) is None and XT.explain("(404) not found", True) is None
+
+
+def test_the_x_program_prints_one_json_line_switches_telemetry_off_before_twscrape_loads_and_never_prints_a_cookie_value():
+    import io
+    out = io.StringIO()
+    assert XT.main({"X_SESSION_COOKIES": json.dumps(JAR)}, out=out, api_factory=lambda path: FakeApi(user=object())) == 0
+    assert json.loads(out.getvalue()) == {"state": "accepted", "detail": "the profile of account id 1234567890 was read through X's own interface with the stored cookies"} and out.getvalue().count("\n") == 1
+    for bad in ("", "not json", "[1, 2]", "null"):
+        out = io.StringIO()
+        XT.main({"X_SESSION_COOKIES": bad}, out=out)
+        got = json.loads(out.getvalue())
+        assert got["state"] == "unreachable" and ("not handed over as an object" in got["detail"] or "no auth_token or ct0" in got["detail"])
+    assert not [v for v in (AUTH, CT0) if v in out.getvalue()]
+    source = Path(XT.__file__).read_text(encoding="utf-8")
+    assert source.index('os.environ["TWS_TELEMETRY"] = "0"') < source.index("from twscrape import API") and 'os.environ["DO_NOT_TRACK"] = "1"' in source
+    assert not [w for w in ("api.search", "api.tweet", "user_tweets", "tweet_details", "followers", "following", "retweeters") if w in source]            # it reads one profile and calls no search or timeline interface
+    pin = (ROOT / "requirements-twscrape.txt").read_text(encoding="utf-8").split()
+    assert pin == ["twscrape==0.20.1"]
+
+
+@pytest.mark.skipif(not __import__("os").environ.get("TWSCRAPE_PYTHON"), reason="needs TWSCRAPE_PYTHON: an environment with twscrape installed")
+def test_the_real_twscrape_library_runs_the_program_to_the_point_of_asking_x_and_reports_what_happened_in_one_json_line():
+    env = {"X_SESSION_COOKIES": json.dumps(JAR), "PATH": __import__("os").environ.get("PATH", ""), "HOME": "/tmp"}
+    done = subprocess.run([__import__("os").environ["TWSCRAPE_PYTHON"], str(SL.TWSCRAPE_SCRIPT)], env=env, capture_output=True, text=True, timeout=180)
+    last = json.loads([ln for ln in done.stdout.splitlines() if ln.startswith("{")][-1])
+    assert last["state"] in ("accepted", "rejected", "unreachable") and AUTH not in done.stdout and CT0 not in done.stdout and AUTH not in last["detail"]
+
+
+# ---- discovery: the fallback when neither the plain reader nor the session can read the page --------------------------------------------------------
+
+class FakeSearch:
+    def __init__(self, results=None, raises=None):
+        self.results, self.raises, self.queries = results or [], raises, []
+
+    def search(self, query, *, kind="web", num=10, **kw):
+        self.queries.append((query, kind, num))
+        if self.raises:
+            raise self.raises
+        return self.results
+
+
+def result(rank, title, url, snippet):
+    from contentintel.providers import Result
+    return Result(rank, title, url, snippet)
+
+
+def test_when_the_page_and_the_session_cannot_be_read_discovery_answers_with_search_snippets_and_says_what_they_are(settings, ledger):
+    check("x", settings, ledger, Worker(lambda item: logged_in_page("x")))
+    search = FakeSearch([result(1, "Some account (@someaccount) / X", "https://x.com/someaccount", "Posts about overalls"), result(2, "A post", "https://x.com/someaccount/status/1", "A short post"),
+                         result(3, "", "https://example.com/empty", "")])
+    got = read(settings, ledger, Worker(page_for(WALL, WALL)), providers=[("exa", search)])
+    assert got.route == "discovery" and not got.skipped and [t[:2] for t in got.trail][:2] == [("primary", K.NEED_LOGIN), ("session", K.NEED_LOGIN)]
+    assert [(r["title"], r["route"], r["provider"]) for r in got.rows] == [("Some account (@someaccount) / X", "discovery", "exa"), ("A post", "discovery", "exa")] and got.rows[0]["text"] == "Posts about overalls"
+    assert search.queries == [("x.com someaccount", "web", 5)]                                                                  # one search, about the address, five results at most
+    unproved = read(settings, SL.SessionLedger(tmp_ledger_path(ledger)), Worker(page_for(WALL, WALL)), providers=[("serper_dev", FakeSearch([result(1, "T", "https://x.com/a", "s")]))])
+    assert unproved.route == "discovery" and [t[:2] for t in unproved.trail][:2] == [("primary", K.NEED_LOGIN), ("session", "off")]          # a session that was never proved is skipped, and discovery still answers
+
+
+def tmp_ledger_path(ledger):
+    return ledger.path.with_name("empty_sessions_health.json")
+
+
+def test_a_failing_search_ends_in_an_honest_skip_with_the_true_reason_and_a_search_is_made_only_once(settings, ledger):
+    from contentintel import providers as P
+    for exc, code in ((P.AuthError("Exa rejected the API key (HTTP 401)"), K.NEED_SETUP), (P.QuotaError("Exa is out of credits (HTTP 402)"), K.RATE_LIMITED), (P.ProviderError("Exa: HTTP 500"), K.UPSTREAM_BROKEN)):
+        search = FakeSearch(raises=exc)
+        got = read(settings, ledger, Worker(page_for(WALL, WALL)), providers=[("exa", search)])
+        assert got.skipped and got.trail[-1][:2] == ("discovery", code) and len(search.queries) == 1 and "discovery:" in got.reason
+    empty = FakeSearch([])
+    got = read(settings, ledger, Worker(page_for(WALL, WALL)), providers=[("exa", empty)])
+    assert not got.skipped and got.route == "" and len(empty.queries) == 1                                                      # a real, empty answer
+    primary = Worker(page_for(PAGE, PAGE))
+    search = FakeSearch([result(1, "T", "https://x.com/a", "s")])
+    assert read(settings, ledger, primary, providers=[("exa", search)]).route == "primary" and search.queries == []             # discovery is never asked when the page was read
+
+
+def test_the_discovery_status_names_the_provider_that_would_be_asked_and_says_when_none_can():
+    assert SL.discovery_status({}) == "not available in this run: no search key (EXA_API_KEY, SERPER_API_KEY or TAVILY_API_KEY) is passed to it"
+    assert SL.discovery_status({"SERPER_API_KEY": "k"}) == "available here, through serper_dev"
+    assert SL.discovery_status({"TAVILY_API_KEY": "k", "EXA_API_KEY": "k", "SERPER_API_KEY": "k"}) == "available here, through exa (then serper_dev, tavily)"
+    assert [n for n, _ in SL.discovery_providers({"EXA_API_KEY": "k", "SERPER_API_KEY": "k"})] == ["exa", "serper_dev"] and SL.SEARCH_ORDER[0] == "exa"
+    assert [SL._query_for(u) for u in ("https://www.instagram.com/some_account/?hl=en#x", "https://x.com/someaccount", "https://www.reddit.com/r/overalls-fans/")] == ["instagram.com some account", "x.com someaccount", "reddit.com r overalls fans"]
+
+
+def test_the_command_says_when_it_fell_back_to_discovery_and_prints_the_discovery_line_in_the_report(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(SL, "discovery_rows", lambda url, environ, providers=None: [{"url": "https://x.com/a", "final_url": "https://x.com/a", "title": "A title", "text": "A snippet", "chars": 9, "route": "discovery", "provider": "exa"}])
+    code, out = run_cli(tmp_path, monkeypatch, capsys, "--what", "read", "--key", "x", "--url", URL)
+    assert code == 0 and "The page itself could not be read, so this is discovery (the search layer, exa, no login): titles and snippets about the address, not the page." in out and "- A title" in out and "A snippet" in out
+    code, out = run_cli(tmp_path, monkeypatch, capsys, "--what", "list")
+    assert "If a session fails, a read falls back to discovery (the search layer, no login): not available in this run" in out
+    code, out = run_cli(tmp_path, monkeypatch, capsys, "--what", "list", EXA_API_KEY="k")
+    assert "available here, through exa" in out
+
+
+def test_the_workflows_pass_the_search_keys_to_the_read_and_install_twscrape_only_when_an_x_session_is_stored():
+    wf = ROOT / ".github" / "workflows"
+    sess = yaml.safe_load((wf / "sessions.yml").read_text(encoding="utf-8"))["jobs"]["sessions"]["steps"]
+    run = next(s for s in sess if s.get("name") == "Stored login sessions")["env"]
+    assert all(run[n] == "${{ secrets." + n + " }}" for n in ("SERPER_API_KEY", "TAVILY_API_KEY", "EXA_API_KEY"))
+    install = next(s for s in sess if str(s.get("name", "")).startswith("Install the isolated twscrape environment"))
+    assert install["if"] == "${{ inputs.what == 'check' }}" and install["env"] == {"X_SESSION_B64": "${{ secrets.X_SESSION_B64 }}"} and 'if [ -n "$X_SESSION_B64" ]; then' in install["run"]
+    assert 'pip" install -q -r requirements-twscrape.txt' in install["run"] and 'TWSCRAPE_PYTHON=$RUNNER_TEMP/twscrape-env/bin/python" >> "$GITHUB_ENV"' in install["run"]
+    acc = yaml.safe_load((wf / "acceptance.yml").read_text(encoding="utf-8"))["jobs"]["acceptance"]["steps"]
+    step = next(s for s in acc if str(s.get("name", "")).startswith("Stored login sessions"))["run"]
+    assert 'if [ -n "$X_SESSION_B64" ]; then' in step and "install -q -r requirements-twscrape.txt" in step and 'export TWSCRAPE_PYTHON=' in step
+    assert step.index("twscrape-env") < step.index("observatory sessions --all --what check")
