@@ -252,7 +252,7 @@
   "ai:claude|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 3,
+   "consecutive_successes": 5,
    "history": [
     {
      "at": "2026-11-11T04:24:24Z",
@@ -274,10 +274,24 @@
      "items": 1,
      "ms": 2823,
      "ok": true
+    },
+    {
+     "at": "2026-11-12T04:21:56Z",
+     "code": "",
+     "items": 1,
+     "ms": 1198,
+     "ok": true
+    },
+    {
+     "at": "2026-11-12T04:21:56Z",
+     "code": "",
+     "items": 1,
+     "ms": 655,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-11T11:11:57Z",
+   "last_success": "2026-11-12T04:21:56Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:claude",
@@ -286,7 +300,7 @@
   "ai:cloudflare|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 2,
+   "consecutive_successes": 3,
    "history": [
     {
      "at": "2026-11-10T09:20:48Z",
@@ -343,6 +357,13 @@
      "items": 1,
      "ms": 1651,
      "ok": true
+    },
+    {
+     "at": "2026-11-12T04:21:56Z",
+     "code": "",
+     "items": 1,
+     "ms": 457,
+     "ok": true
     }
    ],
    "last_error": {
@@ -350,7 +371,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "unusable answer: the answer is not valid JSON"
    },
-   "last_success": "2026-11-11T11:11:57Z",
+   "last_success": "2026-11-12T04:21:56Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:cloudflare",
@@ -558,7 +579,7 @@
   "ai:google|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 1,
+   "consecutive_successes": 2,
    "history": [
     {
      "at": "2026-11-10T09:17:16Z",
@@ -580,6 +601,13 @@
      "items": 1,
      "ms": 1257,
      "ok": true
+    },
+    {
+     "at": "2026-11-12T04:21:56Z",
+     "code": "",
+     "items": 1,
+     "ms": 1577,
+     "ok": true
     }
    ],
    "last_error": {
@@ -587,7 +615,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "All 1 routed attempt(s) failed with upstream provider errors (empty_completion ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: google/gemini-3.5-flash key1: empty_completion. Last error: empty completion from Gemini 3.5 Flash"
    },
-   "last_success": "2026-11-11T04:24:24Z",
+   "last_success": "2026-11-12T04:21:56Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:google",
@@ -595,8 +623,8 @@
   },
   "ai:groq|gateway": {
    "acceptance": null,
-   "consecutive_failures": 6,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 2,
    "history": [
     {
      "at": "2026-11-10T08:54:44Z",
@@ -737,6 +765,20 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-12T04:21:56Z",
+     "code": "",
+     "items": 1,
+     "ms": 327,
+     "ok": true
+    },
+    {
+     "at": "2026-11-12T04:21:56Z",
+     "code": "",
+     "items": 1,
+     "ms": 188,
+     "ok": true
     }
    ],
    "last_error": {
@@ -744,16 +786,16 @@
     "code": "RATE_LIMITED",
     "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset."
    },
-   "last_success": "2026-11-11T11:11:57Z",
+   "last_success": "2026-11-12T04:21:56Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:groq",
-   "state": "degraded"
+   "state": "healthy"
   },
   "ai:openrouter|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 1,
+   "consecutive_successes": 2,
    "history": [
     {
      "at": "2026-11-10T09:13:15Z",
@@ -796,6 +838,13 @@
      "items": 1,
      "ms": 1869,
      "ok": true
+    },
+    {
+     "at": "2026-11-12T04:21:56Z",
+     "code": "",
+     "items": 1,
+     "ms": 10445,
+     "ok": true
     }
    ],
    "last_error": {
@@ -803,11 +852,11 @@
     "code": "UPSTREAM_BROKEN",
     "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: openrouter/qwen/qwen3-next-80b-a3b-instruct:free key1: model_not_found. Last error: OpenRouter API erro"
    },
-   "last_success": "2026-11-11T15:50:12Z",
+   "last_success": "2026-11-12T04:21:56Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:openrouter",
-   "state": "degraded"
+   "state": "healthy"
   },
   "claude|api": {
    "acceptance": {

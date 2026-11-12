@@ -193,6 +193,83 @@
     "tokens_in": 23,
     "tokens_out": 57
    }
+  },
+  "2026-11-12": {
+   "claude": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 8e-05,
+      "requests": 2,
+      "tokens": 44
+     }
+    },
+    "cost_usd": 8e-05,
+    "failures": 0,
+    "latency_ms": 1853,
+    "requests": 2,
+    "tokens_in": 36,
+    "tokens_out": 8
+   },
+   "cloudflare": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 44
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 457,
+    "requests": 1,
+    "tokens_in": 42,
+    "tokens_out": 2
+   },
+   "google": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 9
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 1577,
+    "requests": 1,
+    "tokens_in": 8,
+    "tokens_out": 1
+   },
+   "groq": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 226
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 515,
+    "requests": 2,
+    "tokens_in": 156,
+    "tokens_out": 70
+   },
+   "openrouter": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 58
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 10445,
+    "requests": 1,
+    "tokens_in": 17,
+    "tokens_out": 41
+   }
   }
  }
 }
