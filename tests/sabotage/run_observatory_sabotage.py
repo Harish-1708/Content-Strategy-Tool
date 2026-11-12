@@ -643,6 +643,25 @@ U57 = [   # update 50: a stale Controls row is removed
 ]
 MUTATIONS.extend(U57)
 
+U58 = [   # update 51: the browser, BLOCKED, one attempt
+    ('u51-live-retries', 'contentintel/session_live.py', 'job["retry"] = {"attempts": 1, "backoff_seconds": 0}', 'job["retry"] = {"attempts": 3, "backoff_seconds": 0}', 'a challenge page is asked for again with the same session'),
+    ('u51-live-blocked-is-cannot-check', 'contentintel/session_live.py', '    if err.get("code") == "PLATFORM_BLOCKED":\n        return done(BLOCKED,', '    if False:\n        return done(BLOCKED,', 'a bot-check page is reported as a check that could not be made'),
+    ('u51-live-blocked-voids-proof', 'contentintel/session_live.py', 'CLEARS_PROOF = (REJECTED, EXPIRED, BAD_CAPTURE, NOT_SET_UP)', 'CLEARS_PROOF = (REJECTED, EXPIRED, BAD_CAPTURE, NOT_SET_UP, BLOCKED)', 'a block voids the earlier proof of the session'),
+    ('u51-live-blocked-red', 'contentintel/session_live.py', 'OWNER_ACTION = (REJECTED, EXPIRED, BAD_CAPTURE)', 'OWNER_ACTION = (REJECTED, EXPIRED, BAD_CAPTURE, BLOCKED)', 'a platform blocking the runner turns the run red'),
+    ('u51-live-reason-dropped', 'contentintel/session_live.py', 'why_plain = f"the browser could not be used here ({res.get(\'browser_error\') or \'no reason was given\'})"', 'why_plain = "the browser could not be used here (no reason was given)"', "the browser library's own reason is not shown"),
+    ('u51-live-box-advice', 'contentintel/session_live.py', 'and this site may only show its logged-in state in a browser")', 'and this site may only show its logged-in state in a browser: run the check with the browser box ticked")', 'the check points at an input that does not exist'),
+    ('u51-live-days-zero', 'contentintel/session_live.py', '(" (less than a day left)" if r["days_left"] == 0 else f" ({r[\'days_left\']} day(s) left)")', 'f" ({r[\'days_left\']} day(s) left)"', 'an expiry within a day is shown as 0 days'),
+    ('u51-worker-reason-hidden', 'contentintel/observatory/scrapling_worker.py', 'out["browser_error"] = _short_error(exc, [str(c["value"]) for c in kw.get("cookies", [])])', 'out["browser_error"] = ""', "the browser library's reason is not passed on"),
+    ('u51-worker-reason-unredacted', 'contentintel/observatory/scrapling_worker.py', '[str(c["value"]) for c in kw.get("cookies", [])])', '[])', 'a cookie value can travel in the browser error'),
+    ('u51-worker-reason-unbounded', 'contentintel/observatory/scrapling_worker.py', '    return text[:300]', '    return text', 'the browser error is not bounded'),
+    ('u51-worker-reason-short-values', 'contentintel/observatory/scrapling_worker.py', '        if len(value) >= 6:', '        if len(value) >= 600:', 'a short cookie value is not hidden'),
+    ('u51-wf-sessions-playwright', '.github/workflows/sessions.yml', '-m patchright install --with-deps chromium', '-m playwright install --with-deps chromium', 'the sessions workflow installs the browser the stealth fetcher does not use'),
+    ('u51-wf-acceptance-playwright', '.github/workflows/acceptance.yml', 'scrapling-env/bin/python" -m patchright install --with-deps chromium', 'scrapling-env/bin/python" -m playwright install --with-deps chromium', 'Acceptance installs the browser the stealth fetcher does not use'),
+    ('u51-wf-observatory-playwright', '.github/workflows/observatory.yml', 'scrapling-env/bin/python" -m patchright install --with-deps chromium', 'scrapling-env/bin/python" -m playwright install --with-deps chromium', 'the Observatory browsers option installs the browser the stealth fetcher does not use'),
+    ('u51-requirements-unpinned', 'requirements-scrapling.txt', 'scrapling[fetchers]==0.5', 'scrapling[fetchers]>=0.5', 'a new Scrapling version is adopted without checking'),
+]
+MUTATIONS.extend(U58)
+
 def run_tests(workdir):
     env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}
     patterns = os.environ.get("SABOTAGE_TESTS", "").split() or TESTS                # SABOTAGE_TESTS narrows the run to chosen test files, for a slow machine
