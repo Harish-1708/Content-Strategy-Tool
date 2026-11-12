@@ -21,10 +21,10 @@ from . import sessions as S
 PROVED_DAYS = 14                      # a passed check counts as live proof for this long
 ACCEPTED, REJECTED, EXPIRED = "ACCEPTED", "REJECTED", "EXPIRED"
 NOT_SET_UP, BAD_CAPTURE, OFF = "NOT SET UP", "BAD CAPTURE", "OFF"
-CANNOT_CHECK, UNCONFIRMED = "CANNOT CHECK", "UNCONFIRMED"
-ORDER = (ACCEPTED, UNCONFIRMED, REJECTED, EXPIRED, BAD_CAPTURE, CANNOT_CHECK, NOT_SET_UP, OFF)
+CANNOT_CHECK, UNCONFIRMED, BLOCKED = "CANNOT CHECK", "UNCONFIRMED", "BLOCKED"
+ORDER = (ACCEPTED, UNCONFIRMED, REJECTED, EXPIRED, BAD_CAPTURE, BLOCKED, CANNOT_CHECK, NOT_SET_UP, OFF)
 OWNER_ACTION = (REJECTED, EXPIRED, BAD_CAPTURE)           # the states a person has to fix (a new capture): they turn a check run red, a missing secret does not
-CLEARS_PROOF = (REJECTED, EXPIRED, BAD_CAPTURE, NOT_SET_UP)       # these states void an earlier proof; "cannot check", "unconfirmed" and "off" learn nothing, so they keep it
+CLEARS_PROOF = (REJECTED, EXPIRED, BAD_CAPTURE, NOT_SET_UP)       # these states void an earlier proof; "cannot check", "blocked", "unconfirmed" and "off" learn nothing, so they keep it
 WALL = re.compile(r"login page|log in|sign in", re.I)
 
 
@@ -104,6 +104,7 @@ def _worker_page(platform, url, settings, contact, python, environ, runner, *, w
         env[name] = text                                                                 # the worker is handed this one named secret and nothing else of ours
     job = wc.build_job([{"url": url, "advanced": adv}], settings, contact)
     job["return_html"] = True
+    job["retry"] = {"attempts": 1, "backoff_seconds": 0}                                  # one attempt: a challenge page is never asked for again with the same session
     got = wc.run_worker(job, python, timeout=timeout, environ=env, runner=runner)
     results = got.get("results") or []
     if not results:
@@ -147,16 +148,20 @@ def check_platform(platform, settings, contact, python, *, environ=None, runner=
         return done(CANNOT_CHECK, f"the check could not be made here: {exc}")
     html, final, status = res.get("html") or "", res.get("final_url") or spec["check_url"], int(res.get("status") or 0)
     plain = bool(res.get("browser_note"))
+    why_plain = f"the browser could not be used here ({res.get('browser_error') or 'no reason was given'})"
+    err = res.get("error") or {}
+    if err.get("code") == "PLATFORM_BLOCKED":
+        return done(BLOCKED, f"{spec['label']} showed a bot-check or challenge page to this runner, so the session itself could not be judged"
+                    + (f"; and {why_plain}" if plain else "") + ". This is the platform blocking the runner, not a bad session")
     if not html:
-        err = res.get("error") or {}
         if status in (401, 403):
             return done(REJECTED, f"the site answered {status}: either it refused the session or it blocked this runner; capture a new session, and if it repeats the platform blocks runners")
         return done(CANNOT_CHECK, f"the page could not be read ({err.get('code') or status or 'no answer'}): {err.get('message') or 'no page came back'}")
     ok, reason = S.check_logged_in(platform, final, html, status or 200)
     if ok:
-        return done(ACCEPTED, "the platform's own page showed a logged-in state" + (" (read over plain HTTP: no browser was installed here)" if plain else ""))
+        return done(ACCEPTED, "the platform's own page showed a logged-in state" + (f" (read over plain HTTP because {why_plain})" if plain else ""))
     if plain:
-        return done(UNCONFIRMED, f"{reason}; but no browser was installed here, so the page was read over plain HTTP and this site may only show its logged-in state in a browser: run the check with the browser box ticked")
+        return done(UNCONFIRMED, f"{reason}; but the page was read over plain HTTP because {why_plain}, and this site may only show its logged-in state in a browser")
     return done(REJECTED, f"{reason}: the stored session was not accepted; capture a new one")
 
 
@@ -175,7 +180,8 @@ def format_report(rows, offline=False):
     head = "Stored login sessions: no request was made, each platform shows what is stored" if offline else "Stored login sessions: each platform is judged on its own, live"
     lines = [head + " (a missing secret is not a failure; an expired, refused or unusable one needs a new capture):"]
     for r in rows:
-        expiry = f"; expires {r['expires_on']}" + (f" ({r['days_left']} day(s) left)" if r["days_left"] != "" else "") if r["expires_on"] else ""
+        left = "" if r["days_left"] == "" else (" (less than a day left)" if r["days_left"] == 0 else f" ({r['days_left']} day(s) left)")
+        expiry = f"; expires {r['expires_on']}{left}" if r["expires_on"] else ""
         proof = f"; last proved {r['proved_on'][:10]}" if r.get("proved_on") else ""
         lines.append(f"  {r['label']:<{width}}  {r['state']:<12} {r['reason']}{expiry}{proof}")
     counts = {}
