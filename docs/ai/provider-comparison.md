@@ -119,7 +119,7 @@ Create nothing until approved.
 
 ## 8. Recommended initial allowlist, and what is switched on
 
-**Switched on at present (read from `ai_providers.yaml`): cloudflare, github, google, groq, mistral, openrouter, and claude.** Everything else is off. The six free providers receive Public and Internal data under the owner's recorded decision of 2026-11-03; Restricted data goes to Claude only. The list below was the original recommendation and is kept for the reasoning; where it says Public only, the owner's decision since then allows Internal.
+**Switched on at present (read from `ai_providers.yaml`): cloudflare, google, groq, mistral, openrouter, and claude.** Everything else is off (GitHub Models is retired by GitHub, 30 July 2026: see docs/ai/retired-providers.md). The five free providers receive Public and Internal data under the owner's recorded decision of 2026-11-03; Restricted data goes to Claude only. The list below was the original recommendation and is kept for the reasoning; where it says Public only, the owner's decision since then allows Internal.
 
 1. **Groq**: first candidate for bulk classification and summarisation of public text.
 2. **Mistral**: second; Public only because it trains on prompts.
