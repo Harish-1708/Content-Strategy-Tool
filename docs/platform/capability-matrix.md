@@ -103,7 +103,7 @@ How to read the **Default** column. *On* means the capability is on by default: 
 
 ## Owner-control defaults (verified from the registry, not assumed)
 
-`tests/test_owner_defaults.py` checks every line below against the code and the shipped `observatory.yaml`, and checks that turning each of the 107 permission switches off blocks exactly that capability and turning it back on restores it.
+`tests/test_owner_defaults.py` checks every line below against the code and the shipped `observatory.yaml`, and checks that turning each of the 106 permission switches off blocks exactly that capability and turning it back on restores it.
 
 | Control | Default |
 |---|---|
@@ -112,7 +112,7 @@ How to read the **Default** column. *On* means the capability is on by default: 
 | Every channel: all connected Agent-Reach channels, and every search provider | On |
 | Scrapling permissions (`access_controls`: custom identity, proxy, session, browser, account cookies, evasion) | On |
 | AI Gateway route, every AI purpose | `gateway_first`: the free providers first, Claude when none can answer. With no free-provider credential on the machine nothing is tried and Claude answers as before |
-| AI Gateway providers (Cloudflare, GitHub Models, Google, Groq, Mistral, OpenRouter: every external provider enabled in `ai_providers.yaml`) | Each has its own owner switch (`services.ai_gateway.channels.<provider>`), on by default. Claude is the fallback and has no switch here. Availability is not permission to send data: what each provider may receive is set by its approved data classes in `ai_providers.yaml` (Internal for these six, by the owner's decision; secret data never), and no setting in this update widens that |
+| AI Gateway providers (Cloudflare, Google, Groq, Mistral, OpenRouter: every external provider enabled in `ai_providers.yaml`; GitHub Models was retired by GitHub on 30 July 2026 and is kept only as a record) | Each has its own owner switch (`services.ai_gateway.channels.<provider>`), on by default. Claude is the fallback and has no switch here. Availability is not permission to send data: what each provider may receive is set by its approved data classes in `ai_providers.yaml` (Internal for these six, by the owner's decision; secret data never), and no setting in this update widens that |
 | Page reader route, every purpose | `auto`: Scrapling first when its worker is installed, then Jina Reader, then the built-in reader. An explicit owner route (or `--engine`) always wins, including over the workflow's Scrapling box |
 | Per-request Scrapling options (`services.scrapling.defaults.*`: browser, session, proxy, impersonate, hide_canvas, block_webrtc, humanize, solve_challenges, disable_resources) | **On.** The numbers and texts (delay, rest hours, locale, timezone, identity, accept-language) are blank, which means the standing pace and the honest identity |
 | Agent-Reach search providers in research | Last in the web search order; on in every workflow (`AGENT_REACH_SEARCH=on`); they only answer where they can run |
