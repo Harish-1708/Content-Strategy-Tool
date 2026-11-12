@@ -137,12 +137,16 @@ def test_the_ledger_holds_no_secret_value_and_a_damaged_file_is_ignored(settings
 
 
 def test_what_the_page_looked_like_decides_between_accepted_rejected_and_unconfirmed(settings, ledger):
-    plain = dict(logged_in_page("x"), browser_note="no browser is installed here, so the page was read over plain HTTP")
+    why = "BrowserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell"
+    plain = dict(logged_in_page("x"), browser_note="no browser is installed here, so the page was read over plain HTTP", browser_error=why)
     assert check("x", settings, ledger, Worker(lambda item: plain))["state"] == SL.ACCEPTED
-    assert "plain HTTP" in ledger.data["x"]["reason"]
-    shell = dict(login_wall("x"), browser_note="no browser is installed here, so the page was read over plain HTTP")
+    assert f"read over plain HTTP because the browser could not be used here ({why})" in ledger.data["x"]["reason"]
+    shell = dict(login_wall("x"), browser_note="no browser is installed here, so the page was read over plain HTTP", browser_error=why)
     row = check("x", settings, ledger, Worker(lambda item: shell))
-    assert row["state"] == SL.UNCONFIRMED and "browser box" in row["reason"] and SL.exit_code([row]) == 0                      # plain HTTP cannot tell: never called a refusal
+    assert row["state"] == SL.UNCONFIRMED and f"because the browser could not be used here ({why})" in row["reason"] and SL.exit_code([row]) == 0      # plain HTTP cannot tell: never called a refusal
+    assert "browser box" not in row["reason"] and "tick" not in row["reason"]                                                     # it never points at an input that does not exist
+    no_reason = dict(login_wall("x"), browser_note="no browser is installed here, so the page was read over plain HTTP")
+    assert "the browser could not be used here (no reason was given)" in check("x", settings, ledger, Worker(lambda item: no_reason))["reason"]
     wrong = dict(logged_in_page("x"), final_url="https://evil.example/home")
     assert check("x", settings, ledger, Worker(lambda item: wrong))["state"] == SL.REJECTED
     challenge = dict(logged_in_page("instagram"), final_url="https://www.instagram.com/challenge/")
@@ -348,16 +352,53 @@ def test_the_sessions_workflow_and_acceptance_hand_over_the_eight_optional_secre
     assert run["continue-on-error"] is True and all(run["env"][n] == "${{ secrets." + n + " }}" for n in names) and run["env"]["READ_URL"] == "${{ inputs.url }}"
     assert 'args=(observatory sessions --all --what "$WHAT")' in run["run"] and '--key "$PLATFORM"' in run["run"] and "${{ inputs" not in run["run"]            # inputs reach the script only as environment variables
     install = next(s for s in steps if str(s.get("name", "")).startswith("Install the isolated Scrapling"))
-    assert install["if"] == "${{ inputs.what != 'list' }}" and "playwright install" in install["run"]
+    assert install["if"] == "${{ inputs.what != 'list' }}" and "-m patchright install --with-deps chromium" in install["run"] and "-m playwright install" not in install["run"]      # the browser Scrapling's stealth fetcher actually runs on
     save = next(s for s in steps if str(s.get("name", "")).startswith("Save what was found"))
     assert "git add -f data/_shared/sessions_health.json" in save["run"] and "git add -f data\n" not in save["run"]
     assert next(s for s in steps if str(s.get("name", "")).startswith("Show the run as red"))["if"] == "steps.run.outcome == 'failure'"
     acc = yaml.safe_load((wf / "acceptance.yml").read_text(encoding="utf-8"))["jobs"]["acceptance"]["steps"]
     step = next(s for s in acc if str(s.get("name", "")).startswith("Stored login sessions"))
     assert step["continue-on-error"] is True and all(step["env"][n] == "${{ secrets." + n + " }}" for n in names) and step["id"] == "sessions"
-    assert "observatory sessions --all --what check" in step["run"] and "observatory sessions --all --what list" in step["run"] and "playwright install" in step["run"]
+    assert "observatory sessions --all --what check" in step["run"] and "observatory sessions --all --what list" in step["run"] and "-m patchright install --with-deps chromium" in step["run"] and "-m playwright install" not in step["run"]
     red = next(s for s in acc if s.get("name") == "Show the run as red when a route failed")
     assert "steps.sessions.outcome == 'failure'" in red["if"]
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     for n in names:
         assert f"| `{n}` |" in readme, n
+
+
+def test_a_platform_that_shows_the_runner_a_challenge_page_is_blocked_not_rejected_and_the_session_is_asked_once_only(settings, ledger):
+    check("x", settings, ledger, Worker(lambda item: logged_in_page("x")))
+    blocked = {"ok": False, "status": 0, "html": "", "error": {"code": "PLATFORM_BLOCKED", "message": "x.com still refused after 1 attempt(s) (a bot-check or challenge page was shown)"}}
+    worker = Worker(lambda item: blocked)
+    row = check("x", settings, ledger, worker, now="2026-11-12T10:00:00Z")
+    assert row["state"] == SL.BLOCKED and "bot-check or challenge page to this runner, so the session itself could not be judged" in row["reason"] and "not a bad session" in row["reason"]
+    assert row["proved_on"] == NOW and SL.exit_code([row]) == 0 and "BLOCKED" in SL.ORDER                                       # a block learns nothing about the session: the proof stays and the run is not red
+    assert worker.jobs[0]["retry"] == {"attempts": 1, "backoff_seconds": 0} and len(worker.jobs) == 1                              # a challenge page is never asked for again with the same session
+    with_note = dict(blocked, browser_note="no browser is installed here, so the page was read over plain HTTP", browser_error="Executable doesn't exist")
+    assert "; and the browser could not be used here (Executable doesn't exist)." in check("x", settings, ledger, Worker(lambda item: with_note))["reason"] + "."
+    nothing = {"ok": False, "status": 503, "html": "", "error": {"code": "UPSTREAM_BROKEN", "message": "x.com answered 503"}}
+    assert check("x", settings, ledger, Worker(lambda item: nothing))["state"] == SL.CANNOT_CHECK                              # only a bot-check is a block
+
+
+def test_the_days_left_say_less_than_a_day_instead_of_zero_days(settings, ledger):
+    rows = [{"platform": "reddit", "label": "Reddit", "state": SL.UNCONFIRMED, "reason": "r", "expires_on": "2026-11-13", "days_left": 0, "proved_on": ""},
+            {"platform": "x", "label": "X (Twitter)", "state": SL.ACCEPTED, "reason": "r", "expires_on": "2027-11-12", "days_left": 364, "proved_on": ""},
+            {"platform": "tiktok", "label": "TikTok", "state": SL.ACCEPTED, "reason": "r", "expires_on": "2026-11-14", "days_left": 1, "proved_on": ""}]
+    lines = SL.format_report(rows).splitlines()
+    assert "expires 2026-11-13 (less than a day left)" in lines[1] and "0 day(s)" not in "\n".join(lines)
+    assert "expires 2027-11-12 (364 day(s) left)" in lines[2] and "expires 2026-11-14 (1 day(s) left)" in lines[3]
+    assert lines[-2].strip() == "2 ACCEPTED, 1 UNCONFIRMED"
+
+
+def test_every_workflow_that_installs_scrapling_s_browser_does_it_through_patchright_which_is_the_library_its_stealth_fetcher_runs_on():
+    import re
+    for name in ("sessions.yml", "acceptance.yml", "observatory.yml"):
+        text = (ROOT / ".github" / "workflows" / name).read_text(encoding="utf-8")
+        scrapling_lines = [ln for ln in text.splitlines() if "scrapling-env/bin/python" in ln and " -m " in ln and "install" in ln]
+        assert scrapling_lines and all("-m patchright install --with-deps chromium" in ln for ln in scrapling_lines), name
+        assert not [ln for ln in text.splitlines() if "scrapling-env" in ln and "-m playwright install" in ln], name
+    worker = (ROOT / "contentintel" / "observatory" / "scrapling_worker.py").read_text(encoding="utf-8")
+    assert "from scrapling.fetchers import StealthyFetcher" in worker
+    pin = (ROOT / "requirements-scrapling.txt").read_text(encoding="utf-8")
+    assert re.search(r"^scrapling\[fetchers\]==0\.5$", pin, re.M)                                                              # the version whose stealth fetcher imports patchright: a new one is checked before it is adopted
