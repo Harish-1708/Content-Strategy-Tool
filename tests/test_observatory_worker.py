@@ -891,6 +891,15 @@ def test_when_no_browser_is_installed_the_page_is_read_over_plain_http_and_the_r
     fake = NoBrowser()
     res, _ = drive(stub_job(["https://shop.example/"], adv={"stealth": True, "solve_cloudflare": True, "impersonate": True}), fake)
     assert res[0]["ok"] and "plain HTTP" in res[0]["browser_note"] and [c[0] for c in fake.calls].count("http") >= 1 and [c[0] for c in fake.calls].count("stealth") == 1
+    assert res[0]["browser_error"].startswith("BrowserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium.") and len(res[0]["browser_error"]) <= 300     # the real reason travels with the note
+    class Chatty(Fake):
+        def stealth_get(self, url, **kw):
+            self.calls.append(("stealth", url, kw))
+            raise RuntimeError("Executable doesn't exist; the page was asked for with sessionid=SECRETCOOKIEVALUE99 " + "x " * 400)
+    chatty_job = stub_job(["https://shop.example/"], adv={"stealth": True, "cookies_env": "SESSION_COOKIES_X"})
+    w = W.Worker(chatty_job, fetchers=Chatty(), sleep=lambda s: None, clock=lambda: 0.0, environ={"SESSION_COOKIES_X": '{"sessionid": "SECRETCOOKIEVALUE99"}'})
+    res = [w.one(chatty_job["items"][0])]
+    assert "SECRETCOOKIEVALUE99" not in res[0]["browser_error"] and "sessionid=***" in res[0]["browser_error"] and len(res[0]["browser_error"]) == 300      # a cookie value never travels, and the text is bounded
     fake = NoBrowser()
     fake.stealth_get = lambda url, **kw: (_ for _ in ()).throw(RuntimeError("something else broke"))
     res, _ = drive(stub_job(["https://shop.example/"], adv={"stealth": True}), fake)
