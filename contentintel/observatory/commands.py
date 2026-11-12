@@ -791,15 +791,20 @@ def _sessions(args, settings, now):
         except K.Failure as exc:
             print(f"Error: {exc}")
             return 1
-        for row in result.rows[:1]:
-            print(f"{row['title'] or row['final_url']}\n  {row['chars']} characters read through the {row['route']} route\n" + row["text"][:1500])
+        if result.route == "discovery":
+            print(f"The page itself could not be read, so this is discovery (the search layer, {result.rows[0]['provider']}, no login): titles and snippets about the address, not the page.")
+            for row in result.rows[:5]:
+                print(f"- {row['title']}\n  {row['url']}\n  {row['text'][:300]}")
+        else:
+            for row in result.rows[:1]:
+                print(f"{row['title'] or row['final_url']}\n  {row['chars']} characters read through the {row['route']} route\n" + row["text"][:1500])
         if result.skipped:
             print("not read: " + result.reason)
         return 0
     if what == "check" and not python:
         print("note: the Scrapling environment is not installed here, so no live request can be made; tick the browser box, or run with what = list to see what is stored")
     rows = SL.check_all(settings, contact, python, platforms=platforms, now=now, ledger=ledger, offline=(what == "status"))
-    print(SL.format_report(rows, offline=(what == "status")))
+    print(SL.format_report(rows, offline=(what == "status"), discovery=SL.discovery_status(os.environ)))
     return SL.exit_code(rows) if what == "check" else 0
 
 
