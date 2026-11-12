@@ -22,7 +22,7 @@ from .snapshots import SnapshotError, SnapshotStore
 
 from .. import agent_reach_catalog as CAT
 
-ACTIONS = ("plan", "discover", "decide", "judge", "monitor", "corpus", "instagram", "reddit", "agentreach", "reliability", "controls", "connections", "report", "history", "prune", "status")
+ACTIONS = ("plan", "discover", "decide", "judge", "monitor", "corpus", "instagram", "reddit", "agentreach", "reliability", "controls", "connections", "sessions", "report", "history", "prune", "status")
 JUDGE_ROUTER = None               # tests replace this: () -> (router, usage, review, side); None means the real AI layer
 HOMEPAGE_SOCIAL = None            # tests replace this: (domain) -> {instagram, tiktok, youtube}; None means read the site
 REDDIT_HTTP = None                # tests replace this: the HTTP function the Reddit API route uses; None means the real one
@@ -138,6 +138,8 @@ def run(args, store, ledger, now):
             return _controls(args, store, settings, brands, now)
         if args.action == "connections":
             return _connections(args, settings, now)
+        if args.action == "sessions":
+            return _sessions(args, settings, now)
         if args.action == "monitor":
             return _monitor(args, store, ledger, settings, brands, snaps, now)
         if args.action == "report":
@@ -762,6 +764,43 @@ def _connections(args, settings, now):
         if r["connection"] in ids:
             print(f"{r['connection']:17} {r['on']:4} {str(r['health_score'] if r['health_score'] != '' else '-'):8} {r['state']:9} {r['route']:15} {r['version']:8} {r['secrets_handed_over']:8} {r['fallback'][:60]}")
     return 0
+
+
+def _sessions(args, settings, now):
+    """The stored login sessions, each platform on its own: `list` (nothing is requested), `check` (a real, live check of every platform that has a stored session, or the one named with --key) and
+    `read` (one logged-in page of a platform, through the chain: plain reader, then the stored session if a live check passed, then an honest skip)."""
+    from .. import contract as K
+    from .. import session_live as SL
+    from .. import sessions as S
+    what = args.what if args.what in ("check", "read") else "status"                                          # list (or nothing): what is stored, no request made
+    if args.key and args.key not in S.PLATFORMS:
+        print(f"Error: no platform called {args.key!r}; the platforms are {', '.join(S.PLATFORMS)}")
+        return 1
+    platforms = [args.key] if args.key else list(S.PLATFORMS)
+    contact = (os.environ.get("OBSERVATORY_CONTACT") or settings["politeness"]["contact"]).strip()
+    python = os.environ.get("SCRAPLING_PYTHON", "")
+    ledger = SL.SessionLedger()
+    if what == "read":
+        if len(platforms) != 1 or not args.url:
+            print("Error: read needs one platform (--key) and the address (--url), for example: sessions --what read --key x --url https://x.com/<account>")
+            return 1
+        try:
+            if not contact:
+                raise K.Failure(K.NEED_SETUP, "no contact address: set the OBSERVATORY_CONTACT secret")
+            result = SL.read_page(platforms[0], args.url, settings, contact, python, now=now, ledger=ledger, log=print)
+        except K.Failure as exc:
+            print(f"Error: {exc}")
+            return 1
+        for row in result.rows[:1]:
+            print(f"{row['title'] or row['final_url']}\n  {row['chars']} characters read through the {row['route']} route\n" + row["text"][:1500])
+        if result.skipped:
+            print("not read: " + result.reason)
+        return 0
+    if what == "check" and not python:
+        print("note: the Scrapling environment is not installed here, so no live request can be made; tick the browser box, or run with what = list to see what is stored")
+    rows = SL.check_all(settings, contact, python, platforms=platforms, now=now, ledger=ledger, offline=(what == "status"))
+    print(SL.format_report(rows, offline=(what == "status")))
+    return SL.exit_code(rows) if what == "check" else 0
 
 
 def _controls(args, store, settings, brands, now):
