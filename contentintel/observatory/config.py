@@ -77,7 +77,7 @@ def register_service(name, *, label="", channels=(), purposes=None, routes=None,
 register_service("scrapling", label="Scrapling (page reading, browser, request controls)", options=True)
 register_service("agent_reach", label="Agent-Reach (social and research channels through OpenCLI)", channels=AR_CHANNELS)
 register_service("search", label="Web search (Google-backed providers)", channels=SEARCH_PROVIDERS)
-GATEWAY_PROVIDERS = ("cloudflare", "github", "google", "groq", "mistral", "openrouter")          # the external free providers enabled in ai_providers.yaml (a test keeps this equal); Claude is the fallback and has no switch here
+GATEWAY_PROVIDERS = ("cloudflare", "google", "groq", "mistral", "openrouter")          # the external free providers enabled in ai_providers.yaml (a test keeps this equal); Claude is the fallback and has no switch here
 register_service("ai_gateway", label="AI Gateway (free-provider routing with Claude as fallback)", channels=GATEWAY_PROVIDERS, routes={"purposes": "ai", "choices": ("claude", "gateway_first"), "default": "gateway_first"})
 from .. import connections as _CONN
 from .. import guards as _GUARDS
