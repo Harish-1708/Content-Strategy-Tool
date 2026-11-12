@@ -112,9 +112,9 @@ def step(name_part):
     return next(s for s in wf()["jobs"]["observatory"]["steps"] if name_part in str(s.get("name", "")) or name_part in str(s.get("uses", "")))
 
 
-def test_the_observatory_workflow_passes_every_ai_secret_and_can_call_github_models():
+def test_the_observatory_workflow_passes_every_ai_secret_and_asks_for_no_models_permission():
     data = wf()
-    assert data["permissions"] == {"contents": "write", "models": "read"}
+    assert data["permissions"] == {"contents": "write"}                                                    # GitHub Models is retired: nothing asks for the models permission any more
     env = step("Run")["env"]
     for name in ("ANTHROPIC_API_KEY", "FREEAPI_ENCRYPTION_KEY", "FREEAPI_ADMIN_PASSWORD", "GROQ_API_KEY", "MISTRAL_API_KEY", "OPENROUTER_API_KEY", "GEMINI_API_KEY", "CEREBRAS_API_KEY",
                  "CLOUDFLARE_ACCOUNT_ID", "CLOUDFLARE_API_TOKEN"):
