@@ -1,50 +1,50 @@
 {
   "boss": {
-    "checked_at": "2026-11-12T09:29:14Z",
+    "checked_at": "2026-11-12T12:32:43Z",
     "proved_on": "",
-    "reason": "the stored Boss (Zhipin) session is missing the cookie wt2 or zp_token or __zp_stoken__: the capture was not logged in; capture again after logging in",
-    "state": "BAD CAPTURE"
+    "reason": "add the secret BOSS_SESSION_B64 (capture one by hand: docs/platform/session-capture-guide.md)",
+    "state": "NOT SET UP"
   },
   "facebook": {
-    "checked_at": "2026-11-12T09:29:14Z",
-    "proved_on": "2026-11-12T09:29:14Z",
-    "reason": "the platform's own page showed a logged-in state (read over plain HTTP: no browser was installed here)",
+    "checked_at": "2026-11-12T12:32:43Z",
+    "proved_on": "2026-11-12T12:32:43Z",
+    "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED"
   },
   "instagram": {
-    "checked_at": "2026-11-12T09:29:14Z",
+    "checked_at": "2026-11-12T12:32:43Z",
     "proved_on": "",
-    "reason": "no sign of being logged in was found on the page (any doubt counts as not logged in); but no browser was installed here, so the page was read over plain HTTP and this site may only show its logged-in state in a browser: run the check with the browser box ticked",
-    "state": "UNCONFIRMED"
+    "reason": "no sign of being logged in was found on the page (any doubt counts as not logged in): the stored session was not accepted; capture a new one",
+    "state": "REJECTED"
   },
   "linkedin": {
-    "checked_at": "2026-11-12T09:29:14Z",
-    "proved_on": "2026-11-12T09:29:14Z",
-    "reason": "the platform's own page showed a logged-in state (read over plain HTTP: no browser was installed here)",
+    "checked_at": "2026-11-12T12:32:43Z",
+    "proved_on": "2026-11-12T12:32:43Z",
+    "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED"
   },
   "reddit": {
-    "checked_at": "2026-11-12T09:29:14Z",
+    "checked_at": "2026-11-12T12:32:43Z",
     "proved_on": "",
-    "reason": "no sign of being logged in was found on the page (any doubt counts as not logged in); but no browser was installed here, so the page was read over plain HTTP and this site may only show its logged-in state in a browser: run the check with the browser box ticked",
-    "state": "UNCONFIRMED"
+    "reason": "no sign of being logged in was found on the page (any doubt counts as not logged in): the stored session was not accepted; capture a new one",
+    "state": "REJECTED"
   },
   "tiktok": {
-    "checked_at": "2026-11-12T09:29:14Z",
+    "checked_at": "2026-11-12T12:32:43Z",
     "proved_on": "",
-    "reason": "the page shows the logged-out state; but no browser was installed here, so the page was read over plain HTTP and this site may only show its logged-in state in a browser: run the check with the browser box ticked",
-    "state": "UNCONFIRMED"
+    "reason": "the page shows the logged-out state: the stored session was not accepted; capture a new one",
+    "state": "REJECTED"
   },
   "x": {
-    "checked_at": "2026-11-12T09:29:14Z",
+    "checked_at": "2026-11-12T12:32:43Z",
     "proved_on": "",
-    "reason": "the page could not be read (PLATFORM_BLOCKED): x.com still refused after 3 attempt(s) (a bot-check or challenge page was shown); marked failed and moved on",
-    "state": "CANNOT CHECK"
+    "reason": "X (Twitter) showed a bot-check or challenge page to this runner, so the session itself could not be judged. This is the platform blocking the runner, not a bad session",
+    "state": "BLOCKED"
   },
   "xiaohongshu": {
-    "checked_at": "2026-11-12T09:29:14Z",
+    "checked_at": "2026-11-12T12:32:43Z",
     "proved_on": "",
-    "reason": "the stored Xiaohongshu session holds no cookie for xiaohongshu.com; it was captured from the wrong site or the wrong browser profile",
-    "state": "BAD CAPTURE"
+    "reason": "add the secret XIAOHONGSHU_SESSION_B64 (capture one by hand: docs/platform/session-capture-guide.md)",
+    "state": "NOT SET UP"
   }
 }
