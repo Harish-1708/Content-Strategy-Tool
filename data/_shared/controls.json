@@ -1,6 +1,6 @@
 {
  "history": [],
- "updated_at": "2026-11-12T07:10:14Z",
+ "updated_at": "2026-11-12T09:33:41Z",
  "values": {},
  "written": {
   "defi_snacks": {
@@ -177,7 +177,16 @@
    "services.search.use_for.idea_bank": "on",
    "services.search.use_for.planning": "on",
    "services.search.use_for.social_discovery": "on",
-   "services.search.use_for.youtube_research": "on"
+   "services.search.use_for.youtube_research": "on",
+   "services.stored_sessions.channels.boss": "on",
+   "services.stored_sessions.channels.facebook": "on",
+   "services.stored_sessions.channels.instagram": "on",
+   "services.stored_sessions.channels.linkedin": "on",
+   "services.stored_sessions.channels.reddit": "on",
+   "services.stored_sessions.channels.tiktok": "on",
+   "services.stored_sessions.channels.x": "on",
+   "services.stored_sessions.channels.xiaohongshu": "on",
+   "services.stored_sessions.enabled": "on"
   },
   "duderobe": {
    "access_controls.account_cookies": "on",
@@ -353,7 +362,16 @@
    "services.search.use_for.idea_bank": "on",
    "services.search.use_for.planning": "on",
    "services.search.use_for.social_discovery": "on",
-   "services.search.use_for.youtube_research": "on"
+   "services.search.use_for.youtube_research": "on",
+   "services.stored_sessions.channels.boss": "on",
+   "services.stored_sessions.channels.facebook": "on",
+   "services.stored_sessions.channels.instagram": "on",
+   "services.stored_sessions.channels.linkedin": "on",
+   "services.stored_sessions.channels.reddit": "on",
+   "services.stored_sessions.channels.tiktok": "on",
+   "services.stored_sessions.channels.x": "on",
+   "services.stored_sessions.channels.xiaohongshu": "on",
+   "services.stored_sessions.enabled": "on"
   },
   "swoveralls": {
    "access_controls.account_cookies": "on",
@@ -529,7 +547,16 @@
    "services.search.use_for.idea_bank": "on",
    "services.search.use_for.planning": "on",
    "services.search.use_for.social_discovery": "on",
-   "services.search.use_for.youtube_research": "on"
+   "services.search.use_for.youtube_research": "on",
+   "services.stored_sessions.channels.boss": "on",
+   "services.stored_sessions.channels.facebook": "on",
+   "services.stored_sessions.channels.instagram": "on",
+   "services.stored_sessions.channels.linkedin": "on",
+   "services.stored_sessions.channels.reddit": "on",
+   "services.stored_sessions.channels.tiktok": "on",
+   "services.stored_sessions.channels.x": "on",
+   "services.stored_sessions.channels.xiaohongshu": "on",
+   "services.stored_sessions.enabled": "on"
   }
  }
 }
