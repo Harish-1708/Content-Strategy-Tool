@@ -1432,7 +1432,7 @@
      "title": "XL / Bordeaux"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53755991523439,
      "options": [
@@ -1450,7 +1450,7 @@
      "title": "2XL / Bordeaux"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53755991556207,
      "options": [
@@ -2282,7 +2282,6 @@
    },
    "family": "Kids Swoveralls",
    "flags": [
-    "final_sale",
     "new"
    ],
    "handle": "kids-swoveralls-forest-green-1",
@@ -2312,7 +2311,6 @@
     "Active",
     "All",
     "color-family:GREEN",
-    "final sale",
     "FW22",
     "holiday",
     "igg26_fashion_forward",
@@ -2487,6 +2485,7 @@
    },
    "family": "Kids Swoveralls",
    "flags": [
+    "final_sale",
     "limited_edition",
     "on_sale"
    ],
@@ -2521,9 +2520,11 @@
     "All",
     "color-family:",
     "color-family:YELLOW",
+    "final sale",
     "full price",
     "igg26_fashion_forward",
     "InventoryCheck",
+    "Kids",
     "LimitedSW",
     "Shop",
     "size_guide_kids",
@@ -2692,6 +2693,7 @@
    },
    "family": "Kids Swoveralls",
    "flags": [
+    "final_sale",
     "limited_edition",
     "on_sale"
    ],
@@ -2726,9 +2728,11 @@
     "All",
     "color-family:",
     "color-family:YELLOW",
+    "final sale",
     "full price",
     "igg26_fashion_forward",
     "InventoryCheck",
+    "Kids",
     "LimitedSW",
     "Shop",
     "size_guide_kids",
@@ -2908,7 +2912,6 @@
    },
    "family": "Kids Swoveralls",
    "flags": [
-    "final_sale",
     "new"
    ],
    "handle": "kids-swoveralls-light-heather-grey-1",
@@ -2938,7 +2941,6 @@
     "Active",
     "All",
     "color-family:GREY",
-    "final sale",
     "FW22",
     "igg26_fashion_forward",
     "Kids",
@@ -3124,7 +3126,6 @@
    },
    "family": "Kids Swoveralls",
    "flags": [
-    "final_sale",
     "new"
    ],
    "handle": "kids-swoveralls-midnight-black-1",
@@ -3154,7 +3155,6 @@
     "Active",
     "All",
     "color-family:BLACK",
-    "final sale",
     "FW22",
     "igg26_fashion_forward",
     "Kids",
@@ -3338,7 +3338,6 @@
    },
    "family": "Kids Swoveralls",
    "flags": [
-    "final_sale",
     "new"
    ],
    "handle": "kids-swoveralls-navy-1",
@@ -3368,7 +3367,6 @@
     "Active",
     "All",
     "color-family:BLUE",
-    "final sale",
     "FW22",
     "holiday",
     "igg26_fashion_forward",
@@ -8335,7 +8333,7 @@
      "title": "L / Dog Days Navy"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 43949671612527,
      "options": [
