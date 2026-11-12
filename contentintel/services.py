@@ -57,6 +57,8 @@ def _build():
                 add(f"services.{name}.channels.{c}", "bool", True, f"the secrets the {c} repository declares it needs are handed to it (every other secret is withheld)", label)
             elif name == "connections":
                 add(f"services.{name}.channels.{c}", "bool", True, f"the {c} repository is connected (OFF: it is never run)", label)
+            elif name == "stored_sessions":
+                add(f"services.{name}.channels.{c}", "bool", True, f"the stored {c} session may be loaded and used (OFF: it is never loaded; only the account's own pages are ever read with it)", label)
             else:
                 add(f"services.{name}.channels.{c}", "bool", spec.get("channel_default", True), f"the {c} {'channel' if name == 'agent_reach' else 'provider'} may be used", label)
         if spec["routes"]:
@@ -429,7 +431,7 @@ def sheet_tab(settings, data_dir, now, sheet_id="sheet"):
     tmp = path.with_suffix(".tmp")
     tmp.write_text(json.dumps({"values": data.get("values", {}), "history": data.get("history", []), "written": all_written, "updated_at": now}, indent=1, sort_keys=True), encoding="utf-8")
     tmp.replace(path)
-    return {"title": CONTROLS_TAB, "columns": CONTROLS_COLUMNS, "rows_by_key": rows, "key_col": "key", "starter_manual": []}
+    return {"title": CONTROLS_TAB, "columns": CONTROLS_COLUMNS, "rows_by_key": rows, "key_col": "key", "starter_manual": [], "drop_unknown": True}      # every row of this tab belongs to a control: one for a control that was removed is deleted
 
 
 def apply_sheet_controls(grid, settings, data_dir, now, save=True, sheet_id="sheet"):
