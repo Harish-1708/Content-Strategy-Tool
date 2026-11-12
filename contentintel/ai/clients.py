@@ -101,20 +101,23 @@ class GatewayClient:
 
 USER_AGENT = "KelsonResearchBot/1.0"
 
+RETIRED_HOSTS = {"models.github.ai": "GitHub Models was retired by GitHub on 30 July 2026: its inference API and model catalogue no longer exist for any customer, so no token, permission or request change can bring it back. "
+                                     "It is not called. The other configured providers (Groq, OpenRouter, Google, Cloudflare, Claude) take its place."}
+
 
 class DirectClient:
-    """A provider with an OpenAI-style endpoint called straight from here (GitHub Models, OpenRouter). The token is sent as a header and never appears in a message or a result.
+    """A provider with an OpenAI-style endpoint called straight from here (OpenRouter). The token is sent as a header and never appears in a message or a result. A redirect is never followed behind the
+    scenes: a 307/308 to the same https host is followed once, anything else is reported with where it pointed. An endpoint of a provider that has been retired is refused before any request is made."""
 
-    For GitHub Models the request is tried with each documented API version and then with a plain JSON Accept header; an answer that is not usable JSON or a redirect moves on to the next variant, and if none
-    works the failure says what each returned. A redirect is never followed behind the scenes; a 307/308 to the same https host is followed once, anything else is reported with where it pointed."""
-
-    def __init__(self, base_url, token, http=None, clock=time.monotonic, api_versions=("2022-11-28",)):
+    def __init__(self, base_url, token, http=None, clock=time.monotonic):
         from urllib.parse import urlsplit
         if not str(base_url).startswith("https://"):
             raise ValueError("a direct provider is only reached over https")
+        host = urlsplit(str(base_url)).netloc.lower()
+        for retired_host, why in RETIRED_HOSTS.items():
+            if host == retired_host or host.endswith("." + retired_host):
+                raise Failure(contract.PROVIDER_RETIRED, why)
         self.base_url, self.token, self.http, self.clock = str(base_url).rstrip("/"), token, http or default_http, clock
-        self.api_versions = tuple(str(v) for v in (api_versions or ("2022-11-28",)))
-        self.github = urlsplit(self.base_url).netloc.lower().endswith("github.ai")
 
     def _clean(self, text):
         return str(text).replace(self.token, "***") if self.token else str(text)
@@ -123,30 +126,15 @@ class DirectClient:
         from urllib.parse import urlsplit
         return str(url).startswith("https://") and urlsplit(str(url)).netloc.lower() == urlsplit(self.base_url).netloc.lower()
 
-    def _variants(self):
-        """(api version, Accept header) pairs, in the order they are tried."""
-        if not self.github:
-            return [(None, "application/json")]
-        return [(v, "application/vnd.github+json") for v in self.api_versions] + [(self.api_versions[-1], "application/json")]
-
-    def _headers(self, version, accept):
-        headers = {"Authorization": "Bearer " + self.token, "Content-Type": "application/json", "Accept": accept, "User-Agent": USER_AGENT}
-        if version:
-            headers["X-GitHub-Api-Version"] = version
-        return headers
+    def _headers(self):
+        return {"Authorization": "Bearer " + self.token, "Content-Type": "application/json", "Accept": "application/json", "User-Agent": USER_AGENT}
 
     def _body(self, route, messages, max_tokens):
         return {"model": route["model"], "messages": messages, "max_tokens": max_tokens, "temperature": 0}
 
-    def _plain_ok_hint(self, exc, tried):
-        """GitHub answered every variant with the plain text OK (the raw probe showed the same for the model catalogue too): that is not a reply from the Models service, so say so and say what to try."""
-        if self.github and "something that is not JSON (text/plain): 'OK'" in str(exc) and all("'OK'" in t for t in tried):
-            return (" | Every variant, and the model catalogue in the raw probe, got a plain-text OK with no JSON: that is not an answer from the GitHub Models service, so the job's own token is not being "
-                    "accepted for it. Create a fine-grained token with the Models: read permission and save it as the secret GH_MODELS_TOKEN; it is used before the job's token.")
-        return ""
-
-    def _attempt(self, route, messages, max_tokens, timeout, version, accept):
-        headers = self._headers(version, accept)
+    def complete(self, route, system, prompt, max_tokens, timeout=90, expect_platform=None, lane=None):
+        messages = ([{"role": "system", "content": system}] if system else []) + [{"role": "user", "content": prompt}]
+        headers = self._headers()
         body = self._body(route, messages, max_tokens)
         url = self.base_url + "/chat/completions"
         t0 = self.clock()
@@ -166,7 +154,7 @@ class DirectClient:
         err = answer.get("error") if isinstance(answer, dict) else None
         text_error = self._clean((err.get("message") if isinstance(err, dict) else err) or "")[:200] if err else ""
         if status in (401, 403):
-            raise Failure(contract.NEED_SETUP, "the provider rejected the token (for GitHub Models the job needs the permission models: read)")
+            raise Failure(contract.NEED_SETUP, "the provider rejected the token")
         if status in (402, 429):
             retry = reply.get("Retry-After") or reply.get("retry-after") or ""
             raise Failure(contract.RATE_LIMITED, text_error or f"the provider answered {status}: its free limit was reached", retry_after=int(retry) if str(retry).isdigit() else None)
@@ -185,21 +173,6 @@ class DirectClient:
         usage = answer.get("usage") or {}
         return Completion(text=choice or "", tokens_in=int(usage.get("prompt_tokens", 0)), tokens_out=int(usage.get("completion_tokens", 0)), latency_ms=ms,
                           model=str(answer.get("model") or route["model"]))
-
-    def complete(self, route, system, prompt, max_tokens, timeout=90, expect_platform=None, lane=None):
-        messages = ([{"role": "system", "content": system}] if system else []) + [{"role": "user", "content": prompt}]
-        tried, variants = [], self._variants()
-        for n, (version, accept) in enumerate(variants):
-            label = (f"API version {version}" + ("" if accept.startswith("application/vnd.github") else f" with Accept {accept}")) if version else "this request"
-            try:
-                return self._attempt(route, messages, max_tokens, timeout, version, accept)
-            except Failure as exc:
-                if exc.code != contract.UPSTREAM_BROKEN or n == len(variants) - 1:         # only an unusable answer is worth another variant; a refusal or a limit is final
-                    if tried:
-                        hint = self._plain_ok_hint(exc, tried)
-                        raise Failure(exc.code, f"{exc} ({label}); earlier: " + "; ".join(tried) + hint) from None
-                    raise
-                tried.append(f"{label}: {exc}"[:260])
 
 
 class OpenRouterClient(DirectClient):
