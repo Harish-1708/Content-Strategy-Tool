@@ -5946,6 +5946,7 @@
    },
    "family": "Swoveralls",
    "flags": [
+    "final_sale",
     "limited_edition",
     "on_sale"
    ],
@@ -5983,6 +5984,7 @@
     "All",
     "color-family:",
     "color-family:YELLOW",
+    "final sale",
     "full price",
     "igg26_fashion_forward",
     "InventoryCheck",
@@ -7157,7 +7159,7 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
-   "in_stock": true,
+   "in_stock": false,
    "ingredients": "",
    "materials": "cotton 95%; spandex 5%",
    "missing_expected": [
@@ -7300,7 +7302,7 @@
      "title": "3XL / Cosmic"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753225609327,
      "options": [
@@ -8194,7 +8196,6 @@
    },
    "family": "Swoveralls",
    "flags": [
-    "final_sale",
     "limited_edition",
     "new"
    ],
@@ -8228,7 +8229,6 @@
     "All",
     "badge_Coming Soon",
     "color-family:BLUE",
-    "final sale",
     "full price",
     "igg26_fashion_forward",
     "InventoryCheck",
@@ -9264,6 +9264,7 @@
    },
    "family": "Swoveralls",
    "flags": [
+    "final_sale",
     "limited_edition",
     "on_sale"
    ],
@@ -9299,6 +9300,7 @@
     "All",
     "color-family:",
     "color-family:YELLOW",
+    "final sale",
     "full price",
     "igg26_fashion_forward",
     "InventoryCheck",
@@ -9501,6 +9503,7 @@
    },
    "family": "Swoveralls",
    "flags": [
+    "final_sale",
     "limited_edition",
     "on_sale"
    ],
@@ -9536,6 +9539,7 @@
     "All",
     "color-family:",
     "color-family:YELLOW",
+    "final sale",
     "full price",
     "igg26_fashion_forward",
     "InventoryCheck",
@@ -11294,7 +11298,6 @@
    },
    "family": "Swoveralls",
    "flags": [
-    "final_sale",
     "limited_edition"
    ],
    "handle": "swoveralls-cat",
@@ -11326,7 +11329,6 @@
     "All",
     "badge_Coming Soon",
     "color-family:BLUE",
-    "final sale",
     "full price",
     "igg26_fashion_forward",
     "InventoryCheck",
@@ -11614,7 +11616,7 @@
    "variant_count": 7,
    "variants": [
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753433030767,
      "options": [
@@ -11811,6 +11813,7 @@
    },
    "family": "Swoveralls",
    "flags": [
+    "final_sale",
     "limited_edition",
     "on_sale"
    ],
@@ -11846,6 +11849,7 @@
     "All",
     "color-family:",
     "color-family:YELLOW",
+    "final sale",
     "full price",
     "igg26_fashion_forward",
     "InventoryCheck",
@@ -12047,6 +12051,7 @@
    },
    "family": "Swoveralls",
    "flags": [
+    "final_sale",
     "limited_edition",
     "on_sale"
    ],
@@ -12085,6 +12090,7 @@
     "All",
     "color-family:",
     "color-family:YELLOW",
+    "final sale",
     "full price",
     "igg26_fashion_forward",
     "InventoryCheck",
@@ -12674,7 +12680,6 @@
    },
    "family": "Swovie Shorts",
    "flags": [
-    "final_sale",
     "limited_edition",
     "new"
    ],
@@ -12713,7 +12718,6 @@
     "All",
     "badge_Coming Soon",
     "color-family:BLUE",
-    "final sale",
     "igg26_fashion_forward",
     "InventoryCheck",
     "LimitedSW",
