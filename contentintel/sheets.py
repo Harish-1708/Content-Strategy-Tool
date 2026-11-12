@@ -245,6 +245,7 @@ def _read_competitor_decisions(spreadsheet, brand, store, now, report, dry_run):
         return
     try:
         if "Competitors" not in [w.title for w in _call(spreadsheet.worksheets)]:         # through _call: a refused read (429) is waited out and retried, never given up on
+            report.notes.append("Competitor decisions read from the sheet: 0 (no Competitors tab in this sheet yet: nothing to read, no competitor has been found for this brand)")
             return
         values = _call(_call(spreadsheet.worksheet, "Competitors").get_all_values)
         n = obs_report.apply_sheet_decisions(values, store, brand.slug, now, save=not dry_run)
@@ -260,6 +261,7 @@ def _read_controls(spreadsheet, brand, store, now, report, dry_run):
     try:
         from . import services
         if services.CONTROLS_TAB not in [w.title for w in _call(spreadsheet.worksheets)]:
+            report.notes.append("Controls read from the sheet: 0 change(s) (no Controls tab in this sheet yet: nothing to read)")
             return
         settings = services.load_settings(None, store.data_dir)
         values = _call(_call(spreadsheet.worksheet, services.CONTROLS_TAB).get_all_values)
