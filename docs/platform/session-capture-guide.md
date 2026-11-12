@@ -85,6 +85,27 @@ A passed check is live proof for **14 days**. A later refusal, an expiry, or rem
 
 The states and dates are saved to `data/_shared/sessions_health.json` (never a secret value). Dummy accounts only, never a main account.
 
+## What a check prints about each page (Update 52)
+
+Under every platform that was really checked, the log now says what its page showed, with no secret in it:
+
+- **page:** whether it was read with the browser or over plain HTTP, the HTTP status, the address it landed on (never the part after a `?` or `#`) and the page title;
+- **cookies sent (names) / the platform sent back (names):** names only, never a value. A session cookie that is missing from the second list, or replaced, is the platform ending the session;
+- **logged-in markers found:** which of the markers were and were not in the page, so a wrong marker can be corrected from a real page;
+- **logged-out wording:** looked for in the **visible text** only. A logged-in page can hold that wording in its translations, so wording found only in the page's code is listed but not counted;
+- **password field on the page**, a **login or challenge word in the address**, and the **first words of the visible text** (at most 240 characters; a dummy account's page, so nothing private is expected);
+- **the worker said:** the worker's own error, if it gave one.
+
+An ACCEPTED platform gets one line. The logged-in markers for each platform are still best guesses: this evidence is how they get corrected.
+
+## X, and the last resort
+
+If x.com shows the runner a bot-check (BLOCKED), the check asks X's own profile interface through twscrape, but only for X, only with the two cookies already stored (and `twid` to know which profile), and it reads one profile. Accepted means ACCEPTED *through twscrape*: X accepts the session, but the browser read of x.com is **not** proved, so the read chain does not use it. A rejection (cookies not accepted, account locked) is REJECTED with X's own reason; anything that could not be judged stays BLOCKED. twscrape's usage reporting is switched off. The environment is installed only when an X session is stored.
+
+## Discovery: when neither the page nor the session can be read
+
+`what = read` now tries the plain reader, then the stored session, then **discovery**: one search about the address through the search layer (Exa, then Serper, then Tavily: the first that has a key), which returns titles and snippets about the address rather than the page, with no login. The result says so. It is off when no search key is passed to the run. Research (the collectors) does not use stored sessions at all, so a rejected session changes nothing there.
+
 ## The Gmail code reader
 
 `contentintel/gmail_otp.py` is built and **unused**. It would only ever step in for a re-login where a platform emails a code, and only after that platform's flow has been proved live. Nothing calls it today, and no re-login is attempted anywhere: a refused or expired session always ends in "capture a new one".
