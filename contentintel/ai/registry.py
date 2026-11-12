@@ -15,7 +15,7 @@ from . import data_class as dc
 
 DEFAULT_PATH = "ai_providers.yaml"
 # endpoints a provider may be called at directly (everything else goes through the local gateway); a prompt is never sent to an address typed into a file
-DIRECT_ENDPOINTS = ("https://models.github.ai/inference", "https://openrouter.ai/api/v1")
+DIRECT_ENDPOINTS = ("https://openrouter.ai/api/v1",)
 TERMS_STATUS = ("verified", "verified_secondary", "upstream_documented", "declared_only", "unverified", "owner_decision")
 CLAUDE = "claude"
 
@@ -49,7 +49,8 @@ class Provider:
     limits: dict
     price_per_million: dict
     models: tuple
-    direct: dict = field(default_factory=dict)      # a provider called straight from this tool (not through the gateway): {base_url, api_versions (tried in order)}
+    direct: dict = field(default_factory=dict)      # a provider called straight from this tool (not through the gateway): {base_url}
+    retired: dict = field(default_factory=dict)     # {date, source, reason}: withdrawn by its provider for good. The record is kept; it is never enabled, routed to or called
 
     @property
     def effective_ceiling(self):
@@ -85,6 +86,8 @@ class Registry:
     def eligibility(self, pid, data_class, *, experimental_ok=False, model=None):
         """(ok, reason): may this provider and model be used for data of this class, by configuration alone."""
         p = self.provider(pid)
+        if p.retired:
+            return False, f"RETIRED: {p.label} was withdrawn by its provider on {p.retired['date']}; it is never called"
         if not p.enabled:
             return False, "disabled (a person has not approved it)"
         if p.experimental and not experimental_ok:
@@ -136,7 +139,14 @@ def load_registry(path=DEFAULT_PATH):
         if not isinstance(d, dict):
             raise RegistryError(f"{where} must be a list of settings")
         _only(d, ("label", "enabled", "experimental", "paid", "ceiling", "owner_override", "approved_classes", "credentials", "gateway_platform",
-                  "terms", "limits", "price_per_million", "models", "direct"), where)
+                  "terms", "limits", "price_per_million", "models", "direct", "retired"), where)
+        retired = d.get("retired") or {}
+        if retired:
+            _only(retired, ("date", "source", "reason"), f"{where}.retired")
+            if not all(str(retired.get(k, "")).strip() for k in ("date", "source", "reason")):
+                raise RegistryError(f"{where}.retired needs date, source and reason: a retirement is a recorded fact")
+            if d.get("enabled") or d.get("direct") or (d.get("credentials") or {}).get("env"):
+                raise RegistryError(f"{where}: a retired provider cannot be enabled and keeps no endpoint or credential name (the record stays, the integration is gone)")
         ceiling = d.get("ceiling", dc.PUBLIC)
         try:
             dc.validate(ceiling)
@@ -191,7 +201,7 @@ def load_registry(path=DEFAULT_PATH):
             raise RegistryError(f"{where}: a model is listed twice")
         direct = d.get("direct") or {}
         if direct:
-            _only(direct, ("base_url", "api_versions"), f"{where}.direct")
+            _only(direct, ("base_url",), f"{where}.direct")
             base = str(direct.get("base_url", ""))
             if not any(base == ok or base.startswith(ok + "/") for ok in DIRECT_ENDPOINTS):
                 raise RegistryError(f"{where}.direct.base_url must be one of the endpoints this tool knows: {', '.join(DIRECT_ENDPOINTS)}")
@@ -203,7 +213,7 @@ def load_registry(path=DEFAULT_PATH):
         out[pid] = Provider(id=pid, label=str(d.get("label") or pid), enabled=bool(d.get("enabled", False)), experimental=bool(d.get("experimental", False)),
                             paid=paid, ceiling=ceiling, override=override, approved_classes=approved,
                             credential_env=tuple((d.get("credentials") or {}).get("env", [])), gateway_platform=str(d.get("gateway_platform") or pid),
-                            terms=terms, limits=limits, price_per_million=price, models=tuple(models), direct=dict(direct))
+                            terms=terms, limits=limits, price_per_million=price, models=tuple(models), direct=dict(direct), retired=dict(retired))
     if not out:
         raise RegistryError(f"{path}: providers must name at least one provider")
     return Registry(providers=out, daily_usd=_num(budgets.get("daily_usd", 0), "budgets.daily_usd"), monthly_usd=_num(budgets.get("monthly_usd", 0), "budgets.monthly_usd"))
