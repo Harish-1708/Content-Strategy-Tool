@@ -1,5 +1,5 @@
 # AI providers: every platform in the pinned FreeLLMAPI v0.16.17 (84 ids), GitHub Models (called directly), and Claude: 86 in all.
-# Switched on at present: cloudflare, github, google, groq, mistral, openrouter and claude. A test keeps this line equal to the enabled flags below.
+# Switched on at present: cloudflare, google, groq, mistral, openrouter and claude. A test keeps this line equal to the enabled flags below. GitHub Models is retired (see its retired: record): kept, never enabled or called.
 #
 # NOTHING is on unless it says enabled: true. A provider carries the terms found when it was checked (terms.status says
 # how well: verified = the provider's own page; verified_secondary = quoted by other sites; upstream_documented = the gateway
@@ -29,7 +29,7 @@ budgets:
 providers:
   github:
     label: GitHub Models
-    enabled: true
+    enabled: false
     experimental: false
     ceiling: public
     approved_classes:
@@ -40,16 +40,11 @@ providers:
       approved_by: Harish
       date: '2026-11-03'
       reason: 'Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent.'
-    credentials:
-      env:
-      - GH_MODELS_TOKEN
-      - GITHUB_TOKEN
     gateway_platform: github
-    direct:
-      base_url: https://models.github.ai/inference
-      api_versions:
-      - '2026-03-10'
-      - '2022-11-28'
+    retired:
+      date: '2026-07-30'
+      source: https://github.blog/changelog/2026-07-30-github-models-is-now-retired/
+      reason: "GitHub fully retired GitHub Models on 30 July 2026 (announced 1 July) - the playground, model catalogue, inference API and BYOK are no longer available to any customer. Every endpoint answers a plain-text OK, which was seen live on 2026-11-11 with the job's own token, a fine-grained token and no token at all. The integration was removed; this record stays so nobody rebuilds it."
     terms:
       status: verified_secondary
       date: '2026-11-03'
