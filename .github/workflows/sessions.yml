@@ -54,6 +54,22 @@ jobs:
           "$RUNNER_TEMP/scrapling-env/bin/python" -m patchright install --with-deps chromium      # patchright, not playwright: it is the library Scrapling's stealth browser runs on, and each one looks for its own pinned browser build (a mismatch looked like "no browser installed")
           echo "SCRAPLING_PYTHON=$RUNNER_TEMP/scrapling-env/bin/python" >> "$GITHUB_ENV"
 
+      - name: Install the isolated twscrape environment (the last resort for X only)
+        if: ${{ inputs.what == 'check' }}
+        shell: bash
+        env:
+          X_SESSION_B64: ${{ secrets.X_SESSION_B64 }}
+        run: |
+          # Only when an X session is stored: twscrape (pinned in requirements-twscrape.txt) reads the account's own profile with the two cookies already in that session, and only if x.com
+          # shows the runner a bot-check. Its own environment, no new secret; its usage reporting is switched off by the program that runs it.
+          if [ -n "$X_SESSION_B64" ]; then
+            python -m venv "$RUNNER_TEMP/twscrape-env"
+            "$RUNNER_TEMP/twscrape-env/bin/pip" install -q -r requirements-twscrape.txt
+            echo "TWSCRAPE_PYTHON=$RUNNER_TEMP/twscrape-env/bin/python" >> "$GITHUB_ENV"
+          else
+            echo "No X session is stored: twscrape is not installed."
+          fi
+
       - name: Stored login sessions
         id: run
         continue-on-error: true
@@ -71,6 +87,10 @@ jobs:
           LINKEDIN_SESSION_B64: ${{ secrets.LINKEDIN_SESSION_B64 }}
           XIAOHONGSHU_SESSION_B64: ${{ secrets.XIAOHONGSHU_SESSION_B64 }}
           BOSS_SESSION_B64: ${{ secrets.BOSS_SESSION_B64 }}
+          # The discovery fallback of what = read (the search layer, no login): the same keys the research uses. Optional.
+          SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
         run: |
           set +e
           args=(observatory sessions --all --what "$WHAT")
