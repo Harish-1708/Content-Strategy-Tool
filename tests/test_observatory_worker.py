@@ -958,3 +958,23 @@ def test_the_raw_page_is_handed_back_only_when_a_stored_session_check_asks_for_i
     fake = Fake({"https://x.example/big": Resp(200, big, {"content-type": "text/html"})})
     sized, _ = drive(stub_job(["https://x.example/big"], {"stealth": True}, return_html=True), fake)
     assert len(sized[0]["html"]) == 300000                                                                  # bounded
+
+
+def test_a_stored_session_check_keeps_the_refused_page_the_way_it_was_fetched_and_the_cookie_names_but_an_ordinary_read_does_not():
+    refused = Resp(403, "<html><title>Just a moment...</title><body>Verify you are human</body></html>", {"content-type": "text/html"})
+    refused.cookies = {"ct0": "COOKIEVALUEMUSTNOTTRAVEL1", "guest_id": "COOKIEVALUEMUSTNOTTRAVEL2"}
+    fake = Fake({"https://x.example/home": refused})
+    asked, _ = drive(stub_job(["https://x.example/home"], {"stealth": True}, return_html=True, retry={"attempts": 1, "backoff_seconds": 0}), fake)
+    page = asked[0]
+    assert not page["ok"] and page["error"]["code"] == "PLATFORM_BLOCKED" and page["status"] == 403 and "Verify you are human" in page["html"] and page["final_url"] == "https://x.example/home"
+    assert page["fetched_with"] == "browser" and page["cookie_names_back"] == ["ct0", "guest_id"] and "COOKIEVALUEMUSTNOTTRAVEL" not in json.dumps(page)      # names only, never a value
+    ordinary, _ = drive(stub_job(["https://x.example/home"], {"stealth": True}, retry={"attempts": 1, "backoff_seconds": 0}), fake)
+    assert not ordinary[0]["ok"] and "html" not in ordinary[0] and "cookie_names_back" not in ordinary[0]                                   # only a session check keeps the page
+    good = Resp(200, "<html><title>Home</title><body>" + "your timeline " * 40 + "</body></html>", {"content-type": "text/html"})
+    plain, _ = drive(stub_job(["https://x.example/home"], {}, return_html=True), Fake({"https://x.example/home": good}))
+    assert plain[0]["ok"] and plain[0]["fetched_with"] == "plain HTTP"
+    class NoBrowserHere(Fake):
+        def stealth_get(self, url, **kw):
+            raise RuntimeError("BrowserType.launch: Executable doesn't exist at /x")
+    fell, _ = drive(stub_job(["https://x.example/home"], {"stealth": True}, return_html=True), NoBrowserHere({"https://x.example/home": good}))
+    assert fell[0]["ok"] and fell[0]["fetched_with"] == "plain HTTP" and "browser_error" in fell[0]
