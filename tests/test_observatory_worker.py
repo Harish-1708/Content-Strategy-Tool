@@ -932,3 +932,20 @@ def test_with_the_private_address_guard_off_the_worker_reads_a_local_address_and
     j = _with_guards(job(site, ["/other"]), private_address_block=True)
     j["allow_private_for_tests"] = False
     assert run_real(j)["results"][0]["error"]["code"] == "BAD_INPUT"
+
+
+def test_the_raw_page_is_handed_back_only_when_a_stored_session_check_asks_for_it_and_the_status_is_always_there():
+    page = "<html><title>Home</title><body>" + "logged in as someone " * 30 + "</body></html>"
+    fake = Fake({"https://x.example/home": Resp(200, page, {"content-type": "text/html"})})
+    plain, _ = drive(stub_job(["https://x.example/home"], {"stealth": True}), fake)
+    assert plain[0]["ok"] and plain[0]["status"] == 200 and "html" not in plain[0]
+    asked, _ = drive(stub_job(["https://x.example/home"], {"stealth": True}, return_html=True), fake)
+    assert asked[0]["ok"] and asked[0]["html"] == page and asked[0]["final_url"] == "https://x.example/home"
+    wall = "<html><title>Log in</title><body>Log in to continue. Password: <input type=password></body></html>"
+    fake = Fake({"https://x.example/home": Resp(200, wall, {"content-type": "text/html"})})
+    walled, _ = drive(stub_job(["https://x.example/home"], {"stealth": True}, return_html=True), fake)
+    assert not walled[0]["ok"] and "login page" in walled[0]["error"]["message"] and walled[0]["html"] == wall and walled[0]["status"] == 200      # a refused page still comes back, so it can be judged
+    big = "<html><body>" + "a" * 400000 + "</body></html>"
+    fake = Fake({"https://x.example/big": Resp(200, big, {"content-type": "text/html"})})
+    sized, _ = drive(stub_job(["https://x.example/big"], {"stealth": True}, return_html=True), fake)
+    assert len(sized[0]["html"]) == 300000                                                                  # bounded
