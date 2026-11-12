@@ -312,9 +312,35 @@ def status(platform, environ=None, now=""):
 
 # ---- is it still logged in? -----------------------------------------------------------------------------------------------------------------------
 
-def check_logged_in(platform, final_url, html, http_status=200):
+def _title(html):
+    found = re.search(r"<title[^>]*>(.*?)</title>", str(html or ""), re.I | re.S)
+    return " ".join(found.group(1).split())[:120] if found else ""
+
+
+def _landed(url):
+    """An address with no query, fragment or login-in-the-address part, so nothing that could be a token is ever printed."""
+    text = str(url or "")
+    text = re.sub(r"^(https?://)[^/@]*@", r"\1", text)
+    return text.split("?")[0].split("#")[0][:200]
+
+
+def page_evidence(platform, final_url, html, http_status=0, text=""):
+    """What a page showed, for the log, with no secret in it: where it landed (no query), the HTTP status, the title, which logged-in markers were and were not in the page, which logged-out wording was
+    in the visible text and which only in the page's code, whether a password field is on it, and the first words of its visible text."""
+    spec = _spec(platform)
+    low, vis = str(html or "").lower(), " ".join(str(text or "").split()).lower()
+    landed = _landed(final_url)
+    return {"landed": landed, "status": int(http_status or 0), "title": _title(html), "html_chars": len(str(html or "")), "text_chars": len(vis),
+            "logged_in_found": [m for m in spec["logged_in"] if m in low], "logged_in_missing": [m for m in spec["logged_in"] if m not in low],
+            "logged_out_in_text": [m for m in spec["logged_out"] if m in (vis if text else low)], "logged_out_only_in_code": [m for m in spec["logged_out"] if text and m in low and m not in vis],
+            "password_field": 'type="password"' in low or "type='password'" in low, "login_word_in_address": next((w for w in LOGIN_WORDS if w in landed.lower()), ""),
+            "text_starts": " ".join(str(text or "").split())[:240]}
+
+
+def check_logged_in(platform, final_url, html, http_status=200, text=None):
     """(True, why) only when the page that loaded with the session really is the logged-in site. Any doubt means (False, why): a redirect to anything that looks like a login or a challenge
-    (case-insensitive: /Login counts), another site, an empty page, the logged-out wording, or no logged-in marker at all."""
+    (case-insensitive: /Login counts), another site, an empty page, the logged-out wording, or no logged-in marker at all. The logged-out wording is looked for in the page's VISIBLE text when that
+    is given (the page's code can hold that wording in its translations even for a logged-in page); the logged-in markers are looked for in the page's code."""
     spec = _spec(platform)
     url = str(final_url or "")
     low_url = url.lower()
@@ -330,8 +356,9 @@ def check_logged_in(platform, final_url, html, http_status=200):
     if len(body) < 200:
         return False, "the page came back empty or nearly empty"
     low = body.lower()
+    visible = " ".join(str(text).split()).lower() if text is not None else low
     for marker in spec["logged_out"]:
-        if marker in low:
+        if marker in visible:
             return False, "the page shows the logged-out state"
     if not any(marker in low for marker in spec["logged_in"]):
         return False, "no sign of being logged in was found on the page (any doubt counts as not logged in)"
