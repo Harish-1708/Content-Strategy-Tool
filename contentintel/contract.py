@@ -29,9 +29,10 @@ RATE_LIMITED = "RATE_LIMITED"          # a limit, or out of credits
 PLATFORM_BLOCKED = "PLATFORM_BLOCKED"  # a challenge, a warning or a refusal: stop, never work around it
 NOT_FOUND = "NOT_FOUND"
 BAD_INPUT = "BAD_INPUT"
+PROVIDER_RETIRED = "PROVIDER_RETIRED"  # the provider has been withdrawn for good (not a failure to retry, not a setting to fix): it is never called
 
-CODES = (NEED_SETUP, NEED_LOGIN, UPSTREAM_BROKEN, TIMEOUT, RATE_LIMITED, PLATFORM_BLOCKED, NOT_FOUND, BAD_INPUT)
-FINAL_CODES = frozenset({NOT_FOUND, BAD_INPUT, PLATFORM_BLOCKED, RATE_LIMITED, NEED_LOGIN})
+CODES = (NEED_SETUP, NEED_LOGIN, UPSTREAM_BROKEN, TIMEOUT, RATE_LIMITED, PLATFORM_BLOCKED, NOT_FOUND, BAD_INPUT, PROVIDER_RETIRED)
+FINAL_CODES = frozenset({NOT_FOUND, BAD_INPUT, PLATFORM_BLOCKED, RATE_LIMITED, NEED_LOGIN, PROVIDER_RETIRED})
 
 HINTS = {
     NEED_SETUP: "A key, tool or setting is missing or wrong. Check the repository secret or the setting named in the message.",
@@ -42,6 +43,7 @@ HINTS = {
     PLATFORM_BLOCKED: "The platform refused or challenged this server. Automation on this source stops; a person has to look at the account.",
     NOT_FOUND: "What was asked for does not exist (any more). Check the address.",
     BAD_INPUT: "The request itself was wrong. Check the arguments or the settings.",
+    PROVIDER_RETIRED: "The provider has been withdrawn for good by its owner. It is not called and nothing can restore it; the other configured providers take its place.",
 }
 
 MAX_MESSAGE = 500
