@@ -239,7 +239,9 @@ def test_a_mock_run_never_touches_the_real_spending_ledger_or_health_records(ai)
 
 def test_check_in_mock_mode_says_it_proves_nothing_about_providers(ai):
     code, out = ai("check")
-    assert code == 0 and "AI check, MOCK" in out and "scripted stand-in" in out and "NOTE: a mock pass is not proof" in out and "LIVE" not in out.replace("--live", "")
+    assert code == 0 and "AI check, MOCK" in out and "scripted stand-in" in out and "NOTE: a mock pass is not proof" in out and "LIVE" not in out.replace("--live", "").replace("0 LIVE", "")
+    assert not [ln for ln in out.splitlines() if ln.strip().startswith("LIVE ")]                                    # a scripted stand-in is never listed as a live provider
+    assert any(ln.strip().startswith("MOCK") and "claude" in ln and "not proof the provider works" in ln for ln in out.splitlines()) and "Provider status" in out
     assert "MOCK  ok        claude/claude-sonnet-5-5" in out and "skipped   groq/openai/gpt-oss-120b: disabled" in out
 
 
@@ -442,8 +444,9 @@ def test_the_cli_module_does_not_import_the_ai_package_at_start_up():
 
 def test_the_shipped_providers_command_shows_the_rolled_out_providers_with_their_recorded_decision(ai):
     code, out = ai("providers", providers=ROOT / "ai_providers.yaml")
-    assert code == 0 and "86 providers in the registry, 7 enabled" in out
-    for pid in ("cloudflare", "github", "google", "groq", "mistral", "openrouter"):
+    assert code == 0 and "86 providers in the registry, 6 enabled, 1 retired (kept as a record, never called)" in out
+    assert "RETIRED" in next(l for l in out.splitlines() if l.strip().startswith("github "))
+    for pid in ("cloudflare", "google", "groq", "mistral", "openrouter"):
         line = next(l for l in out.splitlines() if l.strip().startswith(pid + " "))
         assert "ON" in line and "internal*" in line and "public,internal" in line, line         # * = raised by a recorded owner decision
     assert "restricted" in next(l for l in out.splitlines() if l.strip().startswith("claude "))
@@ -501,3 +504,53 @@ def test_the_live_check_leaves_a_thinking_model_room_to_think_and_still_answer()
     lane = CM.canary_lane()
     assert lane.max_tokens == CM.CANARY_MAX_TOKENS and lane.max_tokens >= 256                              # 24 tokens gave Gemini 3.5 Flash nothing left to answer with: "empty completion"
     assert lane.max_tokens < 1000                                                                          # still a tiny, free-tier-safe call
+
+
+# ---- the provider status list: LIVE, MOCK, FAILED, SKIPPED, DISABLED and RETIRED are never confused ------------------------------------------------
+
+def _shipped():
+    from contentintel.ai import registry as reg_mod
+    return reg_mod.load_registry(ROOT / "ai_providers.yaml")
+
+
+def _status(pid, outcome, mode="live", only=None, switched_off=()):
+    return CM.provider_status(_shipped().provider(pid), outcome, mode, only or set(), set(switched_off))
+
+
+def test_each_provider_gets_exactly_one_clear_status_and_only_a_real_answer_is_live():
+    one = {"ok": 1, "failed": [], "skipped": []}
+    assert _status("groq", {"groq": {"ok": 2, "failed": [], "skipped": []}}) == ("LIVE", "2 answered")
+    assert _status("groq", {"groq": {"ok": 1, "failed": ["UPSTREAM_BROKEN", "TIMEOUT"], "skipped": []}}) == ("LIVE", "1 answered, 2 failed (TIMEOUT, UPSTREAM_BROKEN)")
+    label, detail = _status("groq", {"groq": one}, mode="mock")
+    assert label == "MOCK" and "scripted stand-in" in detail and "not proof the provider works" in detail                  # a mock answer is never LIVE
+    label, detail = _status("google", {"google": {"ok": 0, "failed": ["UPSTREAM_BROKEN"], "skipped": []}})
+    assert label == "FAILED" and "UPSTREAM_BROKEN" in detail and "enabled and was tried" in detail
+    assert _status("mistral", {"mistral": {"ok": 0, "failed": [], "skipped": ["no credentials or client available on this machine"]}}) == ("SKIPPED", "no credentials or client available on this machine")
+    assert _status("mistral", {}) == ("SKIPPED", "nothing was tried")
+    assert _status("groq", {"groq": one}, only={"cloudflare"}) == ("SKIPPED", "not in this run (only=cloudflare)")
+    assert _status("openrouter", {"openrouter": one}, switched_off={"openrouter"}) == ("DISABLED", "switched off by the owner")
+    assert _status("cerebras", {}) == ("DISABLED", "switched off by the owner")                                           # enabled: false in the file
+
+
+def test_a_retired_provider_is_always_retired_whatever_the_run_shows_and_is_never_called_or_live():
+    for outcome in ({}, {"github": {"ok": 3, "failed": [], "skipped": []}}, {"github": {"ok": 0, "failed": ["UPSTREAM_BROKEN"], "skipped": []}}):
+        for mode in ("live", "mock"):
+            for only in (set(), {"groq"}, {"github"}):
+                assert _status("github", outcome, mode, only, switched_off={"github"}) == ("RETIRED", "GitHub Models was withdrawn by its provider on 2026-07-30; never called")
+
+
+def test_the_status_block_lists_every_provider_in_use_the_owners_switched_off_ones_and_the_retired_one_with_honest_counts():
+    reg = _shipped()
+    outcome = {"groq": {"ok": 2, "failed": [], "skipped": []}, "openrouter": {"ok": 1, "failed": [], "skipped": []}, "google": {"ok": 0, "failed": ["UPSTREAM_BROKEN"], "skipped": []},
+               "mistral": {"ok": 0, "failed": [], "skipped": ["no credentials or client available on this machine"]}}
+    notes = ["SKIPPED: cloudflare: switched off by the owner (services.ai_gateway.channels.cloudflare)"]
+    block = CM.provider_status_block(reg, outcome, "live", set(), notes)
+    lines = [ln.strip() for ln in block.splitlines()]
+    assert lines[0].startswith("Provider status (a green run does not mean a provider is live")
+    order = [ln.split()[0] for ln in lines[1:-1]]
+    assert order == ["LIVE", "LIVE", "FAILED", "SKIPPED", "SKIPPED", "DISABLED", "RETIRED"]                          # live first, retired last
+    assert [ln.split()[1] for ln in lines[1:-1]] == ["groq", "openrouter", "google", "claude", "mistral", "cloudflare", "github"]
+    assert lines[-1] == "2 LIVE, 1 FAILED, 2 SKIPPED, 1 DISABLED, 1 RETIRED"
+    assert "RETIRED" in next(ln for ln in lines if ln.endswith("never called") and ln.split()[1] == "github")
+    mock = CM.provider_status_block(reg, {"groq": {"ok": 1, "failed": [], "skipped": []}}, "mock", set(), [])
+    assert not [ln for ln in mock.splitlines() if ln.strip().startswith("LIVE ")] and mock.splitlines()[-1].strip() == "0 LIVE, 1 MOCK, 0 FAILED, 5 SKIPPED, 1 RETIRED"
