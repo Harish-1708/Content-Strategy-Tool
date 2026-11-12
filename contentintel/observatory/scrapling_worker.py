@@ -440,10 +440,12 @@ class Worker:
                     kw["cookies"] = [{"name": str(k), "value": str(v), "url": current} for k, v in jar.items()]
                 try:
                     resp = self.f.stealth_get(current, **kw)
+                    out["fetched_with"] = "browser"
                 except Exception as exc:
                     if _browser_missing(exc):                                                       # no browser installed here: read the page over plain HTTP instead, and say so
                         out["browser_note"] = "no browser is installed here, so the page was read over plain HTTP"
                         out["browser_error"] = _short_error(exc, [str(c["value"]) for c in kw.get("cookies", [])])       # what the browser library really said, so a wrong or missing browser is never hidden
+                        out["fetched_with"] = "plain HTTP"
                         adv = {**adv, "stealth": False}
                         continue
                     raise
@@ -469,6 +471,11 @@ class Worker:
                     raise
             status = int(resp.status)
             heads = {str(k).lower(): v for k, v in dict(getattr(resp, "headers", {}) or {}).items()}
+            if self.job.get("return_html"):                                                  # a stored-session check judges the page, so it keeps the last one it saw, refused or not
+                out["fetched_with"] = out.get("fetched_with") or "plain HTTP"
+                out["status"], out["final_url"] = status, current
+                out["html"] = bytes(resp.body or b"").decode("utf-8", errors="replace")[:300000]
+                out["cookie_names_back"] = sorted(str(k) for k in dict(getattr(resp, "cookies", {}) or {}))[:40]       # names only, never a value
             retry = signals.parse_retry_after(heads.get("retry-after"))
             ok = status < 400 and not signals.looks_like_challenge(status, heads, bytes(resp.body or b""))
             self._done(host, ok=ok or status in (301, 302, 303, 307, 308), retry_after=retry)
