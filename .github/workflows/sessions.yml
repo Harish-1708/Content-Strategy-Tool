@@ -51,7 +51,7 @@ jobs:
         run: |
           python -m venv "$RUNNER_TEMP/scrapling-env"
           "$RUNNER_TEMP/scrapling-env/bin/pip" install -q -r requirements-scrapling.txt
-          "$RUNNER_TEMP/scrapling-env/bin/python" -m playwright install --with-deps chromium      # a logged-in page is only shown to a browser
+          "$RUNNER_TEMP/scrapling-env/bin/python" -m patchright install --with-deps chromium      # patchright, not playwright: it is the library Scrapling's stealth browser runs on, and each one looks for its own pinned browser build (a mismatch looked like "no browser installed")
           echo "SCRAPLING_PYTHON=$RUNNER_TEMP/scrapling-env/bin/python" >> "$GITHUB_ENV"
 
       - name: Stored login sessions
