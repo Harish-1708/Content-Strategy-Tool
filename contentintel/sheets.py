@@ -521,8 +521,14 @@ def _prune_rows(spreadsheet, ws, key_col, remove_keys, protect=("Decision", "Not
                 kept += 1
             else:
                 doomed.append(row_no)
+    _delete_rows(spreadsheet, ws, doomed)
+    return len(doomed), kept
+
+
+def _delete_rows(spreadsheet, ws, row_numbers):
+    """Delete the given 1-based rows in as few requests as possible (neighbouring rows as one range, last range first so the numbers stay right)."""
     ranges = []                                              # [first, last] of neighbouring rows, 1-based
-    for row_no in doomed:
+    for row_no in sorted(row_numbers):
         if ranges and ranges[-1][1] == row_no - 1:
             ranges[-1][1] = row_no
         else:
@@ -531,7 +537,28 @@ def _prune_rows(spreadsheet, ws, key_col, remove_keys, protect=("Decision", "Not
                 for first, last in reversed(ranges)]
     for start in range(0, len(requests), 100):
         _call(spreadsheet.batch_update, {"requests": requests[start:start + 100]})
-    return len(doomed), kept
+
+
+def _drop_unknown_rows(spreadsheet, ws, key_col, known_keys):
+    """For a tab the tool owns completely (the Controls tab): delete the rows whose key is not one the tool knows any more (a control that was removed), so a stale row does not stay for ever.
+    The header and rows with no key are never touched, and nothing is deleted when the tool knows no keys at all (that would be a failure to build the list, not a tab to empty).
+    Returns the keys of the rows deleted."""
+    if not known_keys:
+        return []
+    values = _call(ws.get_all_values)
+    header = [str(h) for h in (values[0] if values else [])]
+    if key_col not in header:
+        return []
+    key_at = header.index(key_col)
+    doomed, dropped = [], []
+    for row_no, row in enumerate(values[1:], start=2):
+        key = str(row[key_at]).strip() if key_at < len(row) else ""
+        if key and key not in known_keys:
+            doomed.append(row_no)
+            dropped.append(key)
+    if doomed:
+        _delete_rows(spreadsheet, ws, doomed)
+    return dropped
 
 
 def _decision_dropdown(sp, ws):
@@ -784,6 +811,13 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
         rows = {key: {c: _typed(c, _plain(row.get(c))) for c in tab["columns"]} for key, row in tab["rows_by_key"].items()}
         _sync_table(ws, tab=tab["title"], columns=tab["columns"], rows_by_key=rows, key_col=tab["key_col"], report=report, dry_run=dry_run,
                     starter_manual=tab["starter_manual"], stamp=(STAMP, now))
+        if tab.get("drop_unknown") and ws is not None and not dry_run:
+            try:
+                dropped = _drop_unknown_rows(spreadsheet, ws, tab["key_col"], set(rows))
+                if dropped:
+                    report.notes.append(f"{tab['title']}: removed {len(dropped)} row(s) for controls that no longer exist ({', '.join(dropped[:5])}{', ...' if len(dropped) > 5 else ''})")
+            except Exception as exc:                                       # a tidy that fails never stops the sheet
+                report.notes.append(f"{tab['title']}: stale rows were not removed ({exc.__class__.__name__})")
 
     bank = ib.normalise_bank(store.read_ideabank(brand.slug))
     shown = ib.sheet_rows(bank)
