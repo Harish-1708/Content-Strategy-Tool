@@ -1,48 +1,48 @@
 {
   "boss": {
-    "checked_at": "2026-11-12T12:32:43Z",
+    "checked_at": "2026-11-12T12:55:36Z",
     "proved_on": "",
     "reason": "add the secret BOSS_SESSION_B64 (capture one by hand: docs/platform/session-capture-guide.md)",
     "state": "NOT SET UP"
   },
   "facebook": {
-    "checked_at": "2026-11-12T12:32:43Z",
-    "proved_on": "2026-11-12T12:32:43Z",
+    "checked_at": "2026-11-12T12:55:36Z",
+    "proved_on": "2026-11-12T12:55:36Z",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED"
   },
   "instagram": {
-    "checked_at": "2026-11-12T12:32:43Z",
+    "checked_at": "2026-11-12T12:55:36Z",
     "proved_on": "",
     "reason": "no sign of being logged in was found on the page (any doubt counts as not logged in): the stored session was not accepted; capture a new one",
     "state": "REJECTED"
   },
   "linkedin": {
-    "checked_at": "2026-11-12T12:32:43Z",
-    "proved_on": "2026-11-12T12:32:43Z",
+    "checked_at": "2026-11-12T12:55:36Z",
+    "proved_on": "2026-11-12T12:55:36Z",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED"
   },
   "reddit": {
-    "checked_at": "2026-11-12T12:32:43Z",
+    "checked_at": "2026-11-12T12:55:36Z",
     "proved_on": "",
     "reason": "no sign of being logged in was found on the page (any doubt counts as not logged in): the stored session was not accepted; capture a new one",
     "state": "REJECTED"
   },
   "tiktok": {
-    "checked_at": "2026-11-12T12:32:43Z",
+    "checked_at": "2026-11-12T12:55:36Z",
     "proved_on": "",
     "reason": "the page shows the logged-out state: the stored session was not accepted; capture a new one",
     "state": "REJECTED"
   },
   "x": {
-    "checked_at": "2026-11-12T12:32:43Z",
+    "checked_at": "2026-11-12T12:55:36Z",
     "proved_on": "",
-    "reason": "X (Twitter) showed a bot-check or challenge page to this runner, so the session itself could not be judged. This is the platform blocking the runner, not a bad session",
-    "state": "BLOCKED"
+    "reason": "no sign of being logged in was found on the page (any doubt counts as not logged in): the stored session was not accepted; capture a new one",
+    "state": "REJECTED"
   },
   "xiaohongshu": {
-    "checked_at": "2026-11-12T12:32:43Z",
+    "checked_at": "2026-11-12T12:55:36Z",
     "proved_on": "",
     "reason": "add the secret XIAOHONGSHU_SESSION_B64 (capture one by hand: docs/platform/session-capture-guide.md)",
     "state": "NOT SET UP"
