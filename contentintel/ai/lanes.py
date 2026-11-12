@@ -66,6 +66,8 @@ def load_lanes(path=DEFAULT_PATH, registry=None):
             if registry is not None:
                 if r["provider"] not in registry.providers:
                     raise LaneError(f"{where}.chain[{i}]: provider {r['provider']!r} is not in ai_providers.yaml")
+                if registry.providers[r["provider"]].retired:
+                    raise LaneError(f"{where}.chain[{i}]: {r['provider']} was retired by its provider ({registry.providers[r['provider']].retired['date']}); remove this route")
                 if not registry.model_ok(r["provider"], str(r["model"])):
                     raise LaneError(f"{where}.chain[{i}]: model {r['model']!r} is not an approved model of {r['provider']} (allowlist in ai_providers.yaml)")
             chain.append({"provider": r["provider"], "model": str(r["model"]), "gateway_model": str(r.get("gateway_model") or r["model"])})
