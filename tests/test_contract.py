@@ -89,10 +89,10 @@ def test_errors_are_scrubbed_cut_and_always_carry_a_hint():
         Failure("MADE_UP")
 
 
-def test_the_five_final_codes_are_exactly_the_ones_another_route_cannot_fix():
-    assert K.FINAL_CODES == {K.NOT_FOUND, K.BAD_INPUT, K.PLATFORM_BLOCKED, K.RATE_LIMITED, K.NEED_LOGIN}
+def test_the_six_final_codes_are_exactly_the_ones_another_route_cannot_fix():
+    assert K.FINAL_CODES == {K.NOT_FOUND, K.BAD_INPUT, K.PLATFORM_BLOCKED, K.RATE_LIMITED, K.NEED_LOGIN, K.PROVIDER_RETIRED}      # a retired provider is withdrawn for good: no other route of it exists
     assert not K.FINAL_CODES & {K.TIMEOUT, K.UPSTREAM_BROKEN, K.NEED_SETUP}
-    assert set(K.HINTS) == set(K.CODES) and len(K.CODES) == 8
+    assert set(K.HINTS) == set(K.CODES) and len(K.CODES) == 9
 
 
 # ---- the envelope -----------------------------------------------------------------------------------------------------------
