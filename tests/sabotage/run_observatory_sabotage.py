@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OBS, AI = "contentintel/observatory/", "contentintel/ai/"
-TESTS = ["tests/test_observatory_*.py", "tests/test_services.py", "tests/test_ytdlp_youtube.py", "tests/test_external_repository.py", "tests/test_platform_wiring.py", "tests/test_platform_matrix.py", "tests/test_reddit_routes.py", "tests/test_agent_reach_instagram.py", "tests/test_ai_github.py", "tests/test_ai_health_tab.py", "tests/test_ai_config.py", "tests/test_providers.py", "tests/test_agent_reach_catalog.py", "tests/test_owner_defaults.py", "tests/test_capability_matrix.py", "tests/test_research.py", "tests/test_sources.py", "tests/test_guards.py", "tests/test_connections.py", "tests/test_sheets.py", "tests/test_health.py", "tests/test_acceptance.py", "tests/test_acceptance_agent_reach.py", "tests/test_acceptance_fixes.py", "tests/test_ai_gateway.py", "tests/test_ai_commands.py", "tests/test_ai_github.py", "tests/test_ai_config.py", "tests/test_ai_health_tab.py"]
+TESTS = ["tests/test_observatory_*.py", "tests/test_contract.py", "tests/test_services.py", "tests/test_ytdlp_youtube.py", "tests/test_external_repository.py", "tests/test_platform_wiring.py", "tests/test_platform_matrix.py", "tests/test_reddit_routes.py", "tests/test_agent_reach_instagram.py", "tests/test_ai_github.py", "tests/test_ai_health_tab.py", "tests/test_ai_config.py", "tests/test_providers.py", "tests/test_agent_reach_catalog.py", "tests/test_owner_defaults.py", "tests/test_capability_matrix.py", "tests/test_research.py", "tests/test_sources.py", "tests/test_guards.py", "tests/test_connections.py", "tests/test_sheets.py", "tests/test_health.py", "tests/test_acceptance.py", "tests/test_acceptance_agent_reach.py", "tests/test_acceptance_fixes.py", "tests/test_ai_gateway.py", "tests/test_ai_commands.py", "tests/test_ai_github.py", "tests/test_ai_config.py", "tests/test_ai_health_tab.py"]
 
 # (id, file, text found exactly once, replacement, what the bug simulates)
 MUTATIONS = [
@@ -64,7 +64,6 @@ MUTATIONS = [
     ("direct-token-leaks", AI + "clients.py", '        return str(text).replace(self.token, "***") if self.token else str(text)', "        return str(text)", "the GitHub token appears in an error message"),
     ("direct-413-misclassified", AI + "clients.py", "        if status in (400, 413, 422):", "        if status in (400, 422):", "a too-large request is treated as a provider outage"),
     ("gateway-gets-direct-providers", AI + "gateway.py", '        if p.id == "claude" or p.direct:', '        if p.id == "claude":', "GitHub Models is sent through the gateway"),
-    ("github-silently-off", "ai_providers.yaml", "    label: GitHub Models\n    enabled: true", "    label: GitHub Models\n    enabled: false", "GitHub Models switched off without anyone noticing"),
     ("health-tab-ignores-rest", AI + "sheetrows.py", '        resting = pause.get("until") if pause.get("until", "") > now else ""', '        resting = ""', "a resting provider shows as ready"),
     # ---- the recorded decision for evasion methods, and the owner's switches (no host list) ----
     ("worker-evasion-switch-ignored", OBS + "scrapling_worker.py", '                if not self.controls.get("evasion"):', "                if False:", "the owner's evasion switch does nothing"),
@@ -461,7 +460,6 @@ U47 = [   # update 46: competitor filter, empty searches, page-read summary, You
     ('u46-yt-nothing-succeeds', 'contentintel/observatory/commands.py', '    if args.what == "youtube" and empty_brands and len(empty_brands) == len(brands):', '    if False:', 'a YouTube corpus with no channel anywhere is a success'),
     ('u46-report-no-fallback', 'contentintel/observatory/commands.py', '        if not sites:                                           # no monitor run has finished yet', '        if False:                                           # no monitor run has finished yet', 'the report ignores the competitors discovery chose'),
     ('u46-tab-drops-monitoring', 'contentintel/observatory/report.py', '        if c.get("domain") and c["domain"] in monitored_domains:          # already shown', '        if c.get("status") == "monitoring" or (c.get("domain") and c["domain"] in monitored_domains):          # already shown', 'a competitor chosen for monitoring vanishes from the Competitors tab'),
-    ('u46-wf-models-permission', '.github/workflows/observatory.yml', "  models: read               # lets the job's own token", "  checks: read               # lets the job's own token", 'the workflow cannot call GitHub Models'),
     ('u46-wf-ai-secret-dropped', '.github/workflows/observatory.yml', '          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}           # the AI layer', '          ANTHROPIC_API_KEY_UNUSED: ${{ secrets.ANTHROPIC_API_KEY }}           # the AI layer', 'the workflow does not pass the Claude key'),
     ('u46-wf-scrapling-crawl', '.github/workflows/observatory.yml', " || (inputs.action == 'corpus' && (inputs.what == 'crawl' || inputs.what == 'deepread'))", '', 'a crawl run does not install Scrapling by itself'),
     ('u46-wf-gateway-blocks', '.github/workflows/observatory.yml', '        continue-on-error: true\n        shell: bash\n        run: |\n          # the FreeLLMAPI connection: the newest release by default; the recorded', '        shell: bash\n        run: |\n          # the FreeLLMAPI connection: the newest release by default; the recorded', 'a gateway that cannot be built stops the run'),
@@ -473,12 +471,6 @@ U48 = [   # update 46: GitHub Models API versions and redirects, the OpenRouter 
     ('u46-gh-follows-redirects', 'contentintel/ai/clients.py', '    def redirect_request(self, *args, **kwargs):\n        return None', '    def redirect_request(self, *args, **kwargs):\n        return super().redirect_request(*args, **kwargs)', "a redirect is followed behind the caller's back"),
     ('u46-gh-redirect-any-host', 'contentintel/ai/clients.py', 'if status in (307, 308) and hop == 0 and self._same_host(where):', 'if status in (307, 308) and hop == 0:', 'the token is sent to whatever host a redirect names'),
     ('u46-gh-redirect-unreported', 'contentintel/ai/clients.py', '        if 300 <= status < 400:\n            raise Failure(contract.UPSTREAM_BROKEN, self._clean(f"the provider redirected', '        if False:\n            raise Failure(contract.UPSTREAM_BROKEN, self._clean(f"the provider redirected', 'a redirect is not reported'),
-    ('u46-gh-one-version-only', 'contentintel/ai/clients.py', '        for n, (version, accept) in enumerate(variants):', '        for n, (version, accept) in enumerate(variants[:1]):', 'only the first API version is ever tried'),
-    ('u46-gh-retry-on-refusal', 'contentintel/ai/clients.py', 'if exc.code != contract.UPSTREAM_BROKEN or n == len(variants) - 1:', 'if n == len(variants) - 1:', 'a refusal or limit is asked again with another variant'),
-    ('u46-gh-earlier-attempts-lost', 'contentintel/ai/clients.py', '"; ".join(tried) + hint) from None', '"" + hint) from None', 'the failure forgets what the earlier version returned'),
-    ('u46-gh-versions-swapped', 'ai_providers.yaml', "      api_versions:\n      - '2026-03-10'\n      - '2022-11-28'", "      api_versions:\n      - '2022-11-28'\n      - '2026-03-10'", 'the old API version is tried first'),
-    ('u46-gh-versions-not-passed', 'contentintel/ai/commands.py', ', api_versions=p.direct.get("api_versions") or ("2022-11-28",))', ')', 'the configured API versions never reach the client'),
-    ('u46-gh-versions-rejected', 'contentintel/ai/registry.py', '_only(direct, ("base_url", "api_versions"), f"{where}.direct")', '_only(direct, ("base_url",), f"{where}.direct")', 'the provider file cannot list API versions'),
     ('u46-or-dead-model-approved', 'ai_providers.yaml', '    - id: openai/gpt-oss-120b:free\n      approved: false', '    - id: openai/gpt-oss-120b:free\n      approved: true', 'the dead OpenRouter free model is approved again'),
 ]
 MUTATIONS.extend(U48)
@@ -489,8 +481,7 @@ U49 = [   # update 46: the live check's token limit
 MUTATIONS.extend(U49)
 
 U50 = [   # update 47: page-read summary, Sheets reads, Scrapling health, cannot run here, acceptance GitHub, OpenRouter and GitHub clients
-    ('u47-gh-no-user-agent', 'contentintel/ai/clients.py', '"Accept": accept, "User-Agent": USER_AGENT}', '"Accept": accept}', "the provider is called under urllib's own name"),
-    ('u47-gh-no-json-variant', 'contentintel/ai/clients.py', ' + [(self.api_versions[-1], "application/json")]', '', 'the plain JSON Accept variant is never tried'),
+    ('u47-gh-no-user-agent', 'contentintel/ai/clients.py', '"Content-Type": "application/json", "Accept": "application/json", "User-Agent": USER_AGENT}', '"Content-Type": "application/json", "Accept": "application/json"}', "the provider is called under urllib's own name"),
     ('u47-or-paid-completion-allowed', 'contentintel/ai/clients.py', ' and str(price.get("completion", "1")) in ("0", "0.0") and "text" in modalities:', ' and "text" in modalities:', 'a model with a priced completion is treated as free'),
     ('u47-or-image-model-allowed', 'contentintel/ai/clients.py', 'in ("0", "0.0") and str(price.get("completion", "1")) in ("0", "0.0") and "text" in modalities:', 'in ("0", "0.0") and str(price.get("completion", "1")) in ("0", "0.0"):', 'an image model is asked for text'),
     ('u47-or-suffix-ignored', 'contentintel/ai/clients.py', 'if str(m.get("id", "")).endswith(":free") and', 'if True and', 'a model without the free suffix is accepted'),
@@ -500,7 +491,7 @@ U50 = [   # update 47: page-read summary, Sheets reads, Scrapling health, cannot
     ('u47-or-smallest-first', 'contentintel/ai/clients.py', 'sorted(found, reverse=True)[:3]', 'sorted(found)[:3]', 'the smallest free models lead'),
     ('u47-or-gone-model-unexplained', 'contentintel/ai/clients.py', 'if status == 404 and "free" in text_error.lower():', 'if False:', 'a model withdrawn from free use is not reported as gone'),
     ('u47-cmd-openrouter-uses-github-client', 'contentintel/ai/commands.py', 'klass = cl.OpenRouterClient if str(p.direct["base_url"]).startswith("https://openrouter.ai") else cl.DirectClient', 'klass = cl.DirectClient', 'OpenRouter is called with the GitHub client'),
-    ('u47-registry-openrouter-endpoint', 'contentintel/ai/registry.py', 'DIRECT_ENDPOINTS = ("https://models.github.ai/inference", "https://openrouter.ai/api/v1")', 'DIRECT_ENDPOINTS = ("https://models.github.ai/inference",)', 'OpenRouter is not an allowed direct endpoint'),
+    ('u47-registry-openrouter-endpoint', 'contentintel/ai/registry.py', 'DIRECT_ENDPOINTS = ("https://openrouter.ai/api/v1",)', 'DIRECT_ENDPOINTS = ()', 'OpenRouter is not an allowed direct endpoint'),
     ('u47-yaml-openrouter-via-gateway', 'ai_providers.yaml', '    gateway_platform: openrouter\n    direct:\n      base_url: https://openrouter.ai/api/v1\n    terms:', '    gateway_platform: openrouter\n    terms:', 'OpenRouter goes back through the gateway'),
     ('u47-gateway-log-folder', 'contentintel/ai/gateway.py', '        self.log_path.parent.mkdir(parents=True, exist_ok=True)          # the scratch folder', '        pass          # the scratch folder', "the gateway's log folder is not made"),
     ('u47-sheets-decisions-list-no-retry', 'contentintel/sheets.py', 'if "Competitors" not in [w.title for w in _call(spreadsheet.worksheets)]:', 'if "Competitors" not in [w.title for w in spreadsheet.worksheets()]:', 'a refused tab list is not retried when reading decisions'),
@@ -519,7 +510,6 @@ U50 = [   # update 47: page-read summary, Sheets reads, Scrapling health, cannot
     ('u47-acceptance-github-one-query', 'contentintel/observatory/acceptance_checks.py', 'for query in (environ.get("GITHUB_CHECK_QUERY", "agent reach"), "python"):', 'for query in (environ.get("GITHUB_CHECK_QUERY", "agent reach"),):', 'the GitHub check gives up after one query'),
     ('u47-acceptance-github-vague', 'contentintel/observatory/acceptance_checks.py', '(the workflow passes GITHUB_TOKEN to lift that)', '(see the workflow)', 'the GitHub check does not say what to do'),
     ('u47-acceptance-yml-github-token', '.github/workflows/acceptance.yml', '          GITHUB_TOKEN: ${{ github.token }}                  # lifts', '          GITHUB_TOKEN_UNUSED: ${{ github.token }}                  # lifts', "the acceptance run is not given the job's token"),
-    ('u47-ai-yml-probe-blocks', '.github/workflows/ai-gateway.yml', '        continue-on-error: true\n        shell: bash\n        env:\n          GITHUB_TOKEN: ${{ github.token }}\n          GH_MODELS_TOKEN: ${{ secrets.GH_MODELS_TOKEN }}\n        run: |\n          # The same request the live check makes', '        shell: bash\n        env:\n          GITHUB_TOKEN: ${{ github.token }}\n          GH_MODELS_TOKEN: ${{ secrets.GH_MODELS_TOKEN }}\n        run: |\n          # The same request the live check makes', 'the diagnostic probe can fail the run'),
     ('u47-read-printed-per-brand', 'contentintel/observatory/commands.py', '    if page["url"] in shown:', '    if False:', 'the same page is described once per brand'),
     ('u47-read-zero-price-shown', 'contentintel/observatory/commands.py', '            if amount > 0 and len(re.findall', '            if len(re.findall', 'a $0.00 placeholder is shown as a price'),
     ('u47-read-links-kept-in-names', 'contentintel/observatory/commands.py', '    text = re.sub(r"\\[([^\\]]*)\\]\\([^)]*\\)", r"\\1", text)', '    text = text', 'link addresses are read as page text'),
@@ -533,10 +523,6 @@ U52 = [   # update 48: OpenRouter cap, GitHub OK hint and Models token, connecti
     ('u48-or-list-uncapped', 'contentintel/ai/clients.py', 'chain = lead[: self.MAX_MODELS - 1] + [self.ROUTER]', 'chain = lead + [self.ROUTER]', 'OpenRouter is sent more than three models'),
     ('u48-or-router-first', 'contentintel/ai/clients.py', 'chain = lead[: self.MAX_MODELS - 1] + [self.ROUTER]', 'chain = [self.ROUTER] + lead[: self.MAX_MODELS - 1]', 'the free router is asked before the free models'),
     ('u48-or-max-five', 'contentintel/ai/clients.py', '    MAX_MODELS = 3 ', '    MAX_MODELS = 5 ', 'the cap is raised above what OpenRouter accepts'),
-    ('u48-gh-hint-dropped', 'contentintel/ai/clients.py', 'if self.github and "something that is not JSON (text/plain): \'OK\'" in str(exc) and all("\'OK\'" in t for t in tried):', 'if False:', 'the plain-OK explanation is never given'),
-    ('u48-gh-hint-for-any-failure', 'contentintel/ai/clients.py', ' in str(exc) and all("\'OK\'" in t for t in tried):', ' in str(exc):', 'the plain-OK explanation is given although the variants disagree'),
-    ('u48-gh-hint-without-the-secret-name', 'contentintel/ai/clients.py', 'save it as the secret GH_MODELS_TOKEN; it is used', 'save it as the secret MODELS_TOKEN; it is used', 'the explanation names the wrong secret'),
-    ('u48-yaml-token-order', 'ai_providers.yaml', '      - GH_MODELS_TOKEN\n      - GITHUB_TOKEN\n    gateway_platform: github', '      - GITHUB_TOKEN\n      - GH_MODELS_TOKEN\n    gateway_platform: github', "the job's token is used before the Models token"),
     ('u48-conn-nonfault-scored', 'contentintel/connections.py', '        if not ok and code in NOT_THE_REPOSITORYS_FAULT:\n            return', '        if False:\n            return', "a missing environment or a refusal lowers a connection's health"),
     ('u48-conn-ratelimit-scored', 'contentintel/connections.py', '"PLATFORM_BLOCKED", "RATE_LIMITED", "NOT_FOUND", "BAD_INPUT"})', '"PLATFORM_BLOCKED", "NOT_FOUND", "BAD_INPUT"})', "a site's rate limit lowers a connection's health"),
     ('u48-conn-migration-off', 'contentintel/connections.py', 'if isinstance(entry, dict) and entry.get("v", 1) < HISTORY_VERSION:', 'if False:', 'the old failures stay in the history'),
@@ -548,17 +534,48 @@ U52 = [   # update 48: OpenRouter cap, GitHub OK hint and Models token, connecti
     ('u48-read-no-recorded-line', 'contentintel/observatory/commands.py', '            if brand is brands[-1]:', '            if False:', 'the brands the page was recorded for are not listed'),
     ('u48-sheets-decisions-silent', 'contentintel/sheets.py', 'report.notes.append(f"Competitor decisions read from the sheet: {n}', '_ = (f"Competitor decisions read from the sheet: {n}', 'the Competitors tab read leaves no line in the log'),
     ('u48-sheets-controls-silent', 'contentintel/sheets.py', 'report.notes.append(f"Controls read from the sheet:', '_ = (f"Controls read from the sheet:', 'the Controls tab read leaves no line in the log'),
-    ('u48-wf-models-token-dropped', '.github/workflows/observatory.yml', '          GH_MODELS_TOKEN: ${{ secrets.GH_MODELS_TOKEN }}         # optional: a fine-grained token with Models: read for the AI layer', '          GH_MODELS_TOKEN_UNUSED: ${{ secrets.GH_MODELS_TOKEN }}         # optional: a fine-grained token with Models: read for the AI layer', 'the Observatory job is not given the Models token'),
     ('u48-wf-contact-annotation', '.github/workflows/observatory.yml', 'echo "::er""ror::The secret OBSERVATORY_CONTACT is missing.', 'echo "::error::The secret OBSERVATORY_CONTACT is missing.', 'the step header prints a line that looks like an error'),
     ('u48-wf-scrapling-connections', '.github/workflows/observatory.yml', " || (inputs.action == 'connections' && (inputs.what == 'check' || inputs.what == 'install'))", '', 'a connections check does not install Scrapling'),
-    ('u48-readme-token-undocumented', 'README.md', '| `GH_MODELS_TOKEN` | a fine-grained GitHub token', '| `GH_MODELS_TOKEN_X` | a fine-grained GitHub token', 'the new secret is not documented'),
 ]
 MUTATIONS.extend(U52)
 
 U53 = [   # update 48a: the Models token is renamed (GitHub reserves the GITHUB_ prefix)
-    ('u48a-wf-reserved-secret-name', '.github/workflows/observatory.yml', 'GH_MODELS_TOKEN: ${{ secrets.GH_MODELS_TOKEN }}         # optional: a fine-grained token with Models: read for the AI layer', 'GH_MODELS_TOKEN: ${{ secrets.GITHUB_MODELS_TOKEN }}         # optional: a fine-grained token with Models: read for the AI layer', 'a secret name GitHub does not allow is used'),
+    ('u48a-wf-reserved-secret-name', '.github/workflows/observatory.yml', 'REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}', 'REDDIT_CLIENT_ID: ${{ secrets.GITHUB_REDDIT_ID }}', 'a secret name GitHub does not allow is used'),
 ]
 MUTATIONS.extend(U53)
+
+U54 = [   # update 49: GitHub Models retired, PROVIDER_RETIRED, the status list
+    ('u49-code-not-final', 'contentintel/contract.py', 'RATE_LIMITED, NEED_LOGIN, PROVIDER_RETIRED})', 'RATE_LIMITED, NEED_LOGIN})', 'a retired provider is treated as an ordinary failure to try another route for'),
+    ('u49-code-no-hint', 'contentintel/contract.py', '    PROVIDER_RETIRED: "The provider has been withdrawn', '    NOT_FOUND: "The provider has been withdrawn', 'the retired code has no explanation'),
+    ('u49-reg-retired-enabled-allowed', 'contentintel/ai/registry.py', '            if d.get("enabled") or d.get("direct") or (d.get("credentials") or {}).get("env"):', '            if False:', 'a retired provider can be switched back on'),
+    ('u49-reg-retired-record-unchecked', 'contentintel/ai/registry.py', '            if not all(str(retired.get(k, "")).strip() for k in ("date", "source", "reason")):', '            if False:', 'a retirement without a date, source and reason is accepted'),
+    ('u49-reg-retired-eligible', 'contentintel/ai/registry.py', '        if p.retired:\n            return False, f"RETIRED:', '        if False:\n            return False, f"RETIRED:', 'a retired provider is described as merely disabled'),
+    ('u49-reg-github-endpoint-allowed', 'contentintel/ai/registry.py', 'DIRECT_ENDPOINTS = ("https://openrouter.ai/api/v1",)', 'DIRECT_ENDPOINTS = ("https://openrouter.ai/api/v1", "https://models.github.ai/inference")', 'the retired address is an allowed endpoint again'),
+    ('u49-lanes-retired-route-allowed', 'contentintel/ai/lanes.py', '                if registry.providers[r["provider"]].retired:\n                    raise LaneError', '                if False:\n                    raise LaneError', 'a lane may route to a retired provider'),
+    ('u49-client-retired-host-allowed', 'contentintel/ai/clients.py', '        for retired_host, why in RETIRED_HOSTS.items():', '        for retired_host, why in {}.items():', 'the client calls the retired address'),
+    ('u49-client-retired-subdomain', 'contentintel/ai/clients.py', 'if host == retired_host or host.endswith("." + retired_host):', 'if host == retired_host:', 'a sub-domain of the retired address is called'),
+    ('u49-client-retired-message', 'contentintel/ai/clients.py', 'so no token, permission or request change can bring it back.', 'so it may come back later.', 'the refusal suggests the retired service can be restored'),
+    ('u49-client-retired-code', 'contentintel/ai/clients.py', 'raise Failure(contract.PROVIDER_RETIRED, why)', 'raise Failure(contract.UPSTREAM_BROKEN, why)', 'the refusal is reported as an ordinary upstream failure'),
+    ('u49-cmd-mock-is-live', 'contentintel/ai/commands.py', 'word = "LIVE" if mode == "live" else "MOCK"', 'word = "LIVE"', 'a scripted stand-in is listed as a live provider'),
+    ('u49-cmd-retired-ignored', 'contentintel/ai/commands.py', '    if provider.retired:\n        return "RETIRED"', '    if False:\n        return "RETIRED"', 'a retired provider is listed as disabled'),
+    ('u49-cmd-failed-is-live', 'contentintel/ai/commands.py', '    if slot and slot["ok"]:', '    if slot:', 'a provider that only failed is listed as live'),
+    ('u49-cmd-switched-off-hidden', 'contentintel/ai/commands.py', 'switched_off = {n.split(":")[1].strip() for n in notes if n.startswith("SKIPPED:") and "switched off by the owner" in n}', 'switched_off = set()', 'a provider the owner switched off is not listed'),
+    ('u49-cmd-only-ignored', 'contentintel/ai/commands.py', '    if only and provider.id not in only:\n        return "SKIPPED"', '    if False:\n        return "SKIPPED"', 'a provider outside the run is listed as tried'),
+    ('u49-cmd-count-wrong', 'contentintel/ai/commands.py', 'lines.append("    " + ", ".join(f"{counts.get(k, 0)} {k}"', 'lines.append("    " + ", ".join(f"{counts.get(k, 0) + 1} {k}"', 'the status counts are wrong'),
+    ('u49-sheetrows-retired-status', 'contentintel/ai/sheetrows.py', '"status": "retired" if p.retired else ("resting" if resting else ("ready" if p.enabled else "off")),', '"status": ("resting" if resting else ("ready" if p.enabled else "off")),', 'the AI Gateway Health tab shows the retired provider as off'),
+    ('u49-yaml-github-enabled', 'ai_providers.yaml', '    label: GitHub Models\n    enabled: false', '    label: GitHub Models\n    enabled: true', 'GitHub Models is switched back on in the provider file'),
+    ('u49-yaml-github-route', 'ai_lanes.yaml', '      - {provider: groq, model: openai/gpt-oss-20b}\n', '      - {provider: groq, model: openai/gpt-oss-20b}\n      - {provider: github, model: openai/gpt-4.1-mini}\n', 'a lane routes to GitHub Models again'),
+    ('u49-wf-observatory-models-permission', '.github/workflows/observatory.yml', 'permissions:\n  contents: write\n', 'permissions:\n  contents: write\n  models: read\n', 'the Observatory job asks for the Models permission again'),
+    ('u49-wf-ai-models-permission', '.github/workflows/ai-gateway.yml', 'permissions:\n  contents: write\n', 'permissions:\n  contents: write\n  models: read\n', 'the AI job asks for the Models permission again'),
+    ('u49-readme-secret-back', 'README.md', '| `REDDIT_CLIENT_ID` |', '| `GH_MODELS_TOKEN` | a token for GitHub Models | optional | nowhere |\n| `REDDIT_CLIENT_ID` |', 'the retired Models secret is documented again'),
+]
+MUTATIONS.extend(U54)
+
+U55 = [   # update 49: a line for every brand even without the tabs
+    ('u49-sheets-no-competitors-tab-silent', 'contentintel/sheets.py', '            report.notes.append("Competitor decisions read from the sheet: 0 (no Competitors tab', '            _ = ("Competitor decisions read from the sheet: 0 (no Competitors tab', 'a brand with no Competitors tab prints no line for the read'),
+    ('u49-sheets-no-controls-tab-silent', 'contentintel/sheets.py', '            report.notes.append("Controls read from the sheet: 0 change(s) (no Controls tab', '            _ = ("Controls read from the sheet: 0 change(s) (no Controls tab', 'a brand with no Controls tab prints no line for the read'),
+]
+MUTATIONS.extend(U55)
 
 def run_tests(workdir):
     env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}
