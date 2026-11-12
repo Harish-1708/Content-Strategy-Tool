@@ -22,7 +22,7 @@ U51 = [
     ("u48-sess-check-host-suffix", SE, 'if not any(host == h or host.endswith("." + h) for h in spec["hosts"]):', 'if not any(host.endswith(h) for h in spec["hosts"]):', "a look-alike host counts as the platform"),
     ("u48-sess-check-status", SE, "if http_status in (401, 403):", "if False:", "a 403 counts as logged in"),
     ("u48-sess-check-empty-page", SE, "if len(body) < 200:", "if False:", "an empty page counts as logged in"),
-    ("u48-sess-check-logged-out", SE, "    for marker in spec[\"logged_out\"]:\n        if marker in low:", "    for marker in spec[\"logged_out\"]:\n        if False:", "the logged-out wording is ignored"),
+    ("u48-sess-check-logged-out", SE, "    for marker in spec[\"logged_out\"]:\n        if marker in visible:", "    for marker in spec[\"logged_out\"]:\n        if False:", "the logged-out wording is ignored"),
     ("u48-sess-check-doubt-is-ok", SE, 'if not any(marker in low for marker in spec["logged_in"]):', 'if False:', "a page with no sign of being logged in counts as logged in"),
     ("u48-sess-refresh-allowed", SE, "    spec = _spec(platform)\n    raise K.Failure(K.NEED_LOGIN, f\"{spec['label']} cannot be logged in again automatically", "    spec = _spec(platform)\n    return None\n    raise K.Failure(K.NEED_LOGIN, f\"{spec['label']} cannot be logged in again automatically", "a re-login is reported as done"),
     ("u48-sess-capture-file-open", SE, "fd = os.open(out, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)", "fd = os.open(out, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)", "a captured session is readable by every user"),
