@@ -26,6 +26,12 @@ Two uses. As a pattern: removing hidden and zero-width content before text reach
 
 Licences of what that environment installs (read from the installed packages, 2026-11-03): BSD, MIT, Apache-2.0 and PSF throughout, plus MPL-2.0 for `certifi` and `orjson`, and `tld`, which offers MPL-1.1, GPL-2.0 or LGPL-2.1 (used here under MPL-1.1, unmodified). No package is GPL-only. The environment is created on the runner for a run and is not distributed. If browsers are downloaded (only when asked), they carry their own licences.
 
+## twscrape
+
+https://pypi.org/project/twscrape/ (version 0.20.1, pinned in `requirements-twscrape.txt`), MIT licence (read from the installed package, 2026-11-12). An unofficial client for X's own web interface.
+
+One use, approved by the owner as a last resort: when x.com shows the runner a bot-check, `contentintel/x_twscrape_check.py` reads ONE profile (the stored session's own account) with the cookies already in the stored session, to tell whether X accepts the session. It runs in its own isolated environment, never searches and never retries. twscrape reports anonymous usage to an outside service (PostHog) unless told not to: the program switches that off (`TWS_TELEMETRY=0`, `DO_NOT_TRACK=1`) before the library is imported, and a test checks the order. Its libraries (aiosqlite, beautifulsoup4, fake-useragent, httpx, loguru, py-machineid, pyotp) are installed only in that environment. It uses X's interface without X's permission, with a dummy account's own cookies: the risk is to that dummy account.
+
 ## Protego and defusedxml
 
 Protego (BSD 3-Clause) reads robots.txt; defusedxml (Python Software Foundation licence) reads sitemaps and feeds safely. Both are ordinary dependencies in `requirements.txt`.
