@@ -26,7 +26,7 @@ def load(tmp_path, services=None, **extra):
 
 def test_the_initial_defaults_turn_every_service_channel_and_purpose_on_and_use_the_gateway_and_auto_readers_everywhere():
     s = OC.load_settings("missing.yaml")["services"]
-    assert sorted(s) == ["agent_reach", "ai_gateway", "connection_routes", "connection_secrets", "connection_versions", "connections", "guards", "page_readers", "scrapling", "search"]
+    assert sorted(s) == ["agent_reach", "ai_gateway", "connection_routes", "connection_secrets", "connection_versions", "connections", "guards", "page_readers", "scrapling", "search", "stored_sessions"]
     assert s["scrapling"] == {"enabled": True, "use_for": {p: True for p in PURPOSES}, "defaults": ON, "overrides": []}
     assert s["agent_reach"] == {"enabled": True, "channels": {c: True for c in CAT.integrated()}, "use_for": {p: True for p in PURPOSES}}
     assert s["search"] == {"enabled": True, "use_for": {p: True for p in PURPOSES}, "channels": {n: True for n in ("serper_dev", "tavily", "serpapi", "exa", "exa_mcp", "agent_reach_reddit", "agent_reach_youtube")}}
@@ -37,7 +37,7 @@ def test_the_initial_defaults_turn_every_service_channel_and_purpose_on_and_use_
 
 def test_every_control_has_a_default_that_matches_the_settings_defaults():
     settings = OC.load_settings("missing.yaml")
-    assert len(SV.CONTROLS) == len(SV.BY_KEY) == 174        # 5 services x (1 master + 12 purposes) + 22 channels + the guards service (1 master + 5 guards) + the connections services (master and 12 purposes, 6 on/off, 6 routes, 6 versions, 6 secrets, 3 masters) + 19 routes + 15 central defaults + 6 request switches + 1 engine
+    assert len(SV.CONTROLS) == len(SV.BY_KEY) == 183        # the stored login sessions service (1 master + 8 platforms) + 5 services x (1 master + 12 purposes) + 22 channels + the guards service (1 master + 5 guards) + the connections services (master and 12 purposes, 6 on/off, 6 routes, 6 versions, 6 secrets, 3 masters) + 19 routes + 15 central defaults + 6 request switches + 1 engine
     for defn in SV.CONTROLS:
         assert SV.current(settings, defn["key"]) == defn["default"], defn["key"]
 
