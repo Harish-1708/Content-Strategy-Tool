@@ -1742,3 +1742,65 @@ def test_the_feeds_command_lists_what_discovery_found_and_reports_a_refusal(env,
     code, out = env("corpus", "--what", "feeds", "--url", "https://shop.example/", now=T3)
     assert code == 1 and "PLATFORM_BLOCKED" in out
     assert env("corpus", "--what", "feeds", now=T3)[0] == 1
+
+
+def test_a_row_for_a_control_that_no_longer_exists_is_removed_from_the_controls_tab_and_nothing_else_is(env, brands):
+    from contentintel import sheets
+    sp = FakeSpreadsheet("stale")
+    sheets.update_brand_sheet(brands[SLUG], env.store, sp, T1)
+    ws = sp.worksheet("Controls")
+    header, rows = read(ws)
+    assert len(rows) == len(SVC.CONTROLS)
+    width = len(header)
+    stale = [["services.ai_gateway.channels.github", "on", "on", "default", "AI Gateway", "the github provider may be used"], ["services.guards.channels.nothing_here", "on", "on", "default", "Guards", "a guard that was removed"]]
+    ws.update([row + [""] * (width - len(row)) for row in stale], range_name=f"A{len(rows) + 2}")                    # the rows a removed control leaves behind, at the bottom of the tab
+    ws.update([["", "", "", "", "", "a row with no key at all"]], range_name=f"A{len(rows) + 4}")
+    assert len(read(ws)[1]) == len(rows) + 3
+    rep = sheets.update_brand_sheet(brands[SLUG], env.store, sp, T2)
+    header, after = read(sp.worksheet("Controls"))
+    keys = [r["key"] for r in after]
+    assert "services.ai_gateway.channels.github" not in keys and "services.guards.channels.nothing_here" not in keys
+    assert [k for k in keys if k] == [c["key"] for c in SVC.CONTROLS] and "services.agent_reach.channels.github" in keys                    # the Agent-Reach GitHub search channel is a real control and stays
+    assert len(after) == len(SVC.CONTROLS) + 1 and [r["description"] for r in after if not r["key"]] == ["a row with no key at all"]       # a row with no key is not ours to delete
+    note = next(n for n in rep.notes if n.startswith("Controls: removed 2 row(s) for controls that no longer exist"))
+    assert "services.ai_gateway.channels.github" in note and "services.guards.channels.nothing_here" in note
+    again = sheets.update_brand_sheet(brands[SLUG], env.store, sp, "2026-11-12T10:00:00Z")
+    assert not [n for n in again.notes if "no longer exist" in n]                                                              # nothing left to remove: nothing is said
+
+
+def test_the_tidy_never_runs_on_a_dry_run_and_never_empties_a_tab_when_the_tool_knows_no_keys(env, brands, monkeypatch):
+    from contentintel import sheets
+    sp = FakeSpreadsheet("dry")
+    sheets.update_brand_sheet(brands[SLUG], env.store, sp, T1)
+    ws = sp.worksheet("Controls")
+    header, rows = read(ws)
+    ws.update([["services.old.removed", "on", "on", "default", "Old", "gone"] + [""] * (len(header) - 6)], range_name=f"A{len(rows) + 2}")
+    dry = sheets.update_brand_sheet(brands[SLUG], env.store, sp, T2, dry_run=True)
+    assert "services.old.removed" in [r["key"] for r in read(sp.worksheet("Controls"))[1]] and not [n for n in dry.notes if "no longer exist" in n]
+    assert sheets._drop_unknown_rows(sp, sp.worksheet("Controls"), "key", set()) == [] and "services.old.removed" in [r["key"] for r in read(sp.worksheet("Controls"))[1]]
+    assert sheets._drop_unknown_rows(sp, sp.worksheet("Controls"), "no_such_column", {"x"}) == []
+    monkeypatch.setattr(sheets, "_drop_unknown_rows", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("google said no")))
+    rep = sheets.update_brand_sheet(brands[SLUG], env.store, sp, "2026-11-12T10:00:00Z")
+    assert any(n == "Controls: stale rows were not removed (RuntimeError)" for n in rep.notes)                                  # a failed tidy never stops the sheet
+
+
+def test_only_the_controls_tab_loses_rows_the_tool_does_not_know_every_other_tab_keeps_what_a_person_added(env, brands):
+    from contentintel import sheets
+    sp = FakeSpreadsheet("others")
+    sheets.update_brand_sheet(brands[SLUG], env.store, sp, T1)
+    titles = [w.title for w in sp.worksheets()]
+    assert "Connections Health" in titles and "Controls" in titles
+    added = {}
+    for title in [t for t in titles if t not in ("Controls", "Sheet1", "Status")]:                       # Status is a list of figures the tool rewrites whole
+        ws = sp.worksheet(title)
+        header, rows = read(ws)
+        if not header:
+            continue
+        key_col = header[0]
+        ws.update([["manual-row-a-person-wrote"] + [""] * (len(header) - 1)], range_name=f"A{len(rows) + 2}")
+        added[title] = key_col
+    assert "Connections Health" in added and len(added) >= 3
+    sheets.update_brand_sheet(brands[SLUG], env.store, sp, T2)
+    for title, key_col in added.items():
+        header, after = read(sp.worksheet(title))
+        assert "manual-row-a-person-wrote" in [r[header[0]] for r in after], title                                 # the tidy is for the Controls tab alone
