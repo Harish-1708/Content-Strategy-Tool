@@ -37,7 +37,7 @@ def test_the_initial_defaults_turn_every_service_channel_and_purpose_on_and_use_
 
 def test_every_control_has_a_default_that_matches_the_settings_defaults():
     settings = OC.load_settings("missing.yaml")
-    assert len(SV.CONTROLS) == len(SV.BY_KEY) == 175        # 5 services x (1 master + 12 purposes) + 23 channels + the guards service (1 master + 5 guards) + the connections services (master and 12 purposes, 6 on/off, 6 routes, 6 versions, 6 secrets, 3 masters) + 19 routes + 15 central defaults + 6 request switches + 1 engine
+    assert len(SV.CONTROLS) == len(SV.BY_KEY) == 174        # 5 services x (1 master + 12 purposes) + 22 channels + the guards service (1 master + 5 guards) + the connections services (master and 12 purposes, 6 on/off, 6 routes, 6 versions, 6 secrets, 3 masters) + 19 routes + 15 central defaults + 6 request switches + 1 engine
     for defn in SV.CONTROLS:
         assert SV.current(settings, defn["key"]) == defn["default"], defn["key"]
 
