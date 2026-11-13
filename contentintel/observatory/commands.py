@@ -230,8 +230,16 @@ def _monitor(args, store, ledger, settings, brands, snaps, now):
     elif wish == "scrapling":
         from . import worker_client as wc
         page_reader = lambda comp, urls: wc.WorkerPages(comp, urls, settings, contact, os.environ.get("SCRAPLING_PYTHON", ""), snaps, pauses=pauses, now=now)   # noqa: E731
+    social_reader = None
+    cfg = settings["social"]
+    if cfg["max_per_competitor"] > 0 and (not only or "social" in only):
+        from . import social_profiles as SP
+        if any(SP.handles_for(slot["comp"], snaps.read_social(sid), settings) for sid, slot in sites.items() if not ids or sid in ids):      # only when some competitor has a profile to read
+            social_reader, note = SP.build_reader(settings, contact, os.environ, SV.scrapling_allowed(settings, "competitors")[0])
+            if note:
+                print("  " + note)
     results = monitor.run_sites(sites, make_client=make, snaps=snaps, settings=settings, hl=ledger, now=now, only=only, workers=max(1, args.workers), ids=ids or None,
-                                page_reader=page_reader)
+                                page_reader=page_reader, social_reader=social_reader)
     pauses.save(now)
     for b in brands:
         mine = [slot["comp"] for sid, slot in sorted(sites.items()) if b.slug in slot["brands"]]
@@ -799,6 +807,9 @@ def _sessions(args, settings, now):
             else:
                 print(f"  {label}: not read: {part['error']}")
         print(f"  verdict: {got['verdict']}")
+        reads = SL.ReadLog()
+        reads.add(SL.compare_entry(platforms[0], args.url, got), now)
+        _save_reads(reads)
         return 0
     if what == "read":
         if len(platforms) != 1 or not args.url:
@@ -818,14 +829,29 @@ def _sessions(args, settings, now):
         else:
             for row in result.rows[:1]:
                 print(f"{row['title'] or row['final_url']}\n  {row['chars']} characters read through the {row['route']} route\n" + row["text"][:1500])
-        if result.skipped:
-            print("not read: " + result.reason)
+        if result.rows and result.route != "discovery":
+            print(f"content quality: {result.rows[0]['quality']} ({SL.judge_content(result.rows[0]['text'])[1]})")
+        elif result.rows:
+            print("content quality: snippets about the address, not the page")
+        reads = SL.ReadLog()
+        reads.add(SL.read_entry(platforms[0], args.url, result), now)
+        _save_reads(reads)
+        if not result.rows:
+            print("nothing real was read: " + (result.reason or "every route answered with no usable text") + "\n" + result.summary())
+            return 1
         return 0
     if what == "check" and not python:
         print("note: the Scrapling environment is not installed here, so no live request can be made; tick the browser box, or run with what = list to see what is stored")
     rows = SL.check_all(settings, contact, python, platforms=platforms, now=now, ledger=ledger, offline=(what == "status"))
     print(SL.format_report(rows, offline=(what == "status"), discovery=SL.discovery_status(os.environ)))
     return SL.exit_code(rows) if what == "check" else 0
+
+
+def _save_reads(reads):
+    try:
+        reads.save()
+    except OSError as exc:
+        print(f"note: the read could not be stored ({exc.__class__.__name__}); it is in this log only")
 
 
 def _controls(args, store, settings, brands, now):

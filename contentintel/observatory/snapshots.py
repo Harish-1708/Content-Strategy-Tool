@@ -45,6 +45,9 @@ def _stamp(now):
     return re.sub(r"[^0-9TZ]", "", now) or "unknown"
 
 
+SOCIAL_KEYS = ("instagram", "tiktok", "youtube", "linkedin", "facebook", "x")
+
+
 class SnapshotStore:
     def __init__(self, data_dir="data"):
         self.root = Path(data_dir) / "_observatory" / "sites"
@@ -196,10 +199,10 @@ class SnapshotStore:
             data = json.loads((self.site_dir(site) / "social.json").read_text(encoding="utf-8"))
         except (OSError, ValueError):
             return {}
-        return {k: v for k, v in data.items() if k in ("instagram", "tiktok", "youtube") and isinstance(v, str) and v}
+        return {k: v for k, v in data.items() if k in SOCIAL_KEYS and isinstance(v, str) and v}
 
     def write_social(self, site, social, now):
-        data = {k: v for k, v in social.items() if k in ("instagram", "tiktok", "youtube") and v}
+        data = {k: v for k, v in social.items() if k in SOCIAL_KEYS and v}
         data["found_at"] = now
         _atomic(self.site_dir(site) / "social.json", json.dumps(data, indent=1, sort_keys=True).encode("utf-8"))
 

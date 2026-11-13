@@ -213,6 +213,12 @@ def jsonld_products(blocks):
 _IG = re.compile(r"^https?://(?:www\.)?instagram\.com/([A-Za-z0-9_.]{1,30})/?(?:[?#].*)?$", re.I)
 _IG_RESERVED = {"p", "reel", "reels", "tv", "explore", "accounts", "stories", "direct", "about", "developer", "legal", "web", "share", "privacy", "directory", "challenge", "emails"}
 _TT = re.compile(r"^https?://(?:www\.)?tiktok\.com/@([A-Za-z0-9_.]{2,24})/?(?:[?#].*)?$", re.I)
+_LI = re.compile(r"^https?://(?:[a-z]{2,3}\.|www\.)?linkedin\.com/company/([A-Za-z0-9_.\-%]{1,100})/?(?:[?#].*)?$", re.I)
+_FB = re.compile(r"^https?://(?:www\.|m\.)?facebook\.com/([A-Za-z0-9.\-]{5,50})/?(?:[?#].*)?$", re.I)
+_FB_RESERVED = {"sharer", "sharer.php", "share", "share.php", "dialog", "tr", "plugins", "groups", "events", "pages", "people", "profile.php", "login", "login.php", "policies", "help", "marketplace", "watch",
+                "gaming", "privacy", "business", "ads", "legal", "photo", "photos", "video", "videos", "permalink.php", "story.php", "hashtag"}
+_X = re.compile(r"^https?://(?:www\.|mobile\.)?(?:twitter|x)\.com/([A-Za-z0-9_]{1,15})/?(?:[?#].*)?$", re.I)
+_X_RESERVED = {"share", "intent", "home", "i", "search", "hashtag", "login", "settings", "explore", "messages", "notifications", "tos", "privacy", "about", "compose"}
 _YT_HANDLE = re.compile(r"^https?://(?:www\.|m\.)?youtube\.com/@([A-Za-z0-9_.\-]{3,30})/?(?:[/?#].*)?$", re.I)
 _YT_ID = re.compile(r"^https?://(?:www\.|m\.)?youtube\.com/channel/(UC[0-9A-Za-z_\-]{22})/?(?:[/?#].*)?$", re.I)
 
@@ -241,7 +247,7 @@ def social_links(links, jsonld=()):
     The account linked most often wins; links to single posts, share buttons and Instagram's own sections are not accounts. Legacy YouTube /c/ and /user/ links are left out: the API cannot resolve them."""
     from collections import Counter
     urls = [str(link.get("href", "")) if isinstance(link, dict) else str(link) for link in links] + _same_as(jsonld)
-    found = {"instagram": Counter(), "tiktok": Counter(), "youtube": Counter()}
+    found = {"instagram": Counter(), "tiktok": Counter(), "youtube": Counter(), "linkedin": Counter(), "facebook": Counter(), "x": Counter()}
     for url in urls:
         m = _IG.match(url)
         if m and m.group(1).lower() not in _IG_RESERVED:
@@ -258,4 +264,16 @@ def social_links(links, jsonld=()):
         m = _YT_ID.match(url)
         if m:
             found["youtube"][m.group(1)] += 1
+            continue
+        m = _LI.match(url)
+        if m:
+            found["linkedin"][m.group(1).lower()] += 1
+            continue
+        m = _FB.match(url)
+        if m and m.group(1).lower() not in _FB_RESERVED:
+            found["facebook"][m.group(1).lower()] += 1
+            continue
+        m = _X.match(url)
+        if m and m.group(1).lower() not in _X_RESERVED:
+            found["x"][m.group(1).lower()] += 1
     return {k: c.most_common(1)[0][0] for k, c in found.items() if c}

@@ -139,6 +139,7 @@ DEFAULTS = {
     "sitemaps": {"max_urls": 50000, "max_child_sitemaps": 25, "max_decompressed_bytes": 25_000_000},
     "pages": {"max_per_competitor": 12, "max_text_chars": 20000, "keep_text_chars": 6000},
     "feeds": {"max_items": 500},
+    "social": {"max_per_competitor": 4, "tiktok": True, "linkedin": True, "instagram": True, "facebook": False, "x": False, "min_change_pct": 5.0, "max_discovery_per_run": 12},   # public-profile snapshots: no login; the platforms read, and the move in followers that is worth an event
     "retry": {"attempts": 3, "backoff_seconds": 2},          # with the rest guard OFF: how many times a refusing site is tried, and the pause (seconds) that grows with each try, before it is marked failed and the run moves on
     "crawl": {"max_pages": 25, "depth": 2},                     # a site crawl through Scrapling (SV.scrapling_crawl, corpus --what crawl): pages at most (1-200) and links deep at most (0-6)
     "discovery": {
@@ -177,7 +178,7 @@ _RANGES = {   # (section, key): (minimum, maximum)
     ("shopify", "max_products"): (1, 20000), ("shopify", "max_collections"): (1, 500), ("shopify", "max_pages_per_collection"): (1, 40), ("shopify", "per_page"): (10, 250),
     ("sitemaps", "max_urls"): (100, 200000), ("sitemaps", "max_child_sitemaps"): (1, 200), ("sitemaps", "max_decompressed_bytes"): (100_000, 100_000_000),
     ("pages", "max_per_competitor"): (0, 100), ("pages", "max_text_chars"): (500, 200_000), ("pages", "keep_text_chars"): (200, 50_000),
-    ("feeds", "max_items"): (10, 5000), ("retry", "attempts"): (1, 10), ("retry", "backoff_seconds"): (0, 60), ("crawl", "max_pages"): (1, 200), ("crawl", "depth"): (0, 6),
+    ("social", "max_per_competitor"): (0, 6), ("social", "min_change_pct"): (0, 100), ("social", "max_discovery_per_run"): (0, 60), ("feeds", "max_items"): (10, 5000), ("retry", "attempts"): (1, 10), ("retry", "backoff_seconds"): (0, 60), ("crawl", "max_pages"): (1, 200), ("crawl", "depth"): (0, 6),
     ("discovery", "min_score"): (0, 100), ("discovery", "auto_monitor_score"): (0, 100), ("discovery", "auto_monitor_max"): (0, 50),
     ("discovery", "max_monitored"): (1, 100), ("discovery", "probe_max"): (0, 50), ("discovery", "lookup_max"): (0, 50), ("discovery", "min_appearances"): (1, 100),
     ("discovery", "enrich_max"): (0, 30), ("discovery", "min_confidence"): (0.3, 0.99), ("discovery", "agent_reach_calls"): (0, 60), ("discovery", "judge_max"): (0, 50),
@@ -419,7 +420,7 @@ _ADVANCED_KEYS = ("browser", "stealth", "proxy", "rotate", "cookies_env", "sessi
 # headers a person may not set: credentials (they belong to accounts we own and go through cookies_env on a listed host) and anything that falsifies where a request comes from
 _FORBIDDEN_HEADERS = {"cookie", "authorization", "proxy-authorization", "x-forwarded-for", "forwarded", "via", "client-ip", "x-real-ip", "true-client-ip", "x-originating-ip", "host",
                       "user-agent", "from", "content-length", "transfer-encoding", "connection"}
-_MONITOR_KEYS = ("shopify", "sitemap", "feeds", "pages")
+_MONITOR_KEYS = ("shopify", "sitemap", "feeds", "pages", "social")
 BRAND_KEYS = ("competitors", "discovery", "youtube", "reddit", "exclude_domains", "ignore")
 
 

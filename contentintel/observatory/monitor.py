@@ -12,6 +12,7 @@ from .. import contract as K
 from .. import health
 from ..safety import is_public_url
 from . import changes as CH
+from . import social_profiles as SP
 from . import config as OC
 from . import feeds as F
 from . import htmlx as H
@@ -19,7 +20,7 @@ from . import polite, shopify as S
 from . import sitemaps as M
 
 STORES, PAGES = "competitor_stores", "competitor_pages"
-PARTS = ("pages", "feeds", "sitemap", "shopify")
+PARTS = ("pages", "feeds", "sitemap", "shopify", "social")
 RECHECK_STORE_DAYS = 30
 
 
@@ -110,8 +111,9 @@ class _Run:
         self.state = snaps.load_state(self.site)
         self.base = S.base_url(comp["domain"])
 
-    def action(self, part, source, route, action, fn):
-        """Run one collector action; returns the first item or None. Records health, notes the outcome, and notices a stop."""
+    def action(self, part, source, route, action, fn, stops=True):
+        """Run one collector action; returns the first item or None. Records health, notes the outcome, and notices a stop (unless `stops` is False: a social platform refusing the runner must never
+        end the monitoring of the competitor's own site)."""
         holder = {}
 
         def runner():
@@ -125,7 +127,7 @@ class _Run:
             return env["items"][0]
         exc = holder.get("exc")
         err = env["error"]
-        if isinstance(exc, K.Failure) and polite.is_fatal(exc):
+        if stops and isinstance(exc, K.Failure) and polite.is_fatal(exc):
             self.stopped = f"{err['code']}: {err['message']}"
         self.parts.setdefault(part, []).append({"ok": False, "code": err["code"], "message": err["message"], "route": route})
         return None
@@ -175,7 +177,7 @@ def _record_social(run, found, snaps, now):
                                    after=new, tier="public_polite", access="page_text"))
 
 
-def monitor_site(comp, *, client, snaps, settings, hl, now, only=None, page_reader=None):
+def monitor_site(comp, *, client, snaps, settings, hl, now, only=None, page_reader=None, social_reader=None):
     """Run every enabled part for one competitor. Returns {'site', 'domain', 'parts', 'events', 'stopped'}."""
     run = _Run(comp, client, snaps, settings, hl, now)
     want = set(only or PARTS)
@@ -198,6 +200,13 @@ def monitor_site(comp, *, client, snaps, settings, hl, now, only=None, page_read
             if url == run.base + "/":
                 _record_social(run, snap.get("social") or {}, snaps, now)
             run.keep("pages", page_kind(url), snap, lambda old, new: CH.diff_page(run.site, old, new, settings, now), label=url)
+
+    if "social" in want and mon.get("social", True) and social_reader is not None and not run.stopped:       # the public profiles (no login): what each shows now, and what moved since last time
+        for platform, handle in SP.handles_for(comp, snaps.read_social(run.site), settings):
+            snap = run.action("social", PAGES, "social_profile", "read_social_profile", lambda p=platform, h=handle: social_reader.snapshot(p, h, now), stops=False)
+            if snap is None:
+                continue
+            run.keep("social", f"profile-{platform}", snap, lambda old, new: SP.diff_profile(run.site, comp["name"], old, new, settings, now), label=f"{SP.LABELS[platform]} profile @{handle}")
 
     if "feeds" in want and mon.get("feeds", True) and not run.stopped:
         urls = list(comp["feeds"]) + [u for u in discovered_feeds if is_public_url(u)]
@@ -269,14 +278,14 @@ def _is_shopify(run, setting):
 
 # ---- many sites -------------------------------------------------------------------------------------------------------------------------------
 
-def run_sites(sites, *, make_client, snaps, settings, hl, now, only=None, workers=3, ids=None, page_reader=None):
+def run_sites(sites, *, make_client, snaps, settings, hl, now, only=None, workers=3, ids=None, page_reader=None, social_reader=None):
     """Monitor every planned site (or just `ids`), a few at a time; each site has its own client and pace. Returns results in site order."""
     chosen = [sid for sid in sorted(sites) if not ids or sid in ids]
 
     def one(sid):
         comp = sites[sid]["comp"]
         try:
-            return monitor_site(comp, client=make_client(), snaps=snaps, settings=settings, hl=hl, now=now, only=only, page_reader=page_reader)
+            return monitor_site(comp, client=make_client(), snaps=snaps, settings=settings, hl=hl, now=now, only=only, page_reader=page_reader, social_reader=social_reader)
         except Exception as exc:                 # one site's unexpected problem must never end the others
             err = K.classify_exception(exc)
             return {"site": sid, "domain": comp["domain"], "parts": {}, "events": [], "stopped": f"{err['code']}: {err['message']}", "politeness": {}}
@@ -298,3 +307,4 @@ def stale_report(snaps, site, now, settings, stale_after_days=14):
         out.append({"kind": kind, "captured_at": last["captured_at"], "confirmed_at": last["confirmed_at"], "age_days": round(age, 1) if age is not None else None,
                     "stale": age is None or age > stale_after_days, "complete": last.get("complete", True)})
     return out
+

@@ -4,6 +4,7 @@ Each check is a function returning (items, what was read) or raising the failure
 robots.txt, pause and identity rules as real monitoring.
 """
 import copy
+import os
 
 from .. import contract as K
 from . import feeds as F
@@ -12,7 +13,7 @@ from . import shopify as S
 from . import sitemaps as M
 
 NEEDS = {("competitor_stores", "public_json"): "catalogue_walk", ("competitor_stores", "sitemap"): "read_sitemap", ("competitor_pages", "static_fetch"): "read_page",
-         ("competitor_pages", "feed"): "read_feed", ("competitor_pages", "reader"): "read_via_reader"}
+         ("competitor_pages", "feed"): "read_feed", ("competitor_pages", "reader"): "read_via_reader", ("competitor_pages", "social_profile"): "read_social_profile"}
 
 
 def make_checks(domain, settings, contact, now, *, client=None, reader_http=None, other_domains=()):
@@ -71,8 +72,18 @@ def make_checks(domain, settings, contact, now, *, client=None, reader_http=None
         r = readers.JinaReader(cfg, get_client(), **({"http": reader_http} if reader_http else {}))
         got = r.read(base + "/")
         return 1, f"read the home page of {domain} through the reader ({len(got['text'])} characters)"
+    def social():
+        from ..acceptance import Skipped
+        python = os.environ.get("SCRAPLING_PYTHON", "")
+        if not python:
+            raise Skipped("the browser (the Scrapling environment) is not installed here, so a public profile could not be read to prove this route")
+        from . import social_profiles as SP
+        snap = SP.snapshot_profile("tiktok", "tiktok", SP.make_reader(settings, contact, python), now)             # a major public profile that is not any client's or competitor's
+        if not snap["metrics"]:
+            raise K.Failure(K.UPSTREAM_BROKEN, "the public TikTok profile of @tiktok was read, but no follower or like count was found on it")
+        return len(snap["metrics"]), f"read the public TikTok profile of @tiktok without a login: {', '.join(f'{k} {v:,}' for k, v in sorted(snap['metrics'].items()))}"
     return {("competitor_stores", "public_json"): store, ("competitor_stores", "sitemap"): sitemap, ("competitor_pages", "static_fetch"): page,
-            ("competitor_pages", "feed"): feed, ("competitor_pages", "reader"): reader}
+            ("competitor_pages", "feed"): feed, ("competitor_pages", "reader"): reader, ("competitor_pages", "social_profile"): social}
 
 
 # The Agent-Reach research channels the acceptance run proves, each with the one small thing it tries. The first seven need OpenCLI and a browser logged in to the site.
