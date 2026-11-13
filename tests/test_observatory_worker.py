@@ -978,3 +978,55 @@ def test_a_stored_session_check_keeps_the_refused_page_the_way_it_was_fetched_an
             raise RuntimeError("BrowserType.launch: Executable doesn't exist at /x")
     fell, _ = drive(stub_job(["https://x.example/home"], {"stealth": True}, return_html=True), NoBrowserHere({"https://x.example/home": good}))
     assert fell[0]["ok"] and fell[0]["fetched_with"] == "plain HTTP" and "browser_error" in fell[0]
+
+
+# ---- Update 53: the cookie names of a response, in every shape the library gives them ----------------------------------------------------------------
+
+BROWSER_COOKIES = ({"name": "csrftoken", "value": "COOKIEVALUEMUSTNOTTRAVEL1", "domain": ".instagram.com", "path": "/", "expires": 1799999999, "httpOnly": False, "secure": True, "sameSite": "Lax"},
+                   {"name": "mid", "value": "COOKIEVALUEMUSTNOTTRAVEL2", "domain": ".instagram.com", "path": "/", "expires": -1, "httpOnly": True, "secure": True, "sameSite": "None"},
+                   {"name": "csrftoken", "value": "COOKIEVALUEMUSTNOTTRAVEL3", "domain": "www.instagram.com", "path": "/", "expires": -1, "httpOnly": False, "secure": True, "sameSite": "Lax"})      # eight keys each: what a browser gives
+
+
+def test_the_cookie_names_are_found_in_every_shape_never_a_value_never_a_repeat_and_never_an_error():
+    assert W._cookie_names(BROWSER_COOKIES) == ["csrftoken", "mid"]                                         # the shape that crashed the worker in Update 52: a tuple of eight-key cookie objects
+    assert W._cookie_names({"b": "VALUE1", "a": "VALUE2"}) == ["a", "b"] and W._cookie_names([("z", "VALUE"), ["y", "VALUE"]]) == ["y", "z"]
+    class Named:
+        def __init__(self, name):
+            self.name = name
+    assert W._cookie_names([Named("n1"), Named("n2"), Named("")]) == ["n1", "n2"]
+    class Breaks:
+        def __iter__(self):
+            raise RuntimeError("a library that changed its mind")
+    for junk in (None, "", 5, [], (), [object()], [{"nope": 1}], [()], Breaks(), [None, 3]):
+        assert W._cookie_names(junk) == [], junk
+    assert len(W._cookie_names({f"c{i:03d}": "v" for i in range(100)})) == 40 and "VALUE" not in json.dumps(W._cookie_names(BROWSER_COOKIES))
+
+
+def test_a_browser_page_that_sets_cookies_is_read_and_judged_not_crashed_and_its_title_and_visible_text_are_kept_even_when_refused():
+    good = Resp(200, "<html><title>Home</title><body>" + "your feed " * 40 + "</body></html>", {"content-type": "text/html"})
+    good.cookies = BROWSER_COOKIES
+    asked, _ = drive(stub_job(["https://x.example/home"], {"stealth": True}, return_html=True), Fake({"https://x.example/home": good}))
+    assert asked[0]["ok"] and "error" not in asked[0] and asked[0]["cookie_names_back"] == ["csrftoken", "mid"] and asked[0]["fetched_with"] == "browser"
+    assert asked[0]["title"] == "Home" and "your feed" in asked[0]["text"] and "COOKIEVALUEMUSTNOTTRAVEL" not in json.dumps(asked[0])
+    refused = Resp(403, "<html><head><title>Just a moment...</title></head><body><h1>Verify you are human</h1> " + "x " * 60 + "</body></html>", {"content-type": "text/html"})
+    refused.cookies = BROWSER_COOKIES
+    blocked, _ = drive(stub_job(["https://x.example/home"], {"stealth": True}, return_html=True, retry={"attempts": 1, "backoff_seconds": 0}), Fake({"https://x.example/home": refused}))
+    page = blocked[0]
+    assert page["error"]["code"] == "PLATFORM_BLOCKED" and page["title"] == "Just a moment..." and "Verify you are human" in page["text"] and page["status"] == 403 and page["cookie_names_back"] == ["csrftoken", "mid"]      # classified as a block, with what it said
+    wall = Resp(200, "<html><title>Log in</title><body>Log in to continue. Password: <input type=password> " + "x " * 60 + "</body></html>", {"content-type": "text/html"})
+    wall.cookies = BROWSER_COOKIES
+    walled, _ = drive(stub_job(["https://x.example/home"], {"stealth": True}, return_html=True), Fake({"https://x.example/home": wall}))
+    assert "login page" in walled[0]["error"]["message"] and walled[0]["title"] == "Log in" and "Log in to continue." in walled[0]["text"] and walled[0]["html"].startswith("<html>")
+
+
+def test_the_visible_text_kept_for_a_session_check_is_bounded_and_the_title_is_the_pages():
+    big = Resp(403, "<html><head><title>Just a moment...</title></head><body>" + "challenge words " * 600 + "</body></html>", {"content-type": "text/html"})
+    got, _ = drive(stub_job(["https://x.example/home"], {"stealth": True}, return_html=True, retry={"attempts": 1, "backoff_seconds": 0}), Fake({"https://x.example/home": big}))
+    assert got[0]["title"] == "Just a moment..." and 2900 <= len(got[0]["text"]) <= 3000
+
+
+def test_an_ordinary_read_of_a_login_page_still_reports_the_status_it_was_given_and_nothing_else_of_the_page():
+    wall = Resp(200, "<html><title>Log in</title><body>Log in to continue. Password: <input type=password> " + "x " * 60 + "</body></html>", {"content-type": "text/html"})
+    got, _ = drive(stub_job(["https://x.example/home"], {"stealth": True}), Fake({"https://x.example/home": wall}))
+    assert not got[0]["ok"] and "login page" in got[0]["error"]["message"] and got[0]["status"] == 200                       # the status is reported without a session check asking for the page
+    assert "html" not in got[0] and "text" not in got[0] and "cookie_names_back" not in got[0]
