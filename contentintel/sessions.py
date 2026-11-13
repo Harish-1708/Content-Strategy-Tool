@@ -47,7 +47,7 @@ LOGIN_WORDS = ("login", "log-in", "signin", "sign-in", "sign_in", "checkpoint", 
 PLATFORMS = {
     "instagram": {"label": "Instagram", "secret": "INSTAGRAM_SESSION_B64", "hosts": ("instagram.com",), "required": ("sessionid", "csrftoken"), "any_of": (),
                   "login_url": "https://www.instagram.com/accounts/login/", "check_url": "https://www.instagram.com/",
-                  "logged_in": ('"viewerid"', '"is_logged_in":true', "/accounts/activity", "direct/inbox"), "logged_out": ("log in to instagram", "create new account"),
+                  "logged_in": ('"viewerid"', '"is_logged_in":true', "/accounts/activity", "direct/inbox"), "logged_out": ("log in to instagram", "create new account"), "adv": {"network_idle": True},
                   "lifetime": "about 90 days", "can": "single posts and profiles at low volume; not keyword search", "verified": False},
     "x": {"label": "X (Twitter)", "secret": "X_SESSION_B64", "hosts": ("x.com", "twitter.com"), "required": ("auth_token", "ct0"), "any_of": (),
           "login_url": "https://x.com/i/flow/login", "check_url": "https://x.com/home",
@@ -59,7 +59,7 @@ PLATFORMS = {
                "lifetime": "about 30 days for the token", "can": "single known videos through yt-dlp; not search", "verified": False},
     "reddit": {"label": "Reddit", "secret": "REDDIT_SESSION_B64", "hosts": ("reddit.com",), "required": (), "any_of": ("reddit_session", "token_v2"),
                "login_url": "https://www.reddit.com/login", "check_url": "https://www.reddit.com/settings/",
-               "logged_in": ("logout", "settings/account", '"loggedin":true'), "logged_out": ("log in to reddit",),
+               "logged_in": ("logout", "settings/account", '"loggedin":true'), "logged_in_text": ("expand user menu", "open profile menu"), "logged_out": ("log in to reddit",),
                "lifetime": "weeks to months; Reddit's own API closes in March 2027", "can": "reads while Reddit still allows them", "verified": False},
     "facebook": {"label": "Facebook", "secret": "FACEBOOK_SESSION_B64", "hosts": ("facebook.com",), "required": ("c_user", "xs"), "any_of": (),
                  "login_url": "https://www.facebook.com/login", "check_url": "https://www.facebook.com/",
@@ -216,13 +216,23 @@ class Session:
     def _key_names(self):
         return set(self.spec["required"]) | set(self.spec["any_of"])
 
+    def _bound(self):
+        """The date after which the session surely stops working: the earliest expiry among the cookies that are ALL needed, and the latest among the either-or ones (any one of them keeps it alive, so
+        a short token that the platform renews from a long cookie does not set the date). An either-or cookie with no expiry written down lasts as long as the browser session would: it sets no date."""
+        dates = self._expiry_of(set(self.spec["required"]))
+        either = [c for c in self._cookies() if c["name"] in set(self.spec["any_of"])]
+        stamped = self._expiry_of(set(self.spec["any_of"]))
+        if either and len(stamped) == len(either):
+            dates.append(max(stamped))
+        return dates
+
     def expires_on(self):
-        """The earliest date a cookie this route depends on stops working (YYYY-MM-DD), or '' when the cookies carry no expiry (they last as long as the browser session would)."""
-        dates = self._expiry_of(self._key_names())
+        """The date a cookie this route depends on stops working (YYYY-MM-DD), or '' when the cookies carry no expiry (they last as long as the browser session would)."""
+        dates = self._bound()
         return min(dates).strftime("%Y-%m-%d") if dates else ""
 
     def days_left(self):
-        dates = self._expiry_of(self._key_names())
+        dates = self._bound()
         return None if not dates else (min(dates) - self._now).days
 
     def expired(self):
@@ -330,8 +340,13 @@ def page_evidence(platform, final_url, html, http_status=0, text=""):
     spec = _spec(platform)
     low, vis = str(html or "").lower(), " ".join(str(text or "").split()).lower()
     landed = _landed(final_url)
+    noscript = re.search(r"<noscript[^>]*>(.*?)</noscript>", str(html or ""), re.I | re.S)
+    body_at = low.find("<body")
+    shape = {"scripts": len(re.findall(r"<script\b", low)), "noscript": " ".join(re.sub(r"<[^>]+>", " ", noscript.group(1)).split())[:200] if noscript else "",
+             "body_ids": re.findall(r'\bid="([A-Za-z][\w:.\-]{0,40})"', str(html or "")[body_at:] if body_at >= 0 else "")[:6]}
     return {"landed": landed, "status": int(http_status or 0), "title": _title(html), "html_chars": len(str(html or "")), "text_chars": len(vis),
             "logged_in_found": [m for m in spec["logged_in"] if m in low], "logged_in_missing": [m for m in spec["logged_in"] if m not in low],
+            "logged_in_text_found": [m for m in spec.get("logged_in_text", ()) if m in vis], "logged_in_text_missing": [m for m in spec.get("logged_in_text", ()) if m not in vis], **shape,
             "visible_text_available": bool(vis), "logged_out_in_text": [m for m in spec["logged_out"] if m in vis], "logged_out_only_in_code": [m for m in spec["logged_out"] if m in low and m not in vis],
             "password_field": 'type="password"' in low or "type='password'" in low, "login_word_in_address": next((w for w in LOGIN_WORDS if w in landed.lower()), ""),
             "text_starts": " ".join(str(text or "").split())[:240]}
@@ -360,7 +375,7 @@ def check_logged_in(platform, final_url, html, http_status=200, text=None):
     for marker in spec["logged_out"]:
         if marker in visible:
             return False, "the page shows the logged-out state"
-    if not any(marker in low for marker in spec["logged_in"]):
+    if not (any(marker in low for marker in spec["logged_in"]) or any(marker in visible for marker in spec.get("logged_in_text", ()))):
         return False, "no sign of being logged in was found on the page (any doubt counts as not logged in)"
     return True, "logged in"
 
