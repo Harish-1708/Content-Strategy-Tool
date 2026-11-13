@@ -53,7 +53,7 @@ class Context:
 
 
 _OBSERVATORY_ACTIONS = {("competitor_stores", "public_json"): "catalogue_walk", ("competitor_stores", "sitemap"): "read_sitemap", ("competitor_pages", "static_fetch"): "read_page",
-                        ("competitor_pages", "feed"): "read_feed", ("competitor_pages", "reader"): "read_via_reader", ("reddit", "api"): "read_subreddit", ("reddit", "agent_reach"): "read_subreddit", ("agent_reach_research", "youtube"): "search_youtube"}
+                        ("competitor_pages", "feed"): "read_feed", ("competitor_pages", "reader"): "read_via_reader", ("competitor_pages", "social_profile"): "read_social_profile", ("reddit", "api"): "read_subreddit", ("reddit", "agent_reach"): "read_subreddit", ("agent_reach_research", "youtube"): "search_youtube"}
 
 
 def row_result(row):

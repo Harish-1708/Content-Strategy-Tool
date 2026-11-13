@@ -58,11 +58,11 @@ STARTER_MANUAL = {PRODUCTS: ["Notes"], RESEARCH: ["Review"], COLLECTED: ["Review
                   IDEABANK: ["Decision", "Notes"], REQUESTS: ["Changes"], BRIEFS: ["Feedback"], REJECTED: ["Rescue"]}   # added only when a tab is brand new
 STAMP = "last_updated"                          # when the tool last changed that row
 
-NUMERIC = {"price_min", "price_max", "price", "compare_at_price", "engagement_pct", "success_rate_7d", "avg_items", "multiple", "trend_multiple", "views_per_day", "spend_this_month_usd"}
+NUMERIC = {"followers_change_pct", "price_min", "price_max", "price", "compare_at_price", "engagement_pct", "success_rate_7d", "avg_items", "multiple", "trend_multiple", "views_per_day", "spend_this_month_usd"}
 INTEGER = {"variant_count", "image_count", "times_seen", "best_rank", "likes", "comments", "shares", "attempts_7d", "acceptance_items",
            "views", "saves", "reach", "days_running", "variants", "page_followers", "score", "fit", "idea", "assets", "violations", "items_added",
            "products", "collections", "on_sale_products", "events_7d", "median", "approved_models", "requests_today", "daily_limit", "left_today", "requests_this_month",
-           "failures_this_month", "tokens_today"}
+           "failures_this_month", "tokens_today", "days_left", "http_status", "html_chars", "text_chars", "chars", "public_chars", "session_chars", "followers", "followers_change", "following", "employees"}
 BOOLEAN = {"excluded", "in_stock", "on_sale", "available"}
 
 _BLANK_TABS = ("Sheet1", "Sheet 1")
@@ -229,7 +229,11 @@ def _observatory_tabs(brand, store, now, report):
         from .observatory import report as obs_report
         from .observatory.snapshots import SnapshotStore
         from . import services
-        return obs_report.sheet_tabs(brand, store, SnapshotStore(store.data_dir), now, services.load_settings(None, store.data_dir))
+        snaps = SnapshotStore(store.data_dir)
+        tabs = obs_report.sheet_tabs(brand, store, snaps, now, services.load_settings(None, store.data_dir))
+        from .observatory import social_profiles
+        social = social_profiles.sheet_tab(obs_report.read_brand_sites(store, brand.slug), snaps)           # what the public profiles of the watched competitors show
+        return tabs + ([social] if social else [])
     except ImportError:
         return []
     except Exception as exc:
@@ -292,6 +296,19 @@ def _connection_tabs(store, now, report):
         return [connections.sheet_tab(services.load_settings(None, store.data_dir), now)]
     except Exception as exc:
         report.notes.append(f"Connections Health tab skipped: {exc}")
+        return []
+
+
+def _session_tabs(store, now, report):
+    """The Sessions and Session Reads tabs: a readable copy of the stored-login-session record (data/_shared/sessions_health.json and sessions_reads.json), or none before the first check.
+    Never stops the rest of the sheet."""
+    try:
+        from . import session_live as SL
+        from pathlib import Path as _Path
+        shared = _Path(store.data_dir) / "_shared"
+        return SL.sheet_tabs(SL.SessionLedger(shared / "sessions_health.json"), SL.ReadLog(shared / "sessions_reads.json"))
+    except Exception as exc:
+        report.notes.append(f"Sessions tabs skipped: {exc}")
         return []
 
 
@@ -806,7 +823,7 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
 
     _read_competitor_decisions(spreadsheet, brand, store, now, report, dry_run)
     _read_controls(spreadsheet, brand, store, now, report, dry_run)
-    for tab in _observatory_tabs(brand, store, now, report) + _controls_tabs(brand, store, now, report) + _connection_tabs(store, now, report) + _ai_tabs(store, now, report):     # what the competitor observatory has found, and how the AI providers are doing
+    for tab in _observatory_tabs(brand, store, now, report) + _controls_tabs(brand, store, now, report) + _connection_tabs(store, now, report) + _session_tabs(store, now, report) + _ai_tabs(store, now, report):     # what the competitor observatory has found, and how the AI providers are doing
         ws = _ensure_tab(spreadsheet, tab["title"], report, dry_run, created)
         rows = {key: {c: _typed(c, _plain(row.get(c))) for c in tab["columns"]} for key, row in tab["rows_by_key"].items()}
         _sync_table(ws, tab=tab["title"], columns=tab["columns"], rows_by_key=rows, key_col=tab["key_col"], report=report, dry_run=dry_run,

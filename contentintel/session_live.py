@@ -7,6 +7,7 @@ What ACCEPTED means: the platform's own page, loaded with the stored session fro
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -41,6 +42,24 @@ def _parse(text):
 
 # ---- what was found, kept between runs (no secret value is ever written) -------------------------------------------------------------------------------
 
+REASON_LIMIT = 1500
+AMBIGUOUS = ("no sign of being logged in", "the page came back empty")
+UNCONFIRMED_LIMIT = 3                                                                    # checks in a row with no sign either way before the session counts as refused
+EVIDENCE_KEEP = ("fetched_with", "status", "landed", "title", "html_chars", "html_truncated", "text_chars", "visible_text_available", "logged_in_found", "logged_in_missing", "logged_in_text_found",
+                 "logged_in_text_missing", "logged_out_in_text", "logged_out_only_in_code", "password_field", "login_word_in_address", "scripts", "body_ids", "noscript", "cookies_sent", "cookies_back",
+                 "worker_error")
+
+
+def compact_evidence(ev):
+    """The evidence worth keeping with a verdict: how the page was read, what was found and missing, the counts. Never the page's words (text_starts is left out: the repository may be public)."""
+    if not isinstance(ev, dict):
+        return {}
+    kept = {k: ev[k] for k in EVIDENCE_KEEP if k in ev}
+    if "title" in kept:
+        kept["title"] = str(kept["title"])[:200]
+    return kept
+
+
 class SessionLedger:
     """data/_shared/sessions_health.json: per platform the last result, why, when, and the day a live check last passed (empty when a later check voided it)."""
 
@@ -54,9 +73,14 @@ class SessionLedger:
             except (OSError, ValueError):
                 self.data = {}
 
-    def record(self, platform, state, reason, now, via="browser"):
+    def record(self, platform, state, reason, now, via="browser", evidence=None, expires_on="", days_left="", twscrape=None):
         entry = self.data.setdefault(platform, {"state": "", "reason": "", "checked_at": "", "proved_on": ""})
-        entry.update(state=state, reason=str(reason)[:300], checked_at=now)
+        entry.update(state=state, reason=" ".join(str(reason).split())[:REASON_LIMIT], checked_at=now, expires_on=expires_on or "", days_left=days_left, evidence=compact_evidence(evidence))
+        entry["unconfirmed_streak"] = (entry.get("unconfirmed_streak", 0) + 1) if state == UNCONFIRMED else 0
+        if isinstance(twscrape, dict):
+            entry["twscrape"] = {"state": str(twscrape.get("state", "")), "detail": " ".join(str(twscrape.get("detail", "")).split())[:600]}
+        else:
+            entry.pop("twscrape", None)
         if state == ACCEPTED:
             entry["proved_on"], entry["proved_via"] = now, via
         elif state in CLEARS_PROOF:
@@ -172,7 +196,7 @@ def check_platform(platform, settings, contact, python, *, environ=None, runner=
         row.update(state=state, reason=reason, via=via)
         if ledger is not None:
             if record and not offline:
-                ledger.record(platform, state, reason, now, via=via)
+                ledger.record(platform, state, reason, now, via=via, evidence=row.get("evidence"), expires_on=row.get("expires_on", ""), days_left=row.get("days_left", ""), twscrape=row.get("twscrape"))
             row["proved_on"], row["proved_via"] = ledger.proved_on(platform), ledger.proved_via(platform)
         return row
 
@@ -203,7 +227,7 @@ def check_platform(platform, settings, contact, python, *, environ=None, runner=
     if err and err.get("code") != "PLATFORM_BLOCKED" and not refused and not WALL.search(str(err.get("message", ""))) and int(status or 0) not in (401, 403) and not looks_like_challenge(status, html, row["evidence"]["title"]):
         return done(CANNOT_CHECK, f"the Scrapling worker could not read the page cleanly ({humanise_error(err.get('code'), err.get('message', ''))}), so nothing was judged; this is not the platform's answer")
     if err.get("code") == "PLATFORM_BLOCKED" or refused or looks_like_challenge(status, html, row["evidence"]["title"]):
-        blocked = ((f"{spec['label']} refused the browser with an error status instead of a page ({humanise_error(err.get('code'), err.get('message', ''))}), so the session itself could not be judged" if refused else
+        blocked = ((f"{spec['label']}: {humanise_error(err.get('code'), err.get('message', ''))}, so the session itself could not be judged" if refused else
                     f"{spec['label']} showed a bot-check or challenge page to this runner, so the session itself could not be judged")
                    + (f"; and {why_plain}" if plain else "") + ". This is the platform blocking the runner, not a bad session")
         if platform == "x":                                                              # the approved last resort: ask X's own profile interface, with the two cookies already stored
@@ -227,6 +251,12 @@ def check_platform(platform, settings, contact, python, *, environ=None, runner=
         return done(ACCEPTED, "the platform's own page showed a logged-in state" + (f" (read over plain HTTP because {why_plain})" if plain else ""))
     if plain:
         return done(UNCONFIRMED, f"{reason}; but the page was read over plain HTTP because {why_plain}, and this site may only show its logged-in state in a browser")
+    if reason.startswith(AMBIGUOUS):                                                      # nothing says logged in, and nothing says logged out either: an error page, a half-drawn page, an empty one
+        streak = ((ledger.data.get(platform) or {}).get("unconfirmed_streak", 0) + 1) if ledger is not None else 1
+        if streak < UNCONFIRMED_LIMIT:
+            return done(UNCONFIRMED, f"the page gave no sign of being logged in or logged out (it may be an error or a half-drawn page), so it is not counted as a refusal and the proof is kept; "
+                                     f"it is looked at again on the next check, and after {UNCONFIRMED_LIMIT} such checks in a row it is treated as refused (this is check {streak})")
+        return done(REJECTED, f"no sign of being logged in was found on {streak} checks in a row (any doubt counts as not logged in): the stored session was not accepted; capture a new one")
     return done(REJECTED, f"{reason}: the stored session was not accepted; capture a new one")
 
 
@@ -324,7 +354,7 @@ def readable(text):
 
 def humanise_error(code, message):
     """A worker error in plain words, keeping the original at the end. The browser's own wording (net::ERR_...) means little to a reader."""
-    raw = " ".join(str(message or "").split())
+    raw = " ".join(str(message or "").split("Call log:")[0].split())
     low = raw.lower()
     if "err_http_response_code_failure" in low:
         plain = "the platform answered the browser with an error status instead of a page, which is its own refusal of an automated visit (LinkedIn does this with status 999)"
@@ -337,11 +367,31 @@ def humanise_error(code, message):
     return f"{plain} ({code}: {raw[:150]})"
 
 
+CHALLENGE_TEXT = ("drag the puzzle piece", "verify you are human", "performing security verification", "just a moment", "captcha", "access denied", "are you a robot", "unusual traffic")
+WHY_NOT_CONTENT = {"script shell": "a script shell, an icon or an image", "challenge page": "a bot-check or puzzle page, not content", "too little": "too little to be a page", "empty": "no text came back"}
+
+
+def judge_content(text):
+    """What a read really returned: (quality, detail). 'real text' only when there is enough of it; otherwise 'script shell' (a title, an icon name, an image), 'challenge page' (a bot-check or puzzle),
+    'too little' or 'empty'. The size of what came back is not the test: twenty thousand characters of image data is a script shell."""
+    clean = " ".join(clean_text(text).split())
+    if not clean:
+        return "empty", WHY_NOT_CONTENT["empty"]
+    low = clean.lower()
+    if len(clean) < 600 and any(word in low for word in CHALLENGE_TEXT):
+        return "challenge page", WHY_NOT_CONTENT["challenge page"]
+    if readable(clean):
+        words = sum(1 for w in clean.split() if any(c.isalpha() for c in w) and len(w) <= 30)
+        return "real text", f"{len(clean)} characters, {words} words"
+    return ("script shell" if ("[image]" in clean or "[data]" in clean) else "too little"), WHY_NOT_CONTENT["script shell" if ("[image]" in clean or "[data]" in clean) else "too little"]
+
+
 def _rows_from(res, route):
     text = clean_text(res.get("text") or res.get("markdown") or "")
-    if text and not readable(text):
-        raise K.Failure(K.UPSTREAM_BROKEN, f"the page came back with no readable text ({len(text.strip())} characters: a script shell, an icon or an image)")
-    return [{"url": res.get("url"), "final_url": res.get("final_url"), "title": res.get("title") or "", "text": text, "chars": len(text), "route": route}] if text else []
+    quality, _ = judge_content(text)
+    if text.strip() and quality != "real text":
+        raise K.Failure(K.UPSTREAM_BROKEN, f"the page came back with no readable text ({len(text.strip())} characters: {WHY_NOT_CONTENT[quality]})")
+    return [{"url": res.get("url"), "final_url": res.get("final_url"), "title": res.get("title") or "", "text": text, "chars": len(text), "route": route, "quality": quality}] if text.strip() else []
 
 
 def _failure_from(res):
@@ -362,11 +412,12 @@ def _read_once(platform, url, settings, contact, python, environ, runner, with_s
     text = " ".join(clean_text(res.get("text") or "").split())
     err = res.get("error") or {}
     worked = bool(res.get("ok"))
-    if worked and not readable(text):
-        worked, error = False, f"UPSTREAM_BROKEN: the page came back with no readable text ({len(text)} characters: a script shell, an icon or an image)"
+    quality = judge_content(text)[0] if worked else ""
+    if worked and quality != "real text":
+        worked, error = False, f"UPSTREAM_BROKEN: the page came back with no readable text ({len(text)} characters: {WHY_NOT_CONTENT[quality]})"
     else:
         error = "" if worked else humanise_error(err.get("code") or "no answer", err.get("message") or "no page came back")
-    return {"ok": worked, "chars": len(text), "words": set(text.lower().split()), "title": str(res.get("title") or ""), "landed": S._landed(res.get("final_url") or ""), "starts": text[:300], "error": error}
+    return {"ok": worked, "chars": len(text), "words": set(text.lower().split()), "title": str(res.get("title") or ""), "landed": S._landed(res.get("final_url") or ""), "starts": text[:300], "error": error, "quality": quality}
 
 
 def compare_page(platform, url, settings, contact, python, *, environ=None, runner=subprocess.run, now="", ledger=None):
@@ -401,6 +452,115 @@ def compare_page(platform, url, settings, contact, python, *, environ=None, runn
     else:
         verdict = "neither read works (public: " + public["error"] + "; session: " + session["error"] + ")"
     return {"public": public, "session": session, "verdict": verdict}
+
+
+MAX_READS = 200
+
+
+class ReadLog:
+    """data/_shared/sessions_reads.json: the last MAX_READS reads and compares, newest last, so they outlive the run logs: what was asked (the address without any query), which route answered, the
+    verdict, how much real text came back and what kind of content it was. The first words are kept for a read with no login (and for discovery); never for a read through a stored session."""
+
+    def __init__(self, path=None):
+        self.path = Path(path) if path else Path(os.environ.get("CONTENTINTEL_DATA_DIR", "data")) / "_shared" / "sessions_reads.json"
+        self.items = []
+        if self.path.is_file():
+            try:
+                loaded = json.loads(self.path.read_text(encoding="utf-8"))
+                self.items = [i for i in loaded if isinstance(i, dict)][-MAX_READS:] if isinstance(loaded, list) else []
+            except (OSError, ValueError):
+                self.items = []
+
+    def add(self, entry, now):
+        self.items = (self.items + [{"at": now, **entry}])[-MAX_READS:]
+
+    def save(self):
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.write_text(json.dumps(self.items, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def read_entry(platform, url, result):
+    """The stored record of one read: the route that answered (or none), why nothing did, the quality of what came back and the trail of routes tried."""
+    row = result.rows[0] if result.rows else {}
+    by_session = result.route == "session"
+    quality = row.get("quality") or ("snippets about the address, not the page" if result.route == "discovery" else "")
+    return {"kind": "read", "platform": platform, "url": S._landed(url), "route": result.route or "none", "skipped": bool(result.skipped), "reason": " ".join(str(result.reason).split())[:300],
+            "quality": quality, "chars": int(row.get("chars") or 0), "title": str(row.get("title") or "")[:200], "landed": S._landed(row.get("final_url") or ""),
+            "starts": "" if by_session else " ".join(str(row.get("text") or "").split())[:200], "trail": [[n, o, " ".join(str(d).split())[:200]] for n, o, d in result.trail]}
+
+
+def compare_entry(platform, url, got):
+    """The stored record of one compare: the verdict, and for each of the two reads whether it worked, how much real text, what kind, where it landed, why not."""
+    def part(p, words):
+        out = {"ok": bool(p.get("ok")), "chars": int(p.get("chars") or 0), "quality": str(p.get("quality") or ""), "title": str(p.get("title") or "")[:200], "landed": str(p.get("landed") or ""),
+               "error": " ".join(str(p.get("error") or "").split())[:300]}
+        if words:
+            out["starts"] = " ".join(str(p.get("starts") or "").split())[:200]
+        return out
+    session = got["session"]
+    return {"kind": "compare", "platform": platform, "url": S._landed(url), "verdict": " ".join(str(got["verdict"]).split())[:600], "public": part(got["public"], True),
+            "session": ({"used": True, **part(session, False)} if session.get("used") else {"used": False, "reason": " ".join(str(session.get("reason", "")).split())[:300]})}
+
+
+SESSIONS_TAB, SESSION_READS_TAB = "Sessions", "Session Reads"
+SESSIONS_COLUMNS = ["platform", "label", "state", "reason", "checked_at", "proved_on", "proved_via", "expires_on", "days_left", "landed", "http_status", "fetched_with", "html_chars", "text_chars",
+                    "logged_in_markers_found", "logged_in_markers_missing", "logged_out_wording", "password_field", "worker_error", "twscrape"]
+READS_COLUMNS = ["read_id", "at", "kind", "platform", "url", "route", "quality", "chars", "title", "landed", "verdict", "public_chars", "public_quality", "session_used", "session_chars",
+                 "session_quality", "starts", "reason"]
+
+
+def sessions_rows(ledger):
+    """One row per platform for the Sessions tab, from the tool's own record (sessions_health.json): the verdict, the whole reason, the dates and the evidence, readable at a glance. A platform that has never
+    been checked says so. Never a cookie value; the page's words are not in the record."""
+    rows = {}
+    for platform, spec in S.PLATFORMS.items():
+        got = ledger.data.get(platform) or {}
+        ev = got.get("evidence") or {}
+        tw = got.get("twscrape") or {}
+        rows[platform] = {
+            "platform": platform, "label": spec["label"], "state": got.get("state") or "NOT CHECKED", "reason": got.get("reason") or "no check has been run for this platform yet",
+            "checked_at": got.get("checked_at", ""), "proved_on": got.get("proved_on", ""), "proved_via": got.get("proved_via", "") if got.get("proved_on") else "",
+            "expires_on": got.get("expires_on", ""), "days_left": got.get("days_left", ""), "landed": ev.get("landed", ""), "http_status": ev.get("status", ""), "fetched_with": ev.get("fetched_with", ""),
+            "html_chars": ev.get("html_chars", ""), "text_chars": ev.get("text_chars", ""),
+            "logged_in_markers_found": ", ".join(list(ev.get("logged_in_found") or []) + list(ev.get("logged_in_text_found") or [])),
+            "logged_in_markers_missing": ", ".join(list(ev.get("logged_in_missing") or []) + list(ev.get("logged_in_text_missing") or [])),
+            "logged_out_wording": ", ".join(ev.get("logged_out_in_text") or []), "password_field": ("yes" if ev.get("password_field") else "no") if ev else "",
+            "worker_error": ev.get("worker_error", ""), "twscrape": (f"{tw.get('state', '')}: {tw.get('detail', '')}" if tw else "")}
+    return rows
+
+
+def read_id(entry):
+    """A stable key for one stored read or compare: when, what and where. The same entry always gets the same key, so a sheet row is updated, not repeated."""
+    stamp = hashlib.sha1(f"{entry.get('url', '')}".encode("utf-8")).hexdigest()[:6]
+    return f"{entry.get('at', '')}|{entry.get('platform', '')}|{entry.get('kind', '')}|{stamp}"
+
+
+def reads_rows(reads):
+    """One row per stored read or compare for the Session Reads tab, newest last, from sessions_reads.json."""
+    rows = {}
+    for entry in reads.items:
+        key = read_id(entry)
+        pub, ses = entry.get("public") or {}, entry.get("session") or {}
+        trail = " | ".join(f"{n}: {o}" + (f" ({d})" if d else "") for n, o, d in (entry.get("trail") or []))
+        rows[key] = {
+            "read_id": key, "at": entry.get("at", ""), "kind": entry.get("kind", ""), "platform": entry.get("platform", ""), "url": entry.get("url", ""), "route": entry.get("route", ""),
+            "quality": entry.get("quality", ""), "chars": entry.get("chars", "") if entry.get("kind") == "read" else "", "title": entry.get("title", "") or pub.get("title", ""),
+            "landed": entry.get("landed", "") or pub.get("landed", ""), "verdict": entry.get("verdict", ""), "public_chars": pub.get("chars", ""), "public_quality": pub.get("quality", ""),
+            "session_used": ("yes" if ses.get("used") else "no") if entry.get("kind") == "compare" else "", "session_chars": ses.get("chars", "") if ses.get("used") else "",
+            "session_quality": ses.get("quality", "") if ses.get("used") else "", "starts": entry.get("starts", "") or pub.get("starts", ""),
+            "reason": entry.get("reason", "") or trail or ses.get("reason", "") or ses.get("error", "")}
+    return rows
+
+
+def sheet_tabs(ledger, reads):
+    """The two Sheets tabs that mirror the tool's own record: Sessions (one row per platform) and Session Reads (every stored read and compare). A tab is offered only when its record has something in it,
+    so a sheet gains no empty tab before the first check. The JSON files stay the record; the sheet is the readable copy."""
+    tabs = []
+    if ledger.data:
+        tabs.append({"title": SESSIONS_TAB, "columns": SESSIONS_COLUMNS, "rows_by_key": sessions_rows(ledger), "key_col": "platform", "starter_manual": []})
+    if reads.items:
+        tabs.append({"title": SESSION_READS_TAB, "columns": READS_COLUMNS, "rows_by_key": reads_rows(reads), "key_col": "read_id", "starter_manual": []})
+    return tabs
 
 
 SEARCH_ORDER = ("serper_dev", "tavily", "serpapi", "exa", "exa_mcp")                 # the discovery layer's providers, in the order they are tried (the first one that has a key is asked): the ones that return snippets come first, because Exa's search here asks for titles and links only (page text is billed separately)
