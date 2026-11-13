@@ -269,7 +269,7 @@ def test_every_declared_route_has_a_row_with_every_column(tmp_path, monkeypatch)
     passing(led, source="meta_ads", route="browser")
     fail(led, K.RATE_LIMITED)
     rows = led.rows(NOW)
-    assert len(rows) == 39 and all(list(r) == H.SHEET_COLUMNS for r in rows)
+    assert len(rows) == 40 and all(list(r) == H.SHEET_COLUMNS for r in rows)
     by = {r["route_key"]: r for r in rows}
     assert by["meta_ads|browser"]["status"] == "healthy" and by["meta_ads|browser"]["verified"] == "yes" and by["meta_ads|browser"]["acceptance_result"] == "pass"
     t = by["tiktok|browser"]

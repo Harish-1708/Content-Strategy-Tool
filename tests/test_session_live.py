@@ -13,6 +13,7 @@ import yaml
 from contentintel import cli
 from contentintel import contract as K
 from contentintel import services as SV
+from contentintel import session_chain as SC
 from contentintel import session_live as SL
 from contentintel import sessions as S
 from conftest import ROOT
@@ -329,7 +330,7 @@ def test_the_sessions_command_lists_checks_and_reads_each_platform_and_explains_
     code, out = run_cli(tmp_path, monkeypatch, capsys, "--what", "read", "--key", "x", "--url", "https://evil.example/")
     assert code == 1 and "never sent to another site" in out
     code, out = run_cli(tmp_path, monkeypatch, capsys, "--what", "read", "--key", "x", "--url", URL)
-    assert code == 0 and "primary: NEED_SETUP" in out and "not read: " in out                                                      # no worker here: skipped, with the reason for each route
+    assert code == 1 and "primary: NEED_SETUP" in out and "nothing real was read: " in out                                        # no worker here: skipped, with the reason for each route, and the run is not green
 
 
 def test_the_eight_platform_switches_and_a_master_switch_are_owner_controls_that_default_to_on():
@@ -796,7 +797,8 @@ def test_reddit_is_accepted_on_the_words_its_logged_in_page_shows_and_the_eviden
     assert "logged-in words in the visible text: expand user menu, open profile menu" in line and row["evidence"]["logged_in_text_found"] == ["expand user menu", "open profile menu"]
     wall = dict(REDDIT_PAGE, text="Skip to main content Log In Sign Up")
     row = check("reddit", settings, ledger, Worker(lambda item: wall))
-    assert row["state"] == SL.REJECTED
+    assert row["state"] == SL.UNCONFIRMED                                                                            # no logged-in words, and no logged-out wording either
+    assert check("reddit", settings, ledger, Worker(lambda item: dict(REDDIT_PAGE, text="Log in to Reddit to continue " * 5)))["state"] == SL.REJECTED      # real logged-out wording is a refusal
     lines = SL.evidence_lines(row)
     assert "logged-in words in the visible text: none of 2 (expand user menu, open profile menu)" in lines[2]
 
@@ -805,7 +807,7 @@ def test_a_page_with_no_visible_text_is_described_by_its_shape_so_a_script_shell
     shell = {"ok": True, "status": 200, "final_url": "https://www.instagram.com/", "title": "Instagram", "fetched_with": "browser", "text": "",
              "html": '<html><head><title>Instagram</title></head><body><div id="react-root"></div><noscript>JavaScript is required.</noscript>' + "<script>var x=1;</script>" * 8 + "</body></html>" + " " * 200}
     row = check("instagram", settings, ledger, Worker(lambda item: shell))
-    assert row["state"] == SL.REJECTED
+    assert row["state"] == SL.UNCONFIRMED
     lines = SL.evidence_lines(row)
     shape = next(ln for ln in lines if ln.startswith("      page code:"))
     assert shape == f"      page code: {row['evidence']['html_chars']} characters, 8 script tags, element ids: react-root; the no-script note says: 'JavaScript is required.'"
@@ -961,6 +963,7 @@ def test_compare_says_neither_read_works_for_pages_with_no_readable_text_and_a_p
     puzzle = dict(profile, text="Drag the puzzle piece into place Audio")
     got = compare(settings, ledger, Worker(pages_for(profile, puzzle)), platform="tiktok", url="https://www.tiktok.com/@swoveralls", env=environ("tiktok"))
     assert got["public"]["ok"] and got["session"]["ok"] is False and "no readable text (38 characters" in got["session"]["error"]
+    assert got["public"]["quality"] == "real text" and got["session"]["quality"] == "challenge page" and "a bot-check or puzzle page, not content" in got["session"]["error"]
     assert got["verdict"].startswith("the public read works and the session read failed (UPSTREAM_BROKEN: the page came back with no readable text (38 characters") and "the session adds nothing here" in got["verdict"]
     empty = dict(profile, text="", title="Swoveralls")
     both = compare(settings, ledger, Worker(pages_for(empty, empty)), platform="tiktok", url="https://www.tiktok.com/@swoveralls", env=environ("tiktok"))
@@ -975,7 +978,8 @@ def test_a_platform_that_answers_the_browser_with_an_error_status_is_a_block_in_
     check("linkedin", settings, ledger, Worker(lambda item: logged_in_page("linkedin")))
     row = check("linkedin", settings, ledger, Worker(lambda item: refusal), env=environ("linkedin"), now="2026-11-14T10:00:00Z")
     assert row["state"] == SL.BLOCKED and row["proved_on"] == NOW and SL.exit_code([row]) == 0                              # a block learns nothing: the proof stays, the run is not red
-    assert row["reason"].startswith("LinkedIn refused the browser with an error status instead of a page (the platform answered the browser with an error status instead of a page, which is its own refusal")
+    assert row["reason"].startswith("LinkedIn: the platform answered the browser with an error status instead of a page, which is its own refusal of an automated visit (LinkedIn does this with status 999) (UPSTREAM_BROKEN: Error: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://www.linkedin.com/feed/)")
+    assert "Call log" not in row["reason"] and row["reason"].count("error status instead of a page") == 1
     assert "so the session itself could not be judged" in row["reason"] and "not a bad session" in row["reason"] and "\n" not in row["reason"]
     page = {"ok": True, "status": 200, "url": "https://www.linkedin.com/company/swoveralls", "final_url": "https://www.linkedin.com/company/swoveralls", "title": "Swoveralls | LinkedIn",
             "text": "Skip to main content LinkedIn Top Content People Learning Jobs Games Join now Sign in Swoveralls Retail Creating the world comfiest products using sustainable resources"}
@@ -1016,3 +1020,194 @@ def test_a_cut_page_is_said_to_be_cut_and_a_twscrape_403_says_the_runner_is_bloc
     assert row["state"] == SL.BLOCKED and "X answers 403 to this runner's address on both routes (its web page and its profile interface), so from GitHub's servers its session cannot be proved; only a different network address would change that" in row["reason"]
     other, _ = x_row(settings, ledger, tmp_path, json.dumps({"state": "unreachable", "detail": "the profile read timed out"}))
     assert "on both routes" not in other["reason"]
+
+
+# ---- Update 56: the whole reason and the evidence are stored, reads and compares are kept, and the content is judged -----------------------------------
+
+LONG_X = json.dumps({"state": "unreachable", "detail": "NoAccountError: No account available for queue UserByRestId; twscrape logged: Unknown error. Account timeouted for 15 minutes. Create issue please: https://github.com/vladkens/twscrape/issues If it mistake, you can unlock accounts with `twscrape reset_locks`. Err: HttpStatusError 403; username=session-check; queue=UserByRestId; backend=httpx; proxy=False"})
+
+
+X_CHALLENGE = dict(BLOCKED_X, status=403, final_url="https://x.com/home", title="Just a moment...", text="Performing security verification This website uses a security service to protect against bots",
+                   html="<html><head><title>Just a moment...</title></head><body>" + "challenge-platform " * 20 + "</body></html>", error={"code": "PLATFORM_BLOCKED", "message": "x.com still refused after 1 attempt(s)"})
+
+
+def test_the_stored_verdict_keeps_the_whole_reason_and_the_evidence_and_never_the_pages_words(settings, ledger, tmp_path):
+    runner, env = with_tw(Worker(lambda item: X_CHALLENGE), TwRunner(LONG_X), tmp_path)
+    row = SL.check_platform("x", settings, "owner@example.com", sys.executable, environ=env, runner=runner, now=NOW, ledger=ledger)
+    assert len(row["reason"]) > 300
+    kept = ledger.data["x"]
+    assert kept["reason"] == " ".join(row["reason"].split()) and "HttpStatusError 403" in kept["reason"] and "Account timeouted for 15 minutes" in kept["reason"]       # the real run's reason, not its first 300 characters
+    assert kept["state"] == SL.BLOCKED and kept["expires_on"] == row["expires_on"] and kept["days_left"] == row["days_left"] and kept["twscrape"]["state"] == "unreachable" and "HttpStatusError 403" in kept["twscrape"]["detail"]
+    ev = kept["evidence"]
+    assert ev["status"] == 403 and ev["title"] == "Just a moment..." and ev["landed"] == "https://x.com/home" and ev["fetched_with"] == "browser" and ev["html_chars"] > 0 and ev["text_chars"] >= 0
+    assert ev["logged_in_missing"] and ev["logged_in_found"] == [] and ev["cookies_sent"] == sorted(ev["cookies_sent"]) and "auth_token" in ev["cookies_sent"] and "scripts" in ev and "visible_text_available" in ev
+    assert "text_starts" not in ev and set(ev) <= set(SL.EVIDENCE_KEEP)
+    ledger.save()
+    on_disk = (tmp_path / "sessions_health.json").read_text(encoding="utf-8")
+    assert VALUE not in on_disk and "COOKIEVALUE" not in on_disk and json.loads(on_disk)["x"]["evidence"]["status"] == 403
+    reloaded = SL.SessionLedger(tmp_path / "sessions_health.json")
+    assert reloaded.data["x"] == kept
+
+
+def test_a_later_verdict_without_evidence_does_not_keep_the_old_evidence_or_twscrape_answer(settings, ledger, tmp_path):
+    x_row(settings, ledger, tmp_path, LONG_X)
+    assert ledger.data["x"]["evidence"] and ledger.data["x"]["twscrape"]
+    row = check("x", settings, ledger, Worker(lambda item: logged_in_page("x")), env={}, now="2026-11-14T10:00:00Z")
+    assert row["state"] == SL.NOT_SET_UP and ledger.data["x"]["evidence"] == {} and "twscrape" not in ledger.data["x"] and ledger.data["x"]["checked_at"] == "2026-11-14T10:00:00Z"
+    row = check("tiktok", settings, ledger, Worker(lambda item: logged_in_page("tiktok")))
+    kept = ledger.data["tiktok"]
+    assert kept["state"] == SL.ACCEPTED and kept["evidence"]["logged_in_found"] and kept["evidence"]["landed"] == "https://www.tiktok.com/" and "twscrape" not in kept and kept["expires_on"] == row["expires_on"]
+    assert SL.compact_evidence(None) == {} and SL.compact_evidence("nope") == {} and SL.compact_evidence({"title": "t" * 500, "text_starts": "secret words", "unknown": 1})["title"] == "t" * 200
+    assert "text_starts" not in SL.compact_evidence({"text_starts": "words"}) and "unknown" not in SL.compact_evidence({"unknown": 1})
+    ledger.record("x", SL.BLOCKED, "word \n " * 400, NOW)
+    assert len(ledger.data["x"]["reason"]) == SL.REASON_LIMIT == 1500 and "\n" not in ledger.data["x"]["reason"]
+
+
+def test_the_content_judge_looks_at_what_came_back_not_how_much():
+    assert SL.judge_content("# Swoveralls ## swoveralls ### 405Following 73.3KFollowers 1.8MLikes ## Sweatpants + Overalls = Swoveralls FALL LIMITED EDITION PRINT DROP NOW LIVE Log in")[0] == "real text"
+    assert SL.judge_content("Drag the puzzle piece into place Audio") == ("challenge page", "a bot-check or puzzle page, not content")
+    assert SL.judge_content("Performing security verification This website uses a security service to protect against malicious bots")[0] == "challenge page"
+    assert SL.judge_content("Verify you are human " + "real words about a long product page that goes on " * 30)[0] == "real text"                # a long page that mentions a captcha is still content
+    junk = "InstagramDown chevron icon\nInstagram\n![](data:image/png;base64," + "iVBORw0KGgoAAAANSUhEUgAAAKAAAACg" * 700 + ")"
+    assert len(junk) > 20000 and SL.judge_content(junk) == ("script shell", "a script shell, an icon or an image")                          # twenty thousand characters of image data
+    assert SL.judge_content("Home Search Explore") == ("too little", "too little to be a page") and SL.judge_content("") == ("empty", "no text came back") and SL.judge_content(None)[0] == "empty"
+    quality, detail = SL.judge_content("word " * 3000)
+    assert quality == "real text" and detail == "14999 characters, 3000 words"
+    row = SL._rows_from({"url": "u", "final_url": "u", "title": "T", "text": "real words " * 40}, "primary")[0]
+    assert row["quality"] == "real text" and row["route"] == "primary"
+    with pytest.raises(K.Failure) as seen:
+        SL._rows_from({"text": junk}, "primary")
+    assert seen.value.code == K.UPSTREAM_BROKEN and "no readable text (" in str(seen.value) and "a script shell, an icon or an image" in str(seen.value) and "base64" not in str(seen.value)
+    with pytest.raises(K.Failure) as seen:
+        SL._rows_from({"text": "Drag the puzzle piece into place Audio"}, "session")
+    assert "a bot-check or puzzle page, not content" in str(seen.value) and SL._rows_from({"text": ""}, "primary") == [] and SL._rows_from({"text": "   "}, "primary") == []
+
+
+def chain_result(route, rows=(), trail=(), skipped=False, reason=""):
+    return SC.ChainResult("x page", route=route, rows=list(rows), trail=list(trail), skipped=skipped, reason=reason)
+
+
+def test_a_read_is_stored_with_its_route_quality_and_trail_and_the_words_of_a_logged_in_read_are_not(tmp_path):
+    row = {"url": "u", "final_url": "https://www.tiktok.com/@swoveralls?lang=en#top", "title": "TikTok", "text": "profile words " * 30, "chars": 420, "route": "primary", "quality": "real text"}
+    got = SL.read_entry("tiktok", "https://www.tiktok.com/@swoveralls?lang=en&token=SECRETTOKEN", chain_result("primary", [row], [("primary", "ok", "")]))
+    assert got["url"] == "https://www.tiktok.com/@swoveralls" and "SECRETTOKEN" not in json.dumps(got) and got["landed"] == "https://www.tiktok.com/@swoveralls" and got["route"] == "primary"
+    assert got["quality"] == "real text" and got["chars"] == 420 and got["starts"] == ("profile words " * 30).strip()[:200] and got["trail"] == [["primary", "ok", ""]] and got["skipped"] is False
+    private = SL.read_entry("tiktok", URL, chain_result("session", [dict(row, route="session")], [("primary", "UPSTREAM_BROKEN", "no readable text"), ("session", "ok", "")]))
+    assert private["route"] == "session" and private["starts"] == "" and private["chars"] == 420 and private["trail"][0] == ["primary", "UPSTREAM_BROKEN", "no readable text"]
+    snippets = SL.read_entry("instagram", URL, chain_result("discovery", [{"title": "Swoveralls - Instagram", "final_url": "https://www.instagram.com/swoveralls/", "text": "Sweatpants + Overalls", "chars": 21, "route": "discovery"}]))
+    assert snippets["quality"] == "snippets about the address, not the page" and snippets["starts"] == "Sweatpants + Overalls" and snippets["route"] == "discovery"
+    none = SL.read_entry("x", URL, chain_result("", [], [("primary", "PLATFORM_BLOCKED", "x" * 400)], skipped=True, reason="no route could run " * 30))
+    assert none["route"] == "none" and none["skipped"] is True and none["chars"] == 0 and none["starts"] == "" and len(none["reason"]) == 300 and len(none["trail"][0][2]) == 200
+
+
+def test_a_compare_is_stored_with_both_reads_and_the_verdict_and_only_the_public_words(tmp_path):
+    public = {"ok": True, "chars": 184, "quality": "real text", "title": "TikTok", "landed": "https://www.tiktok.com/@swoveralls", "starts": "# Swoveralls 405 Following 73.3K Followers " * 10, "error": "", "words": {"a"}}
+    session = {"used": True, "ok": False, "chars": 38, "quality": "challenge page", "title": "TikTok", "landed": "https://www.tiktok.com/@swoveralls", "starts": "Drag the puzzle piece into place Audio", "error": "UPSTREAM_BROKEN: no readable text (38 characters", "words": set()}
+    got = SL.compare_entry("tiktok", "https://www.tiktok.com/@swoveralls?x=1", {"public": public, "session": session, "verdict": "the public read works and the session read failed"})
+    assert got["kind"] == "compare" and got["url"] == "https://www.tiktok.com/@swoveralls" and got["verdict"] == "the public read works and the session read failed"
+    assert got["public"]["starts"] == public["starts"][:200] and got["public"]["quality"] == "real text" and "words" not in got["public"]
+    assert got["session"] == {"used": True, "ok": False, "chars": 38, "quality": "challenge page", "title": "TikTok", "landed": "https://www.tiktok.com/@swoveralls", "error": "UPSTREAM_BROKEN: no readable text (38 characters"}
+    assert "Drag the puzzle" not in json.dumps(got["session"])                                                         # a logged-in read's words are never stored
+    off = SL.compare_entry("x", URL, {"public": dict(public, ok=False, error="PLATFORM_BLOCKED: refused"), "session": {"used": False, "reason": "no live proof yet for x"}, "verdict": "v"})
+    assert off["session"] == {"used": False, "reason": "no live proof yet for x"} and off["public"]["ok"] is False and off["public"]["error"] == "PLATFORM_BLOCKED: refused"
+
+
+def test_the_read_log_keeps_the_latest_200_in_order_survives_a_bad_file_and_round_trips(tmp_path):
+    path = tmp_path / "data" / "_shared" / "sessions_reads.json"
+    log = SL.ReadLog(path)
+    for i in range(205):
+        log.add({"kind": "read", "n": i}, f"2026-11-13T10:{i % 60:02d}:00Z")
+    assert len(log.items) == SL.MAX_READS == 200 and log.items[0]["n"] == 5 and log.items[-1]["n"] == 204 and log.items[-1]["at"] == "2026-11-13T10:24:00Z"
+    log.save()
+    again = SL.ReadLog(path)
+    assert again.items == log.items
+    again.add({"kind": "compare", "n": 205}, NOW)
+    assert len(again.items) == 200 and again.items[0]["n"] == 6 and again.items[-1]["kind"] == "compare"
+    path.write_text("not json", encoding="utf-8")
+    assert SL.ReadLog(path).items == []
+    path.write_text(json.dumps({"a": 1}), encoding="utf-8")
+    assert SL.ReadLog(path).items == []
+    path.write_text(json.dumps([{"n": 1}, "junk", 3, {"n": 2}]), encoding="utf-8")
+    assert [i["n"] for i in SL.ReadLog(path).items] == [1, 2]
+
+
+def test_the_commands_store_every_read_and_compare_and_a_read_that_pulled_nothing_real_is_not_green(tmp_path, monkeypatch, capsys):
+    monkeypatch.setenv("CONTENTINTEL_DATA_DIR", str(tmp_path / "data"))
+    store = tmp_path / "data" / "_shared" / "sessions_reads.json"
+    row = {"url": URL, "final_url": URL, "title": "Some account", "text": "profile posts " * 40, "chars": 560, "route": "primary", "quality": "real text"}
+    monkeypatch.setattr(SL, "read_page", lambda *a, **k: chain_result("primary", [row], [("primary", "ok", "")]))
+    code, out = run_cli(tmp_path, monkeypatch, capsys, "--what", "read", "--key", "x", "--url", URL)
+    assert code == 0 and "560 characters read through the primary route" in out and "content quality: real text (" in out and "words)" in out
+    saved = json.loads(store.read_text(encoding="utf-8"))
+    assert len(saved) == 1 and saved[0]["kind"] == "read" and saved[0]["route"] == "primary" and saved[0]["quality"] == "real text" and saved[0]["platform"] == "x" and saved[0]["at"]
+    monkeypatch.setattr(SL, "read_page", lambda *a, **k: chain_result("discovery", [{"title": "T", "url": "https://x.com/u", "final_url": "https://x.com/u", "text": "snippet words", "chars": 13, "route": "discovery", "provider": "serper_dev"}], [("primary", "UPSTREAM_BROKEN", "no readable text")]))
+    code, out = run_cli(tmp_path, monkeypatch, capsys, "--what", "read", "--key", "x", "--url", URL)
+    assert code == 0 and "content quality: snippets about the address, not the page" in out and "this is discovery" in out and len(json.loads(store.read_text(encoding="utf-8"))) == 2
+    monkeypatch.setattr(SL, "read_page", lambda *a, **k: chain_result("", [], [("primary", "UPSTREAM_BROKEN", "the page came back with no readable text (20000 characters: a script shell, an icon or an image)"), ("session", "off", "no live proof"), ("discovery", "empty", "")], skipped=False, reason=""))
+    code, out = run_cli(tmp_path, monkeypatch, capsys, "--what", "read", "--key", "x", "--url", URL)
+    assert code == 1 and "nothing real was read: every route answered with no usable text" in out and "primary: UPSTREAM_BROKEN" in out and "content quality" not in out
+    last = json.loads(store.read_text(encoding="utf-8"))
+    assert len(last) == 3 and last[-1]["route"] == "none" and last[-1]["quality"] == "" and last[-1]["trail"][0][0] == "primary"
+    canned = {"public": {"ok": True, "chars": 120, "landed": URL, "title": "T", "starts": "public words", "quality": "real text", "error": ""}, "session": {"used": False, "reason": "no live proof yet for x"}, "verdict": "only the public read was made"}
+    monkeypatch.setattr(SL, "compare_page", lambda *a, **k: canned)
+    code, out = run_cli(tmp_path, monkeypatch, capsys, "--what", "compare", "--key", "x", "--url", URL)
+    stored = json.loads(store.read_text(encoding="utf-8"))
+    assert code == 0 and len(stored) == 4 and stored[-1]["kind"] == "compare" and stored[-1]["verdict"] == "only the public read was made" and stored[-1]["public"]["starts"] == "public words"
+    monkeypatch.setattr(SL.ReadLog, "save", lambda self: (_ for _ in ()).throw(OSError("disk full")))
+    code, out = run_cli(tmp_path, monkeypatch, capsys, "--what", "compare", "--key", "x", "--url", URL)
+    assert code == 0 and "note: the read could not be stored (OSError); it is in this log only" in out
+
+
+def test_the_sessions_workflow_saves_the_reads_and_compares_as_well_as_the_checks():
+    text = (ROOT / ".github" / "workflows" / "sessions.yml").read_text(encoding="utf-8")
+    step = text[text.index("- name: Save what was found"):text.index("- name: Update the Google Sheets")]                 # the save step only: the Sheets step after it has the same condition
+    assert "if: ${{ inputs.what == 'check' || inputs.what == 'read' || inputs.what == 'compare' }}" in step
+    assert "git add -f data/_shared/sessions_health.json || true" in step and "git add -f data/_shared/sessions_reads.json || true" in step and "never a secret value" in step
+
+
+# ---- Update 56: a page with no sign either way is not a refusal --------------------------------------------------------------------------------------
+
+TIKTOK_GLITCH = {"ok": True, "status": 200, "final_url": "https://www.tiktok.com/", "title": "TikTok - Make Your Day", "fetched_with": "browser", "text": "We're having trouble playing this video. Please refresh and try again.",
+                 "html": '<html><head><title>TikTok - Make Your Day</title></head><body>{"i18n":"Log in to TikTok"}' + "<script>x</script>" * 30 + "</body></html>"}
+
+
+def test_a_half_drawn_or_error_page_is_unconfirmed_and_keeps_the_proof_instead_of_turning_the_run_red(settings, ledger):
+    check("tiktok", settings, ledger, Worker(lambda item: logged_in_page("tiktok")))
+    assert ledger.proved("tiktok", NOW)
+    row = check("tiktok", settings, ledger, Worker(lambda item: TIKTOK_GLITCH), now="2026-11-13T12:00:00Z")
+    assert row["state"] == SL.UNCONFIRMED and SL.exit_code([row]) == 0 and ledger.proved("tiktok", "2026-11-13T12:00:00Z") and row["proved_on"] == NOW           # the earlier proof is not voided by one glitch
+    assert "no sign of being logged in or logged out" in row["reason"] and "not counted as a refusal" in row["reason"] and "(this is check 1)" in row["reason"] and "3 such checks in a row" in row["reason"]
+    assert row["evidence"]["logged_out_only_in_code"] == ["log in to tiktok"] and row["evidence"]["logged_out_in_text"] == []                                        # wording only in the code is not a refusal
+    assert ledger.data["tiktok"]["unconfirmed_streak"] == 1 and ledger.data["tiktok"]["state"] == "UNCONFIRMED"
+
+
+def test_three_checks_in_a_row_with_no_sign_either_way_count_as_a_refusal_and_a_good_check_starts_the_count_again(settings, ledger):
+    check("tiktok", settings, ledger, Worker(lambda item: logged_in_page("tiktok")))
+    states = [check("tiktok", settings, ledger, Worker(lambda item: TIKTOK_GLITCH), now=f"2026-11-13T1{i}:00:00Z")["state"] for i in range(2)]
+    assert states == [SL.UNCONFIRMED, SL.UNCONFIRMED] and ledger.data["tiktok"]["unconfirmed_streak"] == 2 and ledger.proved("tiktok", "2026-11-13T12:00:00Z")
+    row = check("tiktok", settings, ledger, Worker(lambda item: TIKTOK_GLITCH), now="2026-11-13T13:00:00Z")
+    assert row["state"] == SL.REJECTED and "no sign of being logged in was found on 3 checks in a row" in row["reason"] and SL.exit_code([row]) == 1 and not ledger.proved("tiktok", "2026-11-13T13:00:00Z")
+    assert ledger.data["tiktok"]["unconfirmed_streak"] == 0                                                          # a refusal ends the streak
+    check("tiktok", settings, ledger, Worker(lambda item: TIKTOK_GLITCH), now="2026-11-14T10:00:00Z")
+    check("tiktok", settings, ledger, Worker(lambda item: TIKTOK_GLITCH), now="2026-11-14T11:00:00Z")
+    assert ledger.data["tiktok"]["unconfirmed_streak"] == 2
+    check("tiktok", settings, ledger, Worker(lambda item: logged_in_page("tiktok")), now="2026-11-14T12:00:00Z")
+    assert ledger.data["tiktok"]["unconfirmed_streak"] == 0
+    assert check("tiktok", settings, ledger, Worker(lambda item: TIKTOK_GLITCH), now="2026-11-14T13:00:00Z")["state"] == SL.UNCONFIRMED               # the count began again
+    assert ledger.data["tiktok"]["unconfirmed_streak"] == 1
+
+
+def test_real_signs_of_being_logged_out_are_still_a_refusal_at_once(settings, ledger):
+    wording = dict(TIKTOK_GLITCH, text="Log in to TikTok  Use phone / email / username")
+    assert check("tiktok", settings, ledger, Worker(lambda item: wording))["state"] == SL.REJECTED
+    on_login = dict(TIKTOK_GLITCH, final_url="https://www.tiktok.com/login", text="Welcome back " * 10)
+    assert check("tiktok", settings, ledger, Worker(lambda item: on_login))["state"] == SL.REJECTED
+    on_password_page = dict(TIKTOK_GLITCH, text="Welcome back " * 10, html=TIKTOK_GLITCH["html"] + '<input type="password">')
+    assert check("tiktok", settings, ledger, Worker(lambda item: on_password_page))["state"] == SL.UNCONFIRMED       # a password field is reported in the evidence, not by itself a refusal (Reddit's settings page has one)
+    check("tiktok", settings, ledger, Worker(lambda item: logged_in_page("tiktok")))
+    empty = dict(TIKTOK_GLITCH, html="<html></html>", text="")
+    assert check("tiktok", settings, ledger, Worker(lambda item: empty))["state"] == SL.UNCONFIRMED                  # an empty page says nothing either way
+    check("tiktok", settings, ledger, Worker(lambda item: logged_in_page("tiktok")))
+    forbidden = dict(TIKTOK_GLITCH, status=403, html="<html>Forbidden " + "x " * 120 + "</html>", ok=False, error={"code": "UPSTREAM_BROKEN", "message": "www.tiktok.com answered 403"})
+    assert check("tiktok", settings, ledger, Worker(lambda item: forbidden))["state"] == SL.REJECTED
+    assert ledger.data["tiktok"]["unconfirmed_streak"] == 0

@@ -345,7 +345,7 @@ def test_the_sheet_gets_a_collector_health_tab_that_updates_in_place(swov, store
     sp = FakeSpreadsheet("sid")
     sheets.update_brand_sheet(swov, store, sp, NOW, health_rows=ledger.rows(NOW))
     header, rows = read(sp.worksheet("Collector Health"))
-    assert header[:len(H.SHEET_COLUMNS)] == H.SHEET_COLUMNS and len(rows) == 39
+    assert header[:len(H.SHEET_COLUMNS)] == H.SHEET_COLUMNS and len(rows) == 40
     by = {r["route_key"]: r for r in rows}
     assert by["meta_ads|browser"]["status"] == "healthy" and by["meta_ads|browser"]["acceptance_items"] == 4 and by["meta_ads|browser"]["acceptance_result"] == "pass"
     assert by["meta_ads|browser"]["success_rate_7d"] == 100 and by["meta_ads|browser"]["attempts_7d"] == 1
@@ -353,7 +353,7 @@ def test_the_sheet_gets_a_collector_health_tab_that_updates_in_place(swov, store
     ledger.observe("tiktok", "browser", ok=False, code=K.RATE_LIMITED, message="429", now=at(NOW, hours=1))
     sheets.update_brand_sheet(swov, store, sp, at(NOW, hours=1), health_rows=ledger.rows(at(NOW, hours=1)))
     _, again = read(sp.worksheet("Collector Health"))
-    assert len(again) == 39 and {r["route_key"]: r for r in again}["tiktok|browser"]["status"] == "paused"
+    assert len(again) == 40 and {r["route_key"]: r for r in again}["tiktok|browser"]["status"] == "paused"
     assert {r["route_key"]: r for r in again}["tiktok|browser"]["error_code"] == "RATE_LIMITED"
 
 
@@ -368,10 +368,10 @@ def test_a_person_reordering_or_adding_columns_to_the_health_tab_is_respected(sw
     sheets.update_brand_sheet(swov, store, sp, NOW, health_rows=ledger.rows(NOW))
     ws = sp.worksheet("Collector Health")
     from fake_sheets import insert_column
-    insert_column(ws, 1, "My notes", {row: "note" for row in range(2, 41)})
+    insert_column(ws, 1, "My notes", {row: "note" for row in range(2, 42)})
     sheets.update_brand_sheet(swov, store, sp, at(NOW, hours=1), health_rows=ledger.rows(at(NOW, hours=1)))
     header, rows = read(ws)
-    assert header[0] == "My notes" and len(rows) == 39 and all(r["My notes"] == "note" for r in rows) and "route_key" in header
+    assert header[0] == "My notes" and len(rows) == 40 and all(r["My notes"] == "note" for r in rows) and "route_key" in header
 
 
 # ---- the command line -------------------------------------------------------------------------------------------------------
@@ -398,7 +398,7 @@ def test_health_prints_every_route_and_json_matches(run_cli, capsys):
     assert "meta_ads / browser" in out and "unverified" in out and "instagram / agent_reach" in out and "disabled" in out and "planned" in out
     assert run_cli("health", "--json") == 0
     rows = json.loads(capsys.readouterr().out)
-    assert len(rows) == 39 and rows[0]["route_key"] == "meta_ads|browser"
+    assert len(rows) == 40 and rows[0]["route_key"] == "meta_ads|browser"
     assert run_cli("health", "--matrix") == 0
     assert "OFF EXPERIMENTAL" in capsys.readouterr().out
 
@@ -610,7 +610,7 @@ def test_the_sheets_command_puts_the_health_tab_on_the_sheet(tmp_path, monkeypat
     monkeypatch.setenv("SHEET_SHARE_EMAIL", EMAIL)
     assert cli.main(["sheets", "--brand", "swoveralls", "--data-dir", str(data), "--sheets-config", str(tmp_path / "none.yaml")]) == 0
     header, rows = read(client.created[0].worksheet("Collector Health"))
-    assert header[:len(H.SHEET_COLUMNS)] == H.SHEET_COLUMNS and len(rows) == 39 and {r["status"] for r in rows} == {"unverified", "disabled", "planned"}
+    assert header[:len(H.SHEET_COLUMNS)] == H.SHEET_COLUMNS and len(rows) == 40 and {r["status"] for r in rows} == {"unverified", "disabled", "planned"}
 
 
 def test_without_sources_yaml_the_sheets_command_still_works_and_adds_no_health_tab(tmp_path, monkeypatch, swov):
