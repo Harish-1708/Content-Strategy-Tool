@@ -137,6 +137,40 @@ For a platform whose session is rejected or blocked, the other paths are the pla
 
 A read that comes back as a script shell (a title, an icon name, an image) is no longer reported as success: image data is replaced by `[image]`, and a page with fewer than 12 real words or 80 characters counts as unreadable, so the chain moves on to the next route (the session, then discovery). A compare says so too. Platforms that draw their page after it loads (Instagram, Facebook, TikTok) are waited for on a read (Instagram also on a check); the page code a check keeps is up to 2,000,000 characters and the log says when it was cut. An error status from the browser (`net::ERR_HTTP_RESPONSE_CODE_FAILURE`, LinkedIn's 999) is shown as a BLOCKED result in plain words, not a failed check.
 
+## Where the results are stored (Update 56)
+
+Two files in `data/_shared/` are committed by the Stored login sessions workflow, so the results outlive the run logs:
+
+- **`sessions_health.json`** (a check): per platform the state, the **whole** reason (it was cut at 300 characters before, which hid twscrape's own "HttpStatusError 403, account timed out for 15 minutes"), when it was checked, the day it was last proved and how, the expiry date and days left, twscrape's answer for X, and the **evidence**: how the page was read, the HTTP status, where it landed, the title, the characters of code and of visible text, which logged-in markers were found and missing, the logged-out wording, whether there was a password field, the script count and element ids, the cookie names sent and sent back, and the worker's error. The page's words are not stored.
+- **`sessions_reads.json`** (a read or a compare): the latest 200, newest last. For a read: the address (without any query), the route that answered or none, why nothing did, the quality of what came back, the characters, the title, where it landed, the first 200 characters of what a read with no login (or discovery) returned, and the routes tried. For a compare: the verdict and, for each of the two reads, whether it worked, the characters, the quality, the title, where it landed and why not. **The words of a read through a stored session are never stored**, because the repository may be public.
+
+## Judging what a read returned (Update 56)
+
+A read is judged on its content, not its size. The quality is one of: **real text** (enough characters and enough real words), **script shell** (a title, an icon name and image data: twenty thousand characters of it is still a shell), **challenge page** (a short bot-check or puzzle page: "Drag the puzzle piece", "Performing security verification"), **too little**, or **empty**. Only real text counts as a read; anything else moves the chain on to the next route. A `what = read` that pulled nothing real prints "nothing real was read" with the routes tried and the run is **red**, so a green run means something real was read (or discovery returned snippets, which is labelled "snippets about the address, not the page").
+
+## Where stored sessions stand: the closing position (Update 56)
+
+Four days of live testing settled what the stored sessions are, and what they are not.
+
+**What they are for:** a health check. A session proves, per platform, that the login you captured still works from GitHub's servers, and tells you when it needs a new capture. Proved on 2026-11-13: **Instagram, Reddit and Facebook** (ACCEPTED). They are not used to collect research, because the compare runs showed a logged-in read adds nothing over the public read, and is more likely to be challenged.
+
+**What cannot be fixed from GitHub's servers:** **X** (x.com shows the runner a bot-check, and X's profile interface answers 403: the address is blocked on both routes) and **LinkedIn** (it answers a logged-in automated visit with an error status, 999). Both show as BLOCKED, which is not red and leaves any earlier proof alone. Only a different network address would change that, which is outside what this tool does. **Xiaohongshu** and **Boss** are not set up.
+
+**TikTok** is the flaky one: the same session was accepted and, minutes later, the page showed "We're having trouble playing this video". A page that gives no sign of being logged in **or** logged out is now UNCONFIRMED, not a refusal: the proof is kept, the run is not red, and it is looked at again on the next check. Three such checks in a row (`UNCONFIRMED_LIMIT`) count as a refusal. Real signs of being logged out (the logged-out wording in the visible text, a login address, a 401 or 403) are still a refusal at once.
+
+**Where the research comes from instead:** public pages and search snippets, with no login at all (next section).
+
+## Public profile snapshots (Update 56)
+
+The monitor reads each competitor's **public** social profile once per run and keeps a dated snapshot when it changed: followers, following, likes, posts, employees, the bio, and when it was read. A followers, likes or employees count that moves by at least `social.min_change_pct` (default 5%, and by more than rounding), and a changed bio, become events. The **Social Profiles** tab in each brand's sheet shows the latest numbers with the change since the reading before.
+
+- **TikTok and LinkedIn** are read as public pages in the browser (proved on a real profile: TikTok followers, following, likes and bio; LinkedIn About text and employees). If the browser read fails and a search key is set, the search snippet is used instead.
+- **Instagram, Facebook and X** are asked of the search layer, because a runner cannot read their pages: one search per profile, and only the result whose address is **exactly** that account (a near match such as `@brand_` for `@brand` is a different account and is never used). The snippet gives followers, following and posts. Instagram is on by default; Facebook and X are off until you switch them on (`social.facebook`, `social.x`), because their snippets have not been proved.
+- **Limits and switches (observatory settings, section `social`):** `max_per_competitor` (default 4), one true/false per platform, `min_change_pct` (5), `max_discovery_per_run` (12 searches per run). A competitor can be excluded with `monitor: {social: false}`.
+- **Where the handles come from:** the competitor file (Instagram, TikTok), and the accounts a competitor's own pages link to (now also LinkedIn, Facebook and X).
+- A platform refusing the runner is reported in Collector Health (source `competitor_pages`, route `social_profile`) and never stops the monitoring of the competitor's own site. The weekly acceptance run proves the route by reading TikTok's own public profile.
+- **Not proved:** counts from a search snippet are rounded (`51K`); Facebook and X snippets; and whether a platform will keep serving its public page to the runner.
+
 ## What a rejected check can mean
 
 An expiry date is the earliest of the cookies that are all needed and the **latest** of the either-or ones (Reddit's `reddit_session` or `token_v2`): a short token the platform renews from a long cookie does not set it. Reddit's page shows its logged-in menu as visible text ("Open inbox", "Expand user menu", "Open profile menu"), so those words count as evidence. Instagram's page is a script shell until it has finished loading, so its check waits for the network to go quiet; if a page has no visible text, the evidence prints its shape (script tags, element ids, the no-script note). twscrape's own warnings (why it put the account aside) are now part of its answer.
