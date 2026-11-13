@@ -227,10 +227,10 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 3223525392484,Swoveralls - Dark Athletic Grey,26289326030948,2XL / Dark Athletic Grey,Size=2XL; Color=Dark Athletic Grey,20-2XL-DGRY,99.00,,true
 3223525392484,Swoveralls - Dark Athletic Grey,26289326063716,3XL / Dark Athletic Grey,Size=3XL; Color=Dark Athletic Grey,20-3XL-DGRY,99.00,,true
 3223525392484,Swoveralls - Dark Athletic Grey,40859029045359,4XL / Dark Athletic Grey,Size=4XL; Color=Dark Athletic Grey,20-4XL-DGRY,99.00,,true
-7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936387183,XXS / Dino Navy,Size=XXS; Color=Dino Navy,1038-XXS-DINO,120.00,,true
+7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936387183,XXS / Dino Navy,Size=XXS; Color=Dino Navy,1038-XXS-DINO,120.00,,false
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936419951,XS / Dino Navy,Size=XS; Color=Dino Navy,1038-XS-DINO,120.00,,false
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936452719,S / Dino Navy,Size=S; Color=Dino Navy,1038-S-DINO,120.00,,false
-7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936485487,M / Dino Navy,Size=M; Color=Dino Navy,1038-M-DINO,120.00,,true
+7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936485487,M / Dino Navy,Size=M; Color=Dino Navy,1038-M-DINO,120.00,,false
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936518255,L / Dino Navy,Size=L; Color=Dino Navy,1038-L-DINO,120.00,,false
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936551023,XL / Dino Navy,Size=XL; Color=Dino Navy,1038-XL-DINO,120.00,,false
 7215056781423,Swoveralls - Dino Navy - Coming Soon!,41347936583791,2XL / Dino Navy,Size=2XL; Color=Dino Navy,1038-2XL-DINO,120.00,,false
@@ -323,7 +323,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15022560804975,Swoveralls - Nightshade Plum,53160030077039,L / Nightshade Plum,Size=L; Color=Nightshade Plum,SWPANTS-066-L,120.00,,true
 15022560804975,Swoveralls - Nightshade Plum,53160030109807,XL / Nightshade Plum,Size=XL; Color=Nightshade Plum,SWPANTS-066-XL,120.00,,false
 15022560804975,Swoveralls - Nightshade Plum,53160030142575,2XL / Nightshade Plum,Size=2XL; Color=Nightshade Plum,SWPANTS-066-2XL,120.00,,false
-15022560804975,Swoveralls - Nightshade Plum,53160030175343,3XL / Nightshade Plum,Size=3XL; Color=Nightshade Plum,SWPANTS-066-3XL,120.00,,true
+15022560804975,Swoveralls - Nightshade Plum,53160030175343,3XL / Nightshade Plum,Size=3XL; Color=Nightshade Plum,SWPANTS-066-3XL,120.00,,false
 15022560804975,Swoveralls - Nightshade Plum,53160030208111,4XL / Nightshade Plum,Size=4XL; Color=Nightshade Plum,SWPANTS-066-4XL,120.00,,true
 15346083430511,Swoveralls - Otter Romp,53753483853935,S / Otter Romp,Size=S; Color=Otter Romp,SWPANTS-DHG-S,120.00,,false
 15346083430511,Swoveralls - Otter Romp,53753483886703,M / Otter Romp,Size=M; Color=Otter Romp,SWPANTS-DHG-M,120.00,,true

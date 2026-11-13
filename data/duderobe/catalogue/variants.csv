@@ -58,7 +58,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 8927175672094,Kids DudeRobe,47471189983518,Grey / Youth (5-9 Year Old),Color=Grey; Size=Youth (5-9 Year Old),ROBEYOUTH-GRAY-OS,68.00,,true
 8927175672094,Kids DudeRobe,47532988727582,Grey / XS (10-15 Year Old),Color=Grey; Size=XS (10-15 Year Old),ROBE1-GRAY-XS,68.00,,false
 8927175672094,Kids DudeRobe,47471190311198,Black / Youth (5-9 Year Old),Color=Black; Size=Youth (5-9 Year Old),ROBEYOUTH-BLACK-OS,68.00,,true
-8927175672094,Kids DudeRobe,47532988793118,Black / XS (10-15 Year Old),Color=Black; Size=XS (10-15 Year Old),ROBE1-BLACK-XS,68.00,,true
+8927175672094,Kids DudeRobe,47532988793118,Black / XS (10-15 Year Old),Color=Black; Size=XS (10-15 Year Old),ROBE1-BLACK-XS,68.00,,false
 10109410443550,Mom & LittleDude,51861463105822,Default Title,Title=Default Title,,175.00,196.00,true
 15945149186334,Personalization,60146552209694,Default Title,Title=Default Title,,9.00,,true
 9747382927646,Reversible DudeHoodie,49738913382686,Navy / S,Color=Navy; Size=S,F25HOODIE-NAVY-S,98.00,,true
@@ -112,7 +112,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 1363889356843,The DudeRobe,31947185848401,Grey / S-M,Color=Grey; Size=S-M,ROBE1-Gray-S/M,128.00,,true
 1363889356843,The DudeRobe,31947194073169,Grey / L-XL,Color=Grey; Size=L-XL,ROBE1-Gray-L/XL,128.00,,true
 1363889356843,The DudeRobe,31947194761297,Grey / 2XL-3XL,Color=Grey; Size=2XL-3XL,ROBE1-GRAY-2XL/3XL,128.00,,true
-1363889356843,The DudeRobe,47315796820254,Black / XS,Color=Black; Size=XS,ROBE1-BLACK-XS,128.00,,true
+1363889356843,The DudeRobe,47315796820254,Black / XS,Color=Black; Size=XS,ROBE1-BLACK-XS,128.00,,false
 1363889356843,The DudeRobe,39307874697297,Black / S-M,Color=Black; Size=S-M,ROBE1-Black-S/M,128.00,,true
 1363889356843,The DudeRobe,39307876466769,Black / L-XL,Color=Black; Size=L-XL,ROBE1-Black-L/XL,128.00,,true
 1363889356843,The DudeRobe,39307877875793,Black / 2XL-3XL,Color=Black; Size=2XL-3XL,ROBE1-BLACK-2XL/3XL,128.00,,true
