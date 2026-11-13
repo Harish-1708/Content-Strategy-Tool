@@ -487,3 +487,48 @@ def test_when_two_valid_codes_compete_the_newest_wins_and_a_newer_message_from_a
     assert got(earlier, shop, sender_hint="instagram.com") == "555555"                                         # the newest message is from another sender: it is skipped
     assert got(earlier, shop) == "888888"                                                                       # with no sender named, the newest message counts
     assert got(earlier, shop, sender_hint="INSTAGRAM.com") == "555555"                                          # the sender is matched without regard to case
+
+
+# ---- Update 54: Reddit's words in the visible text, the either-or expiry, and the page shape in the evidence ---------------------------------------------
+
+def reddit_state(**dates):
+    return state(*[cookie(name, domain=".reddit.com", expires=date) for name, date in dates.items()])
+
+
+def test_reddit_is_logged_in_when_its_visible_text_has_the_logged_in_menu_even_though_its_code_holds_no_marker():
+    page = "<html><title>Reddit - The heart of the internet</title><body><shreddit-app>" + "x " * 150 + "</shreddit-app></body></html>"
+    assert S.PLATFORMS["reddit"]["logged_in_text"] == ("expand user menu", "open profile menu")
+    ok, why = S.check_logged_in("reddit", "https://www.reddit.com/settings/", page, 200, text="Skip to main content Open inbox Expand user menu Open profile menu # Settings Account Profile")
+    assert (ok, why) == (True, "logged in")
+    assert S.check_logged_in("reddit", "https://www.reddit.com/settings/", page, 200, text="Skip to main content Log In Sign Up Get app")[0] is False       # no logged-in words
+    assert S.check_logged_in("reddit", "https://www.reddit.com/settings/", page, 200, text="Open inbox Expand user menu Log in to Reddit")[0] is False           # logged-out wording still wins
+    assert S.check_logged_in("reddit", "https://www.reddit.com/login/", page, 200, text="Expand user menu")[0] is False                                         # a login address is never logged in
+    assert S.check_logged_in("reddit", "https://www.reddit.com/settings/", page, 200, text=None)[0] is False                                                    # no visible text given: the code is searched, and holds nothing
+    ev = S.page_evidence("reddit", "https://www.reddit.com/settings/", page, 200, "Open inbox Expand user menu # Settings")
+    assert ev["logged_in_text_found"] == ["expand user menu"] and ev["logged_in_text_missing"] == ["open profile menu"] and ev["logged_in_found"] == []
+
+
+def test_the_expiry_is_the_earliest_of_the_cookies_that_are_all_needed_and_the_latest_of_the_either_or_ones():
+    both = S.load("reddit", env("reddit", reddit_state(reddit_session="2027-05-01", token_v2="2026-11-14")), NOW)
+    assert both.expires_on() == "2027-05-01" and both.days_left() == 170                                           # a short token the platform renews does not set the date
+    short_only = S.load("reddit", env("reddit", reddit_state(token_v2="2026-11-14")), NOW)
+    assert short_only.expires_on() == "2026-11-14" and short_only.days_left() == 2
+    undated = S.load("reddit", env("reddit", state(cookie("reddit_session", domain=".reddit.com", expires=-1), cookie("token_v2", domain=".reddit.com", expires="2026-11-14"))), NOW)
+    assert undated.expires_on() == "" and undated.days_left() is None                                              # one either-or cookie with no expiry lasts the browser session: no date, never "expired"
+    mixed = S.load("facebook", env("facebook", state(cookie("c_user", domain=".facebook.com", expires="2027-01-01"), cookie("xs", domain=".facebook.com", expires="2026-12-01"))), NOW)
+    assert mixed.expires_on() == "2026-12-01"                                                                      # cookies that are all needed: the earliest
+    gone = S.load("reddit", env("reddit", reddit_state(reddit_session="2027-05-01", token_v2="2026-11-01")), NOW)
+    assert not gone.expired() and gone.expires_on() == "2027-05-01"                                                # the short one has expired, the long one has not: the session is not expired
+    err = failure(S.load, "reddit", env("reddit", reddit_state(reddit_session="2026-11-01", token_v2="2026-11-02")), NOW)
+    assert err.code == "NEED_LOGIN" and "expired on 2026-11-02" in str(err)                                          # both either-or cookies have expired: the session has
+
+
+def test_the_page_evidence_describes_the_shape_of_a_script_only_page_without_a_secret_in_it():
+    html = ('<html lang="en"><head><title>Instagram</title></head><body><div id="react-root"></div><div id="mount_0_0_Zk"></div><noscript>You need to enable JavaScript to run this app.</noscript>'
+            + "<script>var t=\"CSRFTOKENVALUE123456\";</script>" * 3 + "</body></html>")
+    ev = S.page_evidence("instagram", "https://www.instagram.com/", html, 200, "")
+    assert ev["scripts"] == 3 and ev["noscript"] == "You need to enable JavaScript to run this app." and ev["body_ids"] == ["react-root", "mount_0_0_Zk"] and ev["visible_text_available"] is False
+    assert "CSRFTOKENVALUE123456" not in json.dumps(ev)                                                              # ids and a no-script note, never what is inside a script
+    plain = S.page_evidence("instagram", "https://www.instagram.com/", "<html>nothing</html>", 200, "")
+    assert plain["scripts"] == 0 and plain["noscript"] == "" and plain["body_ids"] == []
+    assert S.PLATFORMS["instagram"]["adv"] == {"network_idle": True} and all("adv" not in spec for p, spec in S.PLATFORMS.items() if p != "instagram")
