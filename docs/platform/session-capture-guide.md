@@ -104,7 +104,7 @@ If x.com shows the runner a bot-check (BLOCKED), the check asks X's own profile 
 
 ## Discovery: when neither the page nor the session can be read
 
-`what = read` now tries the plain reader, then the stored session, then **discovery**: one search about the address through the search layer (Exa, then Serper, then Tavily: the first that has a key), which returns titles and snippets about the address rather than the page, with no login. The result says so. It is off when no search key is passed to the run. Research (the collectors) does not use stored sessions at all, so a rejected session changes nothing there.
+`what = read` now tries the plain reader, then the stored session, then **discovery**: one search about the address through the search layer (Serper, then Tavily, then Exa: the first that has a key; Exa's search here returns titles and links only, so it is asked last), which returns titles and snippets about the address rather than the page, with no login. The result says so. It is off when no search key is passed to the run. Research (the collectors) does not use stored sessions at all, so a rejected session changes nothing there.
 
 ## The Gmail code reader
 
