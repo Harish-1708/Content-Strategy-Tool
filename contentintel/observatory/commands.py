@@ -772,7 +772,7 @@ def _sessions(args, settings, now):
     from .. import contract as K
     from .. import session_live as SL
     from .. import sessions as S
-    what = args.what if args.what in ("check", "read") else "status"                                          # list (or nothing): what is stored, no request made
+    what = args.what if args.what in ("check", "read", "compare") else "status"                                  # list (or nothing): what is stored, no request made
     if args.key and args.key not in S.PLATFORMS:
         print(f"Error: no platform called {args.key!r}; the platforms are {', '.join(S.PLATFORMS)}")
         return 1
@@ -780,6 +780,26 @@ def _sessions(args, settings, now):
     contact = (os.environ.get("OBSERVATORY_CONTACT") or settings["politeness"]["contact"]).strip()
     python = os.environ.get("SCRAPLING_PYTHON", "")
     ledger = SL.SessionLedger()
+    if what == "compare":
+        if len(platforms) != 1 or not args.url:
+            print("Error: compare needs one platform (--key) and the address (--url), for example: sessions --what compare --key tiktok --url https://www.tiktok.com/@<account>")
+            return 1
+        try:
+            if not contact:
+                raise K.Failure(K.NEED_SETUP, "no contact address: set the OBSERVATORY_CONTACT secret")
+            got = SL.compare_page(platforms[0], args.url, settings, contact, python, now=now, ledger=ledger)
+        except K.Failure as exc:
+            print(f"Error: {exc}")
+            return 1
+        for label, part in (("without a login", got["public"]), ("through the stored session", got["session"])):
+            if part.get("used") is False:
+                print(f"  {label}: not used: {part['reason']}")
+            elif part["ok"]:
+                print(f"  {label}: read {part['chars']} characters; landed on {part['landed']}; title '{part['title']}'\n      starts: '{part['starts']}'")
+            else:
+                print(f"  {label}: not read: {part['error']}")
+        print(f"  verdict: {got['verdict']}")
+        return 0
     if what == "read":
         if len(platforms) != 1 or not args.url:
             print("Error: read needs one platform (--key) and the address (--url), for example: sessions --what read --key x --url https://x.com/<account>")
