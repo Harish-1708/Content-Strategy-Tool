@@ -99,7 +99,7 @@ def _host_ok(platform, url):
 def _worker_page(platform, url, settings, contact, python, environ, runner, *, with_session, timeout=180):
     """One address through the Scrapling worker, with the stored session or without it. Returns the worker's result for the address; raises K.Failure for what could not be done at all."""
     from .observatory import worker_client as wc
-    adv = {"stealth": True}
+    adv = {"stealth": True, **(S.PLATFORMS[platform].get("adv") or {})}                  # a platform that only shows its page once it has finished loading is waited for (Instagram)
     env = dict(environ)
     if with_session:
         session = S.load(platform, environ)
@@ -154,7 +154,7 @@ def twscrape_layer(session, environ, runner=subprocess.run, timeout=150):
     lines = [ln for ln in (done.stdout or "").splitlines() if ln.strip().startswith("{")]
     try:
         got = json.loads(lines[-1])
-        state, detail = str(got["state"]), str(got.get("detail", ""))[:300]
+        state, detail = str(got["state"]), str(got.get("detail", ""))[:600]
     except (IndexError, ValueError, KeyError):
         return {"state": "unreachable", "detail": f"the twscrape check gave no answer (exit {done.returncode})"}
     return {"state": state if state in ("accepted", "rejected", "unreachable") else "unreachable", "detail": detail}
@@ -244,6 +244,9 @@ def evidence_lines(r):
             f"read with the {ev['fetched_with']}; HTTP {ev['status'] or 'no answer'}; landed on {ev['landed'] or 'no address'}; no title"
     found = ev["logged_in_found"]
     markers = f"logged-in markers found: {', '.join(found)}" if found else f"logged-in markers found: none of {len(ev['logged_in_missing'])} ({', '.join(ev['logged_in_missing'])})"
+    if ev["logged_in_text_found"] or ev["logged_in_text_missing"]:
+        in_text = ev["logged_in_text_found"]
+        markers += "; " + (f"logged-in words in the visible text: {', '.join(in_text)}" if in_text else f"logged-in words in the visible text: none of {len(ev['logged_in_text_missing'])} ({', '.join(ev['logged_in_text_missing'])})")
     if r["state"] == ACCEPTED:
         return [f"      page: {shown}; {markers}"]
     if ev["visible_text_available"]:
@@ -256,6 +259,9 @@ def evidence_lines(r):
              + (f"; login or challenge word in the address: {ev['login_word_in_address']}" if ev["login_word_in_address"] else "")]
     if ev["text_starts"]:
         lines.append(f"      visible text starts: '{ev['text_starts']}'")
+    else:
+        lines.append(f"      page code: {ev['html_chars']} characters, {ev['scripts']} script tags" + (f", element ids: {', '.join(ev['body_ids'])}" if ev["body_ids"] else ", no element ids")
+                     + (f"; the no-script note says: '{ev['noscript']}'" if ev["noscript"] else "; no no-script note"))
     if ev["worker_error"]:
         lines.append(f"      the worker said: {ev['worker_error']}")
     tw = r.get("twscrape")
@@ -307,6 +313,52 @@ def _failure_from(res):
     if WALL.search(message):
         code = K.NEED_LOGIN
     return K.Failure(code, message)
+
+
+def _read_once(platform, url, settings, contact, python, environ, runner, with_session):
+    """One read through the worker, summarised: did it work, how much text, the title, where it landed, the first words, or why it failed. Never raises."""
+    try:
+        res = _worker_page(platform, url, settings, contact, python, environ, runner, with_session=with_session)
+    except K.Failure as exc:
+        return {"ok": False, "chars": 0, "words": set(), "title": "", "landed": "", "starts": "", "error": str(exc)}
+    text = " ".join(str(res.get("text") or "").split())
+    err = res.get("error") or {}
+    return {"ok": bool(res.get("ok")), "chars": len(text), "words": set(text.lower().split()), "title": str(res.get("title") or ""), "landed": S._landed(res.get("final_url") or ""),
+            "starts": text[:300], "error": "" if res.get("ok") else f"{err.get('code') or 'no answer'}: {str(err.get('message') or 'no page came back')[:200]}"}
+
+
+def compare_page(platform, url, settings, contact, python, *, environ=None, runner=subprocess.run, now="", ledger=None):
+    """The same address read twice, once with no login and once through the stored session (only when the owner has it on and a live check passed), so the question 'what does the session add?' has an
+    answer in characters and in words the public read did not show. One attempt each. The address must be on the platform's own hosts. Returns {"public", "session", "verdict"}."""
+    environ = os.environ if environ is None else environ
+    now = _now(now)
+    if platform not in S.PLATFORMS:
+        raise K.Failure(K.BAD_INPUT, f"no stored-session platform called {platform!r}; the platforms are {', '.join(S.PLATFORMS)}")
+    if not _host_ok(platform, url):
+        raise K.Failure(K.BAD_INPUT, f"{url} is not on {', '.join(S.PLATFORMS[platform]['hosts'])}: a stored session is never sent to another site")
+    public = _read_once(platform, url, settings, contact, python, environ, runner, False)
+    on, why = switched_on(settings, platform)
+    if not on:
+        session = {"used": False, "reason": why}
+    elif ledger is None or not ledger.proved(platform, now):
+        session = {"used": False, "reason": f"no live proof yet for {platform}: run the sessions check first (a session is only used after the platform accepted it in the last {PROVED_DAYS} days)"}
+    else:
+        session = {"used": True, **_read_once(platform, url, settings, contact, python, environ, runner, True)}
+    if not session["used"]:
+        verdict = "only the public read was made: " + session["reason"] if public["ok"] else "the public read failed and the session was not used: " + session["reason"]
+    elif public["ok"] and session["ok"]:
+        new_words = len(session["words"] - public["words"])
+        if session["chars"] > public["chars"] * 1.2 and new_words >= 20:
+            verdict = f"the session adds content: {session['chars'] - public['chars']} more characters and {new_words} words the public read did not show"
+        else:
+            verdict = f"the session adds little or nothing here: {session['chars']} characters against {public['chars']} in public, {new_words} words not in the public read"
+    elif session["ok"]:
+        verdict = "only the session read works: the public read failed (" + public["error"] + ")"
+    elif public["ok"]:
+        verdict = "the public read works and the session read failed (" + session["error"] + "): the session adds nothing here"
+    else:
+        verdict = "neither read works (public: " + public["error"] + "; session: " + session["error"] + ")"
+    return {"public": public, "session": session, "verdict": verdict}
 
 
 SEARCH_ORDER = ("serper_dev", "tavily", "serpapi", "exa", "exa_mcp")                 # the discovery layer's providers, in the order they are tried (the first one that has a key is asked): the ones that return snippets come first, because Exa's search here asks for titles and links only (page text is billed separately)
