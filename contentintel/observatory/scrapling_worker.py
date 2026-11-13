@@ -475,7 +475,12 @@ class Worker:
                 out["fetched_with"] = out.get("fetched_with") or "plain HTTP"
                 out["status"], out["final_url"] = status, current
                 out["html"] = bytes(resp.body or b"").decode("utf-8", errors="replace")[:300000]
-                out["cookie_names_back"] = sorted(str(k) for k in dict(getattr(resp, "cookies", {}) or {}))[:40]       # names only, never a value
+                out["cookie_names_back"] = _cookie_names(getattr(resp, "cookies", None))                                # names only, never a value
+                try:                                                                              # the title and the visible words of the page, whatever happens to it next (a refusal, a login wall)
+                    seen = htmlx.parse_page(out["html"], current, 4000)
+                    out["title"], out["text"] = seen["title"], seen["text"][:3000]
+                except Exception:
+                    pass
             retry = signals.parse_retry_after(heads.get("retry-after"))
             ok = status < 400 and not signals.looks_like_challenge(status, heads, bytes(resp.body or b""))
             self._done(host, ok=ok or status in (301, 302, 303, 307, 308), retry_after=retry)
@@ -540,6 +545,28 @@ class Worker:
             except Exception as exc:
                 out["adaptive_error"] = f"{exc.__class__.__name__}"
         return out
+
+
+def _cookie_names(cookies):
+    """The NAMES of the cookies in a response, whatever shape the library gives them: a dict of name to value (plain HTTP), a tuple of cookie objects with a name key (a browser), pairs, or objects with
+    a name. Never a value, and never an error: a shape it does not know gives no names, not a crash."""
+    names = []
+    try:
+        if isinstance(cookies, dict):
+            names = [str(k) for k in cookies]
+        else:
+            for item in cookies or ():
+                if isinstance(item, dict):
+                    name = item.get("name")
+                elif isinstance(item, (tuple, list)):
+                    name = item[0] if item else None
+                else:
+                    name = getattr(item, "name", None)
+                if name:
+                    names.append(str(name))
+    except Exception:
+        return []
+    return sorted(set(names))[:40]
 
 
 def _short_error(exc, secrets=()):
