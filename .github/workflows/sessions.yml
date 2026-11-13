@@ -9,9 +9,9 @@ on:
   workflow_dispatch:
     inputs:
       what:
-        description: "check = a live check of each platform that has a stored session; list = what is stored (no request); read = one logged-in page (needs the platform and the address below)"
+        description: "check = a live check of each platform that has a stored session; list = what is stored (no request); read = one page through the chain (needs the platform and the address below); compare = the same page with no login and through the session, to see what the session adds (platform and address needed)"
         type: choice
-        options: [check, list, read]
+        options: [check, list, read, compare]
         default: check
       platform:
         description: "One platform, or all of them (each is judged on its own either way)"
