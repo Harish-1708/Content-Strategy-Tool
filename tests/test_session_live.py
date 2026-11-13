@@ -699,8 +699,8 @@ def test_a_failing_search_ends_in_an_honest_skip_with_the_true_reason_and_a_sear
 def test_the_discovery_status_names_the_provider_that_would_be_asked_and_says_when_none_can():
     assert SL.discovery_status({}) == "not available in this run: no search key (EXA_API_KEY, SERPER_API_KEY or TAVILY_API_KEY) is passed to it"
     assert SL.discovery_status({"SERPER_API_KEY": "k"}) == "available here, through serper_dev"
-    assert SL.discovery_status({"TAVILY_API_KEY": "k", "EXA_API_KEY": "k", "SERPER_API_KEY": "k"}) == "available here, through exa (then serper_dev, tavily)"
-    assert [n for n, _ in SL.discovery_providers({"EXA_API_KEY": "k", "SERPER_API_KEY": "k"})] == ["exa", "serper_dev"] and SL.SEARCH_ORDER[0] == "exa"
+    assert SL.discovery_status({"TAVILY_API_KEY": "k", "EXA_API_KEY": "k", "SERPER_API_KEY": "k"}) == "available here, through serper_dev (then tavily, exa)"
+    assert [n for n, _ in SL.discovery_providers({"EXA_API_KEY": "k", "SERPER_API_KEY": "k"})] == ["serper_dev", "exa"] and SL.SEARCH_ORDER[:3] == ("serper_dev", "tavily", "serpapi")      # the providers that return snippets are asked first: Exa's search here returns titles and links only
     assert [SL._query_for(u) for u in ("https://www.instagram.com/some_account/?hl=en#x", "https://x.com/someaccount", "https://www.reddit.com/r/overalls-fans/")] == ["instagram.com some account", "x.com someaccount", "reddit.com r overalls fans"]
 
 
@@ -726,3 +726,58 @@ def test_the_workflows_pass_the_search_keys_to_the_read_and_install_twscrape_onl
     step = next(s for s in acc if str(s.get("name", "")).startswith("Stored login sessions"))["run"]
     assert 'if [ -n "$X_SESSION_B64" ]; then' in step and "install -q -r requirements-twscrape.txt" in step and 'export TWSCRAPE_PYTHON=' in step
     assert step.index("twscrape-env") < step.index("observatory sessions --all --what check")
+
+
+# ---- Update 53: a read the worker did not complete is never judged; a bot-check is a block; the evidence is honest about visible text ----------------
+
+def test_a_page_the_worker_failed_to_read_cleanly_is_not_judged_and_never_called_a_rejection(settings, ledger):
+    check("instagram", settings, ledger, Worker(lambda item: logged_in_page("instagram")))
+    broken = dict(logged_in_page("instagram"), ok=False, text="", error={"code": "UPSTREAM_BROKEN", "message": "ValueError: dictionary update sequence element #0 has length 8; 2 is required"})
+    broken.pop("text")
+    row = check("instagram", settings, ledger, Worker(lambda item: broken), now="2026-11-12T10:00:00Z")
+    assert row["state"] == SL.CANNOT_CHECK and "could not read the page cleanly (UPSTREAM_BROKEN: ValueError: dictionary update sequence element #0 has length 8; 2 is required)" in row["reason"]
+    assert "nothing was judged; this is not the platform's answer" in row["reason"] and SL.exit_code([row]) == 0 and row["proved_on"] == NOW          # the earlier proof stays: nothing was learned
+    assert row["evidence"]["html_chars"] > 0 and any(ln.startswith("      the worker said: UPSTREAM_BROKEN: ValueError") for ln in SL.evidence_lines(row))      # the evidence is still shown
+    for message in ("x.com answered 500", "too many redirects, or one without a destination"):
+        assert check("instagram", settings, ledger, Worker(lambda item: dict(broken, error={"code": "UPSTREAM_BROKEN", "message": message})))["state"] == SL.CANNOT_CHECK
+    wall = dict(login_wall("instagram"), status=200)
+    assert check("instagram", settings, ledger, Worker(lambda item: wall))["state"] == SL.REJECTED                                           # a login wall IS an answer: judged
+    forbidden = dict(logged_in_page("instagram"), ok=False, status=403, html="<html>Forbidden " + "x " * 120 + "</html>", error={"code": "UPSTREAM_BROKEN", "message": "www.instagram.com answered 403"})
+    assert check("instagram", settings, ledger, Worker(lambda item: forbidden))["state"] == SL.REJECTED                                      # so is a plain 401 or 403
+
+
+def test_a_cloudflare_style_bot_check_is_a_block_even_when_the_worker_called_it_something_else_and_x_then_gets_the_last_resort(settings, ledger, tmp_path):
+    page = {"ok": False, "status": 403, "final_url": "https://x.com/home", "title": "Just a moment...", "fetched_with": "browser", "text": "Verify you are human",
+            "html": "<html><head><title>Just a moment...</title></head><body>" + "challenge-platform " * 30 + "</body></html>", "error": {"code": "UPSTREAM_BROKEN", "message": "ValueError: boom"}}
+    tw = TwRunner(json.dumps({"state": "accepted", "detail": "the profile of account id 1 was read"}))
+    runner, env = with_tw(Worker(lambda item: page), tw, tmp_path)
+    row = SL.check_platform("x", settings, "o@example.com", sys.executable, environ=env, runner=runner, now=NOW, ledger=ledger)
+    assert row["state"] == SL.ACCEPTED and row["via"] == "twscrape" and len(tw.calls) == 1
+    other = {**environ("instagram")}
+    assert check("instagram", settings, ledger, Worker(lambda item: dict(page, final_url="https://www.instagram.com/")), env=other)["state"] == SL.BLOCKED
+    for status, title, html in ((200, "Just a moment...", "x"), (403, "Forbidden", "<html>nothing special</html>"), (404, "Just a moment...", "x"), (0, "Just a moment...", "x")):
+        assert SL.looks_like_challenge(status, html, title) is False, (status, title)
+    for status in (401, 403, 429, 503):
+        assert SL.looks_like_challenge(status, "<html>Attention Required! | Cloudflare</html>", "") and SL.looks_like_challenge(status, "", "Just a moment...")
+    assert SL.looks_like_challenge(403, "<div id='cf-chl-widget'></div>", "") and SL.looks_like_challenge(403, "please enable JavaScript and cookies to continue", "")
+
+
+def test_the_evidence_never_calls_wording_in_the_pages_code_visible_text_and_says_so_when_there_is_no_visible_text(settings, ledger):
+    html = '<html><title>TikTok</title><script>{"i18n":"Log in to TikTok"}</script>' + "filler " * 60 + "</html>"
+    no_text = {"ok": True, "status": 200, "final_url": "https://www.tiktok.com/", "html": html, "fetched_with": "browser", "text": ""}
+    row = check("tiktok", settings, ledger, Worker(lambda item: no_text))
+    ev = row["evidence"]
+    assert ev["visible_text_available"] is False and ev["logged_out_in_text"] == [] and ev["logged_out_only_in_code"] == ["log in to tiktok"]
+    lines = SL.evidence_lines(row)
+    assert "no visible text was available, so the logged-out wording was not judged; in the page's code (not counted): log in to tiktok" in lines[2] and "logged-out wording in the visible text" not in lines[2]
+    with_text = dict(no_text, text="Log in to TikTok  Use phone / email / username")
+    row = check("tiktok", settings, ledger, Worker(lambda item: with_text))
+    ev = row["evidence"]
+    assert row["state"] == SL.REJECTED and ev["visible_text_available"] is True and ev["logged_out_in_text"] == ["log in to tiktok"] and ev["logged_out_only_in_code"] == []
+    assert "logged-out wording in the visible text: log in to tiktok" in SL.evidence_lines(row)[2] and any(ln.startswith("      visible text starts: 'Log in to TikTok") for ln in SL.evidence_lines(row))
+
+
+def test_tiktoks_logged_in_markers_do_not_include_a_word_that_is_also_on_its_logged_out_pages():
+    assert "upload" not in S.PLATFORMS["tiktok"]["logged_in"] and S.PLATFORMS["tiktok"]["logged_in"] == ('"islogin":true', 'data-e2e="profile-icon"')
+    page = '<html><title>TikTok</title><body><a href="/upload">Upload</a>' + "word " * 80 + "</body></html>"
+    assert S.check_logged_in("tiktok", "https://www.tiktok.com/", page, 200, text="Upload For You Following")[0] is False      # the Upload button alone proves nothing
