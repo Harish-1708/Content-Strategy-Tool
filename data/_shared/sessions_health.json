@@ -1,55 +1,55 @@
 {
   "boss": {
-    "checked_at": "2026-11-12T16:46:37Z",
+    "checked_at": "2026-11-13T04:36:33Z",
     "proved_on": "",
     "proved_via": "",
     "reason": "add the secret BOSS_SESSION_B64 (capture one by hand: docs/platform/session-capture-guide.md)",
     "state": "NOT SET UP"
   },
   "facebook": {
-    "checked_at": "2026-11-12T16:46:37Z",
-    "proved_on": "2026-11-12T16:46:37Z",
+    "checked_at": "2026-11-13T04:36:33Z",
+    "proved_on": "2026-11-13T04:36:33Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED"
   },
   "instagram": {
-    "checked_at": "2026-11-12T16:46:37Z",
+    "checked_at": "2026-11-13T04:36:33Z",
     "proved_on": "",
     "proved_via": "",
     "reason": "no sign of being logged in was found on the page (any doubt counts as not logged in): the stored session was not accepted; capture a new one",
     "state": "REJECTED"
   },
   "linkedin": {
-    "checked_at": "2026-11-12T16:46:37Z",
-    "proved_on": "2026-11-12T16:46:37Z",
+    "checked_at": "2026-11-13T04:36:33Z",
+    "proved_on": "2026-11-13T04:36:33Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED"
   },
   "reddit": {
-    "checked_at": "2026-11-12T16:46:37Z",
+    "checked_at": "2026-11-13T04:36:33Z",
     "proved_on": "",
     "proved_via": "",
     "reason": "no sign of being logged in was found on the page (any doubt counts as not logged in): the stored session was not accepted; capture a new one",
     "state": "REJECTED"
   },
   "tiktok": {
-    "checked_at": "2026-11-12T16:46:37Z",
-    "proved_on": "",
-    "proved_via": "",
-    "reason": "the page shows the logged-out state: the stored session was not accepted; capture a new one",
-    "state": "REJECTED"
+    "checked_at": "2026-11-13T04:36:33Z",
+    "proved_on": "2026-11-13T04:36:33Z",
+    "proved_via": "browser",
+    "reason": "the platform's own page showed a logged-in state",
+    "state": "ACCEPTED"
   },
   "x": {
-    "checked_at": "2026-11-12T16:46:37Z",
+    "checked_at": "2026-11-13T04:36:33Z",
     "proved_on": "",
     "proved_via": "",
-    "reason": "the site answered 403: the stored session was not accepted; capture a new one",
-    "state": "REJECTED"
+    "reason": "X (Twitter) showed a bot-check or challenge page to this runner, so the session itself could not be judged. This is the platform blocking the runner, not a bad session. The last-resort twscrape check could not judge it either: NoAccountError: No account available for queue UserByRestId",
+    "state": "BLOCKED"
   },
   "xiaohongshu": {
-    "checked_at": "2026-11-12T16:46:37Z",
+    "checked_at": "2026-11-13T04:36:33Z",
     "proved_on": "",
     "proved_via": "",
     "reason": "add the secret XIAOHONGSHU_SESSION_B64 (capture one by hand: docs/platform/session-capture-guide.md)",
