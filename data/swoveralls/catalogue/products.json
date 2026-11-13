@@ -1351,6 +1351,7 @@
     "InventoryCheck",
     "LimitedSW",
     "New",
+    "refunnel",
     "Shop",
     "swatch_group_swoveralls",
     "swoveralls"
@@ -7453,7 +7454,7 @@
      "title": "S / Dancing Skeletons"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753349046383,
      "options": [
