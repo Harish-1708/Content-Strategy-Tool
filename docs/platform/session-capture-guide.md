@@ -106,6 +106,24 @@ If x.com shows the runner a bot-check (BLOCKED), the check asks X's own profile 
 
 `what = read` now tries the plain reader, then the stored session, then **discovery**: one search about the address through the search layer (Serper, then Tavily, then Exa: the first that has a key; Exa's search here returns titles and links only, so it is asked last), which returns titles and snippets about the address rather than the page, with no login. The result says so. It is off when no search key is passed to the run. Research (the collectors) does not use stored sessions at all, so a rejected session changes nothing there.
 
+## What the session adds: `what = compare` (Update 54)
+
+Before a session is wired into the collectors, the question is what it adds over a plain read. `Actions > Stored login sessions > what = compare` (choose the platform and an address on that platform's own site) reads the **same address twice**: once with no login and once through the stored session (only when the owner has it on and a check passed in the last 14 days). It prints both (characters read, where it landed, the title, the first words) and a verdict: "the session adds content: N more characters and M words the public read did not show", or "adds little or nothing here", or "only the session read works", or "neither works". One attempt each; a session is never sent to another site.
+
+Run it on a handful of real addresses (a competitor's TikTok profile, a Facebook page, a LinkedIn company page, a hashtag or search page) before deciding anything: the answer will differ by platform and by kind of page. For example, X's public profile was readable with no login at all.
+
+## Using the proved sessions for research: not wired yet, and why
+
+The collectors read through the existing routes; the stored sessions are not used by them. What a session could add is the **text of a specific page that a visitor without a login does not get**, read through a real browser. It is not a search interface, not an API and not structured data: a read returns what a page shows as text.
+
+If the comparison shows a platform's session adds real content, the wiring would be: for each competitor handle in a brand file, a "social page read" collector reads the profile page through the chain (plain reader, then the stored session if proved, then discovery), stores the text in the corpus with its route, lets the AI judge score it, and shows the route's health in the Collector Health tab (healthy while a check passed in the last 14 days). That is a small, honest gain: the recent posts, captions and visible numbers of a competitor's page. It is not a way to search a platform or pull trending feeds at volume, which is also where accounts get blocked.
+
+For a platform whose session is rejected or blocked, the other paths are the plain public read (often enough: see X above), and discovery (search-engine titles and snippets about the address).
+
+## What a rejected check can mean
+
+An expiry date is the earliest of the cookies that are all needed and the **latest** of the either-or ones (Reddit's `reddit_session` or `token_v2`): a short token the platform renews from a long cookie does not set it. Reddit's page shows its logged-in menu as visible text ("Open inbox", "Expand user menu", "Open profile menu"), so those words count as evidence. Instagram's page is a script shell until it has finished loading, so its check waits for the network to go quiet; if a page has no visible text, the evidence prints its shape (script tags, element ids, the no-script note). twscrape's own warnings (why it put the account aside) are now part of its answer.
+
 ## The Gmail code reader
 
 `contentintel/gmail_otp.py` is built and **unused**. It would only ever step in for a re-login where a platform emails a code, and only after that platform's flow has been proved live. Nothing calls it today, and no re-login is attempted anywhere: a refused or expired session always ends in "capture a new one".
