@@ -327,3 +327,5 @@ sources:
       static_fetch: {tier: public_polite, access_type: page_text, login: none}
       feed: {tier: public_polite, access_type: feed, login: none}
       reader: {tier: third_party_service, access_type: page_text, login: none}
+      social_profile: {tier: public_polite, access_type: page_text, login: none}
+
