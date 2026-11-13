@@ -125,6 +125,17 @@ def _evidence(platform, res, session, plain):
     return ev
 
 
+CHALLENGE_WORDS = ("just a moment", "attention required", "cf-chl", "challenge-platform", "verify you are human", "enable javascript and cookies to continue", "captcha")
+
+
+def looks_like_challenge(status, html, title=""):
+    """A bot-check page (Cloudflare's 'Just a moment...' and the like) answered with a refusal status: the platform is blocking the runner, whatever the worker called it."""
+    if int(status or 0) not in (401, 403, 429, 503):
+        return False
+    blob = (str(title) + " " + str(html or "")[:20000]).lower()
+    return any(word in blob for word in CHALLENGE_WORDS)
+
+
 TWSCRAPE_SCRIPT = Path(__file__).resolve().parent / "x_twscrape_check.py"
 
 
@@ -188,7 +199,9 @@ def check_platform(platform, settings, contact, python, *, environ=None, runner=
     why_plain = f"the browser could not be used here ({res.get('browser_error') or 'no reason was given'})"
     err = res.get("error") or {}
     row["evidence"] = _evidence(platform, res, session, plain)
-    if err.get("code") == "PLATFORM_BLOCKED":
+    if err and err.get("code") != "PLATFORM_BLOCKED" and not WALL.search(str(err.get("message", ""))) and int(status or 0) not in (401, 403) and not looks_like_challenge(status, html, row["evidence"]["title"]):
+        return done(CANNOT_CHECK, f"the Scrapling worker could not read the page cleanly ({err.get('code')}: {str(err.get('message', ''))[:200]}), so nothing was judged; this is not the platform's answer")
+    if err.get("code") == "PLATFORM_BLOCKED" or looks_like_challenge(status, html, row["evidence"]["title"]):
         blocked = (f"{spec['label']} showed a bot-check or challenge page to this runner, so the session itself could not be judged"
                    + (f"; and {why_plain}" if plain else "") + ". This is the platform blocking the runner, not a bad session")
         if platform == "x":                                                              # the approved last resort: ask X's own profile interface, with the two cookies already stored
@@ -233,7 +246,10 @@ def evidence_lines(r):
     markers = f"logged-in markers found: {', '.join(found)}" if found else f"logged-in markers found: none of {len(ev['logged_in_missing'])} ({', '.join(ev['logged_in_missing'])})"
     if r["state"] == ACCEPTED:
         return [f"      page: {shown}; {markers}"]
-    out_words = f"logged-out wording in the visible text: {', '.join(ev['logged_out_in_text']) or 'none'}" + (f"; only in the page's code (not counted): {', '.join(ev['logged_out_only_in_code'])}" if ev["logged_out_only_in_code"] else "")
+    if ev["visible_text_available"]:
+        out_words = f"logged-out wording in the visible text: {', '.join(ev['logged_out_in_text']) or 'none'}" + (f"; only in the page's code (not counted): {', '.join(ev['logged_out_only_in_code'])}" if ev["logged_out_only_in_code"] else "")
+    else:
+        out_words = "no visible text was available, so the logged-out wording was not judged" + (f"; in the page's code (not counted): {', '.join(ev['logged_out_only_in_code'])}" if ev["logged_out_only_in_code"] else "")
     lines = [f"      page: {shown}",
              f"      cookies sent (names): {', '.join(ev['cookies_sent']) or 'none'}; the platform sent back (names): {', '.join(ev['cookies_back']) or 'none'}",
              f"      {markers}; {out_words}; password field on the page: {'yes' if ev['password_field'] else 'no'}"
@@ -293,7 +309,7 @@ def _failure_from(res):
     return K.Failure(code, message)
 
 
-SEARCH_ORDER = ("exa", "serper_dev", "tavily", "serpapi", "exa_mcp")                 # the discovery layer's providers, in the order they are tried (the first one that has a key is asked)
+SEARCH_ORDER = ("serper_dev", "tavily", "serpapi", "exa", "exa_mcp")                 # the discovery layer's providers, in the order they are tried (the first one that has a key is asked): the ones that return snippets come first, because Exa's search here asks for titles and links only (page text is billed separately)
 
 
 def discovery_providers(environ):
