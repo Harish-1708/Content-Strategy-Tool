@@ -19,12 +19,17 @@ on:
         options: [all, x, instagram, tiktok, reddit, facebook, linkedin, xiaohongshu, boss]
         default: all
       url:
-        description: "For read only: the address, on that platform's own site (a session is never sent to another site)"
+        description: "For read and compare: the address, on that platform's own site (a session is never sent to another site)"
         required: false
         default: ""
+      sheets:
+        description: "Update the Google Sheets afterwards (the Sessions and Session Reads tabs mirror what was found; the JSON files stay the record)"
+        type: boolean
+        default: true
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: catalogue-data
@@ -102,13 +107,14 @@ jobs:
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           exit "$code"
 
-      - name: Save what was found (states and dates only, never a secret value)
-        if: ${{ inputs.what == 'check' }}
+      - name: Save what was found (states, dates, counts and the first words of public reads only, never a secret value)
+        if: ${{ inputs.what == 'check' || inputs.what == 'read' || inputs.what == 'compare' }}
         shell: bash
         run: |
           git config user.name "stored-sessions"
           git config user.email "stored-sessions@users.noreply.github.com"
           git add -f data/_shared/sessions_health.json || true
+          git add -f data/_shared/sessions_reads.json || true
           if git diff --cached --quiet; then
             echo "No changes to save."
           else
@@ -116,6 +122,12 @@ jobs:
             git pull --rebase
             git push
           fi
+
+      - name: Update the Google Sheets with what was found (the Google Sheets workflow, which holds the Sheets key; this job never sees it)
+        if: ${{ (inputs.what == 'check' || inputs.what == 'read' || inputs.what == 'compare') && inputs.sheets }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run sheets.yml --ref "$GITHUB_REF_NAME" -f brand=all -f dry_run=false
 
       - name: Show the run as red when a stored session needs a new capture
         if: steps.run.outcome == 'failure'
