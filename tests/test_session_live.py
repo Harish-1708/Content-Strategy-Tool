@@ -102,7 +102,7 @@ def test_each_of_the_eight_platforms_gets_its_own_result_and_one_platforms_troub
     for job, got in zip(worker.jobs, worker.envs):
         platform = platform_of(job["items"][0])
         name = f"SESSION_COOKIES_{platform.upper()}"
-        assert job["items"][0]["advanced"] == {"stealth": True, "cookies_env": name} and job["return_html"] is True
+        assert job["items"][0]["advanced"] == {"stealth": True, **(S.PLATFORMS[platform].get("adv") or {}), "cookies_env": name} and job["return_html"] is True
         assert json.loads(got[name]) == {n: VALUE + n for n in (list(S.PLATFORMS[platform]["required"]) or [S.PLATFORMS[platform]["any_of"][0]])}
         assert not [k for k in got if k.startswith("SESSION_COOKIES_") and k != name] and "ANTHROPIC_API_KEY" not in got and "GOOGLE_SERVICE_ACCOUNT_JSON" not in got     # one named secret, nothing else of ours
         assert not [k for k in got if k.endswith("_SESSION_B64")]
@@ -346,7 +346,7 @@ def test_the_sessions_workflow_and_acceptance_hand_over_the_eight_optional_secre
     assert not [n for n in names if n in obs_text]                                                                           # the stored sessions live in their own workflow and in Acceptance, nowhere else
     sess = yaml.safe_load((wf / "sessions.yml").read_text(encoding="utf-8"))
     dispatch = (sess.get(True) or sess.get("on"))["workflow_dispatch"]["inputs"]
-    assert dispatch["what"]["options"] == ["check", "list", "read"] and dispatch["platform"]["options"] == ["all", *sorted(PLATFORMS, key=lambda p: ["all", "x", "instagram", "tiktok", "reddit", "facebook", "linkedin", "xiaohongshu", "boss"].index(p))]
+    assert dispatch["what"]["options"] == ["check", "list", "read", "compare"] and dispatch["platform"]["options"] == ["all", *sorted(PLATFORMS, key=lambda p: ["all", "x", "instagram", "tiktok", "reddit", "facebook", "linkedin", "xiaohongshu", "boss"].index(p))]
     steps = sess["jobs"]["sessions"]["steps"]
     run = next(s for s in steps if s.get("name") == "Stored login sessions")
     assert run["continue-on-error"] is True and all(run["env"][n] == "${{ secrets." + n + " }}" for n in names) and run["env"]["READ_URL"] == "${{ inputs.url }}"
@@ -781,3 +781,129 @@ def test_tiktoks_logged_in_markers_do_not_include_a_word_that_is_also_on_its_log
     assert "upload" not in S.PLATFORMS["tiktok"]["logged_in"] and S.PLATFORMS["tiktok"]["logged_in"] == ('"islogin":true', 'data-e2e="profile-icon"')
     page = '<html><title>TikTok</title><body><a href="/upload">Upload</a>' + "word " * 80 + "</body></html>"
     assert S.check_logged_in("tiktok", "https://www.tiktok.com/", page, 200, text="Upload For You Following")[0] is False      # the Upload button alone proves nothing
+
+
+# ---- Update 54: Reddit, the page shape, compare, and twscrape's own words --------------------------------------------------------------------------------
+
+REDDIT_PAGE = {"ok": True, "status": 200, "final_url": "https://www.reddit.com/settings/", "title": "Reddit - The heart of the internet", "fetched_with": "browser",
+               "html": "<html><body><shreddit-app>" + "x " * 150 + "</shreddit-app></body></html>", "text": "Skip to main content Open inbox Expand user menu Open profile menu # Settings Account Profile Privacy"}
+
+
+def test_reddit_is_accepted_on_the_words_its_logged_in_page_shows_and_the_evidence_names_them(settings, ledger):
+    row = check("reddit", settings, ledger, Worker(lambda item: REDDIT_PAGE))
+    assert row["state"] == SL.ACCEPTED and row["proved_on"] == NOW
+    line = SL.evidence_lines(row)[0]
+    assert "logged-in words in the visible text: expand user menu, open profile menu" in line and row["evidence"]["logged_in_text_found"] == ["expand user menu", "open profile menu"]
+    wall = dict(REDDIT_PAGE, text="Skip to main content Log In Sign Up")
+    row = check("reddit", settings, ledger, Worker(lambda item: wall))
+    assert row["state"] == SL.REJECTED
+    lines = SL.evidence_lines(row)
+    assert "logged-in words in the visible text: none of 2 (expand user menu, open profile menu)" in lines[2]
+
+
+def test_a_page_with_no_visible_text_is_described_by_its_shape_so_a_script_shell_can_be_told_from_an_empty_page(settings, ledger):
+    shell = {"ok": True, "status": 200, "final_url": "https://www.instagram.com/", "title": "Instagram", "fetched_with": "browser", "text": "",
+             "html": '<html><head><title>Instagram</title></head><body><div id="react-root"></div><noscript>JavaScript is required.</noscript>' + "<script>var x=1;</script>" * 8 + "</body></html>" + " " * 200}
+    row = check("instagram", settings, ledger, Worker(lambda item: shell))
+    assert row["state"] == SL.REJECTED
+    lines = SL.evidence_lines(row)
+    shape = next(ln for ln in lines if ln.startswith("      page code:"))
+    assert shape == f"      page code: {row['evidence']['html_chars']} characters, 8 script tags, element ids: react-root; the no-script note says: 'JavaScript is required.'"
+    worker = Worker(lambda item: shell)
+    check("instagram", settings, ledger, worker)
+    assert worker.jobs[0]["items"][0]["advanced"]["network_idle"] is True                                              # Instagram's page is waited for until it has finished loading
+    with_text = dict(shell, text="Home Search Explore")
+    assert not [ln for ln in SL.evidence_lines(check("instagram", settings, ledger, Worker(lambda item: with_text))) if ln.startswith("      page code:")]       # with visible text, no shape line
+    other = Worker(lambda item: logged_in_page("facebook"))
+    check("facebook", settings, ledger, other)
+    assert "network_idle" not in other.jobs[0]["items"][0]["advanced"]                                                  # only the platform that needs it waits
+
+
+def pages_for(public, session):
+    def answer(item):
+        return session if item["advanced"].get("cookies_env") else public
+    return answer
+
+
+RICH = {"ok": True, "status": 200, "url": URL, "final_url": URL + "?x=1#y", "title": "Some account", "text": "profile posts " + " ".join(f"public{i}" for i in range(30))}
+RICHER = {"ok": True, "status": 200, "url": URL, "final_url": URL, "title": "Some account", "text": "profile posts " + " ".join(f"public{i}" for i in range(30)) + " " + " ".join(f"private{i}" for i in range(80))}
+
+
+def compare(settings, ledger, worker, **kw):
+    return SL.compare_page(kw.pop("platform", "x"), kw.pop("url", URL), settings, "o@example.com", sys.executable, environ=kw.pop("env", environ("x")), runner=worker, now=NOW, ledger=ledger)
+
+
+def test_compare_reads_the_same_page_with_and_without_the_login_and_says_what_the_session_adds(settings, ledger):
+    check("x", settings, ledger, Worker(lambda item: logged_in_page("x")))
+    worker = Worker(pages_for(RICH, RICHER))
+    got = compare(settings, ledger, worker)
+    assert len(worker.jobs) == 2 and "cookies_env" not in worker.jobs[0]["items"][0]["advanced"] and worker.jobs[1]["items"][0]["advanced"]["cookies_env"] == "SESSION_COOKIES_X"
+    assert got["public"]["ok"] and got["public"]["landed"] == URL and got["session"]["used"] is True and got["session"]["chars"] > got["public"]["chars"]
+    assert got["verdict"].startswith("the session adds content: ") and "80 words the public read did not show" in got["verdict"]
+    same = compare(settings, ledger, Worker(pages_for(RICH, RICH)))
+    assert same["verdict"] == f"the session adds little or nothing here: {RICH['text'].__len__()} characters against {RICH['text'].__len__()} in public, 0 words not in the public read"
+    gone = {"ok": False, "status": 403, "url": URL, "error": {"code": "PLATFORM_BLOCKED", "message": "x.com still refused after 1 attempt(s)"}}
+    assert compare(settings, ledger, Worker(pages_for(RICH, gone)))["verdict"] == "the public read works and the session read failed (PLATFORM_BLOCKED: x.com still refused after 1 attempt(s)): the session adds nothing here"
+    assert compare(settings, ledger, Worker(pages_for(gone, RICHER)))["verdict"].startswith("only the session read works: the public read failed (PLATFORM_BLOCKED:")
+    both = compare(settings, ledger, Worker(pages_for(gone, gone)))["verdict"]
+    assert both.startswith("neither read works (public: PLATFORM_BLOCKED:") and "session: PLATFORM_BLOCKED:" in both
+
+
+def test_compare_never_uses_a_session_that_was_not_proved_or_is_switched_off_and_never_sends_it_to_another_site(settings, ledger):
+    worker = Worker(pages_for(RICH, RICHER))
+    got = compare(settings, ledger, worker)
+    assert got["session"]["used"] is False and "no live proof yet for x: run the sessions check first" in got["session"]["reason"] and len(worker.jobs) == 1
+    assert got["verdict"].startswith("only the public read was made: no live proof yet for x")
+    check("x", settings, ledger, Worker(lambda item: logged_in_page("x")))
+    sec = settings["services"]["stored_sessions"]
+    off = {**settings, "services": {**settings["services"], "stored_sessions": {**sec, "channels": {**sec["channels"], "x": False}}}}
+    worker = Worker(pages_for(RICH, RICHER))
+    got = SL.compare_page("x", URL, off, "o@example.com", sys.executable, environ=environ("x"), runner=worker, now=NOW, ledger=ledger)
+    assert got["session"]["used"] is False and "services.stored_sessions.channels.x" in got["session"]["reason"] and len(worker.jobs) == 1
+    worker = Worker(pages_for(RICH, RICHER))
+    for url in ("https://evil.example/x.com", "https://x.com.evil.example/home"):
+        with pytest.raises(K.Failure) as seen:
+            compare(settings, ledger, worker, url=url)
+        assert seen.value.code == K.BAD_INPUT and "never sent to another site" in str(seen.value)
+    with pytest.raises(K.Failure):
+        compare(settings, ledger, worker, platform="myspace")
+    assert worker.jobs == []
+    broken = SL.compare_page("x", URL, settings, "o@example.com", "", environ=environ("x"), runner=worker, now=NOW, ledger=ledger)
+    assert broken["public"]["ok"] is False and "Scrapling environment is not set up" in broken["public"]["error"]
+
+
+def test_the_compare_command_prints_both_reads_and_the_verdict_and_asks_for_a_platform_and_an_address(tmp_path, monkeypatch, capsys):
+    canned = {"public": {"ok": True, "chars": 120, "landed": URL, "title": "T", "starts": "public words"}, "session": {"used": True, "ok": True, "chars": 900, "landed": URL, "title": "T2", "starts": "more words"},
+              "verdict": "the session adds content: 780 more characters and 60 words the public read did not show"}
+    monkeypatch.setattr(SL, "compare_page", lambda *a, **k: canned)
+    code, out = run_cli(tmp_path, monkeypatch, capsys, "--what", "compare", "--key", "x", "--url", URL)
+    assert code == 0 and "  without a login: read 120 characters; landed on https://x.com/someaccount; title 'T'" in out and "through the stored session: read 900 characters" in out
+    assert "verdict: the session adds content: 780 more characters" in out
+    monkeypatch.setattr(SL, "compare_page", lambda *a, **k: {"public": {"ok": False, "error": "PLATFORM_BLOCKED: refused"}, "session": {"used": False, "reason": "no live proof yet for x"}, "verdict": "v"})
+    code, out = run_cli(tmp_path, monkeypatch, capsys, "--what", "compare", "--key", "x", "--url", URL)
+    assert "without a login: not read: PLATFORM_BLOCKED: refused" in out and "through the stored session: not used: no live proof yet for x" in out
+    for argv in (["--what", "compare"], ["--what", "compare", "--key", "x"], ["--what", "compare", "--url", URL]):
+        code, out = run_cli(tmp_path, monkeypatch, capsys, *argv)
+        assert code == 1 and "compare needs one platform (--key) and the address (--url)" in out
+
+
+def test_twscrape_s_own_warnings_explain_a_failure_and_a_known_one_is_judged(settings):
+    logs = ["ConnectError; username=session-check; queue=UserByRestId; backend=httpx; proxy=False; cooling account for 60s", f"x {AUTH} y"]
+    import asyncio
+    got = asyncio.run(XT.check(JAR, api_factory=lambda path: FakeApi(pool=FakePool(None, True)), logs=logs))
+    assert got["state"] == "unreachable" and "twscrape logged: ConnectError; username=session-check" in got["detail"] and AUTH not in got["detail"] and "x *** y" in got["detail"]
+    assert len(got["detail"]) <= 600
+    said = asyncio.run(XT.check(JAR, api_factory=lambda path: FakeApi(pool=FakePool(None, True)), logs=["(32) Could not authenticate you; username=session-check"]))
+    assert said["state"] == "rejected" and "error 32" in said["detail"]
+    locked = asyncio.run(XT.check(JAR, api_factory=lambda path: FakeApi(pool=FakePool(None, True)), logs=["(326) Authorization: Denied by access control: account locked"]))
+    assert locked["state"] == "rejected" and "error 326" in locked["detail"]
+    quiet = asyncio.run(XT.check(JAR, api_factory=lambda path: FakeApi(pool=FakePool(None, True)), logs=[]))
+    assert "twscrape logged" not in quiet["detail"]
+    source = Path(XT.__file__).read_text(encoding="utf-8")
+    assert "logger.add(lambda message: logs.append" in source and 'level="WARNING"' in source
+
+
+def test_the_compare_option_is_offered_by_the_sessions_workflow_and_a_long_twscrape_answer_is_kept_whole(settings, ledger, tmp_path):
+    long_detail = "NoAccountError: " + "word " * 200
+    row, _ = x_row(settings, ledger, tmp_path, json.dumps({"state": "unreachable", "detail": long_detail[:590]}))
+    assert long_detail[:200] in row["reason"] and len(row["twscrape"]["detail"]) == 590                                 # up to 600 characters of twscrape's answer survive
