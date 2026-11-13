@@ -1,55 +1,55 @@
 {
   "boss": {
-    "checked_at": "2026-11-13T08:03:51Z",
+    "checked_at": "2026-11-13T12:53:57Z",
     "proved_on": "",
     "proved_via": "",
     "reason": "add the secret BOSS_SESSION_B64 (capture one by hand: docs/platform/session-capture-guide.md)",
     "state": "NOT SET UP"
   },
   "facebook": {
-    "checked_at": "2026-11-13T08:03:51Z",
-    "proved_on": "2026-11-13T08:03:51Z",
+    "checked_at": "2026-11-13T12:53:57Z",
+    "proved_on": "2026-11-13T12:53:57Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED"
   },
   "instagram": {
-    "checked_at": "2026-11-13T08:03:51Z",
-    "proved_on": "",
-    "proved_via": "",
-    "reason": "no sign of being logged in was found on the page (any doubt counts as not logged in): the stored session was not accepted; capture a new one",
-    "state": "REJECTED"
+    "checked_at": "2026-11-13T12:53:57Z",
+    "proved_on": "2026-11-13T12:53:57Z",
+    "proved_via": "browser",
+    "reason": "the platform's own page showed a logged-in state",
+    "state": "ACCEPTED"
   },
   "linkedin": {
-    "checked_at": "2026-11-13T08:03:51Z",
+    "checked_at": "2026-11-13T12:53:57Z",
     "proved_on": "2026-11-13T04:36:33Z",
     "proved_via": "browser",
-    "reason": "the Scrapling worker could not read the page cleanly (UPSTREAM_BROKEN: Error: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://www.linkedin.com/feed/\nCall log:\n  - navigating to \"https://www.linkedin.com/feed/\", waiting until \"load\"\n), so nothing was judged; this is not the platform's answe",
-    "state": "CANNOT CHECK"
+    "reason": "LinkedIn refused the browser with an error status instead of a page (the platform answered the browser with an error status instead of a page, which is its own refusal of an automated visit (LinkedIn does this with status 999) (UPSTREAM_BROKEN: Error: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE a",
+    "state": "BLOCKED"
   },
   "reddit": {
-    "checked_at": "2026-11-13T08:03:51Z",
-    "proved_on": "2026-11-13T08:03:51Z",
+    "checked_at": "2026-11-13T12:53:57Z",
+    "proved_on": "2026-11-13T12:53:57Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED"
   },
   "tiktok": {
-    "checked_at": "2026-11-13T08:03:51Z",
-    "proved_on": "2026-11-13T08:03:51Z",
-    "proved_via": "browser",
-    "reason": "the platform's own page showed a logged-in state",
-    "state": "ACCEPTED"
+    "checked_at": "2026-11-13T12:53:57Z",
+    "proved_on": "",
+    "proved_via": "",
+    "reason": "no sign of being logged in was found on the page (any doubt counts as not logged in): the stored session was not accepted; capture a new one",
+    "state": "REJECTED"
   },
   "x": {
-    "checked_at": "2026-11-13T08:03:51Z",
+    "checked_at": "2026-11-13T12:53:57Z",
     "proved_on": "",
     "proved_via": "",
     "reason": "X (Twitter) showed a bot-check or challenge page to this runner, so the session itself could not be judged. This is the platform blocking the runner, not a bad session. The last-resort twscrape check could not judge it either: NoAccountError: No account available for queue UserByRestId; twscrape log",
     "state": "BLOCKED"
   },
   "xiaohongshu": {
-    "checked_at": "2026-11-13T08:03:51Z",
+    "checked_at": "2026-11-13T12:53:57Z",
     "proved_on": "",
     "proved_via": "",
     "reason": "add the secret XIAOHONGSHU_SESSION_B64 (capture one by hand: docs/platform/session-capture-guide.md)",
