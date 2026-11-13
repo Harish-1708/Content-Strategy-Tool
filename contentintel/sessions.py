@@ -55,7 +55,7 @@ PLATFORMS = {
           "lifetime": "months; the spare account must be phone-verified for search", "can": "search, timelines, users (the best session case)", "verified": False},
     "tiktok": {"label": "TikTok", "secret": "TIKTOK_SESSION_B64", "hosts": ("tiktok.com",), "required": ("sessionid",), "any_of": (),
                "login_url": "https://www.tiktok.com/login", "check_url": "https://www.tiktok.com/",
-               "logged_in": ('"islogin":true', "data-e2e=\"profile-icon\"", "upload"), "logged_out": ("log in to tiktok",),
+               "logged_in": ('"islogin":true', "data-e2e=\"profile-icon\""), "logged_out": ("log in to tiktok",),
                "lifetime": "about 30 days for the token", "can": "single known videos through yt-dlp; not search", "verified": False},
     "reddit": {"label": "Reddit", "secret": "REDDIT_SESSION_B64", "hosts": ("reddit.com",), "required": (), "any_of": ("reddit_session", "token_v2"),
                "login_url": "https://www.reddit.com/login", "check_url": "https://www.reddit.com/settings/",
@@ -332,7 +332,7 @@ def page_evidence(platform, final_url, html, http_status=0, text=""):
     landed = _landed(final_url)
     return {"landed": landed, "status": int(http_status or 0), "title": _title(html), "html_chars": len(str(html or "")), "text_chars": len(vis),
             "logged_in_found": [m for m in spec["logged_in"] if m in low], "logged_in_missing": [m for m in spec["logged_in"] if m not in low],
-            "logged_out_in_text": [m for m in spec["logged_out"] if m in (vis if text else low)], "logged_out_only_in_code": [m for m in spec["logged_out"] if text and m in low and m not in vis],
+            "visible_text_available": bool(vis), "logged_out_in_text": [m for m in spec["logged_out"] if m in vis], "logged_out_only_in_code": [m for m in spec["logged_out"] if m in low and m not in vis],
             "password_field": 'type="password"' in low or "type='password'" in low, "login_word_in_address": next((w for w in LOGIN_WORDS if w in landed.lower()), ""),
             "text_starts": " ".join(str(text or "").split())[:240]}
 
