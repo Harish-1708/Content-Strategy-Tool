@@ -1,0 +1,33 @@
+[
+  {
+    "at": "2026-11-13T19:32:21Z",
+    "chars": 149,
+    "kind": "read",
+    "landed": "https://www.instagram.com/swoveralls_/",
+    "platform": "instagram",
+    "quality": "snippets about the address, not the page",
+    "reason": "",
+    "route": "discovery",
+    "skipped": false,
+    "starts": "51K followers \u00b7 1.9K+ following \u00b7 1325 posts \u00b7 @swoveralls_: \u201cThe Comfiest Overalls On Earth Sweatpants + Overalls = Swoveralls\u2122 CORDUROY DROP LIVE \u201d",
+    "title": "SWOVERALLS (@swoveralls_) \u2022 Instagram photos and ...",
+    "trail": [
+      [
+        "primary",
+        "UPSTREAM_BROKEN",
+        "the platform answered the browser with an error status instead of a page, which is its own refusal of an automated visit (LinkedIn does this with status 999) (UPSTREAM_BROKEN: Error: Page.goto: net::E"
+      ],
+      [
+        "session",
+        "UPSTREAM_BROKEN",
+        "the page came back with no readable text (79 characters: a script shell, an icon or an image)"
+      ],
+      [
+        "discovery",
+        "ok",
+        "5 item(s)"
+      ]
+    ],
+    "url": "https://www.instagram.com/swoveralls/"
+  }
+]
