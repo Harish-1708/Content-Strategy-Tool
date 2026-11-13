@@ -907,3 +907,112 @@ def test_the_compare_option_is_offered_by_the_sessions_workflow_and_a_long_twscr
     long_detail = "NoAccountError: " + "word " * 200
     row, _ = x_row(settings, ledger, tmp_path, json.dumps({"state": "unreachable", "detail": long_detail[:590]}))
     assert long_detail[:200] in row["reason"] and len(row["twscrape"]["detail"]) == 590                                 # up to 600 characters of twscrape's answer survive
+
+
+# ---- Update 55: junk is not content, the wait is for reads, a refused visit is a block, and errors are in plain words --------------------------------
+
+SHELL = {"ok": True, "status": 200, "url": "https://www.instagram.com/swoveralls/", "final_url": "https://www.instagram.com/swoveralls/", "title": "Instagram",
+         "text": "InstagramDown chevron icon\nInstagram\n![](data:image/png;base64," + "iVBORw0KGgoAAAANSUhEUgAAAKAAAACg" * 400 + ")"}
+
+
+def test_text_is_cleaned_of_image_data_and_judged_readable_only_when_it_has_enough_real_words():
+    junk = "InstagramDown chevron icon Instagram ![](data:image/png;base64," + "A" * 5000 + ")"
+    assert SL.clean_text(junk) == "InstagramDown chevron icon Instagram ![]([image])" and SL.clean_text("x" * 250 + " y") == "[data] y" and SL.clean_text(None) == ""
+    assert SL.readable(SL.clean_text(junk)) is False and SL.readable("") is False and SL.readable("word " * 10) is False and SL.readable("a" * 100) is False       # too few words, or no words
+    tiktok = "# Swoveralls ## swoveralls ### 405Following 73.3KFollowers 1.8MLikes ## Sweatpants + Overalls = Swoveralls FALL LIMITED EDITION PRINT DROP NOW LIVE linktr.ee/swoveralls Log in Log in"
+    assert len(tiktok) > 80 and SL.readable(tiktok) is True                                                              # a short real profile counts
+    assert SL.readable("alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu") is False         # twelve words, but too few characters
+    few_but_long = "abcdefghijklmnopqrstuvwxy " * 5                                                            # 130 characters, only five words
+    assert len(few_but_long) > 80 and SL.readable(few_but_long) is False and SL.readable(few_but_long * 3) is True      # enough characters is not enough: it needs enough real words
+    assert SL.readable("Drag the puzzle piece into place Audio") is False and SL.readable("word " * 20) is True and SL.readable(("12 34 " * 40)) is False   # a puzzle page and a page of numbers do not
+
+
+def test_error_text_is_given_in_plain_words_with_the_original_kept():
+    raw = "Error: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://www.linkedin.com/feed/\nCall log:\n  - navigating to x"
+    plain = SL.humanise_error("UPSTREAM_BROKEN", raw)
+    assert plain.startswith("the platform answered the browser with an error status instead of a page, which is its own refusal of an automated visit (LinkedIn does this with status 999) (UPSTREAM_BROKEN: Error: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE")
+    assert "\n" not in plain and SL.humanise_error("UPSTREAM_BROKEN", "Page.goto: Timeout 30000ms exceeded.").startswith("the page did not finish loading in time (UPSTREAM_BROKEN: ")
+    assert SL.humanise_error("X", "net::ERR_CONNECTION_RESET at https://x").startswith("a network error stopped the page from loading (X: ")
+    assert SL.humanise_error("UPSTREAM_BROKEN", "something else entirely") == "UPSTREAM_BROKEN: something else entirely" and len(SL.humanise_error("C", "w " * 500)) <= 300
+    assert str(SL._failure_from({"error": {"code": "UPSTREAM_BROKEN", "message": raw}})).startswith("the platform answered the browser with an error status instead of a page")      # a failed read says it in plain words too
+    wall = "https://www.instagram.com/ shows only a login page"
+    failure = SL._failure_from({"error": {"code": "UPSTREAM_BROKEN", "message": wall}})
+    assert failure.code == K.NEED_LOGIN and str(failure) == wall                                                       # a login wall keeps its own wording and code
+
+
+def test_a_read_that_returns_only_a_script_shell_moves_on_to_discovery_and_no_image_data_is_ever_returned(settings, ledger):
+    search = FakeSearch([result(1, "Swoveralls (@swoveralls) - Instagram", "https://www.instagram.com/swoveralls/", "Sweatpants + Overalls = Swoveralls")])
+    got = read(settings, ledger, Worker(lambda item: SHELL), platform="instagram", url="https://www.instagram.com/swoveralls/", env=environ("instagram"), providers=[("serper_dev", search)])
+    assert got.route == "discovery" and [t[:2] for t in got.trail][:2] == [("primary", K.UPSTREAM_BROKEN), ("session", "off")]
+    assert "no readable text" in got.reason or any("no readable text" in str(t) for t in got.trail)
+    assert got.rows[0]["provider"] == "serper_dev" and "base64" not in json.dumps(got.rows) and search.queries == [("instagram.com swoveralls", "web", 5)]
+    good = dict(SHELL, text="Swoveralls 405 Following 73K Followers a profile with real words in it that a reader can use " * 3)
+    page = read(settings, ledger, Worker(lambda item: good), platform="instagram", url="https://www.instagram.com/swoveralls/", env=environ("instagram"))
+    assert page.route == "primary" and "[image]" not in page.rows[0]["text"] and page.rows[0]["chars"] > 200
+    with_image = dict(good, text=good["text"] + " ![](data:image/png;base64," + "B" * 600 + ")")
+    cleaned = read(settings, ledger, Worker(lambda item: with_image), platform="instagram", url="https://www.instagram.com/swoveralls/", env=environ("instagram"))
+    assert "[image]" in cleaned.rows[0]["text"] and "BBBBBB" not in cleaned.rows[0]["text"]
+
+
+def test_compare_says_neither_read_works_for_pages_with_no_readable_text_and_a_puzzle_page_is_a_failed_session_read(settings, ledger):
+    check("tiktok", settings, ledger, Worker(lambda item: logged_in_page("tiktok")))
+    profile = {"ok": True, "status": 200, "url": "https://www.tiktok.com/@swoveralls", "final_url": "https://www.tiktok.com/@swoveralls", "title": "TikTok - Make Your Day",
+               "text": "# Swoveralls ## swoveralls ### 405Following 73.3KFollowers 1.8MLikes ## Sweatpants + Overalls = Swoveralls FALL LIMITED EDITION PRINT DROP NOW LIVE Log in"}
+    puzzle = dict(profile, text="Drag the puzzle piece into place Audio")
+    got = compare(settings, ledger, Worker(pages_for(profile, puzzle)), platform="tiktok", url="https://www.tiktok.com/@swoveralls", env=environ("tiktok"))
+    assert got["public"]["ok"] and got["session"]["ok"] is False and "no readable text (38 characters" in got["session"]["error"]
+    assert got["verdict"].startswith("the public read works and the session read failed (UPSTREAM_BROKEN: the page came back with no readable text (38 characters") and "the session adds nothing here" in got["verdict"]
+    empty = dict(profile, text="", title="Swoveralls")
+    both = compare(settings, ledger, Worker(pages_for(empty, empty)), platform="tiktok", url="https://www.tiktok.com/@swoveralls", env=environ("tiktok"))
+    assert both["verdict"].startswith("neither read works (public: UPSTREAM_BROKEN: the page came back with no readable text (0 characters") and both["public"]["ok"] is False
+    junk = compare(settings, ledger, Worker(pages_for(SHELL, SHELL)), platform="tiktok", url="https://www.tiktok.com/@swoveralls", env=environ("tiktok"))
+    assert "base64" not in json.dumps({k: v for k, v in junk["public"].items() if k != "words"}) and junk["public"]["chars"] < 200 and junk["public"]["ok"] is False
+
+
+def test_a_platform_that_answers_the_browser_with_an_error_status_is_a_block_in_plain_words_and_a_compare_explains_it(settings, ledger):
+    refusal = {"ok": False, "status": 0, "html": "", "fetched_with": "browser", "error": {"code": "UPSTREAM_BROKEN",
+               "message": "Error: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://www.linkedin.com/feed/\nCall log:\n  - navigating to \"https://www.linkedin.com/feed/\", waiting until \"load\""}}
+    check("linkedin", settings, ledger, Worker(lambda item: logged_in_page("linkedin")))
+    row = check("linkedin", settings, ledger, Worker(lambda item: refusal), env=environ("linkedin"), now="2026-11-14T10:00:00Z")
+    assert row["state"] == SL.BLOCKED and row["proved_on"] == NOW and SL.exit_code([row]) == 0                              # a block learns nothing: the proof stays, the run is not red
+    assert row["reason"].startswith("LinkedIn refused the browser with an error status instead of a page (the platform answered the browser with an error status instead of a page, which is its own refusal")
+    assert "so the session itself could not be judged" in row["reason"] and "not a bad session" in row["reason"] and "\n" not in row["reason"]
+    page = {"ok": True, "status": 200, "url": "https://www.linkedin.com/company/swoveralls", "final_url": "https://www.linkedin.com/company/swoveralls", "title": "Swoveralls | LinkedIn",
+            "text": "Skip to main content LinkedIn Top Content People Learning Jobs Games Join now Sign in Swoveralls Retail Creating the world comfiest products using sustainable resources"}
+    got = compare(settings, ledger, Worker(pages_for(page, refusal)), platform="linkedin", url="https://www.linkedin.com/company/swoveralls", env=environ("linkedin"), now="2026-11-13T10:00:00Z")
+    assert got["session"]["error"].startswith("the platform answered the browser with an error status instead of a page") and "\n" not in got["session"]["error"]
+    unrelated = dict(refusal, error={"code": "UPSTREAM_BROKEN", "message": "ValueError: something broke inside"})
+    assert check("linkedin", settings, ledger, Worker(lambda item: unrelated), env=environ("linkedin"))["state"] == SL.CANNOT_CHECK                  # an unrelated error is still not judged
+
+
+def test_only_a_read_waits_for_the_page_to_draw_itself_and_only_where_the_platform_needs_it(settings, ledger):
+    for platform, check_wait, read_wait in (("instagram", 8000, 8000), ("facebook", None, 6000), ("tiktok", None, 3000), ("x", None, None), ("reddit", None, None), ("linkedin", None, None)):
+        worker = Worker(lambda item, p=platform: logged_in_page(p))
+        SL.check_platform(platform, settings, "o@example.com", sys.executable, environ=environ(platform), runner=worker, now=NOW, ledger=ledger)
+        assert worker.jobs[0]["items"][0]["advanced"].get("wait") == check_wait, platform
+        reader = Worker(lambda item, p=platform: {"ok": True, "status": 200, "final_url": S.PLATFORMS[p]["check_url"], "title": "T", "text": "real words " * 30})
+        SL._read_once(platform, S.PLATFORMS[platform]["check_url"], settings, "o@example.com", sys.executable, environ(platform), reader, False)
+        assert reader.jobs[0]["items"][0]["advanced"].get("wait") == read_wait, platform
+        assert "cookies_env" not in reader.jobs[0]["items"][0]["advanced"]
+    check("instagram", settings, ledger, Worker(lambda item: logged_in_page("instagram")))
+    for platform, wait in (("instagram", 8000), ("facebook", 6000)):
+        if platform == "facebook":
+            check("facebook", settings, ledger, Worker(lambda item: logged_in_page("facebook")))
+        worker = Worker(lambda item, p=platform: dict(WALL, final_url=S.PLATFORMS[p]["check_url"]))
+        SL.read_page(platform, S.PLATFORMS[platform]["check_url"], settings, "o@example.com", sys.executable, environ=environ(platform), runner=worker, now=NOW, ledger=ledger, providers=[])
+        assert [j["items"][0]["advanced"].get("wait") for j in worker.jobs] == [wait, wait] and "cookies_env" not in worker.jobs[0]["items"][0]["advanced"] and "cookies_env" in worker.jobs[1]["items"][0]["advanced"]      # the plain read and the session read both wait
+
+
+def test_a_cut_page_is_said_to_be_cut_and_a_twscrape_403_says_the_runner_is_blocked_on_both_routes(settings, ledger, tmp_path):
+    shell = {"ok": True, "status": 200, "final_url": "https://www.instagram.com/", "title": "Instagram", "fetched_with": "browser", "text": "", "html_truncated": True,
+             "html": '<html><body><div id="splash-screen"></div>' + "<script>x</script>" * 46 + "</body></html>"}
+    row = check("instagram", settings, ledger, Worker(lambda item: shell))
+    line = next(ln for ln in SL.evidence_lines(row) if ln.startswith("      page code:"))
+    assert "characters (cut at the limit: the rest was not searched), 46 script tags, element ids: splash-screen" in line
+    whole = dict(shell, html_truncated=False)
+    assert "(cut at the limit" not in next(ln for ln in SL.evidence_lines(check("instagram", settings, ledger, Worker(lambda item: whole))) if ln.startswith("      page code:"))
+    x403 = json.dumps({"state": "unreachable", "detail": "NoAccountError: No account available for queue UserByRestId; twscrape logged: Unknown error. Account timeouted for 15 minutes. Err: HttpStatusError 403; username=session-check"})
+    row, _ = x_row(settings, ledger, tmp_path, x403)
+    assert row["state"] == SL.BLOCKED and "X answers 403 to this runner's address on both routes (its web page and its profile interface), so from GitHub's servers its session cannot be proved; only a different network address would change that" in row["reason"]
+    other, _ = x_row(settings, ledger, tmp_path, json.dumps({"state": "unreachable", "detail": "the profile read timed out"}))
+    assert "on both routes" not in other["reason"]

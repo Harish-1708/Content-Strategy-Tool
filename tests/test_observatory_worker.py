@@ -954,10 +954,14 @@ def test_the_raw_page_is_handed_back_only_when_a_stored_session_check_asks_for_i
     fake = Fake({"https://x.example/home": Resp(200, wall, {"content-type": "text/html"})})
     walled, _ = drive(stub_job(["https://x.example/home"], {"stealth": True}, return_html=True), fake)
     assert not walled[0]["ok"] and "login page" in walled[0]["error"]["message"] and walled[0]["html"] == wall and walled[0]["status"] == 200      # a refused page still comes back, so it can be judged
-    big = "<html><body>" + "a" * 400000 + "</body></html>"
+    assert asked[0]["html_truncated"] is False and walled[0]["html_truncated"] is False
+    big = "<html><body>" + "a" * 2_100_000 + "</body></html>"
     fake = Fake({"https://x.example/big": Resp(200, big, {"content-type": "text/html"})})
     sized, _ = drive(stub_job(["https://x.example/big"], {"stealth": True}, return_html=True), fake)
-    assert len(sized[0]["html"]) == 300000                                                                  # bounded
+    assert len(sized[0]["html"]) == W.RAW_PAGE_CAP == 2_000_000 and sized[0]["html_truncated"] is True            # bounded, and it says so
+    midsize = "<html><body>" + "a" * 700_000 + "</body></html>"
+    mid, _ = drive(stub_job(["https://x.example/mid"], {"stealth": True}, return_html=True), Fake({"https://x.example/mid": Resp(200, midsize, {"content-type": "text/html"})}))
+    assert len(mid[0]["html"]) == len(midsize) and mid[0]["html_truncated"] is False                           # a big page (Instagram's is over 300,000 characters) is kept whole
 
 
 def test_a_stored_session_check_keeps_the_refused_page_the_way_it_was_fetched_and_the_cookie_names_but_an_ordinary_read_does_not():
@@ -1030,3 +1034,11 @@ def test_an_ordinary_read_of_a_login_page_still_reports_the_status_it_was_given_
     got, _ = drive(stub_job(["https://x.example/home"], {"stealth": True}), Fake({"https://x.example/home": wall}))
     assert not got[0]["ok"] and "login page" in got[0]["error"]["message"] and got[0]["status"] == 200                       # the status is reported without a session check asking for the page
     assert "html" not in got[0] and "text" not in got[0] and "cookie_names_back" not in got[0]
+
+
+def test_the_wait_option_reaches_the_browser_in_milliseconds_and_is_capped():
+    base = W.stealth_kwargs({"stealth": True}, "agent", 20)
+    assert "wait" not in base and base["network_idle"] is False
+    assert W.stealth_kwargs({"wait": 5000}, "agent", 20)["wait"] == 5000
+    assert W.stealth_kwargs({"wait": 99999}, "agent", 20)["wait"] == 15000 and W.stealth_kwargs({"wait": -5}, "agent", 20).get("wait") in (None, 0) and "wait" not in W.stealth_kwargs({"wait": 0}, "agent", 20)
+    assert W.stealth_kwargs({"wait": "2500"}, "agent", 20)["wait"] == 2500 and W.stealth_kwargs({"network_idle": True, "wait": 3000}, "agent", 20)["network_idle"] is True

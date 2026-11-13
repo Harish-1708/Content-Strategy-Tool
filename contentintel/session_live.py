@@ -96,10 +96,10 @@ def _host_ok(platform, url):
 
 # ---- one platform ---------------------------------------------------------------------------------------------------------------------------------
 
-def _worker_page(platform, url, settings, contact, python, environ, runner, *, with_session, timeout=180):
+def _worker_page(platform, url, settings, contact, python, environ, runner, *, with_session, timeout=180, reading=False):
     """One address through the Scrapling worker, with the stored session or without it. Returns the worker's result for the address; raises K.Failure for what could not be done at all."""
     from .observatory import worker_client as wc
-    adv = {"stealth": True, **(S.PLATFORMS[platform].get("adv") or {})}                  # a platform that only shows its page once it has finished loading is waited for (Instagram)
+    adv = {"stealth": True, **(S.PLATFORMS[platform].get("adv") or {}), **((S.PLATFORMS[platform].get("read_adv") or {}) if reading else {})}      # a platform that draws its page after it has loaded is waited for
     env = dict(environ)
     if with_session:
         session = S.load(platform, environ)
@@ -120,7 +120,7 @@ def _evidence(platform, res, session, plain):
     """What the page showed, from the worker's answer, with no secret: see sessions.page_evidence. Adds how it was fetched and the cookie NAMES sent and sent back."""
     err = res.get("error") or {}
     ev = S.page_evidence(platform, res.get("final_url") or "", res.get("html") or "", res.get("status") or 0, res.get("text") or "")
-    ev.update(fetched_with=res.get("fetched_with") or ("plain HTTP" if plain else "browser"), cookies_sent=sorted(session.cookie_jar()), cookies_back=list(res.get("cookie_names_back") or []),
+    ev.update(html_truncated=bool(res.get("html_truncated")), fetched_with=res.get("fetched_with") or ("plain HTTP" if plain else "browser"), cookies_sent=sorted(session.cookie_jar()), cookies_back=list(res.get("cookie_names_back") or []),
               worker_error=(f"{err.get('code')}: {err.get('message')}"[:300] if err else ""))
     return ev
 
@@ -199,10 +199,12 @@ def check_platform(platform, settings, contact, python, *, environ=None, runner=
     why_plain = f"the browser could not be used here ({res.get('browser_error') or 'no reason was given'})"
     err = res.get("error") or {}
     row["evidence"] = _evidence(platform, res, session, plain)
-    if err and err.get("code") != "PLATFORM_BLOCKED" and not WALL.search(str(err.get("message", ""))) and int(status or 0) not in (401, 403) and not looks_like_challenge(status, html, row["evidence"]["title"]):
-        return done(CANNOT_CHECK, f"the Scrapling worker could not read the page cleanly ({err.get('code')}: {str(err.get('message', ''))[:200]}), so nothing was judged; this is not the platform's answer")
-    if err.get("code") == "PLATFORM_BLOCKED" or looks_like_challenge(status, html, row["evidence"]["title"]):
-        blocked = (f"{spec['label']} showed a bot-check or challenge page to this runner, so the session itself could not be judged"
+    refused = "err_http_response_code_failure" in str(err.get("message", "")).lower()                  # the browser's own words for a platform that answers an automated visit with an error status
+    if err and err.get("code") != "PLATFORM_BLOCKED" and not refused and not WALL.search(str(err.get("message", ""))) and int(status or 0) not in (401, 403) and not looks_like_challenge(status, html, row["evidence"]["title"]):
+        return done(CANNOT_CHECK, f"the Scrapling worker could not read the page cleanly ({humanise_error(err.get('code'), err.get('message', ''))}), so nothing was judged; this is not the platform's answer")
+    if err.get("code") == "PLATFORM_BLOCKED" or refused or looks_like_challenge(status, html, row["evidence"]["title"]):
+        blocked = ((f"{spec['label']} refused the browser with an error status instead of a page ({humanise_error(err.get('code'), err.get('message', ''))}), so the session itself could not be judged" if refused else
+                    f"{spec['label']} showed a bot-check or challenge page to this runner, so the session itself could not be judged")
                    + (f"; and {why_plain}" if plain else "") + ". This is the platform blocking the runner, not a bad session")
         if platform == "x":                                                              # the approved last resort: ask X's own profile interface, with the two cookies already stored
             layered = twscrape_layer(session, environ, runner)
@@ -213,6 +215,8 @@ def check_platform(platform, settings, contact, python, *, environ=None, runner=
             if layered["state"] == "rejected":
                 return done(REJECTED, f"{layered['detail']} ({via})")
             blocked += f". The last-resort twscrape check could not judge it either: {layered['detail']}"
+            if "403" in layered["detail"]:
+                blocked += ". X answers 403 to this runner's address on both routes (its web page and its profile interface), so from GitHub's servers its session cannot be proved; only a different network address would change that"
         return done(BLOCKED, blocked)
     if not html:
         if status in (401, 403):
@@ -260,7 +264,7 @@ def evidence_lines(r):
     if ev["text_starts"]:
         lines.append(f"      visible text starts: '{ev['text_starts']}'")
     else:
-        lines.append(f"      page code: {ev['html_chars']} characters, {ev['scripts']} script tags" + (f", element ids: {', '.join(ev['body_ids'])}" if ev["body_ids"] else ", no element ids")
+        lines.append(f"      page code: {ev['html_chars']} characters{' (cut at the limit: the rest was not searched)' if ev.get('html_truncated') else ''}, {ev['scripts']} script tags" + (f", element ids: {', '.join(ev['body_ids'])}" if ev["body_ids"] else ", no element ids")
                      + (f"; the no-script note says: '{ev['noscript']}'" if ev["noscript"] else "; no no-script note"))
     if ev["worker_error"]:
         lines.append(f"      the worker said: {ev['worker_error']}")
@@ -301,8 +305,42 @@ def exit_code(rows):
 
 # ---- one logged-in page through the fallback chain ------------------------------------------------------------------------------------------------
 
+DATA_URI = re.compile(r"data:[\w/+.\-]+;base64,[A-Za-z0-9+/=]{20,}")
+LONG_TOKEN = re.compile(r"\S{200,}")
+MIN_READABLE_CHARS, MIN_READABLE_WORDS = 80, 12
+
+
+def clean_text(text):
+    """A page's text for the log and the corpus: image data and long unbroken tokens (the junk a script shell leaves) are replaced by a short note, so they are never printed or counted as content."""
+    text = DATA_URI.sub("[image]", str(text or ""))
+    return LONG_TOKEN.sub("[data]", text)
+
+
+def readable(text):
+    """True when there is real text to read: enough characters and enough words made of letters. A script shell that is only a title, an icon name and an image is not."""
+    words = [w for w in str(text).split() if any(c.isalpha() for c in w) and len(w) <= 30]
+    return len(str(text).strip()) >= MIN_READABLE_CHARS and len(words) >= MIN_READABLE_WORDS
+
+
+def humanise_error(code, message):
+    """A worker error in plain words, keeping the original at the end. The browser's own wording (net::ERR_...) means little to a reader."""
+    raw = " ".join(str(message or "").split())
+    low = raw.lower()
+    if "err_http_response_code_failure" in low:
+        plain = "the platform answered the browser with an error status instead of a page, which is its own refusal of an automated visit (LinkedIn does this with status 999)"
+    elif "timeout" in low and ("goto" in low or "exceeded" in low):
+        plain = "the page did not finish loading in time"
+    elif "net::err_" in low:
+        plain = "a network error stopped the page from loading"
+    else:
+        return f"{code}: {raw}"[:300]
+    return f"{plain} ({code}: {raw[:150]})"
+
+
 def _rows_from(res, route):
-    text = res.get("text") or res.get("markdown") or ""
+    text = clean_text(res.get("text") or res.get("markdown") or "")
+    if text and not readable(text):
+        raise K.Failure(K.UPSTREAM_BROKEN, f"the page came back with no readable text ({len(text.strip())} characters: a script shell, an icon or an image)")
     return [{"url": res.get("url"), "final_url": res.get("final_url"), "title": res.get("title") or "", "text": text, "chars": len(text), "route": route}] if text else []
 
 
@@ -311,20 +349,24 @@ def _failure_from(res):
     message = err.get("message") or "the page could not be read"
     code = {"NEED_SETUP": K.NEED_SETUP, "NEED_LOGIN": K.NEED_LOGIN, "RATE_LIMITED": K.RATE_LIMITED, "PLATFORM_BLOCKED": K.PLATFORM_BLOCKED, "NOT_FOUND": K.NOT_FOUND, "BAD_INPUT": K.BAD_INPUT}.get(err.get("code"), K.UPSTREAM_BROKEN)
     if WALL.search(message):
-        code = K.NEED_LOGIN
-    return K.Failure(code, message)
+        return K.Failure(K.NEED_LOGIN, message)
+    return K.Failure(code, humanise_error(err.get("code") or "no answer", message))
 
 
 def _read_once(platform, url, settings, contact, python, environ, runner, with_session):
     """One read through the worker, summarised: did it work, how much text, the title, where it landed, the first words, or why it failed. Never raises."""
     try:
-        res = _worker_page(platform, url, settings, contact, python, environ, runner, with_session=with_session)
+        res = _worker_page(platform, url, settings, contact, python, environ, runner, with_session=with_session, reading=True)
     except K.Failure as exc:
         return {"ok": False, "chars": 0, "words": set(), "title": "", "landed": "", "starts": "", "error": str(exc)}
-    text = " ".join(str(res.get("text") or "").split())
+    text = " ".join(clean_text(res.get("text") or "").split())
     err = res.get("error") or {}
-    return {"ok": bool(res.get("ok")), "chars": len(text), "words": set(text.lower().split()), "title": str(res.get("title") or ""), "landed": S._landed(res.get("final_url") or ""),
-            "starts": text[:300], "error": "" if res.get("ok") else f"{err.get('code') or 'no answer'}: {str(err.get('message') or 'no page came back')[:200]}"}
+    worked = bool(res.get("ok"))
+    if worked and not readable(text):
+        worked, error = False, f"UPSTREAM_BROKEN: the page came back with no readable text ({len(text)} characters: a script shell, an icon or an image)"
+    else:
+        error = "" if worked else humanise_error(err.get("code") or "no answer", err.get("message") or "no page came back")
+    return {"ok": worked, "chars": len(text), "words": set(text.lower().split()), "title": str(res.get("title") or ""), "landed": S._landed(res.get("final_url") or ""), "starts": text[:300], "error": error}
 
 
 def compare_page(platform, url, settings, contact, python, *, environ=None, runner=subprocess.run, now="", ledger=None):
@@ -419,13 +461,13 @@ def read_page(platform, url, settings, contact, python, *, environ=None, runner=
     on, why = switched_on(settings, platform)
 
     def primary():
-        res = _worker_page(platform, url, settings, contact, python, environ, runner, with_session=False)
+        res = _worker_page(platform, url, settings, contact, python, environ, runner, with_session=False, reading=True)
         if not res.get("ok"):
             raise _failure_from(res)
         return _rows_from(res, "primary")
 
     def session():
-        res = _worker_page(platform, url, settings, contact, python, environ, runner, with_session=True)
+        res = _worker_page(platform, url, settings, contact, python, environ, runner, with_session=True, reading=True)
         if not res.get("ok"):
             raise _failure_from(res)
         return _rows_from(res, "session")

@@ -531,4 +531,5 @@ def test_the_page_evidence_describes_the_shape_of_a_script_only_page_without_a_s
     assert "CSRFTOKENVALUE123456" not in json.dumps(ev)                                                              # ids and a no-script note, never what is inside a script
     plain = S.page_evidence("instagram", "https://www.instagram.com/", "<html>nothing</html>", 200, "")
     assert plain["scripts"] == 0 and plain["noscript"] == "" and plain["body_ids"] == []
-    assert S.PLATFORMS["instagram"]["adv"] == {"network_idle": True} and all("adv" not in spec for p, spec in S.PLATFORMS.items() if p != "instagram")
+    assert S.PLATFORMS["instagram"]["adv"] == {"network_idle": True, "wait": 8000} and all("adv" not in spec for p, spec in S.PLATFORMS.items() if p != "instagram")
+    assert {p: spec.get("read_adv") for p, spec in S.PLATFORMS.items() if spec.get("read_adv")} == {"instagram": {"network_idle": True, "wait": 8000}, "facebook": {"wait": 6000}, "tiktok": {"wait": 3000}}     # a read waits for the page to draw itself

@@ -101,6 +101,8 @@ def stealth_kwargs(adv, honest_agent, timeout):
         kw["useragent"] = honest_agent
     if adv.get("wait_selector"):
         kw["wait_selector"] = adv["wait_selector"]
+    if adv.get("wait"):
+        kw["wait"] = max(0, min(int(adv["wait"]), 15000))                                  # milliseconds to wait after the page has loaded, for a page that draws itself afterwards: at most 15 seconds
     return kw
 
 
@@ -474,7 +476,7 @@ class Worker:
             if self.job.get("return_html"):                                                  # a stored-session check judges the page, so it keeps the last one it saw, refused or not
                 out["fetched_with"] = out.get("fetched_with") or "plain HTTP"
                 out["status"], out["final_url"] = status, current
-                out["html"] = bytes(resp.body or b"").decode("utf-8", errors="replace")[:300000]
+                _keep_raw(out, bytes(resp.body or b"").decode("utf-8", errors="replace"))
                 out["cookie_names_back"] = _cookie_names(getattr(resp, "cookies", None))                                # names only, never a value
                 try:                                                                              # the title and the visible words of the page, whatever happens to it next (a refusal, a login wall)
                     seen = htmlx.parse_page(out["html"], current, 4000)
@@ -517,7 +519,7 @@ class Worker:
         html = body.decode("utf-8", errors="replace")
         out["status"] = int(resp.status)
         if self.job.get("return_html"):                                                    # only a stored-session check asks for the raw page: it judges logged-in markers that are not in the text
-            out["html"] = html[:300000]
+            _keep_raw(out, html)
         page = htmlx.parse_page(html, out.get("final_url", url), self.job.get("max_chars", 20000))
         if signals.looks_like_login_wall(body, page["title"]):
             out["error"] = {"code": "UPSTREAM_BROKEN", "message": f"{url} shows only a login page", "robots_path": False}
@@ -545,6 +547,15 @@ class Worker:
             except Exception as exc:
                 out["adaptive_error"] = f"{exc.__class__.__name__}"
         return out
+
+
+RAW_PAGE_CAP = 2_000_000                                                                 # the most of a page's code a stored-session check keeps: logged-in markers can sit deep inside it
+
+
+def _keep_raw(out, html):
+    """The page's code for a stored-session check, bounded, with a note when it was cut."""
+    out["html"] = html[:RAW_PAGE_CAP]
+    out["html_truncated"] = len(html) > RAW_PAGE_CAP
 
 
 def _cookie_names(cookies):

@@ -112,6 +112,19 @@ Before a session is wired into the collectors, the question is what it adds over
 
 Run it on a handful of real addresses (a competitor's TikTok profile, a Facebook page, a LinkedIn company page, a hashtag or search page) before deciding anything: the answer will differ by platform and by kind of page. For example, X's public profile was readable with no login at all.
 
+## What the first compare runs showed (2026-11-13)
+
+Four addresses were read with no login and through the session. **The sessions added nothing on any of them**, so they are not wired into the collectors:
+
+- **TikTok profile:** the public read returned the profile (name, 405 following, 73.3K followers, 1.8M likes, the bio line); the session read hit a puzzle (captcha) page and returned 38 characters.
+- **Facebook page:** neither read returned any text (the page draws itself after it loads; reads now wait for it).
+- **LinkedIn company page:** the public read returned the page's About text (2,730 characters); the session read was refused by LinkedIn with an error status, which is its own refusal of an automated visit.
+- **X profile:** blocked on the public read this time (X is intermittent: an earlier run read the public profile), and the session was not used because it was never proved.
+
+What that suggests: the stored sessions prove a login works, but from GitHub's servers a logged-in visit is **more** likely to be challenged than a public one. The useful finding is the public read: a competitor's public profile page gives follower counts, likes and the bio, which could be snapshotted over time without any session. That is a different (and simpler) collector from the one the sessions were built for, and it is only worth building if you want it.
+
+X cannot be proved from GitHub's servers by either route: x.com shows a bot-check to the browser, and X's profile interface answers 403 to twscrape.
+
 ## Using the proved sessions for research: not wired yet, and why
 
 The collectors read through the existing routes; the stored sessions are not used by them. What a session could add is the **text of a specific page that a visitor without a login does not get**, read through a real browser. It is not a search interface, not an API and not structured data: a read returns what a page shows as text.
@@ -119,6 +132,10 @@ The collectors read through the existing routes; the stored sessions are not use
 If the comparison shows a platform's session adds real content, the wiring would be: for each competitor handle in a brand file, a "social page read" collector reads the profile page through the chain (plain reader, then the stored session if proved, then discovery), stores the text in the corpus with its route, lets the AI judge score it, and shows the route's health in the Collector Health tab (healthy while a check passed in the last 14 days). That is a small, honest gain: the recent posts, captions and visible numbers of a competitor's page. It is not a way to search a platform or pull trending feeds at volume, which is also where accounts get blocked.
 
 For a platform whose session is rejected or blocked, the other paths are the plain public read (often enough: see X above), and discovery (search-engine titles and snippets about the address).
+
+## Reads that return nothing useful
+
+A read that comes back as a script shell (a title, an icon name, an image) is no longer reported as success: image data is replaced by `[image]`, and a page with fewer than 12 real words or 80 characters counts as unreadable, so the chain moves on to the next route (the session, then discovery). A compare says so too. Platforms that draw their page after it loads (Instagram, Facebook, TikTok) are waited for on a read (Instagram also on a check); the page code a check keeps is up to 2,000,000 characters and the log says when it was cut. An error status from the browser (`net::ERR_HTTP_RESPONSE_CODE_FAILURE`, LinkedIn's 999) is shown as a BLOCKED result in plain words, not a failed check.
 
 ## What a rejected check can mean
 
