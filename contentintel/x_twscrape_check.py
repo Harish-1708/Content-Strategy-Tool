@@ -49,16 +49,27 @@ def explain(error_msg, active):
     return None
 
 
-def _scrub(text, secrets):
+def _scrub(text, secrets, bound=300):
     text = " ".join(str(text).split())
     for value in secrets:
         if len(str(value)) >= 6:
             text = text.replace(str(value), "***")
-    return text[:300]
+    return text[:bound]
 
 
-async def check(jar, api_factory=None, timeout=60):
-    """The result for one session. `api_factory(db_path)` makes the twscrape API (a stand-in in tests)."""
+def _capture_logs(logs):
+    """twscrape says why a request failed in its own log (the reason an account is put aside for a while): keep its warnings in `logs` instead of letting them go to the console unread."""
+    try:
+        from loguru import logger
+        logger.remove()
+        logger.add(lambda message: logs.append(str(message).strip()), level="WARNING", format="{message}")
+    except Exception:
+        pass
+
+
+async def check(jar, api_factory=None, timeout=60, logs=None):
+    """The result for one session. `api_factory(db_path)` makes the twscrape API (a stand-in in tests). `logs` collects twscrape's own warnings, which explain a failure that gave no profile."""
+    logs = [] if logs is None else logs
     secrets = [str(v) for v in (jar or {}).values()]
     missing = [n for n in REQUIRED if not (jar or {}).get(n)]
     if missing:
@@ -71,6 +82,7 @@ async def check(jar, api_factory=None, timeout=60):
         db = os.path.join(tmp, "session-check.db")
         if api_factory is None:
             from twscrape import API                                                     # imported only now: after the telemetry switch above
+            _capture_logs(logs)
             api_factory = lambda path: API(path, raise_when_no_account=True, wait_timeout=20)
         api = api_factory(db)
         user, error = None, None
@@ -97,7 +109,12 @@ async def check(jar, api_factory=None, timeout=60):
             said = explain(getattr(account, "error_msg", None), getattr(account, "active", None))
             if said:
                 return {"state": said[0], "detail": _scrub(said[1], secrets)}
-        return {"state": "unreachable", "detail": _scrub(error or "X returned no profile (a bot-check, a block or a network problem), so nothing could be judged", secrets)}
+        from_logs = explain("\n".join(logs), None) if logs else None                   # (32), (326) or (88) in twscrape's own messages say what X thought
+        if from_logs:
+            return {"state": from_logs[0], "detail": _scrub(from_logs[1], secrets)}
+        heard = _scrub(" | ".join(logs[-3:]), secrets, bound=300)
+        base = _scrub(error or "X returned no profile (a bot-check, a block or a network problem), so nothing could be judged", secrets)
+        return {"state": "unreachable", "detail": _scrub(base + (f"; twscrape logged: {heard}" if heard else ""), secrets, bound=600)}
 
 
 def main(environ=None, out=sys.stdout, api_factory=None):
@@ -109,7 +126,7 @@ def main(environ=None, out=sys.stdout, api_factory=None):
     except ValueError:
         out.write(json.dumps({"state": "unreachable", "detail": "the cookies were not handed over as an object of name and value"}) + "\n")
         return 0
-    result = asyncio.run(check(jar, api_factory=api_factory))
+    result = asyncio.run(check(jar, api_factory=api_factory, logs=[]))
     out.write(json.dumps(result) + "\n")
     return 0
 
