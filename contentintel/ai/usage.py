@@ -51,6 +51,10 @@ class UsageLedger:
     def day(self, provider_id, now):
         return self.data["days"].get(now[:10], {}).get(provider_id, {"requests": 0, "tokens_in": 0, "tokens_out": 0, "cost_usd": 0.0})
 
+    def month_requests(self, provider_id, now):
+        """Calls made to one provider so far this month, from the ledger (a provider whose free key allows only so many calls a month)."""
+        return sum(providers.get(provider_id, {}).get("requests", 0) for day, providers in self.data["days"].items() if day[:7] == now[:7])
+
     def spend(self, now, *, month=False):
         total = 0.0
         for day, providers in self.data["days"].items():
@@ -70,6 +74,8 @@ class UsageLedger:
             return False, "daily request limit reached"
         if lim.get("tokens_per_day") is not None and d["tokens_in"] + d["tokens_out"] + est_tokens > lim["tokens_per_day"]:
             return False, "daily token limit reached"
+        if lim.get("requests_per_month") is not None and self.month_requests(provider.id, now) + 1 > lim["requests_per_month"]:
+            return False, "monthly request limit reached (the provider's own cap)"
         if provider.paid:
             if registry.daily_usd <= 0 and registry.monthly_usd <= 0:
                 return False, "paid use is not approved (the spending budget is zero)"

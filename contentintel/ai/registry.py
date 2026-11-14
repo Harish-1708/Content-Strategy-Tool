@@ -18,6 +18,7 @@ DEFAULT_PATH = "ai_providers.yaml"
 DIRECT_ENDPOINTS = ("https://openrouter.ai/api/v1",)
 TERMS_STATUS = ("verified", "verified_secondary", "upstream_documented", "declared_only", "unverified", "owner_decision")
 CLAUDE = "claude"
+DEFAULT_PACING = {"fast_wait_seconds": 2, "max_wait_seconds": 120}                      # how long a call may wait for a free slot at one provider before another is tried first, and before it gives up
 
 
 class RegistryError(Exception):
@@ -31,6 +32,7 @@ class Model:
     capabilities: tuple
     price: dict
     note: str = ""
+    internal: bool = True                     # the owner's per-route switch: false takes Internal data off this one model (Public is unaffected)
 
 
 @dataclass(frozen=True)
@@ -72,6 +74,7 @@ class Registry:
     providers: dict
     daily_usd: float
     monthly_usd: float
+    pacing: dict = field(default_factory=lambda: dict(DEFAULT_PACING))
 
     def provider(self, pid):
         try:
@@ -90,10 +93,10 @@ class Registry:
             return False, f"RETIRED: {p.label} was withdrawn by its provider on {p.retired['date']}; it is never called"
         if not p.enabled:
             return False, "disabled (a person has not approved it)"
-        if p.experimental and not experimental_ok:
-            return False, "experimental route: not allowed in this lane"
         if model is not None and not self.model_ok(pid, model):
             return False, f"model {model!r} is not in the approved-model allowlist"
+        if model is not None and data_class == dc.INTERNAL and not p.model(model).internal:
+            return False, f"Internal data is switched off for model {model!r} by the owner (internal: false in ai_providers.yaml)"
         if not p.can_receive(data_class):
             return False, f"not approved for {data_class} data"
         return True, ""
@@ -128,11 +131,18 @@ def load_registry(path=DEFAULT_PATH):
         raise RegistryError(f"{path} could not be read: {exc}") from None
     if not isinstance(raw, dict):
         raise RegistryError(f"{path} must be a list of settings")
-    _only(raw, ("version", "budgets", "providers"), path)
+    _only(raw, ("version", "budgets", "providers", "pacing"), path)
     if raw.get("version") != 1:
         raise RegistryError(f"{path}: version must be 1")
     budgets = raw.get("budgets") or {}
     _only(budgets, ("daily_usd", "monthly_usd"), f"{path} budgets")
+    pacing = dict(DEFAULT_PACING)
+    given_pacing = raw.get("pacing") or {}
+    if not isinstance(given_pacing, dict):
+        raise RegistryError(f"{path} pacing must be a list of settings")
+    _only(given_pacing, tuple(DEFAULT_PACING), f"{path} pacing")
+    for k, v in given_pacing.items():
+        pacing[k] = _num(v, f"{path} pacing.{k}")
     out = {}
     for pid, d in (raw.get("providers") or {}).items():
         where = f"providers.{pid}"
@@ -180,21 +190,22 @@ def load_registry(path=DEFAULT_PATH):
                 raise RegistryError(f"{where}.{flag} must be true or false")
         if d.get("enabled") and status in ("unverified", "declared_only"):
             raise RegistryError(f"{where}: a provider whose terms are {status} cannot be enabled")
-        if d.get("experimental") and eff != dc.PUBLIC:
-            raise RegistryError(f"{where}: an experimental route may only be Public")
         limits = d.get("limits") or {}
-        _only(limits, ("requests_per_day", "tokens_per_day", "requests_per_minute"), f"{where}.limits")
+        _only(limits, ("requests_per_day", "tokens_per_day", "requests_per_minute", "requests_per_hour", "requests_per_month", "concurrency"), f"{where}.limits")
         for k, v in limits.items():
             _num(v, f"{where}.limits.{k}")
+        if "concurrency" in limits and (isinstance(limits["concurrency"], float) or limits["concurrency"] < 1):
+            raise RegistryError(f"{where}.limits.concurrency must be a whole number of 1 or more (calls at the same time)")
         price = _prices(d.get("price_per_million") or {}, f"{where}.price_per_million")
         models = []
         for i, m in enumerate(d.get("models") or []):
             if not isinstance(m, dict) or not m.get("id"):
                 raise RegistryError(f"{where}.models[{i}] needs an id")
-            _only(m, ("id", "approved", "capabilities", "price_per_million", "note"), f"{where}.models[{i}]")
-            if "approved" in m and not isinstance(m["approved"], bool):
-                raise RegistryError(f"{where}.models[{i}].approved must be true or false")
-            models.append(Model(id=str(m["id"]), approved=bool(m.get("approved", False)), capabilities=tuple(m.get("capabilities") or ()),
+            _only(m, ("id", "approved", "capabilities", "price_per_million", "note", "internal"), f"{where}.models[{i}]")
+            for flag in ("approved", "internal"):
+                if flag in m and not isinstance(m[flag], bool):
+                    raise RegistryError(f"{where}.models[{i}].{flag} must be true or false")
+            models.append(Model(id=str(m["id"]), approved=bool(m.get("approved", False)), capabilities=tuple(m.get("capabilities") or ()), internal=bool(m.get("internal", True)),
                                 price=_prices(m.get("price_per_million") or {}, f"{where}.models[{i}].price_per_million"), note=str(m.get("note", ""))))
         ids = [m.id for m in models]
         if len(ids) != len(set(ids)):
@@ -216,4 +227,4 @@ def load_registry(path=DEFAULT_PATH):
                             terms=terms, limits=limits, price_per_million=price, models=tuple(models), direct=dict(direct), retired=dict(retired))
     if not out:
         raise RegistryError(f"{path}: providers must name at least one provider")
-    return Registry(providers=out, daily_usd=_num(budgets.get("daily_usd", 0), "budgets.daily_usd"), monthly_usd=_num(budgets.get("monthly_usd", 0), "budgets.monthly_usd"))
+    return Registry(providers=out, daily_usd=_num(budgets.get("daily_usd", 0), "budgets.daily_usd"), monthly_usd=_num(budgets.get("monthly_usd", 0), "budgets.monthly_usd"), pacing=pacing)

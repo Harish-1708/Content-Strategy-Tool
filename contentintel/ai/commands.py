@@ -76,10 +76,11 @@ def load_all(args):
 
 def build_stack(args, store, health, *, mode, clients):
     registry, lanes = load_all(args)
+    pool = lanes_mod.load_pool(args.lanes_config, registry)                                  # the shared pool: every approved model, available to every lane that draws on it
     lanes = {**lanes, "canary": canary_lane()}
     shared = Path(store.data_dir) / "_shared" if mode == "live" else Path(args.workdir) / "mock-state"     # a mock run never touches the real spending ledger
     usage, review = usage_mod.UsageLedger(shared / "ai_usage.json"), review_mod.ReviewQueue(shared / "ai_review.json")
-    return registry, lanes, usage, review, router_mod.Router(registry, lanes, usage, health, clients, review)
+    return registry, lanes, usage, review, router_mod.Router(registry, lanes, usage, health, clients, review, pool=pool)
 
 
 def save_state(usage, review, health, store, mode="live"):
@@ -173,7 +174,7 @@ def run_ai(args, store, health, now):
             used = [r for r in rows if r["eligible"]]
             print(f"{name}  [{lane.max_data_class} max; review {lane.review}{'; Claude leads' if lane.claude_leads else ''}]  ->  " + (f"{len(used)} route(s) ready" if used else "nothing can run: the task would be deferred"))
             for r in rows:
-                print(f"    {'ready  ' if r['eligible'] else 'skipped'} {r['provider']} / {r['model']}" + ("" if r["eligible"] else f": {r['reason']}"))
+                print(f"    {'ready  ' if r['eligible'] else 'skipped'} {r['provider']} / {r['model']}" + (" (pool)" if r.get("source") == "pool" else "") + ("" if r["eligible"] and not r["reason"] else f": {r['reason']}"))
         return 0
     if action == "usage":
         usage = usage_mod.UsageLedger(Path(store.data_dir) / "_shared" / "ai_usage.json")
@@ -259,6 +260,9 @@ def _check(args, registry, lanes, router, usage, review, health, store, now, mod
         for r in lane.chain:
             if (r["provider"], r["model"]) not in [(t["provider"], t["model"]) for t in targets] and (not only or r["provider"] in only):
                 targets.append(r)
+    for r in router.pool:                           # the shared pool is checked too: each model is one real call, reported under its own provider
+        if (r["provider"], r["model"]) not in [(t["provider"], t["model"]) for t in targets] and (not only or r["provider"] in only):
+            targets.append(r)
     outcome = {}                                    # provider -> {"ok": n, "failed": [codes], "skipped": [reasons]}
     for r in targets:
         res = router.run_route("canary", r, instructions="Reply with the single word OK.", now=now)

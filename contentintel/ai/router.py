@@ -14,13 +14,18 @@ Each provider is its own source for health: a rate limit on one provider rests t
 """
 import hashlib
 import json
+import re
 
 from .. import contract
 from .. import safety
 from . import data_class as dc
 from . import validate
+from .pacing import Pacer
 
 CLAUDE = "claude"
+PACED = object()                         # a route that would have to wait for its provider's own limit: passed over, tried again only if nothing else answers
+TOO_BIG = re.compile(r"max[_ ]?(output[_ ]?)?tokens|maximum|too (large|long|many)|exceed|context length|out of range", re.I)
+MIN_CAP = 1024                           # the smallest cap tried when a provider rejects a large one
 
 
 def _stable_bucket(lane, item_ids, text, n):
@@ -36,10 +41,13 @@ def build_prompt(instructions, context=()):
 
 
 class Router:
-    def __init__(self, registry, lanes, usage, health, clients, review, *, coordinator_client=None, clock=None):
+    def __init__(self, registry, lanes, usage, health, clients, review, *, coordinator_client=None, clock=None, pool=(), pacer=None):
         self.registry, self.lanes, self.usage, self.health = registry, lanes, usage, health
         self.clients, self.review = clients, review
         self.claude = coordinator_client
+        self.pool = list(pool)                                     # the shared pool: every approved model, available to every lane that draws on it
+        self.pacer = pacer or Pacer(getattr(registry, "pacing", None))
+        self.learned_caps = {}                                     # (provider, model) -> the largest max_tokens it has been seen to accept this run
 
     # ---- planning (no calls) ------------------------------------------------------------------------------------------------------
 
@@ -47,20 +55,29 @@ class Router:
         """For each route of the lane: whether it would be used now, and if not why. Makes no call and records nothing."""
         lane = self.lanes[lane_name]
         rows = []
+        own = {(r["provider"], r["model"]) for r in lane.chain}
         for r in self._routes(lane):
             ok, why = self._eligible(lane, r, data_class, now)
-            rows.append({"provider": r["provider"], "model": r["model"], "eligible": ok, "reason": why})
+            if ok and r["provider"] in self.registry.providers:
+                wait = self.pacer.wait_for(self.registry.provider(r["provider"]))
+                if wait > self.pacer.fast_wait:
+                    why = f"paced: the provider's own limit leaves no free slot for {wait:.0f}s, so another route is tried first"
+            source = "lane" if (r["provider"], r["model"]) in own else ("claude" if r["provider"] == CLAUDE else "pool")
+            rows.append({"provider": r["provider"], "model": r["model"], "eligible": ok, "reason": why, "source": source})
         return rows
 
     def _routes(self, lane):
         chain = list(lane.chain)
+        if lane.use_pool:
+            have = {(r["provider"], r["model"]) for r in chain}
+            chain += [r for r in self.pool if (r["provider"], r["model"]) not in have]
         if lane.claude_fallback and not any(r["provider"] == CLAUDE for r in chain):
             chain.append({"provider": CLAUDE, "model": lane.claude_model, "gateway_model": lane.claude_model})
         return chain
 
     def _eligible(self, lane, route, data_class, now, est_in=2000):
         pid = route["provider"]
-        ok, why = self.registry.eligibility(pid, data_class, experimental_ok=lane.allow_experimental, model=route["model"])
+        ok, why = self.registry.eligibility(pid, data_class, model=route["model"])
         if not ok:
             return False, why
         if pid not in self.clients:
@@ -80,12 +97,23 @@ class Router:
         if not dc.within(lane.max_data_class, data_class):
             return {**base, "status": "refused", "reason": f"the {lane_name} lane may carry {lane.max_data_class} data at most; this is {data_class}"}
         prompt = build_prompt(instructions, context)
+        paced = []
         for route in self._routes(lane):
             ok, why = self._eligible(lane, route, data_class, now, est_in=max(1, len(prompt) // 3))
             if not ok:
                 base["skipped"].append({"provider": route["provider"], "reason": why})
                 continue
-            result = self._try(lane, route, system, prompt, now, base)
+            result = self._try(lane, route, system, prompt, now, base, patient=False)
+            if result is PACED:
+                paced.append(route)                                    # its provider's own limit has no slot soon: the next provider is tried first, so load is spread
+                continue
+            if result is not None:
+                return self._finish(lane, route, result, data_class, item_ids, now, base)
+        for route in paced:                                            # nothing else answered: now wait for a free slot, as long as the provider's own limit needs
+            result = self._try(lane, route, system, prompt, now, base, patient=True)
+            if result is PACED:
+                base["skipped"].append({"provider": route["provider"], "reason": "paced: no free slot within the longest wait"})
+                continue
             if result is not None:
                 return self._finish(lane, route, result, data_class, item_ids, now, base)
         return {**base, "status": "deferred", "reason": "no route produced a usable answer; the task is deferred, nothing was guessed"}
@@ -97,27 +125,50 @@ class Router:
         ok, why = self._eligible(lane, route, dc.PUBLIC, now)
         if not ok:
             return {**base, "status": "skipped", "reason": why}
-        result = self._try(lane, route, system, build_prompt(instructions, context), now, base)
+        result = self._try(lane, route, system, build_prompt(instructions, context), now, base, patient=True)
+        if result is PACED:
+            return {**base, "status": "skipped", "reason": "paced: no free slot at this provider within the longest wait"}
         if result is None:
             return {**base, "status": "failed", "reason": base["attempts"][-1]["message"]}
         return {**base, "status": "ok", "route": {"provider": route["provider"], "model": route["model"]}, "output": result[0], "text": result[1].text,
                 "completion": result[1]}
 
-    def _try(self, lane, route, system, prompt, now, base):
+    def _try(self, lane, route, system, prompt, now, base, patient=True):
         pid = route["provider"]
         provider = self.registry.provider(pid)
         client = self.clients[pid]
         source = f"ai:{pid}"
         attempt = {"provider": pid, "model": route["model"]}
+        got, _ = self.pacer.acquire(provider, self.pacer.max_wait if patient else self.pacer.fast_wait)
+        if not got:
+            return PACED
+        held = 1                                                       # slots reserved at this provider: a retry with a smaller cap is another request and takes its own
+        cap = min(lane.max_tokens, self.learned_caps.get((pid, route["model"]), lane.max_tokens))
         try:
-            comp = client.complete(route, system, prompt, lane.max_tokens, expect_platform=provider.gateway_platform if pid != CLAUDE else None, lane=lane.name)
-        except Exception as exc:       # every failure of every client is classified; none can end the run
-            err = contract.classify_exception(exc)
-            attempt.update({"result": err["code"], "message": err["message"]})
-            base["attempts"].append(attempt)
-            self.usage.record(provider, lane.name, now, ok=False, model=route["model"])
-            self.health.observe(source, "gateway", ok=False, code=err["code"], message=err["message"], now=now)
-            return None
+            while True:
+                try:
+                    comp = client.complete(route, system, prompt, cap, expect_platform=provider.gateway_platform if pid != CLAUDE else None, lane=lane.name)
+                    break
+                except Exception as exc:       # every failure of every client is classified; none can end the run
+                    err = contract.classify_exception(exc)
+                    if err["code"] != contract.RATE_LIMITED and cap > MIN_CAP and TOO_BIG.search(str(err["message"])):
+                        cap = max(MIN_CAP, cap // 2)                      # the provider refused this much output: ask for less, remember it, and ask again
+                        self.learned_caps[(pid, route["model"])] = cap
+                        got, _ = self.pacer.acquire(provider, self.pacer.max_wait)
+                        if not got:
+                            return PACED
+                        held += 1
+                        continue
+                    if err["code"] == contract.RATE_LIMITED:
+                        self.pacer.rate_limited(provider, err.get("retry_after_seconds"))          # Retry-After is honoured: nothing more goes to this provider until then
+                    attempt.update({"result": err["code"], "message": err["message"]})
+                    base["attempts"].append(attempt)
+                    self.usage.record(provider, lane.name, now, ok=False, model=route["model"])
+                    self.health.observe(source, "gateway", ok=False, code=err["code"], message=err["message"], now=now, retry_after=err.get("retry_after_seconds"))
+                    return None
+        finally:
+            for _ in range(held):
+                self.pacer.release(provider)
         try:
             output = validate.check_output(comp.text, lane)
         except validate.OutputProblem as problem:
