@@ -2130,7 +2130,7 @@
     "version": "3a4b3bc047b8"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 12,
+   "consecutive_successes": 13,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -2222,6 +2222,13 @@
      "items": 3,
      "ms": 39410,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T03:47:31Z",
+     "code": "",
+     "items": 29,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": {
@@ -2229,7 +2236,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "could not find the username box on the login page (the page may have changed: update login_steps in browser.yaml)"
    },
-   "last_success": "2026-11-12T15:19:20Z",
+   "last_success": "2026-11-14T03:47:31Z",
    "pause": null,
    "route": "browser",
    "source": "instagram",
@@ -2334,7 +2341,7 @@
     "version": "3a4b3bc047b8"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 19,
+   "consecutive_successes": 21,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -2468,10 +2475,24 @@
      "items": 3,
      "ms": 13962,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T03:47:31Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T03:47:31Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-12T15:19:20Z",
+   "last_success": "2026-11-14T03:47:31Z",
    "pause": null,
    "route": "browser",
    "source": "meta_ads",
@@ -3115,7 +3136,7 @@
     "version": "3a4b3bc047b8"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 7,
+   "consecutive_successes": 8,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -3207,6 +3228,13 @@
      "items": 3,
      "ms": 53926,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T03:47:31Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": {
@@ -3214,7 +3242,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "login ok; 0 items (0 from the site's data, 0 only from page links); nothing could be read (run Recon to see what the site sends)"
    },
-   "last_success": "2026-11-12T15:19:20Z",
+   "last_success": "2026-11-14T03:47:31Z",
    "pause": null,
    "route": "browser",
    "source": "tiktok",
@@ -3222,8 +3250,8 @@
   },
   "video_instagram|layered": {
    "acceptance": null,
-   "consecutive_failures": 1,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 3,
    "history": [
     {
      "at": "2026-11-04T16:11:21Z",
@@ -3273,19 +3301,43 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-14T03:55:14Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-14T03:55:14Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T03:55:14Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T03:55:14Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": {
-    "at": "2026-11-04T16:11:21Z",
+    "at": "2026-11-14T03:55:14Z",
     "code": "UPSTREAM_BROKEN",
     "message": "the video is shorter than a second (0.0s)"
    },
-   "last_success": "2026-11-04T16:11:21Z",
-   "pause": {
-    "code": "UPSTREAM_BROKEN",
-    "message": "the video is shorter than a second (0.0s)",
-    "until": "2026-11-04T16:13:21Z"
-   },
+   "last_success": "2026-11-14T03:55:14Z",
+   "pause": null,
    "route": "layered",
    "source": "video_instagram",
    "state": "healthy"
@@ -3293,7 +3345,7 @@
   "video_tiktok|layered": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 4,
+   "consecutive_successes": 7,
    "history": [
     {
      "at": "2026-11-04T16:11:21Z",
@@ -3378,6 +3430,27 @@
      "items": 1,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T03:55:14Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T03:55:14Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T03:55:14Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": {
@@ -3385,7 +3458,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "the file is not a picture or video we can read"
    },
-   "last_success": "2026-11-04T16:11:21Z",
+   "last_success": "2026-11-14T03:55:14Z",
    "pause": null,
    "route": "layered",
    "source": "video_tiktok",
