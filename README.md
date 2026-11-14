@@ -209,6 +209,10 @@ names marked set or not set, so you can see what the run can see (the values are
 | `GEMINI_COOKIES` | Gemini Deep Research, logged in as the dummy Google account | for Deep Research | cookies exported as a JSON list (Google blocks automated sign-in, so there is no password option) |
 | `ANTHROPIC_API_KEY` | Claude writing each brand's research seeds, the Deep Research prompt, and answering Gemini's questions | optional, recommended | the key from console.anthropic.com |
 | `APIFY_TOKEN` | the optional Apify extra | only if you switch Apify on | the API token from your Apify account |
+| `AGENT_REACH_URL` | Agent-Reach's OpenCLI channels on our Google Cloud Run (docs/platform/agent-reach-cloud-run.md) | only once the service is deployed (a deferred live check) | the service address the deploy workflow prints |
+| `AGENT_REACH_TOKEN` | the same; the deploy workflow also stores it in Secret Manager for the service | only once the service is deployed | a long random value you make up, at least 24 characters |
+| `GCP_SA_KEY` | the Agent-Reach on Cloud Run deploy workflow only | only to deploy that service | the JSON key of a Google Cloud service account with the roles listed in docs/platform/agent-reach-cloud-run.md |
+| `GCP_PROJECT_ID` | the same deploy workflow | only to deploy that service | the id of our Google Cloud project |
 | `IDEA_BANK_FOLDER_ID` | the Shared Drive folder where each Idea Bank item's pictures and videos are saved | optional (without it the files are skipped; everything else works) | the id of a folder inside a Shared Drive (the part after `/folders/` in its address) |
 | `DEEP_RESEARCH_DOC_ID` | the Google Doc where every Deep Research report is added as a new tab | optional (reports are always saved in the repository too) | the Doc's address, or just the long id between `/d/` and `/edit` |
 | `FREEAPI_ENCRYPTION_KEY` | the AI gateway's own storage key (64 hex characters) | only for the AI layer's live checks | you generate it in any browser (docs/ai/setup-instructions.md) |

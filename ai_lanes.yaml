@@ -191,6 +191,11 @@ pool:
   - {provider: zhipu, model: glm-4.7-flash}
   - {provider: zhipu, model: glm-4.5-flash}
   - {provider: zhipu, model: glm-4.6v-flash}
-  - {provider: kilo, model: poolside/laguna-m.1:free}
-  - {provider: kilo, model: stepfun/step-3.7-flash:free}
-  - {provider: kilo, model: poolside/laguna-xs.2:free}
+  - {provider: kilo, model: kilo-auto/free}
+  - {provider: kilo, model: nvidia/nemotron-3.5-super-vl:free}
+  - {provider: google, model: gemma-4-31b-it}
+  - {provider: google, model: gemma-4-26b-a4b-it}
+  - {provider: openrouter, model: nvidia/nemotron-3-ultra-550b-a55b:free}
+  - {provider: openrouter, model: nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free}
+  - {provider: openrouter, model: google/gemma-4-26b-a4b-it:free}
+  - {provider: openrouter, model: google/gemma-4-31b-it:free}

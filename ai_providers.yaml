@@ -157,15 +157,15 @@ providers:
       - tools
       note: "approved 2026-11-10 as the Google model the gateway knows: Google routes requests to gemini-3.5-flash to its current flash model; gemini-3.8-flash is newer but is not in the pinned gateway catalogue, so it cannot be used through it"
     - id: gemma-4-31b-it
-      approved: false
+      approved: true
       capabilities:
       - text
-      note: present in the gateway baseline; not approved
+      note: 'approved 2026-11-14 as a CANDIDATE: google lists it in its own model list (catalog run of 2026-11-14) and the pinned gateway''s catalogue holds it; no live check has tried it. It has NOT answered live yet; the next live check decides, and a model that is gone rests alone while its provider keeps working'
     - id: gemma-4-26b-a4b-it
-      approved: false
+      approved: true
       capabilities:
       - text
-      note: present in the gateway baseline; not approved
+      note: 'approved 2026-11-14 as a CANDIDATE: google lists it in its own model list (catalog run of 2026-11-14) and the pinned gateway''s catalogue holds it; no live check has tried it. It has NOT answered live yet; the next live check decides, and a model that is gone rests alone while its provider keeps working'
   groq:
     label: Groq
     enabled: true
@@ -1063,10 +1063,10 @@ providers:
       - text
       note: present in the gateway baseline; not approved
     - id: google/gemma-4-31b-it:free
-      approved: false
+      approved: true
       capabilities:
       - text
-      note: present in the gateway baseline; not approved
+      note: 'approved 2026-11-14 as a CANDIDATE: openrouter lists it in its own model list (catalog run of 2026-11-14) and the pinned gateway''s catalogue holds it; no live check has tried it. It has NOT answered live yet; the next live check decides, and a model that is gone rests alone while its provider keeps working'
     - id: liquid/lfm-2.5-1.2b-instruct:free
       approved: false
       capabilities:
@@ -1078,15 +1078,15 @@ providers:
       - text
       note: present in the gateway baseline; not approved
     - id: google/gemma-4-26b-a4b-it:free
-      approved: false
+      approved: true
       capabilities:
       - text
-      note: present in the gateway baseline; not approved
+      note: 'approved 2026-11-14 as a CANDIDATE: openrouter lists it in its own model list (catalog run of 2026-11-14) and the pinned gateway''s catalogue holds it; no live check has tried it. It has NOT answered live yet; the next live check decides, and a model that is gone rests alone while its provider keeps working'
     - id: nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free
-      approved: false
+      approved: true
       capabilities:
       - text
-      note: present in the gateway baseline; not approved
+      note: 'approved 2026-11-14 as a CANDIDATE: openrouter lists it in its own model list (catalog run of 2026-11-14) and the pinned gateway''s catalogue holds it; no live check has tried it. It has NOT answered live yet; the next live check decides, and a model that is gone rests alone while its provider keeps working'
     - id: poolside/laguna-xs.2:free
       approved: false
       capabilities:
@@ -1119,11 +1119,11 @@ providers:
       - tools
       note: present in the gateway baseline; not approved
     - id: nvidia/nemotron-3-ultra-550b-a55b:free
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved 2026-11-14 as a CANDIDATE: openrouter lists it in its own model list (catalog run of 2026-11-14) and the pinned gateway''s catalogue holds it; no live check has tried it. It has NOT answered live yet; the next live check decides, and a model that is gone rests alone while its provider keeps working'
     - id: cognitivecomputations/dolphin-mistral-24b-venice-edition:free
       approved: false
       capabilities:
@@ -1589,20 +1589,30 @@ providers:
       - tools
       note: 'switched off 2026-11-14: Kilo itself answered 404 model_not_found for it in the live check of that day (AI gateway #22), after the gateway''s stored no-key row let the call reach Kilo. Add it back only after a live check answers'
     - id: poolside/laguna-m.1:free
-      approved: true
+      approved: false
       capabilities:
       - text
-      note: 'approved 2026-11-14 as a CANDIDATE: it is in the pinned gateway''s catalogue, but it has NOT answered live yet. The next live check decides; a model that is gone rests alone and its provider keeps working'
+      note: 'switched off 2026-11-14: the live check of that day (AI gateway #23) got 404 model_not_found (UPSTREAM_BROKEN: every routed provider reports the model as not found or removed upstream), and Kilo''s own model list of 473 does not hold it. Add it back only after a live check answers'
     - id: stepfun/step-3.7-flash:free
-      approved: true
+      approved: false
       capabilities:
       - text
-      note: 'approved 2026-11-14 as a CANDIDATE: it is in the pinned gateway''s catalogue, but it has NOT answered live yet. The next live check decides; a model that is gone rests alone and its provider keeps working'
+      note: 'switched off 2026-11-14: the live check of that day (AI gateway #23) got 404 model_not_found (UPSTREAM_BROKEN: every routed provider reports the model as not found or removed upstream), and Kilo''s own model list of 473 does not hold it. Add it back only after a live check answers'
     - id: poolside/laguna-xs.2:free
+      approved: false
+      capabilities:
+      - text
+      note: 'switched off 2026-11-14: the live check of that day (AI gateway #23) got 404 model_not_found (UPSTREAM_BROKEN: every routed provider reports the model as not found or removed upstream), and Kilo''s own model list of 473 does not hold it. Add it back only after a live check answers'
+    - id: kilo-auto/free
       approved: true
       capabilities:
       - text
-      note: 'approved 2026-11-14 as a CANDIDATE: it is in the pinned gateway''s catalogue, but it has NOT answered live yet. The next live check decides; a model that is gone rests alone and its provider keeps working'
+      note: 'approved 2026-11-14 as a CANDIDATE: listed in Kilo''s own model list (473 models) in the catalog run of 2026-11-14; Kilo''s free automatic route. Not in the pinned gateway''s catalogue, so the gateway''s add-model call adds it. It has NOT answered live yet; the next live check decides, and a model that is gone rests alone while its provider keeps working'
+    - id: nvidia/nemotron-3.5-super-vl:free
+      approved: true
+      capabilities:
+      - text
+      note: 'approved 2026-11-14 as a CANDIDATE: listed in Kilo''s own model list (473 models) in the catalog run of 2026-11-14. Not in the pinned gateway''s catalogue, so the gateway''s add-model call adds it. It has NOT answered live yet; the next live check decides, and a model that is gone rests alone while its provider keeps working'
   pollinations:
     label: Pollinations
     enabled: false

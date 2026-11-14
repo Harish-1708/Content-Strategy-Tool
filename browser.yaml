@@ -16,6 +16,26 @@ pacing:
   min_delay_seconds: 3          # a random pause before opening each page
   max_delay_seconds: 8
   scroll_pause_seconds: 3       # a random pause after each scroll
+
+# Human-like browsing for the sessions that are LOGGED IN with an account (Instagram, TikTok): see contentintel/human.py. A person does not open a page after a fixed pause and jump two thousand
+# pixels down it, so the browser pauses the way reading time varies, settles on a page, moves the mouse, scrolls in several small turns (now and then a little back up) and takes a longer break after
+# every few pages. It only looks: it never clicks, likes, follows, posts or messages. A page opened without an account (the public Meta Ads library) keeps the plain pauses above.
+# Set `enabled: false` to go back to the plain pauses and jumps. Every number below is a range [smallest, largest].
+human:
+  enabled: true
+  settle_seconds: [1.5, 4.0]        # looking at the page after it has opened
+  wheel_steps: [5, 9]               # one scroll is this many small wheel turns
+  wheel_step_pixels: [120, 420]
+  wheel_step_ms: [40, 160]          # the moment each turn takes
+  scroll_back_chance: 0.12          # now and then a little scroll back up
+  scroll_back_pixels: [80, 300]
+  reading_variation: 0.35           # how much reading time varies (0 = never)
+  distraction_chance: 0.08          # now and then a longer pause, as when someone looks away
+  distraction_factor: [2.0, 4.0]
+  mouse_moves: true
+  break_every_pages: [6, 10]        # a longer break after this many pages
+  break_seconds: [20, 60]
+
 limits:
   max_scrolls_per_page: 8       # how far down a results page it will scroll
 
