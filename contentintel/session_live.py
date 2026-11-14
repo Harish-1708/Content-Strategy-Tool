@@ -145,7 +145,7 @@ def _evidence(platform, res, session, plain):
     err = res.get("error") or {}
     ev = S.page_evidence(platform, res.get("final_url") or "", res.get("html") or "", res.get("status") or 0, res.get("text") or "")
     ev.update(html_truncated=bool(res.get("html_truncated")), fetched_with=res.get("fetched_with") or ("plain HTTP" if plain else "browser"), cookies_sent=sorted(session.cookie_jar()), cookies_back=list(res.get("cookie_names_back") or []),
-              worker_error=(f"{err.get('code')}: {err.get('message')}"[:300] if err else ""))
+              worker_error=(f"{err.get('code')}: {' '.join(str(err.get('message')).split('Call log:')[0].split())}"[:300] if err else ""))
     return ev
 
 
@@ -225,9 +225,9 @@ def check_platform(platform, settings, contact, python, *, environ=None, runner=
     row["evidence"] = _evidence(platform, res, session, plain)
     refused = "err_http_response_code_failure" in str(err.get("message", "")).lower()                  # the browser's own words for a platform that answers an automated visit with an error status
     if err and err.get("code") != "PLATFORM_BLOCKED" and not refused and not WALL.search(str(err.get("message", ""))) and int(status or 0) not in (401, 403) and not looks_like_challenge(status, html, row["evidence"]["title"]):
-        return done(CANNOT_CHECK, f"the Scrapling worker could not read the page cleanly ({humanise_error(err.get('code'), err.get('message', ''))}), so nothing was judged; this is not the platform's answer")
+        return done(CANNOT_CHECK, f"the Scrapling worker could not read the page cleanly ({humanise_error(err.get('code'), err.get('message', ''), platform)}), so nothing was judged; this is not the platform's answer")
     if err.get("code") == "PLATFORM_BLOCKED" or refused or looks_like_challenge(status, html, row["evidence"]["title"]):
-        blocked = ((f"{spec['label']}: {humanise_error(err.get('code'), err.get('message', ''))}, so the session itself could not be judged" if refused else
+        blocked = ((f"{spec['label']}: {humanise_error(err.get('code'), err.get('message', ''), platform)}, so the session itself could not be judged" if refused else
                     f"{spec['label']} showed a bot-check or challenge page to this runner, so the session itself could not be judged")
                    + (f"; and {why_plain}" if plain else "") + ". This is the platform blocking the runner, not a bad session")
         if platform == "x":                                                              # the approved last resort: ask X's own profile interface, with the two cookies already stored
@@ -240,7 +240,7 @@ def check_platform(platform, settings, contact, python, *, environ=None, runner=
                 return done(REJECTED, f"{layered['detail']} ({via})")
             blocked += f". The last-resort twscrape check could not judge it either: {layered['detail']}"
             if "403" in layered["detail"]:
-                blocked += ". X answers 403 to this runner's address on both routes (its web page and its profile interface), so from GitHub's servers its session cannot be proved; only a different network address would change that"
+                blocked += ". X has answered 403 to this runner's address on both routes (its web page and its profile interface) and has also accepted it (the check of 14 Nov 2026 reached x.com/home logged in), so it is intermittent: when it blocks, its session cannot be proved from GitHub's servers and only a different network address would change that"
         return done(BLOCKED, blocked)
     if not html:
         if status in (401, 403):
@@ -296,7 +296,7 @@ def evidence_lines(r):
     else:
         lines.append(f"      page code: {ev['html_chars']} characters{' (cut at the limit: the rest was not searched)' if ev.get('html_truncated') else ''}, {ev['scripts']} script tags" + (f", element ids: {', '.join(ev['body_ids'])}" if ev["body_ids"] else ", no element ids")
                      + (f"; the no-script note says: '{ev['noscript']}'" if ev["noscript"] else "; no no-script note"))
-    if ev["worker_error"]:
+    if ev["worker_error"] and ev["worker_error"][:120] not in " ".join(str(r.get("reason") or "").split()):          # said once: not again when the verdict already carries it
         lines.append(f"      the worker said: {ev['worker_error']}")
     tw = r.get("twscrape")
     if tw:
@@ -352,12 +352,13 @@ def readable(text):
     return len(str(text).strip()) >= MIN_READABLE_CHARS and len(words) >= MIN_READABLE_WORDS
 
 
-def humanise_error(code, message):
-    """A worker error in plain words, keeping the original at the end. The browser's own wording (net::ERR_...) means little to a reader."""
+def humanise_error(code, message, platform=""):
+    """A worker error in plain words, keeping the original at the end. The browser's own wording (net::ERR_...) means little to a reader. Only LinkedIn is named for status 999: it is what LinkedIn does,
+    and saying it about another platform would be a guess."""
     raw = " ".join(str(message or "").split("Call log:")[0].split())
     low = raw.lower()
     if "err_http_response_code_failure" in low:
-        plain = "the platform answered the browser with an error status instead of a page, which is its own refusal of an automated visit (LinkedIn does this with status 999)"
+        plain = "the platform answered the browser with an error status instead of a page, which is its own refusal of an automated visit" + (" (LinkedIn does this with status 999)" if platform == "linkedin" else " (the browser does not say which status)")
     elif "timeout" in low and ("goto" in low or "exceeded" in low):
         plain = "the page did not finish loading in time"
     elif "net::err_" in low:
@@ -394,13 +395,13 @@ def _rows_from(res, route):
     return [{"url": res.get("url"), "final_url": res.get("final_url"), "title": res.get("title") or "", "text": text, "chars": len(text), "route": route, "quality": quality}] if text.strip() else []
 
 
-def _failure_from(res):
+def _failure_from(res, platform=""):
     err = res.get("error") or {}
     message = err.get("message") or "the page could not be read"
     code = {"NEED_SETUP": K.NEED_SETUP, "NEED_LOGIN": K.NEED_LOGIN, "RATE_LIMITED": K.RATE_LIMITED, "PLATFORM_BLOCKED": K.PLATFORM_BLOCKED, "NOT_FOUND": K.NOT_FOUND, "BAD_INPUT": K.BAD_INPUT}.get(err.get("code"), K.UPSTREAM_BROKEN)
     if WALL.search(message):
         return K.Failure(K.NEED_LOGIN, message)
-    return K.Failure(code, humanise_error(err.get("code") or "no answer", message))
+    return K.Failure(code, humanise_error(err.get("code") or "no answer", message, platform))
 
 
 def _read_once(platform, url, settings, contact, python, environ, runner, with_session):
@@ -416,7 +417,7 @@ def _read_once(platform, url, settings, contact, python, environ, runner, with_s
     if worked and quality != "real text":
         worked, error = False, f"UPSTREAM_BROKEN: the page came back with no readable text ({len(text)} characters: {WHY_NOT_CONTENT[quality]})"
     else:
-        error = "" if worked else humanise_error(err.get("code") or "no answer", err.get("message") or "no page came back")
+        error = "" if worked else humanise_error(err.get("code") or "no answer", err.get("message") or "no page came back", platform)
     return {"ok": worked, "chars": len(text), "words": set(text.lower().split()), "title": str(res.get("title") or ""), "landed": S._landed(res.get("final_url") or ""), "starts": text[:300], "error": error, "quality": quality}
 
 
@@ -484,6 +485,8 @@ def read_entry(platform, url, result):
     row = result.rows[0] if result.rows else {}
     by_session = result.route == "session"
     quality = row.get("quality") or ("snippets about the address, not the page" if result.route == "discovery" else "")
+    if row.get("left_out"):
+        quality += f"; {len(row['left_out'])} result(s) about a different account ({', '.join(row['left_out'])}) left out"
     return {"kind": "read", "platform": platform, "url": S._landed(url), "route": result.route or "none", "skipped": bool(result.skipped), "reason": " ".join(str(result.reason).split())[:300],
             "quality": quality, "chars": int(row.get("chars") or 0), "title": str(row.get("title") or "")[:200], "landed": S._landed(row.get("final_url") or ""),
             "starts": "" if by_session else " ".join(str(row.get("text") or "").split())[:200], "trail": [[n, o, " ".join(str(d).split())[:200]] for n, o, d in result.trail]}
@@ -590,6 +593,25 @@ def _query_for(url):
     return " ".join([host, *re.sub(r"[/_\-.]+", " ", path).split()])[:120]
 
 
+NOT_ACCOUNTS = frozenset({"p", "reel", "reels", "tv", "explore", "stories", "hashtag", "tags", "tag", "video", "watch", "status", "i", "in", "company", "school", "posts", "groups", "pages", "r", "user", "search", "channel", "c", "feed", "web", "share", "photo", "photos", "events", "marketplace", "login", "accounts", "directory", "locations", "popular", "settings", "intent", "hashtags", "topics", "discover", "music", "place", "t", "u", "@"})
+
+
+def _account_of(url):
+    """(host, account) of an address whose first path word names an account (instagram.com/name, tiktok.com/@name, x.com/name), else (host, ''). Words like /reel/ or /explore/ are not accounts."""
+    text = re.sub(r"^https?://(www\.)?", "", str(url or "").split("?")[0].split("#")[0].lower())
+    host, _, path = text.partition("/")
+    first = path.split("/")[0].lstrip("@").strip()
+    return host, ("" if not first or first in NOT_ACCOUNTS else first)
+
+
+def _other_account(target, found):
+    """The other account's name (as @name) when a search result is a profile of a DIFFERENT account on the same site as the address that was asked for (swoveralls_ when swoveralls was asked for), else ''.
+    A result on another site, or about a post or a page, is not judged here. Accounts are compared exactly: a near match is a different account."""
+    t_host, t_account = _account_of(target)
+    f_host, f_account = _account_of(found)
+    return f"@{f_account}" if t_account and f_account and f_host == t_host and f_account != t_account else ""
+
+
 def discovery_rows(url, environ, providers=None):
     """The discovery fallback: ONE search about the address through the first search provider that has a key. These are titles and snippets from the search layer, not the page itself, and no login is used."""
     from . import providers as P
@@ -605,7 +627,16 @@ def discovery_rows(url, environ, providers=None):
         raise K.Failure(K.RATE_LIMITED, str(exc)) from None
     except P.ProviderError as exc:
         raise K.Failure(K.UPSTREAM_BROKEN, str(exc)) from None
-    return [{"url": r.url, "final_url": r.url, "title": r.title, "text": r.snippet or "", "chars": len(r.snippet or ""), "route": "discovery", "provider": name} for r in results if r.snippet or r.title]
+    rows = [{"url": r.url, "final_url": r.url, "title": r.title, "text": r.snippet or "", "chars": len(r.snippet or ""), "route": "discovery", "provider": name} for r in results if r.snippet or r.title]
+    kept, left_out = [], []
+    for row in rows:
+        other = _other_account(url, row["url"])
+        (left_out.append(other) if other else kept.append(row))
+    if not kept and left_out:
+        raise K.Failure(K.NOT_FOUND, f"the search found only a different account ({', '.join(sorted(set(left_out)))}) for {url}: an account with a similar name is never used in its place")
+    if kept and left_out:
+        kept[0]["left_out"] = sorted(set(left_out))                   # said in the stored record and the log: these results were about a different account
+    return kept
 
 
 def read_page(platform, url, settings, contact, python, *, environ=None, runner=subprocess.run, now="", ledger=None, log=None, providers=None):
@@ -623,13 +654,13 @@ def read_page(platform, url, settings, contact, python, *, environ=None, runner=
     def primary():
         res = _worker_page(platform, url, settings, contact, python, environ, runner, with_session=False, reading=True)
         if not res.get("ok"):
-            raise _failure_from(res)
+            raise _failure_from(res, platform)
         return _rows_from(res, "primary")
 
     def session():
         res = _worker_page(platform, url, settings, contact, python, environ, runner, with_session=True, reading=True)
         if not res.get("ok"):
-            raise _failure_from(res)
+            raise _failure_from(res, platform)
         return _rows_from(res, "session")
 
     proved = ledger.proved(platform, now) if ledger is not None else False
