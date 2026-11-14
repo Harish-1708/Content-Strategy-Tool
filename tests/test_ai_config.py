@@ -232,14 +232,19 @@ def test_every_platform_in_the_pinned_gateway_is_in_the_registry_and_nowhere_els
         assert reg.provider(pid).gateway_platform == pid
 
 
-def test_the_registry_allowlist_is_a_subset_of_the_models_the_pinned_gateway_ships():
+ADDED = {"kilo": {"kilo-auto/free", "nvidia/nemotron-3.5-super-vl:free"}}
+
+
+def test_the_registry_allowlist_is_a_subset_of_the_models_the_pinned_gateway_ships_except_the_two_added_through_the_gateway():
     reg = R.load_registry(SHIPPED_P)
     shipped = {p["id"]: {m["modelId"] for m in p["models"]} for p in INVENTORY["platforms"]}
     for p in reg.providers.values():
         if p.id == "claude" or p.direct or p.retired:                                       # a retired provider is a record: the pinned gateway no longer ships it
             continue
-        assert {m.id for m in p.models} <= shipped[p.id], p.id
-    assert sum(len(p.models) for p in reg.providers.values() if p.id != "claude" and not p.direct and not p.retired) == 85
+        extra = {m.id for m in p.models} - shipped[p.id]
+        assert extra == ADDED.get(p.id, set()), p.id                                           # only Kilo's two free routes are not in the pinned catalogue; the gateway's add-model call adds them
+        assert all("add-model call adds it" in m.note for m in p.models if m.id in extra), p.id
+    assert sum(len(p.models) for p in reg.providers.values() if p.id != "claude" and not p.direct and not p.retired) == 87
 
 
 def test_the_shipped_lanes_load_against_the_allowlist_and_cover_the_ten_kinds_of_work_and_the_two_platform_lanes():
@@ -333,7 +338,7 @@ def test_kilo_is_enabled_like_the_others_with_internal_open_one_model_in_the_poo
     p = R.load_registry(SHIPPED_P).provider("kilo")
     assert p.enabled and p.experimental and p.approved_classes == ("public", "internal") and p.effective_ceiling == "internal" and p.credential_env == ()
     assert p.override["approved_by"] == "Harish" and p.override["date"] == "2026-11-14" and "Internal stays open everywhere" in p.override["reason"] and "Restricted data" in p.override["reason"]
-    assert [m.id for m in p.models if m.approved] == ["poolside/laguna-m.1:free", "stepfun/step-3.7-flash:free", "poolside/laguna-xs.2:free"] and len(p.models) == 4               # Kilo answered 404 for its nemotron model (live check #22): off; its other three are candidates
+    assert [m.id for m in p.models if m.approved] == ["kilo-auto/free", "nvidia/nemotron-3.5-super-vl:free"] and len(p.models) == 6               # Kilo answered 404 for its nemotron model (live check #22): off; its other three are candidates
     assert p.terms["trains_on_data"].startswith("yes") and "Public and Internal data" in p.terms["note"] and "services.ai_internal_data.channels.kilo" in p.terms["note"] and "internal: false" in p.terms["note"]
     assert p.limits == {"requests_per_hour": 200} and "Retry-After" in p.terms["note"]
 

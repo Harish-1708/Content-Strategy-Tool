@@ -202,7 +202,7 @@ def test_in_browser_mode_a_failed_browser_run_is_never_quietly_rescued_by_apify(
     f = world(cfg)
     expired_instagram(cfg, f)
     result = run(store, tmp_path, swov, cfg, settings, f, apify=apify, backend="browser", sources=("instagram",))
-    assert statuses(result) == [("instagram", "failed")] and http.calls == [] and used(store) == {}
+    assert statuses(result) == [("instagram", "skipped")] and http.calls == [] and used(store) == {}
     plan = run(store, tmp_path / "b", swov, cfg, settings, world(cfg), apify=apify, backend="browser", sources=("meta_ads",), dry_run=True)
     assert "Apify" not in plan.brands["swoveralls"][0].detail
 
@@ -247,7 +247,7 @@ def test_in_fallback_mode_a_failed_login_is_rescued_by_apify_but_still_flagged(t
     result = run(store, tmp_path, swov, cfg, settings, f, apify=apify, backend="fallback")
     assert statuses(result) == [("meta_ads", "ran"), ("tiktok", "ran"), ("instagram", "ran")]
     assert "via Apify (the browser failed: instagram: not logged in" in result.brands["swoveralls"][2].detail
-    assert result.problems and result.problems_for == ["instagram"]                         # the cookies still need refreshing
+    assert not result.problems and list(result.needs_you) == ["instagram"]                         # the cookies still need refreshing
     assert {r["source"]: r["via"] for r in store.read_collected("swoveralls")} == {"meta_ads": "browser", "tiktok": "browser", "instagram": "apify"}
     assert used(store) == {"collected_items": 4, "apify_items": 1}
 
@@ -271,7 +271,7 @@ def test_in_fallback_mode_without_a_token_a_browser_failure_is_just_a_failure(tm
     f = world(cfg)
     expired_instagram(cfg, f)
     result = run(store, tmp_path, swov, cfg, settings, f, apify=None, backend="fallback", sources=("instagram",))
-    assert statuses(result) == [("instagram", "failed")] and "not logged in" in result.brands["swoveralls"][0].detail
+    assert statuses(result) == [("instagram", "skipped")] and "not logged in" in result.brands["swoveralls"][0].detail
 
 
 def test_in_fallback_mode_a_used_up_apify_allowance_leaves_the_browser_failure_standing(tmp_path, store, swov, cfg, settings):
@@ -279,7 +279,7 @@ def test_in_fallback_mode_a_used_up_apify_allowance_leaves_the_browser_failure_s
     f = world(cfg)
     expired_instagram(cfg, f)
     result = run(store, tmp_path, swov, cfg, replace(settings, apify_monthly_items=0), f, apify=apify, backend="fallback", sources=("instagram",))
-    assert statuses(result) == [("instagram", "failed")] and http.calls == []
+    assert statuses(result) == [("instagram", "skipped")] and http.calls == []
 
 
 def test_a_rejected_apify_token_switches_apify_off_for_the_run(tmp_path, store, swov, cfg, settings):
@@ -440,9 +440,9 @@ def test_apify_only_without_a_token_skips_and_names_the_secret(cli2, capsys):
 def test_fallback_uses_apify_when_the_browser_login_fails_and_still_exits_red(cli2, capsys, tmp_path):
     state, go, http, cfg = cli2
     expired_instagram(cfg, state["factory"])
-    assert go("--brand", "swoveralls", "--backend", "fallback", "--sources", "instagram") == 1
+    assert go("--brand", "swoveralls", "--backend", "fallback", "--sources", "instagram") == 0
     out = capsys.readouterr().out
-    assert "via Apify (the browser failed" in out and "::error::instagram: the login did not work" in out and "KEYMARK" not in out
+    assert "via Apify (the browser failed" in out and "::warning::instagram: needs you, this source was skipped and the run carries on" in out and "::error::instagram" not in out and "KEYMARK" not in out
     assert '"via": "apify"' in (tmp_path / "data" / "swoveralls" / "research" / "collected.jsonl").read_text()
 
 

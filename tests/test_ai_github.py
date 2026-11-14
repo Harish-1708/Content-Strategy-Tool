@@ -252,6 +252,7 @@ class FakeSidecar:
 
     def __init__(self, gateway_dir, lock):
         self.isolated, self.base_url, self.result = [], "http://127.0.0.1:1", (True, "3 model(s) are each their own group")
+        self.add_calls, self.add_result = [], (["kilo:kilo-auto/free"], [])
         FakeSidecar.made.append(self)
 
     def start(self, env, port, log):
@@ -262,6 +263,10 @@ class FakeSidecar:
 
     def bootstrap(self, password):
         return "unified-key"
+
+    def add_missing_models(self, password, registry, environ):
+        self.add_calls.append(password)
+        return self.add_result
 
     def isolate_models(self, password):
         self.isolated.append(password)
@@ -284,6 +289,17 @@ def test_a_live_run_makes_each_providers_model_its_own_group_and_a_gateway_that_
     notes = []
     clients, side = CM.live_clients(reg, _gateway_env(tmp_path), str(tmp_path / "gw"), str(tmp_path / "work"), notes)
     assert side is FakeSidecar.made[0] and side.isolated == ["long-enough-password"] and "groq" in clients
+    assert side.add_calls == ["long-enough-password"] and any(n.startswith("NOTE: 1 approved model(s) the pinned gateway's catalogue does not hold were added") and "kilo:kilo-auto/free" in n for n in notes)      # the live flow adds them before it groups
+    FakeSidecar.made.clear()
+    monkeypatch.setattr(FakeSidecar, "add_missing_models", lambda self, pw, registry, environ: ([], ["kilo:kilo-auto/free (HTTP 400: no)"]))
+    notes = []
+    CM.live_clients(reg, _gateway_env(tmp_path), str(tmp_path / "gw"), str(tmp_path / "work"), notes)
+    assert "NOTE: could not add an approved model to the gateway: kilo:kilo-auto/free (HTTP 400: no)" in notes and not any("add an approved model" in n and n.startswith("APPLICATION") for n in notes)      # a refusal is a note, never a failure
+    monkeypatch.undo()
+    monkeypatch.setattr(CM.gw, "Sidecar", FakeSidecar)
+    FakeSidecar.made.clear()
+    notes = []
+    clients, side = CM.live_clients(reg, _gateway_env(tmp_path), str(tmp_path / "gw"), str(tmp_path / "work"), notes)
     assert any(n.startswith("SKIPPED: mistral: no credential") for n in notes) and not any(n.startswith("APPLICATION: mistral") for n in notes)        # no key on purpose: a skip, never a problem
     assert not [n for n in notes if "own group" in n]                                    # nothing to report when it worked (the Claude-key note is a different matter)
     FakeSidecar.made.clear()

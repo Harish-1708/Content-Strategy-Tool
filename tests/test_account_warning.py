@@ -224,8 +224,8 @@ def test_a_warned_account_stops_the_run_for_that_site_and_is_rested(tmp_path, st
     f = world(cfg)
     f.browsers["instagram"] = warned_page(cfg)
     result = go(store, tmp_path, swov, cfg, settings, f, sources=("meta_ads", "tiktok", "instagram"))
-    assert statuses(result) == [("meta_ads", "ran"), ("tiktok", "ran"), ("instagram", "failed")]
-    assert result.problems_for == ["instagram"]
+    assert statuses(result) == [("meta_ads", "ran"), ("tiktok", "ran"), ("instagram", "skipped")]
+    assert list(result.needs_you) == ["instagram"] and not result.problems_for
     detail = result.brands["swoveralls"][2].detail
     assert "instagram showed an account warning (We suspect automated behavior" in detail
     assert "The account will rest until 2026-10-23 (3 days)" in detail and "collectors.safety.cooldown_days" in detail
@@ -272,7 +272,7 @@ def test_a_rest_of_zero_stops_this_run_only_and_remembers_nothing(tmp_path, stor
     f = world(cfg)
     f.browsers["instagram"] = warned_page(cfg)
     result = go(store, tmp_path, swov, cfg, replace(settings, cooldown_days={"instagram": 0}), f)
-    assert statuses(result) == [("instagram", "failed")] and "It will not be used again in this run." in result.brands["swoveralls"][0].detail
+    assert statuses(result) == [("instagram", "skipped")] and "It will not be used again in this run." in result.brands["swoveralls"][0].detail
     assert store.read_cooldowns() == {} and result.resting == {}
 
 
@@ -289,7 +289,7 @@ def test_each_site_rests_on_its_own(tmp_path, store, swov, cfg, settings):
     f.browsers["tiktok"] = FakeBrowser({"https://www.tiktok.com/tag/": {"present": [tt["warning_any"][0]], "text": "Your account has been suspended"}},
                                       present_always={tt["logged_in_any"][0]})
     result = go(store, tmp_path, swov, cfg, settings, f, sources=("tiktok", "instagram"))
-    assert statuses(result) == [("tiktok", "failed"), ("instagram", "ran")]
+    assert statuses(result) == [("tiktok", "skipped"), ("instagram", "ran")]
     assert list(store.read_cooldowns()) == ["tiktok"]
 
 
@@ -300,7 +300,7 @@ def test_a_warning_in_one_brand_keeps_the_account_away_from_the_next_brand_in_th
         write_research(tmp_path, brands[slug], ONE)
     result = C.run_collect([brands["swoveralls"], brands["duderobe"]], store, browser_factory=f, creds=CREDS, settings=settings,
                            browser_cfg=cfg, ledger_cls=R.Ledger, sources=["instagram"], now=NOW, run_id="r", root=str(tmp_path / "brands"))
-    assert statuses(result, "swoveralls") == [("instagram", "failed")] and statuses(result, "duderobe") == [("instagram", "skipped")]
+    assert statuses(result, "swoveralls") == [("instagram", "skipped")] and statuses(result, "duderobe") == [("instagram", "skipped")]
     assert result.brands["duderobe"][0].detail.startswith("instagram: instagram showed an account warning")
     assert f.browsers["instagram"].opened == ["https://www.instagram.com/", "https://www.instagram.com/explore/tags/a/"]   # opened once, then left alone
 
@@ -310,7 +310,7 @@ def test_a_plain_security_check_is_not_an_account_warning_and_starts_no_rest(tmp
     f = world(cfg)
     f.browsers["tiktok"] = FakeBrowser({"https://www.tiktok.com/": {"present": [tt["challenge_any"][0]]}}, present_always={tt["logged_in_any"][0]})
     result = go(store, tmp_path, swov, cfg, settings, f, sources=("tiktok",))
-    assert statuses(result) == [("tiktok", "failed")] and "security check" in result.brands["swoveralls"][0].detail
+    assert statuses(result) == [("tiktok", "skipped")] and "security check" in result.brands["swoveralls"][0].detail
     assert store.read_cooldowns() == {} and result.resting == {} and "will rest" not in result.brands["swoveralls"][0].detail
 
 
@@ -342,7 +342,7 @@ def test_a_warning_in_fallback_mode_is_rescued_by_apify_but_still_flagged_and_re
     f = world(cfg)
     f.browsers["instagram"] = warned_page(cfg)
     result = go(store, tmp_path, swov, cfg, settings, f, backend="fallback", apify=apify)
-    assert statuses(result) == [("instagram", "ran")] and result.problems_for == ["instagram"]
+    assert statuses(result) == [("instagram", "ran")] and list(result.needs_you) == ["instagram"] and not result.problems_for
     assert "via Apify (the browser failed: instagram: instagram showed an account warning" in result.brands["swoveralls"][0].detail
     assert list(store.read_cooldowns()) == ["instagram"]
 

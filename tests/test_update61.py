@@ -230,5 +230,5 @@ def test_the_ai_check_asks_every_route_with_the_ignore_rests_request(monkeypatch
                      "--providers-config", str(ROOT / "ai_providers.yaml"), "--lanes-config", str(ROOT / "ai_lanes.yaml"), "--tasks-config", str(ROOT / "ai_eval_tasks.yaml"), "--workdir", str(tmp_path / "w")])
     capsys.readouterr()
     assert code == 0 and len(seen) >= 29 and all(flag is True for _, _, flag in seen)                                  # every route of the check, every provider
-    assert {("kilo", "poolside/laguna-m.1:free"), ("kilo", "stepfun/step-3.7-flash:free"), ("kilo", "poolside/laguna-xs.2:free")} <= {(p, m) for p, m, _ in seen}
+    assert {("kilo", "kilo-auto/free"), ("kilo", "nvidia/nemotron-3.5-super-vl:free")} <= {(p, m) for p, m, _ in seen}
     assert len({m for p, m, _ in seen if p == "ollama"}) == 7                                                        # all seven Ollama models are on the list to try

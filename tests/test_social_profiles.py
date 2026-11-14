@@ -399,3 +399,16 @@ def test_the_sheet_gets_a_social_profiles_tab_with_the_latest_numbers_and_the_ch
     assert header[:len(SP.SOCIAL_COLUMNS)] == SP.SOCIAL_COLUMNS and len(rows) == 2
     tt = next(r for r in rows if r["platform"] == "TikTok")
     assert tt["followers"] == 1100 and isinstance(tt["followers"], int) and tt["followers_change"] == 100 and tt["followers_change_pct"] == 10 and tt["likes"] == 80
+
+
+def test_a_profile_without_a_single_count_is_not_a_row_but_linkedins_about_text_is(tmp_path):
+    snaps = SN.SnapshotStore(tmp_path / "data")
+    sites = [{"id": "shop-example", "name": "Shop", "domain": "shop.example", "origin": "test", "kind": "store", "request_controls": ""}]
+    empty = {"platform": "tiktok", "handle": "shop", "url": "u", "name": "", "bio": "words", "metrics": {}, "quality": "real text", "text": "x"}
+    snaps.save("shop-example", "profile-tiktok", dict(empty, captured_at=T1), T1)
+    snaps.save("shop-example", "profile-instagram", dict(empty, platform="instagram", captured_at=T1), T1)
+    snaps.save("shop-example", "profile-linkedin", {"platform": "linkedin", "handle": "shop", "url": "u", "name": "", "bio": "", "about": "About text", "metrics": {}, "quality": "real text", "text": "x", "captured_at": T1}, T1)
+    tab = SP.sheet_tab(sites, snaps)
+    assert sorted(tab["rows_by_key"]) == ["shop-example|linkedin"]                                              # the two empty rows older runs stored (monitoring #35) are no longer shown
+    snaps.save("shop-example", "profile-tiktok", dict(empty, metrics={"followers": 5}, captured_at=T2), T2)
+    assert sorted(SP.sheet_tab(sites, snaps)["rows_by_key"]) == ["shop-example|linkedin", "shop-example|tiktok"]        # and the row is back as soon as a count is read

@@ -66,15 +66,18 @@ def test_a_list_that_cannot_be_read_says_why_and_never_shows_the_key():
     assert CAT.fetch(provider("cloudflare"), {}, Http({})) == ([], "no model-list address is known for this provider")
 
 
-def test_the_comparison_names_withdrawn_models_candidates_and_models_the_pinned_gateway_cannot_route():
-    http = Http({"api.kilo.ai": (200, {"data": [{"id": "poolside/laguna-m.1:free"}, {"id": "stepfun/step-3.7-flash:free"}, {"id": DEAD_KILO}, {"id": "brand-new/model:free"}]}),
+def test_the_comparison_names_withdrawn_models_candidates_dead_ones_and_models_the_pinned_catalogue_lacks():
+    http = Http({"api.kilo.ai": (200, {"data": [{"id": "kilo-auto/free"}, {"id": "poolside/laguna-m.1:free"}, {"id": DEAD_KILO}, {"id": "brand-new/model:free"}, {"id": "brand-new/paid-model"}]}),
+                 "api.groq.com": (200, {"data": [{"id": "openai/gpt-oss-120b"}, {"id": "openai/gpt-oss-safeguard-20b"}]}),
                  "ollama.com": (200, {"models": [{"name": "gpt-oss:120b-cloud"}, {"name": "glm-5.3-flash:cloud"}]})})
-    rows = {r["id"]: r for r in CAT.run(REG, {"OLLAMA_API_KEY": "k"}, INVENTORY, http)}
+    rows = {r["id"]: r for r in CAT.run(REG, {"OLLAMA_API_KEY": "k", "GROQ_API_KEY": "k"}, INVENTORY, http)}
     kilo = rows["kilo"]
-    assert kilo["ok"] and kilo["listed"] == 4
-    assert kilo["approved_missing"] == ["poolside/laguna-xs.2:free"]                                             # approved by us, not in Kilo's own list
-    assert kilo["candidates"] == [DEAD_KILO]                                                                      # in the pinned catalogue, listed, not approved (here only because the stand-in lists it)
-    assert kilo["unroutable"] == ["brand-new/model:free"]                                                         # listed, but the pinned gateway does not know it
+    assert kilo["ok"] and kilo["listed"] == 5
+    assert kilo["approved_missing"] == ["nvidia/nemotron-3.5-super-vl:free"]                                       # approved by us, not in Kilo's own list
+    assert sorted(kilo["known_dead"]) == sorted([DEAD_KILO, "poolside/laguna-m.1:free"])      # listed, but a live check of ours switched it off: not offered again
+    assert kilo["candidates"] == []
+    assert kilo["unroutable"] == ["brand-new/model:free", "brand-new/paid-model"] and kilo["free_unknown"] == ["brand-new/model:free"]      # not in the pinned catalogue; the free one is singled out
+    assert rows["groq"]["candidates"] == ["openai/gpt-oss-safeguard-20b"] and rows["groq"]["approved_missing"] == ["openai/gpt-oss-20b"]   # in the pinned catalogue, not approved, no live check against it
     ollama = rows["ollama"]
     assert ollama["ok"] and "gpt-oss:120b" not in ollama["approved_missing"] and "glm-4.7" in ollama["approved_missing"] and ollama["unroutable"] == ["glm-5.3-flash:cloud"]      # a ':cloud' name matches its plain name
     assert rows["nvidia"]["ok"] is False and rows["nvidia"]["approved_missing"] == []                              # an unread list makes no claim about our models
@@ -91,7 +94,7 @@ def test_the_report_is_plain_truncated_and_never_contains_a_key():
     http = Http({"integrate.api.nvidia.com": (200, {"data": many}), "api.kilo.ai": (200, {"data": [{"id": "poolside/laguna-m.1:free"}]})})
     text = CAT.format_report(CAT.run(REG, {"NVIDIA_API_KEY": "SECRET-9", "GEMINI_API_KEY": "SECRET-8"}, INVENTORY, http))
     assert text.startswith("Provider model lists (READ-ONLY: nothing is changed")
-    assert "nvidia      20 listed" in text and "(+12 more)" in text and "need a newer pin" in text and "probably withdrawn" in text and "candidates" in text
+    assert "nvidia      20 listed" in text and "(+12 more)" in text and "add-model call can add one" in text and "probably withdrawn" in text and "candidates" in text
     assert "kilo        1 listed" in text and "google      NOT READ: the list answered HTTP 404" in text and "cohere      NOT READ: no key in this run (COHERE_API_KEY)" in text
     assert "SECRET-9" not in text and "SECRET-8" not in text and "2 of 10 provider list(s) read" in text
 

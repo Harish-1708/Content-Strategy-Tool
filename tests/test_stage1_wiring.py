@@ -125,7 +125,7 @@ def test_a_login_wall_rests_the_route_and_the_next_run_does_not_open_the_browser
     factory = world(cfg)
     factory.browsers["instagram"] = FakeBrowser({}, present_always={ig["login_wall_any"][0]})
     result = go(store, tmp_path, swov, cfg, settings, factory, health=ledger, sources=("instagram",))
-    assert detail(result, "instagram").status == "failed"
+    assert detail(result, "instagram").status == "skipped"
     assert entry(ledger, "instagram", "browser")["history"][-1]["code"] == K.NEED_LOGIN
     assert ledger.is_paused("instagram", "browser", at(NOW, hours=11)) and not ledger.is_paused("instagram", "browser", at(NOW, hours=12))
     again = world(cfg)

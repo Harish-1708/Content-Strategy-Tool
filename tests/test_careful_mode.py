@@ -334,7 +334,7 @@ def test_a_run_that_is_warned_still_stops_and_rests_in_careful_mode(tmp_path, st
     f.browsers["instagram"] = FakeBrowser({"https://www.instagram.com/explore/tags/": {"present": [ig["warning_any"][0]], "text": POPUP.strip()}},
                                           present_always={ig["logged_in_any"][0]})
     result = go(store, tmp_path, swov, cfg, settings, f)
-    assert statuses(result) == [("instagram", "failed")] and list(store.read_cooldowns()) == ["instagram"]
+    assert statuses(result) == [("instagram", "skipped")] and list(store.read_cooldowns()) == ["instagram"]
     assert "We've detected automated behavior on your account" in store.read_cooldowns()["instagram"]["reason"]
 
 
@@ -473,11 +473,17 @@ def test_the_browser_is_not_launched_with_the_option_that_hides_automation():
 
 def test_the_real_factory_gives_each_site_its_own_pauses(monkeypatch, cfg):
     seen = {}
-    monkeypatch.setattr(B, "open_browser", lambda site_name, site_cfg, pacing, cookies, debug: seen.setdefault(site_name, pacing))
+    humans = {}
+
+    def fake_open(site_name, site_cfg, pacing, cookies, debug, human=None):
+        humans[site_name] = human
+        return seen.setdefault(site_name, pacing)
+    monkeypatch.setattr(B, "open_browser", fake_open)
     factory = cli._real_factory(cfg, {"instagram": {"cookies": "c"}, "tiktok": {"cookies": "c"}}, "dbg")
     factory("instagram")
     factory("tiktok")
     assert seen["instagram"]["max_delay_seconds"] == 60 and seen["tiktok"] == cfg["pacing"]
+    assert humans["instagram"] is cfg["human"] and humans["tiktok"] is cfg["human"]                       # the human: settings of browser.yaml reach every site's browser
 
 
 # ---- every page load counts, and brands share a run's pages ---------------------------------------------------------------------

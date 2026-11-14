@@ -356,9 +356,10 @@ def test_the_real_pinned_gateway_passes_the_mock_provider_smoke_test(tmp_path):
     results, report = smoke.run_smoke(os.environ["FREEAPI_GATEWAY_DIR"], reg, LOCK, tmp_path, G.baseline_from_inventory(ROOT / "docs" / "ai" / "provider_inventory.json"))
     failed = [(n, d) for n, ok, d in results if not ok]
     assert not failed, failed
-    assert report["models_on"] == 3 and report["models_off"] == 105 and len(results) == 9                    # no key is given here: the one model on is Kilo's approved one (Kilo needs no key); the other 107 are off
-    assert next(d for n, ok, d in results if n.startswith("every baseline model")) == "109 rows, 0 wrongly enabled, 0 approved but off, 3 approved and on"
-    assert next(d for n, ok, d in results if n.startswith("a key-less provider")) == "3 key-less model(s) have their stored row" and report["keys"] == ["kilo"]      # Kilo holds the gateway's stored no-key row: without it the live check said "no key configured"
+    assert report["models_on"] == 0 and report["models_off"] == 108 and len(results) == 10                    # no key is given here: of the pinned catalogue nothing is on (Kilo's two approved models are not in it); the other 108 are off
+    assert next(d for n, ok, d in results if n.startswith("every baseline model")) == "111 rows, 0 wrongly enabled, 0 approved but off, 2 approved and on"                  # 108 of the catalogue + the smoke model + Kilo's two added ones, which are on (no key needed)
+    assert next(d for n, ok, d in results if n.startswith("approved models the pinned catalogue lacks")) == "2 added: kilo:kilo-auto/free, kilo:nvidia/nemotron-3.5-super-vl:free"      # added through the REAL pinned gateway's add-model call
+    assert next(d for n, ok, d in results if n.startswith("a key-less provider")) == "2 key-less model(s) have their stored row" and report["keys"] == ["kilo"]      # Kilo holds the gateway's stored no-key row: without it the live check said "no key configured"
 
 
 @pytest.mark.parametrize("status, body, message", [(204, {"error": {"message": "why"}}, "why"), (204, {}, "the gateway answered 204"), (302, {}, "the gateway answered 302"),

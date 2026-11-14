@@ -85,13 +85,13 @@ def write_research(tmp_path, brand, data):
 
 
 def collect(store, tmp_path, brands, data, factory, cfg, settings, *, creds=CREDS, sources=("meta_ads", "tiktok", "instagram"),
-            now=NOW, dry_run=False, run_id="run1", fresh=False):
+            now=NOW, dry_run=False, run_id="run1", fresh=False, page_finder=None):
     data = {"track_own_brand": False, **data}
     for b in brands:
         write_research(tmp_path, b, data)
     return C.run_collect(brands, store, browser_factory=factory, creds=creds, settings=settings, browser_cfg=cfg,
                          ledger_cls=R.Ledger, sources=list(sources), now=now, run_id=run_id, dry_run=dry_run,
-                         root=str(tmp_path / "brands"), fresh=fresh)
+                         root=str(tmp_path / "brands"), fresh=fresh, page_finder=page_finder)
 
 
 def statuses(result, slug="swoveralls"):
@@ -647,8 +647,8 @@ def test_expired_cookies_switch_a_site_off_for_the_run_but_not_the_others(tmp_pa
     f = world(cfg)
     f.browsers["instagram"] = FakeBrowser({}, present_always={site(cfg, "instagram")["login_wall_any"][0]})
     result = collect(store, tmp_path, [swov], FULL, f, cfg, settings)
-    assert statuses(result) == [("meta_ads", "ran"), ("tiktok", "ran"), ("instagram", "failed")]
-    assert result.problems and result.problems_for == ["instagram"] and used(store) == {"collected_items": 4}
+    assert statuses(result) == [("meta_ads", "ran"), ("tiktok", "ran"), ("instagram", "skipped")]
+    assert not result.problems and list(result.needs_you) == ["instagram"] and used(store) == {"collected_items": 4}
     assert any("INSTAGRAM_COOKIES" in n for n in result.notes)
 
 
@@ -656,7 +656,7 @@ def test_a_failed_site_is_not_retried_for_the_next_task_or_brand(tmp_path, store
     f = world(cfg)
     f.browsers["instagram"] = FakeBrowser({}, present_always={site(cfg, "instagram")["challenge_any"][0]})
     result = collect(store, tmp_path, [swov, dude], {"social": {"instagram": {"hashtags": ["a"]}}}, f, cfg, settings)
-    assert statuses(result, "swoveralls") == [("instagram", "failed")] and statuses(result, "duderobe") == [("instagram", "skipped")]
+    assert statuses(result, "swoveralls") == [("instagram", "skipped")] and statuses(result, "duderobe") == [("instagram", "skipped")]
     assert len(f.browsers["instagram"].opened) == 1 and "Log in once" in result.brands["duderobe"][0].detail
 
 
@@ -941,9 +941,9 @@ def test_cli_deep_research_only_runs_when_named(cli_env, capsys, tmp_path):
 def test_cli_exits_with_an_error_when_a_login_fails_and_says_what_to_do(cli_env, capsys):
     state, run, cfg = cli_env
     state["factory"].browsers["tiktok"] = FakeBrowser({}, present_always={site(cfg, "tiktok")["challenge_any"][0]})
-    assert run("--brand", "swoveralls") == 1
+    assert run("--brand", "swoveralls") == 0
     out = capsys.readouterr().out
-    assert "::error::tiktok: the login did not work" in out and "::error::swoveralls: 1 collection tasks failed" in out and COOKIE_MARKER not in out
+    assert "::warning::tiktok: needs you, this source was skipped and the run carries on" in out and "::error::" not in out and COOKIE_MARKER not in out
 
 
 def test_cli_reports_a_broken_seeds_file_plainly(cli_env, capsys, tmp_path):
@@ -1033,3 +1033,28 @@ def test_a_fresh_run_asks_every_source_again_inside_the_reuse_window_and_says_wh
     assert all(s == "ran" for _, s in statuses(fresh)) and asked.opened                                          # every source was asked again
     m = re.search(r"  (\d+) item\(s\) collected in this run: (\d+) new to the Collected tab, (\d+) already there", C.format_collect_report(fresh, settings))
     assert m and int(m.group(1)) > 0 and m.group(2) == "0" and int(m.group(3)) == int(m.group(1))             # the same items found again: one row each, none new
+
+
+def _bench_state(**entries):
+    from contentintel import benchmarks as bench
+    items = {}
+    for name, (status, source, checked) in entries.items():
+        items[bench.norm_name(name)] = {"name": name, "kind": "benchmark", "status": status, "page_id": "", "page_name": "", "page_likes": 0, "reason": "r", "candidates": [], "checked_at": checked, "source": source}
+    return {"version": 1, "items": items}
+
+
+def _found(name):
+    return {"status": "resolved", "page_id": "1234567", "page_name": name, "page_likes": 0, "candidates": [], "reason": "found with Serper"}
+
+
+def test_a_collect_run_looks_for_the_page_and_files_it_and_a_dry_run_does_not(tmp_path, store, swov, cfg, settings):
+    settings = replace(settings, benchmarks_enabled=True)                                  # the fixture switches the benchmark follow-up off; this test is about it
+    store.write_benchmarks("swoveralls", _bench_state(Chobani=("ambiguous", "auto", "2026-10-01T00:00:00Z")))
+    asked = []
+    result = collect(store, tmp_path, [swov], FULL, world(cfg), cfg, settings, page_finder=lambda n: asked.append(n) or _found(n), dry_run=True)
+    assert asked == [] and __import__('contentintel.benchmarks', fromlist=['x']).clean_state(store.read_benchmarks("swoveralls"))["items"]["chobani"]["status"] == "ambiguous"
+    result = collect(store, tmp_path, [swov], FULL, world(cfg), cfg, settings, page_finder=lambda n: asked.append(n) or _found(n))
+    assert asked == ["Chobani"] and __import__('contentintel.benchmarks', fromlist=['x']).clean_state(store.read_benchmarks("swoveralls"))["items"]["chobani"]["status"] == "resolved"
+    assert any("swoveralls: Chobani: resolved - found with Serper" in n for n in result.notes)
+
+

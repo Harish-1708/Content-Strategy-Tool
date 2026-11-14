@@ -20,7 +20,7 @@ def test_every_enabled_free_provider_receives_internal_data_including_kilo_which
             assert "internal" in p.approved_classes and p.effective_ceiling in ("internal", "restricted"), p.id
             assert "restricted" not in p.approved_classes or p.id == "claude", p.id                                # Restricted data is a separate rule and goes to Claude only
     kilo = SHIPPED.provider("kilo")
-    assert kilo.experimental and kilo.can_receive("internal") and SHIPPED.eligibility("kilo", "internal", model="poolside/laguna-m.1:free") == (True, "")
+    assert kilo.experimental and kilo.can_receive("internal") and SHIPPED.eligibility("kilo", "internal", model="kilo-auto/free") == (True, "")
 
 
 def test_no_shipped_model_has_internal_switched_off_so_the_default_is_on_everywhere():

@@ -33,7 +33,7 @@ DEAD = {
     ("nvidia", "minimaxai/minimax-m2.7"): "HTTP 410: end of life on 2026-07-27", ("nvidia", "nvidia/nemotron-3-nano-30b-a3b"): "HTTP 410: end of life on 2026-09-01",
     ("ollama", "kimi-k2-thinking"): "HTTP 410: retired by Ollama on 2026-06-16", ("ollama", "deepseek-v3.2"): "HTTP 410: retired by Ollama on 2026-07-15",
     ("ollama", "mistral-large-3:675b"): "HTTP 410: retired by Ollama on 2026-11-09", ("ollama", "cogito-2.1:671b"): "HTTP 410: retired by Ollama on 2026-06-16",
-    ("google", "gemini-2.5-flash-lite"): "HTTP 404: no longer available to new users", ("kilo", "nvidia/nemotron-3-super-120b-a12b:free"): "404 model_not_found",
+    ("google", "gemini-2.5-flash-lite"): "HTTP 404: no longer available to new users", ("kilo", "nvidia/nemotron-3-super-120b-a12b:free"): "404 model_not_found", ("kilo", "poolside/laguna-m.1:free"): "404 model_not_found", ("kilo", "stepfun/step-3.7-flash:free"): "404 model_not_found", ("kilo", "poolside/laguna-xs.2:free"): "404 model_not_found",
 }
 # What the same live check PROVED WORKING (answered). An update must not take any of these away.
 PROVEN_LIVE = [("groq", "openai/gpt-oss-120b"), ("groq", "openai/gpt-oss-20b"), ("openrouter", "openrouter/free"), ("openrouter", "qwen/qwen3-coder:free"), ("openrouter", "z-ai/glm-4.5-air:free"),
@@ -50,13 +50,13 @@ def test_every_model_the_live_check_proved_gone_is_switched_off_with_the_reason_
         assert "switched off 2026-11-14" in m.note and reason in m.note and "Add it back only after a live check answers" in m.note, (pid, model)
         assert (pid, model) not in POOL_KEYS, (pid, model)
         assert not any((c["provider"], c["model"]) == (pid, model) for lane in LANE_MAP.values() for c in lane.chain), (pid, model)
-    assert len(DEAD) == 18 and {p for p, _ in DEAD} == {"nvidia", "ollama", "google", "kilo"}
+    assert len(DEAD) == 21 and {p for p, _ in DEAD} == {"nvidia", "ollama", "google", "kilo"}
 
 
 def test_the_providers_other_models_are_untouched_by_that_cleanup():
     assert [m.id for m in REG.provider("nvidia").models if m.approved] == ["google/gemma-4-31b-it"]
     assert sorted(m.id for m in REG.provider("ollama").models if m.approved) == sorted(["gpt-oss:120b", "glm-4.7", "devstral-2:123b", "qwen3-coder-next", "qwen3-coder:480b", "gpt-oss:20b", "gemma4:31b"])
-    assert [m.id for m in REG.provider("google").models if m.approved] == ["gemini-3.5-flash"] and len(POOL) == 27
+    assert sorted(m.id for m in REG.provider("google").models if m.approved) == ["gemini-3.5-flash", "gemma-4-26b-a4b-it", "gemma-4-31b-it"] and len(POOL) == 32
     assert REG.provider("zhipu").model("glm-4.7-flash").approved is True                                       # one 429 (a passing limit), not a broken model
 
 
@@ -153,7 +153,7 @@ def row(platform, model, key_count, key="modelId"):
 
 
 def test_a_keyless_provider_needs_the_gateways_stored_row_and_the_check_names_the_one_that_lacks_it():
-    kilo = "poolside/laguna-m.1:free"
+    kilo = "kilo-auto/free"
     ok, detail = SM.keyless_check([row("kilo", kilo, 1), row("groq", "openai/gpt-oss-120b", 0)], REG)
     assert ok and detail == "1 key-less model(s) have their stored row"                                         # a keyed provider's rows are not judged here
     ok, detail = SM.keyless_check([row("kilo", kilo, 0)], REG)
