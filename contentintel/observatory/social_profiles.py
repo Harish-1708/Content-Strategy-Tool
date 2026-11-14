@@ -275,7 +275,7 @@ def sheet_tab(sites, snaps):
             if not kind.startswith("profile-"):
                 continue
             entry, snap = snaps.latest(site["id"], kind)
-            if not snap:
+            if not snap or (snap.get("platform") in NEEDS_COUNTS and not snap.get("metrics")):      # a profile without a single count is not a row (older runs stored some; they are no longer shown)
                 continue
             history = snaps.history(site["id"], kind)
             prev = snaps.load(site["id"], kind, history[-2]) if len(history) > 1 else {}
