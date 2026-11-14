@@ -191,4 +191,6 @@ pool:
   - {provider: zhipu, model: glm-4.7-flash}
   - {provider: zhipu, model: glm-4.5-flash}
   - {provider: zhipu, model: glm-4.6v-flash}
-  - {provider: kilo, model: nvidia/nemotron-3-super-120b-a12b:free}
+  - {provider: kilo, model: poolside/laguna-m.1:free}
+  - {provider: kilo, model: stepfun/step-3.7-flash:free}
+  - {provider: kilo, model: poolside/laguna-xs.2:free}

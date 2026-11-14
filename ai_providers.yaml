@@ -1583,26 +1583,26 @@ providers:
       requests_per_hour: 200
     models:
     - id: nvidia/nemotron-3-super-120b-a12b:free
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: Kilo itself answered 404 model_not_found for it in the live check of that day (AI gateway #22), after the gateway''s stored no-key row let the call reach Kilo. Add it back only after a live check answers'
     - id: poolside/laguna-m.1:free
-      approved: false
+      approved: true
       capabilities:
       - text
-      note: present in the gateway baseline; not approved
+      note: 'approved 2026-11-14 as a CANDIDATE: it is in the pinned gateway''s catalogue, but it has NOT answered live yet. The next live check decides; a model that is gone rests alone and its provider keeps working'
     - id: stepfun/step-3.7-flash:free
-      approved: false
+      approved: true
       capabilities:
       - text
-      note: present in the gateway baseline; not approved
+      note: 'approved 2026-11-14 as a CANDIDATE: it is in the pinned gateway''s catalogue, but it has NOT answered live yet. The next live check decides; a model that is gone rests alone and its provider keeps working'
     - id: poolside/laguna-xs.2:free
-      approved: false
+      approved: true
       capabilities:
       - text
-      note: present in the gateway baseline; not approved
+      note: 'approved 2026-11-14 as a CANDIDATE: it is in the pinned gateway''s catalogue, but it has NOT answered live yet. The next live check decides; a model that is gone rests alone and its provider keeps working'
   pollinations:
     label: Pollinations
     enabled: false

@@ -2,3 +2,5 @@
 pytest>=8.0
 pyflakes>=3.2
 jsonschema>=4.20
+setuptools>=68
+wheel>=0.42                     # the wheel-build test needs both; without them it skipped on GitHub
