@@ -77,8 +77,9 @@ def register_service(name, *, label="", channels=(), purposes=None, routes=None,
 register_service("scrapling", label="Scrapling (page reading, browser, request controls)", options=True)
 register_service("agent_reach", label="Agent-Reach (social and research channels through OpenCLI)", channels=AR_CHANNELS)
 register_service("search", label="Web search (Google-backed providers)", channels=SEARCH_PROVIDERS)
-GATEWAY_PROVIDERS = ("cloudflare", "google", "groq", "mistral", "openrouter")          # the external free providers enabled in ai_providers.yaml (a test keeps this equal); Claude is the fallback and has no switch here
+GATEWAY_PROVIDERS = ("cloudflare", "cohere", "google", "groq", "kilo", "mistral", "nvidia", "ollama", "openrouter", "zhipu")          # the external free providers enabled in ai_providers.yaml (a test keeps this equal); Claude is the fallback and has no switch here
 register_service("ai_gateway", label="AI Gateway (free-provider routing with Claude as fallback)", channels=GATEWAY_PROVIDERS, routes={"purposes": "ai", "choices": ("claude", "gateway_first"), "default": "gateway_first"})
+register_service("ai_internal_data", label="AI Gateway: Internal data to each provider (ON everywhere; OFF takes Internal data away from that provider and leaves Public as it is)", channels=GATEWAY_PROVIDERS, purposes=())
 from .. import connections as _CONN
 from .. import guards as _GUARDS
 register_service("guards", label="Guards (each protection that could stop a request; OFF never blocks)", channels=tuple(_GUARDS.GUARDS), purposes=(), channel_default=_GUARDS.legacy())
