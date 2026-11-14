@@ -270,6 +270,158 @@
     "tokens_in": 17,
     "tokens_out": 41
    }
+  },
+  "2026-11-14": {
+   "claude": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 8e-05,
+      "requests": 2,
+      "tokens": 44
+     }
+    },
+    "cost_usd": 8e-05,
+    "failures": 0,
+    "latency_ms": 2000,
+    "requests": 2,
+    "tokens_in": 36,
+    "tokens_out": 8
+   },
+   "cloudflare": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 44
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 12015,
+    "requests": 1,
+    "tokens_in": 42,
+    "tokens_out": 2
+   },
+   "cohere": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 143
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 2161,
+    "requests": 4,
+    "tokens_in": 28,
+    "tokens_out": 115
+   },
+   "google": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 9
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 1,
+    "latency_ms": 10694,
+    "requests": 2,
+    "tokens_in": 8,
+    "tokens_out": 1
+   },
+   "groq": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 226
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 760,
+    "requests": 2,
+    "tokens_in": 156,
+    "tokens_out": 70
+   },
+   "kilo": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 0
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 1,
+    "latency_ms": 0,
+    "requests": 1,
+    "tokens_in": 0,
+    "tokens_out": 0
+   },
+   "nvidia": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 13,
+      "tokens": 22
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 12,
+    "latency_ms": 45441,
+    "requests": 13,
+    "tokens_in": 20,
+    "tokens_out": 2
+   },
+   "ollama": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 11,
+      "tokens": 0
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 11,
+    "latency_ms": 0,
+    "requests": 11,
+    "tokens_in": 0,
+    "tokens_out": 0
+   },
+   "openrouter": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 3,
+      "tokens": 180
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 3625,
+    "requests": 3,
+    "tokens_in": 125,
+    "tokens_out": 55
+   },
+   "zhipu": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 3,
+      "tokens": 268
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 1,
+    "latency_ms": 7477,
+    "requests": 3,
+    "tokens_in": 25,
+    "tokens_out": 243
+   }
   }
  }
 }
