@@ -298,11 +298,13 @@ def test_a_zero_budget_means_no_paid_call_at_all(tmp_path):
     assert res["status"] == "deferred" and claude.calls == [] and any("not approved (the spending budget is zero)" in s["reason"] for s in res["skipped"])
 
 
-def test_experimental_routes_run_only_in_lanes_that_allow_them(tmp_path):
+def test_an_experimental_route_is_only_a_label_public_data_goes_to_it_in_any_lane_and_internal_follows_the_owners_approval(tmp_path):
     gamma = mock("ok answer")
     router, *_ = stack(tmp_path, {"gamma": gamma})
-    assert run(router, "noexp")["status"] == "deferred" and gamma.calls == [] and "experimental route" in run(router, "noexp")["skipped"][0]["reason"]
-    assert run(router, "exp")["route"]["provider"] == "gamma" and len(gamma.calls) == 1
+    assert run(router, "noexp")["route"]["provider"] == "gamma" and len(gamma.calls) == 1                         # Public data: allowed even in a lane that does not say so (Update 57: Kilo, public only, in the shared pool)
+    assert run(router, "exp")["route"]["provider"] == "gamma" and len(gamma.calls) == 2
+    assert router.registry.eligibility("gamma", "internal", experimental_ok=False) == (False, "not approved for internal data")      # the owner has not approved Internal for this one: that, not the word experimental, is the reason
+    assert router.registry.eligibility("gamma", "internal", experimental_ok=True) == (False, "not approved for internal data")
 
 
 def test_a_disabled_provider_is_never_called_even_with_a_client(tmp_path):

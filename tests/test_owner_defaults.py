@@ -3,7 +3,7 @@ import pytest
 
 from contentintel import services as SV
 
-SWITCHES = [c for c in SV.CONTROLS if c["kind"] == "bool" and c["key"].startswith("services.") and ".defaults." not in c["key"] and not c["key"].startswith(("services.guards.", "services.stored_sessions.", "services.connection_secrets.", "services.connection_routes.", "services.connection_versions."))]       # permissions; the .defaults. entries are per-request tuning, below
+SWITCHES = [c for c in SV.CONTROLS if c["kind"] == "bool" and c["key"].startswith("services.") and ".defaults." not in c["key"] and not c["key"].startswith(("services.guards.", "services.stored_sessions.", "services.ai_internal_data.", "services.connection_secrets.", "services.connection_routes.", "services.connection_versions."))]       # permissions; the .defaults. entries are per-request tuning, below
 
 
 def test_the_shipped_observatory_yaml_agrees_with_every_default_in_the_code():

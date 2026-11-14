@@ -1804,3 +1804,23 @@ def test_only_the_controls_tab_loses_rows_the_tool_does_not_know_every_other_tab
     for title, key_col in added.items():
         header, after = read(sp.worksheet(title))
         assert "manual-row-a-person-wrote" in [r[header[0]] for r in after], title                                 # the tidy is for the Controls tab alone
+
+
+def test_the_owners_internal_data_switch_takes_internal_data_off_one_provider_in_the_live_stack_and_leaves_public_and_every_other_provider_alone(env):
+    ledger = HLTH.HealthLedger.load(env.store, SRCS.load_sources(ROOT / "sources.yaml"))
+    kw = dict(providers_config=str(ROOT / "ai_providers.yaml"), lanes_config=str(ROOT / "ai_lanes.yaml"), gateway_dir=str(env.tmp / "no-gateway"), workdir=str(env.tmp / "ai-work"))
+    settings = SVC.load_settings(None, str(env.tmp))
+    router, *_rest, notes, finish = SVC.ai_stack(env.store, ledger, {}, settings=settings, **kw)
+    assert all(router.registry.provider(p).approved_classes == ("public", "internal") for p in OC.GATEWAY_PROVIDERS) and not [n for n in notes if "Internal data switched off" in n]      # on by default, for all ten
+    settings["services"]["ai_internal_data"]["channels"]["nvidia"] = False
+    router, *_rest, notes, finish = SVC.ai_stack(env.store, ledger, {}, settings=settings, **kw)
+    nvidia = router.registry.provider("nvidia")
+    assert nvidia.enabled and nvidia.approved_classes == ("public",) and router.registry.provider("ollama").approved_classes == ("public", "internal") and router.registry.provider("kilo").approved_classes == ("public", "internal")
+    assert any(n.startswith("NOTE: nvidia: Internal data switched off by the owner (services.ai_internal_data.channels.nvidia)") for n in notes) and not any("SKIPPED: nvidia" in n for n in notes)
+    internal = {(r["provider"], r["model"]): r for r in router.explain("trend_opportunity", "internal", "2026-11-14T10:00:00Z")}
+    public = {(r["provider"], r["model"]): r for r in router.explain("trend_opportunity", "public", "2026-11-14T10:00:00Z")}
+    key = ("nvidia", "deepseek-ai/deepseek-v4-pro")
+    assert internal[key]["reason"] == "not approved for internal data" and public[key]["reason"] == "no credentials or client available on this machine"      # Public still reaches it
+    settings["services"]["ai_internal_data"]["channels"]["nvidia"] = True
+    router, *_rest, notes, finish = SVC.ai_stack(env.store, ledger, {}, settings=settings, **kw)
+    assert router.registry.provider("nvidia").approved_classes == ("public", "internal")                    # turning it back on restores it

@@ -55,7 +55,7 @@ def test_github_models_is_kept_as_a_retired_record_that_cannot_be_used():
     assert p.override["approved_by"] == "Harish" and [m.id for m in p.models if m.approved] == ["openai/gpt-4.1-mini", "meta/Llama-3.3-70B-Instruct"]      # the history is kept as it was
     ok, why = reg.eligibility("github", "public", model="openai/gpt-4.1-mini")
     assert not ok and why == "RETIRED: GitHub Models was withdrawn by its provider on 2026-07-30; it is never called"
-    assert sorted(pid for pid, x in reg.providers.items() if x.enabled) == ["claude", "cloudflare", "google", "groq", "mistral", "openrouter"]
+    assert sorted(pid for pid, x in reg.providers.items() if x.enabled) == ["claude", "cloudflare", "cohere", "google", "groq", "kilo", "mistral", "nvidia", "ollama", "openrouter", "zhipu"]
     assert [pid for pid, x in reg.providers.items() if x.retired] == ["github"]
 
 
@@ -218,7 +218,7 @@ def test_the_providers_command_lists_the_retired_provider_as_retired_and_counts_
     out = capsys.readouterr().out
     line = next(ln for ln in out.splitlines() if ln.strip().startswith("github "))
     assert "RETIRED" in line and "ON" not in line.split()
-    assert "6 enabled, 1 retired (kept as a record, never called)" in out
+    assert "11 enabled, 1 retired (kept as a record, never called)" in out
 
 
 def test_cerebras_was_checked_found_to_need_a_card_and_stays_off():

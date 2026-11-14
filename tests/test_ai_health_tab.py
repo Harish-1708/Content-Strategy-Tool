@@ -30,7 +30,7 @@ HEALTH = {"routes": {"ai:groq|gateway": {"last_success": "2026-11-03T11:00:00Z",
 
 def test_each_enabled_provider_has_a_row_with_free_quota_used_failures_and_rest(tmp_path):
     rows = SR.rows(REG, ledger(tmp_path), HEALTH, NOW)
-    assert list(rows)[0] == "claude" and set(rows) == {"claude", "cloudflare", "github", "google", "groq", "mistral", "openrouter"}
+    assert list(rows)[0] == "claude" and set(rows) == {"claude", "cloudflare", "cohere", "github", "google", "groq", "kilo", "mistral", "nvidia", "ollama", "openrouter", "zhipu"}
     groq = rows["groq"]
     assert (groq["status"], groq["cost"], groq["requests_today"], groq["daily_limit"], groq["left_today"], groq["failures_this_month"]) == ("ready", "free", 31, 1000, 969, 1)
     assert groq["tokens_today"] == 18000 and groq["last_success"] == "2026-11-03T11:00:00Z" and groq["last_error"] == "TIMEOUT at 2026-11-02T09:00" and "nothing is bought" in groq["note"]
@@ -49,7 +49,7 @@ def test_claude_shows_its_spend_against_both_caps(tmp_path):
 def test_a_rest_that_has_ended_is_not_shown_and_providers_that_are_off_and_unused_are_left_out(tmp_path):
     late = "2026-11-03T14:00:00Z"
     rows = SR.rows(REG, ledger(tmp_path), HEALTH, late)
-    assert rows["mistral"]["status"] == "ready" and rows["mistral"]["resting_until"] == "" and "cerebras" not in rows and "kilo" not in rows
+    assert rows["mistral"]["status"] == "ready" and rows["mistral"]["resting_until"] == "" and "cerebras" not in rows and "kilo" in rows
 
 
 def test_nothing_enabled_and_nothing_used_means_no_tab(tmp_path):

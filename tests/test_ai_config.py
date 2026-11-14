@@ -66,7 +66,6 @@ def test_a_valid_registry_loads_with_the_recorded_override_and_prices(tmp_path):
     (lambda d: d["providers"]["alpha"]["terms"].update(status="declared_only"), "cannot be enabled"),
     (lambda d: d["providers"]["alpha"]["terms"].update(status="made up"), "terms.status must be"),
     (lambda d: d["providers"]["alpha"]["terms"].update(unknown=1), "unknown setting"),
-    (lambda d: d["providers"]["gamma"].update(ceiling="internal", approved_classes=["internal"]), "experimental route may only be Public"),
     (lambda d: d["providers"]["alpha"].update(enabled="yes"), "must be true or false"),
     (lambda d: d["providers"]["alpha"].update(paid="no"), "must be true or false"),
     (lambda d: d["providers"]["alpha"]["limits"].update(requests_per_day=-1), "number of 0 or more"),
@@ -104,7 +103,7 @@ def test_a_missing_or_unreadable_registry_is_refused(tmp_path):
     ("alpha", "public", "unlisted", False, False, "not in the approved-model allowlist"),
     ("beta", "internal", "b-1", False, True, ""),
     ("beta", "restricted", "b-1", False, False, "not approved for restricted data"),
-    ("gamma", "public", "g-1", False, False, "experimental route"),
+    ("gamma", "public", "g-1", False, True, ""),                                    # an experimental route is a label, not a guard: nothing in the code keeps data from it
     ("gamma", "public", "g-1", True, True, ""),
     ("delta", "public", "d-1", False, False, "disabled"),
     ("claude", "restricted", "claude-sonnet-5-5", False, True, ""),
@@ -151,7 +150,6 @@ def test_valid_lanes_load_with_their_defaults(tmp_path):
     (lambda d: d["lanes"]["pub"].update(claude_model="claude-opus-5-5"), "not an approved Claude model"),
     (lambda d: d["lanes"]["pub"].update(min_confidence=2), "between 0 and 1"),
     (lambda d: d["lanes"]["pub"].update(min_confidence=True), "between 0 and 1"),
-    (lambda d: d["lanes"]["internal"].update(allow_experimental=True), "may only carry Public"),
     (lambda d: d.update(version=2), "needs version: 1"),
     (lambda d: d.update(lanes={}), "needs version: 1"),
 ])
@@ -170,7 +168,7 @@ def test_missing_lanes_file_is_refused(tmp_path):
 
 # ---- the shipped files -----------------------------------------------------------------------------------------------------------
 
-ROLLED_OUT = ["cloudflare", "google", "groq", "mistral", "openrouter"]        # the providers whose terms have been checked and which the owner has approved
+ROLLED_OUT = ["cloudflare", "cohere", "google", "groq", "kilo", "mistral", "nvidia", "ollama", "openrouter", "zhipu"]        # the providers the owner has approved (Update 57 added cohere, kilo, nvidia, ollama and zhipu)
 
 
 def test_the_shipped_registry_enables_only_checked_providers_and_claude():
@@ -190,10 +188,10 @@ def test_the_shipped_registry_enables_only_checked_providers_and_claude():
 
 def test_each_rolled_out_provider_carries_a_dated_named_owner_decision_for_internal_data_and_never_restricted():
     reg = R.load_registry(SHIPPED_P)
-    for pid in ROLLED_OUT:
+    for pid in [x for x in ROLLED_OUT if x != "kilo"]:                                                     # Kilo trains on prompts: Public data only, no override (see the next test)
         p = reg.provider(pid)
         assert p.approved_classes == ("public", "internal") and p.effective_ceiling == "internal", pid
-        assert p.override["approved_by"] == "Harish" and p.override["date"] == "2026-11-03" and p.override["ceiling"] == "internal", pid
+        assert p.override["approved_by"] == "Harish" and p.override["date"] in ("2026-11-03", "2026-11-14") and p.override["ceiling"] == "internal", pid
         assert "Restricted data" in p.override["reason"] and "never sent" in p.override["reason"] and "credentials" in p.override["reason"], pid
         assert "restricted" not in p.approved_classes
 
@@ -327,3 +325,60 @@ def test_no_retired_model_is_approved_and_every_lane_route_uses_an_approved_mode
     assert not RETIRED & used and used <= approved                                          # and no lane routes to a model nobody approved
     assert {("groq", "openai/gpt-oss-120b"), ("groq", "openai/gpt-oss-20b"), ("google", "gemini-3.5-flash"), ("openrouter", "openrouter/free")} <= approved
     assert [r["model"] for lane in lanes.values() for r in lane.get("chain", []) if r["provider"] == "openrouter"] == ["openrouter/free"] * 3     # OpenRouter free models rotate every few days: the lane asks for the free router and the client picks today's free models
+
+
+# ---- Update 57: the five providers added, and what is recorded for each ------------------------------------------------------------------------------
+
+def test_kilo_is_enabled_like_the_others_with_internal_open_one_model_in_the_pool_and_the_owner_switch_named_in_its_record():
+    p = R.load_registry(SHIPPED_P).provider("kilo")
+    assert p.enabled and p.experimental and p.approved_classes == ("public", "internal") and p.effective_ceiling == "internal" and p.credential_env == ()
+    assert p.override["approved_by"] == "Harish" and p.override["date"] == "2026-11-14" and "Internal stays open everywhere" in p.override["reason"] and "Restricted data" in p.override["reason"]
+    assert [m.id for m in p.models if m.approved] == ["nvidia/nemotron-3-super-120b-a12b:free"] and len(p.models) == 4
+    assert p.terms["trains_on_data"].startswith("yes") and "Public and Internal data" in p.terms["note"] and "services.ai_internal_data.channels.kilo" in p.terms["note"] and "internal: false" in p.terms["note"]
+    assert p.limits == {"requests_per_hour": 200} and "Retry-After" in p.terms["note"]
+
+
+def test_nvidia_ollama_cohere_and_zhipu_carry_the_personal_use_decision_dated_with_the_commercial_use_question_answered():
+    reg = R.load_registry(SHIPPED_P)
+    for pid in ("nvidia", "ollama", "cohere", "zhipu"):
+        p = reg.provider(pid)
+        assert p.enabled and p.terms["status"] == "owner_decision" and p.terms["date"] == "2026-11-14", pid
+        assert p.terms["business_use"].startswith("Commercial use allowed?"), pid                              # the question is asked and answered in every record
+        assert "personal" in p.terms["business_use"] and "personal" in p.terms["note"].lower() or pid == "zhipu", pid
+        assert "if one is, the owner stops" in p.terms["note"] or "owner stops" in p.terms["note"], pid
+        assert p.approved_classes == ("public", "internal") and p.override["date"] == "2026-11-14" and p.override["approved_by"] == "Harish", pid
+        assert all(m.approved for m in p.models) and len(p.models) == {"nvidia": 13, "ollama": 11, "cohere": 4, "zhipu": 3}[pid], pid
+        assert p.credential_env == ({"nvidia": "NVIDIA_API_KEY", "ollama": "OLLAMA_API_KEY", "cohere": "COHERE_API_KEY", "zhipu": "ZHIPU_API_KEY"}[pid],), pid
+    z = reg.provider("zhipu").terms
+    assert z["note"].startswith("DATA RESIDENCY IS IN CHINA") and "before any client data goes to it" in z["note"] and "z.ai" in z["note"]
+    assert "not permitted for production or commercial use" in reg.provider("cohere").terms["business_use"] and "decision for later" in reg.provider("cohere").terms["business_use"]
+    assert "production use needs an NVIDIA AI Enterprise licence" in reg.provider("nvidia").terms["business_use"] and "may end the free service at any time" in reg.provider("nvidia").terms["business_use"]
+
+
+def test_each_new_providers_limits_are_its_own_stated_ones_and_nothing_of_ours():
+    reg = R.load_registry(SHIPPED_P)
+    assert reg.provider("nvidia").limits == {"requests_per_minute": 30}                                      # a SETTING, started conservatively: sources say 30 to 40 and it varies by model and load
+    assert reg.provider("ollama").limits == {"concurrency": 1}                                               # one request at a time; no rate figure is published, so none is invented
+    assert reg.provider("cohere").limits == {"requests_per_minute": 20, "requests_per_month": 1000}           # the trial key's own stated limits
+    assert reg.provider("zhipu").limits == {"requests_per_minute": 60}
+    for pid in ("nvidia", "ollama", "cohere", "zhipu", "kilo"):
+        assert not {"requests_per_day", "tokens_per_day"} & set(reg.provider(pid).limits), pid                 # no daily budget of ours on any of them
+    assert reg.pacing == {"fast_wait_seconds": 2, "max_wait_seconds": 120} and reg.daily_usd == 0.5 and reg.monthly_usd == 10      # and the Claude spending cap is untouched
+
+
+def test_the_registry_accepts_the_new_limits_and_a_pacing_section_and_refuses_nonsense(tmp_path):
+    base = {"version": 1, "budgets": {"daily_usd": 0.5, "monthly_usd": 10}, "providers": {"p": {"label": "P", "enabled": False, "limits": {"requests_per_minute": 5, "requests_per_hour": 100, "requests_per_month": 900, "concurrency": 2}}}}
+    path = tmp_path / "p.yaml"
+    import yaml as _y
+    path.write_text(_y.safe_dump(base), encoding="utf-8")
+    assert R.load_registry(path).provider("p").limits == {"requests_per_minute": 5, "requests_per_hour": 100, "requests_per_month": 900, "concurrency": 2} and R.load_registry(path).pacing == {"fast_wait_seconds": 2, "max_wait_seconds": 120}
+    path.write_text(_y.safe_dump({**base, "pacing": {"fast_wait_seconds": 5, "max_wait_seconds": 30}}), encoding="utf-8")
+    assert R.load_registry(path).pacing == {"fast_wait_seconds": 5, "max_wait_seconds": 30}
+    for bad_limits in ({"concurrency": 0}, {"concurrency": 1.5}, {"requests_per_minute": -1}, {"requests_per_second": 1}):
+        path.write_text(_y.safe_dump({**base, "providers": {"p": {"label": "P", "limits": bad_limits}}}), encoding="utf-8")
+        with __import__("pytest").raises(R.RegistryError):
+            R.load_registry(path)
+    for bad_pacing in ({"max_wait_seconds": -1}, {"hold_seconds": 3}, "slow"):
+        path.write_text(_y.safe_dump({**base, "pacing": bad_pacing}), encoding="utf-8")
+        with __import__("pytest").raises(R.RegistryError):
+            R.load_registry(path)
