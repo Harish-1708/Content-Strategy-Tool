@@ -38,7 +38,7 @@ Your `ANTHROPIC_API_KEY` secret already exists. A Claude.ai subscription does **
 
 1. Go to **console.mistral.ai**, sign up with a company email.
 2. **Admin > Subscriptions > Experiment for free** (phone verification is required; one phone number per plan). Read and accept the terms.
-3. **Important:** Mistral says Experiment-plan requests **may be used to train its models**. Keep Mistral on **Public data only**.
+3. **Read the terms and write down three answers (the same three for every provider; they go in that provider's `terms:` record in `ai_providers.yaml`):** **Does it train on prompts?** Mistral says Experiment-plan requests **may be used to train its models**. **Commercial use allowed?** Say it for your own use: this tool is a personal project (not a product, not sold, not offered as a service, no production deployment). **Is a card asked for?** If it is, stop and do not add the provider. Internal data goes to every enabled provider under your recorded decision; you can take it away from one in Controls (`services.ai_internal_data.channels.<provider>`) or from one model (`internal: false`).
 4. Create a workspace, then **API keys > Create**. Add it as **`MISTRAL_API_KEY`**.
 
 ## 4. OpenRouter (free `:free` models)
@@ -55,6 +55,22 @@ Your `ANTHROPIC_API_KEY` secret already exists. A Claude.ai subscription does **
 
 Optional: **Cerebras** (`CEREBRAS_API_KEY`, from cloud.cerebras.ai) and **Cloudflare Workers AI** (`CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`). I have not verified their free terms; I will before they are switched on.
 
+## 5b. NVIDIA, Zhipu, Ollama, Cohere (keys) and Kilo (no key)
+
+Where each is, as of 2026-11-13 (screens change). For each one, step 3 is the same: **Does it train on prompts?** **Commercial use allowed?** **Is a card asked for?** (write the answers in its `terms:` record; if a card is asked for, stop and tell me).
+
+**NVIDIA** (`NVIDIA_API_KEY`). 1. build.nvidia.com, sign in with an email and verify a phone number. 2. Open any model and choose **Get API Key**. 3. Terms: the free API is for prototyping, development and research (production needs an NVIDIA AI Enterprise licence). 4. Add the key as **`NVIDIA_API_KEY`**. The free limit varies by model and load (sources say 30 to 40 requests a minute): read the number in your account dashboard and put it in `limits: requests_per_minute` for nvidia (it starts at 30).
+
+**Zhipu / Z.ai** (`ZHIPU_API_KEY`). 1. Use the international platform, z.ai (not bigmodel.cn), and sign up. 2. Create an API key. 3. Terms: **data is processed in China**; the record says so. The Flash models are free. 4. Add the key as **`ZHIPU_API_KEY`**. It publishes no rate limit: the 60 a minute in the file is a setting.
+
+**Ollama Cloud** (`OLLAMA_API_KEY`). 1. ollama.com, create an account. 2. Settings, **Keys**, create a key. 3. Terms: Ollama says it does not log or train on prompts; a free account has a monthly starter amount on starter models only (which of the approved models that covers is shown by the check). One request at a time (`concurrency: 1`). 4. Add the key as **`OLLAMA_API_KEY`**.
+
+**Cohere** (`COHERE_API_KEY`). 1. dashboard.cohere.com, sign up. 2. **API Keys**: the **trial key** is free. 3. Terms: a trial key is **not permitted for production or commercial use**: it is right for your personal evaluation and development, and a production key would be a later decision. Limits: 20 requests a minute, 1,000 calls a month (kept by the tool). 4. Add the key as **`COHERE_API_KEY`**.
+
+**Kilo** (no key, no signup). Already switched on. Its free anonymous models are limited to 200 requests an hour per address and its own documentation says prompts may be logged for training; your standing decision covers it, and you can take Internal data away from it in Controls.
+
+After adding a key, run **Actions > AI gateway > Run workflow** (check, live): each provider is reported on its own line as LIVE, FAILED or SKIPPED. A model a free tier does not serve fails and says so: delete its line from the `pool:` in `ai_lanes.yaml`.
+
 ## 6. Adding a GitHub Secret
 
 Repository **Settings > Secrets and variables > Actions > New repository secret**. Name exactly as written, paste the value, save.
@@ -67,6 +83,7 @@ Repository **Settings > Secrets and variables > Actions > New repository secret*
 | `GROQ_API_KEY` | section 2 |
 | `MISTRAL_API_KEY` | section 3 |
 | `OPENROUTER_API_KEY` | section 4 |
+| `NVIDIA_API_KEY`, `ZHIPU_API_KEY`, `OLLAMA_API_KEY`, `COHERE_API_KEY` | section 5b (Kilo needs none) |
 | `GEMINI_API_KEY` | section 5 |
 | `CEREBRAS_API_KEY`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` | optional |
 
