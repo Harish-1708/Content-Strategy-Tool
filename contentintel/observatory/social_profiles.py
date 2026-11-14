@@ -43,6 +43,12 @@ def parse_count(text, suffix=""):
     return int(round(value * MULTIPLIER.get(str(suffix or "").lower(), 1)))
 
 
+def label_metric(text, word):                           # (the name `label_metric` is kept short on purpose)
+    """The count written AFTER its label ('Followers: 976', 'Followers 122.3K'), or None. Only a fallback: a page that writes '122.3KFollowers' is read by metric() first."""
+    m = re.search(r"(?<![\w])" + METRIC_WORDS[word] + r"\b[\s:\-–]*" + NUMBER, text, re.I)
+    return parse_count(m.group(1), m.group(2)) if m else None
+
+
 def metric(text, word):
     """The count written next to a label ('405Following', '976 Followers', '2 employees'), or None. The first one on the page wins."""
     m = re.search(r"(?<![\w.,])" + NUMBER + r"\s*" + METRIC_WORDS[word] + r"\b", text, re.I)
@@ -62,6 +68,9 @@ def parse_profile(platform, text, title=""):
         found = metric(text, word)
         if found is not None:
             out["metrics"][word] = found
+    after = {word: found for word in METRIC_WORDS if (found := label_metric(text, word)) is not None}      # the label-first layout ('Followers 122.3K')
+    if len(after) > len(out["metrics"]):                    # a page is read in the layout that explains more of it; a tie keeps the layout that has worked live ('122.3KFollowers'). "Following 69 Followers 122.3K" would otherwise read '69 Followers'
+        out["metrics"] = after
     if platform == "tiktok":
         m = re.match(r"#\s+(.+?)\s+##\s+(\S+)", text)
         out["name"] = _cut(m.group(1), 100) if m else ""
@@ -108,6 +117,7 @@ def handles_for(comp, discovered, settings):
 
 
 RETRY_QUALITIES = ("too little", "script shell", "empty")        # a challenge page is never asked for again: only a page that did not finish drawing
+NEEDS_COUNTS = ("tiktok", "instagram", "facebook", "x")          # for these the follower, like or post counts ARE the snapshot: a page without them is not recorded as one (LinkedIn's About text alone is worth keeping)
 
 
 def make_reader(settings, contact, python, environ=None, runner=subprocess.run):
@@ -121,7 +131,8 @@ def make_reader(settings, contact, python, environ=None, runner=subprocess.run):
             raise SL._failure_from(res)
         text = " ".join(SL.clean_text(res.get("text") or "").split())
         quality = SL.judge_content(text)[0]
-        if quality in RETRY_QUALITIES:                    # a half-drawn page (monitoring #33: 60 characters for a TikTok profile that a read a few minutes later returned in full): one more try, waiting twice as long
+        undrawn = quality == "real text" and platform in NEEDS_COUNTS and not parse_profile(platform, text, str(res.get("title") or ""))["metrics"]
+        if quality in RETRY_QUALITIES or undrawn:         # a half-drawn page, or a page that drew its text but not yet its counts (monitoring #35: TikTok read as real text, no counts); a bot-check is never asked for again (monitoring #33: 60 characters for a TikTok profile that a read a few minutes later returned in full): one more try, waiting twice as long
             usual = int((S.PLATFORMS[platform].get("read_adv") or S.PLATFORMS[platform].get("adv") or {}).get("wait") or 3000)
             again = SL._worker_page(platform, url, settings, contact, python, environ, runner, with_session=False, reading=True, wait_ms=max(2 * usual, 6000))
             if again.get("ok"):
@@ -145,6 +156,8 @@ def snapshot_profile(platform, handle, reader, now=""):
     if any(phrase in low for phrase in GONE) and len(got["text"]) < 800:
         raise K.Failure(K.NOT_FOUND, f"{LABELS[platform]} says there is no such account or page as {handle!r}")
     parsed = parse_profile(platform, got["text"], got.get("title", ""))
+    if not parsed["metrics"] and platform in NEEDS_COUNTS:
+        raise K.Failure(K.NOT_FOUND, f"the {LABELS[platform]} page for {handle!r} was read but shows no follower, like or post count, so there is nothing to record (nothing is estimated); the page starts: {got['text'][:160]!r}")
     return {"platform": platform, "handle": handle.lstrip("@"), "url": url, "landed": got.get("landed", ""), "name": parsed["name"], "bio": parsed["bio"], "joined": parsed["joined"],
             "about": parsed["about"], "metrics": parsed["metrics"], "quality": got.get("quality", ""), "text": got["text"][:TEXT_KEPT], "complete": bool(parsed["metrics"])}
 
