@@ -234,7 +234,7 @@ def test_the_browser_install_is_pinned_cached_and_retried():
     assert "could not be downloaded after 3 tries" in text
     data = yaml.safe_load(text)
     steps = {s.get("name"): s for s in data["jobs"]["collect"]["steps"]}
-    assert steps["Install the browser"]["if"] == steps["Remember the downloaded browser"]["if"] == "inputs.mode != 'plan' && inputs.mode != 'seeds'"
+    assert steps["Install the browser"]["if"] == steps["Remember the downloaded browser"]["if"] == "inputs.mode != 'plan' && inputs.mode != 'seeds' && inputs.mode != 'benchmarks'"             # the browser is not installed for the modes that open none
 
 
 def test_the_sheet_has_a_details_column_right_after_the_media_link():
