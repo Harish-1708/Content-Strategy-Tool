@@ -173,6 +173,8 @@ def build_parser():
     p.add_argument("--rest", default="",
                    help="rest these accounts now (instagram, tiktok, gemini), without opening them: use it when a warning was seen on the site")
     p.add_argument("--rest-days", type=int, default=0, help="how many days --rest lasts (0: the setting for each site)")
+    p.add_argument("--find-pages", action="store_true",
+                   help="look now, with Serper and a reviewer, for the main Facebook page of every benchmark brand the Ad Library could not settle; nothing is collected")
     p.add_argument("--fresh", action="store_true",
                    help="collect again now, ignoring what was collected in the last days (the item caps still apply; a source that refuses falls back as before)")
     p.add_argument("--ignore-cooldown", action="store_true",
@@ -356,17 +358,23 @@ def _drive():
 
 
 def _page_finder(claude, args):
-    """The finder for a benchmark brand the Ad Library could not settle: Serper to search, the routed AI client to confirm the main official Facebook page, a plain page read for its id. None when there is no Serper key
-    or no AI client (the benchmark is then left for a person, as before)."""
+    return _page_finder_status(claude, args)[0]
+
+
+def _page_finder_status(claude, args):
+    """(finder, why not). The finder for a benchmark brand the Ad Library could not settle: Serper to search, the routed AI client to confirm the main official Facebook page, a plain page read for its id. None, with the
+    reason, when there is no Serper search (no key, or switched off for discovery) or no AI client: the benchmark is then left for a person, as before, and the run SAYS so."""
     serper = _search_providers(args, "discovery").get("serper_dev")          # under the owner's search switches, like every other search
-    if serper is None or claude is None or not hasattr(claude, "json_task"):
-        return None
+    if serper is None:
+        return None, "no Serper search is available to this run (SERPER_API_KEY is not set in this workflow, or search is switched off for discovery)"
+    if claude is None or not hasattr(claude, "json_task"):
+        return None, "no AI client is available to confirm the page (ANTHROPIC_API_KEY is not set here)"
     getter = _get()
 
     def get_html(url):
         return getter(url, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36", "Accept-Language": "en-US,en;q=0.9"}, timeout=20).text
     from . import main_page
-    return main_page.make_finder(serper, claude, get_html)
+    return main_page.make_finder(serper, claude, get_html), ""
 
 
 def _get():
@@ -724,7 +732,7 @@ def _real_factory(browser_cfg, creds, debug_dir):
     return factory
 
 
-EXTRA_SECRETS = ("ANTHROPIC_API_KEY", "APIFY_TOKEN")
+EXTRA_SECRETS = ("ANTHROPIC_API_KEY", "APIFY_TOKEN", "SERPER_API_KEY")
 
 
 def _secrets_status(browser_cfg, env):
@@ -763,6 +771,8 @@ def _collect(args, store):
         plain.for_purpose = lambda purpose: _routed(plain, purpose, args, store)
     claude = _routed(plain, "autoseeds", args, store)
     backend = collectors_mod.effective_backend(args.backend, settings)
+    if not args.find_pages and not args.dry_run and not args.seeds and not args.check and not args.recon and not args.test_deep_research:
+        print("Benchmark page finder: " + ("ON (Serper search, then a reviewer through our AI tools confirms the main official page)" if _page_finder_status(claude, args)[0] else "OFF: " + _page_finder_status(claude, args)[1]))
     print("Secrets this run can see (names only; values are never shown):")
     for name, state in _secrets_status(browser_cfg, os.environ):
         print(f"  {name:<22} {state}")
@@ -798,6 +808,30 @@ def _collect(args, store):
         if not outcome["ok"] and not outcome["detail"].startswith("no login"):
             print(f"::error::Deep Research test failed: {outcome['detail']}")
             return 1
+        return 0
+    if args.find_pages:
+        finder, why = _page_finder_status(claude, args)
+        print("Benchmark page finder: " + ("ON (Serper search, then a reviewer through our AI tools confirms the main official page, then the page id is read from the page)" if finder else f"OFF: {why}"))
+        ledger = research_mod.Ledger(store.load_usage(), now[:7])
+        from . import benchmarks as bench_mod
+        from . import main_page as main_page_mod
+        from .research import load_brand_research
+        for slug in [args.brand] if args.brand else list_brand_slugs(args.brands_dir):
+            brand = load_brand(slug, args.brands_dir)
+            cfg = load_brand_research(brand, args.brands_dir)["collect"]
+            state, lines = bench_mod.clean_state(store.read_benchmarks(slug)), []
+            if finder is not None:
+                state, lines = main_page_mod.heal_benchmarks(state, cfg["ads"].get("benchmark_pages"), finder, now, 10)
+                if lines:
+                    store.write_benchmarks(slug, state)
+            print(f"--- {slug}: benchmark pages looked for ---")
+            print("\n".join(lines) if lines else ("nothing was looked for: every benchmark is settled, decided by you, or the finder is off" if finder is not None else "nothing was looked for: the finder is off"))
+            seeds = autoseeds_mod.ensure_auto_seeds(brand, store, claude, settings, ledger, now, False)
+            if seeds.seeds is not None:
+                print(collectors_mod.format_benchmark_status(brand, store, seeds.seeds, settings, now, args.brands_dir))
+            print()
+        if finder is None:
+            print(f"::warning::The benchmark page finder is off: {why}")
         return 0
     if args.fresh and not args.dry_run:
         print("Fresh run: what was collected in the last days is NOT reused; every source is asked again now (the item caps still apply).")

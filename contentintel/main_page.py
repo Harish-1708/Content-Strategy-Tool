@@ -16,8 +16,10 @@ REGIONS = {"au", "nz", "uk", "us", "usa", "ca", "in", "de", "fr", "es", "it", "b
 REGION_WORDS = ("australia", "new zealand", "united kingdom", " uk", "india", "canada", "ireland", "deutschland", "france", "españa", "brasil", "méxico", "south africa", "singapore", "malaysia", "philippines", "japan", "korea")
 SEARCHES = ('"{name}" official Facebook page', 'site:facebook.com "{name}"')
 MAX_CANDIDATES = 5
+FB_PEOPLE = re.compile(r"^https?://(?:www\.|m\.|web\.)?facebook\.com/(?:people/([^/]+)/(\d{6,})|profile\.php\?(?:[^#]*&)?id=(\d{6,}))", re.I)
 FB_PAGE = re.compile(r"^https?://(?:www\.|m\.|web\.)?facebook\.com/([A-Za-z0-9._\-]+)/?(?:[?#].*)?$", re.I)
-PAGE_ID_PATTERNS = (r'"pageID"\s*:\s*"(\d{6,})"', r'"page_id"\s*:\s*"?(\d{6,})', r"fb://page/\?id=(\d{6,})", r'"entity_id"\s*:\s*"(\d{6,})"', r'content="fb://profile/(\d{6,})"')
+PAGE_ID_PATTERNS = (r'"pageID"\s*:\s*"(\d{6,})"', r'"page_id"\s*:\s*"?(\d{6,})', r"fb://page/\?id=(\d{6,})", r'"entity_id"\s*:\s*"(\d{6,})"', r'content="fb://profile/(\d{6,})"',
+                    r'"delegate_page_id"\s*:\s*"?(\d{6,})', r'"profile_id"\s*:\s*"?(\d{6,})', r"facebook\.com/profile\.php\?id=(\d{6,})")
 
 REVIEW_SYSTEM = (
     "You confirm which Facebook page is a brand's MAIN official page. You are given the brand name and some candidate pages found by a web search (address, title, snippet). "
@@ -35,10 +37,20 @@ def slug_of(url):
 
 
 def candidates_from(results):
-    """Facebook PAGE addresses among search results, once each (a post, a video or a group is not a page)."""
+    """Facebook PAGE addresses among search results, once each (a post, a video or a group is not a page). An address that already holds the page id (facebook.com/people/Name/123..., profile.php?id=123...) carries it."""
     seen, out = set(), []
     for r in results or []:
         url = str(r.get("url") or r.get("link") or "")
+        people = FB_PEOPLE.match(url.strip())
+        if people:
+            name, page_id = people.group(1) or "", people.group(2) or people.group(3)
+            slug = re.sub(r"[^A-Za-z0-9]", "", (name or "").replace("-", "")) or page_id
+            key = "id:" + page_id
+            if key in seen:
+                continue
+            seen.add(key)
+            out.append({"url": f"https://www.facebook.com/profile.php?id={page_id}", "slug": slug, "id": page_id, "title": str(r.get("title") or "")[:140], "snippet": str(r.get("snippet") or "")[:240]})
+            continue
         slug = slug_of(url)
         if not slug or slug.lower() in seen:
             continue
@@ -92,7 +104,7 @@ def lookup_main_page(name, search, review, read_id, label="the reviewer"):
     found = []
     for query in SEARCHES:
         try:
-            found += candidates_from(search(query.format(name=name)))
+            found += list(search(query.format(name=name)) or [])                   # the raw results: they are turned into candidates once, below
         except Exception as exc:                                       # a search that fails is a reason, never a crash
             out["reason"] = f"the search for this brand's Facebook page failed ({type(exc).__name__})"
             return out
@@ -116,9 +128,10 @@ def lookup_main_page(name, search, review, read_id, label="the reviewer"):
     if (verdict["regional"] or looks_regional(name, chosen)) and others_regional:
         out.update(status="ambiguous", reason=f"only regional pages were found ({chosen['url']} and {others_regional[0]['url']}) and none is the main one, so which region is meant is a person's decision")
         return out
-    page_id = read_id(chosen["url"])
+    page_id = chosen.get("id") or read_id(chosen["url"])
     if not page_id:
-        out.update(status="ambiguous", reason=f"{chosen['url']} was confirmed as the main official page by {label} ({verdict['reason']}), but its page id could not be read from the page")
+        why = getattr(read_id, "why", "")
+        out.update(status="ambiguous", reason=f"{chosen['url']} was confirmed as the main official page by {label} ({verdict['reason']}), but its page id could not be read from the page" + (f" ({why})" if why else ""))
         return out
     out.update(status="resolved", page_id=page_id, page_name=chosen["title"] or chosen["slug"], page_likes=0,
                reason=f"found with Serper and confirmed as the main official page by {label}: {verdict['reason']} ({chosen['url']})")
@@ -157,8 +170,21 @@ def make_finder(serper, claude, get_html, label="the AI reviewer"):
         return claude.json_task(REVIEW_SYSTEM, f"Brand: {name}\nCandidates:\n{listing}", max_tokens=500)
 
     def read_id(url):
-        try:
-            return read_page_id(get_html(url))
-        except Exception:
-            return ""
+        """The page id from the page's own HTML, trying the page, its mobile address and its basic address; read_id.why says what each one did."""
+        slug = slug_of(url)
+        tried = []
+        for variant in dict.fromkeys([url, f"https://m.facebook.com/{slug}", f"https://mbasic.facebook.com/{slug}"] if slug else [url]):
+            host = variant.split("/")[2]
+            try:
+                found = read_page_id(get_html(variant))
+            except Exception as exc:                                       # the kind of error only
+                tried.append(f"{host}: {type(exc).__name__}")
+                continue
+            if found:
+                read_id.why = ""
+                return found
+            tried.append(f"{host}: no page id in the page")
+        read_id.why = "tried " + "; ".join(tried)
+        return ""
+    read_id.why = ""
     return lambda name: lookup_main_page(name, search, review, read_id, label)
