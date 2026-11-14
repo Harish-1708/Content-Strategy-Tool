@@ -273,7 +273,7 @@
   "ai:claude|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 9,
+   "consecutive_successes": 11,
    "history": [
     {
      "at": "2026-11-11T04:24:24Z",
@@ -337,10 +337,24 @@
      "items": 1,
      "ms": 977,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 1192,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 945,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-14T06:32:38Z",
+   "last_success": "2026-11-14T08:39:07Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:claude",
@@ -349,7 +363,7 @@
   "ai:cloudflare|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 5,
+   "consecutive_successes": 6,
    "history": [
     {
      "at": "2026-11-10T09:20:48Z",
@@ -427,6 +441,13 @@
      "items": 1,
      "ms": 450,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 374,
+     "ok": true
     }
    ],
    "last_error": {
@@ -434,7 +455,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "unusable answer: the answer is not valid JSON"
    },
-   "last_success": "2026-11-14T06:32:38Z",
+   "last_success": "2026-11-14T08:39:07Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:cloudflare",
@@ -442,8 +463,8 @@
   },
   "ai:cohere|gateway": {
    "acceptance": null,
-   "consecutive_failures": 1,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 4,
    "history": [
     {
      "at": "2026-11-14T05:00:40Z",
@@ -500,6 +521,34 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 329,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 1096,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 345,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 244,
+     "ok": true
     }
    ],
    "last_error": {
@@ -507,7 +556,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: cohere/command-r-08-2024 key1: timeout. Last error: The operation was aborted (cohere, chat, 15s)"
    },
-   "last_success": "2026-11-14T06:32:38Z",
+   "last_success": "2026-11-14T08:39:07Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:cohere",
@@ -715,7 +764,7 @@
   "ai:google|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 1,
+   "consecutive_successes": 2,
    "history": [
     {
      "at": "2026-11-10T09:17:16Z",
@@ -765,6 +814,13 @@
      "items": 1,
      "ms": 12705,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 4044,
+     "ok": true
     }
    ],
    "last_error": {
@@ -772,7 +828,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: google/gemini-2.5-flash-lite key1: model_not_found. Last error: Google API error 404: This model models"
    },
-   "last_success": "2026-11-14T06:32:38Z",
+   "last_success": "2026-11-14T08:39:07Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:google",
@@ -781,7 +837,7 @@
   "ai:groq|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 6,
+   "consecutive_successes": 8,
    "history": [
     {
      "at": "2026-11-10T08:54:44Z",
@@ -964,6 +1020,20 @@
      "items": 1,
      "ms": 286,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 301,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 259,
+     "ok": true
     }
    ],
    "last_error": {
@@ -971,7 +1041,7 @@
     "code": "RATE_LIMITED",
     "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset."
    },
-   "last_success": "2026-11-14T06:32:38Z",
+   "last_success": "2026-11-14T08:39:07Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:groq",
@@ -1025,10 +1095,82 @@
    "source": "ai:kilo",
    "state": "healthy"
   },
+  "ai:kilo|model:poolside/laguna-m.1:free": {
+   "acceptance": null,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-14T08:39:07Z",
+    "code": "UPSTREAM_BROKEN",
+    "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: kilo/poolside/laguna-m.1:free key1: model_not_found. Last error: Kilo Gateway API error 404: Not Found"
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "model:poolside/laguna-m.1:free",
+   "source": "ai:kilo",
+   "state": "healthy"
+  },
+  "ai:kilo|model:poolside/laguna-xs.2:free": {
+   "acceptance": null,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-14T08:39:07Z",
+    "code": "UPSTREAM_BROKEN",
+    "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: kilo/poolside/laguna-xs.2:free key1: model_not_found. Last error: Kilo Gateway API error 404: Not Found"
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "model:poolside/laguna-xs.2:free",
+   "source": "ai:kilo",
+   "state": "healthy"
+  },
+  "ai:kilo|model:stepfun/step-3.7-flash:free": {
+   "acceptance": null,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-14T08:39:07Z",
+    "code": "UPSTREAM_BROKEN",
+    "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: kilo/stepfun/step-3.7-flash:free key1: model_not_found. Last error: Kilo Gateway API error 404: Not Fou"
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "model:stepfun/step-3.7-flash:free",
+   "source": "ai:kilo",
+   "state": "healthy"
+  },
   "ai:nvidia|gateway": {
    "acceptance": null,
-   "consecutive_failures": 0,
-   "consecutive_successes": 1,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
    "history": [
     {
      "at": "2026-11-14T05:00:40Z",
@@ -1127,12 +1269,19 @@
      "items": 1,
      "ms": 50784,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "TIMEOUT",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-14T05:00:40Z",
-    "code": "UPSTREAM_BROKEN",
-    "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: nvidia/nvidia/nemotron-3-nano-30b-a3b key1: model_not_found. Last error: NVIDIA NIM API error 410: The "
+    "at": "2026-11-14T08:39:07Z",
+    "code": "TIMEOUT",
+    "message": "the gateway could not be reached: timed out"
    },
    "last_success": "2026-11-14T06:32:38Z",
    "pause": null,
@@ -1241,10 +1390,178 @@
    "source": "ai:ollama",
    "state": "degraded"
   },
+  "ai:ollama|model:devstral-2:123b": {
+   "acceptance": null,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-14T08:39:07Z",
+    "code": "RATE_LIMITED",
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~24h."
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "model:devstral-2:123b",
+   "source": "ai:ollama",
+   "state": "healthy"
+  },
+  "ai:ollama|model:gemma4:31b": {
+   "acceptance": null,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-14T08:39:07Z",
+    "code": "RATE_LIMITED",
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~24h."
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "model:gemma4:31b",
+   "source": "ai:ollama",
+   "state": "healthy"
+  },
+  "ai:ollama|model:glm-4.7": {
+   "acceptance": null,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-14T08:39:07Z",
+    "code": "RATE_LIMITED",
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~24h."
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "model:glm-4.7",
+   "source": "ai:ollama",
+   "state": "healthy"
+  },
+  "ai:ollama|model:gpt-oss:120b": {
+   "acceptance": null,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-14T08:39:07Z",
+    "code": "RATE_LIMITED",
+    "message": "All models rate-limited after 1 attempt. Soonest cooldown reset ~24h. Attempt trail: ollama/gpt-oss:120b key1: out_of_credits. Last error: Ollama Cloud API error 402: Add usage credits or subscribe and save up to 66%: [redacted-url] (ref: 0fe12325-f2b9-4a94-a611-d5a7d3549c60)"
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "model:gpt-oss:120b",
+   "source": "ai:ollama",
+   "state": "healthy"
+  },
+  "ai:ollama|model:gpt-oss:20b": {
+   "acceptance": null,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-14T08:39:07Z",
+    "code": "RATE_LIMITED",
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~24h."
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "model:gpt-oss:20b",
+   "source": "ai:ollama",
+   "state": "healthy"
+  },
+  "ai:ollama|model:qwen3-coder-next": {
+   "acceptance": null,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-14T08:39:07Z",
+    "code": "RATE_LIMITED",
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~24h."
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "model:qwen3-coder-next",
+   "source": "ai:ollama",
+   "state": "healthy"
+  },
+  "ai:ollama|model:qwen3-coder:480b": {
+   "acceptance": null,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-14T08:39:07Z",
+    "code": "RATE_LIMITED",
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~24h."
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "model:qwen3-coder:480b",
+   "source": "ai:ollama",
+   "state": "healthy"
+  },
   "ai:openrouter|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 8,
+   "consecutive_successes": 11,
    "history": [
     {
      "at": "2026-11-10T09:13:15Z",
@@ -1336,6 +1653,27 @@
      "items": 1,
      "ms": 552,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 396,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 584,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 1424,
+     "ok": true
     }
    ],
    "last_error": {
@@ -1343,7 +1681,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: openrouter/qwen/qwen3-next-80b-a3b-instruct:free key1: model_not_found. Last error: OpenRouter API erro"
    },
-   "last_success": "2026-11-14T06:32:38Z",
+   "last_success": "2026-11-14T08:39:07Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:openrouter",
@@ -1352,7 +1690,7 @@
   "ai:zhipu|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 5,
+   "consecutive_successes": 2,
    "history": [
     {
      "at": "2026-11-14T05:00:40Z",
@@ -1395,14 +1733,35 @@
      "items": 1,
      "ms": 973,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 5940,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:39:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 2830,
+     "ok": true
     }
    ],
    "last_error": {
-    "at": "2026-11-14T05:00:40Z",
+    "at": "2026-11-14T08:39:07Z",
     "code": "RATE_LIMITED",
-    "message": "All models rate-limited after 1 attempt. Soonest cooldown reset ~64s. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: 该模型当前访问量过大，请您稍后再试"
+    "message": "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: 该模型当前访问量过大，请您稍后再试"
    },
-   "last_success": "2026-11-14T06:32:38Z",
+   "last_success": "2026-11-14T08:39:07Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:zhipu",
