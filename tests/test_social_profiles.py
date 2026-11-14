@@ -101,15 +101,22 @@ def test_a_profile_is_read_into_a_snapshot_and_a_missing_account_is_not_one():
     snap = SP.snapshot_profile("tiktok", "@swoveralls", reader, T1)
     assert snap["platform"] == "tiktok" and snap["handle"] == "swoveralls" and snap["url"] == "https://www.tiktok.com/@swoveralls" and snap["metrics"]["followers"] == 73300 and snap["complete"] is True
     assert snap["name"] == "Swoveralls" and snap["quality"] == "real text" and snap["text"] == TIKTOK_TEXT and "via" not in snap
-    no_numbers = SP.snapshot_profile("tiktok", "x", lambda p, u: {"text": "words about a thing " * 10, "title": "", "landed": "", "quality": "real text"})
+    blank = lambda p, u: {"text": "words about a thing " * 10, "title": "", "landed": "", "quality": "real text"}
+    with pytest.raises(K.Failure) as seen:                            # for TikTok the counts ARE the snapshot: a page without them is not recorded as one, and says what it started with
+        SP.snapshot_profile("tiktok", "x", blank)
+    assert seen.value.code == K.NOT_FOUND and "shows no follower, like or post count" in str(seen.value) and "the page starts: 'words about a thing" in str(seen.value)
+    no_numbers = SP.snapshot_profile("linkedin", "x", blank)           # LinkedIn's About text alone is worth keeping
     assert no_numbers["complete"] is False and no_numbers["metrics"] == {}
     gone = lambda p, u: {"text": "Couldn't find this account Looking for videos? Try browsing our trending creators", "title": "", "landed": "", "quality": "real text"}
     with pytest.raises(K.Failure) as seen:
         SP.snapshot_profile("tiktok", "nobody", gone)
     assert seen.value.code == K.NOT_FOUND and "no such account or page as 'nobody'" in str(seen.value)
     long_page = lambda p, u: {"text": "Page not found is a phrase in our blog post. " + "real words about our brand " * 60, "title": "", "landed": "", "quality": "real text"}
-    assert SP.snapshot_profile("tiktok", "x", long_page)["complete"] is False                                              # a long real page that mentions the phrase is not a missing account
-    assert len(SP.snapshot_profile("tiktok", "x", lambda p, u: {"text": "w " * 5000, "title": "", "landed": "", "quality": "real text"})["text"]) == SP.TEXT_KEPT
+    assert SP.snapshot_profile("linkedin", "x", long_page)["complete"] is False                                            # a long real page that mentions the phrase is not a missing account (it is a LinkedIn page, whose About text is kept without counts)
+    with pytest.raises(K.Failure) as seen:
+        SP.snapshot_profile("tiktok", "x", long_page)
+    assert seen.value.code == K.NOT_FOUND and "no such account" not in str(seen.value) and "shows no follower, like or post count" in str(seen.value)      # for TikTok it is a page without counts, not a missing account
+    assert len(SP.snapshot_profile("linkedin", "x", lambda p, u: {"text": "w " * 5000, "title": "", "landed": "", "quality": "real text"})["text"]) == SP.TEXT_KEPT
 
 
 # ---- what changed ---------------------------------------------------------------------------------------------------------------------------------

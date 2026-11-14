@@ -344,9 +344,9 @@ WF = yaml.safe_load(WF_TEXT)
 
 def test_the_workflow_keeps_mock_and_live_in_separate_jobs():
     jobs = WF["jobs"]
-    assert set(jobs) == {"mock", "live"} and jobs["live"]["needs"] == "mock" and jobs["live"]["if"] == "inputs.live == true" and "if" not in jobs["mock"]
+    assert set(jobs) == {"mock", "live"} and jobs["live"]["needs"] == "mock" and jobs["live"]["if"] == "inputs.live == true || inputs.catalog == true" and "if" not in jobs["mock"]
     assert "Mock-provider" in jobs["mock"]["name"] and "Live-provider" in jobs["live"]["name"]
-    assert set(WF[True]["workflow_dispatch"]["inputs"]) == {"live", "evaluate", "only", "strict"} and WF[True]["workflow_dispatch"]["inputs"]["live"]["default"] is False
+    assert set(WF[True]["workflow_dispatch"]["inputs"]) == {"live", "evaluate", "only", "catalog", "strict"} and WF[True]["workflow_dispatch"]["inputs"]["live"]["default"] is False
     assert WF["concurrency"]["group"] == "catalogue-data" and "slack" not in WF_TEXT.lower().replace("no slack message", "")
 
 

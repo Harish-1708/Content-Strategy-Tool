@@ -356,9 +356,9 @@ def test_the_real_pinned_gateway_passes_the_mock_provider_smoke_test(tmp_path):
     results, report = smoke.run_smoke(os.environ["FREEAPI_GATEWAY_DIR"], reg, LOCK, tmp_path, G.baseline_from_inventory(ROOT / "docs" / "ai" / "provider_inventory.json"))
     failed = [(n, d) for n, ok, d in results if not ok]
     assert not failed, failed
-    assert report["models_on"] == 1 and report["models_off"] == 107 and len(results) == 9                    # no key is given here: the one model on is Kilo's approved one (Kilo needs no key); the other 107 are off
-    assert next(d for n, ok, d in results if n.startswith("every baseline model")) == "109 rows, 0 wrongly enabled, 0 approved but off, 1 approved and on"
-    assert next(d for n, ok, d in results if n.startswith("a key-less provider")) == "1 key-less model(s) have their stored row" and report["keys"] == ["kilo"]      # Kilo holds the gateway's stored no-key row: without it the live check said "no key configured"
+    assert report["models_on"] == 3 and report["models_off"] == 105 and len(results) == 9                    # no key is given here: the one model on is Kilo's approved one (Kilo needs no key); the other 107 are off
+    assert next(d for n, ok, d in results if n.startswith("every baseline model")) == "109 rows, 0 wrongly enabled, 0 approved but off, 3 approved and on"
+    assert next(d for n, ok, d in results if n.startswith("a key-less provider")) == "3 key-less model(s) have their stored row" and report["keys"] == ["kilo"]      # Kilo holds the gateway's stored no-key row: without it the live check said "no key configured"
 
 
 @pytest.mark.parametrize("status, body, message", [(204, {"error": {"message": "why"}}, "why"), (204, {}, "the gateway answered 204"), (302, {}, "the gateway answered 302"),

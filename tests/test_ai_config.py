@@ -333,7 +333,7 @@ def test_kilo_is_enabled_like_the_others_with_internal_open_one_model_in_the_poo
     p = R.load_registry(SHIPPED_P).provider("kilo")
     assert p.enabled and p.experimental and p.approved_classes == ("public", "internal") and p.effective_ceiling == "internal" and p.credential_env == ()
     assert p.override["approved_by"] == "Harish" and p.override["date"] == "2026-11-14" and "Internal stays open everywhere" in p.override["reason"] and "Restricted data" in p.override["reason"]
-    assert [m.id for m in p.models if m.approved] == ["nvidia/nemotron-3-super-120b-a12b:free"] and len(p.models) == 4
+    assert [m.id for m in p.models if m.approved] == ["poolside/laguna-m.1:free", "stepfun/step-3.7-flash:free", "poolside/laguna-xs.2:free"] and len(p.models) == 4               # Kilo answered 404 for its nemotron model (live check #22): off; its other three are candidates
     assert p.terms["trains_on_data"].startswith("yes") and "Public and Internal data" in p.terms["note"] and "services.ai_internal_data.channels.kilo" in p.terms["note"] and "internal: false" in p.terms["note"]
     assert p.limits == {"requests_per_hour": 200} and "Retry-After" in p.terms["note"]
 

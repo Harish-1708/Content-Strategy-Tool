@@ -85,13 +85,13 @@ def write_research(tmp_path, brand, data):
 
 
 def collect(store, tmp_path, brands, data, factory, cfg, settings, *, creds=CREDS, sources=("meta_ads", "tiktok", "instagram"),
-            now=NOW, dry_run=False, run_id="run1"):
+            now=NOW, dry_run=False, run_id="run1", fresh=False):
     data = {"track_own_brand": False, **data}
     for b in brands:
         write_research(tmp_path, b, data)
     return C.run_collect(brands, store, browser_factory=factory, creds=creds, settings=settings, browser_cfg=cfg,
                          ledger_cls=R.Ledger, sources=list(sources), now=now, run_id=run_id, dry_run=dry_run,
-                         root=str(tmp_path / "brands"))
+                         root=str(tmp_path / "brands"), fresh=fresh)
 
 
 def statuses(result, slug="swoveralls"):
@@ -1019,3 +1019,17 @@ def test_the_report_says_how_many_collected_items_are_new_to_the_collected_tab_a
     assert again and int(again.group(1)) == total and again.group(2) == "0" and int(again.group(3)) == total        # the same items found again: one row each, none new
     rows = C.collected_rows(store.read_collected("swoveralls"))
     assert len(rows) == total and all(r["times_seen"] == 2 for r in rows.values())                                # and the tab has exactly the new ones: 119 collected is not 119 rows
+
+
+def test_a_fresh_run_asks_every_source_again_inside_the_reuse_window_and_says_which_items_were_already_known(tmp_path, store, swov, cfg, settings):
+    import re
+    first = collect(store, tmp_path, [swov], FULL, world(cfg), cfg, settings)
+    assert all(s == "ran" for _, s in statuses(first))
+    soon = "2026-10-21T07:00:00Z"                                                                              # a day later: inside the 3-day window
+    reused = collect(store, tmp_path, [swov], FULL, world(cfg), cfg, settings, now=soon)
+    assert all(s == "reused" for _, s in statuses(reused)) and "collected in this run" not in C.format_collect_report(reused, settings)
+    asked = world(cfg)
+    fresh = collect(store, tmp_path, [swov], FULL, asked, cfg, settings, now=soon, fresh=True)
+    assert all(s == "ran" for _, s in statuses(fresh)) and asked.opened                                          # every source was asked again
+    m = re.search(r"  (\d+) item\(s\) collected in this run: (\d+) new to the Collected tab, (\d+) already there", C.format_collect_report(fresh, settings))
+    assert m and int(m.group(1)) > 0 and m.group(2) == "0" and int(m.group(3)) == int(m.group(1))             # the same items found again: one row each, none new

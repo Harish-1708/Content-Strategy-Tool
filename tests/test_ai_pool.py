@@ -29,14 +29,14 @@ def keys(routes):
 
 def test_the_shipped_pool_holds_every_approved_model_of_every_enabled_free_provider_once_and_nothing_else():
     approved = [(p.id, m.id) for p in REG.providers.values() if p.enabled and p.id != "claude" for m in p.models if m.approved]
-    assert sorted(keys(POOL)) == sorted(approved) and len(set(keys(POOL))) == len(POOL) == 25
+    assert sorted(keys(POOL)) == sorted(approved) and len(set(keys(POOL))) == len(POOL) == 27
     assert not [r for r in POOL if r["provider"] == "claude"]                                               # Claude leads or falls back: it is never part of the free pool
     per = {}
     for r in POOL:
         per[r["provider"]] = per.get(r["provider"], 0) + 1
-    assert per == {"groq": 2, "mistral": 2, "openrouter": 3, "cloudflare": 1, "google": 1, "nvidia": 1, "ollama": 7, "cohere": 4, "zhipu": 3, "kilo": 1}      # the models the live check of 2026-11-14 proved gone are out
+    assert per == {"groq": 2, "mistral": 2, "openrouter": 3, "cloudflare": 1, "google": 1, "nvidia": 1, "ollama": 7, "cohere": 4, "zhipu": 3, "kilo": 3}      # the models the live check of 2026-11-14 proved gone are out; Kilo has its three candidates
     assert [r["provider"] for r in POOL][:10] == ["groq", "groq", "mistral", "mistral", "openrouter", "openrouter", "openrouter", "cloudflare", "google", "nvidia"]      # the proven providers first
-    assert ("kilo", "nvidia/nemotron-3-super-120b-a12b:free") in keys(POOL) and ("zhipu", "glm-4.6v-flash") in keys(POOL) and ("nvidia", "google/gemma-4-31b-it") in keys(POOL) and ("nvidia", "meta/llama-4-maverick-17b-128e-instruct") not in keys(POOL)
+    assert ("kilo", "poolside/laguna-m.1:free") in keys(POOL) and ("kilo", "nvidia/nemotron-3-super-120b-a12b:free") not in keys(POOL) and ("zhipu", "glm-4.6v-flash") in keys(POOL) and ("nvidia", "google/gemma-4-31b-it") in keys(POOL) and ("nvidia", "meta/llama-4-maverick-17b-128e-instruct") not in keys(POOL)
 
 
 def test_every_lane_draws_on_the_pool_except_the_three_that_stay_with_claude():
@@ -155,7 +155,7 @@ def run_cli(tmp_path, monkeypatch, capsys, action, *extra):
 def test_a_mock_check_tries_every_pool_model_and_reports_each_provider_on_its_own(tmp_path, monkeypatch, capsys):
     code, out = run_cli(tmp_path, monkeypatch, capsys, "check")
     assert code == 0
-    for provider, model in (("kilo", "nvidia/nemotron-3-super-120b-a12b:free"), ("zhipu", "glm-4.6v-flash"), ("nvidia", "google/gemma-4-31b-it"), ("ollama", "gemma4:31b"),
+    for provider, model in (("kilo", "poolside/laguna-m.1:free"), ("zhipu", "glm-4.6v-flash"), ("nvidia", "google/gemma-4-31b-it"), ("ollama", "gemma4:31b"),
                             ("cohere", "command-r-08-2024"), ("groq", "openai/gpt-oss-20b"), ("google", "gemini-3.5-flash")):
         assert f"MOCK  ok        {provider}/{model}" in out, (provider, model)
     block = out[out.index("Provider status"):]
@@ -167,7 +167,7 @@ def test_a_mock_check_tries_every_pool_model_and_reports_each_provider_on_its_ow
 def test_the_plan_shows_the_pool_routes_and_which_data_may_go_where(tmp_path, monkeypatch, capsys):
     code, out = run_cli(tmp_path, monkeypatch, capsys, "plan", "--data-class", "internal")
     assert code == 0 and "(pool)" in out
-    kilo_line = "kilo / nvidia/nemotron-3-super-120b-a12b:free (pool): no credentials or client available on this machine"
-    assert kilo_line in out and "experimental route" not in out and "not approved for internal" not in out.split("kilo / nvidia")[1].split("\n")[0]      # Internal is open through Kilo as through the others; here it only lacks a client
+    kilo_line = "kilo / poolside/laguna-m.1:free (pool): no credentials or client available on this machine"
+    assert kilo_line in out and "experimental route" not in out and "not approved for internal" not in out.split("kilo / poolside")[1].split("\n")[0]      # Internal is open through Kilo as through the others; here it only lacks a client
     public_code, public = run_cli(tmp_path, monkeypatch, capsys, "plan", "--data-class", "public")
-    assert public_code == 0 and "kilo / nvidia/nemotron-3-super-120b-a12b:free (pool): no credentials or client available on this machine" in public    # for Public data it is allowed (here there is no client)
+    assert public_code == 0 and "kilo / poolside/laguna-m.1:free (pool): no credentials or client available on this machine" in public    # for Public data it is allowed (here there is no client)

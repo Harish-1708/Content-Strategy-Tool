@@ -20,7 +20,7 @@ def test_every_enabled_free_provider_receives_internal_data_including_kilo_which
             assert "internal" in p.approved_classes and p.effective_ceiling in ("internal", "restricted"), p.id
             assert "restricted" not in p.approved_classes or p.id == "claude", p.id                                # Restricted data is a separate rule and goes to Claude only
     kilo = SHIPPED.provider("kilo")
-    assert kilo.experimental and kilo.can_receive("internal") and SHIPPED.eligibility("kilo", "internal", model="nvidia/nemotron-3-super-120b-a12b:free") == (True, "")
+    assert kilo.experimental and kilo.can_receive("internal") and SHIPPED.eligibility("kilo", "internal", model="poolside/laguna-m.1:free") == (True, "")
 
 
 def test_no_shipped_model_has_internal_switched_off_so_the_default_is_on_everywhere():
@@ -81,7 +81,7 @@ def test_every_enabled_providers_key_reaches_the_runner_in_every_workflow_that_u
     observatory = (ROOT / ".github/workflows/observatory.yml").read_text(encoding="utf-8")
     for name in wanted:
         line = f"{name}: ${{{{ secrets.{name} }}}}"
-        assert gateway.count(line) == 2 and observatory.count(line) == 1, name                                       # ai-gateway.yml in two places, observatory.yml once
+        assert gateway.count(line) in (2, 3) and observatory.count(line) == 1, name                                    # ai-gateway.yml: the live check and the evaluation (and, for the keys with a model-list address, the catalog step); observatory.yml once
     secrets = next(g for g in re.findall(r'"secrets": \(([^)]*)\)', (ROOT / "contentintel/connections.py").read_text(encoding="utf-8")) if "FREEAPI_ENCRYPTION_KEY" in g)
     for name in ("NVIDIA_API_KEY", "ZHIPU_API_KEY", "OLLAMA_API_KEY", "COHERE_API_KEY"):
         assert f'"{name}"' in secrets, name
