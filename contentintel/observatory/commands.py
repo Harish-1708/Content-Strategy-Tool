@@ -826,6 +826,8 @@ def _sessions(args, settings, now):
             print(f"The page itself could not be read, so this is discovery (the search layer, {result.rows[0]['provider']}, no login): titles and snippets about the address, not the page.")
             for row in result.rows[:5]:
                 print(f"- {row['title']}\n  {row['url']}\n  {row['text'][:300]}")
+            if result.rows[0].get("left_out"):
+                print(f"Left out: {len(result.rows[0]['left_out'])} result(s) about a different account ({', '.join(result.rows[0]['left_out'])}). An account with a similar name is never used for this address.")
         else:
             for row in result.rows[:1]:
                 print(f"{row['title'] or row['final_url']}\n  {row['chars']} characters read through the {row['route']} route\n" + row["text"][:1500])

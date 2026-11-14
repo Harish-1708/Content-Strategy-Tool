@@ -163,7 +163,7 @@ def make_discovery(environ=None, providers=None, limit=12):
         text = " ".join(f"{hit.get('title') or ''} {hit.get('text') or ''}".split())
         parsed = parse_profile(platform, text, hit.get("title", ""))
         if not parsed["metrics"]:
-            raise K.Failure(K.UPSTREAM_BROKEN, f"the search result for {LABELS[platform]} {handle!r} gave no follower, like or post count")
+            raise K.Failure(K.NOT_FOUND, f"the search result for exactly {LABELS[platform]} {handle!r} was found but its text shows no follower, like or post count, so there is nothing to record (nothing is estimated)")
         bio = re.search(r"@" + re.escape(want) + r"\)?\s*[:\-]\s*[\"“]?(.*?)[\"”]?\s*$", text, re.I)
         return {"platform": platform, "handle": want, "url": url, "landed": S._landed(hit.get("url") or ""), "name": parsed["name"], "bio": _cut(bio.group(1)) if bio else parsed["bio"], "joined": "",
                 "about": "", "metrics": parsed["metrics"], "quality": "search snippet", "via": "search", "text": text[:TEXT_KEPT], "complete": True}
