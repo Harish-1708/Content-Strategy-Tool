@@ -26,6 +26,18 @@ CLAUDE = "claude"
 PACED = object()                         # a route that would have to wait for its provider's own limit: passed over, tried again only if nothing else answers
 TOO_BIG = re.compile(r"max[_ ]?(output[_ ]?)?tokens|maximum|too (large|long|many)|exceed|context length|out of range", re.I)
 GONE = re.compile(r"model_not_found|not found or removed upstream|end of life|was retired|has been retired|no longer available|decommission|has been deprecated|Function '[^']*': Not found for account", re.I)
+CREDITS = re.compile(r"out_of_credits|add usage credits|usage credits|insufficient[_ ](credits|funds|balance)|payment required|credit balance", re.I)
+CREDITS_REST = 86400                     # a model that answers 'out of credits' is not asked again for a day. ONLY that model: a 402 on one model does not prove the provider's other models are out of credits, and only trying them tells us (owner, 14 Nov 2026)
+RESET = re.compile(r"soonest (?:cooldown )?reset ~\s*(\d+)\s*([smh])", re.I)
+
+
+def reset_seconds(message):
+    """Seconds from the gateway's own 'Soonest cooldown reset ~13s' (or ~2m, ~24h), or None. It is how long the gateway holds the provider's key on cooldown after a refusal."""
+    m = RESET.search(str(message or ""))
+    return int(m.group(1)) * {"s": 1, "m": 60, "h": 3600}[m.group(2).lower()] if m else None
+
+
+
 GONE_REST = 86400                        # a withdrawn model is not asked again for a day (and only that model: its provider's other models keep working)
 MIN_CAP = 1024                           # the smallest cap tried when a provider rejects a large one
 
@@ -77,17 +89,18 @@ class Router:
             chain.append({"provider": CLAUDE, "model": lane.claude_model, "gateway_model": lane.claude_model})
         return chain
 
-    def _eligible(self, lane, route, data_class, now, est_in=2000):
+    def _eligible(self, lane, route, data_class, now, est_in=2000, ignore_rests=False):
+        """ignore_rests: a live CHECK tries every route, even one that an earlier run left resting, because finding out which ones work is its whole purpose."""
         pid = route["provider"]
         ok, why = self.registry.eligibility(pid, data_class, model=route["model"])
         if not ok:
             return False, why
         if pid not in self.clients:
             return False, "no credentials or client available on this machine"
-        rest = self.health.is_paused(f"ai:{pid}", "gateway", now)
+        rest = None if ignore_rests else self.health.is_paused(f"ai:{pid}", "gateway", now)
         if rest:
             return False, rest["message"]
-        gone = self.health.is_paused(f"ai:{pid}", "model:" + route["model"], now)
+        gone = None if ignore_rests else self.health.is_paused(f"ai:{pid}", "model:" + route["model"], now)
         if gone:
             return False, "this model was reported withdrawn by its provider: " + str(gone["message"])[:160]
         ok, why = self.usage.allows(self.registry.provider(pid), self.registry, now, model=route["model"], est_in=est_in, max_out=lane.max_tokens)
@@ -123,11 +136,11 @@ class Router:
                 return self._finish(lane, route, result, data_class, item_ids, now, base)
         return {**base, "status": "deferred", "reason": "no route produced a usable answer; the task is deferred, nothing was guessed"}
 
-    def run_route(self, lane_name, route, *, instructions, context=(), now, system=""):
-        """One specific route, for evaluation. The same eligibility, checks and recording apply. Public data only."""
+    def run_route(self, lane_name, route, *, instructions, context=(), now, system="", ignore_rests=False):
+        """One specific route, for evaluation and for the live check. The same eligibility, checks and recording apply (a live check passes ignore_rests so that every route is tried). Public data only."""
         lane = self.lanes[lane_name]
         base = {"lane": lane_name, "data_class": dc.PUBLIC, "attempts": [], "skipped": [], "route": None, "output": None, "text": "", "review_id": ""}
-        ok, why = self._eligible(lane, route, dc.PUBLIC, now)
+        ok, why = self._eligible(lane, route, dc.PUBLIC, now, ignore_rests=ignore_rests)
         if not ok:
             return {**base, "status": "skipped", "reason": why}
         result = self._try(lane, route, system, build_prompt(instructions, context), now, base, patient=True)
@@ -164,15 +177,21 @@ class Router:
                             return PACED
                         held += 1
                         continue
-                    if err["code"] == contract.RATE_LIMITED:
-                        self.pacer.rate_limited(provider, err.get("retry_after_seconds"))          # Retry-After is honoured: nothing more goes to this provider until then
+                    message = str(err["message"])
+                    credits = bool(CREDITS.search(message))
+                    wait = err.get("retry_after_seconds") or reset_seconds(message)                  # the provider's Retry-After, or the gateway's own 'Soonest reset ~13s'
+                    short = wait if (wait and wait <= self.pacer.max_wait and (err["code"] == contract.RATE_LIMITED or credits)) else None
+                    if short:
+                        self.pacer.rate_limited(provider, short)                                   # a short wait is waited for (then the provider's next model is tried): the full allowance is used
                     attempt.update({"result": err["code"], "message": err["message"]})
                     base["attempts"].append(attempt)
                     self.usage.record(provider, lane.name, now, ok=False, model=route["model"])
                     if err["code"] in (contract.UPSTREAM_BROKEN, contract.NOT_FOUND) and GONE.search(str(err["message"])):
                         self.health.observe(source, "model:" + route["model"], ok=False, code=err["code"], message=err["message"], now=now, rest_seconds=GONE_REST)      # that model only: the provider is not rested
+                    elif credits or (err["code"] == contract.RATE_LIMITED and wait and not short):
+                        self.health.observe(source, "model:" + route["model"], ok=False, code=err["code"], message=err["message"], now=now, rest_seconds=CREDITS_REST if credits else int(wait))      # THIS model only: the provider's other models are tried
                     else:
-                        self.health.observe(source, "gateway", ok=False, code=err["code"], message=err["message"], now=now, retry_after=err.get("retry_after_seconds"))
+                        self.health.observe(source, "gateway", ok=False, code=err["code"], message=err["message"], now=now, retry_after=short or err.get("retry_after_seconds"))
                     return None
         finally:
             for _ in range(held):

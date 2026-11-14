@@ -141,6 +141,11 @@ def _fmt_rows(rows, keys):
 
 def run_ai(args, store, health, now):
     action = args.action
+    if action == "catalog":
+        from . import catalog as cat
+        registry, _ = load_all(args)
+        print(cat.format_report(cat.run(registry, os.environ, cat.inventory())))
+        return 0
     if action == "smoke":
         registry, _ = load_all(args)
         if not Path(args.gateway_dir, "server/dist/index.js").is_file():
@@ -265,7 +270,7 @@ def _check(args, registry, lanes, router, usage, review, health, store, now, mod
             targets.append(r)
     outcome = {}                                    # provider -> {"ok": n, "failed": [codes], "skipped": [reasons]}
     for r in targets:
-        res = router.run_route("canary", r, instructions="Reply with the single word OK.", now=now)
+        res = router.run_route("canary", r, instructions="Reply with the single word OK.", now=now, ignore_rests=True)      # a check tries EVERY route, even one an earlier run left resting: finding out which work is its purpose
         slot = outcome.setdefault(r["provider"], {"ok": 0, "failed": [], "skipped": []})
         if res["status"] == "ok":
             c = res["completion"]
