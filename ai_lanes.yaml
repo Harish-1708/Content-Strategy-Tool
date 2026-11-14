@@ -14,60 +14,70 @@ lanes:
     max_data_class: internal
     chain:
       - {provider: groq, model: openai/gpt-oss-120b}
+      - {provider: cohere, model: command-a-03-2025}
+      - {provider: nvidia, model: deepseek-ai/deepseek-v4-pro}
       - {provider: mistral, model: mistral-small-latest}
       - {provider: openrouter, model: "openrouter/free"}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
     output: {format: json, schema: {type: object, required: [items], properties: {items: {type: array, minItems: 1}}}}
-    max_tokens: 1500
+    max_tokens: 8000
 
   competitor_intelligence:
     description: Classify and summarise competitor activity (products, offers, messaging).
     max_data_class: internal
     chain:
       - {provider: groq, model: openai/gpt-oss-120b}
+      - {provider: nvidia, model: mistralai/mistral-large-3-675b-instruct-2512}
+      - {provider: cohere, model: command-a-03-2025}
       - {provider: mistral, model: mistral-small-latest}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
     output: {format: json, schema: {type: object, required: [competitors], properties: {competitors: {type: array}}}}
     review: required
-    max_tokens: 1500
+    max_tokens: 8000
 
   audience_voice:
     description: Group audience questions and complaints into pain-point themes, keeping the source of every quote.
     max_data_class: internal
     chain:
       - {provider: mistral, model: mistral-small-latest}
+      - {provider: nvidia, model: moonshotai/kimi-k2.6}
       - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
     output: {format: json, schema: {type: object, required: [themes], properties: {themes: {type: array, minItems: 1}}}}
     review_sample_every: 5
-    max_tokens: 1500
+    max_tokens: 8000
 
   formula_analysis:
     description: Match a creative to a known formula or describe a new one, with a confidence.
     max_data_class: internal
     chain:
+      - {provider: nvidia, model: moonshotai/kimi-k2.6}
+      - {provider: ollama, model: kimi-k2-thinking}
       - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: mistral, model: mistral-large-latest}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
     output: {format: json, schema: {type: object, required: [formula, confidence], properties: {formula: {type: string, minLength: 2}, confidence: {type: number, minimum: 0, maximum: 1}}}}
     min_confidence: 0.4
-    max_tokens: 800
+    max_tokens: 8000
 
   trend_opportunity:
     description: Spot rising angles and gaps from collected evidence, with the evidence cited.
     max_data_class: internal
     chain:
+      - {provider: nvidia, model: deepseek-ai/deepseek-v4-pro}
+      - {provider: ollama, model: deepseek-v3.2}
+      - {provider: ollama, model: kimi-k2-thinking}
       - {provider: mistral, model: mistral-large-latest}
       - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
     output: {format: json, schema: {type: object, required: [opportunities], properties: {opportunities: {type: array, minItems: 1}}}}
     review: required
-    max_tokens: 2000
+    max_tokens: 8000
 
   strategic_reasoning:
     description: Weigh options and recommend a direction. Claude leads; a person reviews.
@@ -78,12 +88,15 @@ lanes:
     output: {format: text, min_chars: 200}
     forbid: [guaranteed results, clinically proven, 100% safe]
     review: required
-    max_tokens: 2500
+    use_pool: false
+    max_tokens: 8000
 
   content_ideation:
     description: Propose hooks and angles for a brand, from approved evidence and facts.
     max_data_class: internal
     chain:
+      - {provider: ollama, model: kimi-k2-thinking}
+      - {provider: nvidia, model: moonshotai/kimi-k2.6}
       - {provider: mistral, model: mistral-large-latest}
       - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: google, model: gemini-3.5-flash}
@@ -92,7 +105,7 @@ lanes:
     output: {format: json, schema: {type: object, required: [ideas], properties: {ideas: {type: array, minItems: 3}}}}
     forbid: [guaranteed results, clinically proven, 100% safe]
     review_sample_every: 5
-    max_tokens: 1800
+    max_tokens: 8000
 
   brief_generation:
     description: Write a creative brief. Claude leads; every brief waits for a person and passes the claim check.
@@ -103,19 +116,21 @@ lanes:
     output: {format: json, schema: {type: object, required: [title, hook, body], properties: {title: {type: string, minLength: 3}, hook: {type: string, minLength: 5}, body: {type: string, minLength: 50}}}}
     forbid: [guaranteed results, clinically proven, 100% safe]
     review: required
-    max_tokens: 3000
+    use_pool: false
+    max_tokens: 8000
 
   production_support:
     description: Shot lists, captions and on-screen text drafts for the studio.
     max_data_class: internal
     chain:
       - {provider: groq, model: openai/gpt-oss-20b}
+      - {provider: zhipu, model: glm-4.7-flash}
       - {provider: mistral, model: mistral-small-latest}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
     output: {format: text, min_chars: 40}
     review_sample_every: 5
-    max_tokens: 1500
+    max_tokens: 8000
 
   validation_qa:
     description: Check another output against the evidence and the rules; list real problems only.
@@ -124,7 +139,8 @@ lanes:
       - {provider: claude, model: claude-haiku-5-5}
     claude_leads: true
     output: {format: json, schema: {type: object, required: [verdict, issues], properties: {verdict: {type: string, enum: [pass, fail, unsure]}, issues: {type: array}}}}
-    max_tokens: 1200
+    use_pool: false
+    max_tokens: 8000
 
   # The two lanes the platform's modules reach through the AI Gateway adapter (services.ai_client) when the owner routes a purpose gateway_first. They carry Internal data at most and need no review:
   # the module's own checks (claims, schemas, rules) still run on whatever comes back, exactly as they do on Claude's answer.
@@ -133,21 +149,73 @@ lanes:
     max_data_class: internal
     chain:
       - {provider: groq, model: openai/gpt-oss-120b}
+      - {provider: nvidia, model: meta/llama-3.3-70b-instruct}
+      - {provider: zhipu, model: glm-4.7-flash}
       - {provider: mistral, model: mistral-small-latest}
       - {provider: openrouter, model: "openrouter/free"}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: false      # the module that asked falls back to its own Claude client, under its own spending cap, when this lane has no answer
     output: {format: text, min_chars: 1}
-    max_tokens: 2000
+    max_tokens: 8000
 
   general_json:
     description: JSON language-model task for any module (idea scoring, planning, briefs, deep checks), when routed through the gateway.
     max_data_class: internal
     chain:
       - {provider: groq, model: openai/gpt-oss-120b}
+      - {provider: zhipu, model: glm-4.7-flash}
+      - {provider: nvidia, model: meta/llama-3.3-70b-instruct}
       - {provider: mistral, model: mistral-small-latest}
       - {provider: openrouter, model: "openrouter/free"}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: false      # the module that asked falls back to its own Claude client, under its own spending cap, when this lane has no answer
     output: {format: json, schema: {type: object}}
-    max_tokens: 2500
+    max_tokens: 8000
+
+# THE SHARED POOL: every approved model, in one list, available to every lane (after the lane's own preferred routes above), and to every future stage, tool and the website, without
+# any of them needing its own wiring. A model is approved once in ai_providers.yaml and listed once here; it is not the property of any lane. A route is still used only if its provider
+# is enabled and approved for the data class, has a credential and is not resting, and is paced to the provider's own limits. The proven providers come first, then the new ones. Lanes that
+# must stay with Claude (strategic reasoning, brief generation, validation) say use_pool: false. Which models a free tier really serves is shown by `ai check`; take one out by removing its line.
+pool:
+  - {provider: groq, model: openai/gpt-oss-120b}
+  - {provider: groq, model: openai/gpt-oss-20b}
+  - {provider: mistral, model: mistral-large-latest}
+  - {provider: mistral, model: mistral-small-latest}
+  - {provider: openrouter, model: openrouter/free}
+  - {provider: openrouter, model: qwen/qwen3-coder:free}
+  - {provider: openrouter, model: z-ai/glm-4.5-air:free}
+  - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
+  - {provider: google, model: gemini-3.5-flash}
+  - {provider: google, model: gemini-2.5-flash-lite}
+  - {provider: nvidia, model: deepseek-ai/deepseek-v4-pro}
+  - {provider: nvidia, model: moonshotai/kimi-k2.6}
+  - {provider: nvidia, model: mistralai/mistral-large-3-675b-instruct-2512}
+  - {provider: nvidia, model: meta/llama-4-maverick-17b-128e-instruct}
+  - {provider: nvidia, model: qwen/qwen3-coder-480b-a35b-instruct}
+  - {provider: nvidia, model: z-ai/glm-5.1}
+  - {provider: nvidia, model: deepseek-ai/deepseek-v4-flash}
+  - {provider: nvidia, model: nvidia/nemotron-3-super-120b-a12b}
+  - {provider: nvidia, model: meta/llama-3.3-70b-instruct}
+  - {provider: nvidia, model: meta/llama-3.1-70b-instruct}
+  - {provider: nvidia, model: minimaxai/minimax-m2.7}
+  - {provider: nvidia, model: google/gemma-4-31b-it}
+  - {provider: nvidia, model: nvidia/nemotron-3-nano-30b-a3b}
+  - {provider: ollama, model: kimi-k2-thinking}
+  - {provider: ollama, model: deepseek-v3.2}
+  - {provider: ollama, model: mistral-large-3:675b}
+  - {provider: ollama, model: cogito-2.1:671b}
+  - {provider: ollama, model: gpt-oss:120b}
+  - {provider: ollama, model: glm-4.7}
+  - {provider: ollama, model: devstral-2:123b}
+  - {provider: ollama, model: qwen3-coder-next}
+  - {provider: ollama, model: qwen3-coder:480b}
+  - {provider: ollama, model: gpt-oss:20b}
+  - {provider: ollama, model: gemma4:31b}
+  - {provider: cohere, model: command-a-reasoning-08-2025}
+  - {provider: cohere, model: command-a-03-2025}
+  - {provider: cohere, model: command-r-plus-08-2024}
+  - {provider: cohere, model: command-r-08-2024}
+  - {provider: zhipu, model: glm-4.7-flash}
+  - {provider: zhipu, model: glm-4.5-flash}
+  - {provider: zhipu, model: glm-4.6v-flash}
+  - {provider: kilo, model: nvidia/nemotron-3-super-120b-a12b:free}

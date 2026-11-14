@@ -1,5 +1,5 @@
 # AI providers: every platform in the pinned FreeLLMAPI v0.16.17 (84 ids), GitHub Models (called directly), and Claude: 86 in all.
-# Switched on at present: cloudflare, google, groq, mistral, openrouter and claude. A test keeps this line equal to the enabled flags below. GitHub Models is retired (see its retired: record): kept, never enabled or called.
+# Switched on at present: cloudflare, cohere, google, groq, kilo, mistral, nvidia, ollama, openrouter, zhipu and claude. A test keeps this line equal to the enabled flags below. GitHub Models is retired (see its retired: record): kept, never enabled or called.
 #
 # NOTHING is on unless it says enabled: true. A provider carries the terms found when it was checked (terms.status says
 # how well: verified = the provider's own page; verified_secondary = quoted by other sites; upstream_documented = the gateway
@@ -792,96 +792,109 @@ providers:
       note: declared by the upstream project only; not checked against the provider
   nvidia:
     label: NVIDIA NIM
-    enabled: false
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
     credentials:
       env:
       - NVIDIA_API_KEY
     gateway_platform: nvidia
     terms:
-      status: unverified
-      date: '2026-11-03'
-      note: declared by the upstream project only; not checked against the provider
+      status: owner_decision
+      date: '2026-11-14'
+      trains_on_data: 'not confirmed: sources disagree (one reading of NVIDIA''s trial terms allows logging prompts and outputs for product improvement, another says data is not used for training); the terms read at signup settle it'
+      retention: not stated
+      business_use: 'Commercial use allowed? Not applicable and not claimed: this tool is the owner''s personal project (not a product, not sold, not offered as a service, no production deployment). NVIDIA''s free API is for prototyping, development and research; production use needs an NVIDIA AI Enterprise licence; NVIDIA may end the free service at any time.'
+      note: 'Owner decision 2026-11-14: enabled for personal prototyping and development use. No card is asked for at signup (a web check on 2026-11-13); if one is, the owner stops. The free limit is the provider''s own and is paced, never exceeded: sources say about 30 to 40 requests a minute and that it varies by model and load, so the figure below is a setting, started conservatively, and the account dashboard at build.nvidia.com is the source of truth.'
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-14'
+      reason: 'Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent. Recorded for this provider on 2026-11-14 together with the personal-use decision.'
+    # NVIDIA's free limit is not a fixed figure (sources say 30 to 40 a minute, varying by model and load). This is a SETTING: change it to what the account dashboard shows.
+    limits:
+      requests_per_minute: 30
     models:
     - id: meta/llama-3.1-70b-instruct
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: deepseek-ai/deepseek-v4-pro
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: mistralai/mistral-large-3-675b-instruct-2512
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: minimaxai/minimax-m2.7
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: moonshotai/kimi-k2.6
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: meta/llama-4-maverick-17b-128e-instruct
-      approved: false
+      approved: true
       capabilities:
       - text
       - vision
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: meta/llama-3.3-70b-instruct
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: google/gemma-4-31b-it
-      approved: false
+      approved: true
       capabilities:
       - text
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: nvidia/nemotron-3-super-120b-a12b
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: nvidia/nemotron-3-nano-30b-a3b
-      approved: false
+      approved: true
       capabilities:
       - text
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: qwen/qwen3-coder-480b-a35b-instruct
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: deepseek-ai/deepseek-v4-flash
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: z-ai/glm-5.1
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
   mistral:
     label: Mistral
     enabled: true
@@ -1130,43 +1143,57 @@ providers:
       note: present in the gateway baseline; not approved
   cohere:
     label: Cohere
-    enabled: false
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
     credentials:
       env:
       - COHERE_API_KEY
     gateway_platform: cohere
     terms:
-      status: unverified
-      date: '2026-11-03'
-      note: declared by the upstream project only; not checked against the provider
+      status: owner_decision
+      date: '2026-11-14'
+      trains_on_data: not stated; to be confirmed from its terms at signup
+      retention: not stated
+      business_use: 'Commercial use allowed? No, not for a trial key: Cohere''s pricing page says trial-key calls are not permitted for production or commercial use. Not applicable here: this is the owner''s personal project used for evaluation and development only (not a product, not sold, not a service, no production deployment). A production key (billing set up, by application) is a decision for later, not now.'
+      note: 'Owner decision 2026-11-14: kept in the plan on a trial key for personal evaluation and development. No card is asked for at signup; if one is, the owner stops. Trial limits are Cohere''s own: 20 requests a minute and 1,000 calls a month across everything. Newer models such as Command A may need Cohere''s sales team; the live check shows what the trial key serves.'
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-14'
+      reason: 'Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent. Recorded for this provider on 2026-11-14 together with the personal-use decision.'
+    # Cohere trial key (its own stated limits, unverified until signup): 20 requests a minute on chat, 1,000 calls a month in total.
+    limits:
+      requests_per_minute: 20
+      requests_per_month: 1000
     models:
     - id: command-r-plus-08-2024
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: command-a-03-2025
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: command-a-reasoning-08-2025
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: command-r-08-2024
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
   tavily:
     label: tavily
     enabled: false
@@ -1392,138 +1419,175 @@ providers:
       note: present in the gateway baseline; not approved
   zhipu:
     label: Zhipu (Z.ai / bigmodel.cn)
-    enabled: false
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
     credentials:
       env:
       - ZHIPU_API_KEY
     gateway_platform: zhipu
     terms:
-      status: unverified
-      date: '2026-11-03'
-      note: declared by the upstream project only; not checked against the provider
+      status: owner_decision
+      date: '2026-11-14'
+      trains_on_data: not stated; to be confirmed from its terms at signup
+      retention: not stated
+      business_use: 'Commercial use allowed? The Flash models are listed free permanently and its pricing allows commercial use; not relevant here: personal project, not a product, not sold, not a service, no production deployment. Its terms also prohibit using Z.ai to develop or train competing models, which this tool does not do.'
+      note: 'DATA RESIDENCY IS IN CHINA: Z.ai is operated from China by Zhipu AI, so prompts sent to it are processed there. Recorded 2026-11-14, before any client data goes to it. Use the international platform (z.ai), not bigmodel.cn. Owner decision 2026-11-14: enabled for personal use. No card is asked for at signup; if one is, the owner stops. Rate limits are not published: about 1 request a second and about 1,000 calls a day by a third-party measurement (unofficial), which the figure below follows.'
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-14'
+      reason: 'Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent. Recorded for this provider on 2026-11-14 together with the personal-use decision.'
+    # Z.ai publishes no limit for the Flash models: about 1 request a second by a third-party measurement (unofficial). A SETTING: change it to what the account shows.
+    limits:
+      requests_per_minute: 60
     models:
     - id: glm-4.5-flash
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: glm-4.7-flash
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: glm-4.6v-flash
-      approved: false
+      approved: true
       capabilities:
       - text
       - vision
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
   ollama:
     label: Ollama Cloud
-    enabled: false
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
     credentials:
       env:
       - OLLAMA_API_KEY
     gateway_platform: ollama
     terms:
-      status: unverified
-      date: '2026-11-03'
-      note: declared by the upstream project only; not checked against the provider
+      status: owner_decision
+      date: '2026-11-14'
+      trains_on_data: no, per Ollama's stated policy (prompt and response data is not logged or trained on); to be confirmed from its terms at signup
+      retention: not stated; Ollama says it keeps no prompt or response logs
+      business_use: 'Commercial use allowed? Not applicable and not claimed: personal project, not a product, not sold, not offered as a service, no production deployment. A free account has a monthly starter amount of cloud usage on starter models only; buying credits unlocks the rest.'
+      note: 'Owner decision 2026-11-14: enabled for personal use. No card is asked for at signup (a web check on 2026-11-13); if one is, the owner stops. Which of the approved models are in the free starter set is confirmed at signup and shown by the live check; a model that is not will fail and say so. One request at a time: its own limit, paced.'
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-14'
+      reason: 'Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent. Recorded for this provider on 2026-11-14 together with the personal-use decision.'
+    # Ollama Cloud's free account allows one request at a time (its own limit). Rate limits are unpublished; confirm at signup.
+    limits:
+      concurrency: 1
     models:
     - id: qwen3-coder:480b
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: mistral-large-3:675b
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: deepseek-v3.2
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: cogito-2.1:671b
-      approved: false
+      approved: true
       capabilities:
       - text
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: kimi-k2-thinking
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: glm-4.7
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: gpt-oss:120b
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: devstral-2:123b
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: gpt-oss:20b
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: gemma4:31b
-      approved: false
+      approved: true
       capabilities:
       - text
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: qwen3-coder-next
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
   kilo:
     label: Kilo Gateway
-    enabled: false
+    enabled: true
     experimental: true
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
     credentials:
       env: []
     gateway_platform: kilo
     terms:
       status: upstream_documented
-      date: '2026-11-03'
+      date: '2026-11-14'
       trains_on_data: yes (per upstream documentation)
-      note: anonymous :free routes limited to 200 requests/hour per IP; the gateway's own documentation says prompts and outputs are logged for training
+      business_use: Free anonymous routes; personal use. No key and no signup.
+      note: 'Owner decision 2026-11-14: enabled for Public and Internal data, like every other provider (Internal stays open everywhere, including experimental routes; the owner can switch Internal off for kilo in Controls, services.ai_internal_data.channels.kilo, or for one model with internal: false). Kilo''s own documentation says prompts and outputs are logged for training: that is covered by the standing decision above. Anonymous :free routes are limited to 200 requests/hour per IP (unverified until used live); GitHub runners share IP ranges, so the real budget on a runner may be lower. The 429 and Retry-After are honoured.'
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-14'
+      reason: 'Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent. Recorded for this provider on 2026-11-14 together with the personal-use decision, which said Internal stays open everywhere including experimental routes.'
+    # Kilo's anonymous free routes: 200 requests an hour per IP (its own stated limit, unverified until used live).
+    limits:
+      requests_per_hour: 200
     models:
     - id: nvidia/nemotron-3-super-120b-a12b:free
-      approved: false
+      approved: true
       capabilities:
       - text
       - tools
-      note: present in the gateway baseline; not approved
+      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: poolside/laguna-m.1:free
       approved: false
       capabilities:

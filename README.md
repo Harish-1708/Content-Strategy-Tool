@@ -216,6 +216,10 @@ names marked set or not set, so you can see what the run can see (the values are
 | `GROQ_API_KEY` | Groq models through the gateway | only if you switch Groq on | console.groq.com > API Keys |
 | `MISTRAL_API_KEY` | Mistral models through the gateway (free plan may train on prompts: Public data only) | only if you switch Mistral on | console.mistral.ai > API keys |
 | `OPENROUTER_API_KEY` | OpenRouter's free models, called directly: the tool asks for the models that are free today (they change every few days), never a paid one | only if you switch OpenRouter on | openrouter.ai > Keys |
+| `NVIDIA_API_KEY` | NVIDIA's free hosted models (personal prototyping and development use) | only if you switch NVIDIA on |
+| `ZHIPU_API_KEY` | Zhipu / Z.ai's free Flash models (data is processed in China) | only if you switch Zhipu on |
+| `OLLAMA_API_KEY` | Ollama Cloud's free starter models | only if you switch Ollama on |
+| `COHERE_API_KEY` | Cohere's trial key (personal evaluation and development; not for production) | only if you switch Cohere on |
 | `GEMINI_API_KEY` | Google Gemini through the gateway (free tier may train on prompts: Public data only) | only if you switch Gemini on | aistudio.google.com > Get API key |
 | `CEREBRAS_API_KEY` | Cerebras through the gateway | optional | cloud.cerebras.ai |
 | `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` | Cloudflare Workers AI through the gateway | optional; both or neither | the Cloudflare dashboard > Workers AI |
