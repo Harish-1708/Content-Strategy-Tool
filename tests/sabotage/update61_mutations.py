@@ -19,8 +19,8 @@ U61 = [
     ('u61-cat-error-text', 'contentintel/ai/catalog.py', 'return [], f"the list could not be fetched ({type(exc).__name__})"', 'return [], f"the list could not be fetched ({exc})"', 'a network error can print the key'),
     ('u61-cat-status', 'contentintel/ai/catalog.py', '    if status != 200:', '    if False:', 'an error answer is read as a list'),
     ('u61-cat-missing', 'contentintel/ai/catalog.py', 'row["approved_missing"] = [m.id for m in approved if normalise(m.id) not in live]', 'row["approved_missing"] = []', 'withdrawn models are never named'),
-    ('u61-cat-unroutable', 'contentintel/ai/catalog.py', 'row["unroutable"] = [i for n, i in live.items() if n not in known]', 'row["unroutable"] = []', 'models the pinned gateway cannot route are never named'),
-    ('u61-cat-candidates', 'contentintel/ai/catalog.py', 'if n in known and not any(normalise(m.id) == n and m.approved for m in p.models)]', 'if n in known]', 'approved models are offered as candidates'),
+    ('u61-cat-unroutable', 'contentintel/ai/catalog.py', 'row["unroutable"] = [i for n, i in live.items() if n not in known and n not in ours]', 'row["unroutable"] = []', 'models the pinned gateway cannot route are never named'),
+    ('u61-cat-candidates', 'contentintel/ai/catalog.py', 'if n in known and not (n in ours and (ours[n].approved or _dead(ours[n])))]', 'if n in known]', 'approved models are offered as candidates'),
     ('u61-cat-claude', 'contentintel/ai/catalog.py', 'if not p.enabled or p.id == "claude":', 'if not p.enabled:', 'Claude is looked up as a provider'),
     ('u61-cat-truncate', 'contentintel/ai/catalog.py', 'SHOWN = 8 ', 'SHOWN = 800 ', 'long lists are not shortened'),
     ('u61-label-first-off', 'contentintel/observatory/social_profiles.py', '    if len(after) > len(out["metrics"]):', '    if False:', 'a label-first page is never read'),
@@ -30,7 +30,7 @@ U61 = [
     ('u61-empty-snapshot-kept', 'contentintel/observatory/social_profiles.py', '    if not parsed["metrics"] and platform in NEEDS_COUNTS:', '    if False:', 'a TikTok page without counts is recorded as an empty row'),
     ('u61-page-start-hidden', 'contentintel/observatory/social_profiles.py', "was read but shows no follower, like or post count, so there is nothing to record (nothing is estimated); the page starts: {got['text'][:160]!r}", 'was read but shows no follower, like or post count, so there is nothing to record (nothing is estimated)', 'the failure no longer shows how the page started'),
     ('u61-fresh-ignored', 'contentintel/collectors.py', 'if not fresh and _fresh(records, task.source, task.key, now, days):', 'if _fresh(records, task.source, task.key, now, days):', 'fresh still reuses the last days'),
-    ('u61-fresh-not-passed', 'contentintel/cli.py', 'registry=registry, fresh=bool(args.fresh))', 'registry=registry, fresh=False)', 'the command never passes fresh to the run'),
+    ('u61-fresh-not-passed', 'contentintel/cli.py', 'registry=registry, fresh=bool(args.fresh), page_finder=_page_finder(claude, args))', 'registry=registry, fresh=False, page_finder=_page_finder(claude, args))', 'the command never passes fresh to the run'),
     ('u61-fresh-flag-inverted', 'contentintel/cli.py', 'p.add_argument("--fresh", action="store_true",', 'p.add_argument("--fresh", action="store_false",', 'fresh is on unless asked'),
     ('u61-fresh-workflow', '.github/workflows/collect.yml', 'if [ "$FRESH" = "true" ] && [ "$MODE" = "collect" ]; then', 'if [ "$FRESH" = "true" ]; then', 'fresh is passed in every mode'),
     ('u61-skips-hidden', '.github/workflows/tests.yml', 'python -m pytest -q -rs ', 'python -m pytest -q ', 'skipped tests are not named in the log'),
@@ -38,6 +38,6 @@ U61 = [
     ('u61-catalog-job-gate', '.github/workflows/ai-gateway.yml', '    if: inputs.live == true || inputs.catalog == true\n', '    if: inputs.live == true\n', 'the catalog cannot run on its own'),
     ('u61-catalog-step-gate', '.github/workflows/ai-gateway.yml', '        id: catalog\n        if: inputs.catalog == true', '        id: catalog\n        if: always()', 'the catalog step runs on every run'),
     ('u61-kilo-note', 'ai_providers.yaml', 'Kilo itself answered 404 model_not_found', 'Kilo is fine', "Kilo's dead model loses its reason"),
-    ('u61-kilo-pool', 'ai_lanes.yaml', '  - {provider: kilo, model: stepfun/step-3.7-flash:free}\n', '', 'a Kilo candidate is missing from the pool'),
+    ('u61-kilo-pool', 'ai_lanes.yaml', '  - {provider: kilo, model: nvidia/nemotron-3.5-super-vl:free}\n', '', 'a Kilo candidate is missing from the pool'),
     ('u61-doc-rule', 'docs/standing-rules.md', '**A skipped test is named.**', '**Skips are fine.**', 'the skip rule is reworded away')
 ]

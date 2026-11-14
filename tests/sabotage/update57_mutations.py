@@ -51,7 +51,7 @@ U57 = [
     ('u57-data-cohere-month', 'ai_providers.yaml', 'requests_per_month: 1000', 'requests_per_month: 100000', "Cohere's monthly cap is not kept"),
     ('u57-data-zhipu-china', 'ai_providers.yaml', 'DATA RESIDENCY IS IN CHINA:', 'Data residency:', "the China warning is dropped from Zhipu's record"),
     ('u57-data-kilo-public-only', 'ai_providers.yaml', 'enabled for Public and Internal data, like every other provider', 'enabled for PUBLIC data only', "Kilo's record contradicts the decision"),
-    ('u57-data-pool-kilo', 'ai_lanes.yaml', '  - {provider: kilo, model: poolside/laguna-m.1:free}\n', '', "Kilo's model is missing from the pool"),
+    ('u57-data-pool-kilo', 'ai_lanes.yaml', '  - {provider: kilo, model: kilo-auto/free}\n', '', "Kilo's model is missing from the pool"),
     ('u57-data-cap-formula', 'ai_lanes.yaml', '    min_confidence: 0.4\n    max_tokens: 8000', '    min_confidence: 0.4\n    max_tokens: 4000', 'a lane cap is left low'),
     ('u57-data-claude-cap', 'ai_providers.yaml', '  daily_usd: 0.5\n', '  daily_usd: 5.0\n', 'the Claude daily spending cap is raised'),
     ('u57-wire-observatory-key', '.github/workflows/observatory.yml', '          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}\n', '', 'the NVIDIA key never reaches the observatory run'),

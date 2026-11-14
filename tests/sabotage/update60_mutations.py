@@ -23,7 +23,7 @@ U60 = [
     ('u60-collect-all-new', 'contentintel/collectors.py', 'tally["new"] += item.get("item_id") not in known', 'tally["new"] += 1', 'every collected item is called new'),
     ('u60-collect-ids-not-kept', 'contentintel/collectors.py', 'known.add(item.get("item_id"))', 'pass', 'an item found twice in a run is counted new twice'),
     ('u60-collect-line-missing', 'contentintel/collectors.py', '        if tally and tally["items"]:', '        if False:', 'the report never gives the new-versus-known count'),
-    ('u60-dead-model-back', 'ai_lanes.yaml', '  - {provider: kilo, model: poolside/laguna-m.1:free}\n', '  - {provider: nvidia, model: deepseek-ai/deepseek-v4-pro}\n  - {provider: kilo, model: poolside/laguna-m.1:free}\n', 'a withdrawn model is put back in the pool'),
+    ('u60-dead-model-back', 'ai_lanes.yaml', '  - {provider: kilo, model: kilo-auto/free}\n', '  - {provider: nvidia, model: deepseek-ai/deepseek-v4-pro}\n  - {provider: kilo, model: kilo-auto/free}\n', 'a withdrawn model is put back in the pool'),
     ('u60-proven-model-dropped', 'ai_lanes.yaml', '  - {provider: zhipu, model: glm-4.6v-flash}\n', '', 'a model that answered live is taken out of the pool'),
     ('u60-doc-rule', 'docs/standing-rules.md', '**What works must keep working.**', '**Be careful.**', 'the standing rule is reworded away')
 ]
