@@ -8,3 +8,6 @@ How it is kept:
 2. **Every update's PLACEMENT.txt says what already worked and was re-run**, next to what changed.
 3. **A deliberate-bug check exists for each change**, so a later edit that undoes it is caught, and the full suite is run in both modes with the real gateway built (a test that is skipped has not been run; the skips are named).
 4. **A change that removes something (a model, a route) says why and with what evidence**, and keeps the record (a model is switched off with a dated note, not deleted).
+5. **A skipped test is named.** The Tests workflow lists every skipped test with its reason (`-rs`). A test that skips on GitHub but runs in the author's sandbox is told apart in the update's note (for example the Agent-Reach catalogue test needs that program's source, which only its own workflow fetches).
+6. **Every update carries full SHA-256 hashes** (64 characters) in `PLACEMENT.txt`, and its wording is checked against the code it describes before it is sent.
+
