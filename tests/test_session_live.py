@@ -355,7 +355,7 @@ def test_the_sessions_workflow_and_acceptance_hand_over_the_eight_optional_secre
     install = next(s for s in steps if str(s.get("name", "")).startswith("Install the isolated Scrapling"))
     assert install["if"] == "${{ inputs.what != 'list' }}" and "-m patchright install --with-deps chromium" in install["run"] and "-m playwright install" not in install["run"]      # the browser Scrapling's stealth fetcher actually runs on
     save = next(s for s in steps if str(s.get("name", "")).startswith("Save what was found"))
-    assert "git add -f data/_shared/sessions_health.json" in save["run"] and "git add -f data\n" not in save["run"]
+    assert "data/_shared/sessions_health.json" in save["run"] and 'git add -f "$f"' in save["run"] and "git add -f data\n" not in save["run"]
     assert next(s for s in steps if str(s.get("name", "")).startswith("Show the run as red"))["if"] == "steps.run.outcome == 'failure'"
     acc = yaml.safe_load((wf / "acceptance.yml").read_text(encoding="utf-8"))["jobs"]["acceptance"]["steps"]
     step = next(s for s in acc if str(s.get("name", "")).startswith("Stored login sessions"))
@@ -675,7 +675,7 @@ def test_when_the_page_and_the_session_cannot_be_read_discovery_answers_with_sea
     assert got.route == "discovery" and not got.skipped and [t[:2] for t in got.trail][:2] == [("primary", K.NEED_LOGIN), ("session", K.NEED_LOGIN)]
     assert [(r["title"], r["route"], r["provider"]) for r in got.rows] == [("Some account (@someaccount) / X", "discovery", "exa"), ("A post", "discovery", "exa")] and got.rows[0]["text"] == "Posts about overalls"
     assert search.queries == [("x.com someaccount", "web", 5)]                                                                  # one search, about the address, five results at most
-    unproved = read(settings, SL.SessionLedger(tmp_ledger_path(ledger)), Worker(page_for(WALL, WALL)), providers=[("serper_dev", FakeSearch([result(1, "T", "https://x.com/a", "s")]))])
+    unproved = read(settings, SL.SessionLedger(tmp_ledger_path(ledger)), Worker(page_for(WALL, WALL)), providers=[("serper_dev", FakeSearch([result(1, "T", "https://x.com/someaccount", "s")]))])
     assert unproved.route == "discovery" and [t[:2] for t in unproved.trail][:2] == [("primary", K.NEED_LOGIN), ("session", "off")]          # a session that was never proved is skipped, and discovery still answers
 
 
@@ -738,7 +738,8 @@ def test_a_page_the_worker_failed_to_read_cleanly_is_not_judged_and_never_called
     row = check("instagram", settings, ledger, Worker(lambda item: broken), now="2026-11-12T10:00:00Z")
     assert row["state"] == SL.CANNOT_CHECK and "could not read the page cleanly (UPSTREAM_BROKEN: ValueError: dictionary update sequence element #0 has length 8; 2 is required)" in row["reason"]
     assert "nothing was judged; this is not the platform's answer" in row["reason"] and SL.exit_code([row]) == 0 and row["proved_on"] == NOW          # the earlier proof stays: nothing was learned
-    assert row["evidence"]["html_chars"] > 0 and any(ln.startswith("      the worker said: UPSTREAM_BROKEN: ValueError") for ln in SL.evidence_lines(row))      # the evidence is still shown
+    assert row["evidence"]["html_chars"] > 0 and not any(ln.startswith("      the worker said:") for ln in SL.evidence_lines(row))      # the evidence is still shown, and the worker's words are said once: the verdict already carries them
+    assert any(ln.startswith("      the worker said: UPSTREAM_BROKEN: ValueError") for ln in SL.evidence_lines({**row, "reason": "something else"}))     # and shown on their own when the verdict does not
     for message in ("x.com answered 500", "too many redirects, or one without a destination"):
         assert check("instagram", settings, ledger, Worker(lambda item: dict(broken, error={"code": "UPSTREAM_BROKEN", "message": message})))["state"] == SL.CANNOT_CHECK
     wall = dict(login_wall("instagram"), status=200)
@@ -931,7 +932,7 @@ def test_text_is_cleaned_of_image_data_and_judged_readable_only_when_it_has_enou
 
 def test_error_text_is_given_in_plain_words_with_the_original_kept():
     raw = "Error: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://www.linkedin.com/feed/\nCall log:\n  - navigating to x"
-    plain = SL.humanise_error("UPSTREAM_BROKEN", raw)
+    plain = SL.humanise_error("UPSTREAM_BROKEN", raw, "linkedin")
     assert plain.startswith("the platform answered the browser with an error status instead of a page, which is its own refusal of an automated visit (LinkedIn does this with status 999) (UPSTREAM_BROKEN: Error: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE")
     assert "\n" not in plain and SL.humanise_error("UPSTREAM_BROKEN", "Page.goto: Timeout 30000ms exceeded.").startswith("the page did not finish loading in time (UPSTREAM_BROKEN: ")
     assert SL.humanise_error("X", "net::ERR_CONNECTION_RESET at https://x").startswith("a network error stopped the page from loading (X: ")
@@ -1017,7 +1018,7 @@ def test_a_cut_page_is_said_to_be_cut_and_a_twscrape_403_says_the_runner_is_bloc
     assert "(cut at the limit" not in next(ln for ln in SL.evidence_lines(check("instagram", settings, ledger, Worker(lambda item: whole))) if ln.startswith("      page code:"))
     x403 = json.dumps({"state": "unreachable", "detail": "NoAccountError: No account available for queue UserByRestId; twscrape logged: Unknown error. Account timeouted for 15 minutes. Err: HttpStatusError 403; username=session-check"})
     row, _ = x_row(settings, ledger, tmp_path, x403)
-    assert row["state"] == SL.BLOCKED and "X answers 403 to this runner's address on both routes (its web page and its profile interface), so from GitHub's servers its session cannot be proved; only a different network address would change that" in row["reason"]
+    assert row["state"] == SL.BLOCKED and "X has answered 403 to this runner's address on both routes (its web page and its profile interface) and has also accepted it (the check of 14 Nov 2026 reached x.com/home logged in), so it is intermittent: when it blocks, its session cannot be proved from GitHub's servers and only a different network address would change that" in row["reason"]
     other, _ = x_row(settings, ledger, tmp_path, json.dumps({"state": "unreachable", "detail": "the profile read timed out"}))
     assert "on both routes" not in other["reason"]
 
@@ -1162,7 +1163,7 @@ def test_the_sessions_workflow_saves_the_reads_and_compares_as_well_as_the_check
     text = (ROOT / ".github" / "workflows" / "sessions.yml").read_text(encoding="utf-8")
     step = text[text.index("- name: Save what was found"):text.index("- name: Update the Google Sheets")]                 # the save step only: the Sheets step after it has the same condition
     assert "if: ${{ inputs.what == 'check' || inputs.what == 'read' || inputs.what == 'compare' }}" in step
-    assert "git add -f data/_shared/sessions_health.json || true" in step and "git add -f data/_shared/sessions_reads.json || true" in step and "never a secret value" in step
+    assert "for f in data/_shared/sessions_health.json data/_shared/sessions_reads.json; do" in step and 'if [ -f "$f" ]; then git add -f "$f"' in step and "never a secret value" in step
 
 
 # ---- Update 56: a page with no sign either way is not a refusal --------------------------------------------------------------------------------------
@@ -1211,3 +1212,34 @@ def test_real_signs_of_being_logged_out_are_still_a_refusal_at_once(settings, le
     forbidden = dict(TIKTOK_GLITCH, status=403, html="<html>Forbidden " + "x " * 120 + "</html>", ok=False, error={"code": "UPSTREAM_BROKEN", "message": "www.tiktok.com answered 403"})
     assert check("tiktok", settings, ledger, Worker(lambda item: forbidden))["state"] == SL.REJECTED
     assert ledger.data["tiktok"]["unconfirmed_streak"] == 0
+
+
+def test_the_command_says_which_results_about_a_different_account_were_left_out(tmp_path, monkeypatch, capsys):
+    rows = [{"url": "https://x.com/a", "final_url": "https://x.com/a", "title": "A title", "text": "A snippet", "chars": 9, "route": "discovery", "provider": "exa", "left_out": ["@swoveralls_"]}]
+    monkeypatch.setattr(SL, "discovery_rows", lambda url, environ, providers=None: rows)
+    code, out = run_cli(tmp_path, monkeypatch, capsys, "--what", "read", "--key", "x", "--url", URL)
+    assert code == 0 and "Left out: 1 result(s) about a different account (@swoveralls_). An account with a similar name is never used for this address." in out
+    rows[0] = {k: v for k, v in rows[0].items() if k != "left_out"}
+    code, out = run_cli(tmp_path, monkeypatch, capsys, "--what", "read", "--key", "x", "--url", URL)
+    assert code == 0 and "Left out:" not in out
+
+
+def test_the_browsers_call_log_never_reaches_the_evidence_and_the_platform_is_named_only_where_it_is_right(settings, ledger):
+    check("instagram", settings, ledger, Worker(lambda item: logged_in_page("instagram")))
+    broken = dict(logged_in_page("instagram"), ok=False, error={"code": "UPSTREAM_BROKEN", "message": "Error: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://www.instagram.com/\nCall log:\n  - navigating to \"https://www.instagram.com/\""})
+    broken.pop("text", None)
+    row = check("instagram", settings, ledger, Worker(lambda item: broken), now="2026-11-12T10:00:00Z")
+    assert "Call log" not in row["evidence"]["worker_error"] and "navigating" not in row["evidence"]["worker_error"] and row["evidence"]["worker_error"].startswith("UPSTREAM_BROKEN: Error: Page.goto")
+    assert "LinkedIn" not in row["reason"] and "the browser does not say which status" in row["reason"] and "Call log" not in row["reason"]
+
+
+def test_a_compare_that_fails_to_load_a_page_names_the_platform_correctly_in_its_error(settings, ledger):
+    refused = dict(PAGE, ok=False, error={"code": "UPSTREAM_BROKEN", "message": "Error: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://x.com/\nCall log:\n  - navigating"})
+    refused.pop("text", None)
+    check("x", settings, ledger, Worker(lambda item: logged_in_page("x")))
+    got = compare(settings, ledger, Worker(lambda item: refused))
+    errors = [got["public"]["error"], got["session"]["error"]]
+    assert all(e and "LinkedIn" not in e and "the browser does not say which status" in e and "Call log" not in e for e in errors), errors
+    check("linkedin", settings, ledger, Worker(lambda item: logged_in_page("linkedin")))
+    li = compare(settings, ledger, Worker(lambda item: refused), platform="linkedin", url="https://www.linkedin.com/company/swoveralls/", env=environ("linkedin"))
+    assert all("(LinkedIn does this with status 999)" in e for e in (li["public"]["error"], li["session"]["error"])), li         # and for LinkedIn itself the explanation is given

@@ -181,7 +181,7 @@ def test_the_search_layer_gives_the_exact_account_and_never_a_near_match(search_
     search_rows.rows[0] = [{"url": "https://www.instagram.com/x/", "title": "x on Instagram", "text": "photos and videos"}]
     with pytest.raises(K.Failure) as seen:
         SP.make_discovery({}, [], limit=5)("instagram", "x")
-    assert seen.value.code == K.UPSTREAM_BROKEN and "gave no follower, like or post count" in str(seen.value)
+    assert seen.value.code == K.NOT_FOUND and "shows no follower, like or post count" in str(seen.value) and "nothing is estimated" in str(seen.value)          # not an upstream failure: the account was found, the snippet just has no counts
     search_rows.rows[0] = [{"url": "https://x.com/Swoveralls", "title": "SWOVERALLS (@swoveralls) / X", "text": "The latest posts from @swoveralls. 976 Followers 122 Following 743 posts"}]
     assert SP.make_discovery({}, [], limit=5)("x", "swoveralls")["metrics"] == {"followers": 976, "following": 122, "posts": 743}                 # the handle is matched without regard to case
     assert [SP._handle_of(p, u) for p, u in (("tiktok", "https://www.tiktok.com/@Swo/video/1"), ("linkedin", "https://www.linkedin.com/company/swo/"), ("facebook", "https://www.facebook.com/Swo?ref=1"),
