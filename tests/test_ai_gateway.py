@@ -355,7 +355,8 @@ def test_the_real_pinned_gateway_passes_the_mock_provider_smoke_test(tmp_path):
     results, report = smoke.run_smoke(os.environ["FREEAPI_GATEWAY_DIR"], reg, LOCK, tmp_path, G.baseline_from_inventory(ROOT / "docs" / "ai" / "provider_inventory.json"))
     failed = [(n, d) for n, ok, d in results if not ok]
     assert not failed, failed
-    assert report["models_on"] == 0 and report["models_off"] == 108 and len(results) == 8
+    assert report["models_on"] == 1 and report["models_off"] == 107 and len(results) == 8                    # no key is given here: the one model on is Kilo's approved one (Kilo needs no key); the other 107 are off
+    assert next(d for n, ok, d in results if n.startswith("every baseline model")) == "109 rows, 0 wrongly enabled, 0 approved but off, 1 approved and on"
 
 
 @pytest.mark.parametrize("status, body, message", [(204, {"error": {"message": "why"}}, "why"), (204, {}, "the gateway answered 204"), (302, {}, "the gateway answered 302"),

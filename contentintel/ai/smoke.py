@@ -36,6 +36,29 @@ class _Upstream(BaseHTTPRequestHandler):
                     "usage": {"prompt_tokens": 9, "completion_tokens": 2, "total_tokens": 11}})
 
 
+def expected_enabled(registry, environ):
+    """{(platform, model id)} the gateway is MEANT to have switched on for this configuration: the approved models of enabled gateway providers that have their credential, or need none (Kilo). Claude and a
+    provider called directly are never sent through the gateway. Every other model must be off."""
+    out = set()
+    for p in registry.providers.values():
+        if p.id == "claude" or p.direct or not p.enabled:
+            continue
+        if p.credential_env and gw._credential(p, environ) is None:
+            continue
+        out |= {(p.gateway_platform, m.id) for m in p.models if m.approved}
+    return out
+
+
+def switch_check(rows, registry, environ):
+    """(ok, detail): the gateway's model rows against the allowlist. A model that is on but not meant to be (not approved, or its provider has no credential) or an approved model that is off, is named."""
+    want = expected_enabled(registry, environ)
+    seen = {(r.get("platform"), r.get("modelId") or r.get("model_id")): bool(r.get("enabled")) for r in rows if r.get("platform") != "custom"}
+    on = sorted(k for k, v in seen.items() if v and k not in want)
+    off = sorted(k for k in want if k in seen and not seen[k])
+    name = lambda keys: (": " + ", ".join(f"{p}/{m}" for p, m in keys[:6])) if keys else ""      # noqa: E731
+    return bool(seen) and not on and not off, f"{len(rows)} rows, {len(on)} wrongly enabled{name(on)}, {len(off)} approved but off{name(off)}, {sum(1 for k in want if seen.get(k))} approved and on"
+
+
 def run_smoke(gateway_dir, registry, lock, workdir, baseline):
     """Returns a list of (check, passed, detail). Never raises for a failed check; raises GatewayError only if the gateway cannot start."""
     results = []
@@ -66,9 +89,8 @@ def run_smoke(gateway_dir, registry, lock, workdir, baseline):
         key = side.bootstrap(password)
         check("admin login and key retrieval work", bool(key), "key length %d (not shown)" % len(key))
         rows = side.admin_models(password)
-        wrong = [r for r in rows if r.get("platform") != "custom" and r.get("enabled")]
-        check("every baseline model outside the allowlist is switched off", not wrong and any(r.get("platform") != "custom" for r in rows),
-              f"{len(rows)} rows, {len(wrong)} wrongly enabled")
+        ok, detail = switch_check(rows, registry, environ)
+        check("every baseline model outside the allowlist is switched off", ok, detail)
         client = GatewayClient(side.base_url, key)
         done = client.complete({"provider": "custom", "model": "smoke-model", "gateway_model": "smoke-model"}, "", "say OK", 16, expect_platform="custom")
         check("a chat call is routed to the expected provider", done.text == "SMOKE-OK" and upstream.seen == ["smoke-model"], done.text)
