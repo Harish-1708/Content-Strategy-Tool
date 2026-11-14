@@ -273,7 +273,7 @@
   "ai:claude|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 7,
+   "consecutive_successes": 9,
    "history": [
     {
      "at": "2026-11-11T04:24:24Z",
@@ -323,10 +323,24 @@
      "items": 1,
      "ms": 774,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 1239,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 977,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-14T05:00:40Z",
+   "last_success": "2026-11-14T06:32:38Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:claude",
@@ -335,7 +349,7 @@
   "ai:cloudflare|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 4,
+   "consecutive_successes": 5,
    "history": [
     {
      "at": "2026-11-10T09:20:48Z",
@@ -406,6 +420,13 @@
      "items": 1,
      "ms": 12015,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 450,
+     "ok": true
     }
    ],
    "last_error": {
@@ -413,7 +434,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "unusable answer: the answer is not valid JSON"
    },
-   "last_success": "2026-11-14T05:00:40Z",
+   "last_success": "2026-11-14T06:32:38Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:cloudflare",
@@ -421,8 +442,8 @@
   },
   "ai:cohere|gateway": {
    "acceptance": null,
-   "consecutive_failures": 0,
-   "consecutive_successes": 4,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
    "history": [
     {
      "at": "2026-11-14T05:00:40Z",
@@ -451,10 +472,42 @@
      "items": 1,
      "ms": 218,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 361,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 969,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 286,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
-   "last_error": null,
-   "last_success": "2026-11-14T05:00:40Z",
+   "last_error": {
+    "at": "2026-11-14T06:32:38Z",
+    "code": "UPSTREAM_BROKEN",
+    "message": "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: cohere/command-r-08-2024 key1: timeout. Last error: The operation was aborted (cohere, chat, 15s)"
+   },
+   "last_success": "2026-11-14T06:32:38Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:cohere",
@@ -661,8 +714,8 @@
   },
   "ai:google|gateway": {
    "acceptance": null,
-   "consecutive_failures": 1,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 1,
    "history": [
     {
      "at": "2026-11-10T09:17:16Z",
@@ -705,6 +758,13 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 12705,
+     "ok": true
     }
    ],
    "last_error": {
@@ -712,7 +772,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: google/gemini-2.5-flash-lite key1: model_not_found. Last error: Google API error 404: This model models"
    },
-   "last_success": "2026-11-14T05:00:40Z",
+   "last_success": "2026-11-14T06:32:38Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:google",
@@ -721,7 +781,7 @@
   "ai:groq|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 4,
+   "consecutive_successes": 6,
    "history": [
     {
      "at": "2026-11-10T08:54:44Z",
@@ -890,6 +950,20 @@
      "items": 1,
      "ms": 318,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 415,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 286,
+     "ok": true
     }
    ],
    "last_error": {
@@ -897,7 +971,7 @@
     "code": "RATE_LIMITED",
     "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset."
    },
-   "last_success": "2026-11-14T05:00:40Z",
+   "last_success": "2026-11-14T06:32:38Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:groq",
@@ -927,10 +1001,34 @@
    "source": "ai:kilo",
    "state": "healthy"
   },
-  "ai:nvidia|gateway": {
+  "ai:kilo|model:nvidia/nemotron-3-super-120b-a12b:free": {
    "acceptance": null,
    "consecutive_failures": 1,
    "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-14T06:32:38Z",
+    "code": "UPSTREAM_BROKEN",
+    "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: kilo/nvidia/nemotron-3-super-120b-a12b:free key1: model_not_found. Last error: Kilo Gateway API error 4"
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "model:nvidia/nemotron-3-super-120b-a12b:free",
+   "source": "ai:kilo",
+   "state": "healthy"
+  },
+  "ai:nvidia|gateway": {
+   "acceptance": null,
+   "consecutive_failures": 0,
+   "consecutive_successes": 1,
    "history": [
     {
      "at": "2026-11-14T05:00:40Z",
@@ -1022,6 +1120,13 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 50784,
+     "ok": true
     }
    ],
    "last_error": {
@@ -1029,7 +1134,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: nvidia/nvidia/nemotron-3-nano-30b-a3b key1: model_not_found. Last error: NVIDIA NIM API error 410: The "
    },
-   "last_success": "2026-11-14T05:00:40Z",
+   "last_success": "2026-11-14T06:32:38Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:nvidia",
@@ -1037,7 +1142,7 @@
   },
   "ai:ollama|gateway": {
    "acceptance": null,
-   "consecutive_failures": 11,
+   "consecutive_failures": 12,
    "consecutive_successes": 0,
    "history": [
     {
@@ -1116,12 +1221,19 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-14T05:00:40Z",
+    "at": "2026-11-14T06:32:38Z",
     "code": "RATE_LIMITED",
-    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~24h."
+    "message": "All models rate-limited after 1 attempt. Soonest cooldown reset ~24h. Attempt trail: ollama/gpt-oss:120b key1: out_of_credits. Last error: Ollama Cloud API error 402: Add usage credits or subscribe and save up to 66%: [redacted-url] (ref: 05163fad-4a3f-4ffc-9052-14a37daafbe1)"
    },
    "last_success": "",
    "pause": null,
@@ -1132,7 +1244,7 @@
   "ai:openrouter|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 5,
+   "consecutive_successes": 8,
    "history": [
     {
      "at": "2026-11-10T09:13:15Z",
@@ -1203,6 +1315,27 @@
      "items": 1,
      "ms": 2438,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 1832,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 988,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 552,
+     "ok": true
     }
    ],
    "last_error": {
@@ -1210,7 +1343,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: openrouter/qwen/qwen3-next-80b-a3b-instruct:free key1: model_not_found. Last error: OpenRouter API erro"
    },
-   "last_success": "2026-11-14T05:00:40Z",
+   "last_success": "2026-11-14T06:32:38Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:openrouter",
@@ -1219,7 +1352,7 @@
   "ai:zhipu|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 2,
+   "consecutive_successes": 5,
    "history": [
     {
      "at": "2026-11-14T05:00:40Z",
@@ -1241,6 +1374,27 @@
      "items": 1,
      "ms": 790,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 10189,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 5659,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T06:32:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 973,
+     "ok": true
     }
    ],
    "last_error": {
@@ -1248,7 +1402,7 @@
     "code": "RATE_LIMITED",
     "message": "All models rate-limited after 1 attempt. Soonest cooldown reset ~64s. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: 该模型当前访问量过大，请您稍后再试"
    },
-   "last_success": "2026-11-14T05:00:40Z",
+   "last_success": "2026-11-14T06:32:38Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:zhipu",
