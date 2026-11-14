@@ -1494,7 +1494,7 @@ def format_benchmark_status(brand, store, auto, settings, now, root="brands"):
 
 def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg, ledger_cls, sources, now,
                 run_id, configs=None, dry_run=False, root="brands", apify=None, claude=None, backend="browser", region=None,
-                health=None, registry=None):
+                health=None, registry=None, fresh=False):
     """Plan and run collection tasks for each brand, within the caps in `settings`.
 
     backend: browser (the default), apify (Apify only) or fallback (the browser first, Apify when
@@ -1628,7 +1628,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                     report.detail = why
                     continue
                 days = settings.gemini_cache_days if deep else settings.browser_cache_days
-                if _fresh(records, task.source, task.key, now, days):
+                if not fresh and _fresh(records, task.source, task.key, now, days):                # fresh: the owner asked for new results now, so the last days' collection is not reused
                     report.status, report.detail = "reused", f"already collected in the last {days} days"
                     continue
                 if deep:

@@ -173,6 +173,8 @@ def build_parser():
     p.add_argument("--rest", default="",
                    help="rest these accounts now (instagram, tiktok, gemini), without opening them: use it when a warning was seen on the site")
     p.add_argument("--rest-days", type=int, default=0, help="how many days --rest lasts (0: the setting for each site)")
+    p.add_argument("--fresh", action="store_true",
+                   help="collect again now, ignoring what was collected in the last days (the item caps still apply; a source that refuses falls back as before)")
     p.add_argument("--ignore-cooldown", action="store_true",
                    help="use accounts that are resting after a warning (do this only once you have dealt with the warning)")
     p.add_argument("--backend", choices=collectors_mod.BACKENDS, default="auto",
@@ -215,9 +217,9 @@ def build_parser():
         p.add_argument("action")
         p.add_argument("rest", nargs="*")
 
-    p = sub.add_parser("ai", help="the AI layer: plan, providers, usage, review, ask, check, eval, smoke (mock unless --live)")
+    p = sub.add_parser("ai", help="the AI layer: plan, providers, usage, review, ask, check, eval, smoke, catalog (mock unless --live; catalog reads each provider's own model list and changes nothing)")
     _common(p)
-    p.add_argument("action", choices=["plan", "providers", "usage", "review", "ask", "check", "eval", "smoke"])
+    p.add_argument("action", choices=["plan", "providers", "usage", "review", "ask", "check", "eval", "smoke", "catalog"])
     p.add_argument("--providers-config", default="ai_providers.yaml")
     p.add_argument("--lanes-config", default="ai_lanes.yaml")
     p.add_argument("--tasks-config", default="ai_eval_tasks.yaml")
@@ -783,6 +785,8 @@ def _collect(args, store):
             print(f"::error::Deep Research test failed: {outcome['detail']}")
             return 1
         return 0
+    if args.fresh and not args.dry_run:
+        print("Fresh run: what was collected in the last days is NOT reused; every source is asked again now (the item caps still apply).")
     if args.ignore_cooldown and not args.dry_run:
         freed = collectors_mod.clear_cooldowns(store, now)
         print(f"{freed} resting account(s) will be used again: you said the warning has been dealt with.")
@@ -821,7 +825,7 @@ def _collect(args, store):
         brands, store, browser_factory=factory, creds=creds, settings=settings, browser_cfg=browser_cfg,
         ledger_cls=research_mod.Ledger, sources=wanted, now=now, run_id=secrets.token_hex(4),
         dry_run=args.dry_run, root=args.brands_dir, apify=apify, claude=claude, backend=backend,
-        region=args.region.strip() or None, health=health_ledger, registry=registry)
+        region=args.region.strip() or None, health=health_ledger, registry=registry, fresh=bool(args.fresh))
     _save_health(health_ledger, store, args)
     ledger = None if args.dry_run else research_mod.Ledger(store.load_usage(), now[:7])
     print(collectors_mod.format_collect_report(result, settings, ledger))
