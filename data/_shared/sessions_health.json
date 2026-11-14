@@ -1,6 +1,6 @@
 {
   "boss": {
-    "checked_at": "2026-11-13T18:55:45Z",
+    "checked_at": "2026-11-14T02:59:12Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",
@@ -11,12 +11,12 @@
     "unconfirmed_streak": 0
   },
   "facebook": {
-    "checked_at": "2026-11-13T18:55:45Z",
+    "checked_at": "2026-11-14T02:59:12Z",
     "days_left": 363,
     "evidence": {
       "body_ids": [
         "splash-screen",
-        "mount_0_0_vo",
+        "mount_0_0_3x",
         "B:0",
         "B:1",
         "B:2",
@@ -66,7 +66,7 @@
       "login_word_in_address": "",
       "noscript": "",
       "password_field": false,
-      "scripts": 356,
+      "scripts": 365,
       "status": 200,
       "text_chars": 0,
       "title": "Facebook",
@@ -74,23 +74,22 @@
       "worker_error": ""
     },
     "expires_on": "2027-11-12",
-    "proved_on": "2026-11-13T18:55:45Z",
+    "proved_on": "2026-11-14T02:59:12Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
     "unconfirmed_streak": 0
   },
   "instagram": {
-    "checked_at": "2026-11-13T18:55:45Z",
+    "checked_at": "2026-11-14T02:59:12Z",
     "days_left": 363,
     "evidence": {
       "body_ids": [
         "splash-screen",
-        "mount_0_0_C2",
         "B:0",
-        "B:1",
-        "S:1",
-        "P:2"
+        "S:0",
+        "ssr-finished-successfully",
+        "has-finished-comet-page"
       ],
       "cookies_back": [
         "csrftoken",
@@ -119,7 +118,7 @@
         "wd"
       ],
       "fetched_with": "browser",
-      "html_chars": 872413,
+      "html_chars": 862056,
       "html_truncated": false,
       "landed": "https://www.instagram.com/",
       "logged_in_found": [
@@ -137,7 +136,7 @@
       "login_word_in_address": "",
       "noscript": "",
       "password_field": false,
-      "scripts": 133,
+      "scripts": 125,
       "status": 200,
       "text_chars": 0,
       "title": "Instagram",
@@ -145,14 +144,14 @@
       "worker_error": ""
     },
     "expires_on": "2027-11-12",
-    "proved_on": "2026-11-13T18:55:45Z",
+    "proved_on": "2026-11-14T02:59:12Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
     "unconfirmed_streak": 0
   },
   "linkedin": {
-    "checked_at": "2026-11-13T18:55:45Z",
+    "checked_at": "2026-11-14T02:59:12Z",
     "days_left": 363,
     "evidence": {
       "body_ids": [],
@@ -206,7 +205,7 @@
       "text_chars": 0,
       "title": "",
       "visible_text_available": false,
-      "worker_error": "UPSTREAM_BROKEN: Error: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://www.linkedin.com/feed/\nCall log:\n  - navigating to \"https://www.linkedin.com/feed/\", waiting until \"load\"\n"
+      "worker_error": "UPSTREAM_BROKEN: Error: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://www.linkedin.com/feed/"
     },
     "expires_on": "2027-11-12",
     "proved_on": "2026-11-13T04:36:33Z",
@@ -216,16 +215,16 @@
     "unconfirmed_streak": 0
   },
   "reddit": {
-    "checked_at": "2026-11-13T18:55:45Z",
+    "checked_at": "2026-11-14T02:59:12Z",
     "days_left": 179,
     "evidence": {
       "body_ids": [
         "shreddit-skip-link",
         "t2_9kjs7vyo0",
-        "f41815d7-8d33-4660-b47e-6cf7629fcc60",
-        "f41815d7-8d33-4660-b47e-6cf7629fcc60",
         "hamburger-button-tooltip",
-        "navbar-menu-button"
+        "navbar-menu-button",
+        "reddit-logo",
+        "advertise-button"
       ],
       "cookies_back": [
         "FPGSID",
@@ -246,8 +245,7 @@
         "reddit_supported_media_codecs",
         "rlas3",
         "session_tracker",
-        "token_v2",
-        "wwrbucket"
+        "token_v2"
       ],
       "cookies_sent": [
         "FPGSID",
@@ -269,7 +267,7 @@
         "token_v2"
       ],
       "fetched_with": "browser",
-      "html_chars": 426664,
+      "html_chars": 426212,
       "html_truncated": false,
       "landed": "https://www.reddit.com/settings/",
       "logged_in_found": [
@@ -297,14 +295,14 @@
       "worker_error": ""
     },
     "expires_on": "2027-05-12",
-    "proved_on": "2026-11-13T18:55:45Z",
+    "proved_on": "2026-11-14T02:59:12Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
     "unconfirmed_streak": 0
   },
   "tiktok": {
-    "checked_at": "2026-11-13T18:55:45Z",
+    "checked_at": "2026-11-14T02:59:12Z",
     "days_left": 178,
     "evidence": {
       "body_ids": [
@@ -397,13 +395,14 @@
         "uid_tt_ss"
       ],
       "fetched_with": "browser",
-      "html_chars": 469992,
+      "html_chars": 534919,
       "html_truncated": false,
       "landed": "https://www.tiktok.com/",
-      "logged_in_found": [],
-      "logged_in_missing": [
-        "\"islogin\":true",
+      "logged_in_found": [
         "data-e2e=\"profile-icon\""
+      ],
+      "logged_in_missing": [
+        "\"islogin\":true"
       ],
       "logged_in_text_found": [],
       "logged_in_text_missing": [],
@@ -416,35 +415,29 @@
       "password_field": false,
       "scripts": 81,
       "status": 200,
-      "text_chars": 70,
+      "text_chars": 386,
       "title": "TikTok - Make Your Day",
       "visible_text_available": true,
       "worker_error": ""
     },
     "expires_on": "2027-05-11",
-    "proved_on": "",
-    "proved_via": "",
-    "reason": "the page gave no sign of being logged in or logged out (it may be an error or a half-drawn page), so it is not counted as a refusal and the proof is kept; it is looked at again on the next check, and after 3 such checks in a row it is treated as refused (this is check 1)",
-    "state": "UNCONFIRMED",
-    "unconfirmed_streak": 1
+    "proved_on": "2026-11-14T02:59:12Z",
+    "proved_via": "browser",
+    "reason": "the platform's own page showed a logged-in state",
+    "state": "ACCEPTED",
+    "unconfirmed_streak": 0
   },
   "x": {
-    "checked_at": "2026-11-13T18:55:45Z",
+    "checked_at": "2026-11-14T02:59:12Z",
     "days_left": 363,
     "evidence": {
       "body_ids": [
-        "react-root",
-        "layers",
-        "placeholder-c1ofj",
-        "accessible-list-0",
-        "id__1z1k8mzi8iq",
-        "id__48t3t2hwivl"
+        "challenge-error-text"
       ],
       "cookies_back": [
         "__cf_bm",
         "__cuid",
         "auth_token",
-        "cf_clearance",
         "ct0",
         "g_state",
         "gt",
@@ -469,39 +462,43 @@
         "twid"
       ],
       "fetched_with": "browser",
-      "html_chars": 940614,
+      "html_chars": 47021,
       "html_truncated": false,
       "landed": "https://x.com/home",
-      "logged_in_found": [
+      "logged_in_found": [],
+      "logged_in_missing": [
         "\"isloggedin\":true",
         "data-testid=\"sidebarcolumn\"",
         "/compose/post",
         "aria-label=\"home timeline\""
       ],
-      "logged_in_missing": [],
       "logged_in_text_found": [],
       "logged_in_text_missing": [],
       "logged_out_in_text": [],
       "logged_out_only_in_code": [],
       "login_word_in_address": "",
-      "noscript": "body { -ms-overflow-style: scrollbar; overflow-y: scroll; overscroll-behavior-y: none; } .errorContainer { background-color: #FFF; color: #0F1419; max-width: 600px; margin: 0 auto; padding: 10%; font-",
+      "noscript": "Enable JavaScript and cookies to continue",
       "password_field": false,
-      "scripts": 11,
-      "status": 200,
-      "text_chars": 716,
-      "title": "Home / X",
+      "scripts": 3,
+      "status": 403,
+      "text_chars": 1297,
+      "title": "Just a moment...",
       "visible_text_available": true,
-      "worker_error": ""
+      "worker_error": "PLATFORM_BLOCKED: x.com still refused after 1 attempt(s) (a bot-check or challenge page was shown); marked failed and moved on"
     },
     "expires_on": "2027-11-12",
     "proved_on": "2026-11-13T18:55:45Z",
     "proved_via": "browser",
-    "reason": "the platform's own page showed a logged-in state",
-    "state": "ACCEPTED",
+    "reason": "X (Twitter) showed a bot-check or challenge page to this runner, so the session itself could not be judged. This is the platform blocking the runner, not a bad session. The last-resort twscrape check could not judge it either: NoAccountError: No account available for queue UserByRestId; twscrape logged: Unknown error. Account timeouted for 15 minutes. Create issue please: https://github.com/vladkens/twscrape/issues If it mistake, you can unlock accounts with `twscrape reset_locks`. Err: HttpStatusError 403; username=session-check; queue=UserByRestId; backend=httpx; proxy=False. X has answered 403 to this runner's address on both routes (its web page and its profile interface) and has also accepted it (the check of 14 Nov 2026 reached x.com/home logged in), so it is intermittent: when it blocks, its session cannot be proved from GitHub's servers and only a different network address would change that",
+    "state": "BLOCKED",
+    "twscrape": {
+      "detail": "NoAccountError: No account available for queue UserByRestId; twscrape logged: Unknown error. Account timeouted for 15 minutes. Create issue please: https://github.com/vladkens/twscrape/issues If it mistake, you can unlock accounts with `twscrape reset_locks`. Err: HttpStatusError 403; username=session-check; queue=UserByRestId; backend=httpx; proxy=False",
+      "state": "unreachable"
+    },
     "unconfirmed_streak": 0
   },
   "xiaohongshu": {
-    "checked_at": "2026-11-13T18:55:45Z",
+    "checked_at": "2026-11-14T02:59:12Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",
