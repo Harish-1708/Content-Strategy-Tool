@@ -43,6 +43,31 @@
    "source": "auto",
    "status": "resolved"
   },
+  "chubbies": {
+   "candidates": [
+    {
+     "ads": 5,
+     "likes": 1568430,
+     "name": "Chubbies",
+     "page_id": "212377122105873"
+    },
+    {
+     "ads": 5,
+     "likes": 37319,
+     "name": "Chubbies Burger",
+     "page_id": "105564004225369"
+    }
+   ],
+   "checked_at": "2026-11-14T09:05:03Z",
+   "kind": "benchmark",
+   "name": "Chubbies",
+   "page_id": "212377122105873",
+   "page_likes": 1568430,
+   "page_name": "Chubbies",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
   "cozyearth": {
    "candidates": [
     {
@@ -93,6 +118,43 @@
    "source": "auto",
    "status": "unresolved"
   },
+  "dudewipes": {
+   "candidates": [
+    {
+     "ads": 6,
+     "likes": 269434,
+     "name": "Carpe",
+     "page_id": "315614678610514"
+    },
+    {
+     "ads": 2,
+     "likes": 61317,
+     "name": "X Suit",
+     "page_id": "1603857093203672"
+    },
+    {
+     "ads": 1,
+     "likes": 3052,
+     "name": "Dettol Australia",
+     "page_id": "127245917377737"
+    },
+    {
+     "ads": 1,
+     "likes": 1057,
+     "name": "Blinkjoy",
+     "page_id": "103238872674155"
+    }
+   ],
+   "checked_at": "2026-11-14T09:05:03Z",
+   "kind": "benchmark",
+   "name": "Dude Wipes",
+   "page_id": "",
+   "page_likes": 0,
+   "page_name": "",
+   "reason": "other advertisers turned up, but none has a name like this one",
+   "source": "auto",
+   "status": "unresolved"
+  },
   "gymshark": {
    "candidates": [
     {
@@ -108,6 +170,49 @@
    "page_id": "129669023798560",
    "page_likes": 2233736,
    "page_name": "Gymshark",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
+  "liquiddeath": {
+   "candidates": [
+    {
+     "ads": 3,
+     "likes": 408105,
+     "name": "Pocket FM Stories",
+     "page_id": "191352894054471"
+    },
+    {
+     "ads": 4,
+     "likes": 342044,
+     "name": "Liquid Death",
+     "page_id": "2012750189007245"
+    },
+    {
+     "ads": 1,
+     "likes": 185302,
+     "name": "Jolie Beauty",
+     "page_id": "1675580096042114"
+    },
+    {
+     "ads": 1,
+     "likes": 6292,
+     "name": "Home Cleaning Pros",
+     "page_id": "425753307283856"
+    },
+    {
+     "ads": 1,
+     "likes": 2407,
+     "name": "Nicole Carter",
+     "page_id": "304489473615893"
+    }
+   ],
+   "checked_at": "2026-11-14T09:05:03Z",
+   "kind": "benchmark",
+   "name": "Liquid Death",
+   "page_id": "2012750189007245",
+   "page_likes": 342044,
+   "page_name": "Liquid Death",
    "reason": "the only advertiser page named exactly this",
    "source": "auto",
    "status": "resolved"

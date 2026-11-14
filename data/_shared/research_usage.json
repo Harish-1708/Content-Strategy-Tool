@@ -2,8 +2,8 @@
  "lifetime": {
   "agent_reach_youtube": 14,
   "apify_items": 45,
-  "claude_calls": 9,
-  "collected_items": 1345,
+  "claude_calls": 10,
+  "collected_items": 1676,
   "deep_research_tasks": 1,
   "exa": 14,
   "exa_mcp": 16,
@@ -23,8 +23,8 @@
   "2026-11": {
    "agent_reach_youtube": 14,
    "apify_items": 45,
-   "claude_calls": 2,
-   "collected_items": 605,
+   "claude_calls": 3,
+   "collected_items": 936,
    "exa": 14,
    "exa_mcp": 16,
    "serpapi": 18,
