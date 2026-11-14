@@ -97,6 +97,8 @@ def run_smoke(gateway_dir, registry, lock, workdir, baseline):
         check("a call with no key is refused (401)", status == 401, status)
         key = side.bootstrap(password)
         check("admin login and key retrieval work", bool(key), "key length %d (not shown)" % len(key))
+        added, add_problems = side.add_missing_models(password, registry, environ)
+        check("approved models the pinned catalogue lacks are added through the gateway's add-model call", not add_problems, (f"{len(added)} added" + (": " + ", ".join(added) if added else "")) if not add_problems else "; ".join(add_problems))
         rows = side.admin_models(password)
         ok, detail = switch_check(rows, registry, environ)
         check("every baseline model outside the allowlist is switched off", ok, detail)

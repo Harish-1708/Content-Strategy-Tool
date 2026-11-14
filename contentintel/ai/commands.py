@@ -126,6 +126,11 @@ def live_clients(registry, environ, gateway_dir, workdir, notes):
                 side.start(gw.gateway_env(lock, environ, port=port, db_path=Path(workdir) / "gateway.db", config=config), port, Path(workdir) / "gateway.log")
                 side.wait_ready()
                 client = cl.GatewayClient(side.base_url, side.bootstrap(environ["FREEAPI_ADMIN_PASSWORD"]))
+                added, add_problems = side.add_missing_models(environ["FREEAPI_ADMIN_PASSWORD"], registry, environ)
+                if added:
+                    notes.append(f"NOTE: {len(added)} approved model(s) the pinned gateway's catalogue does not hold were added through its add-model call: " + ", ".join(added))
+                for problem in add_problems:
+                    notes.append("NOTE: could not add an approved model to the gateway: " + problem)
                 isolated, why = side.isolate_models(environ["FREEAPI_ADMIN_PASSWORD"])
                 if not isolated:
                     notes.append("NOTE: could not make each provider's model its own group in the gateway (" + why + "); a call that falls back to another provider is refused, not accepted")

@@ -126,6 +126,34 @@ class Sidecar:
         status, rows, _ = self.http("GET", self.base_url + "/api/models", headers={"Authorization": "Bearer " + body["token"]}, body=None, timeout=20)
         return rows if isinstance(rows, list) else []
 
+    def add_missing_models(self, password, registry, environ):
+        """Add to the gateway every APPROVED model of a provider that is switched on here (it has its credential, or needs none) and that the pinned gateway's own catalogue does not hold, through the
+        gateway's own add-model call. Newer models (Kilo's free routes, for one) therefore need no newer gateway pin. A model that is already there is left alone (HTTP 409 is fine); a provider that
+        is not switched on gets nothing added, so no model is ever on without its credential. Returns (added, problems): lists of 'platform:model' and of 'platform:model (reason)'."""
+        added, problems = [], []
+        status, body, _ = self.http("POST", self.base_url + "/api/auth/login", headers={"Content-Type": "application/json"}, body={"email": ADMIN_EMAIL, "password": password}, timeout=20)
+        token = body.get("token") if isinstance(body, dict) else None
+        if status != 200 or not token:
+            return added, [f"the admin login failed ({status})"]
+        auth = {"Authorization": "Bearer " + token, "Content-Type": "application/json"}
+        status, rows, _ = self.http("GET", self.base_url + "/api/models", headers=auth, body=None, timeout=20)
+        have = {(r.get("platform"), r.get("model_id") or r.get("modelId")) for r in (rows if isinstance(rows, list) else [])}
+        for p in registry.providers.values():
+            if p.id == "claude" or p.direct or not p.enabled:
+                continue
+            if p.credential_env and _credential(p, environ) is None:
+                continue                                    # no credential here: nothing of this provider is switched on, so nothing is added
+            for m in p.models:
+                if not m.approved or (p.gateway_platform, m.id) in have:
+                    continue
+                status, out, _ = self.http("POST", self.base_url + "/api/models", headers=auth, body={"platform": p.gateway_platform, "modelId": m.id, "displayName": m.id}, timeout=20)
+                if status in (200, 201):
+                    added.append(f"{p.gateway_platform}:{m.id}")
+                elif status != 409:
+                    reason = ((out or {}).get("error") or {}).get("message") if isinstance(out, dict) else ""
+                    problems.append(f"{p.gateway_platform}:{m.id} (HTTP {status}{': ' + str(reason)[:100] if reason else ''})")
+        return added, problems
+
     def isolate_models(self, password):
         """Make every enabled model its own group in the gateway. The gateway groups the same model across providers (gpt-oss-120b at Groq and at OpenRouter) and, when the provider asked first fails,
         quietly answers from another provider in the group, which this platform then has to refuse. Splitting each platform:model into its own group makes a request go to exactly that provider, so
