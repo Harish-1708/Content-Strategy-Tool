@@ -42,7 +42,7 @@ CONNECTIONS = {
     },
     "freellmapi": {
         "label": "FreeLLMAPI", "repo": "https://github.com/tashfeenahmed/freellmapi", "kind": "node_server", "lock": "ai/gateway.lock.json", "binary": "node",
-        "pinned": "", "probe": [], "secrets": ("FREEAPI_ENCRYPTION_KEY", "FREEAPI_ADMIN_PASSWORD", "GROQ_API_KEY", "MISTRAL_API_KEY", "OPENROUTER_API_KEY", "GEMINI_API_KEY", "CEREBRAS_API_KEY",
+        "pinned": "", "probe": [], "secrets": ("FREEAPI_ENCRYPTION_KEY", "FREEAPI_ADMIN_PASSWORD", "GROQ_API_KEY", "MISTRAL_API_KEY", "NVIDIA_API_KEY", "ZHIPU_API_KEY", "OLLAMA_API_KEY", "COHERE_API_KEY", "OPENROUTER_API_KEY", "GEMINI_API_KEY", "CEREBRAS_API_KEY",
                                               "CLOUDFLARE_ACCOUNT_ID", "CLOUDFLARE_API_TOKEN", "GITHUB_TOKEN"),
         "fallback": "Claude only (the platform's Claude client)",
         "needs": "Node 22 and a build in each job; every provider key you want it to use (its code gives no free access by itself)",

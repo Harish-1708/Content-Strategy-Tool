@@ -57,6 +57,8 @@ def _build():
                 add(f"services.{name}.channels.{c}", "bool", True, f"the secrets the {c} repository declares it needs are handed to it (every other secret is withheld)", label)
             elif name == "connections":
                 add(f"services.{name}.channels.{c}", "bool", True, f"the {c} repository is connected (OFF: it is never run)", label)
+            elif name == "ai_internal_data":
+                add(f"services.{name}.channels.{c}", "bool", True, f"Internal data may be sent to the {c} provider (OFF: {c} receives Public data only; the provider itself stays on)", label)
             elif name == "stored_sessions":
                 add(f"services.{name}.channels.{c}", "bool", True, f"the stored {c} session may be loaded and used (OFF: it is never loaded; only the account's own pages are ever read with it)", label)
             else:
@@ -601,9 +603,14 @@ def ai_stack(store, ledger, environ, *, providers_config="ai_providers.yaml", la
     from .ai import commands as aic
     ns = SimpleNamespace(providers_config=providers_config, lanes_config=lanes_config, gateway_dir=gateway_dir or environ.get("FREEAPI_GATEWAY_DIR", "gateway-src"), workdir=workdir)
     registry, _ = aic.load_all(ns)
-    notes = []
+    notes, internal_off = [], []
     if settings is not None:                                    # the owner's switch for each external provider (services.ai_gateway.channels.<provider>); Claude, the fallback, has none
         import dataclasses
+        for pid, on in settings["services"].get("ai_internal_data", {}).get("channels", {}).items():      # the owner's Internal-data switch for each provider (ON by default; nothing in the code forbids Internal)
+            provider = registry.providers.get(pid)
+            if not on and provider is not None and "internal" in provider.approved_classes:
+                internal_off.append(pid)
+                notes.append(f"NOTE: {pid}: Internal data switched off by the owner (services.ai_internal_data.channels.{pid}); it receives Public data only")
         for pid, on in settings["services"]["ai_gateway"].get("channels", {}).items():
             provider = registry.providers.get(pid)
             if not on and provider is not None and provider.enabled:
@@ -611,6 +618,9 @@ def ai_stack(store, ledger, environ, *, providers_config="ai_providers.yaml", la
                 notes.append(f"SKIPPED: {pid}: switched off by the owner (services.ai_gateway.channels.{pid})")
     clients, side = aic.live_clients(registry, environ, ns.gateway_dir, workdir, notes)
     _, _, usage, review, router = aic.build_stack(ns, store, ledger, mode="live", clients=clients)
+    for pid in internal_off:                                    # the router's own registry: Internal data is taken away from that provider only; it stays on and keeps Public
+        provider = router.registry.providers[pid]
+        router.registry.providers[pid] = dataclasses.replace(provider, approved_classes=tuple(c for c in provider.approved_classes if c != "internal"))
 
     def finish():
         try:
