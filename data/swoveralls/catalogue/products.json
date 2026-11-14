@@ -9006,7 +9006,7 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Aspect_Ratio_Change-3.png?v=1775221120",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Resizing_Request.png?v=1775221120"
    ],
-   "in_stock": true,
+   "in_stock": false,
    "ingredients": "",
    "materials": "cotton 65%; polyester 31%; spandex 4%",
    "missing_expected": [
@@ -9186,7 +9186,7 @@
      "title": "3XL / Garden Party"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 52768781172847,
      "options": [
@@ -11309,7 +11309,7 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_cat.jpg?v=1793799482",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FLORA-CatPrintJoggers-db9cd1ed.jpg?v=1767635891"
    ],
-   "in_stock": true,
+   "in_stock": false,
    "ingredients": "",
    "materials": "cotton 65%; polyester 31%; spandex 4%",
    "missing_expected": [
@@ -11398,7 +11398,7 @@
      "title": "S / Purr Parade Navy"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 43949671055471,
      "options": [

@@ -2884,7 +2884,7 @@
     "version": "3a4b3bc047b8"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 81,
+   "consecutive_successes": 84,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -3452,10 +3452,31 @@
      "items": 72,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T06:22:18Z",
+     "code": "",
+     "items": 7,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T06:22:19Z",
+     "code": "",
+     "items": 31,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T06:22:21Z",
+     "code": "",
+     "items": 72,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-13T19:41:52Z",
+   "last_success": "2026-11-14T06:22:21Z",
    "pause": null,
    "route": "public_json",
    "source": "shopify_catalogue",

@@ -269,7 +269,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781074543,XL / Garden Party,Size=XL; Color=Garden Party,SWPANTS-452-XL,120.00,,false
 14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781107311,2XL / Garden Party,Size=2XL; Color=Garden Party,SWPANTS-452-2XL,120.00,,false
 14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781140079,3XL / Garden Party,Size=3XL; Color=Garden Party,SWPANTS-452-3XL,120.00,,false
-14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781172847,4XL / Garden Party,Size=4XL; Color=Garden Party,SWPANTS-452-4XL,120.00,,true
+14917967904879,Swoveralls - Garden Party - Coming Soon!,52768781172847,4XL / Garden Party,Size=4XL; Color=Garden Party,SWPANTS-452-4XL,120.00,,false
 15114935926895,Swoveralls - GooBle Search,53311680872559,S / GooBle Search,Size=S; Color=GooBle Search,SWPANTSYGG-377-S,89.99,120.00,true
 15114935926895,Swoveralls - GooBle Search,53311680905327,M / GooBle Search,Size=M; Color=GooBle Search,SWPANTSYGG-377-M,89.99,120.00,true
 15114935926895,Swoveralls - GooBle Search,53311680938095,L / GooBle Search,Size=L; Color=GooBle Search,SWPANTSYGG-377-L,89.99,120.00,true
@@ -335,7 +335,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 7969917927535,Swoveralls - Purr Parade - Coming Soon!,43949670957167,XXS / Purr Parade Navy,Size=XXS; Color=Purr Parade Navy,SWPANTS-BL4-XXS,120.00,,false
 7969917927535,Swoveralls - Purr Parade - Coming Soon!,43949670989935,XS / Purr Parade Navy,Size=XS; Color=Purr Parade Navy,SWPANTS-BL4-XS,120.00,,false
 7969917927535,Swoveralls - Purr Parade - Coming Soon!,43949671022703,S / Purr Parade Navy,Size=S; Color=Purr Parade Navy,SWPANTS-BL4-S,120.00,,false
-7969917927535,Swoveralls - Purr Parade - Coming Soon!,43949671055471,M / Purr Parade Navy,Size=M; Color=Purr Parade Navy,SWPANTS-BL4-M,120.00,,true
+7969917927535,Swoveralls - Purr Parade - Coming Soon!,43949671055471,M / Purr Parade Navy,Size=M; Color=Purr Parade Navy,SWPANTS-BL4-M,120.00,,false
 7969917927535,Swoveralls - Purr Parade - Coming Soon!,43949671088239,L / Purr Parade Navy,Size=L; Color=Purr Parade Navy,SWPANTS-BL4-L,120.00,,false
 7969917927535,Swoveralls - Purr Parade - Coming Soon!,43949671121007,XL / Purr Parade Navy,Size=XL; Color=Purr Parade Navy,SWPANTS-BL4-XL,120.00,,false
 7969917927535,Swoveralls - Purr Parade - Coming Soon!,43949671153775,2XL / Purr Parade Navy,Size=2XL; Color=Purr Parade Navy,SWPANTS-BL4-2XL,120.00,,false
