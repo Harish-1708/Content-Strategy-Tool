@@ -91,5 +91,36 @@
       ]
     ],
     "url": "instagram.com/madepants"
+  },
+  {
+    "at": "2026-11-14T03:18:44Z",
+    "chars": 157,
+    "kind": "read",
+    "landed": "https://www.instagram.com/the_oodie/",
+    "platform": "instagram",
+    "quality": "snippets about the address, not the page",
+    "reason": "",
+    "route": "discovery",
+    "skipped": false,
+    "starts": "Welcome to a world of comfort \u2601\ufe0f Sending cuddles around the globe \ud83c\udf0d Join the #OodieSquad BLACK FRIDAY SALE ON NOW \u2026 up to 50% off everything. Oodie\u2122 is BACK.",
+    "title": "The Oodie\u2122 (@the_oodie) \u2022 Instagram photos and videos",
+    "trail": [
+      [
+        "primary",
+        "UPSTREAM_BROKEN",
+        "the platform answered the browser with an error status instead of a page, which is its own refusal of an automated visit (the browser does not say which status) (UPSTREAM_BROKEN: Error: Page.goto: net"
+      ],
+      [
+        "session",
+        "UPSTREAM_BROKEN",
+        "the platform answered the browser with an error status instead of a page, which is its own refusal of an automated visit (the browser does not say which status) (UPSTREAM_BROKEN: Error: Page.goto: net"
+      ],
+      [
+        "discovery",
+        "ok",
+        "5 item(s)"
+      ]
+    ],
+    "url": "instagram.com/the_oodie"
   }
 ]
