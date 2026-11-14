@@ -3885,8 +3885,8 @@
     "run": "480a348f",
     "version": "3a4b3bc047b8"
    },
-   "consecutive_failures": 1,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 3,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -3999,6 +3999,27 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-14T13:43:48Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T13:43:48Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T13:43:48Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": {
@@ -4006,7 +4027,7 @@
     "code": "PLATFORM_BLOCKED",
     "message": "instagram: instagram showed an account warning (the page address contains /accounts/suspended). The tool stopped using the account straight away. Open the account by hand and follow what the warning says"
    },
-   "last_success": "2026-11-14T09:05:03Z",
+   "last_success": "2026-11-14T13:43:48Z",
    "pause": null,
    "route": "browser",
    "source": "instagram",
@@ -4111,7 +4132,7 @@
     "version": "3a4b3bc047b8"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 29,
+   "consecutive_successes": 35,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -4315,10 +4336,52 @@
      "items": 30,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T13:43:48Z",
+     "code": "",
+     "items": 16,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T13:43:48Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T13:43:48Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T13:43:48Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T13:43:48Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T13:43:48Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-14T09:05:03Z",
+   "last_success": "2026-11-14T13:43:48Z",
    "pause": null,
    "route": "browser",
    "source": "meta_ads",
@@ -4983,7 +5046,7 @@
     "version": "3a4b3bc047b8"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 11,
+   "consecutive_successes": 14,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -5103,6 +5166,27 @@
      "items": 30,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T13:43:48Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T13:43:48Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T13:43:48Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": {
@@ -5110,7 +5194,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "login ok; 0 items (0 from the site's data, 0 only from page links); nothing could be read (run Recon to see what the site sends)"
    },
-   "last_success": "2026-11-14T09:05:03Z",
+   "last_success": "2026-11-14T13:43:48Z",
    "pause": null,
    "route": "browser",
    "source": "tiktok",
@@ -5118,8 +5202,8 @@
   },
   "video_instagram|layered": {
    "acceptance": null,
-   "consecutive_failures": 2,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 10,
    "history": [
     {
      "at": "2026-11-04T16:11:21Z",
@@ -5211,6 +5295,90 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 0,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 0,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": {
@@ -5218,7 +5386,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "Video info extraction failed: HTTP Error 400: Bad Request (caused by <HTTPError 400: Bad Request>)"
    },
-   "last_success": "2026-11-14T03:55:14Z",
+   "last_success": "2026-11-14T14:14:28Z",
    "pause": null,
    "route": "layered",
    "source": "video_instagram",
@@ -5227,7 +5395,7 @@
   "video_tiktok|layered": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 2,
+   "consecutive_successes": 3,
    "history": [
     {
      "at": "2026-11-04T16:11:21Z",
@@ -5389,14 +5557,70 @@
      "items": 1,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T14:14:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": {
-    "at": "2026-11-14T09:27:41Z",
+    "at": "2026-11-14T14:14:28Z",
     "code": "UPSTREAM_BROKEN",
     "message": "the video has no picture track"
    },
-   "last_success": "2026-11-14T09:27:41Z",
+   "last_success": "2026-11-14T14:14:28Z",
    "pause": null,
    "route": "layered",
    "source": "video_tiktok",
