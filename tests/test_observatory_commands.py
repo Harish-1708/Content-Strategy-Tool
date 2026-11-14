@@ -1819,7 +1819,7 @@ def test_the_owners_internal_data_switch_takes_internal_data_off_one_provider_in
     assert any(n.startswith("NOTE: nvidia: Internal data switched off by the owner (services.ai_internal_data.channels.nvidia)") for n in notes) and not any("SKIPPED: nvidia" in n for n in notes)
     internal = {(r["provider"], r["model"]): r for r in router.explain("trend_opportunity", "internal", "2026-11-14T10:00:00Z")}
     public = {(r["provider"], r["model"]): r for r in router.explain("trend_opportunity", "public", "2026-11-14T10:00:00Z")}
-    key = ("nvidia", "deepseek-ai/deepseek-v4-pro")
+    key = ("nvidia", "google/gemma-4-31b-it")                                                             # NVIDIA's one model that answered live (the pool carries it into every lane)
     assert internal[key]["reason"] == "not approved for internal data" and public[key]["reason"] == "no credentials or client available on this machine"      # Public still reaches it
     settings["services"]["ai_internal_data"]["channels"]["nvidia"] = True
     router, *_rest, notes, finish = SVC.ai_stack(env.store, ledger, {}, settings=settings, **kw)

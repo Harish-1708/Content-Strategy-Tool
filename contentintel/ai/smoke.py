@@ -59,6 +59,15 @@ def switch_check(rows, registry, environ):
     return bool(seen) and not on and not off, f"{len(rows)} rows, {len(on)} wrongly enabled{name(on)}, {len(off)} approved but off{name(off)}, {sum(1 for k in want if seen.get(k))} approved and on"
 
 
+def keyless_check(rows, registry):
+    """(ok, detail): every approved model of an enabled key-less provider (Kilo) must sit on a platform that holds the gateway's stored 'no-key' row, or the gateway answers 'no key configured for their
+    platform' (live check #21, Kilo). Rows the gateway does not list are not judged."""
+    seen = {(r.get("platform"), r.get("modelId") or r.get("model_id")): int(r.get("keyCount") or 0) for r in rows if r.get("platform") != "custom"}
+    wanted = [(p.gateway_platform, m.id) for p in registry.providers.values() if p.enabled and p.id != "claude" and not p.direct and not p.credential_env for m in p.models if m.approved]
+    missing = sorted(k for k in wanted if k in seen and seen[k] < 1)
+    return not missing, f"{sum(1 for k in wanted if seen.get(k, 0) >= 1)} key-less model(s) have their stored row" + (": missing for " + ", ".join(f"{p}/{m}" for p, m in missing[:4]) if missing else "")
+
+
 def run_smoke(gateway_dir, registry, lock, workdir, baseline):
     """Returns a list of (check, passed, detail). Never raises for a failed check; raises GatewayError only if the gateway cannot start."""
     results = []
@@ -91,6 +100,8 @@ def run_smoke(gateway_dir, registry, lock, workdir, baseline):
         rows = side.admin_models(password)
         ok, detail = switch_check(rows, registry, environ)
         check("every baseline model outside the allowlist is switched off", ok, detail)
+        ok, detail = keyless_check(rows, registry)
+        check("a key-less provider has the gateway's stored no-key row", ok, detail)
         client = GatewayClient(side.base_url, key)
         done = client.complete({"provider": "custom", "model": "smoke-model", "gateway_model": "smoke-model"}, "", "say OK", 16, expect_platform="custom")
         check("a chat call is routed to the expected provider", done.text == "SMOKE-OK" and upstream.seen == ["smoke-model"], done.text)

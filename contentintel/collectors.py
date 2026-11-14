@@ -1312,6 +1312,14 @@ class TaskReport:
     items: int = 0
 
 
+def tally_new(rows, known, tally):
+    """Count collected rows against what the store already holds: tally['items'] every row, tally['new'] the rows whose item id was not known (an id met twice in the same run is new once). `known` grows as ids are met."""
+    for item in rows:
+        tally["items"] += 1
+        tally["new"] += item.get("item_id") not in known
+        known.add(item.get("item_id"))
+
+
 @dataclass
 class CollectResult:
     run_id: str
@@ -1322,6 +1330,7 @@ class CollectResult:
     problems_for: list = field(default_factory=list)
     follow: dict = field(default_factory=dict)        # brand slug -> bench.FollowPlan, as it stands at the end of the run
     resting: dict = field(default_factory=dict)       # site -> {until, at, reason}: accounts resting after a warning
+    fresh: dict = field(default_factory=dict)         # brand slug -> {"items": collected this run, "new": of those not yet in the store}
 
     @property
     def needs_review(self):
@@ -1565,7 +1574,11 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
             health.observe(source, route, ok=False, code=contract.UPSTREAM_BROKEN,
                            message=message or "the route answered but nothing usable came back", now=now)
 
+    known = {}                                           # brand slug -> the item ids already in the store (one row each on the Collected tab)
+
     def save(brand, task, rows, stats, via, extra=None):
+        ids = known.setdefault(brand.slug, {i.get("item_id") for rec in store.read_collected(brand.slug) for i in rec.get("items", [])})
+        tally_new(rows, ids, result.fresh.setdefault(brand.slug, {"items": 0, "new": 0}))
         record = {"at": now, "run": run_id, "source": task.source, "key": task.key, "seeds": task.seeds, "via": via,
                   "from_site_data": stats.get("json", 0), "from_links": stats.get("links", 0), "items": rows}
         if registry is not None:
@@ -1831,6 +1844,9 @@ def format_collect_report(result, settings, ledger=None):
             lines.append("  nothing to collect: no seeds written in research.yaml, and no catalogue yet to build them from (run Sync first)")
         for r in reports:
             lines.append(f"  {r.source:<13} {r.status:<9} {r.seeds}" + (f" -> {r.detail}" if r.detail else ""))
+        tally = result.fresh.get(slug)
+        if tally and tally["items"]:
+            lines.append(f"  {tally['items']} item(s) collected in this run: {tally['new']} new to the Collected tab, {tally['items'] - tally['new']} already there (found before, or by two searches in this run: one row each, its 'times seen' goes up)")
     for slug, plan in result.follow.items():
         lines += ["", f"--- {slug}: benchmark brands ---", bench.format_follow_plan(plan, slug, slug)]
     if result.needs_review:

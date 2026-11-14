@@ -95,7 +95,7 @@ class HealthLedger:
             self.state["routes"][key] = _blank(source, route)
         return self.state["routes"][key]
 
-    def observe(self, source, route, *, ok, code="", items=0, message="", now, elapsed_ms=0, retry_after=None):
+    def observe(self, source, route, *, ok, code="", items=0, message="", now, elapsed_ms=0, retry_after=None, rest_seconds=None):
         """Record one real attempt. A skipped route (resting) is not an attempt and is never recorded here. A provider that says how long to wait (Retry-After on a 429) sets the rest itself:
         it rests for exactly that long, not for the standard period for that kind of failure."""
         entry = self._entry(source, route)
@@ -121,6 +121,8 @@ class HealthLedger:
         seconds = self.registry.pause_for(code)
         if code == "RATE_LIMITED" and isinstance(retry_after, (int, float)) and not isinstance(retry_after, bool) and retry_after > 0:
             seconds = int(retry_after)                            # the provider's own answer to "when may I try again"
+        if isinstance(rest_seconds, (int, float)) and not isinstance(rest_seconds, bool) and rest_seconds > 0:
+            seconds = int(rest_seconds)                           # the caller knows how long this kind of failure lasts (a model that has been withdrawn does not come back in two minutes)
         if seconds > 0 and guards.on("rest_after_refusal"):
             until = add_seconds(now, seconds)
             current = (entry["pause"] or {}).get("until", "")

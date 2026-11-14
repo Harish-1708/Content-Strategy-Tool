@@ -6,7 +6,7 @@ U59 = [
     ('u59-wrongly-on-unchecked', 'contentintel/ai/smoke.py', 'on = sorted(k for k, v in seen.items() if v and k not in want)', 'on = []', 'a model that is on but not approved passes'),
     ('u59-approved-off-unchecked', 'contentintel/ai/smoke.py', 'off = sorted(k for k in want if k in seen and not seen[k])', 'off = []', 'an approved model that is off passes'),
     ('u59-empty-rows-pass', 'contentintel/ai/smoke.py', 'return bool(seen) and not on and not off,', 'return not on and not off,', 'a gateway that lists no models passes'),
-    ('u59-custom-model-counted', 'contentintel/ai/smoke.py', 'for r in rows if r.get("platform") != "custom"}', 'for r in rows}', "the smoke's own fake model counts as wrongly enabled"),
-    ('u59-model-id-spelling', 'contentintel/ai/smoke.py', 'r.get("modelId") or r.get("model_id")', 'r.get("modelId")', 'a row that spells its id model_id is not seen'),
+    ('u59-custom-model-counted', 'contentintel/ai/smoke.py', 'bool(r.get("enabled")) for r in rows if r.get("platform") != "custom"}', 'bool(r.get("enabled")) for r in rows}', "the smoke's own fake model counts as wrongly enabled"),
+    ('u59-model-id-spelling', 'contentintel/ai/smoke.py', 'r.get("modelId") or r.get("model_id")): bool(r.get("enabled"))', 'r.get("modelId")): bool(r.get("enabled"))', 'a row that spells its id model_id is not seen'),
     ('u59-check-not-enforced', 'contentintel/ai/smoke.py', 'ok, detail = switch_check(rows, registry, environ)', 'ok, detail = True, ""', 'the real smoke test no longer checks the switches')
 ]

@@ -107,6 +107,9 @@ def handles_for(comp, discovered, settings):
     return chosen[:max(0, int(cfg["max_per_competitor"]))]
 
 
+RETRY_QUALITIES = ("too little", "script shell", "empty")        # a challenge page is never asked for again: only a page that did not finish drawing
+
+
 def make_reader(settings, contact, python, environ=None, runner=subprocess.run):
     """The function the monitor reads a profile with: (platform, url) -> {'text', 'title', 'landed', 'quality'}, or a K.Failure saying why not (no browser here, the platform refused the runner,
     a puzzle page, a script shell). One attempt, no login, the page waited for where the platform draws it late."""
@@ -118,6 +121,14 @@ def make_reader(settings, contact, python, environ=None, runner=subprocess.run):
             raise SL._failure_from(res)
         text = " ".join(SL.clean_text(res.get("text") or "").split())
         quality = SL.judge_content(text)[0]
+        if quality in RETRY_QUALITIES:                    # a half-drawn page (monitoring #33: 60 characters for a TikTok profile that a read a few minutes later returned in full): one more try, waiting twice as long
+            usual = int((S.PLATFORMS[platform].get("read_adv") or S.PLATFORMS[platform].get("adv") or {}).get("wait") or 3000)
+            again = SL._worker_page(platform, url, settings, contact, python, environ, runner, with_session=False, reading=True, wait_ms=max(2 * usual, 6000))
+            if again.get("ok"):
+                retext = " ".join(SL.clean_text(again.get("text") or "").split())
+                requality = SL.judge_content(retext)[0]
+                if requality == "real text" or len(retext) > len(text):
+                    res, text, quality = again, retext, requality
         if quality != "real text":
             code = K.PLATFORM_BLOCKED if quality == "challenge page" else K.UPSTREAM_BROKEN
             raise K.Failure(code, f"the profile page came back with no readable text ({len(text)} characters: {SL.WHY_NOT_CONTENT[quality]})")
@@ -156,7 +167,8 @@ def make_discovery(environ=None, providers=None, limit=12):
         url = profile_url(platform, handle)
         rows = SL.discovery_rows(url, environ, providers)
         want = handle.lstrip("@").lower()
-        hit = next((r for r in rows if _handle_of(platform, r.get("url")) == want), None)
+        same = [r for r in rows if _handle_of(platform, r.get("url")) == want]         # every result that is exactly this account: its profile, its reels page, its posts
+        hit = next((r for r in same if parse_profile(platform, " ".join(f"{r.get('title') or ''} {r.get('text') or ''}".split()), r.get("title", ""))["metrics"]), same[0] if same else None)
         if hit is None:
             seen = ", ".join(sorted({_handle_of(platform, r.get("url")) or "?" for r in rows})[:4])
             raise K.Failure(K.NOT_FOUND, f"the search found no result for exactly {LABELS[platform]} {handle!r}" + (f" (it found {seen}: other accounts are never used)" if rows else ""))

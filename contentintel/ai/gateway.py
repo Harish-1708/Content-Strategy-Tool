@@ -55,6 +55,8 @@ def build_config(registry, environ, baseline_models):
             continue
         if p.credential_env:
             keys.append({"platform": p.gateway_platform, "key": cred, "label": "actions", "enabled": True})
+        else:                                           # a key-less provider (Kilo): an entry with no key makes the gateway store its own 'no-key' row; without one it reports 'no key configured for their platform'
+            keys.append({"platform": p.gateway_platform, "label": "actions", "enabled": True})
     live = {k["platform"] for k in keys} | {p.gateway_platform for p in registry.providers.values() if p.enabled and not p.credential_env and p.id != "claude" and not p.direct}
     for platform, ids in sorted(baseline_models.items()):
         provider = next((p for p in registry.providers.values() if p.gateway_platform == platform), None)

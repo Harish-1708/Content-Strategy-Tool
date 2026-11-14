@@ -349,7 +349,7 @@ def test_a_run_removes_skipped_brands_before_scoring_so_no_call_is_spent_on_them
     prompt = claude.json_calls[0][1]
     items = store.read_ideabank("swoveralls")["items"]
     assert "IB-0001" not in prompt and "IB-0002" in prompt and items["IB-0001"]["state"] == "removed" and items["IB-0002"]["state"] == "kept"
-    assert "swoveralls: 1 item(s) removed (0 the brand's own, 1 from brands you skip, 0 cop(ies), 0 not relevant enough); 1 kept" in lines
+    assert "swoveralls: 1 item(s) removed (0 the brand's own, 1 from brands you skip, 0 cop(ies), 0 not relevant enough) in this run; the bank now holds 1 kept item(s), 1 of them new in this run" in lines
 
 
 def test_a_skipped_brands_folder_is_moved_to_the_trash(store, swov, drive):

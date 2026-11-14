@@ -347,7 +347,7 @@ def test_nvidia_ollama_cohere_and_zhipu_carry_the_personal_use_decision_dated_wi
         assert "personal" in p.terms["business_use"] and "personal" in p.terms["note"].lower() or pid == "zhipu", pid
         assert "if one is, the owner stops" in p.terms["note"] or "owner stops" in p.terms["note"], pid
         assert p.approved_classes == ("public", "internal") and p.override["date"] == "2026-11-14" and p.override["approved_by"] == "Harish", pid
-        assert all(m.approved for m in p.models) and len(p.models) == {"nvidia": 13, "ollama": 11, "cohere": 4, "zhipu": 3}[pid], pid
+        assert sum(1 for m in p.models if m.approved) == {"nvidia": 1, "ollama": 7, "cohere": 4, "zhipu": 3}[pid] and len(p.models) == {"nvidia": 13, "ollama": 11, "cohere": 4, "zhipu": 3}[pid], pid      # the rest were switched off after the live check of 2026-11-14 (see test_stale_models)
         assert p.credential_env == ({"nvidia": "NVIDIA_API_KEY", "ollama": "OLLAMA_API_KEY", "cohere": "COHERE_API_KEY", "zhipu": "ZHIPU_API_KEY"}[pid],), pid
     z = reg.provider("zhipu").terms
     assert z["note"].startswith("DATA RESIDENCY IS IN CHINA") and "before any client data goes to it" in z["note"] and "z.ai" in z["note"]

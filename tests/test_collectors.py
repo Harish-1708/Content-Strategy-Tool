@@ -1005,3 +1005,17 @@ def test_the_report_says_there_is_no_monthly_cap_or_shows_the_cap(tmp_path, stor
     assert "items 5 (no monthly cap), Apify items 0/100" in text
     capped = C.format_collect_report(free, replace(settings, monthly_items=50), R.Ledger(store.load_usage(), "2026-10"))
     assert "items 5/50, Apify items 0/100" in capped and "no monthly cap" not in capped
+
+
+def test_the_report_says_how_many_collected_items_are_new_to_the_collected_tab_and_how_many_were_already_there(tmp_path, store, swov, cfg, settings):
+    import re
+    first = collect(store, tmp_path, [swov], FULL, world(cfg), cfg, settings)
+    text = C.format_collect_report(first, settings)
+    m = re.search(r"  (\d+) item\(s\) collected in this run: (\d+) new to the Collected tab, (\d+) already there \(found before, or by two searches in this run", text)
+    assert m and int(m.group(1)) > 0 and m.group(1) == m.group(2) and m.group(3) == "0", text
+    total = int(m.group(1))
+    second = collect(store, tmp_path, [swov], FULL, world(cfg), cfg, settings, now="2026-11-04T07:00:01Z")
+    again = re.search(r"  (\d+) item\(s\) collected in this run: (\d+) new to the Collected tab, (\d+) already there", C.format_collect_report(second, settings))
+    assert again and int(again.group(1)) == total and again.group(2) == "0" and int(again.group(3)) == total        # the same items found again: one row each, none new
+    rows = C.collected_rows(store.read_collected("swoveralls"))
+    assert len(rows) == total and all(r["times_seen"] == 2 for r in rows.values())                                # and the tab has exactly the new ones: 119 collected is not 119 rows

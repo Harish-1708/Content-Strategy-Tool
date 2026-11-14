@@ -24,7 +24,7 @@ def test_with_every_key_the_approved_models_of_every_gateway_provider_are_meant_
     per = {}
     for platform, _ in want:
         per[platform] = per.get(platform, 0) + 1
-    assert len(want) == 39 and per == {"groq": 2, "mistral": 2, "cloudflare": 1, "google": 2, "nvidia": 13, "ollama": 11, "cohere": 4, "zhipu": 3, "kilo": 1}
+    assert len(want) == 22 and per == {"groq": 2, "mistral": 2, "cloudflare": 1, "google": 1, "nvidia": 1, "ollama": 7, "cohere": 4, "zhipu": 3, "kilo": 1}      # after the models the live check proved gone were switched off
     assert not any(p in ("claude", "openrouter") for p, _ in want)                                              # Claude has its own client; OpenRouter is called directly
     assert SM.expected_enabled(SHIPPED, {"NVIDIA_API_KEY": "k"}) == {KILO} | {p for p in want if p[0] == "nvidia"}      # a key switches on only its own provider's approved models
     assert SM.expected_enabled(SHIPPED, {"NVIDIA_API_KEY": "  "}) == {KILO}                                      # an empty key is no key
@@ -32,16 +32,16 @@ def test_with_every_key_the_approved_models_of_every_gateway_provider_are_meant_
 
 
 def test_the_check_passes_when_exactly_the_meant_models_are_on_and_names_what_is_wrong_otherwise():
-    rows = [row("kilo", KILO[1], True), row("kilo", "poolside/laguna-m.1:free", False), row("nvidia", "deepseek-ai/deepseek-v4-pro", False), row("custom", "smoke-model", True)]
+    rows = [row("kilo", KILO[1], True), row("kilo", "poolside/laguna-m.1:free", False), row("nvidia", "google/gemma-4-31b-it", False), row("custom", "smoke-model", True)]
     ok, detail = SM.switch_check(rows, SHIPPED, {})
     assert ok and detail == "4 rows, 0 wrongly enabled, 0 approved but off, 1 approved and on"                   # the custom smoke model is ignored
     ok, detail = SM.switch_check([row("kilo", KILO[1], True), row("kilo", "poolside/laguna-m.1:free", True)], SHIPPED, {})
     assert not ok and "1 wrongly enabled: kilo/poolside/laguna-m.1:free" in detail                                # an unapproved model that is on is named
-    ok, detail = SM.switch_check([row("kilo", KILO[1], True), row("nvidia", "deepseek-ai/deepseek-v4-pro", True)], SHIPPED, {})
-    assert not ok and "wrongly enabled: nvidia/deepseek-ai/deepseek-v4-pro" in detail                              # an approved model whose provider has no key must be off
+    ok, detail = SM.switch_check([row("kilo", KILO[1], True), row("nvidia", "google/gemma-4-31b-it", True)], SHIPPED, {})
+    assert not ok and "wrongly enabled: nvidia/google/gemma-4-31b-it" in detail                              # an approved model whose provider has no key must be off
     ok, detail = SM.switch_check([row("kilo", KILO[1], False)], SHIPPED, {})
     assert not ok and "1 approved but off: kilo/nvidia/nemotron-3-super-120b-a12b:free" in detail                  # an approved model that is off is named too
-    ok, detail = SM.switch_check([row("nvidia", "deepseek-ai/deepseek-v4-pro", True), row("kilo", KILO[1], True)], SHIPPED, {"NVIDIA_API_KEY": "k"})
+    ok, detail = SM.switch_check([row("nvidia", "google/gemma-4-31b-it", True), row("kilo", KILO[1], True)], SHIPPED, {"NVIDIA_API_KEY": "k"})
     assert ok and detail.endswith("2 approved and on")                                                            # with the key, the same row is right
     assert SM.switch_check([row("custom", "smoke-model", True)], SHIPPED, {})[0] is False                           # no gateway rows at all is a failure, not a pass
     assert SM.switch_check([row("kilo", KILO[1], True, key="model_id")], SHIPPED, {})[0] is True                    # the gateway may spell the id either way

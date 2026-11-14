@@ -173,11 +173,12 @@ def test_only_enabled_providers_with_credentials_get_a_key_and_only_allowlisted_
     reg = registry_for(tmp_path)
     config, report = G.build_config(reg, ENV, BASELINE)
     assert config["admin"] == {"email": G.ADMIN_EMAIL, "password": "long-enough-password"}
-    assert config["keys"] == [{"platform": "alpha", "key": "alpha-secret", "label": "actions", "enabled": True}]
+    assert config["keys"] == [{"platform": "alpha", "key": "alpha-secret", "label": "actions", "enabled": True},
+                              {"platform": "gamma", "label": "actions", "enabled": True}]               # gamma needs no key: an entry with NO key makes the gateway store its own no-key row (without it Kilo answered "no key configured")
     on = {(m["platform"], m["modelId"]): m["enabled"] for m in config["models"]}
     assert on == {("alpha", "a-1"): True, ("alpha", "a-2"): False, ("delta", "d-1"): False, ("gamma", "g-1"): True}
     assert all(m["fallbackEnabled"] == m["enabled"] for m in config["models"])
-    assert report["keys"] == ["alpha"] and report["models_on"] == 2 and report["models_off"] == 2
+    assert report["keys"] == ["alpha", "gamma"] and report["models_on"] == 2 and report["models_off"] == 2
     assert [s["provider"] for s in report["skipped"]] == ["beta"] and "BETA_KEY" in report["skipped"][0]["reason"]
     assert "claude" not in json.dumps(config) and "license" not in config and "alpha-secret" not in json.dumps(config["models"])
 
@@ -355,8 +356,9 @@ def test_the_real_pinned_gateway_passes_the_mock_provider_smoke_test(tmp_path):
     results, report = smoke.run_smoke(os.environ["FREEAPI_GATEWAY_DIR"], reg, LOCK, tmp_path, G.baseline_from_inventory(ROOT / "docs" / "ai" / "provider_inventory.json"))
     failed = [(n, d) for n, ok, d in results if not ok]
     assert not failed, failed
-    assert report["models_on"] == 1 and report["models_off"] == 107 and len(results) == 8                    # no key is given here: the one model on is Kilo's approved one (Kilo needs no key); the other 107 are off
+    assert report["models_on"] == 1 and report["models_off"] == 107 and len(results) == 9                    # no key is given here: the one model on is Kilo's approved one (Kilo needs no key); the other 107 are off
     assert next(d for n, ok, d in results if n.startswith("every baseline model")) == "109 rows, 0 wrongly enabled, 0 approved but off, 1 approved and on"
+    assert next(d for n, ok, d in results if n.startswith("a key-less provider")) == "1 key-less model(s) have their stored row" and report["keys"] == ["kilo"]      # Kilo holds the gateway's stored no-key row: without it the live check said "no key configured"
 
 
 @pytest.mark.parametrize("status, body, message", [(204, {"error": {"message": "why"}}, "why"), (204, {}, "the gateway answered 204"), (302, {}, "the gateway answered 302"),
@@ -576,3 +578,17 @@ def test_the_live_run_builds_the_openrouter_client_for_the_direct_provider_and_n
     reg = R.load_registry(ROOT / "ai_providers.yaml")
     clients, _ = CM.live_clients(reg, {"GITHUB_TOKEN": "ghp_" + "A" * 36, "OPENROUTER_API_KEY": "sk-or-" + "b" * 30}, None, "/tmp", [])
     assert type(clients["openrouter"]) is C.OpenRouterClient and "github" not in clients
+
+
+@pytest.mark.skipif(not os.environ.get("FREEAPI_GATEWAY_DIR"), reason="needs the pinned gateway built (the AI gateway workflow does this)")
+def test_the_real_smoke_test_fails_when_the_keyless_check_or_the_switch_check_fails(tmp_path, monkeypatch):
+    from contentintel.ai import smoke
+    reg = R.load_registry(ROOT / "ai_providers.yaml")
+    baseline = G.baseline_from_inventory(ROOT / "docs" / "ai" / "provider_inventory.json")
+    monkeypatch.setattr(smoke, "keyless_check", lambda rows, registry: (False, "forced"))
+    results, _ = smoke.run_smoke(os.environ["FREEAPI_GATEWAY_DIR"], reg, LOCK, tmp_path / "a", baseline)
+    assert [(n, d) for n, ok, d in results if not ok] == [("a key-less provider has the gateway's stored no-key row", "forced")]
+    monkeypatch.undo()
+    monkeypatch.setattr(smoke, "switch_check", lambda rows, registry, environ: (False, "forced"))
+    results, _ = smoke.run_smoke(os.environ["FREEAPI_GATEWAY_DIR"], reg, LOCK, tmp_path / "b", baseline)
+    assert [(n, d) for n, ok, d in results if not ok] == [("every baseline model outside the allowlist is switched off", "forced")]

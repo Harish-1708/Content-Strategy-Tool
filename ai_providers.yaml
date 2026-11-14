@@ -122,12 +122,12 @@ providers:
       - tools
       note: "no longer available to new keys (Google answered no-longer-available-to-new-users live 2026-11-10) and its requests move to gemini-3.8-flash on 2026-12-01; replaced by gemini-3.5-flash"
     - id: gemini-2.5-flash-lite
-      approved: true
+      approved: false
       capabilities:
       - text
       - vision
       - tools
-      note: proposed starter approval; review before enabling
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 404: no longer available to new users (Google names gemini-3.5-flash-lite, which the pinned gateway catalogue does not contain). Add it back only after a live check answers'
     - id: gemini-3.1-pro-preview
       approved: false
       capabilities:
@@ -819,82 +819,82 @@ providers:
       requests_per_minute: 30
     models:
     - id: meta/llama-3.1-70b-instruct
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 410: end of life on 2026-08-26. Add it back only after a live check answers'
     - id: deepseek-ai/deepseek-v4-pro
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 410: end of life on 2026-08-07. Add it back only after a live check answers'
     - id: mistralai/mistral-large-3-675b-instruct-2512
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 410: end of life on 2026-07-23. Add it back only after a live check answers'
     - id: minimaxai/minimax-m2.7
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 410: end of life on 2026-07-27. Add it back only after a live check answers'
     - id: moonshotai/kimi-k2.6
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 404: not found for this account. Add it back only after a live check answers'
     - id: meta/llama-4-maverick-17b-128e-instruct
-      approved: true
+      approved: false
       capabilities:
       - text
       - vision
       - tools
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 410: end of life on 2026-07-27. Add it back only after a live check answers'
     - id: meta/llama-3.3-70b-instruct
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 410: end of life on 2026-08-26. Add it back only after a live check answers'
     - id: google/gemma-4-31b-it
       approved: true
       capabilities:
       - text
       note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: nvidia/nemotron-3-super-120b-a12b
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 404: not found for this account. Add it back only after a live check answers'
     - id: nvidia/nemotron-3-nano-30b-a3b
-      approved: true
+      approved: false
       capabilities:
       - text
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 410: end of life on 2026-09-01. Add it back only after a live check answers'
     - id: qwen/qwen3-coder-480b-a35b-instruct
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 410: end of life on 2026-06-11. Add it back only after a live check answers'
     - id: deepseek-ai/deepseek-v4-flash
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 410: end of life on 2026-08-07. Add it back only after a live check answers'
     - id: z-ai/glm-5.1
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 410: end of life on 2026-07-02. Add it back only after a live check answers'
   mistral:
     label: Mistral
     enabled: true
@@ -1499,28 +1499,28 @@ providers:
       - tools
       note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     - id: mistral-large-3:675b
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 410: retired by Ollama on 2026-11-09. Add it back only after a live check answers'
     - id: deepseek-v3.2
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 410: retired by Ollama on 2026-07-15. Add it back only after a live check answers'
     - id: cogito-2.1:671b
-      approved: true
+      approved: false
       capabilities:
       - text
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 410: retired by Ollama on 2026-06-16. Add it back only after a live check answers'
     - id: kimi-k2-thinking
-      approved: true
+      approved: false
       capabilities:
       - text
       - tools
-      note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+      note: 'switched off 2026-11-14: the live check of that day got HTTP 410: retired by Ollama on 2026-06-16. Add it back only after a live check answers'
     - id: glm-4.7
       approved: true
       capabilities:

@@ -595,7 +595,7 @@ def test_an_item_below_the_minimum_is_removed_and_never_gets_a_folder(store, swo
     low = bank["items"]["IB-0002"]
     assert low["state"] == "removed" and low["removed_reason"] == "not relevant enough (scored 49, the minimum is 50)" and not low["assets"] and low["drive_folder_id"] == ""
     assert [n for n in fake.tree() if n.startswith("  IB-")] == ["  IB-0001 - comfort hook/"]
-    assert "swoveralls: 1 item(s) removed (0 the brand's own, 0 from brands you skip, 0 cop(ies), 1 not relevant enough); 1 kept" in lines
+    assert "swoveralls: 1 item(s) removed (0 the brand's own, 0 from brands you skip, 0 cop(ies), 1 not relevant enough) in this run; the bank now holds 1 kept item(s), 1 of them new in this run" in lines
 
 
 def test_an_item_that_scores_exactly_the_minimum_is_kept(store, swov, drive):
@@ -711,3 +711,20 @@ def test_a_counter_lower_than_the_items_already_there_never_reuses_an_id(store):
     assert store.read_ideabank("swoveralls")["next"] == 3
     store.write_ideabank("swoveralls", {"next": 9, "items": {"IB-0001": {}}})
     assert store.read_ideabank("swoveralls")["next"] == 9
+
+
+def test_the_intake_line_says_how_many_items_of_the_whole_store_were_looked_at_and_why_the_left_out_ones_come_back(store, swov, drive):
+    seeded(store)
+    store.append_collected("swoveralls", record([row("instagram", "C", handle="u", title="post A", text="caption A", url="https://www.instagram.com/p/C/", media_url="https://cdn.example/C.jpg", likes=10)]))
+    new, lines = full_run(store, swov, drive, dry_run=True)
+    assert len(new) == 2 and lines == ["swoveralls: 2 new item(s) taken in (of 3 looked at in the whole Collected store, earlier runs included; left out 1 cop(ies), which are counted again every run because they are never taken in)"]
+    new, lines = full_run(store, swov, drive, dry_run=True)
+    assert lines[0].startswith("swoveralls: 2 new item(s) taken in (of 3 looked at")                          # a dry run changes nothing, so the same copy is met again
+
+
+def test_a_run_that_removes_nothing_still_says_how_many_the_bank_holds_and_how_many_are_new(store, swov, drive):
+    seeded(store)
+    new, lines = full_run(store, swov, drive, scored(("IB-0001", 80, "a"), ("IB-0002", 80, "b")))
+    assert "swoveralls: the bank now holds 2 kept item(s), 2 of them new in this run" in lines and not any("removed" in ln for ln in lines)
+    new, lines = full_run(store, swov, drive)
+    assert not any("the bank now holds" in ln for ln in lines)                                                  # nothing new: nothing to say

@@ -28,3 +28,19 @@ Internal data goes to every enabled provider under your recorded decision of 202
 - **A provider:** Controls, `services.ai_internal_data.channels.<provider>` (ON by default for all ten). OFF: that provider receives Public data only and stays on.
 - **One model:** in `ai_providers.yaml` add `internal: false` to the model's entry.
 - **A whole provider off:** `services.ai_gateway.channels.<provider>`.
+
+## Update 60: stale models, Kilo, and a withdrawn model resting alone
+
+**What the live check of 14 Nov 2026 (AI gateway #21) showed.** 16 models answered. 17 were gone: NVIDIA 12 (ten answered HTTP 410 "end of life", two 404 "not found for this account"), Ollama 4 (410, retired between June and 9 November), Google 1 (`gemini-2.5-flash-lite`, 404 "no longer available to new users"). Those 17 are switched off in `ai_providers.yaml` (`approved: false`, with the date and the exact answer in each model's note) and taken out of every lane and the pool. The pool is now 25 models.
+
+**The lane order is what worked before.** The lead routes of Update 57 (NVIDIA DeepSeek, NVIDIA Kimi, Ollama Kimi) were among the dead ones, so those lanes had been falling through to Groq. They now lead with the routes that worked in Update 56 again, and the Cohere reasoning model that answered live sits behind Groq in `formula_analysis` and `trend_opportunity` (Mistral, which has no key, is skipped).
+
+**Why no replacements were added.** The gateway is pinned (v0.16.17) and only routes models in its own catalogue; every model that catalogue holds for NVIDIA and Ollama was already approved, and Google's replacement `gemini-3.5-flash-lite` is not in it. Newer models need a newer gateway pin: a separate decision, not taken here. To add a model later: it must be in `docs/ai/provider_inventory.json`, be approved in `ai_providers.yaml`, and answer in a live check.
+
+**How to refresh next time.** Run Actions, AI gateway, live. A line that says model_not_found, 410, 404 "not found for this account" or "retired" is a withdrawn model: set its `approved: false`, add a dated note, delete its lines from `ai_lanes.yaml`. Models that failed only with "rate-limited" or "exhausted" are not shown to be gone.
+
+**A withdrawn model now rests alone.** When a provider says a model is gone, that one model is not asked again for a day and its provider is not rested, so the provider's other models keep working. Any other failure still rests the provider as before.
+
+**Kilo.** The gateway routes a platform only if it holds a stored key row; for a provider that needs no key it stores a `no-key` row when it is given a key entry without a key. Our gateway configuration gave Kilo no such entry, so it answered "no key configured for their platform". It now does, and the gateway smoke test has a ninth check ("a key-less provider has the gateway's stored no-key row"). The next live check shows whether Kilo answers; Kilo's own limit (200 an hour per address) still applies.
+
+**Ollama.** One model answered with HTTP 402 ("add usage credits") and the gateway then put every other Ollama model on cooldown, so only gpt-oss:120b is known to need credits; the rest are not shown to be gone or to work. Run the live check again after the cooldown.

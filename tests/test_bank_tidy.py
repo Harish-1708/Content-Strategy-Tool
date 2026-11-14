@@ -424,7 +424,7 @@ def test_the_screenshot_case_one_original_no_own_content_no_irrelevant(store_in_
     assert [i["source_item_id"] for i in kept if i["title"].startswith("Bib")] == ["meta_ads:1"]           # the longest-running copy
     assert [n for n in client.session.tree() if n.startswith("  IB-")] == ["  IB-0001 - day off bibs/", "  IB-0002 - calm hoodie/"]
     assert bank["items"]["IB-0003"]["removed_reason"] == "not relevant enough (scored 12, the minimum is 50)"
-    assert "swoveralls: 1 item(s) removed (0 the brand's own, 0 from brands you skip, 0 cop(ies), 1 not relevant enough); 2 kept" in lines
+    assert "swoveralls: 1 item(s) removed (0 the brand's own, 0 from brands you skip, 0 cop(ies), 1 not relevant enough) in this run; the bank now holds 2 kept item(s), 2 of them new in this run" in lines
     assert len(IB.sheet_rows(bank)) == 2
 
 
@@ -624,7 +624,7 @@ def test_a_run_tidies_a_bank_that_already_has_the_brands_own_content(store_in_tm
     new, lines = full_run(store, swov, (client, client.session))
     after = store.read_ideabank("swoveralls")["items"]
     assert after["IB-0001"]["state"] == "removed" and after["IB-0002"]["state"] == "kept"
-    assert "swoveralls: 1 item(s) removed (1 the brand's own, 0 from brands you skip, 0 cop(ies), 0 not relevant enough); 1 kept" in lines
+    assert "swoveralls: 1 item(s) removed (1 the brand's own, 0 from brands you skip, 0 cop(ies), 0 not relevant enough) in this run; the bank now holds 1 kept item(s), 0 of them new in this run" in lines
 
 
 def test_a_run_removes_existing_copies_before_spending_a_claude_call_on_them(store_in_tmp, swov):

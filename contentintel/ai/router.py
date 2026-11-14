@@ -25,6 +25,8 @@ from .pacing import Pacer
 CLAUDE = "claude"
 PACED = object()                         # a route that would have to wait for its provider's own limit: passed over, tried again only if nothing else answers
 TOO_BIG = re.compile(r"max[_ ]?(output[_ ]?)?tokens|maximum|too (large|long|many)|exceed|context length|out of range", re.I)
+GONE = re.compile(r"model_not_found|not found or removed upstream|end of life|was retired|has been retired|no longer available|decommission|has been deprecated|Function '[^']*': Not found for account", re.I)
+GONE_REST = 86400                        # a withdrawn model is not asked again for a day (and only that model: its provider's other models keep working)
 MIN_CAP = 1024                           # the smallest cap tried when a provider rejects a large one
 
 
@@ -85,6 +87,9 @@ class Router:
         rest = self.health.is_paused(f"ai:{pid}", "gateway", now)
         if rest:
             return False, rest["message"]
+        gone = self.health.is_paused(f"ai:{pid}", "model:" + route["model"], now)
+        if gone:
+            return False, "this model was reported withdrawn by its provider: " + str(gone["message"])[:160]
         ok, why = self.usage.allows(self.registry.provider(pid), self.registry, now, model=route["model"], est_in=est_in, max_out=lane.max_tokens)
         return (True, "") if ok else (False, why)
 
@@ -164,7 +169,10 @@ class Router:
                     attempt.update({"result": err["code"], "message": err["message"]})
                     base["attempts"].append(attempt)
                     self.usage.record(provider, lane.name, now, ok=False, model=route["model"])
-                    self.health.observe(source, "gateway", ok=False, code=err["code"], message=err["message"], now=now, retry_after=err.get("retry_after_seconds"))
+                    if err["code"] in (contract.UPSTREAM_BROKEN, contract.NOT_FOUND) and GONE.search(str(err["message"])):
+                        self.health.observe(source, "model:" + route["model"], ok=False, code=err["code"], message=err["message"], now=now, rest_seconds=GONE_REST)      # that model only: the provider is not rested
+                    else:
+                        self.health.observe(source, "gateway", ok=False, code=err["code"], message=err["message"], now=now, retry_after=err.get("retry_after_seconds"))
                     return None
         finally:
             for _ in range(held):

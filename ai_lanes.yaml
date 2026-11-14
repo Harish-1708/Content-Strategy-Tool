@@ -15,7 +15,6 @@ lanes:
     chain:
       - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: cohere, model: command-a-03-2025}
-      - {provider: nvidia, model: deepseek-ai/deepseek-v4-pro}
       - {provider: mistral, model: mistral-small-latest}
       - {provider: openrouter, model: "openrouter/free"}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
@@ -28,7 +27,6 @@ lanes:
     max_data_class: internal
     chain:
       - {provider: groq, model: openai/gpt-oss-120b}
-      - {provider: nvidia, model: mistralai/mistral-large-3-675b-instruct-2512}
       - {provider: cohere, model: command-a-03-2025}
       - {provider: mistral, model: mistral-small-latest}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
@@ -42,7 +40,6 @@ lanes:
     max_data_class: internal
     chain:
       - {provider: mistral, model: mistral-small-latest}
-      - {provider: nvidia, model: moonshotai/kimi-k2.6}
       - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
@@ -54,9 +51,8 @@ lanes:
     description: Match a creative to a known formula or describe a new one, with a confidence.
     max_data_class: internal
     chain:
-      - {provider: nvidia, model: moonshotai/kimi-k2.6}
-      - {provider: ollama, model: kimi-k2-thinking}
       - {provider: groq, model: openai/gpt-oss-120b}
+      - {provider: cohere, model: command-a-reasoning-08-2025}
       - {provider: mistral, model: mistral-large-latest}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
@@ -68,10 +64,8 @@ lanes:
     description: Spot rising angles and gaps from collected evidence, with the evidence cited.
     max_data_class: internal
     chain:
-      - {provider: nvidia, model: deepseek-ai/deepseek-v4-pro}
-      - {provider: ollama, model: deepseek-v3.2}
-      - {provider: ollama, model: kimi-k2-thinking}
       - {provider: mistral, model: mistral-large-latest}
+      - {provider: cohere, model: command-a-reasoning-08-2025}
       - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
     claude_fallback: true
@@ -95,8 +89,6 @@ lanes:
     description: Propose hooks and angles for a brand, from approved evidence and facts.
     max_data_class: internal
     chain:
-      - {provider: ollama, model: kimi-k2-thinking}
-      - {provider: nvidia, model: moonshotai/kimi-k2.6}
       - {provider: mistral, model: mistral-large-latest}
       - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: google, model: gemini-3.5-flash}
@@ -149,7 +141,6 @@ lanes:
     max_data_class: internal
     chain:
       - {provider: groq, model: openai/gpt-oss-120b}
-      - {provider: nvidia, model: meta/llama-3.3-70b-instruct}
       - {provider: zhipu, model: glm-4.7-flash}
       - {provider: mistral, model: mistral-small-latest}
       - {provider: openrouter, model: "openrouter/free"}
@@ -164,7 +155,6 @@ lanes:
     chain:
       - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: zhipu, model: glm-4.7-flash}
-      - {provider: nvidia, model: meta/llama-3.3-70b-instruct}
       - {provider: mistral, model: mistral-small-latest}
       - {provider: openrouter, model: "openrouter/free"}
       - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
@@ -186,24 +176,7 @@ pool:
   - {provider: openrouter, model: z-ai/glm-4.5-air:free}
   - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
   - {provider: google, model: gemini-3.5-flash}
-  - {provider: google, model: gemini-2.5-flash-lite}
-  - {provider: nvidia, model: deepseek-ai/deepseek-v4-pro}
-  - {provider: nvidia, model: moonshotai/kimi-k2.6}
-  - {provider: nvidia, model: mistralai/mistral-large-3-675b-instruct-2512}
-  - {provider: nvidia, model: meta/llama-4-maverick-17b-128e-instruct}
-  - {provider: nvidia, model: qwen/qwen3-coder-480b-a35b-instruct}
-  - {provider: nvidia, model: z-ai/glm-5.1}
-  - {provider: nvidia, model: deepseek-ai/deepseek-v4-flash}
-  - {provider: nvidia, model: nvidia/nemotron-3-super-120b-a12b}
-  - {provider: nvidia, model: meta/llama-3.3-70b-instruct}
-  - {provider: nvidia, model: meta/llama-3.1-70b-instruct}
-  - {provider: nvidia, model: minimaxai/minimax-m2.7}
   - {provider: nvidia, model: google/gemma-4-31b-it}
-  - {provider: nvidia, model: nvidia/nemotron-3-nano-30b-a3b}
-  - {provider: ollama, model: kimi-k2-thinking}
-  - {provider: ollama, model: deepseek-v3.2}
-  - {provider: ollama, model: mistral-large-3:675b}
-  - {provider: ollama, model: cogito-2.1:671b}
   - {provider: ollama, model: gpt-oss:120b}
   - {provider: ollama, model: glm-4.7}
   - {provider: ollama, model: devstral-2:123b}

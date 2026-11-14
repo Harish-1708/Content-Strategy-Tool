@@ -120,10 +120,12 @@ def _host_ok(platform, url):
 
 # ---- one platform ---------------------------------------------------------------------------------------------------------------------------------
 
-def _worker_page(platform, url, settings, contact, python, environ, runner, *, with_session, timeout=180, reading=False):
+def _worker_page(platform, url, settings, contact, python, environ, runner, *, with_session, timeout=180, reading=False, wait_ms=None):
     """One address through the Scrapling worker, with the stored session or without it. Returns the worker's result for the address; raises K.Failure for what could not be done at all."""
     from .observatory import worker_client as wc
     adv = {"stealth": True, **(S.PLATFORMS[platform].get("adv") or {}), **((S.PLATFORMS[platform].get("read_adv") or {}) if reading else {})}      # a platform that draws its page after it has loaded is waited for
+    if wait_ms:
+        adv["wait"] = min(int(wait_ms), 15000)                                          # a longer wait than the platform's usual one, for a second try at a page that was only half drawn (the worker caps it at 15 seconds)
     env = dict(environ)
     if with_session:
         session = S.load(platform, environ)

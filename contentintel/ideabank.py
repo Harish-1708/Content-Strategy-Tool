@@ -1479,12 +1479,14 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
     if web_sources:
         new += intake_web(bank, web_sources, settings, now, request, brand, pages, skipped)
     left_out = [f"{skipped['own']} of the brand's own" if skipped["own"] else "", f"{skipped['duplicate']} cop(ies)" if skipped["duplicate"] else ""]
-    lines.append(f"{brand.slug}: {len(new)} new item(s) taken in" + (f" (left out {' and '.join(x for x in left_out if x)})" if any(left_out) else ""))
+    looked_at = len(new) + skipped["own"] + skipped["duplicate"]
+    lines.append(f"{brand.slug}: {len(new)} new item(s) taken in" + (f" (of {looked_at} looked at in the whole Collected store, earlier runs included; left out {' and '.join(x for x in left_out if x)}, which are counted again every run because they are never taken in)" if any(left_out) else ""))
     if skipped["refreshed"]:
         lines.append(f"{brand.slug}: {skipped['refreshed']} picture or video link(s) were refreshed from this collection, for items with no file yet")
     if dry_run:
         return new, lines
     before = _counts(bank)
+    kept_before = {i for i, it in bank["items"].items() if state_of(it) == "kept"}
     was_removed = {i for i, it in bank["items"].items() if it["state"] == "removed"}
     own = tidy_own(bank, brand, pages, settings)
     skipped_brands = tidy_skipped_brands(bank, skip_brands)
@@ -1565,8 +1567,11 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
             lines.append(f"{brand.slug}: Drive stopped the tidy-up of folders: {exc}")
     after = _counts(bank)
     removed_now = after["removed"] - before["removed"]
+    added_kept = len({i for i, it in bank["items"].items() if state_of(it) == "kept"} - kept_before)
+    if added_kept and not removed_now:
+        lines.append(f"{brand.slug}: the bank now holds {after['kept']} kept item(s), {added_kept} of them new in this run")
     if removed_now:
         lines.append(f"{brand.slug}: {removed_now} item(s) removed ({own} the brand's own, {skipped_brands} from brands you skip, {copies} cop(ies), "
-                     f"{irrelevant} not relevant enough" + (f", {same_technique} the same technique as better ideas" if same_technique else "") + f"); {after['kept']} kept")
+                     f"{irrelevant} not relevant enough" + (f", {same_technique} the same technique as better ideas" if same_technique else "") + f") in this run; the bank now holds {after['kept']} kept item(s), {added_kept} of them new in this run")
     store.write_ideabank(brand.slug, bank)
     return new, lines
