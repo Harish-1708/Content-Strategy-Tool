@@ -122,5 +122,26 @@
       ]
     ],
     "url": "instagram.com/the_oodie"
+  },
+  {
+    "at": "2026-11-14T03:22:12Z",
+    "chars": 190,
+    "kind": "read",
+    "landed": "https://tiktok.com/@freethesheepco",
+    "platform": "tiktok",
+    "quality": "real text",
+    "reason": "",
+    "route": "primary",
+    "skipped": false,
+    "starts": "# Free the Sheep ## freethesheepco ### 69Following 122.3KFollowers 1.6MLikes ## - TO FEEL SAFE AND SECURE FROM WITHIN - Luxury & Innovative Designs for Anxiety. linktr.ee/freethesheep Log in",
+    "title": "TikTok - Make Your Day",
+    "trail": [
+      [
+        "primary",
+        "ok",
+        "1 item(s)"
+      ]
+    ],
+    "url": "tiktok.com/@freethesheepco"
   }
 ]
