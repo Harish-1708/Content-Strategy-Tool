@@ -492,7 +492,7 @@
    "idea": 45,
    "kind": "ad",
    "link_refreshes": 0,
-   "look": "",
+   "look": "polished",
    "mechanism": "street-compliment hook",
    "media_format": "",
    "media_role": "",
@@ -528,9 +528,9 @@
    "video_note": "",
    "video_status": "",
    "video_tries": 0,
-   "visual_hook": "",
-   "visual_quality": "",
-   "visual_tries": 0
+   "visual_hook": "Two side-by-side crops of a man from waist to boots in olive utility pants, rolled cuffs, suede boots, tan backpack; no overlaid text visible.",
+   "visual_quality": "good",
+   "visual_tries": 1
   },
   "IB-0009": {
    "added_at": "2026-10-27T13:04:55Z",
@@ -3746,7 +3746,7 @@
    "source_item_id": "meta_ads:1088865537026760",
    "state": "kept",
    "summary": "A personified hook plus a precise scenario (blanket slips between rounds) gives a vivid problem-solution pairing. Four copy variants suggest active testing, though it has only run 27 days.",
-   "technique": "problem-first product fix",
+   "technique": "problem-first tension hook",
    "text": "Your blanket can't stay on between rounds. The Eden Hoodie can. It’s oversized, lined with sensory-friendly faux fur, slightly weighted at 4 lb, and designed to keep you comfortable without pinning you to the couch.",
    "title": "Your nervous system called…It wants this",
    "topic": "Your nervous system called…It wants this",
@@ -27428,7 +27428,7 @@
    "source_item_id": "web:s_d94af0943556",
    "state": "kept",
    "summary": "A repeatable running-gag format: the same gift each year and the same overjoyed reaction. The humour and the 'dad is easy to please' angle make it shareable.",
-   "technique": "same gift every year gag",
+   "technique": "same gift running gag",
    "text": "Dad opening the exact same father's day gift for every year like its the greatest gift ever created #FathersDay #DadLife #BestDadEver #FathersDayGift # ...",
    "title": "To the Dads who deserve to be celebrated today and every day ...",
    "topic": "Dad loves the same gift yearly",
@@ -27503,7 +27503,7 @@
    "source_item_id": "web:s_9dc99349c608",
    "state": "kept",
    "summary": "The same gag as IB-0423 from a different post: a yearly repeat gift with an exaggerated happy reaction. It combines humour with family warmth.",
-   "technique": "same gift every year gag",
+   "technique": "same gift running gag",
    "text": "Dad opening the exact same father's day gift for every year like its the greatest gift ever created #FathersDay #DadLife #BestDadEver # ...",
    "title": "This year for Father's Day, the kids and I decided ...",
    "topic": "Same gift every year reaction",
@@ -28981,7 +28981,7 @@
    "source_item_id": "web:s_8223d9bfb2a3",
    "state": "kept",
    "summary": "A guide with 15 static ad examples and a testing framework. It matches the static format we want, but it is broad and not tied to Father's Day.",
-   "technique": "ad testing advice content",
+   "technique": "ad testing education",
    "text": "Explore 15 static ads examples for fashion brands, plus Meta ad specs, testing tips and a framework to lift ROAS in 2026.",
    "title": "Static Ads for Fashion Brands: 15 Examples That Still Beat ...",
    "topic": "fashion static ad examples",
@@ -29361,7 +29361,7 @@
    "source_item_id": "web:s_85be7da79d8d",
    "state": "kept",
    "summary": "A fashion-specific prompt to test hooks, angles, formats, audiences and garment groupings. It is a framework rather than an ad, but it fits a multi-colour apparel catalogue.",
-   "technique": "ad testing advice content",
+   "technique": "ad testing education",
    "text": "If you're a serious fashion brand, you should be testing: * Hooks * Angles * Formats * Audiences * Garment groupings. Creative volume = learning ...",
    "title": "If you're in fashion… And your entire ad account is static ...",
    "topic": "Fashion creative testing matrix",
@@ -29371,7 +29371,7 @@
    "video_tries": 0,
    "visual_hook": "",
    "visual_quality": "",
-   "visual_tries": 0
+   "visual_tries": 1
   },
   "IB-0455": {
    "added_at": "2026-10-28T12:28:33Z",
@@ -31939,7 +31939,7 @@
    "source_item_id": "instagram:Ddl84Dbz6Po",
    "state": "kept",
    "summary": "Seasonal how-to styling post on overalls with strong likes. The hook is clear and relevant, but the caption gives no distinctive angle beyond the seasonal tie-in.",
-   "technique": "one garment seasonal styling",
+   "technique": "seasonal garment styling",
    "text": "how to style overalls for spring ⭐️",
    "title": "",
    "topic": "Styling overalls for spring",
@@ -32700,7 +32700,7 @@
    "idea": 38,
    "kind": "social post",
    "link_refreshes": 0,
-   "look": "",
+   "look": "ugc",
    "mechanism": "creator code outfit",
    "media_format": "",
    "media_role": "",
@@ -32739,9 +32739,9 @@
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
-   "visual_hook": "",
-   "visual_quality": "",
-   "visual_tries": 0
+   "visual_hook": "Close-up car selfie of a smiling blonde woman with wavy hair, in a white long-sleeve top and denim overalls, tilting her head with a playful smirk. No overlaid text visible.",
+   "visual_quality": "good",
+   "visual_tries": 1
   },
   "IB-0503": {
    "added_at": "2026-11-04T16:11:21Z",
@@ -36001,7 +36001,7 @@
    "source_item_id": "instagram:C0MynUmL9dy",
    "state": "kept",
    "summary": "Part 2 of a series styling overalls, this time for fall. It invites tagged outfits and requests for part 3, and 9,370 likes show strong interest in overall styling.",
-   "technique": "one garment seasonal styling",
+   "technique": "seasonal garment styling",
    "text": "Styling Overalls, Part 2! We left off styling overalls for the summer and spring and it was about time to move to some fall styling ideas for my favorite denim overalls. Overall Outfit Ideas are my favorite to see others put out, so tag me if you see some cute ones! Let me know if you’d like a part 3 for winter styling 🤎",
    "title": "",
    "topic": "Seasonal overalls styling series",
@@ -37084,7 +37084,7 @@
    "idea": 38,
    "kind": "social post",
    "link_refreshes": 0,
-   "look": "",
+   "look": "ugc",
    "mechanism": "insider recommendation",
    "media_format": "",
    "media_role": "",
@@ -37119,9 +37119,9 @@
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
-   "visual_hook": "",
-   "visual_quality": "",
-   "visual_tries": 0
+   "visual_hook": "Full-length shot of a smiling woman in a green cap, glasses, red striped tee, baggy denim overalls and sandals, standing on a brick patio in front of a lawn and trees. No overlaid text.",
+   "visual_quality": "good",
+   "visual_tries": 1
   },
   "IB-0567": {
    "added_at": "2026-11-14T03:55:14Z",
@@ -38027,7 +38027,7 @@
    "source_item_id": "meta_ads:1627531449156810",
    "state": "kept",
    "summary": "A problem-first hook on the loungewear-versus-pajamas dilemma. It is relevant to Swoveralls, but the copy is generic and the ad has run only 33 days, so the evidence is modest.",
-   "technique": "problem-first product fix",
+   "technique": "problem-first tension hook",
    "text": "😍 **Tired of Loungewear That Feels Comfortable but Looks Too Much Like Pajamas?** ❤️✨ Why should you have to choose between feeling cosy at home and looking beautifully put-together when you step outside? Ordinary lounge sets can feel shapeless, look too casual, or leave you wishing you had something a little more elegant to wear. Meet the Women's Cowl Neck Top & Wide-Leg Pants Set — where velvety softness, graceful draping, and effortless feminine style come together! 🍂💕 ✨ **Why you'll love it:",
    "title": "",
    "topic": "Comfort that doesn't look like pajamas",
@@ -38037,7 +38037,7 @@
    "video_tries": 0,
    "visual_hook": "",
    "visual_quality": "",
-   "visual_tries": 1
+   "visual_tries": 2
   },
   "IB-0581": {
    "added_at": "2026-11-14T03:55:14Z",
