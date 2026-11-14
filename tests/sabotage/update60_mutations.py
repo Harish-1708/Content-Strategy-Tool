@@ -2,14 +2,14 @@
 U60 = [
     ('u60-gone-rest-too-short', 'contentintel/ai/router.py', 'GONE_REST = 86400', 'GONE_REST = 60', 'a withdrawn model is asked again after a minute'),
     ('u60-gone-not-recognised', 'contentintel/ai/router.py', 'if err["code"] in (contract.UPSTREAM_BROKEN, contract.NOT_FOUND) and GONE.search(str(err["message"])):', 'if False:', 'a withdrawn model rests the whole provider'),
-    ('u60-gone-rest-not-checked', 'contentintel/ai/router.py', 'gone = self.health.is_paused(f"ai:{pid}", "model:" + route["model"], now)', 'gone = None', 'a withdrawn model is asked again at once'),
+    ('u60-gone-rest-not-checked', 'contentintel/ai/router.py', 'gone = None if ignore_rests else self.health.is_paused(f"ai:{pid}", "model:" + route["model"], now)', 'gone = None', 'a withdrawn model is asked again at once'),
     ('u60-gone-end-of-life', 'contentintel/ai/router.py', '|end of life|', '|', '"end of life" is not recognised as gone'),
     ('u60-rest-explicit-ignored', 'contentintel/health.py', 'seconds = int(rest_seconds)', 'seconds = seconds', 'an explicit rest is ignored'),
     ('u60-rest-bool-trusted', 'contentintel/health.py', 'isinstance(rest_seconds, (int, float)) and not isinstance(rest_seconds, bool) and rest_seconds > 0', 'isinstance(rest_seconds, (int, float)) and rest_seconds > 0', 'True counts as one second of rest'),
     ('u60-kilo-no-key-row', 'contentintel/ai/gateway.py', 'keys.append({"platform": p.gateway_platform, "label": "actions", "enabled": True})', 'pass', 'a key-less provider gets no stored row (Kilo again)'),
     ('u60-keyless-check-empty', 'contentintel/ai/smoke.py', 'missing = sorted(k for k in wanted if k in seen and seen[k] < 1)', 'missing = []', 'the key-less check can never fail'),
     ('u60-keyless-check-not-enforced', 'contentintel/ai/smoke.py', 'check("a key-less provider has the gateway\'s stored no-key row", ok, detail)', 'check("a key-less provider has the gateway\'s stored no-key row", True, detail)', 'the smoke test no longer enforces the key-less check'),
-    ('u60-reader-no-second-try', 'contentintel/observatory/social_profiles.py', 'if quality in RETRY_QUALITIES:', 'if False:', 'a half-drawn page is not tried again'),
+    ('u60-reader-no-second-try', 'contentintel/observatory/social_profiles.py', 'if quality in RETRY_QUALITIES or undrawn:', 'if False:', 'a half-drawn page is not tried again'),
     ('u60-reader-same-wait', 'contentintel/observatory/social_profiles.py', 'wait_ms=max(2 * usual, 6000))', 'wait_ms=None)', 'the second try waits no longer than the first'),
     ('u60-reader-retries-bot-check', 'contentintel/observatory/social_profiles.py', 'RETRY_QUALITIES = ("too little", "script shell", "empty")', 'RETRY_QUALITIES = ("too little", "script shell", "empty", "challenge page")', 'a bot-check is asked for again'),
     ('u60-reader-keeps-first', 'contentintel/observatory/social_profiles.py', 'if requality == "real text" or len(retext) > len(text):', 'if False:', 'the better second read is thrown away'),
@@ -23,7 +23,7 @@ U60 = [
     ('u60-collect-all-new', 'contentintel/collectors.py', 'tally["new"] += item.get("item_id") not in known', 'tally["new"] += 1', 'every collected item is called new'),
     ('u60-collect-ids-not-kept', 'contentintel/collectors.py', 'known.add(item.get("item_id"))', 'pass', 'an item found twice in a run is counted new twice'),
     ('u60-collect-line-missing', 'contentintel/collectors.py', '        if tally and tally["items"]:', '        if False:', 'the report never gives the new-versus-known count'),
-    ('u60-dead-model-back', 'ai_lanes.yaml', '  - {provider: kilo, model: nvidia/nemotron-3-super-120b-a12b:free}\n', '  - {provider: nvidia, model: deepseek-ai/deepseek-v4-pro}\n  - {provider: kilo, model: nvidia/nemotron-3-super-120b-a12b:free}\n', 'a withdrawn model is put back in the pool'),
+    ('u60-dead-model-back', 'ai_lanes.yaml', '  - {provider: kilo, model: poolside/laguna-m.1:free}\n', '  - {provider: nvidia, model: deepseek-ai/deepseek-v4-pro}\n  - {provider: kilo, model: poolside/laguna-m.1:free}\n', 'a withdrawn model is put back in the pool'),
     ('u60-proven-model-dropped', 'ai_lanes.yaml', '  - {provider: zhipu, model: glm-4.6v-flash}\n', '', 'a model that answered live is taken out of the pool'),
     ('u60-doc-rule', 'docs/standing-rules.md', '**What works must keep working.**', '**Be careful.**', 'the standing rule is reworded away')
 ]
