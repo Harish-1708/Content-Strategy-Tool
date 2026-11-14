@@ -123,7 +123,7 @@ Four addresses were read with no login and through the session. **The sessions a
 
 What that suggests: the stored sessions prove a login works, but from GitHub's servers a logged-in visit is **more** likely to be challenged than a public one. The useful finding is the public read: a competitor's public profile page gives follower counts, likes and the bio, which could be snapshotted over time without any session. That is a different (and simpler) collector from the one the sessions were built for, and it is only worth building if you want it.
 
-X cannot be proved from GitHub's servers by either route: x.com shows a bot-check to the browser, and X's profile interface answers 403 to twscrape.
+X is **intermittent** from GitHub's servers. On 13 Nov 2026 x.com showed the browser a bot-check and X's profile interface answered 403 to twscrape (BLOCKED). On 14 Nov 2026 (check #26) the browser reached x.com/home with the stored session and X was **ACCEPTED for the first time** (logged-in markers found: "isloggedin":true, the sidebar column, the compose link). So the verdict for X is whatever the latest check says; a BLOCKED does not mean the session is bad, and an ACCEPTED does not promise the next run.
 
 ## Using the proved sessions for research: not wired yet, and why
 
@@ -154,7 +154,7 @@ Four days of live testing settled what the stored sessions are, and what they ar
 
 **What they are for:** a health check. A session proves, per platform, that the login you captured still works from GitHub's servers, and tells you when it needs a new capture. Proved on 2026-11-13: **Instagram, Reddit and Facebook** (ACCEPTED). They are not used to collect research, because the compare runs showed a logged-in read adds nothing over the public read, and is more likely to be challenged.
 
-**What cannot be fixed from GitHub's servers:** **X** (x.com shows the runner a bot-check, and X's profile interface answers 403: the address is blocked on both routes) and **LinkedIn** (it answers a logged-in automated visit with an error status, 999). Both show as BLOCKED, which is not red and leaves any earlier proof alone. Only a different network address would change that, which is outside what this tool does. **Xiaohongshu** and **Boss** are not set up.
+**What cannot be fixed from GitHub's servers:** **LinkedIn** (it answers a logged-in automated visit with an error status, 999) always shows as BLOCKED; **X** blocked on 13 Nov 2026 (a bot-check, and 403 from its profile interface) but was ACCEPTED on 14 Nov 2026, so it is intermittent. BLOCKED is not red and leaves any earlier proof alone. Only a different network address would change a block, which is outside what this tool does. **Xiaohongshu** and **Boss** are not set up.
 
 **TikTok** is the flaky one: the same session was accepted and, minutes later, the page showed "We're having trouble playing this video". A page that gives no sign of being logged in **or** logged out is now UNCONFIRMED, not a refusal: the proof is kept, the run is not red, and it is looked at again on the next check. Three such checks in a row (`UNCONFIRMED_LIMIT`) count as a refusal. Real signs of being logged out (the logged-out wording in the visible text, a login address, a 401 or 403) are still a refusal at once.
 
@@ -178,3 +178,13 @@ An expiry date is the earliest of the cookies that are all needed and the **late
 ## The Gmail code reader
 
 `contentintel/gmail_otp.py` is built and **unused**. It would only ever step in for a re-login where a platform emails a code, and only after that platform's flow has been proved live. Nothing calls it today, and no re-login is attempted anywhere: a refused or expired session always ends in "capture a new one".
+
+
+## Update 58: what the live runs of Update 56 showed, and what was changed
+
+- **X was ACCEPTED on 14 Nov 2026** (see above). The closing position in Update 56 ("X blocked") is replaced by "X is intermittent".
+- **A monitoring run now installs the browser** (the weekly schedule too). Before, only a run with the "scrapling" and "browsers" boxes ticked had it, so a default monitoring run read TikTok and LinkedIn public profiles through "no browser" and fell back to search snippets (monitoring #32: three profiles gave no counts). The log line names what was used: "social profiles: read through the browser and the search layer".
+- **A search result about a different account is never used for an address.** Read #24 and #27 of instagram.com/swoveralls returned the top hit @swoveralls_ (51K followers), a different account. Search results that are a profile of another account on the same site are now left out, and the read says so ("Left out: 1 result(s) about a different account (@swoveralls_)"); if the only profile found is another account, nothing is returned and it says so.
+- **A snippet with no counts is "not found", not an upstream failure**: the account was found but its text shows no follower, like or post count, so nothing is recorded and nothing is estimated. It no longer counts against the route's health.
+- **The refusal wording names LinkedIn only for LinkedIn.** The plain-words line said "LinkedIn does this with status 999" for an Instagram read. Other platforms now get "(the browser does not say which status)". The worker's own error (without the browser's call log) is shown once, not twice.
+- **The save step no longer names a file that does not exist yet.** A check writes the verdicts only, so `sessions_reads.json` is not there yet; the step now adds only files that exist and says so for the other.
