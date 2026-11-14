@@ -1122,14 +1122,119 @@
      "items": 0,
      "ms": 5822,
      "ok": null
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 201,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 170,
+     "ok": false
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5241,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5216,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5370,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5707,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 235,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5201,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5415,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 325,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5194,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5341,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 206,
+     "ok": false
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5142,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5713,
+     "ok": null
     }
    ],
    "last_error": {
-    "at": "2026-11-13T19:13:45Z",
+    "at": "2026-11-14T02:25:41Z",
     "code": "UPSTREAM_BROKEN",
     "message": "https://theoodie.com/blogs/news.atom is a feed with no items"
    },
-   "last_success": "2026-11-13T19:13:45Z",
+   "last_success": "2026-11-14T02:25:41Z",
    "pause": null,
    "route": "feed",
    "source": "competitor_pages",
@@ -1284,8 +1389,8 @@
   },
   "competitor_pages|social_profile": {
    "acceptance": null,
-   "consecutive_failures": 1,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 2,
    "history": [
     {
      "at": "2026-11-13T19:13:45Z",
@@ -1328,14 +1433,56 @@
      "items": 0,
      "ms": 1659,
      "ok": false
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 9386,
+     "ok": false
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 1067,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 10066,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 2630,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 9629,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 1337,
+     "ok": null
     }
    ],
    "last_error": {
-    "at": "2026-11-13T19:13:45Z",
+    "at": "2026-11-14T02:25:41Z",
     "code": "UPSTREAM_BROKEN",
-    "message": "the search result for Instagram 'the_oodie' gave no follower, like or post count"
+    "message": "the profile page came back with no readable text (60 characters: too little to be a page); and the search fallback: the search result for exactly TikTok 'freethesheepco' was found but its text shows no follower, like or post count, so there is nothing to record (nothing is estimated)"
    },
-   "last_success": "2026-11-13T19:13:45Z",
+   "last_success": "2026-11-14T02:25:41Z",
    "pause": null,
    "route": "social_profile",
    "source": "competitor_pages",
@@ -1352,7 +1499,7 @@
     "version": "3a4b3bc047b8"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 11,
+   "consecutive_successes": 16,
    "history": [
     {
      "at": "2026-11-10T08:40:20Z",
@@ -1430,10 +1577,45 @@
      "items": 1,
      "ms": 1003,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 12156,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 12710,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 13983,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 8120,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 10676,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-13T19:13:45Z",
+   "last_success": "2026-11-14T02:25:41Z",
    "pause": null,
    "route": "static_fetch",
    "source": "competitor_pages",
@@ -1450,7 +1632,7 @@
     "version": "3a4b3bc047b8"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 16,
+   "consecutive_successes": 21,
    "history": [
     {
      "at": "2026-11-10T08:40:20Z",
@@ -1563,10 +1745,45 @@
      "items": 1,
      "ms": 355569,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 168133,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 103578,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 259743,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 186764,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 362851,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-13T19:13:45Z",
+   "last_success": "2026-11-14T02:25:41Z",
    "pause": null,
    "route": "public_json",
    "source": "competitor_stores",
@@ -1583,7 +1800,7 @@
     "version": "3a4b3bc047b8"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 12,
+   "consecutive_successes": 17,
    "history": [
     {
      "at": "2026-11-10T08:40:20Z",
@@ -1668,10 +1885,45 @@
      "items": 1,
      "ms": 93638,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 36124,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 41315,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 134465,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 36197,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T02:25:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 92634,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-13T19:13:45Z",
+   "last_success": "2026-11-14T02:25:41Z",
    "pause": null,
    "route": "sitemap",
    "source": "competitor_stores",

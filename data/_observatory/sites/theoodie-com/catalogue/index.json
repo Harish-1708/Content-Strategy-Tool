@@ -8,6 +8,15 @@
    "count": 474,
    "file": "20261113T191345Z.json.gz",
    "hash": "c5759ff8462863f17b35"
+  },
+  {
+   "bytes": 108238,
+   "captured_at": "2026-11-14T02:25:41Z",
+   "complete": false,
+   "confirmed_at": "2026-11-14T02:25:41Z",
+   "count": 474,
+   "file": "20261114T022541Z.json.gz",
+   "hash": "057a6a488fec5c594db1"
   }
  ],
  "version": 1
