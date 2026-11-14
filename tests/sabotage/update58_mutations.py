@@ -1,0 +1,25 @@
+"""Deliberate-bug checks for Update 58 (what the live runs of Update 56 showed). Same format as run_observatory_sabotage.MUTATIONS; added to that runner."""
+U58 = [
+    ('u58-wording-always-linkedin', 'contentintel/session_live.py', 'if platform == "linkedin" else " (the browser does not say which status)"', 'if True else " (the browser does not say which status)"', 'every platform is told LinkedIn answers 999'),
+    ('u58-wording-linkedin-lost', 'contentintel/session_live.py', '(" (LinkedIn does this with status 999)" if platform == "linkedin" else', '(" (LinkedIn does this with status 999)" if platform == "nobody" else', 'LinkedIn itself loses its own explanation'),
+    ('u58-failure-no-platform', 'contentintel/session_live.py', 'return K.Failure(code, humanise_error(err.get("code") or "no answer", message, platform))', 'return K.Failure(code, humanise_error(err.get("code") or "no answer", message))', 'a failed read does not know its platform'),
+    ('u58-read-no-platform', 'contentintel/session_live.py', 'err.get("message") or "no page came back", platform)', 'err.get("message") or "no page came back")', 'a compare does not know its platform'),
+    ('u58-calllog-kept', 'contentintel/session_live.py', "' '.join(str(err.get('message')).split('Call log:')[0].split())", "str(err.get('message'))", "the browser's call log reaches the evidence"),
+    ('u58-worker-said-twice', 'contentintel/session_live.py', 'ev["worker_error"][:120] not in', 'ev["worker_error"][:120] in', "the worker's words are said twice"),
+    ('u58-other-account-kept', 'contentintel/session_live.py', '(left_out.append(other) if other else kept.append(row))', 'kept.append(row)', "a different account's profile is used for the address"),
+    ('u58-near-match-is-match', 'contentintel/session_live.py', 'and f_account != t_account else ""', 'and f_account == t_account else ""', 'only the same account is left out'),
+    ('u58-host-ignored', 'contentintel/session_live.py', 'f_host == t_host and f_account != t_account', 'f_account != t_account', 'a profile on another site counts as a different account'),
+    ('u58-reel-is-an-account', 'contentintel/session_live.py', '"p", "reel", "reels",', '"p",', 'a reel address is read as an account'),
+    ('u58-only-other-accepted', 'contentintel/session_live.py', '    if not kept and left_out:', '    if False:', 'when only another account is found, nothing is said'),
+    ('u58-left-out-unsaid', 'contentintel/session_live.py', 'kept[0]["left_out"] = sorted(set(left_out))', 'pass', 'the left-out accounts are not named'),
+    ('u58-entry-unsaid', 'contentintel/session_live.py', '    if row.get("left_out"):\n        quality +=', '    if False:\n        quality +=', 'the stored record does not say results were left out'),
+    ('u58-x-message-blocked', 'contentintel/session_live.py', 'so it is intermittent: when it blocks', 'so when it blocks', 'the X message says it is always blocked'),
+    ('u58-cmd-left-out-unsaid', 'contentintel/observatory/commands.py', '            if result.rows[0].get("left_out"):', '            if False:', 'the read command does not print what was left out'),
+    ('u58-nocounts-upstream', 'contentintel/observatory/social_profiles.py', 'raise K.Failure(K.NOT_FOUND, f"the search result for exactly {LABELS[platform]} {handle!r} was found', 'raise K.Failure(K.UPSTREAM_BROKEN, f"the search result for exactly {LABELS[platform]} {handle!r} was found', 'a snippet without counts counts against the route'),
+    ('u58-save-adds-missing', '.github/workflows/sessions.yml', 'if [ -f "$f" ]; then git add -f "$f"; else', 'if true; then git add -f "$f"; else', 'the save step adds a file that does not exist'),
+    ('u58-monitor-no-browser', '.github/workflows/observatory.yml', "inputs.browsers || inputs.action == 'monitor' || github.event_name == 'schedule' || (inputs.action == 'corpus'", "inputs.browsers || (inputs.action == 'corpus'", 'a monitoring run has no browser environment'),
+    ('u58-schedule-no-chromium', '.github/workflows/observatory.yml', ' || [ "${{ github.event_name }}" = "schedule" ]; then', '; then', 'the weekly run installs no browser'),
+    ('u58-monitor-no-chromium', '.github/workflows/observatory.yml', ' || [ "${{ inputs.action }}" = "monitor" ]', '', 'a monitoring run installs no browser'),
+    ('u58-doc-x', 'docs/platform/session-capture-guide.md', 'ACCEPTED for the first time', 'blocked', 'the guide still says X is blocked'),
+    ('u58-doc-section', 'docs/platform/session-capture-guide.md', '## Update 58', '## Notes', 'the guide has no Update 58 section')
+]
