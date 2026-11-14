@@ -25,6 +25,14 @@
    "request_controls": "browser; session; TLS impersonation; canvas change; WebRTC block; cursor simulation; challenge solving; no images or fonts"
   },
   {
+   "domain": "kortneyandkarlee.com",
+   "id": "kortneyandkarlee-com",
+   "kind": "store",
+   "name": "Kortney and Karlee",
+   "origin": "discovery",
+   "request_controls": "browser; session; TLS impersonation; canvas change; WebRTC block; cursor simulation; challenge solving; no images or fonts"
+  },
+  {
    "domain": "madepants.com",
    "id": "madepants-com",
    "kind": "store",
@@ -41,5 +49,5 @@
    "request_controls": "browser; session; TLS impersonation; canvas change; WebRTC block; cursor simulation; challenge solving; no images or fonts"
   }
  ],
- "updated_at": "2026-11-14T02:25:41Z"
+ "updated_at": "2026-11-14T06:36:22Z"
 }

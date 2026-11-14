@@ -1,0 +1,14 @@
+{
+ "entries": [
+  {
+   "bytes": 253,
+   "captured_at": "2026-11-14T06:36:22Z",
+   "complete": false,
+   "confirmed_at": "2026-11-14T06:36:22Z",
+   "count": 1,
+   "file": "20261114T063622Z.json.gz",
+   "hash": "1a62fe49619357c7aea0"
+  }
+ ],
+ "version": 1
+}
