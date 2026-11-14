@@ -190,7 +190,7 @@ jobs:
           python -m contentintel observatory connections --all --what install --key agent_reach 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Install the isolated Scrapling environment
-        if: ${{ inputs.scrapling || inputs.browsers || (inputs.action == 'corpus' && (inputs.what == 'crawl' || inputs.what == 'deepread')) || (inputs.action == 'connections' && (inputs.what == 'check' || inputs.what == 'install')) }}
+        if: ${{ inputs.scrapling || inputs.browsers || inputs.action == 'monitor' || github.event_name == 'schedule' || (inputs.action == 'corpus' && (inputs.what == 'crawl' || inputs.what == 'deepread')) || (inputs.action == 'connections' && (inputs.what == 'check' || inputs.what == 'install')) }}
         shell: bash
         run: |
           export CONTENTINTEL_EXTERNAL_DIR="$RUNNER_TEMP"
@@ -201,7 +201,7 @@ jobs:
             "$RUNNER_TEMP/scrapling-env/bin/pip" install -q -r requirements-scrapling.txt
           fi
           echo "SCRAPLING_PYTHON=$RUNNER_TEMP/scrapling-env/bin/python" >> "$GITHUB_ENV"
-          if [ "${{ inputs.browsers }}" = "true" ]; then
+          if [ "${{ inputs.browsers }}" = "true" ] || [ "${{ inputs.action }}" = "monitor" ] || [ "${{ github.event_name }}" = "schedule" ]; then   # a monitoring run reads public TikTok and LinkedIn profiles with the browser
             "$RUNNER_TEMP/scrapling-env/bin/python" -m patchright install --with-deps chromium
           fi
 
