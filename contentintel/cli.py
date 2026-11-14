@@ -355,6 +355,20 @@ def _drive():
     return drive_mod.DriveClient(session, folder, email), ""
 
 
+def _page_finder(claude, args):
+    """The finder for a benchmark brand the Ad Library could not settle: Serper to search, the routed AI client to confirm the main official Facebook page, a plain page read for its id. None when there is no Serper key
+    or no AI client (the benchmark is then left for a person, as before)."""
+    serper = _search_providers(args, "discovery").get("serper_dev")          # under the owner's search switches, like every other search
+    if serper is None or claude is None or not hasattr(claude, "json_task"):
+        return None
+    getter = _get()
+
+    def get_html(url):
+        return getter(url, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36", "Accept-Language": "en-US,en;q=0.9"}, timeout=20).text
+    from . import main_page
+    return main_page.make_finder(serper, claude, get_html)
+
+
 def _get():
     if _HTTP_GET is not None:
         return _HTTP_GET
@@ -706,7 +720,7 @@ def _site_creds(browser_cfg, env):
 def _real_factory(browser_cfg, creds, debug_dir):
     def factory(site):
         return browser_mod.open_browser(site, browser_cfg["sites"][site], browser_mod.site_pacing(browser_cfg, site),
-                                        creds[site].get("cookies") or "", debug_dir)
+                                        creds[site].get("cookies") or "", debug_dir, human=browser_cfg.get("human"))
     return factory
 
 
@@ -825,13 +839,15 @@ def _collect(args, store):
         brands, store, browser_factory=factory, creds=creds, settings=settings, browser_cfg=browser_cfg,
         ledger_cls=research_mod.Ledger, sources=wanted, now=now, run_id=secrets.token_hex(4),
         dry_run=args.dry_run, root=args.brands_dir, apify=apify, claude=claude, backend=backend,
-        region=args.region.strip() or None, health=health_ledger, registry=registry, fresh=bool(args.fresh))
+        region=args.region.strip() or None, health=health_ledger, registry=registry, fresh=bool(args.fresh), page_finder=_page_finder(claude, args))
     _save_health(health_ledger, store, args)
     ledger = None if args.dry_run else research_mod.Ledger(store.load_usage(), now[:7])
     print(collectors_mod.format_collect_report(result, settings, ledger))
     for name in result.problems_for:
         print(f"::error::{name}: the login did not work. Re-export the dummy account's cookies (see browser.yaml)."
               if name != "apify" else "::error::apify: the token was rejected. Check the APIFY_TOKEN secret.")
+    for site, message in result.needs_you.items():
+        print(f"::warning::{site}: needs you, this source was skipped and the run carries on: {message[:300]}")
     for slug, reports in result.brands.items():
         failed = [r for r in reports if r.status == "failed"]
         if failed:

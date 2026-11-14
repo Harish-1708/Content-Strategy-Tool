@@ -24,6 +24,7 @@ import yaml
 
 from . import guards
 from . import benchmarks as bench
+from . import main_page
 from . import contract
 from . import deepcheck
 from . import evidence as evidence_mod
@@ -1328,6 +1329,7 @@ class CollectResult:
     brands: dict = field(default_factory=dict)
     notes: list = field(default_factory=list)
     problems_for: list = field(default_factory=list)
+    needs_you: dict = field(default_factory=dict)             # site -> what the owner has to do (an account warning, a login that did not work): shown as a warning, never turns the run red
     follow: dict = field(default_factory=dict)        # brand slug -> bench.FollowPlan, as it stands at the end of the run
     resting: dict = field(default_factory=dict)       # site -> {until, at, reason}: accounts resting after a warning
     fresh: dict = field(default_factory=dict)         # brand slug -> {"items": collected this run, "new": of those not yet in the store}
@@ -1494,7 +1496,7 @@ def format_benchmark_status(brand, store, auto, settings, now, root="brands"):
 
 def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg, ledger_cls, sources, now,
                 run_id, configs=None, dry_run=False, root="brands", apify=None, claude=None, backend="browser", region=None,
-                health=None, registry=None, fresh=False):
+                health=None, registry=None, fresh=False, page_finder=None):
     """Plan and run collection tasks for each brand, within the caps in `settings`.
 
     backend: browser (the default), apify (Apify only) or fallback (the browser first, Apify when
@@ -1606,6 +1608,11 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                     result.notes.append(f"{brand.slug}: auto seeds {seeded.note}")
             cfg = with_own_brand(cfg, brand)
             state = bench.clean_state(store.read_benchmarks(brand.slug))
+            if page_finder is not None and settings.benchmarks_enabled and not dry_run:      # a benchmark the Ad Library could not settle is looked for with Serper, and a reviewer confirms the main official page
+                state, healed = main_page.heal_benchmarks(state, cfg["ads"].get("benchmark_pages"), page_finder, now, settings.benchmark_discovery_per_run)
+                if healed:
+                    store.write_benchmarks(brand.slug, state)
+                    result.notes.extend(f"{brand.slug}: {line}" for line in healed)
             follow = _follow_plan(brand, cfg, auto, state, settings, now) if settings.benchmarks_enabled else None
             tasks = plan_collections(cfg, auto, settings, follow)
             planned_pages = {str(p["page_id"]) for t in tasks for p in t.payload.get("pages", [])}
@@ -1747,10 +1754,10 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                         seen(task.source, route, exc=exc)
                         message = str(exc) + rest_after(exc, site)
                         disabled[site] = message
-                        result.problems_for.append(site)
+                        result.needs_you.setdefault(site, message)           # the account needs the owner (cookies, a suspended account): this source is skipped, the rest of the run is not a failure
                         result.notes.append(message)
                         errors.append(message)
-                        hard = True
+                        hard = False
                         continue
                     except BrowserError as exc:
                         seen(task.source, route, exc=exc)
@@ -1860,6 +1867,9 @@ def format_collect_report(result, settings, ledger=None):
                      f"Deep Research tasks {ledger.month_used('deep_research_tasks'):g}/{settings.monthly_tasks}, "
                      f"Claude calls {ledger.month_used('claude_calls'):g}/{settings.claude_monthly_calls}")
     lines.extend(f"note: {n}" for n in result.notes)
+    if result.needs_you:
+        lines.append("NEEDS YOU (these are skipped, the rest of the run is fine):")
+        lines.extend(f"  {site}: {message}" for site, message in result.needs_you.items())
     return "\n".join(lines)
 
 

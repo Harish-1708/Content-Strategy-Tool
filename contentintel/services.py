@@ -298,6 +298,10 @@ def agent_reach_client(settings, channel, purpose, *, environ, timeout=90, facto
     from . import agent_reach_external as ARX
     from . import connections as CONN
     d = CONN.decide(settings, "agent_reach")
+    from . import agent_reach_remote as REMOTE
+    url, token = REMOTE.configured(environ)
+    if url and d["on"] and d["route"] != "builtin_only" and channel in REMOTE.OPENCLI_CHANNELS:          # the OpenCLI channels run on our Cloud Run when it is set up for this run; the owner's channel switches were checked before this
+        return ARX.RoutedAgentReach(settings, REMOTE.RemoteAgentReach(settings, url=url, token=token, id_token=environ.get("AGENT_REACH_ID_TOKEN", ""), timeout=timeout), builtin)
     exe = CONN.binary_path("agent_reach") if d["on"] and d["route"] != "builtin_only" else ""
     if not exe:
         return builtin

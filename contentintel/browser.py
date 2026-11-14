@@ -14,6 +14,8 @@ from pathlib import Path
 
 import yaml
 
+from .human import Human, HumanConfigError, resolve as resolve_human
+
 SITES = ("meta_ads", "instagram", "tiktok", "gemini")
 _SAMESITE = {"no_restriction": "None", "none": "None", "lax": "Lax", "strict": "Strict", "unspecified": "Lax"}
 _UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -149,7 +151,7 @@ def load_browser_settings(path="browser.yaml"):
     if not path.is_file():
         raise BrowserError(f"{path} is missing; it holds the page addresses and button names the browser uses")
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    extra = set(data) - {"pacing", "limits", "sites"}
+    extra = set(data) - {"pacing", "limits", "sites", "human"}
     if extra:
         raise BrowserError(f"browser.yaml: unknown {sorted(extra)}")
     pacing, limits = data.get("pacing") or {}, data.get("limits") or {}
@@ -162,6 +164,10 @@ def load_browser_settings(path="browser.yaml"):
     if set(limits) != {"max_scrolls_per_page"}:
         raise BrowserError("browser.yaml limits needs max_scrolls_per_page")
     _num(limits["max_scrolls_per_page"], "limits.max_scrolls_per_page", minimum=1)
+    try:
+        resolve_human(data.get("human"))
+    except HumanConfigError as exc:
+        raise BrowserError(str(exc)) from exc
     sites = data.get("sites") or {}
     if set(sites) != set(SITES):
         raise BrowserError(f"browser.yaml sites must be exactly: {', '.join(SITES)}")
@@ -181,7 +187,7 @@ def load_browser_settings(path="browser.yaml"):
             merged = {**pacing, **cfg["pacing"]}
             if merged["min_delay_seconds"] > merged["max_delay_seconds"]:
                 raise BrowserError(f"{where}.pacing: min_delay_seconds cannot be more than max_delay_seconds")
-    return {"pacing": pacing, "limits": limits, "sites": sites}
+    return {"pacing": pacing, "limits": limits, "sites": sites, "human": resolve_human(data.get("human"))}
 
 
 def site_pacing(cfg, site):
@@ -331,10 +337,11 @@ def _short(exc):
 class PlaywrightBrowser:
     """The only code that talks to Playwright. Written from its documentation, not yet run live."""
 
-    def __init__(self, page, debug_dir, pacing, hints):
+    def __init__(self, page, debug_dir, pacing, hints, human=None):
         self.page = page
         self.debug_dir = Path(debug_dir)
         self.pacing = pacing
+        self.human = human                                    # a Human (see human.py) for a logged-in session, else None: the plain pauses and jumps below
         self.hints = hints
         self._json, self._urls = [], []
         page.on("response", self._on_response)
@@ -360,16 +367,24 @@ class PlaywrightBrowser:
 
     def open(self, url):
         self._json, self._urls = [], []
-        time.sleep(random.uniform(self.pacing["min_delay_seconds"], self.pacing["max_delay_seconds"]))
+        if self.human is not None:
+            self.human.before_page(self.pacing)
+        else:
+            time.sleep(random.uniform(self.pacing["min_delay_seconds"], self.pacing["max_delay_seconds"]))
         try:
             self.page.goto(url, wait_until="domcontentloaded", timeout=60000)
         except Exception as exc:
             raise BrowserError(f"could not open {url}: {_short(exc)}") from exc
+        if self.human is not None:
+            self.human.after_load(self.page)
 
     def wait(self, seconds):
         self.page.wait_for_timeout(int(seconds * 1000))
 
     def scroll(self, times=1, pause=3):
+        if self.human is not None:
+            self.human.scroll(self.page, times, pause)
+            return
         for _ in range(times):
             self.page.mouse.wheel(0, random.randint(1800, 2600))
             self.page.wait_for_timeout(int(pause * 1000 * random.uniform(0.8, 1.3)))
@@ -521,10 +536,17 @@ class _SharedPlaywright:
 _SHARED = _SharedPlaywright()
 
 
+def person_for(cookies, human_block):
+    """The Human a browser session gets: one for a session logged in with an account (cookies), none for a public one, and none when the owner set `human: enabled: false`."""
+    return Human(human_block) if cookies and resolve_human(human_block)["enabled"] else None
+
+
 @contextmanager
-def open_browser(site, cfg, pacing, cookies_text, debug_dir, headless=True):
-    """Start Chromium (logged in with the exported cookies, if there are any) for one site."""
+def open_browser(site, cfg, pacing, cookies_text, debug_dir, headless=True, human=None):
+    """Start Chromium (logged in with the exported cookies, if there are any) for one site. `human` is the `human:` block of browser.yaml: a LOGGED-IN session then browses like a person
+    (human.py); a logged-out one (the public Meta Ads library) keeps its plain pauses, which have worked."""
     cookies = parse_cookies(cookies_text)
+    person = person_for(cookies, human)
     try:
         pw = _SHARED.acquire(_start_playwright)
     except BrowserError:
@@ -544,7 +566,7 @@ def open_browser(site, cfg, pacing, cookies_text, debug_dir, headless=True):
             page.set_default_timeout(30000)
         except Exception as exc:
             raise BrowserError(f"could not start the browser for {site}: {_short(exc)}") from exc
-        yield PlaywrightBrowser(page, Path(debug_dir) / site, pacing, cfg.get("json_url_hints", []))
+        yield PlaywrightBrowser(page, Path(debug_dir) / site, pacing, cfg.get("json_url_hints", []), human=person)
     finally:
         try:
             if browser:

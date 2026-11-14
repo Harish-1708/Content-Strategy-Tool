@@ -371,6 +371,7 @@ def humanise_error(code, message, platform=""):
 
 
 CHALLENGE_TEXT = ("drag the puzzle piece", "verify you are human", "performing security verification", "just a moment", "captcha", "access denied", "are you a robot", "unusual traffic")
+CHALLENGE_STARTS = ("verification an unexpected error", "verification ", "an unexpected error occurred. please try again")
 WHY_NOT_CONTENT = {"script shell": "a script shell, an icon or an image", "challenge page": "a bot-check or puzzle page, not content", "too little": "too little to be a page", "empty": "no text came back"}
 
 
@@ -381,6 +382,8 @@ def judge_content(text):
     if not clean:
         return "empty", WHY_NOT_CONTENT["empty"]
     low = clean.lower()
+    if any(low.startswith(start) or start in low[:200] for start in CHALLENGE_STARTS):          # TikTok's verification page ("Verification An unexpected error occurred. Please try again. ...", monitoring #36) is longer than 600 characters once its footer is counted, but it starts like this
+        return "challenge page", WHY_NOT_CONTENT["challenge page"]
     if len(clean) < 600 and any(word in low for word in CHALLENGE_TEXT):
         return "challenge page", WHY_NOT_CONTENT["challenge page"]
     if readable(clean):
