@@ -120,6 +120,8 @@ jobs:
           EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
           EXA_MCP: "on"
           AGENT_REACH_SEARCH: "on"
+          AGENT_REACH_URL: ${{ secrets.AGENT_REACH_URL }}
+          AGENT_REACH_TOKEN: ${{ secrets.AGENT_REACH_TOKEN }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           OBSERVATORY_CONTACT: ${{ secrets.OBSERVATORY_CONTACT }}           # the contact address the competitor, Agent-Reach and Reddit checks put in their requests; without it they skip
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}                 # optional: empty while you have not added Reddit's API credentials, and the Reddit API check then skips as before

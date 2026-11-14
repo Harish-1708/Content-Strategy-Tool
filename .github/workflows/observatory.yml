@@ -241,6 +241,8 @@ jobs:
           EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
           EXA_MCP: "on"
           AGENT_REACH_SEARCH: "on"
+          AGENT_REACH_URL: ${{ secrets.AGENT_REACH_URL }}
+          AGENT_REACH_TOKEN: ${{ secrets.AGENT_REACH_TOKEN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}           # the AI layer (discover and judge): Claude and the free gateway providers
           FREEAPI_ENCRYPTION_KEY: ${{ secrets.FREEAPI_ENCRYPTION_KEY }}
           FREEAPI_ADMIN_PASSWORD: ${{ secrets.FREEAPI_ADMIN_PASSWORD }}

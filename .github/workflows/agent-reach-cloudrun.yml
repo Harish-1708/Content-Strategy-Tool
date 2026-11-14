@@ -1,0 +1,117 @@
+name: Agent-Reach on Cloud Run
+
+# Builds the Agent-Reach container (cloudrun/agent-reach/) and deploys it to OUR Google Cloud Run, or shows its status. The service is built but not used yet: the live check of it is deferred (docs/deferred-live-checks.md).
+# Needs these repository secrets: GCP_SA_KEY (a service account's JSON key), GCP_PROJECT_ID, AGENT_REACH_TOKEN (a long random value, at least 24 characters; it is also stored in Secret Manager).
+# Session cookies are never in GitHub: put each channel's cookies in Secret Manager as  agent-reach-cookies-<channel>  (instagram, reddit, twitter, facebook, linkedin, xiaohongshu, boss).
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "deploy: build the image and deploy it; status: show the service and what it reports"
+        type: choice
+        options: [deploy, status]
+        default: status
+      region:
+        description: "Cloud Run region"
+        type: string
+        default: us-central1
+      require_google_sign_in:
+        description: "deploy only: also require a Google sign-in for every call (then the callers need AGENT_REACH_ID_TOKEN). Off: the long token alone protects the service"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudrun-agent-reach
+  cancel-in-progress: false
+
+env:
+  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+  SERVICE: agent-reach
+  REPO: agent-reach
+  CHANNELS: "instagram reddit twitter facebook linkedin xiaohongshu boss"
+
+jobs:
+  cloudrun:
+    name: Agent-Reach on Cloud Run
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Check the secrets are set
+        shell: bash
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          AGENT_REACH_TOKEN: ${{ secrets.AGENT_REACH_TOKEN }}
+        run: |
+          missing=""
+          [ -n "$GCP_SA_KEY" ] || missing="$missing GCP_SA_KEY"
+          [ -n "$GCP_PROJECT_ID" ] || missing="$missing GCP_PROJECT_ID"
+          if [ "${{ inputs.action }}" = "deploy" ] && [ "${#AGENT_REACH_TOKEN}" -lt 24 ]; then missing="$missing AGENT_REACH_TOKEN(at least 24 characters)"; fi
+          if [ -n "$missing" ]; then echo "::error::Missing repository secret(s):$missing"; exit 1; fi
+
+      - name: Sign in to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ env.GCP_SA_KEY }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Build and deploy
+        if: inputs.action == 'deploy'
+        shell: bash
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          REGION: ${{ inputs.region }}
+          SIGN_IN: ${{ inputs.require_google_sign_in }}
+          AGENT_REACH_TOKEN: ${{ secrets.AGENT_REACH_TOKEN }}
+        run: |
+          set -euo pipefail
+          gcloud config set project "$GCP_PROJECT_ID"
+          gcloud services enable run.googleapis.com cloudbuild.googleapis.com secretmanager.googleapis.com artifactregistry.googleapis.com || echo "::warning::could not enable the APIs; they must already be on"
+          gcloud artifacts repositories describe "$REPO" --location=us >/dev/null 2>&1 || gcloud artifacts repositories create "$REPO" --repository-format=docker --location=us --description="Agent-Reach image"
+          image="us-docker.pkg.dev/$GCP_PROJECT_ID/$REPO/$SERVICE:${GITHUB_SHA::12}"
+          # the token: GitHub holds the one copy the callers use; Secret Manager holds the copy the service reads
+          if ! gcloud secrets describe agent-reach-token >/dev/null 2>&1; then gcloud secrets create agent-reach-token --replication-policy=automatic; fi
+          current="$(gcloud secrets versions access latest --secret=agent-reach-token 2>/dev/null || true)"
+          if [ "$current" != "$AGENT_REACH_TOKEN" ]; then printf '%s' "$AGENT_REACH_TOKEN" | gcloud secrets versions add agent-reach-token --data-file=-; fi
+          gcloud builds submit --config cloudrun/agent-reach/cloudbuild.yaml --substitutions "_IMAGE=$image" .
+          # each channel that has cookies in Secret Manager is mounted as its own folder; a channel without a secret is simply not logged in
+          mounts="AGENT_REACH_TOKEN=agent-reach-token:latest"
+          for channel in $CHANNELS; do
+            if gcloud secrets describe "agent-reach-cookies-$channel" >/dev/null 2>&1; then mounts="$mounts,/secrets/$channel/cookies=agent-reach-cookies-$channel:latest"; echo "cookies found for $channel"; else echo "no cookies secret for $channel (it is not logged in)"; fi
+          done
+          if [ "$SIGN_IN" = "true" ]; then access="--no-allow-unauthenticated"; else access="--allow-unauthenticated"; fi
+          gcloud run deploy "$SERVICE" --image "$image" --region "$REGION" --platform managed $access \
+            --execution-environment gen2 --cpu 2 --memory 4Gi --timeout 300 --concurrency 1 --max-instances 1 --min-instances 0 \
+            --set-secrets "$mounts" --quiet
+          url="$(gcloud run services describe "$SERVICE" --region "$REGION" --format='value(status.url)')"
+          { echo "### Agent-Reach on Cloud Run is deployed"; echo; echo "Service address (put it in the repository secret AGENT_REACH_URL): \`$url\`"; echo; echo "Image: \`$image\`"; } | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Status
+        if: inputs.action == 'status'
+        shell: bash
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          REGION: ${{ inputs.region }}
+        run: |
+          set -uo pipefail
+          gcloud config set project "$GCP_PROJECT_ID" >/dev/null
+          if ! gcloud run services describe "$SERVICE" --region "$REGION" --format='value(status.url)' > /tmp/url 2>/tmp/err; then
+            echo "The service is not deployed yet (run this workflow with action: deploy). $(tr '\n' ' ' < /tmp/err | cut -c1-200)" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          url="$(cat /tmp/url)"
+          { echo "### Agent-Reach on Cloud Run"; echo; echo "Address: \`$url\`"; } | tee -a "$GITHUB_STEP_SUMMARY"
+          gcloud run services describe "$SERVICE" --region "$REGION" --format='value(status.latestReadyRevisionName,status.conditions[0].status)' | tee -a "$GITHUB_STEP_SUMMARY"
+          token="$(gcloud auth print-identity-token 2>/dev/null || true)"
+          if [ -n "$token" ]; then auth=(-H "Authorization: Bearer $token"); else auth=(); fi
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          curl -sS --max-time 60 "${auth[@]}" "$url/healthz" | tee -a "$GITHUB_STEP_SUMMARY" || echo "the service did not answer" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
