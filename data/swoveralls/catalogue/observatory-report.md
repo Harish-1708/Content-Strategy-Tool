@@ -2,21 +2,24 @@
 
 Prepared 2026-11-14. Covers the last 7 days of public information read politely from 6 competitor site(s) (robots.txt obeyed). Everything below is an observation of what a site published, not a statement about why or how well it works.
 
-## Alerts (1)
+## Alerts (2)
 
+- **Emmafy**, 2026-11-14: New product: Oversized Mock Neck Henley Sweatshirt at $59.90 (in clothing, solo) *Next step: A rival added a product. Check whether you have, or want, something comparable.*
 - **Free the Sheep**, 2026-11-14: Offers on https://freethesheep.com/: added 65% off; ended 70% off *Next step: A rival changed its offer or banner. Compare with what you are running now.*
 
 ## Competitors
 
 ### Emmafy (emmafy.com)
 
-Catalogue: 196 products in 27 collections, 22 on sale, 185 in stock.
-Changes: 30 page updated, 5 tags change, 3 sitemap products updated, 1 page changed.
+Catalogue: 197 products in 27 collections, 23 on sale, 186 in stock.
+Changes: 34 page updated, 5 tags change, 4 sitemap products updated, 1 sitemap new products, 1 product new, 1 page changed.
+- 2026-11-14 [notable] 1 new product page(s) in the sitemap
+- 2026-11-14 [major] New product: Oversized Mock Neck Henley Sweatshirt at $59.90 (in clothing, solo)
 
 ### Free the Sheep (freethesheep.com)
 
 Catalogue: 18 products in 46 collections, 14 on sale, 16 in stock.
-Changes: 60 page updated, 4 collection remove, 3 page changed, 3 sitemap products updated, 1 stock out, 1 collection add, 1 new landing page, 1 headline change, 1 offer change, 1 social found.
+Changes: 80 page updated, 4 sitemap products updated, 4 page changed, 4 collection remove, 1 stock out, 1 collection add, 1 new landing page, 1 headline change, 1 offer change, 1 social found.
 - 2026-11-14 [notable] Skywalker Socks removed from Holiday Gifts Under $100
 - 2026-11-14 [notable] Skywalker Socks is sold out
 - 2026-11-14 [notable] Skywalker Socks removed from Holiday Gifts for Her
@@ -29,18 +32,18 @@ Changes: 60 page updated, 4 collection remove, 3 page changed, 3 sitemap product
 ### Kayarize (kayarize.com)
 
 Catalogue: 34 products in 15 collections, 6 on sale, 34 in stock.
-Changes: 3 sitemap products updated, 1 page changed.
+Changes: 18 page updated, 4 sitemap products updated, 1 page changed.
 
 ### Kortney and Karlee (kortneyandkarlee.com)
 
-Changes: 1 social found.
+Changes: 1 social bio changed, 1 social found.
 
 ### Madepants (madepants.com)
 
 Catalogue: 299 products in 23 collections, 42 on sale, 298 in stock (the last reading was incomplete).
-Changes: 20 page updated, 4 sitemap products updated, 1 page changed, 1 sitemap removed products, 1 social found.
+Changes: 40 page updated, 5 sitemap products updated, 1 page changed, 1 sitemap removed products, 1 social found.
 
 ### The Oodie (theoodie.com)
 
 Catalogue: 474 products in 58 collections, 473 on sale, 442 in stock (the last reading was incomplete).
-Changes: 13 page updated, 3 page changed, 3 sitemap products updated, 1 social found.
+Changes: 26 page updated, 4 page changed, 4 sitemap products updated, 1 social found.
