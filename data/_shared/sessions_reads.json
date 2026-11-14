@@ -60,5 +60,36 @@
       ]
     ],
     "url": "instagram.com/swoveralls"
+  },
+  {
+    "at": "2026-11-14T03:11:44Z",
+    "chars": 144,
+    "kind": "read",
+    "landed": "https://www.instagram.com/madepants/",
+    "platform": "instagram",
+    "quality": "snippets about the address, not the page",
+    "reason": "",
+    "route": "discovery",
+    "skipped": false,
+    "starts": "Owned Online Boutique. Shop our collection \u21a1 madepants. Built to last \u2014 made to move. No restock. Limited quantities. Order now at madepants.com",
+    "title": "Madepants",
+    "trail": [
+      [
+        "primary",
+        "UPSTREAM_BROKEN",
+        "the platform answered the browser with an error status instead of a page, which is its own refusal of an automated visit (the browser does not say which status) (UPSTREAM_BROKEN: Error: Page.goto: net"
+      ],
+      [
+        "session",
+        "UPSTREAM_BROKEN",
+        "the platform answered the browser with an error status instead of a page, which is its own refusal of an automated visit (the browser does not say which status) (UPSTREAM_BROKEN: Error: Page.goto: net"
+      ],
+      [
+        "discovery",
+        "ok",
+        "5 item(s)"
+      ]
+    ],
+    "url": "instagram.com/madepants"
   }
 ]
