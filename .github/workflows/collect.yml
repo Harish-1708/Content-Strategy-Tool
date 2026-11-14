@@ -64,6 +64,10 @@ on:
         description: "Only for mode rest: how many days (blank uses the number in research.yaml)"
         required: false
         default: ""
+      fresh:
+        description: "Collect again now, ignoring what was collected in the last 3 days (item caps still apply; a source that refuses falls back as before)"
+        type: boolean
+        default: false
       ignore_cooldown:
         description: "Use accounts that are resting after an account warning (only once you have dealt with the warning)"
         type: boolean
@@ -133,6 +137,7 @@ jobs:
           BACKEND: ${{ inputs.backend }}
           REGION: ${{ inputs.region }}
           IGNORE_COOLDOWN: ${{ inputs.ignore_cooldown }}
+          FRESH: ${{ inputs.fresh }}
           REST_ACCOUNT: ${{ inputs.rest_account }}
           REST_DAYS: ${{ inputs.rest_days }}
           INSTAGRAM_COOKIES: ${{ secrets.INSTAGRAM_COOKIES }}
@@ -168,6 +173,7 @@ jobs:
           args+=(--backend "${BACKEND:-auto}")
           if [ -n "$REGION" ]; then args+=(--region "$REGION"); fi
           if [ "$IGNORE_COOLDOWN" = "true" ]; then args+=(--ignore-cooldown); fi
+          if [ "$FRESH" = "true" ] && [ "$MODE" = "collect" ]; then args+=(--fresh); fi
           { echo "### Collect"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           python -m contentintel collect "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           code=${PIPESTATUS[0]}

@@ -64,7 +64,7 @@ jobs:
           echo "FREEAPI_GATEWAY_DIR=$RUNNER_TEMP/freellmapi" >> "$GITHUB_ENV"
 
       - name: Tests
-        run: python -m pytest -q
+        run: python -m pytest -q -rs          # -rs: every skipped test is listed with its reason in the log
 
       - name: Sabotage check
         if: ${{ inputs.sabotage }}

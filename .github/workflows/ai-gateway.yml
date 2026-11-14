@@ -27,6 +27,10 @@ on:
         description: "live only: limit to these providers, comma-separated (blank: every enabled provider)"
         required: false
         default: ""
+      catalog:
+        description: "Read each provider's own model list (free: no model is called) and compare it with ours and with what the pinned gateway can route. Read-only: nothing is changed"
+        type: boolean
+        default: false
       strict:
         description: "live only: also turn the run red for external provider problems"
         type: boolean
@@ -104,7 +108,7 @@ jobs:
 
   live:
     name: Live-provider checks (real calls)
-    if: inputs.live == true
+    if: inputs.live == true || inputs.catalog == true
     needs: mock
     runs-on: ubuntu-latest
     timeout-minutes: 40
@@ -151,6 +155,7 @@ jobs:
 
       - name: Live check (LIVE result)
         id: live
+        if: inputs.live == true
         continue-on-error: true
         shell: bash
         env:
@@ -181,9 +186,31 @@ jobs:
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           exit "$code"
 
+      - name: Provider model lists (read-only)
+        id: catalog
+        if: inputs.catalog == true
+        continue-on-error: true
+        shell: bash
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+          OLLAMA_API_KEY: ${{ secrets.OLLAMA_API_KEY }}
+          COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set +e
+          { echo "### Provider model lists (read-only)"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel ai catalog 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
       - name: Live evaluation (LIVE result)
         id: evaluate
-        if: inputs.evaluate == true
+        if: inputs.live == true && inputs.evaluate == true
         continue-on-error: true
         shell: bash
         env:
