@@ -11,12 +11,12 @@ Prepared 2026-11-14. Covers the last 7 days of public information read politely 
 ### Emmafy (emmafy.com)
 
 Catalogue: 196 products in 27 collections, 22 on sale, 185 in stock.
-Changes: 26 page updated, 5 tags change, 2 sitemap products updated, 1 page changed.
+Changes: 30 page updated, 5 tags change, 3 sitemap products updated, 1 page changed.
 
 ### Free the Sheep (freethesheep.com)
 
 Catalogue: 18 products in 46 collections, 14 on sale, 16 in stock.
-Changes: 40 page updated, 4 collection remove, 2 page changed, 2 sitemap products updated, 1 stock out, 1 collection add, 1 new landing page, 1 headline change, 1 offer change, 1 social found.
+Changes: 60 page updated, 4 collection remove, 3 page changed, 3 sitemap products updated, 1 stock out, 1 collection add, 1 new landing page, 1 headline change, 1 offer change, 1 social found.
 - 2026-11-14 [notable] Skywalker Socks removed from Holiday Gifts Under $100
 - 2026-11-14 [notable] Skywalker Socks is sold out
 - 2026-11-14 [notable] Skywalker Socks removed from Holiday Gifts for Her
@@ -29,7 +29,7 @@ Changes: 40 page updated, 4 collection remove, 2 page changed, 2 sitemap product
 ### Kayarize (kayarize.com)
 
 Catalogue: 34 products in 15 collections, 6 on sale, 34 in stock.
-Changes: 2 sitemap products updated, 1 page changed.
+Changes: 3 sitemap products updated, 1 page changed.
 
 ### Kortney and Karlee (kortneyandkarlee.com)
 
@@ -38,9 +38,9 @@ Changes: 1 social found.
 ### Madepants (madepants.com)
 
 Catalogue: 299 products in 23 collections, 42 on sale, 298 in stock (the last reading was incomplete).
-Changes: 20 page updated, 3 sitemap products updated, 1 page changed, 1 sitemap removed products, 1 social found.
+Changes: 20 page updated, 4 sitemap products updated, 1 page changed, 1 sitemap removed products, 1 social found.
 
 ### The Oodie (theoodie.com)
 
 Catalogue: 474 products in 58 collections, 473 on sale, 442 in stock (the last reading was incomplete).
-Changes: 13 page updated, 2 sitemap products updated, 2 page changed, 1 social found.
+Changes: 13 page updated, 3 page changed, 3 sitemap products updated, 1 social found.

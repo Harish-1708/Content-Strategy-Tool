@@ -26,6 +26,15 @@
    "count": 196,
    "file": "20261114T063622Z.json.gz",
    "hash": "f78710e381b86dd2f67e"
+  },
+  {
+   "bytes": 78891,
+   "captured_at": "2026-11-14T08:45:13Z",
+   "complete": true,
+   "confirmed_at": "2026-11-14T08:45:13Z",
+   "count": 196,
+   "file": "20261114T084513Z.json.gz",
+   "hash": "757a36cba694e43f15be"
   }
  ],
  "version": 1

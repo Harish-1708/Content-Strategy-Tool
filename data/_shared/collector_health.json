@@ -2234,14 +2234,133 @@
      "items": 0,
      "ms": 5741,
      "ok": null
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 190,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 249,
+     "ok": false
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5214,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5193,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5320,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5483,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 192,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5204,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5407,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 367,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 5203,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 298,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5152,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5317,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 214,
+     "ok": false
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5143,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 5766,
+     "ok": null
     }
    ],
    "last_error": {
-    "at": "2026-11-14T06:36:22Z",
+    "at": "2026-11-14T08:45:13Z",
     "code": "UPSTREAM_BROKEN",
     "message": "https://theoodie.com/blogs/news.atom is a feed with no items"
    },
-   "last_success": "2026-11-14T06:36:22Z",
+   "last_success": "2026-11-14T08:45:13Z",
    "pause": null,
    "route": "feed",
    "source": "competitor_pages",
@@ -2397,7 +2516,7 @@
   "competitor_pages|social_profile": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 7,
+   "consecutive_successes": 10,
    "history": [
     {
      "at": "2026-11-13T19:13:45Z",
@@ -2531,6 +2650,55 @@
      "items": 0,
      "ms": 1798,
      "ok": null
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 15835,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 988,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 2283,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 16980,
+     "ok": null
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 1310,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 16788,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "NOT_FOUND",
+     "items": 0,
+     "ms": 1054,
+     "ok": null
     }
    ],
    "last_error": {
@@ -2538,7 +2706,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "the profile page came back with no readable text (60 characters: too little to be a page); and the search fallback: the search result for exactly TikTok 'freethesheepco' was found but its text shows no follower, like or post count, so there is nothing to record (nothing is estimated)"
    },
-   "last_success": "2026-11-14T06:36:22Z",
+   "last_success": "2026-11-14T08:45:13Z",
    "pause": null,
    "route": "social_profile",
    "source": "competitor_pages",
@@ -2555,7 +2723,7 @@
     "version": "3a4b3bc047b8"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 22,
+   "consecutive_successes": 28,
    "history": [
     {
      "at": "2026-11-10T08:40:20Z",
@@ -2710,10 +2878,52 @@
      "items": 1,
      "ms": 9486,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 12998,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 13877,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 14765,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 6987,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 8081,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 11841,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-14T06:36:22Z",
+   "last_success": "2026-11-14T08:45:13Z",
    "pause": null,
    "route": "static_fetch",
    "source": "competitor_pages",
@@ -2730,7 +2940,7 @@
     "version": "3a4b3bc047b8"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 27,
+   "consecutive_successes": 32,
    "history": [
     {
      "at": "2026-11-10T08:40:20Z",
@@ -2920,10 +3130,45 @@
      "items": 1,
      "ms": 362830,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 167969,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 103230,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 259809,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 187391,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 363184,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-14T06:36:22Z",
+   "last_success": "2026-11-14T08:45:13Z",
    "pause": null,
    "route": "public_json",
    "source": "competitor_stores",
@@ -2940,7 +3185,7 @@
     "version": "3a4b3bc047b8"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 23,
+   "consecutive_successes": 29,
    "history": [
     {
      "at": "2026-11-10T08:40:20Z",
@@ -3102,10 +3347,52 @@
      "items": 1,
      "ms": 92525,
      "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 36051,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 41466,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 134371,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 35594,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 36075,
+     "ok": true
+    },
+    {
+     "at": "2026-11-14T08:45:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 92504,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-14T06:36:22Z",
+   "last_success": "2026-11-14T08:45:13Z",
    "pause": null,
    "route": "sitemap",
    "source": "competitor_stores",
