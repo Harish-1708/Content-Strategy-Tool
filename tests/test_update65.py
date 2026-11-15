@@ -340,7 +340,8 @@ def test_the_apify_lane_reads_within_its_own_allowance_and_charges_both_counters
     lane = VOICE.ApifyVoice(fake, led, per_run=15, monthly=40, shared_cap=100, normalize=lambda s, raw: (raw, 0))
     items, notes = lane.run("sweatpant overalls")
     assert [c[0] for c in fake.calls] == ["clockworks/tiktok-scraper", "apify/instagram-hashtag-scraper"]
-    assert fake.calls[0][1] == {"searchQueries": ["sweatpant overalls"], "resultsPerPage": 7} and fake.calls[1][1] == {"hashtags": ["sweatpantoveralls"], "resultsType": "posts", "resultsLimit": 8} and all(c[3] == 0.25 for c in fake.calls)
+    assert fake.calls[0][1] == {"searchQueries": ["sweatpant overalls"], "resultsPerPage": 7} and fake.calls[1][1] == {"hashtags": ["sweatpantoveralls"], "resultsType": "posts", "resultsLimit": 8}
+    assert [c[3] for c in fake.calls] == [0.50, 0.25]                                      # TikTok's actor refuses less than 0.50 per call (measured live); Instagram's 0.25 bought 27 items
     assert len(items) == 15 and {i["source"] for i in items} == {"apify tiktok", "apify instagram"} and items[0]["weight"] == 100 and items[0]["engagement"]["comments"] == 0
     assert led.month_used("voice_apify_items") == 15 and led.month_used("apify_items") == 60 and lane.spent_this_run == 15 and len(notes) == 2
     again, notes = lane.run("another topic")
@@ -377,7 +378,8 @@ def test_the_voice_command_uses_the_apify_lane_by_default_unless_switched_off_an
     assert fake.calls == [] and "Apify lane" not in capsys.readouterr().out                                    # switched off: not used
     RT.run_voice(_args(tmp_path, "--topic", "sweatpant overalls"), store, "2026-11-15T00:00:00Z", get=get, runner=Runner("", 1, "boom"), environ={"APIFY_TOKEN": "t"}, clock=lambda: 1_790_000_000)
     out = capsys.readouterr().out
-    assert "Apify lane ON for this run (switch off with --no-apify): at most 40 items in this whole run, 60 a month for voice (used so far this month: 0)" in out and "never beyond the Collect step's 100 a month" in out and len(fake.calls) == 2 and all(c[3] == 0.25 for c in fake.calls)          # each Apify call carries the cost ceiling
+    assert "Apify lane ON for this run (switch off with --no-apify): at most 40 items in this whole run, 60 a month for voice (used so far this month: 0)" in out and "never beyond the Collect step's 100 a month" in out and len(fake.calls) == 2 and [c[3] for c in fake.calls] == [0.50, 0.25]          # each Apify call carries its actor's cost ceiling
+    assert "0.5 dollars for TikTok, 0.25 for Instagram" in out and "Apify usage after this run: voice 40/60 items this month, all Apify use 40/100 (this run read 40)." in out
     assert store.load_usage()["months"]["2026-11"]["voice_apify_items"] == fake.calls[0][2] + fake.calls[1][2]            # the spending is saved
     RT.run_voice(_args(tmp_path, "--topic", "x"), store, "2026-11-15T00:00:00Z", get=get, runner=Runner("", 1, "boom"), environ={}, clock=lambda: 1)
     assert "Apify lane skipped: APIFY_TOKEN is not set in this run." in capsys.readouterr().out
@@ -542,3 +544,196 @@ def test_the_research_tools_workflow_has_apify_on_by_default_and_passes_the_swit
     assert inputs["apify"]["default"] is True and inputs["apify"]["type"] == "boolean"
     body = Path(".github/workflows/research-tools.yml").read_text(encoding="utf-8")
     assert 'if [ "$USE_APIFY" = "false" ]; then args+=(--no-apify); fi' in body and "APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}" in body
+
+
+# ---- Update 66: the planner's checks on the live round of Update 65 ----------------------------------------------------------------------------------
+
+def test_the_regional_hint_knows_a_regional_address_in_any_letter_case_when_it_knows_the_brand_and_never_flags_a_plain_name():
+    for slug, brand, want in (("chobaniau", "Chobani", "au"), ("ChobaniAu", "Chobani", "au"), ("CHOBANINZ", "Chobani", "nz"), ("chobani-nz", "", "nz"), ("ChobaniAu", "", "au"), ("DudeWipesUS", "", "us")):
+        assert MP.regional_hint(slug, brand) == want, (slug, brand)
+    for slug, brand in (("Chobani", "Chobani"), ("MadeIn", ""), ("MadeIn", "MadeIn"), ("Snuggie", ""), ("theoodie", ""), ("TheOodie", "The Oodie"), ("Graza", "Graza"), ("chobaniau", "")):
+        assert MP.regional_hint(slug, brand) == "", (slug, brand)                       # without the name, a lower-case 'chobaniau' cannot be told from 'snuggie' or 'theoodie'
+    assert MP.regional_hint("MadeIn", "Made") == "in" and MP.regional_hint("MadeIN", "") == "in"
+
+
+def test_the_page_id_check_uses_the_brand_name_to_warn_about_a_lower_case_regional_address(capsys):
+    get = lambda url, headers=None: (200, '{"pageID":"123456789"}')           # noqa: E731
+    RT.run_pageid(cli.build_parser().parse_args(["pageid", "--url", "https://www.facebook.com/chobaniau", "--name", "Chobani"]), get=get)
+    assert "WARNING: the address looks like a regional page (au)" in capsys.readouterr().out
+    RT.run_pageid(cli.build_parser().parse_args(["pageid", "--url", "https://www.facebook.com/chobaniau"]), get=get)
+    assert "WARNING" not in capsys.readouterr().out
+    assert 'pageid) args=(pageid --url "$VIDEO_URL"); if [ -n "$TOPIC" ]; then args+=(--name "$TOPIC"); fi ;;' in Path(".github/workflows/research-tools.yml").read_text(encoding="utf-8")
+
+
+def test_the_apify_overrides_are_clamped_and_a_cost_override_can_never_defeat_the_ceilings():
+    lane = lambda cost: VOICE.ApifyVoice(FakeApify(), _ledger(), max_cost_usd=cost)           # noqa: E731
+    assert (lane(None).ceiling("tiktok"), lane(None).ceiling("instagram")) == (0.50, 0.25)
+    assert (lane(0.01).ceiling("tiktok"), lane(0.01).ceiling("instagram")) == (0.50, 0.25)         # an override cannot go below what the actor accepts
+    assert (lane(0.75).ceiling("tiktok"), lane(0.75).ceiling("instagram")) == (0.75, 0.75)
+    assert (lane(500).ceiling("tiktok"), lane(500).ceiling("instagram")) == (1.0, 1.0)             # nor above one dollar
+    env = lambda **kw: kw                                                                            # noqa: E731
+    assert RT._env_number(env(X="1000"), "X", 40, 1, 100, int) == 100 and RT._env_number(env(X="0"), "X", 40, 1, 100, int) == 1
+    assert RT._env_number(env(X="abc"), "X", 40, 1, 100, int) == 40 and RT._env_number(env(), "X", 40, 1, 100, int) == 40 and RT._env_number(env(X="7.5"), "X", None, 0.0, 1.0, float) == 1.0
+    assert RT._env_number(env(X="0.3"), "X", None, 0.0, 1.0, float) == 0.3 and RT._env_number(env(), "X", None, 0.0, 1.0, float) is None
+
+
+def test_the_apify_class_describes_and_defaults_to_what_the_lane_really_does():
+    lane = VOICE.ApifyVoice(FakeApify(), _ledger())
+    assert (lane.per_run, lane.monthly, lane.shared_cap, lane.max_cost) == (40, 60, 100, None)
+    doc = VOICE.ApifyVoice.__doc__
+    assert "OFF unless" not in doc and "ON by default" in doc and "0.50 dollars for TikTok" in doc and "27 usable items" in doc and "TikTok asks for half of what is left to read and Instagram for the rest" in doc
+
+
+def test_when_tiktok_is_refused_instagram_still_gets_the_whole_ask_and_both_are_told():
+    from contentintel.providers import ProviderConfigError
+    fake = FakeApify()
+    real = fake.run
+
+    def run(actor, payload, *, max_items, max_cost_usd):
+        if "tiktok" in actor:
+            raise ProviderConfigError("the cost ceiling for this run ($0.25) is below the minimum this actor accepts ($0.50). Nothing was run and nothing was spent.")
+        return real(actor, payload, max_items=max_items, max_cost_usd=max_cost_usd)
+    fake.run = run
+    lane = VOICE.ApifyVoice(fake, _ledger(), normalize=lambda s, raw: (raw, 0))
+    items, notes = lane.run("sweatpant overalls")
+    assert len(items) == 40 and fake.calls[0][1]["resultsLimit"] == 40 and fake.calls[0][3] == 0.25                      # what TikTok could not read is not lost
+    assert "ProviderConfigError" in notes[0] and "minimum this actor accepts" in notes[0] and "asked for 40, 40 item(s) read within a 0.25 dollar ceiling" in notes[1]
+
+
+def test_competitors_mode_asks_apify_about_each_competitor_never_the_brand_and_splits_the_runs_allowance(tmp_path, capsys, monkeypatch):
+    store = _voice_env(tmp_path, monkeypatch)
+    store.write_benchmarks("swoveralls", {"version": 1, "items": {k: {"name": n, "status": "resolved", "page_id": "1"} for k, n in enumerate(["Swoveralls", "The Oodie", "Madepants", "SKIMS"])}})
+    fake = FakeApify()
+    import contentintel.apify as A
+    from contentintel import collectors as COL
+    monkeypatch.setattr(A, "Apify", lambda token: fake)
+    monkeypatch.setattr(COL, "normalize_items", lambda source, raw: (raw, 0))
+    RT.run_voice(_args(tmp_path, "--mode", "competitors"), store, "2026-11-15T00:00:00Z", get=Get({"algolia": (200, json.dumps({"hits": []}))}), runner=Runner("", 1, "boom"), environ={"APIFY_TOKEN": "t"}, clock=lambda: 1)
+    out = capsys.readouterr().out
+    asked = [c[1].get("searchQueries", [None])[0] or c[1]["hashtags"][0] for c in fake.calls]
+    assert asked == ["The Oodie", "theoodie", "Madepants", "madepants", "SKIMS", "skims"] and "Swoveralls" not in asked and "swoveralls" not in asked          # the brand gets nothing here
+    pairs = [fake.calls[i][2] + fake.calls[i + 1][2] for i in range(0, len(fake.calls), 2)]
+    assert sum(c[2] for c in fake.calls) <= 40 and len(pairs) == 3 and all(p <= 13 for p in pairs)           # 40 for the run, split three ways: each ask (TikTok and Instagram together) reads at most 13
+    kept = store.read_extra("swoveralls", "voice")["items"]
+    assert any(i["entity"] == "The Oodie" and i["mode"] == "competitors" and i["source"].startswith("apify ") for i in kept)
+    assert "this run, items per competitor: The Oodie: " in out and "The Oodie: 0;" not in out and "the brand itself: 0" in out and "Apify usage after this run: voice 3" in out
+    assert "(research and competitors modes)" in Path(".github/workflows/research-tools.yml").read_text(encoding="utf-8")
+
+
+def test_every_ffmpeg_install_step_fails_the_run_when_the_install_fails():
+    for name in ("collect.yml", "tests.yml", "research-tools.yml"):
+        wf = yaml.safe_load((Path(".github/workflows") / name).read_text(encoding="utf-8"))
+        steps = [s for job in wf["jobs"].values() for s in job["steps"] if str(s.get("name", "")).startswith("Install ffmpeg")]
+        assert len(steps) == 1, name
+        run = steps[0]["run"]
+        assert "sudo apt-get install -y -qq ffmpeg" in run and "for attempt in 1 2 3" in run and "|| true" not in run and "|| echo" not in run, name       # nothing is swallowed
+        assert run.rstrip().endswith("ffprobe -version | head -1") and "ffmpeg -version | head -1" in run and "FAILS" in steps[0]["name"], name           # no binary: the step (and the run) fails
+        if name == "research-tools.yml":
+            assert steps[0]["if"] == "inputs.tool == 'analyze'"
+
+
+def test_the_apify_usage_is_counted_across_runs_and_the_start_line_shows_it(tmp_path, capsys, monkeypatch):
+    store = _voice_env(tmp_path, monkeypatch)
+    fake = FakeApify()
+    import contentintel.apify as A
+    from contentintel import collectors as COL
+    monkeypatch.setattr(A, "Apify", lambda token: fake)
+    monkeypatch.setattr(COL, "normalize_items", lambda source, raw: (raw, 0))
+    for expected_before in (0, 40):
+        RT.run_voice(_args(tmp_path, "--topic", "sweatpant overalls"), store, "2026-11-15T00:00:00Z", get=Get({"algolia": (200, json.dumps({"hits": []}))}), runner=Runner("", 1, "boom"), environ={"APIFY_TOKEN": "t"}, clock=lambda: 1)
+        out = capsys.readouterr().out
+        assert f"(used so far this month: {expected_before})" in out                                  # the start line shows the earlier runs; the run's own reading is in the end line
+    usage = store.load_usage()["months"]["2026-11"]
+    assert usage["voice_apify_items"] == 60 and usage["apify_items"] == 60                              # 40, then the 20 the monthly allowance had left
+    assert "Apify usage after this run: voice 60/60 items this month, all Apify use 60/100 (this run read 20)." in out
+
+
+def test_the_collect_time_finder_already_knows_a_regional_address_from_the_brand_name_in_any_letter_case():
+    page = lambda slug, title="Page": {"slug": slug, "title": title}                          # noqa: E731
+    for slug in ("chobaniau", "ChobaniAu", "CHOBANINZ", "chobani-nz", "chobani.au"):
+        assert MP.looks_regional("Chobani", page(slug)), slug
+    for slug, brand in (("Chobani", "Chobani"), ("MadeIn", "MadeIn"), ("Snuggie", "Snuggie"), ("theoodie", "The Oodie")):
+        assert not MP.looks_regional(brand, page(slug)), slug
+    assert MP.looks_regional("Made", page("MadeIn"))                                            # with another brand name, 'In' is a region
+
+
+# ---- Update 66: the tool finds the page id itself when the page's own HTML has none ----------------------------------------------------------------
+
+PEOPLE = "https://www.facebook.com/people/Hu-Kitchen/100063775098221/"
+
+
+def _find(results_by_query, verdict, html_id="", asked=None):
+    """lookup_main_page for 'Hu Kitchen' with a page whose HTML has (or has not) an id, fake searches, and a fake reviewer that answers the page review first and the id review after."""
+    asked = [] if asked is None else asked
+
+    class Serper:
+        def search(self, query, num=10):
+            asked.append(query)
+            hits = [r for key, rs in results_by_query.items() if key in query for r in rs]
+            return [Result(rank=i + 1, title=t, url=u, snippet=s) for i, (t, u, s) in enumerate(hits)]
+
+    class Claude:
+        def json_task(self, system, user, max_tokens=0):
+            if "numeric Facebook page id" in system:
+                return verdict(user)
+            return {"choice": "https://www.facebook.com/HuKitchen", "is_main": True, "regional": False, "reason": "the brand's own page"}
+    return MP.make_finder(Serper(), Claude(), lambda url: html_id)("Hu Kitchen")
+
+
+PAGE = {"Hu Kitchen": [("Hu Kitchen | Facebook", "https://www.facebook.com/HuKitchen", "Hu: chocolate and snacks")]}
+IDS = {"facebook.com/people": [("Hu Kitchen | Facebook", PEOPLE, "Hu Kitchen. 52K likes"), ("Hu Kitchen NZ", "https://www.facebook.com/people/Hu-Kitchen-NZ/100090000000001/", "NZ page")]}
+
+
+def test_the_numeric_id_is_found_in_search_results_and_confirmed_by_the_reviewer_when_the_page_html_has_none():
+    asked = []
+    out = _find({**PAGE, **IDS}, lambda user: {"choice": "100063775098221", "same_page": True, "regional": False, "reason": "the people address names Hu Kitchen with no region"}, asked=asked)
+    assert out["status"] == "resolved" and out["page_id"] == "100063775098221"
+    assert "the numeric id came from a search (https://www.facebook.com/people/Hu-Kitchen/100063775098221/)" in out["reason"] and "the reviewer confirmed it is the same page" in out["reason"]
+    assert any("facebook.com/people" in q for q in asked)
+
+
+def test_the_id_search_is_not_used_when_the_page_itself_gives_the_id_and_never_accepts_an_invented_or_regional_id():
+    asked = []
+    out = _find({**PAGE, **IDS}, lambda user: pytest.fail("the reviewer must not be asked"), html_id='{"pageID":"555555555"}', asked=asked)
+    assert out["page_id"] == "555555555" and not any("people" in q for q in asked)
+    invented = _find({**PAGE, **IDS}, lambda user: {"choice": "999999999999", "same_page": True, "regional": False, "reason": "x"})
+    assert invented["status"] == "ambiguous" and "could not confirm one as this page" in invented["reason"] and invented["page_id"] == ""
+    regional = _find({**PAGE, **IDS}, lambda user: {"choice": "100090000000001", "same_page": True, "regional": True, "reason": "NZ"})
+    assert regional["status"] == "ambiguous" and regional["page_id"] == ""
+    unsure = _find({**PAGE, **IDS}, lambda user: {"choice": None, "same_page": False, "regional": False, "reason": "two pages could match"})
+    assert unsure["status"] == "ambiguous" and "(two pages could match)" in unsure["reason"]
+    unsame = _find({**PAGE, **IDS}, lambda user: {"choice": "100063775098221", "same_page": False, "regional": False, "reason": "other brand"})
+    assert unsame["status"] == "ambiguous"
+
+
+def test_when_no_search_result_carries_a_numeric_id_the_reason_says_so_and_a_failed_search_is_not_a_crash():
+    none = _find(PAGE, lambda user: pytest.fail("nothing to review"))
+    assert none["status"] == "ambiguous" and "a search for the page's numeric id found no address carrying one" in none["reason"] and "no page id in the page" in none["reason"]
+    calls = []
+
+    def search(query):
+        calls.append(query)
+        if "people" in query:
+            raise TimeoutError("slow")
+        return [{"url": "https://www.facebook.com/HuKitchen", "title": "Hu Kitchen | Facebook", "snippet": "Hu"}]
+    page_id, why = MP.find_id_by_search("Hu Kitchen", "https://www.facebook.com/HuKitchen", search, lambda *a: {})
+    assert page_id == "" and "failed (TimeoutError)" in why
+
+
+def test_id_candidates_are_read_from_every_kind_of_facebook_address_once():
+    results = [{"url": PEOPLE, "title": "t", "snippet": ""}, {"url": "https://www.facebook.com/profile.php?id=100064549155148", "title": "t2", "snippet": ""},
+               {"url": "https://www.facebook.com/ads/library/?active_status=all&view_all_page_id=102637398978655&country=ALL", "title": "Ads", "snippet": ""},
+               {"url": "https://www.facebook.com/pages/Hu-Kitchen/227070710682171", "title": "t3", "snippet": ""}, {"url": PEOPLE, "title": "again", "snippet": ""},
+               {"url": "https://www.facebook.com/HuKitchen", "title": "no id", "snippet": "no id here 123"}]
+    assert [c["id"] for c in MP.id_candidates(results)] == ["100063775098221", "100064549155148", "102637398978655", "227070710682171"]
+
+
+def test_the_page_id_check_lists_the_numeric_ids_a_search_finds_when_the_four_places_give_none(capsys):
+    get = lambda url, headers=None: (200, "<html>log in</html>")                                # noqa: E731
+    args = cli.build_parser().parse_args(["pageid", "--url", "https://www.facebook.com/HuKitchen", "--name", "Hu Kitchen"])
+    RT.run_pageid(args, get=get, search=lambda q: [{"url": PEOPLE, "title": "Hu Kitchen | Facebook", "snippet": ""}] if "people" in q else [])
+    out = capsys.readouterr().out
+    assert "Search for the numeric id of 'Hu Kitchen': 1 candidate id(s) found in search results" in out and "id 100063775098221 from " + PEOPLE in out
+    RT.run_pageid(args, get=get, search=None, environ={})
+    assert "Search for the numeric id: not tried (SERPER_API_KEY is not set in this run)" in capsys.readouterr().out
+    RT.run_pageid(args, get=lambda url, headers=None: (200, '{"pageID":"123456789"}'), search=lambda q: pytest.fail("not needed when an id is read"))
