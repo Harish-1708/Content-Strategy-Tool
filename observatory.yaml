@@ -75,8 +75,8 @@ discovery:
   enabled: true
   min_score: 40
   auto_monitor_score: 65        # at or above this a competitor is monitored automatically
-  auto_monitor_max: 6           # at most this many are added automatically
-  max_monitored: 10             # at most this many competitors are monitored per brand in total
+  auto_monitor_max: 50          # at most this many are added automatically (50 is the highest the setting allows: no practical cap; set a lower number to limit it, 0 switches automatic monitoring off)
+  max_monitored: 100            # at most this many competitors are monitored per brand in total (100 is the highest the setting allows: no practical cap)
   enrich: true                  # find each strong candidate's Instagram account (and website) from several sources, with a confidence
   enrich_max: 8                 # candidates enriched per run
   min_confidence: 0.7           # a match below this is kept as a "possible", not written to the competitor record

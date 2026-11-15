@@ -196,7 +196,7 @@ names marked set or not set, so you can see what the run can see (the values are
 |---|---|---|---|
 | `OPENVERSE_CLIENT_ID` | higher limits on Openverse's licence-safe picture and audio search | optional | the client id Openverse gives you when you register a free application |
 | `OPENVERSE_CLIENT_SECRET` | the other half of the Openverse registration | optional | the client secret from the same registration |
-| `SCRAPECREATORS_API_KEY` | lets audience voice also read TikTok, Instagram and Meta Ads through the ScrapeCreators service (10,000 free calls, then pay as you go) | optional | the key from scrapecreators.com; leave it unset to keep those three lanes off |
+| `SCRAPECREATORS_API_KEY` | lets audience voice also read TikTok, Instagram and Meta Ads through the ScrapeCreators service (100 free credits once, then paid from about 10 dollars a month; each query spends credits) | optional | the key from scrapecreators.com; leave it unset to keep those three lanes off |
 
 **Searching the web** (Actions > Research)
 

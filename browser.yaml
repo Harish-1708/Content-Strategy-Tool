@@ -58,6 +58,8 @@ sites:
     link_contains: ['/p/', '/reel/']
     logged_in_any: ['a[href="/direct/inbox/"]', 'svg[aria-label="Home"]', 'a[href="/explore/"]']
     login_wall_any: ['input[name="username"]', 'a[href="/accounts/login/"]']
+    # Instagram's login page can sit in front of a hashtag while its header links still look signed in, so these win over the signed-in markers (found in the debug capture of Collect #59: a 'Log into Instagram' page and a 12-item read that looked normal)
+    signed_out_any: ['text=Log into Instagram', 'input[name="email"]']
     challenge_any: ['text=Suspicious Login Attempt', 'text=We detected an unusual login attempt', 'input[name="verificationCode"]', 'text=Confirm it']
     # An ACCOUNT warning (as opposed to a login check): the tool stops using the account at once and rests it
     # (collectors.safety.cooldown_days in research.yaml). The phrases are deliberately strict so an ordinary caption cannot
