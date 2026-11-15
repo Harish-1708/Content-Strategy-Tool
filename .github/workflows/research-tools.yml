@@ -94,6 +94,18 @@ jobs:
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           ffmpeg -version | head -1 | tee -a "$GITHUB_STEP_SUMMARY" || true
 
+      - name: Read the gateway's own provider list (pool tool)
+        if: inputs.tool == 'pool'
+        shell: bash
+        run: |
+          set +e
+          tag=$(python -c "import json;print(json.load(open('ai/gateway.lock.json'))['gateway']['tag'])")
+          if git clone --depth 1 --branch "$tag" https://github.com/tashfeenahmed/freellmapi gateway-src 2>&1 | tail -1; then
+            echo "Gateway source $tag read: its own provider list is used." | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Gateway source could not be read: the built-in list of its providers is used instead." | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+
       - name: Run the tool
         id: run
         shell: bash
@@ -109,6 +121,7 @@ jobs:
           DRY_RUN: ${{ inputs.dry_run }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
+          SCRAPECREATORS_API_KEY: ${{ secrets.SCRAPECREATORS_API_KEY }}
           INSTAGRAM_COOKIES: ${{ secrets.INSTAGRAM_COOKIES }}
           TIKTOK_COOKIES: ${{ secrets.TIKTOK_COOKIES }}
           OPENVERSE_CLIENT_ID: ${{ secrets.OPENVERSE_CLIENT_ID }}
@@ -124,7 +137,7 @@ jobs:
               if [ -n "$PEERS" ]; then args+=(--peers "$PEERS"); fi
               if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi ;;
             analyze) args=(analyze); if [ -n "$VIDEO_URL" ]; then args+=(--url "$VIDEO_URL" --comments); fi ;;
-            pool) args=(pool) ;;
+            pool) args=(pool); if [ -d gateway-src ]; then args+=(--gateway-dir gateway-src); fi ;;
             assets)
               args=(assets --query "$TOPIC" --kind "$KIND")
               if [ -n "$BRAND" ] && [ "$BRAND" != "all" ]; then args+=(--brand "$BRAND"); fi ;;
