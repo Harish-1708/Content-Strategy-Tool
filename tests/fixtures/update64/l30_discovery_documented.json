@@ -1,0 +1,31 @@
+{
+ "schema_version": "1.1",
+ "kind": "discovery",
+ "domain": "loungewear",
+ "generated_at": "2026-11-15T00:00:00Z",
+ "window_days": 30,
+ "source_status": {
+  "reddit": "ok"
+ },
+ "feeds": [],
+ "results": [
+  {
+   "topic": "weighted hoodie blankets",
+   "summary": "People compare weights and wash care.",
+   "score": 88,
+   "sources": [
+    "reddit",
+    "youtube"
+   ]
+  },
+  {
+   "topic": "matching family pyjamas",
+   "summary": "Seasonal spike.",
+   "score": 64,
+   "sources": [
+    "reddit"
+   ]
+  }
+ ],
+ "warnings": []
+}

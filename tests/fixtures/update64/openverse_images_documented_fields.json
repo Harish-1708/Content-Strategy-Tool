@@ -1,0 +1,22 @@
+{
+ "results": [
+  {
+   "title": "Cotton texture",
+   "url": "https://img.example/a.jpg",
+   "thumbnail": "https://img.example/a_t.jpg",
+   "foreign_landing_url": "https://flickr.example/a",
+   "creator": "Ana",
+   "license": "by",
+   "license_version": "2.0",
+   "license_url": "https://cc.example/by/2.0",
+   "attribution": "\"Cotton texture\" by Ana is licensed under CC BY 2.0.",
+   "source": "flickr",
+   "width": 800,
+   "height": 600
+  },
+  {
+   "title": "no url",
+   "creator": "x"
+  }
+ ]
+}

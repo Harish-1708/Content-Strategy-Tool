@@ -1,0 +1,60 @@
+{
+  "clusters": [
+    {
+      "engagement_total": 120,
+      "sources": [
+        "reddit"
+      ],
+      "summary": "Strong firsthand feedback from bib overalls women users.",
+      "title": "bib overalls women discussion thread"
+    },
+    {
+      "engagement_total": 0,
+      "sources": [
+        "grounding"
+      ],
+      "summary": "Recent web reporting about bib overalls women.",
+      "title": "bib overalls women article"
+    }
+  ],
+  "freshness_verdicts": [],
+  "generated_at": "2026-11-14T17:37:01.021064Z",
+  "query": "bib overalls women",
+  "results": [
+    {
+      "candidate_id": "https://reddit.com/r/example/comments/bib-overalls-women-1",
+      "cluster": 0,
+      "engagement": {
+        "num_comments": 48,
+        "score": 120,
+        "upvote_ratio": 0.91
+      },
+      "published_at": "2026-11-09",
+      "relevance_score": 0.4155,
+      "source": "reddit",
+      "summary": "Strong firsthand feedback from bib overalls women users.",
+      "title": "bib overalls women discussion thread",
+      "url": "https://reddit.com/r/example/comments/bib-overalls-women-1"
+    },
+    {
+      "candidate_id": "https://example.com/article/bib-overalls-women",
+      "cluster": 1,
+      "engagement": {},
+      "published_at": "2026-11-07",
+      "relevance_score": 0.371,
+      "source": "grounding",
+      "summary": "Recent web reporting about bib overalls women.",
+      "title": "bib overalls women article",
+      "url": "https://example.com/article/bib-overalls-women"
+    }
+  ],
+  "schema_version": "1.4",
+  "source_status": {
+    "devto": "no-results",
+    "grounding": "ok",
+    "hackernews": "no-results",
+    "reddit": "ok"
+  },
+  "usage": null,
+  "window_days": 30
+}
