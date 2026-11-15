@@ -28,9 +28,9 @@ For each competitor: the Shopify catalogue and collections (public product feeds
 
 `report` prints the alerts. The sheet gets four tabs: **Competitors**, **Observatory Events**, **Competitor Products**, **Public Corpus**, plus **AI Gateway Health** (the same on every sheet). Columns you add by hand (Decision, Notes) are never overwritten.
 
-## Choosing competitors: 10 monitored, up to 6 added automatically
+## Choosing competitors: no practical cap (up to 100 monitored, up to 50 added automatically)
 
-- At most **10** competitors are monitored per brand in total; at most **6** of those are added by discovery (`discovery.max_monitored`, `discovery.auto_monitor_max`).
+- There is no practical cap on competitors: up to **100** are monitored per brand in total and up to **50** of those are added by discovery (`discovery.max_monitored`, `discovery.auto_monitor_max`; these are the highest values the settings allow, and either can be set lower in `observatory.yaml` or the Controls tab; `auto_monitor_max: 0` switches automatic monitoring off). Each monitored site makes a run longer.
 - Discovery looks at what has already been collected (ad libraries, Instagram, TikTok, searches, benchmarks), scores each candidate on a rubric (how often it appears, how long its ads run, how many variants, how relevant its words are), finds its website (a search per name, within your search credit caps), and only then checks the site is a store we may read. A candidate scoring at least `auto_monitor_score` (65) is added automatically; everything is listed with its reasons in the sheet. Candidates you have not decided on are listed on the **Competitors** tab with their score and reasons. Type `monitor` or `stop` in its **Decision** column (or run the `decide` action), and the next sheet update reads it; `reset` hands the choice back to the rubric. A person's choice is permanent: automatic runs never change it. Competitors you list in a brand file are controlled by that file, not by the sheet.
 - Add competitors yourself in `brands/<brand>/observatory.yaml`:
 
