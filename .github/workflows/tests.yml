@@ -38,6 +38,13 @@ jobs:
       - name: Install
         run: pip install -r requirements-dev.txt
 
+      - name: Install ffmpeg (measures how each video moves; the runner does not have it)
+        shell: bash
+        run: |
+          sudo apt-get update -qq || true
+          sudo apt-get install -y -qq ffmpeg || echo "ffmpeg could not be installed: video pace will not be measured in this run"
+          ffmpeg -version | head -1 || true
+
       - name: Lint
         run: python -m pyflakes contentintel tests
 

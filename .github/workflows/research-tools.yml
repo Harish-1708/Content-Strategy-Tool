@@ -4,6 +4,7 @@
 #   pool       free AI capacity worth adding to the pool, from OmniRoute's catalogue read as data (changes nothing)
 #   assets     licence-safe pictures or sounds for a query (Openverse, with Wikimedia Commons as the backup)
 #   motion     motion formats close to a text, from the prompt library (awesome-opus5-5-videos)
+#   pageid     tries the four places a Facebook page id can be read from (Chobani is the first one to try) and says what each gave
 #   install    installs or updates the connections these tools use (also done automatically before each tool)
 # To run it: Actions > Research tools > Run workflow. Nothing here posts or changes anything on any platform; voice and assets keep what they found next to the brand's data.
 name: Research tools
@@ -14,7 +15,7 @@ on:
       tool:
         description: "What to run"
         type: choice
-        options: [voice, analyze, pool, assets, motion, install]
+        options: [voice, analyze, pool, assets, motion, pageid, install]
         default: voice
       brand:
         description: "voice and assets: brand folder name (for example swoveralls) or all (voice only)"
@@ -39,7 +40,7 @@ on:
         options: [quick, deep]
         default: quick
       url:
-        description: "analyze: a public video address (TikTok, Instagram, Facebook, YouTube...)"
+        description: "analyze: a public video address (TikTok, Instagram, Facebook, YouTube...). pageid: a Facebook page address, for example https://www.facebook.com/Chobani"
         required: false
         default: ""
       kind:
@@ -47,6 +48,10 @@ on:
         type: choice
         options: [images, audio]
         default: images
+      apify:
+        description: "voice (research mode): also ask Apify's TikTok and Instagram scrapers (ON by default; needs APIFY_TOKEN; at most 40 items in the whole run and 60 a month for voice, each call capped at 0.25 dollars, and never beyond the Collect step's Apify allowance in research.yaml). Untick to switch it off"
+        type: boolean
+        default: true
       dry_run:
         description: "voice: show what would be asked and ask nothing"
         type: boolean
@@ -72,6 +77,13 @@ jobs:
           cache: pip
           cache-dependency-path: requirements.txt
       - run: pip install -r requirements.txt
+
+      - name: Install ffmpeg (measures how a video moves; the runner does not have it)
+        if: inputs.tool == 'analyze'
+        shell: bash
+        run: |
+          sudo apt-get update -qq || true
+          sudo apt-get install -y -qq ffmpeg || echo "ffmpeg could not be installed: pace will not be measured"
 
       - name: Install the connections these tools use
         shell: bash
@@ -119,6 +131,8 @@ jobs:
           VIDEO_URL: ${{ inputs.url }}
           KIND: ${{ inputs.kind }}
           DRY_RUN: ${{ inputs.dry_run }}
+          USE_APIFY: ${{ inputs.apify }}
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
           SCRAPECREATORS_API_KEY: ${{ secrets.SCRAPECREATORS_API_KEY }}
@@ -135,13 +149,15 @@ jobs:
               if [ -n "$BRAND" ] && [ "$BRAND" != "all" ]; then args+=(--brand "$BRAND"); else args+=(--all); fi
               if [ -n "$TOPIC" ]; then args+=(--topic "$TOPIC"); fi
               if [ -n "$PEERS" ]; then args+=(--peers "$PEERS"); fi
+              if [ "$USE_APIFY" = "false" ]; then args+=(--no-apify); fi
               if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi ;;
-            analyze) args=(analyze); if [ -n "$VIDEO_URL" ]; then args+=(--url "$VIDEO_URL" --comments); fi ;;
+            analyze) args=(analyze); if [ -n "$VIDEO_URL" ]; then args+=(--url "$VIDEO_URL" --comments --pace); fi ;;
             pool) args=(pool); if [ -d gateway-src ]; then args+=(--gateway-dir gateway-src); fi ;;
             assets)
               args=(assets --query "$TOPIC" --kind "$KIND")
               if [ -n "$BRAND" ] && [ "$BRAND" != "all" ]; then args+=(--brand "$BRAND"); fi ;;
             motion) args=(motion --query "$TOPIC") ;;
+            pageid) args=(pageid --url "$VIDEO_URL") ;;
             install) echo "Connections installed in the step above."; exit 0 ;;
           esac
           { echo "### ${TOOL}"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
