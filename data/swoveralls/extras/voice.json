@@ -1,0 +1,822 @@
+{
+ "items": [
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 92,
+    "points": 258
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-19",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Mercury 3: Diffusion at scale",
+   "topic": "merch",
+   "url": "https://www.inceptionlabs.ai/blog/introducing-mercury-3",
+   "weight": 258
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 58,
+    "points": 212
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-25",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Moderna and Merck say their mRNA cancer vaccine cut death, recurrence by 42%",
+   "topic": "merch",
+   "url": "https://arstechnica.com/health/2026/10/personalized-mrna-cancer-vaccine-cut-melanoma-death-recurrence-by-42/",
+   "weight": 212
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 193,
+    "points": 196
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-10",
+   "source": "hackernews",
+   "summary": "",
+   "title": "CoreWeave bond yield tops 16% as AI credit stress rises",
+   "topic": "core",
+   "url": "https://www.cnbc.com/2026/11/06/coreweave-bond-yield-tops-16percent-as-ai-credit-stress-rises.html",
+   "weight": 196
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 53,
+    "points": 195
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-27",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Show HN: Marelleo, an open-source story box I built for my kids using ESP32",
+   "topic": "kids",
+   "url": "https://zebra.rodeo/en/blog/marelleo/",
+   "weight": 195
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 53,
+    "points": 151
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-05",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Being a kid making games in the early 2000s",
+   "topic": "kids",
+   "url": "https://jaytholen.net/teengamedev/",
+   "weight": 151
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 151,
+    "points": 82
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-13",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Mercedes-Benz to halt 'all future investments' in Germany",
+   "topic": "merch",
+   "url": "https://www.ft.com/content/f4a1fd87-9abc-4965-963a-a5349dbfdab7",
+   "weight": 151
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 129,
+    "points": 141
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-03",
+   "source": "hackernews",
+   "summary": "",
+   "title": "macOS 27 does not support CoreStorage volumes",
+   "topic": "core",
+   "url": "https://wadetregaskis.com/macos-27-golden-gate-does-not-actually-support-corestorage-or-hfs-volumes/",
+   "weight": 141
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 126,
+    "points": 86
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-26",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Cognitive Mercantilism: AI panic resembles fears of early capitalism",
+   "topic": "merch",
+   "url": "https://contraptions.venkateshrao.com/p/cognitive-mercantilism",
+   "weight": 126
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 90,
+    "points": 38
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-18",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Kids are outsmarting social media bans. That's not a problem we need to solve",
+   "topic": "kids",
+   "url": "https://www.technologyreview.com/2026/10/16/1146834/kids-are-outsmarting-social-media-bans-thats-not-a-problem-we-need-to-solve/",
+   "weight": 90
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 26,
+    "points": 73
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-14",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Show HN: Fursoy – Out-of-order RV64IMAFDV core in SystemVerilog (Linux 6.6)",
+   "topic": "core",
+   "url": "https://github.com/FURSOY/fursoy-cpu",
+   "weight": 73
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 17,
+    "points": 72
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-25",
+   "source": "hackernews",
+   "summary": "",
+   "title": "LISPy things you can do in 64K bytes of core (2019)",
+   "topic": "core",
+   "url": "https://t3x.org/lisp64k/index.html",
+   "weight": 72
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 11,
+    "points": 56
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-17",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Ad-tech company was a delivery system for \"mercenary spyware\"",
+   "topic": "merch",
+   "url": "https://pluralistic.net/2026/10/17/mercenary-spyware/#discover-tech",
+   "weight": 56
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 28,
+    "points": 48
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-30",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Ask HN: What's it like working at Google nowadays? Core teams like Search, Ads?",
+   "topic": "core",
+   "url": "https://news.ycombinator.com/item?id=50306776",
+   "weight": 48
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 31,
+    "points": 48
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-25",
+   "source": "hackernews",
+   "summary": "",
+   "title": "UTS #39: Unicode Security Mechanisms",
+   "topic": "merch",
+   "url": "https://unicode.org/reports/tr39/",
+   "weight": 48
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 23,
+    "points": 47
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-28",
+   "source": "hackernews",
+   "summary": "",
+   "title": "GitHub saw 7.4B commits in Sep., adding 4M CPU cores+160 PB storage to keep up",
+   "topic": "core",
+   "url": "https://thenewstack.io/github-7-4b-commits-september/",
+   "weight": 47
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 28,
+    "points": 13
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-19",
+   "source": "hackernews",
+   "summary": "",
+   "title": "I will give one of my SpaceX shares to every kid in America",
+   "topic": "kids",
+   "url": "https://twitter.com/elonmusk/status/2112089556615123114",
+   "weight": 28
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 11,
+    "points": 25
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-04",
+   "source": "hackernews",
+   "summary": "",
+   "title": "TScert: A Sound Core for TypeScript",
+   "topic": "core",
+   "url": "https://github.com/cristianoc/TScert",
+   "weight": 25
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 2,
+    "points": 12
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-09",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Tiny Core Linux",
+   "topic": "core",
+   "url": "http://tinycorelinux.net/",
+   "weight": 12
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 1,
+    "points": 11
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-17",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Lithos-metal: Qwen3.8-27B on 40-core M5 Max at 168 tokens/s",
+   "topic": "core",
+   "url": "https://github.com/lithos-ai/lithos-metal",
+   "weight": 11
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 8,
+    "points": 10
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-26",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Init – a Rust agent harness that recompiles and hot-swaps its own core mid-task",
+   "topic": "core",
+   "url": "https://initlabs.si/",
+   "weight": 10
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 0,
+    "points": 9
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-07",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Google, Meta and TikTok Sue to Block Law Curbing Addictive Social Media for Kids",
+   "topic": "kids",
+   "url": "https://www.kqed.org/news/12108703/google-meta-and-tiktok-sue-to-block-california-law-curbing-addictive-social-media-for-kids",
+   "weight": 9
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 3,
+    "points": 8
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-30",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Chinese AI chipmaker Iluvatar CoreX says new GPU matches Nvidia's H200",
+   "topic": "core",
+   "url": "https://www.scmp.com/tech/tech-war/article/3372598/ai-chipmaker-iluvatar-corex-says-new-gpu-matches-nvidias-h200-home-grown-push-accelerates",
+   "weight": 8
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 2,
+    "points": 8
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-05",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Show HN: Kids Shelf, your kids' own little internet",
+   "topic": "kids",
+   "url": "https://kidsshelf.org/",
+   "weight": 8
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 1,
+    "points": 7
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-02",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Florida jet crash victims IDd as tech entrepreneur, toddler kids, wife and nanny",
+   "topic": "kids",
+   "url": "https://nypost.com/2026/11/02/us-news/florida-learjet-crash-victims-idd-as-tech-entrepreneur-toddler-kids-wife-nanny/",
+   "weight": 7
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 0,
+    "points": 7
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-23",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Greece enacts social media ban for kids under 15",
+   "topic": "kids",
+   "url": "https://www.engadget.com/2295143/greece-enacts-social-media-ban-for-kids-under-15/",
+   "weight": 7
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 0,
+    "points": 7
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-20",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Is CoreWeave the Silicon Valley Bank of 2026?",
+   "topic": "core",
+   "url": "https://www.ft.com/content/4fb42dd7-a72c-4e20-9e7c-cdc9d3215159",
+   "weight": 7
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 0,
+    "points": 7
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-07",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Italy's Privacy Chief Warns EU: Don't Spy on Kids to Protect Them",
+   "topic": "kids",
+   "url": "https://www.garanteprivacy.it/home/docweb/-/docweb-display/docweb/10317555",
+   "weight": 7
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 3,
+    "points": 7
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-12",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Kids and Parents Are Protesting Google's Classroom AI",
+   "topic": "kids",
+   "url": "https://www.motherjones.com/politics/2026/11/google-ai-protests-students-parents-families-new-york-nationwide-search-lawsuit/",
+   "weight": 7
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 0,
+    "points": 6
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-06",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Google, Meta and TikTok sue California to block law protecting kids from harms",
+   "topic": "kids",
+   "url": "https://www.euronews.com/2026/11/06/google-meta-and-tiktok-sue-california-to-block-law-protecting-kids-from-social-media-harms",
+   "weight": 6
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 0,
+    "points": 6
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-12",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Memory safety bugs in Rust std/core",
+   "topic": "core",
+   "url": "https://forge-blog.github.io/posts/rust-std-memory-safety/",
+   "weight": 6
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 0,
+    "points": 6
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-19",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Musk pledges to give a share of his SpaceX company to 'every kid in America'",
+   "topic": "kids",
+   "url": "https://apnews.com/article/musk-spacex-anthropic-donation-ai-b3312da37a0e340be275295073055e00",
+   "weight": 6
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 6,
+    "points": 5
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-04",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Show HN: Aggregate Finance, your financial data in a spreadsheet you own",
+   "topic": "merch",
+   "url": "https://app.aggregatefi.com/",
+   "weight": 6
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 0,
+    "points": 5
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-30",
+   "source": "hackernews",
+   "summary": "",
+   "title": "OpenAI's latest discoveries spark a backlash and Help My kid hates AI",
+   "topic": "kids",
+   "url": "https://text.npr.org/nx-s1-6022556",
+   "weight": 5
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 0,
+    "points": 5
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-05",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Show HN: Strive and Seek – original merch for builders, hackers and founders",
+   "topic": "merch",
+   "url": "https://shopstriveandseek.com/",
+   "weight": 5
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 2,
+    "points": 4
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-28",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Accelerating Ubuntu Core Desktop",
+   "topic": "core",
+   "url": "https://jnsgr.uk/2026/10/accelerating-ubuntu-core-desktop",
+   "weight": 4
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 0,
+    "points": 4
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-12",
+   "source": "hackernews",
+   "summary": "",
+   "title": "CoreWeave Is Accelerating to Escape Velocity Thanks to GPU Shortages",
+   "topic": "core",
+   "url": "https://www.nextplatform.com/cloud/2026/11/12/coreweave-is-accelerating-to-escape-velocity-thanks-to-gpu-shortages/5309222",
+   "weight": 4
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 1,
+    "points": 4
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-26",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Greece passes social media ban for kids under 15",
+   "topic": "kids",
+   "url": "https://www.dw.com/en/greece-joins-countries-putting-age-limits-on-social-media-banning-access-for-kids-under-15/a-79739606",
+   "weight": 4
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 1,
+    "points": 4
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-05",
+   "source": "hackernews",
+   "summary": "",
+   "title": "The Hanoi Lake Where Kids Hustle American Tourists for English Lessons",
+   "topic": "kids",
+   "url": "https://www.wsj.com/lifestyle/travel/the-hanoi-lake-where-kids-hustle-american-tourists-for-english-lessons-eacf435e",
+   "weight": 4
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 0,
+    "points": 3
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-29",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Ask HN: Nepal Government wants Google Play Merchant access for its Developers",
+   "topic": "merch",
+   "url": "https://news.ycombinator.com/item?id=50283533",
+   "weight": 3
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 0,
+    "points": 2
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-17",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Playbook for recovering frozen merchant funds",
+   "topic": "merch",
+   "url": "https://guigui19833.github.io/fintech-redirect/",
+   "weight": 2
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 2,
+    "points": 1
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-31",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Should your SaaS use a PSP like Stripe or a MOR like Paddle?",
+   "topic": "merch",
+   "url": "https://proximal-forger-2c2.notion.site/Merchant-of-Record-vs-PSP-40176a015679811f8befc1fba62baf57",
+   "weight": 2
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 2,
+    "points": 1
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-30",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Show HN: Opencommerce – OpenRouter for commerce, one API for AI agents to buy",
+   "topic": "merch",
+   "url": "https://opencommerce.sh",
+   "weight": 2
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 0,
+    "points": 2
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-31",
+   "source": "hackernews",
+   "summary": "",
+   "title": "What is Blocus how have the calls that worry merchants and police reached Spain",
+   "topic": "merch",
+   "url": "https://www.democrata.es/en/current-events/what-is-blocus-and-how-have-the-calls-that-worry-merchants-and-police-arrived-in-spain/amp/",
+   "weight": 2
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 1,
+    "points": 1
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-11-02",
+   "source": "hackernews",
+   "summary": "",
+   "title": "I wear your company's merch at Corgi Coffee,London UK for the days you book",
+   "topic": "merch",
+   "url": "https://corgiboy.co.uk/",
+   "weight": 1
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "num_comments": 0,
+    "points": 1
+   },
+   "entity": "",
+   "first_seen": "2026-11-15T05:08:45Z",
+   "last_seen": "2026-11-15T05:08:45Z",
+   "mode": "research",
+   "published": "2026-10-26",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Show HN: Extending X402 for MoR fiat payments and budget attenuation",
+   "topic": "merch",
+   "url": "https://github.com/mceleri/attenuated-agent-budgets",
+   "weight": 1
+  }
+ ],
+ "seed_topics": [
+  "Mercury 3: Diffusion at scale",
+  "Moderna and Merck say their mRNA cancer vaccine cut death, recurrence by 42%",
+  "CoreWeave bond yield tops 16% as AI credit stress rises",
+  "Show HN: Marelleo, an open-source story box I built for my kids using ESP32",
+  "Being a kid making games in the early 2000s"
+ ],
+ "updated": "2026-11-15T05:08:45Z"
+}
