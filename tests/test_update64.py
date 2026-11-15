@@ -41,6 +41,11 @@ def load(name):
     return json.loads((FIX / name).read_text(encoding="utf-8"))
 
 
+@pytest.fixture(autouse=True)
+def _keep_health_out_of_the_repository(tmp_path, monkeypatch):
+    monkeypatch.setenv("CONTENTINTEL_DATA_DIR", str(tmp_path / "health-data"))                  # connection health is written here, never into the repository's data/ folder
+
+
 @pytest.fixture
 def store(tmp_path):
     return Store(tmp_path / "data")
@@ -52,7 +57,7 @@ def test_the_five_new_connections_are_registered_with_only_the_secrets_they_decl
     for cid in ("last30days", "yt_dlp", "omniroute_catalog", "opus_video_prompts", "fb_ads_library_mcp"):
         assert cid in CONN.CONNECTIONS and cid in CONN.IDS
         assert CONN.CONNECTIONS[cid]["fallback"] and CONN.CONNECTIONS[cid]["repo"].startswith("https://github.com/")
-    assert CONN.CONNECTIONS["last30days"]["secrets"] == ("GITHUB_TOKEN", "SERPER_API_KEY")
+    assert CONN.CONNECTIONS["last30days"]["secrets"] == ("GITHUB_TOKEN", "SERPER_API_KEY", "SCRAPECREATORS_API_KEY")
     env = CONN.external_env(SETTINGS, "last30days", {"PATH": "/bin", "ANTHROPIC_API_KEY": "sk-x", "SERPER_API_KEY": "s", "GITHUB_TOKEN": "g", "GROQ_API_KEY": "q"})
     assert env["SERPER_API_KEY"] == "s" and env["GITHUB_TOKEN"] == "g" and "ANTHROPIC_API_KEY" not in env and "GROQ_API_KEY" not in env
 
@@ -396,8 +401,14 @@ def test_openverse_failures_use_the_platforms_codes_and_the_backup_takes_over():
     found, which = OV.find(get, "cotton", "images")
     assert which == "commons" and found[0]["license"] == "cc-by-sa-4.0" and found[0]["creator"] == "Bo" and found[0]["title"] == "Cotton.jpg"
     assert OV.find(get, "cotton", "images", use_openverse=False)[1] == "commons" and not any("api.openverse" in u for u in get.urls[2:])
+    audio = json.dumps({"query": {"pages": {"1": {"title": "File:Song.ogg", "imageinfo": [{"url": "https://c.example/s.ogg", "descriptionurl": "https://c.example/sp", "extmetadata": {"LicenseShortName": {"value": "CC BY 4.0"}}}]}}}})
+    found, which = OV.find(Get({"commons.wikimedia": (200, audio)}), "song", "audio", use_openverse=False)
+    assert which == "commons" and found[0]["kind"] == "audio" and found[0]["title"] == "Song.ogg"
+    sent = Get({"commons.wikimedia": (200, audio)})
+    OV.find(sent, "song", "audio", use_openverse=False)
+    assert "filetype%3Aaudio" in sent.urls[0] and "bitmap" not in sent.urls[0]
     with pytest.raises(K.Failure):
-        OV.find(get, "song", "audio", use_openverse=False)
+        OV.find(Get({"api.openverse": (500, ""), "commons.wikimedia": (500, "")}), "song", "audio")
 
 
 def test_a_token_is_asked_for_only_with_both_halves_of_the_registration_and_a_refusal_means_anonymous():
@@ -614,15 +625,17 @@ def test_the_idea_bank_hooks_follow_the_owners_yt_dlp_switch_and_what_is_install
         data_dir = str(tmp_path)
     off = {"services": {"connections": {"enabled": True, "channels": {"yt_dlp": False}}}}
     monkeypatch.setattr(RT, "_settings", lambda args: off)
-    facts, pace = RT.ideabank_hooks(A(), None, environ={})
-    assert facts is None
+    facts, pace, motion = RT.ideabank_hooks(A(), None, environ={})
+    assert facts is None and motion
     monkeypatch.setattr(RT, "_settings", lambda args: SETTINGS)
     monkeypatch.setattr(RT.shutil, "which", lambda name: "/usr/bin/" + name)
-    facts, pace = RT.ideabank_hooks(A(), None, environ={})
-    assert callable(facts) and callable(pace)
+    facts, pace, motion = RT.ideabank_hooks(A(), None, environ={})
+    assert callable(facts) and callable(pace) and len(motion) == 703
     monkeypatch.setattr(RT.shutil, "which", lambda name: None)
     monkeypatch.setattr(RT, "_has_module", lambda name: False)
-    assert RT.ideabank_hooks(A(), None, environ={}) == (None, None)
+    off_motion = {"services": {"connections": {"enabled": True, "channels": {"opus_video_prompts": False}}}}
+    monkeypatch.setattr(RT, "_settings", lambda args: off_motion)
+    assert RT.ideabank_hooks(A(), None, environ={}) == (None, None, None)
 
 
 def test_the_new_commands_parse_and_the_read_only_ones_run(capsys, tmp_path):
@@ -659,9 +672,10 @@ def test_the_research_tools_workflow_offers_every_tool_installs_the_right_connec
         assert f"{tool}) keys=({key}) ;;" in text and key in CONN.CONNECTIONS
     assert "install) keys=(last30days yt_dlp omniroute_catalog opus_video_prompts fb_ads_library_mcp)" in text
     assert "git add -f data" in text and wf["concurrency"]["group"] == "catalogue-data" and wf["permissions"] == {"contents": "write"}
-    assert text.count("secrets.OPENVERSE_CLIENT_ID") == 1 and text.count("secrets.OPENVERSE_CLIENT_SECRET") == 1
+    assert text.count("secrets.OPENVERSE_CLIENT_ID") == 1 and text.count("secrets.OPENVERSE_CLIENT_SECRET") == 1 and text.count("secrets.SCRAPECREATORS_API_KEY") == 1
+    assert "pool) args=(pool); if [ -d gateway-src ]; then args+=(--gateway-dir gateway-src); fi ;;" in text and "git clone --depth 1 --branch \"$tag\" https://github.com/tashfeenahmed/freellmapi gateway-src" in text
     readme = Path("README.md").read_text(encoding="utf-8")
-    assert "`OPENVERSE_CLIENT_ID`" in readme and "`OPENVERSE_CLIENT_SECRET`" in readme
+    assert "`OPENVERSE_CLIENT_ID`" in readme and "`OPENVERSE_CLIENT_SECRET`" in readme and "`SCRAPECREATORS_API_KEY`" in readme
 
 
 # ---- the hooks reach the Idea Bank, the collector and the commands --------------------------------------------------------------------------------
@@ -727,12 +741,12 @@ def test_a_failing_facts_step_is_reported_and_the_rest_of_the_run_goes_on(store,
 
 def test_the_command_line_hands_the_hooks_to_the_idea_bank_run(monkeypatch, tmp_path):
     seen = {}
-    monkeypatch.setattr(cli.tools_mod, "ideabank_hooks", lambda args, store: ("FACTS", "PACE"))
+    monkeypatch.setattr(cli.tools_mod, "ideabank_hooks", lambda args, store: ("FACTS", "PACE", "MOTION"))
     monkeypatch.setattr(cli.ib_mod, "run_ideabank", lambda *a, **kw: (seen.update(kw) or ([], ["ok"])))
     monkeypatch.delenv("GOOGLE_SERVICE_ACCOUNT_JSON", raising=False)
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     code = cli.main(["ideabank", "--brand", "swoveralls", "--data-dir", str(tmp_path / "data"), "--brands-dir", "brands", "--sources-config", "sources.yaml"])
-    assert code == 0 and seen["video_facts"] == "FACTS" and seen["pace_fn"] == "PACE"
+    assert code == 0 and seen["video_facts"] == "FACTS" and seen["pace_fn"] == "PACE" and seen["motion_entries"] == "MOTION"
 
 
 def test_the_second_reader_is_built_from_the_owners_switch_and_given_to_the_collector(monkeypatch, tmp_path):
@@ -794,3 +808,245 @@ def test_a_collect_run_from_the_command_line_hands_the_second_reader_to_the_coll
     monkeypatch.setattr(cli, "_hub_settings", lambda args: SETTINGS)
     cli.main(["collect", "--brand", "swoveralls", "--dry-run", "--data-dir", str(tmp_path / "data"), "--brands-dir", "brands", "--sources-config", "sources.yaml"])
     assert callable(seen["secondary"])
+
+
+# ---- the review's fixes ---------------------------------------------------------------------------------------------------------------------------
+
+def test_the_pool_report_says_what_the_catalogue_can_and_cannot_tell_and_puts_verdict_ok_first():
+    assert len(POOL.GATEWAY_PLATFORMS) == 42 and "github" in POOL.GATEWAY_PLATFORMS and len(set(POOL.GATEWAY_PLATFORMS)) == 42
+    entries, where = POOL.read(None)
+    providers = yaml.safe_load(Path("ai_providers.yaml").read_text(encoding="utf-8"))["providers"]
+    groups = POOL.candidates(entries, providers)
+    text = "\n".join(POOL.render(groups, where))
+    assert "no 'official provider' field" in text and "Check a provider's own terms before approving it" in text
+    names = [s["provider"] for s in groups["recommended"]]
+    ok = [s["provider"] for s in groups["recommended"] if s["tos"] == ["ok"]]
+    assert ok == ["morph"] and text.index("  - morph:") < min(text.index(f"  - {n}:") for n in names if n not in ok)         # the one provider the catalogue calls ok comes before every caution, ambiguous and unknown one
+    assert f"{len(ok)} with verdict ok first, then {len(names) - len(ok)} with caution, ambiguous or unknown" in text
+    assert all(f"terms: {'/'.join(s['tos'])}" in text for s in groups["recommended"])
+
+
+class PlanRunner:
+    def __init__(self):
+        self.plans, self.envs = [], []
+
+    def __call__(self, cmd, **kw):
+        self.plans.append(json.loads(Path(cmd[cmd.index("--plan") + 1]).read_text()))
+        self.envs.append(kw["env"])
+        return subprocess.CompletedProcess(cmd, 0, (FIX / "l30_research_mock_real.json").read_text(), "")
+
+
+def test_the_tiktok_instagram_and_meta_ads_lanes_are_added_only_when_the_owner_sets_the_key_and_allows_it(tmp_path):
+    root = checkout(tmp_path)
+    lanes = lambda plan: set(plan["subqueries"][0]["sources"])                      # noqa: E731
+    without = PlanRunner()
+    VOICE.ExternalLast30Days(SETTINGS, root=root, environ={"PATH": "/bin"}, runner=without).run("x")
+    assert lanes(without.plans[0]) == set(VOICE.DEFAULT_SOURCES) and "SCRAPECREATORS_API_KEY" not in without.envs[0]
+    keyed = PlanRunner()
+    VOICE.ExternalLast30Days(SETTINGS, root=root, environ={"PATH": "/bin", "SCRAPECREATORS_API_KEY": "sc"}, runner=keyed).run("x")
+    assert lanes(keyed.plans[0]) == set(VOICE.DEFAULT_SOURCES) | {"tiktok", "instagram", "meta_ads"} and keyed.envs[0]["SCRAPECREATORS_API_KEY"] == "sc"
+    withheld = {"services": {"connection_secrets": {"channels": {"last30days": False}}}}
+    held = PlanRunner()
+    VOICE.ExternalLast30Days(withheld, root=root, environ={"PATH": "/bin", "SCRAPECREATORS_API_KEY": "sc"}, runner=held).run("x")
+    assert lanes(held.plans[0]) == set(VOICE.DEFAULT_SOURCES) and "SCRAPECREATORS_API_KEY" not in held.envs[0]          # the owner's secrets switch withholds the key, so the lanes stay off
+
+
+def test_the_scoring_prompt_carries_the_brand_wide_voice_block_only_when_an_item_in_the_batch_echoes_it(store, swov):
+    voice, _ = VOICE.merge({}, [VOICE._item("reddit", "summer sandals comparison thread", "https://r/9", "", {"score": 900}, "", "", "t", "research")], NOW)
+    store.write_extra(swov.slug, "voice", voice)
+    unrelated, _ = _scored_item()
+    with_voice = FakeClaude()
+    with_voice.json_answers = [{"items": [good("IB-0001", 90)]}]
+    run_scoring(store, swov, unrelated, with_voice)
+    without_voice = FakeClaude()
+    without_voice.json_answers = [{"items": [good("IB-0001", 90)]}]
+    bank, _ = _scored_item()
+    run_scoring(Store(store.data_dir.parent / "no-voice"), swov, bank, without_voice)
+    assert with_voice.json_calls[0][1] == without_voice.json_calls[0][1]                  # voice is kept but nothing echoes it: the prompt is exactly the old one
+    echoing = FakeClaude()
+    echoing.json_answers = [{"items": [good("IB-0001", 90)]}]
+    bank, item = _scored_item()
+    item["title"] = "summer sandals comparison on overalls"
+    run_scoring(store, swov, bank, echoing)
+    assert "What audiences say right now" in echoing.json_calls[0][1] and "summer sandals comparison thread" in echoing.json_calls[0][1]
+
+
+def test_openverse_can_be_lifted_to_any_licence_by_the_owner_and_says_so_in_the_address():
+    get = Get({"api.openverse.org/v1/images": (200, (FIX / "openverse_images_documented_fields.json").read_text())})
+    OV.find(get, "cotton", "images")
+    OV.find(get, "cotton", "images", licence_ok_for_ads=False)
+    assert "license_type=commercial" in get.urls[0] and "license_type" not in get.urls[1] and not hasattr(OV, "COMMERCIAL_OK")
+    args = cli.build_parser().parse_args(["assets", "--query", "cotton", "--any-licence"])
+    assert args.any_licence is True and cli.build_parser().parse_args(["assets", "--query", "x"]).any_licence is False
+
+
+def test_the_assets_command_passes_the_owners_licence_choice_through(tmp_path, monkeypatch):
+    monkeypatch.setattr(RT, "_settings", lambda a: SETTINGS)
+    get = Get({"api.openverse": (200, (FIX / "openverse_images_documented_fields.json").read_text())})
+    for flag, expected in (([], True), (["--any-licence"], False)):
+        get.urls.clear()
+        args = cli.build_parser().parse_args(["assets", "--query", "cotton", "--data-dir", str(tmp_path), *flag])
+        RT.run_assets(args, Store(tmp_path), NOW, get=get, post=lambda u, d: (500, ""), environ={})
+        assert ("license_type=commercial" in get.urls[0]) is expected
+
+
+FAKE_PARSER = ("def _parse_ad_library_markdown(md):\n    return [{'library_id': 'EXT1', 'ad_details_url': 'https://www.facebook.com/ads/library/?id=EXT1', 'started_running': None, "
+               "'ads_using_creative': 1, 'advertiser': 'FromRepo', 'cta': None, 'platforms': []}]\n")
+
+
+def test_the_repositorys_own_parser_runs_first_and_the_platforms_copy_takes_over_when_it_is_missing_or_fails(tmp_path, monkeypatch):
+    import sys
+    ext = tmp_path / "ext"
+    (ext / "fb_ads_library_mcp").mkdir(parents=True)
+    (ext / "fb_ads_library_mcp" / AD.PARSER_FILE).write_text(FAKE_PARSER)
+    monkeypatch.setenv("CONTENTINTEL_EXTERNAL_DIR", str(ext))
+    before = {m: sys.modules.get(m) for m in ("fastmcp", "crawl4ai")}
+    assert callable(AD.checkout_parser()) and {m: sys.modules.get(m) for m in ("fastmcp", "crawl4ai")} == before          # the stand-ins are gone again
+    page = "<div>Library ID: 5</div><a href='https://www.facebook.com/x/'>Brand X</a>"
+    new, facts = AD.make_reader(SETTINGS, C._row)(page, [])
+    assert [r["item_id"] for r in new] == ["meta_ads:EXT1"] and new[0]["handle"] == "FromRepo"                         # the repository's answer was used
+    (ext / "fb_ads_library_mcp" / AD.PARSER_FILE).write_text("def _parse_ad_library_markdown(md):\n    raise RuntimeError('broken')\n")
+    new, facts = AD.make_reader(SETTINGS, C._row)(page, [])
+    assert [r["item_id"] for r in new] == ["meta_ads:5"] and facts["added"] == 1                                         # it failed, so the platform's copy answered
+    (ext / "fb_ads_library_mcp" / AD.PARSER_FILE).write_text("def _parse_ad_library_markdown(md):\n    return 'not a list'\n")
+    assert [r["item_id"] for r in AD.make_reader(SETTINGS, C._row)(page, [])[0]] == ["meta_ads:5"]
+    (ext / "fb_ads_library_mcp" / AD.PARSER_FILE).write_text("x = 1\n")
+    assert AD.checkout_parser() is None and [r["item_id"] for r in AD.make_reader(SETTINGS, C._row)(page, [])[0]] == ["meta_ads:5"]
+    health = json.loads((tmp_path / "health-data" / "_shared" / "connections_health.json").read_text())
+    assert "fb_ads_library_mcp" in json.dumps(health)                                                                    # the repository's attempts were recorded
+
+
+def test_the_real_repositorys_parser_loads_and_agrees_with_the_platforms_copy_when_its_checkout_is_available():
+    real = Path("/tmp/r35/RamsesAguirre777_facebook-ads-library-mcp")
+    if not real.is_dir():
+        pytest.skip("SKIPPED BY NAME: the repository's checkout is not present here (the Research tools install step clones it)")
+    fn = AD.checkout_parser(real)
+    md = (FIX / "adlib_cards.md").read_text()
+    assert callable(fn) and fn(md) == AD.parse(md)
+
+
+def test_discovered_topics_become_auto_seed_keywords_only_when_asked_and_only_as_short_phrases(store):
+    assert "no auto seeds exist yet" in RT.seed_auto_seeds(store, "swoveralls", ["weighted hoodie blankets"])
+    assert store.read_auto_seeds("swoveralls") is None
+    store.write_auto_seeds("swoveralls", {"keywords": {"direct": ["overalls"], "adjacent": [], "cross_industry": ["pop up shop"]}, "context": "c"})
+    said = RT.seed_auto_seeds(store, "swoveralls", ["Weighted Hoodie Blankets For Winter Nights", "#loungewear", "pop up shop", "matching family pyjamas"], limit=5)
+    seeds = store.read_auto_seeds("swoveralls")
+    assert seeds["keywords"]["cross_industry"] == ["pop up shop", "weighted hoodie blankets for", "loungewear", "matching family pyjamas"] and "weighted hoodie blankets for" in said
+    assert seeds["keywords"]["direct"] == ["overalls"] and seeds["context"] == "c"
+    assert "already a seed" in RT.seed_auto_seeds(store, "swoveralls", ["matching family pyjamas"])
+    capped = RT.seed_auto_seeds(store, "swoveralls", [f"topic number {i}" for i in range(9)], limit=3)
+    assert capped.count(";") == 2 and len(store.read_auto_seeds("swoveralls")["keywords"]["cross_industry"]) == 7
+
+
+def test_the_voice_command_seeds_only_with_the_seed_flag(tmp_path, monkeypatch, capsys):
+    ext = tmp_path / "ext"
+    shutil.copytree(checkout(tmp_path / "x"), ext / "last30days")
+    monkeypatch.setenv("CONTENTINTEL_EXTERNAL_DIR", str(ext))
+    monkeypatch.setattr(RT, "_settings", lambda a: SETTINGS)
+    discovery = Runner((FIX / "l30_discovery_documented.json").read_text())
+    store_ = Store(tmp_path / "data")
+    store_.write_auto_seeds("swoveralls", {"keywords": {"direct": [], "adjacent": [], "cross_industry": []}})
+    for flag in ([], ["--seed"]):
+        args = cli.build_parser().parse_args(["voice", "--brand", "swoveralls", "--mode", "discover", "--data-dir", str(tmp_path / "data"), "--brands-dir", "brands", *flag])
+        RT.run_voice(args, store_, NOW, runner=discovery, environ={})
+        out = capsys.readouterr().out
+        assert ("added to the auto seeds" in out) is bool(flag)
+    assert store_.read_auto_seeds("swoveralls")["keywords"]["cross_industry"] == ["weighted hoodie blankets", "matching family pyjamas"]
+
+
+def test_each_kept_item_gets_its_closest_motion_format_once_and_the_sheet_shows_it():
+    entries = MOTION.read(None)[0]
+    bank = bank_with("a", "b", "c")
+    first, second, third = (bank["items"][i] for i in ("IB-0001", "IB-0002", "IB-0003"))
+    for item in (first, second):
+        item.update({"state": "kept", "score": 80})
+    third.update({"state": "kept", "score": 80})
+    first.update({"mechanism": "kinetic typography", "concept": "text reveal over the product"})
+    second.update({"mechanism": "zzzz", "concept": "qqqq"})
+    assert IB.note_motion(bank, entries) == 1
+    assert first["motion_idea"] and "https://x.com/" in first["motion_idea"] and second["motion_idea"] == "" and "motion_idea" not in third          # nothing close: ''; no concept yet: left for later
+    saved = first["motion_idea"]
+    third.update({"mechanism": "text reveal", "concept": "kinetic typography reveal"})
+    assert IB.note_motion(bank, entries) == 1 and first["motion_idea"] == saved                          # the first answer is kept, never redone
+    assert IB.sheet_rows(bank)["IB-0001"]["motion_idea"] == saved and "motion_idea" in IB.IDEABANK_COLUMNS
+
+
+def test_the_idea_bank_run_gives_motion_formats_to_scored_items(store, swov, drive):
+    from test_ideabank import full_run, seeded
+    seeded(store)
+    claude = FakeClaude()
+    claude.json_answers = [{"items": [dict(good("IB-0001", 80), mechanism="kinetic typography", concept="text reveal over the product"), good("IB-0002", 80)]}]
+    new, lines = full_run(store, swov, drive, claude, motion_entries=MOTION.read(None)[0])
+    bank = store.read_ideabank("swoveralls")
+    assert bank["items"]["IB-0001"]["motion_idea"].startswith(("motion", "3d", "explainer", "interactive")) and bank["items"]["IB-0002"].get("motion_idea") is None
+    assert "swoveralls: 1 item(s) got a close motion format from the prompt library (column motion_idea)" in lines
+    off = full_run(store, swov, drive, None)
+    assert not any("motion" in x for x in off[1])
+
+
+def test_video_facts_also_cover_x_linkedin_and_vimeo_videos_and_never_an_ad_card():
+    def item(platform, url, **kw):
+        return dict({"platform": platform, "url": url}, **kw)
+    assert VM.wants_facts(item("x", "https://x.com/brand/status/1")) and VM.wants_facts(item("linkedin", "https://www.linkedin.com/posts/brand-123")) and VM.wants_facts(item("web", "https://vimeo.com/123456"))
+    assert not VM.wants_facts(item("meta_ads", "https://x.com/brand/status/1")) and not VM.wants_facts(item("web", "https://x.com/brand"))
+
+
+def test_the_old_limits_are_options_or_larger(store, swov, tmp_path):
+    p = cli.build_parser()
+    args = p.parse_args(["voice", "--brand", "swoveralls"])
+    assert (args.max_peers, args.max_topics, args.seed) == (6, 5, False) and p.parse_args(["voice", "--brand", "x", "--max-peers", "3", "--max-topics", "2"]).max_topics == 2
+    bench = {"version": 1, "items": {f"k{i}": {"name": f"Brand {i}", "status": "resolved"} for i in range(8)}}
+    store.write_benchmarks("swoveralls", bench)
+    assert len(RT._peer_names(store, "swoveralls")) == 6 and len(RT._peer_names(store, "swoveralls", 3)) == 3
+    assert len(VOICE.topics_for(swov, store, limit=2)) <= 2 and VOICE.topics_for(swov, store, limit=1)[-1] == swov.name and VOICE.KEEP == 2000
+    many = [VOICE._item("reddit", f"t{i}", f"https://r/{i}", "", {"score": i}, "", "", "t", "research") for i in range(500)]
+    assert len(VOICE.merge({}, many, NOW)[0]["items"]) == 500
+
+
+def test_the_brief_shows_more_evidence_than_before(store, swov):
+    bank, item = _scored_item()
+    voice, _ = VOICE.merge({}, [VOICE._item("reddit", f"voice line {i}", f"https://r/{i}", "", {"score": 100 - i}, "", "", "t", "research") for i in range(12)], NOW)
+    store.write_extra(swov.slug, "voice", voice)
+    motion = MOTION.read(None)[0][:7]
+    assets = [{"title": f"a{i}", "url": f"https://i/{i}", "page": "", "license": "by", "license_version": "", "creator": "c", "attribution": "x"} for i in range(9)]
+    text = BR.extras_text(store, swov, [item], motion=motion, assets=assets)
+    assert text.count("voice line") == 8 and text.count("\n- ") >= 8 + 5 + 6 - 1 and text.count("[BY]") == 6 and text.count("never copy") == 1
+    assert sum(1 for line in text.split("\n") if line.startswith("- ") and "by " in line and "https://x.com/" in line) == 5
+
+
+def test_the_readme_has_one_secrets_section_and_one_ads_section_and_documents_the_new_secrets():
+    readme = Path("README.md").read_text(encoding="utf-8")
+    assert readme.count("\n## Secrets") == 1 and readme.count("\n## Ads, social posts and deep research (Actions > Collect)") == 1
+    section = readme[readme.index("## Secrets"):]
+    section = section[:section.index("\n## ", 5)]
+    for name in ("OPENVERSE_CLIENT_ID", "OPENVERSE_CLIENT_SECRET", "SCRAPECREATORS_API_KEY", "GOOGLE_SERVICE_ACCOUNT_JSON", "ANTHROPIC_API_KEY", "SERPER_API_KEY"):
+        assert f"`{name}`" in section, name
+    assert "Gemini's page text sometimes holds the report twice" in readme and "TikTok's security puzzle" in readme
+
+
+def test_the_video_facts_limit_per_run_is_an_option_and_says_what_waits(monkeypatch, tmp_path):
+    class A:
+        data_dir = str(tmp_path)
+    monkeypatch.setattr(RT, "_settings", lambda args: SETTINGS)
+    monkeypatch.setattr(RT.shutil, "which", lambda name: "/usr/bin/" + name)
+    info = json.dumps(load("ytdlp_tiktok_documented_fields.json"))
+    runner = Runner(info)
+    items = {f"IB-{n}": {"platform": "tiktok", "handle": "h", "url": f"https://www.tiktok.com/@h/video/{n}", "metrics": {}} for n in range(1, 4)}
+    facts, _, _ = RT.ideabank_hooks(A(), None, environ={"CONTENTINTEL_VIDEO_FACTS_LIMIT": "2"}, runner=runner)
+    done, notes = facts(items, list(items))
+    assert done == 2 and len(runner.calls) == 2 and any("2 video(s) were read this run" in n for n in notes) and "video_meta" not in items["IB-3"]
+    runner = Runner(info)
+    facts, _, _ = RT.ideabank_hooks(A(), None, environ={}, runner=runner)
+    assert facts(items, ["IB-3"])[0] == 1
+
+
+def test_the_pool_command_reads_the_gateways_own_provider_list_from_the_directory_it_is_given(tmp_path, capsys):
+    src = tmp_path / "gw" / "server" / "src" / "providers"
+    src.mkdir(parents=True)
+    (src / "index.ts").write_text("\n".join(f"register(new OpenAICompatProvider({{ platform: 'p{i}' }}));" for i in range(25)) + "\nregister(new OpenAICompatProvider({ platform: 'morph' }));\n", encoding="utf-8")
+    args = cli.build_parser().parse_args(["pool", "--gateway-dir", str(tmp_path / "gw")])
+    assert RT.run_pool(args) == 0
+    with_gateway = capsys.readouterr().out
+    assert "  - morph:" not in with_gateway                                    # the gateway serves 'morph' in this directory, so it is not offered
+    assert RT.run_pool(cli.build_parser().parse_args(["pool"])) == 0
+    assert "  - morph:" in capsys.readouterr().out
