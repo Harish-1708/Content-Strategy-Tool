@@ -147,7 +147,7 @@ def test_the_reader_tries_the_page_its_mobile_address_and_its_basic_address_and_
         raise ConnectionError("blocked")
     out = MP.make_finder(Serper(), Claude(), blocked)("Dude Wipes")
     assert out["status"] == "ambiguous" and "page id could not be read" in out["reason"]
-    assert "tried www.facebook.com: ConnectionError; m.facebook.com: ConnectionError; mbasic.facebook.com: ConnectionError" in out["reason"] and len(asked) == 3
+    assert "tried www.facebook.com: ConnectionError; m.facebook.com: ConnectionError; mbasic.facebook.com: ConnectionError; www.facebook.com/plugins: ConnectionError" in out["reason"] and len(asked) == 4          # Update 65 adds the public Page Plugin as the fourth place
     empty = MP.make_finder(Serper(), Claude(), lambda url: "<html>login</html>")("Dude Wipes")
     assert "www.facebook.com: no page id in the page" in empty["reason"]
 

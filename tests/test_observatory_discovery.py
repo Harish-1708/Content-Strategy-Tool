@@ -143,11 +143,15 @@ def test_automatic_monitoring_respects_both_caps_and_the_ai_judgement():
     spec = {f"c{n}": (f"c{n}.com", 90 - n) for n in range(10)}
     probes = {k: (True, "") for k in spec}
     book = {"candidates": []}
-    merged(book, spec, probes=probes)
+    capped = settings(discovery__auto_monitor_max=6, discovery__max_monitored=10)                # the caps still work when the owner sets them
+    merged(book, spec, probes=probes, cfg=capped)
     assert sum(s == "monitoring" for s in status(book).values()) == 6                         # auto_monitor_max
     book = {"candidates": []}
-    merged(book, spec, probes=probes, elsewhere=7)
+    merged(book, spec, probes=probes, elsewhere=7, cfg=capped)
     assert sum(s == "monitoring" for s in status(book).values()) == 3                         # max_monitored 10 minus 7 already watched
+    book = {"candidates": []}
+    merged(book, spec, probes=probes)
+    assert sum(s == "monitoring" for s in status(book).values()) == 10                        # by default there is no practical cap: all ten are monitored
     book = {"candidates": []}
     merged(book, {"x": ("x.com", 95)}, probes={"x": (True, "")}, judged={"x": {"relevant": False, "reason": "a different market", "model": "m"}})
     assert status(book) == {"x": "weak"}

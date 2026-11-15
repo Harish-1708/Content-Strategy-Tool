@@ -26,7 +26,7 @@ def test_the_defaults_obey_robots_for_the_crawler_and_treat_it_as_advice_for_rea
     s = OC.load_settings("missing.yaml")
     assert s["crawl_policy"] == {"robots": "obey", "reader_robots": "advisory", "basis": "", "overrides": []}
     assert "authorised_access" not in s and s["advanced"] == {"proxies": [], "rotate": "none"} and s["readers"]["jina"] is True and s["readers"]["exa"] is True
-    assert s["discovery"]["auto_monitor_max"] == 6 and s["discovery"]["max_monitored"] == 10                         # the confirmed allocation
+    assert s["discovery"]["auto_monitor_max"] == 50 and s["discovery"]["max_monitored"] == 100                         # the owner removed the 6/10 cap: these are the settings' own maximums
 
 
 def test_advisory_robots_for_the_crawler_needs_a_written_basis(tmp_path):

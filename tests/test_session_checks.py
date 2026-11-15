@@ -106,7 +106,7 @@ def test_a_page_with_neither_the_prompt_box_nor_a_sign_in_link_is_unknown(cfg):
 
 
 def test_a_site_without_signed_out_selectors_behaves_exactly_as_before(cfg):
-    site = dict(cfg["sites"]["instagram"])
+    site = dict(cfg["sites"]["tiktok"])                                          # Instagram has signed_out_any since Update 65 (its login page can look signed in); TikTok is the site that still has none
     assert "signed_out_any" not in site
     both = FakeBrowser(present_always={site["logged_in_any"][0], site["login_wall_any"][0]})
     assert C.session_state(both, site) == "ok"                                   # the old order: logged-in markers first
