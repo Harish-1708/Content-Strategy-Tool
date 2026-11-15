@@ -87,6 +87,13 @@
   "last_success": "2026-11-11T05:14:21Z",
   "v": 2
  },
+ "fb_ads_library_mcp": {
+  "attempts": [],
+  "builtin_used": 41,
+  "last_error": null,
+  "last_success": "",
+  "v": 2
+ },
  "freellmapi": {
   "attempts": [
    {
