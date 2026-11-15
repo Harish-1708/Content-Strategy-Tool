@@ -14,8 +14,8 @@ from . import contract as K
 API = "https://api.openverse.org/v1"
 TOKEN_URL = API + "/auth_tokens/token/"
 COMMONS = "https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit={n}&gsrsearch={q}&prop=imageinfo&iiprop=url|extmetadata|size&iiurlwidth=640&format=json"
+COMMONS_FILETYPE = {"images": "bitmap", "audio": "audio"}
 KINDS = ("images", "audio")
-COMMERCIAL_OK = ("cc0", "pdm", "by", "by-sa")        # licences that allow use in advertising with a credit line where needed
 
 
 def _asset(kind, r):
@@ -62,9 +62,9 @@ def _strip(html):
     return " ".join(re.sub(r"<[^>]+>", " ", str(html or "")).split())
 
 
-def commons_search(get, query, *, limit=10):
-    """The platform's own backup: Wikimedia Commons pictures with their licence and author. Raises K.Failure."""
-    status, text = get(COMMONS.format(n=max(1, min(int(limit), 20)), q=quote_plus("filetype:bitmap " + " ".join(str(query).split())[:120])), {})
+def commons_search(get, query, kind="images", *, limit=10):
+    """The platform's own backup: Wikimedia Commons pictures or sounds with their licence and author. Raises K.Failure."""
+    status, text = get(COMMONS.format(n=max(1, min(int(limit), 20)), q=quote_plus(f"filetype:{COMMONS_FILETYPE.get(kind, 'bitmap')} " + " ".join(str(query).split())[:120])), {})
     if status != 200:
         raise K.Failure(K.UPSTREAM_BROKEN, f"Wikimedia Commons answered HTTP {status}")
     try:
@@ -76,27 +76,27 @@ def commons_search(get, query, *, limit=10):
         info = (page.get("imageinfo") or [{}])[0]
         meta = info.get("extmetadata") or {}
         lic = _strip((meta.get("LicenseShortName") or {}).get("value")).lower().replace(" ", "-")
-        out.append({"kind": "image", "title": str(page.get("title") or "").removeprefix("File:")[:140], "url": str(info.get("url") or ""), "thumbnail": str(info.get("thumburl") or ""),
+        out.append({"kind": "audio" if kind == "audio" else "image", "title": str(page.get("title") or "").removeprefix("File:")[:140], "url": str(info.get("url") or ""), "thumbnail": str(info.get("thumburl") or ""),
                     "page": str(info.get("descriptionurl") or ""), "creator": _strip((meta.get("Artist") or {}).get("value"))[:100], "license": lic, "license_version": "",
                     "license_url": _strip((meta.get("LicenseUrl") or {}).get("value")), "attribution": _strip((meta.get("Attribution") or {}).get("value"))[:300], "source": "wikimedia commons",
                     "width": info.get("width"), "height": info.get("height"), "duration_ms": None, "via": "commons"})
     return [a for a in out if a["url"]]
 
 
-def find(get, query, kind="images", *, limit=10, bearer="", use_openverse=True):
-    """(assets, which) with the backup as the second route: Openverse first when it is switched on, then Commons (pictures only). Raises the last failure when both fail."""
+def find(get, query, kind="images", *, limit=10, bearer="", use_openverse=True, licence_ok_for_ads=True):
+    """(assets, which) with the backup as the second route: Openverse first when it is switched on, then Wikimedia Commons (pictures and sounds). licence_ok_for_ads=False lifts Openverse's advertising-use filter
+    (the owner's choice; the licence and credit line still come with every result). Raises the last failure when both fail."""
     last = None
     if use_openverse:
         try:
-            return search(get, query, kind, limit=limit, bearer=bearer), "openverse"
+            return search(get, query, kind, limit=limit, bearer=bearer, licence_ok_for_ads=licence_ok_for_ads), "openverse"
         except K.Failure as exc:
             last = exc
-    if kind == "images":
-        try:
-            return commons_search(get, query, limit=limit), "commons"
-        except K.Failure as exc:
-            last = exc
-    raise last or K.Failure(K.NEED_SETUP, "Openverse is switched off and the backup only finds pictures")
+    try:
+        return commons_search(get, query, kind, limit=limit), "commons"
+    except K.Failure as exc:
+        last = exc
+    raise last
 
 
 def credit_line(a):

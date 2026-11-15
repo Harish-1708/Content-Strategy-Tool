@@ -19,6 +19,7 @@ import yaml
 
 from .collectors import collected_rows
 from . import mediacheck
+from . import motion_prompts as MOTION
 from . import pace as PACE
 from . import videometa as VMETA
 from . import voice as VOICE
@@ -886,6 +887,20 @@ def _voice_of(store, brand):
     return data if isinstance(data, dict) and data.get("items") else None
 
 
+def note_motion(bank, entries):
+    """For each kept, scored item, the closest motion format from the prompt library (two shared words at least), kept as 'motion_idea' with its author and link; '' when nothing is close (not asked again). Items not yet
+    given a mechanism or concept are left for a later run. Returns how many items got a format."""
+    got = 0
+    for item in bank["items"].values():
+        if state_of(item) != "kept" or item.get("motion_idea") is not None or not (item.get("mechanism") or item.get("concept")):
+            continue
+        text = " ".join(str(item.get(k) or "") for k in ("mechanism", "concept", "visual_hook", "technique", "topic"))
+        hit = MOTION.search(entries, text, 1)
+        item["motion_idea"] = MOTION.line(hit[0])[:300] if hit else ""
+        got += 1 if hit else 0
+    return got
+
+
 def _note_voice(bank, ids, voice):
     """Remember, on each item, the strongest thing people said about the same subject (shown in the sheet)."""
     for i in ids:
@@ -960,8 +975,7 @@ def score_items(bank, ids, claude, brand, store, settings, budget, now, request=
     todo.sort(key=lambda i: _interest(bank["items"][i]["metrics"]), reverse=True)
     context = brand_context(brand, store)
     voice = _voice_of(store, brand)
-    if voice:
-        context += "\nWhat audiences say right now (real posts, with engagement): " + " ".join(VOICE.prompt_lines(voice, 4).split("\n- ")).strip("- ")
+    voice_block = ("\nWhat audiences say right now (real posts, with engagement): " + " ".join(VOICE.prompt_lines(voice, 8).split("\n- ")).strip("- ")) if voice else ""
     ask = (f"\nRequest: {request['text']}" + (f" (occasion: {request['occasion']})" if request.get("occasion") else "")
            + (f"\nFormats wanted: {', '.join(request['formats'])}" if request.get("formats") else "")) if request else ""
     scored, lines, calls = 0, [], 0
@@ -974,7 +988,8 @@ def score_items(bank, ids, claude, brand, store, settings, budget, now, request=
             break
         batch = todo[start:start + settings.score_batch]
         calls += 1
-        user = f"{context}{ask}\n\nItems:\n" + "\n".join(_item_line(bank["items"][i], voice) for i in batch)
+        echoed = voice_block and any(VOICE.evidence_for(voice, f"{bank['items'][i].get('title', '')} {bank['items'][i].get('text', '')}", 1) for i in batch)
+        user = f"{context}{voice_block if echoed else ''}{ask}\n\nItems:\n" + "\n".join(_item_line(bank["items"][i], voice) for i in batch)          # the block is sent only when an item in this batch echoes it: otherwise the prompt is the old one
         try:
             got = clean_scores(claude.json_task(SCORE_SYSTEM, user, max_tokens=2500), set(batch))
         except ProviderError as exc:
@@ -1441,7 +1456,7 @@ def rescue_items(bank, ids, drive=None):
 
 IDEABANK_COLUMNS = ["idea_id", "kind", "platform", "title", "handle", "url", "posted_at", "score", "fit", "idea", "format", "mechanism", "technique", "concept",
                     "summary", "how_to_use", "hook_line", "first_test", "audience", "channel", "risk", "topic", "region", "request_id", "likes", "comments", "shares", "views", "days_running",
-                    "signal", "preview", "visual_hook", "look", "outlier", "sound", "pace", "people_say", "drive_folder", "assets", "asset_note", "added_at", "scored_at"]
+                    "signal", "preview", "visual_hook", "look", "outlier", "sound", "pace", "people_say", "motion_idea", "drive_folder", "assets", "asset_note", "added_at", "scored_at"]
 
 
 def sheet_rows(bank):
@@ -1461,7 +1476,7 @@ def sheet_rows(bank):
                          "shares": m.get("shares", ""), "views": m.get("views", ""), "days_running": m.get("days_running", ""),
                          "signal": m.get("signal", ""), "preview": preview_label(item),
                          "visual_hook": item.get("visual_hook", ""), "look": item.get("look", ""),
-                         "outlier": m.get("outlier", ""), "sound": (item.get("video_meta") or {}).get("music", ""), "pace": PACE.describe(item.get("pace")), "people_say": item.get("people_say", ""),
+                         "outlier": m.get("outlier", ""), "sound": (item.get("video_meta") or {}).get("music", ""), "pace": PACE.describe(item.get("pace")), "people_say": item.get("people_say", ""), "motion_idea": item.get("motion_idea", ""),
                          "drive_folder": item["drive_folder_url"], "assets": len(item["assets"]),
                          "asset_note": item["asset_note"], "added_at": item["added_at"], "scored_at": item["scored_at"]}
     return rows
@@ -1511,7 +1526,7 @@ def _counts(bank):
 
 def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=None, request=None, web_sources=None,
                  dry_run=False, budget=None, since="", skip_brands=(), audit=False, video_runner=None, cookies=None, rescues=(), browser_factory=None, protected=None, health=None,
-                 video_facts=None, pace_fn=None):
+                 video_facts=None, pace_fn=None, motion_entries=None):
     """Take new sourced items into the brand's bank, keep only what is useful, save its files and score it. Returns (new ids, summary lines).
 
     In order: leave out the brand's own content and copies; tidy what is already in the bank the same way; score what is not scored; keep
@@ -1577,6 +1592,13 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
             lines.append(f"{brand.slug}: {enriched} item(s) got a hook line, first test, audience and channel")
     else:
         same_technique = 0
+    if motion_entries:
+        try:
+            matched = note_motion(bank, motion_entries)
+            if matched:
+                lines.append(f"{brand.slug}: {matched} item(s) got a close motion format from the prompt library (column motion_idea)")
+        except Exception as exc:                                                   # noqa: BLE001 - extra evidence never stops the bank
+            lines.append(f"{brand.slug}: motion formats skipped ({exc.__class__.__name__})")
     if get is not None:
         _, notes = resolve_covers(bank, get, settings)
         lines += [f"{brand.slug}: {n}" for n in notes]

@@ -60,6 +60,9 @@ def add_parsers(sub, common):
     p.add_argument("--mode", choices=VOICE.MODES, default="research", help="research (a topic), competitors (the brand's followed benchmark brands side by side) or discover (what is accelerating in a field)")
     p.add_argument("--peers", default="", help="competitors mode: comma-separated names (default: the brand's benchmark brands)")
     p.add_argument("--depth", choices=("quick", "deep"), default="quick")
+    p.add_argument("--max-peers", type=int, default=6, help="competitors mode: how many benchmark brands to compare (the engine takes up to 6)")
+    p.add_argument("--max-topics", type=int, default=5, help="research mode: how many of the brand's own topics to ask about when none is given")
+    p.add_argument("--seed", action="store_true", help="discover mode: also add the discovered topics to the brand's auto seeds as Meta Ad Library keywords (only when auto seeds already exist)")
     p.add_argument("--dry-run", action="store_true", help="say what would be asked; ask nothing")
 
     p = sub.add_parser("analyze", help="video facts (yt-dlp) for an address and/or the pace of a video file (ffmpeg); prints, saves nothing")
@@ -78,6 +81,7 @@ def add_parsers(sub, common):
     p.add_argument("--query", required=True)
     p.add_argument("--kind", choices=OPENVERSE.KINDS, default="images")
     p.add_argument("--limit", type=int, default=8)
+    p.add_argument("--any-licence", action="store_true", help="lift Openverse's filter to licences that allow use in advertising (every result still shows its licence and credit line)")
 
     p = sub.add_parser("motion", help="motion formats close to a text, from the prompt library (inspiration only, authors credited)")
     common(p)
@@ -93,7 +97,7 @@ def _settings(args):
         return None
 
 
-def _peer_names(store, slug, limit=4):
+def _peer_names(store, slug, limit=6):
     state = store.read_benchmarks(slug) or {}
     names = []
     for entry in (state.get("items") or {}).values():
@@ -122,12 +126,12 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
         if args.mode == "discover":
             jobs = [("", ())] if not args.topic else [(t, ()) for t in args.topic]
         elif args.mode == "competitors":
-            peers = tuple(x.strip() for x in args.peers.split(",") if x.strip()) or tuple(_peer_names(store, slug))
+            peers = tuple(x.strip() for x in args.peers.split(",") if x.strip()) or tuple(_peer_names(store, slug, args.max_peers))
             jobs = [(brand.name, peers)] if peers else []
             if not peers:
                 print(f"{slug}: competitors mode needs peers: none were given and the brand has no benchmark brands yet")
         else:
-            jobs = [(t, ()) for t in (args.topic or VOICE.topics_for(brand, store))]
+            jobs = [(t, ()) for t in (args.topic or VOICE.topics_for(brand, store, limit=args.max_topics))]
         if args.dry_run:
             for topic, peers in jobs:
                 print(f"{slug}: would ask {args.mode} about {topic or 'trending topics'!r}" + (f" against {', '.join(peers)}" if peers else ""))
@@ -151,6 +155,8 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
             top = VOICE.prompt_lines(kept, 3)
             kept["seed_topics"] = VOICE.seed_topics(kept)
             store.write_extra(slug, "voice", kept)
+            if args.seed and args.mode == "discover":
+                print(f"{slug}: " + seed_auto_seeds(store, slug, kept["seed_topics"]))
             ents = VOICE.by_entity(kept)
             if ents:
                 print(f"{slug}: talk about each competitor: " + "; ".join(f"{e}: {n} item(s), {w:,} engagement" for e, (n, w) in sorted(ents.items(), key=lambda kv: -kv[1][1])))
@@ -158,6 +164,25 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
                 print(f"{slug}: topics people are discussing (suggested next research topics): " + "; ".join(kept["seed_topics"]))
             print(f"{slug}: audience voice now holds {len(kept.get('items', []))} item(s), {total_new} new this run." + (f"\n  Strongest:\n{top}" if top else ""))
     return worst
+
+
+def seed_auto_seeds(store, slug, topics, limit=5):
+    """Add discovered topics to the brand's auto seeds as Meta Ad Library keywords (cross-industry scope: ideas from what is accelerating). Opt-in (voice --seed); only when auto seeds already exist; short generic phrases only
+    (1 to 4 words, no brand names beyond what the seeds already allow, no # or @); they last until the seeds are next refreshed. Returns what was done, in words."""
+    import re
+    seeds = store.read_auto_seeds(slug)
+    if not isinstance(seeds, dict) or not isinstance(seeds.get("keywords"), dict):
+        return "no auto seeds exist yet, so nothing was added (run Collect with mode 'seeds' first); the topics stay in the voice file as suggestions"
+    pool = seeds["keywords"].setdefault("cross_industry", [])
+    added = []
+    for topic in topics:
+        phrase = " ".join(re.sub(r"[#@]", "", str(topic)).lower().split()[:4])
+        if phrase and len(phrase) <= 60 and phrase not in {p.lower() for p in pool} and len(added) < limit:
+            pool.append(phrase)
+            added.append(phrase)
+    if added:
+        store.write_auto_seeds(slug, seeds)
+    return ("added to the auto seeds as Meta Ad Library keywords: " + "; ".join(added)) if added else "every discovered topic was already a seed"
 
 
 def run_analyze(args, now="", *, runner=subprocess.run):
@@ -207,7 +232,7 @@ def run_assets(args, store, now, *, get=default_get, post=default_post, environ=
         use = SERVICES.allowed(settings, "openverse", "brief")[0]
     bearer = OPENVERSE.token(post, environ.get("OPENVERSE_CLIENT_ID", ""), environ.get("OPENVERSE_CLIENT_SECRET", "")) if use else ""
     try:
-        found, which = OPENVERSE.find(get, args.query, args.kind, limit=args.limit, bearer=bearer, use_openverse=use)
+        found, which = OPENVERSE.find(get, args.query, args.kind, limit=args.limit, bearer=bearer, use_openverse=use, licence_ok_for_ads=not args.any_licence)
     except K.Failure as exc:
         print(f"Assets: {exc.code}: {exc.message}")
         return 0
@@ -235,7 +260,7 @@ def run_motion(args):
 
 
 def ideabank_hooks(args, store, *, environ=None, runner=subprocess.run):
-    """(video_facts, pace_fn) for the Idea Bank run, each None when switched off or not possible here: the owner's yt_dlp connection, and ffmpeg on the machine."""
+    """(video_facts, pace_fn, motion_entries) for the Idea Bank run, each None when switched off or not possible here: the owner's yt_dlp connection, ffmpeg on the machine, and the owner's opus_video_prompts connection."""
     import os
     import tempfile
     from . import videofetch
@@ -249,10 +274,16 @@ def ideabank_hooks(args, store, *, environ=None, runner=subprocess.run):
         def read_facts(items, ids):
             with tempfile.TemporaryDirectory() as tmp:
                 jar = videofetch.cookie_file([environ.get("INSTAGRAM_COOKIES"), environ.get("TIKTOK_COOKIES")], Path(tmp) / "cookies.txt")
-                return VMETA.enrich_items(items, ids, run=runner, followers=followers, cookies=jar, now=_now())
+                return VMETA.enrich_items(items, ids, run=runner, followers=followers, cookies=jar, now=_now(), limit=int(environ.get("CONTENTINTEL_VIDEO_FACTS_LIMIT") or 40))
         facts = read_facts
     pace = (lambda path: PACE.analyse(path, runner)) if shutil.which("ffmpeg") and shutil.which("ffprobe") else None
-    return facts, pace
+    motion = None
+    if settings is None or CONN.decide(settings, "opus_video_prompts")["on"]:
+        try:
+            motion = MOTION.read(CONN.external_dir() / "opus_video_prompts")[0] or None
+        except Exception:                                                          # noqa: BLE001 - a missing or damaged library only means no motion formats
+            motion = None
+    return facts, pace, motion
 
 
 def _has_module(name):

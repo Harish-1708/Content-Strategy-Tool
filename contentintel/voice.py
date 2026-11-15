@@ -23,11 +23,13 @@ from .safety import scrub
 
 SCRIPT = Path("skills") / "last30days" / "scripts" / "last30days.py"
 MODES = ("research", "competitors", "discover")
-KEEP = 400                       # items kept per brand
+KEEP = 2000                      # items kept per brand
 SUMMARY = 400
 FAILED = {"rate-limited", "auth-failed", "unreachable", "timeout", "schema-drift", "error", "payment-required"}
 # What the engine may read without any key; the owner's other keys (a GitHub token, a search key) are handed over only if the connection's secrets switch is on.
 DEFAULT_SOURCES = ("reddit", "hackernews", "youtube", "github", "polymarket", "digg", "bluesky", "devto")
+# Three lanes the engine runs through the ScrapeCreators service (10,000 free calls, then pay as you go). They are added to every query ONLY when the owner has set SCRAPECREATORS_API_KEY and the connection's secrets switch is on.
+KEYED_LANES = ("tiktok", "instagram", "meta_ads")
 SIGNALS = ("complaint", "praise", "question", "comparison")
 
 
@@ -122,7 +124,8 @@ class ExternalLast30Days:
         with tempfile.TemporaryDirectory(prefix="l30-") as tmp:
             env["HOME"], env["LAST30DAYS_MEMORY_DIR"], env["XDG_CONFIG_HOME"] = tmp, "", tmp         # nothing is saved outside this folder; the engine's own config is never read
             plan = Path(tmp) / "plan.json"
-            plan.write_text(json.dumps(build_plan(topic)), encoding="utf-8")
+            lanes = DEFAULT_SOURCES + (KEYED_LANES if env.get("SCRAPECREATORS_API_KEY") else ())          # env holds the key only if the owner allows it
+            plan.write_text(json.dumps(build_plan(topic, lanes)), encoding="utf-8")
             cmd = self.command(topic, mode, plan, peers, depth)
             try:
                 done = self.runner(cmd, capture_output=True, text=True, timeout=self.timeout, env=env, cwd=str(self.root))
@@ -245,14 +248,14 @@ def prompt_lines(voice, limit=5):
     return "\n".join(f"- ({i['source']}, {i['weight']} engagement) {i['title']}" + (f": {i['summary'][:160]}" if i.get("summary") else "") for i in top if i.get("title"))
 
 
-def topics_for(brand, store, extra=()):
+def topics_for(brand, store, extra=(), limit=5):
     """Topics to ask about for a brand, from its own catalogue (its biggest product categories) and its name: nothing is hardcoded to a brand."""
     latest = store.load_latest(brand.slug) or {}
     cats = {}
     for p in (latest.get("products") or {}).values():
         if isinstance(p, dict) and not p.get("excluded") and p.get("category"):
             cats[p["category"]] = cats.get(p["category"], 0) + 1
-    out = [c for c, _ in sorted(cats.items(), key=lambda kv: -kv[1]) if c and c != "other"][:3]
+    out = [c for c, _ in sorted(cats.items(), key=lambda kv: -kv[1]) if c and c != "other"][:max(1, int(limit) - len(extra) - 1)]
     return list(dict.fromkeys([*extra, *out, brand.name]))
 
 

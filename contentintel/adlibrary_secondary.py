@@ -9,10 +9,11 @@ is drawn on it. They are independent, so:
   * as a SAFETY NET it supplies ads when the structured read finds none on a page whose text clearly shows ads.
 
 It never replaces a field the first reader filled, and it reads text the platform's own browser already fetched: it opens no page itself. The connection `fb_ads_library_mcp` (the repository's own checkout) is
-used when present, with this copy as the backup; the owner can switch it off. HTML is turned into the markdown shape the parser expects by html_to_markdown() below.
+run first when its checkout is present (the repository's own function, loaded as it is), with this copy as the backup; the health of the repository is recorded and the owner can switch it off. HTML is turned into the markdown shape the parser expects by html_to_markdown() below.
 """
 import html
 import re
+from pathlib import Path
 from html.parser import HTMLParser
 from urllib.parse import parse_qs, unquote, urlparse
 
@@ -176,10 +177,58 @@ def fill_missing(row, ad):
     return filled
 
 
-def apply(page_html, rows, *, row_factory=None):
+PARSER_FILE = "facebook_ads_mcp_complete.py"
+_STUBBED = ("fastmcp", "crawl4ai")
+
+
+def checkout_parser(root=None):
+    """The repository's own `_parse_ad_library_markdown`, loaded from its checkout (connection `fb_ads_library_mcp`), or None when the checkout or the function is missing. The repository's server libraries
+    (fastmcp, crawl4ai) are not needed for parsing, so empty stand-ins are put in place only while its file loads and are removed again."""
+    import importlib.util
+    import sys
+    import types
+    from . import connections as CONN
+    path = Path(root) / PARSER_FILE if root else CONN.external_dir() / "fb_ads_library_mcp" / PARSER_FILE
+    if not path.is_file():
+        return None
+
+    class _Stub:
+        def __init__(self, *a, **k):
+            pass
+
+        def tool(self, *a, **k):
+            return lambda fn: fn
+
+        def __getattr__(self, name):
+            return _Stub()
+
+        def __call__(self, *a, **k):
+            return _Stub()
+    saved = {m: sys.modules.get(m) for m in _STUBBED}
+    try:
+        for m in _STUBBED:
+            mod = types.ModuleType(m)
+            mod.__getattr__ = lambda name: _Stub()                                    # any name the repository imports from them
+            sys.modules[m] = mod
+        spec = importlib.util.spec_from_file_location("fb_ads_library_mcp_checkout", str(path))
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        fn = getattr(mod, "_parse_ad_library_markdown", None)
+        return fn if callable(fn) else None
+    except Exception:                                                                 # noqa: BLE001 - a repository that does not load is the platform's copy's turn
+        return None
+    finally:
+        for m, old in saved.items():
+            if old is None:
+                sys.modules.pop(m, None)
+            else:
+                sys.modules[m] = old
+
+
+def apply(page_html, rows, *, row_factory=None, parse_md=None):
     """Use the second parse on a page the collector has already read. Existing rows only gain what they lack; when the structured read found NO ads on the page (rows is empty) and the page text shows ads, those ads
     are added through `row_factory(source, ident, **fields)` (collectors._row). Returns (new rows, facts about what the second reader saw)."""
-    ads = read_page(page_html)
+    ads = parse_md(html_to_markdown(html.unescape(page_html) if "&lt;" in str(page_html)[:2000] else page_html)) if parse_md else read_page(page_html)
     by_id = {str(r.get("item_id", "")).split(":", 1)[-1]: r for r in rows}
     filled, new = 0, []
     for ad in ads:
@@ -192,6 +241,17 @@ def apply(page_html, rows, *, row_factory=None):
     return new, {"seen": len(ads), "filled": filled, "added": len(new), "advertisers": advertisers(ads)}
 
 
+def _as_list(value):
+    if not isinstance(value, list):
+        raise ValueError("the repository's parser did not return a list of ads")
+    return value
+
+
+def _now():
+    from datetime import datetime, timezone
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def make_reader(settings, row_factory):
     """The reader the collector is given, or None when the owner has switched the connection off: (html, rows) -> (new rows, facts). Failures of this reader never reach the collection."""
     from . import connections as CONN
@@ -200,7 +260,10 @@ def make_reader(settings, row_factory):
 
     def reader(page_html, rows):
         try:
-            return apply(page_html, rows, row_factory=row_factory)
+            md = html_to_markdown(html.unescape(page_html) if "&lt;" in str(page_html)[:2000] else page_html)
+            external = checkout_parser()
+            ads, _ = CONN.run_connection(settings, "fb_ads_library_mcp", (lambda: _as_list(external(md))) if external else None, lambda: parse(md), now=_now())
+            return apply(page_html, rows, row_factory=row_factory, parse_md=lambda _md: ads)
         except Exception:                                                      # noqa: BLE001 - a secondary reader must never stop the first
             return [], {"seen": 0, "filled": 0, "added": 0, "advertisers": {}}
     return reader

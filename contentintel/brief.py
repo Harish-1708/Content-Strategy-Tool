@@ -103,18 +103,18 @@ def extras_text(store, brand, items, *, motion=None, assets=None):
         voice = store.read_extra(brand.slug, "voice")
     except Exception:                                                          # noqa: BLE001 - extra evidence never stops a brief
         voice = None
-    lines = VOICE.prompt_lines(voice, 5) if voice else ""
+    lines = VOICE.prompt_lines(voice, 8) if voice else ""
     if lines:
         parts.append("What audiences are saying right now (real posts and their engagement; use the language and the worries, quote nobody by name, state no number from them):\n" + lines)
     rule = PACE.rule_from([i.get("pace") for i in items])
     if rule:
         parts.append("How the reference videos move (measured with ffmpeg): " + rule)
     shown = []
-    for entry in (motion or [])[:3]:
+    for entry in (motion or [])[:5]:
         shown.append("- " + MOTION.line(entry))
     if shown:
         parts.append("Motion formats other creators have used (for the look and movement only; never copy; credit if used):\n" + "\n".join(shown))
-    got = [a for a in (assets or [])[:4] if a.get("url")]
+    got = [a for a in (assets or [])[:6] if a.get("url")]
     if got:
         parts.append("Licence-safe references the team may use (credit line shown):\n" + "\n".join(f"- {a['title']} [{a['license'].upper()}] {a['page'] or a['url']} | credit: {OPENVERSE.credit_line(a)}"[:260] for a in got))
     return "\n\n".join(parts)
@@ -401,7 +401,7 @@ def _motion_for(ask, items):
     """Motion formats close to the ask and the approved ideas (from the prompt library: the checkout, else its snapshot). [] when none is close or the library cannot be read."""
     try:
         entries, _ = MOTION.read(CONN.external_dir() / "opus_video_prompts")
-        return MOTION.search(entries, " ".join([str(ask)] + [f"{i.get('mechanism', '')} {i.get('concept', '')} {i.get('visual_hook', '')}" for i in items]), 3)
+        return MOTION.search(entries, " ".join([str(ask)] + [f"{i.get('mechanism', '')} {i.get('concept', '')} {i.get('visual_hook', '')}" for i in items]), 5)
     except Exception:                                                          # noqa: BLE001
         return []
 

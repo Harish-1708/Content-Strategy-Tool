@@ -6,6 +6,8 @@ on the provider's terms of service (ok, caution, ambiguous, avoid, unknown). The
 snapshot kept in ai/omniroute-free-catalog.json when the repository cannot be reached. This module turns it into a list of candidates the owner can choose from; it changes nothing by itself: the owner approves
 each provider (ai_providers.yaml), as always.
 
+The catalogue has NO field that says a provider is "official": its terms verdict (ok, caution, ambiguous, unknown, avoid) is the only judgement it gives. So the platform does not claim to filter to official providers. It shows every candidate with that verdict, puts the ones the catalogue calls `ok` first, and leaves the owner to check the provider's own terms before approving.
+
 Nothing is hidden. Providers the catalogue itself marks `avoid` (usually access that borrows a consumer subscription or reverse-engineers a web page) are listed under their own heading with that reason, not removed,
 and the owner decides.
 """
@@ -121,13 +123,17 @@ def candidates(entries, providers, gateway=None):
 
 
 def render(groups, where):
-    lines = [f"Free-tier candidates for the AI pool, read from {where}."]
-    labels = (("recommended", "Candidates (recurring or keyless free tier; the catalogue's terms verdict is not 'avoid')"),
+    lines = [f"Free-tier candidates for the AI pool, read from {where}.",
+             "The catalogue has no 'official provider' field; its terms verdict is the only judgement it gives, so each candidate shows it. Check a provider's own terms before approving it."]
+    ok = [s for s in groups.get("recommended") or [] if s["tos"] == ["ok"]]
+    other = [s for s in groups.get("recommended") or [] if s["tos"] != ["ok"]]
+    groups = dict(groups, recommended=ok + other)
+    labels = (("recommended", f"Candidates (recurring or keyless free tier; the catalogue's terms verdict is not 'avoid'): {len(ok)} with verdict ok first, then {len(other)} with caution, ambiguous or unknown"),
               ("avoid", "Listed, not recommended: the catalogue's own terms verdict is 'avoid' (the owner decides)"),
               ("in_pool", "Already in the pool"), ("one_time_only", "One-time credit only (not recurring)"), ("discontinued_only", "Discontinued"))
     for key, title in labels:
         rows = groups.get(key) or []
-        lines.append(f"{title}: {len(rows)}")
+        lines.append(f"{title}: {len(rows)}" if key != "recommended" else title)
         if key in ("recommended", "avoid"):
             for s in rows:
                 flags = [f"{s['monthly_tokens']:,} tokens a month" if s["monthly_tokens"] else "uncapped or keyless", f"terms: {'/'.join(s['tos'])}"]

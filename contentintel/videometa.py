@@ -108,7 +108,7 @@ def fetch(url, *, run=subprocess.run, python=None, timeout=90, cookies=None, com
         raise K.Failure(K.UPSTREAM_BROKEN, "yt-dlp's answer could not be read") from None
 
 
-VIDEO_HOSTS = ("tiktok.com", "instagram.com", "youtube.com", "youtu.be", "facebook.com", "fb.watch")
+VIDEO_HOSTS = ("tiktok.com", "instagram.com", "youtube.com", "youtu.be", "facebook.com", "fb.watch", "x.com", "twitter.com", "linkedin.com", "vimeo.com")
 
 
 def wants_facts(item):
@@ -118,7 +118,7 @@ def wants_facts(item):
         return False
     if item.get("platform") == "meta_ads":
         return False                                    # an Ad Library card is not a public video page
-    return any(h in url for h in VIDEO_HOSTS) and any(p in url for p in ("/video/", "/reel", "/p/", "/watch", "youtu.be", "/shorts/", "/tv/", "/videos/"))
+    return any(h in url for h in VIDEO_HOSTS) and any(p in url for p in ("/video/", "/reel", "/p/", "/watch", "youtu.be", "/shorts/", "/tv/", "/videos/", "/status/", "/posts/", "/feed/update/", "vimeo.com/"))
 
 
 def followers_index(data_dir="data"):

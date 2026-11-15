@@ -56,9 +56,9 @@ CONNECTIONS = {
         "fallback": "the platform's own outlier ranking and trend speed", "needs": "nothing (data and dependency-free scripts)",
     },
     "last30days": {
-        "label": "last30days-skill", "repo": "https://github.com/mvanhorn/last30days-skill", "kind": "git_data", "pinned": "", "probe": [], "secrets": ("GITHUB_TOKEN", "SERPER_API_KEY"),
+        "label": "last30days-skill", "repo": "https://github.com/mvanhorn/last30days-skill", "kind": "git_data", "pinned": "", "probe": [], "secrets": ("GITHUB_TOKEN", "SERPER_API_KEY", "SCRAPECREATORS_API_KEY"),
         "fallback": "the platform's own Hacker News and Reddit reader (contentintel/voice.py)",
-        "needs": "Python 3.12 or newer and nothing else for Reddit, Hacker News, YouTube, GitHub, Polymarket, Digg, Bluesky and dev.to; its TikTok, Instagram and Meta Ads lanes need a ScrapeCreators key and are not used",
+        "needs": "Python 3.12 or newer and nothing else for Reddit, Hacker News, YouTube, GitHub, Polymarket, Digg, Bluesky and dev.to; its TikTok, Instagram and Meta Ads lanes run only when you set SCRAPECREATORS_API_KEY (ScrapeCreators gives 10,000 free calls, then pay as you go)",
     },
     "yt_dlp": {
         "label": "yt-dlp", "repo": "https://github.com/yt-dlp/yt-dlp", "kind": "pip_cli", "pip": "yt-dlp", "binary": "yt-dlp", "pinned": "", "probe": ["--version"], "secrets": (),

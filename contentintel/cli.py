@@ -505,7 +505,7 @@ def _ideabank(args, store):
     claude = _routed(_claude(csettings), "idea_bank", args, store)
     budget = ib_mod.ClaudeBudget(store, now, settings.claude_monthly_calls) if claude else None
     registry, ledger = _health(args, store)
-    video_facts, pace_fn = tools_mod.ideabank_hooks(args, store)
+    video_facts, pace_fn, motion_entries = tools_mod.ideabank_hooks(args, store)
     for slug in list_brand_slugs(args.brands_dir) if args.all else [args.brand]:
         brand = load_brand(slug, args.brands_dir)
         rescues, note = _rescues(brand, store, args)
@@ -513,7 +513,7 @@ def _ideabank(args, store):
         _, lines = ib_mod.run_ideabank(brand, store, settings=settings, now=now, claude=claude, drive=drive, get=_get(),
                                        dry_run=args.dry_run, budget=budget, skip_brands=_skipped_brands(brand, args.brands_dir),
                                        audit=args.audit, video_runner=_video_runner(args), cookies=_cookie_secrets(), rescues=rescues, protected=protected,
-                                       browser_factory=_ad_browser_factory(args), health=ledger, video_facts=video_facts, pace_fn=pace_fn)
+                                       browser_factory=_ad_browser_factory(args), health=ledger, video_facts=video_facts, pace_fn=pace_fn, motion_entries=motion_entries)
         print("\n".join([n for n in (note, note2) if n] + lines))
     _save_health(ledger, store, args)
     return 0
