@@ -830,7 +830,7 @@ U63 = [   # update 56: the whole reason and the evidence stored, reads and compa
 ]
 MUTATIONS.extend(U63)
 
-U64 = [   # update 57: the unconfirmed rule, the Sessions tabs, the public profile collector
+U57_LOCAL = [   # update 57: the unconfirmed rule, the Sessions tabs, the public profile collector
     ('u57-live-ambiguous-refused', 'contentintel/session_live.py', '    if reason.startswith(AMBIGUOUS):', '    if False:', 'a page with no sign either way is a refusal'),
     ('u57-live-ambiguous-empty', 'contentintel/session_live.py', 'AMBIGUOUS = ("no sign of being logged in", "the page came back empty")', 'AMBIGUOUS = ("no sign of being logged in",)', 'an empty page is a refusal'),
     ('u57-live-streak-limit', 'contentintel/session_live.py', 'UNCONFIRMED_LIMIT = 3 ', 'UNCONFIRMED_LIMIT = 30 ', 'a session is never counted as refused however many checks show nothing'),
@@ -907,7 +907,7 @@ U64 = [   # update 57: the unconfirmed rule, the Sessions tabs, the public profi
     ('u57-acc-handle', 'contentintel/observatory/acceptance_checks.py', 'SP.snapshot_profile("tiktok", "tiktok", ', 'SP.snapshot_profile("tiktok", "someoneelse", ', 'the probe reads another account'),
     ('u57-src-route', 'sources.yaml', '      social_profile: {tier: public_polite, access_type: page_text, login: none}\n', '', 'the profile route is not declared'),
 ]
-MUTATIONS.extend(U64)
+MUTATIONS.extend(U57_LOCAL)
 
 from update57_mutations import U57 as _U57              # Update 57's own checks
 MUTATIONS.extend(_U57)
