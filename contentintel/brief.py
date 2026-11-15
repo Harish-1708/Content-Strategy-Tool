@@ -14,6 +14,12 @@ import io
 import json
 
 from . import claimcheck
+from . import connections as CONN
+from . import motion_prompts as MOTION
+from . import openverse as OPENVERSE
+from . import pace as PACE
+from . import videometa as VMETA
+from . import voice as VOICE
 from . import rules as rules_mod
 from .drive import DOCX, DriveError, file_url, safe_name
 from .export import price_range
@@ -84,8 +90,34 @@ def _rules_text(ruleset):
 
 
 def _item_text(item):
+    measured = "; ".join(x for x in (VMETA.line(item.get("video_meta")), PACE.describe(item.get("pace"))) if x)
     return (f'{item["id"]} ({item["kind"]}, {item["platform"]}) "{item["title"]}": {item["summary"] or item["text"][:200]} '
-            f'How we could use it: {item["how_to_use"] or "not scored"}. Risk: {item["risk"] or "none noted"}.')
+            f'How we could use it: {item["how_to_use"] or "not scored"}. Risk: {item["risk"] or "none noted"}.' + (f" Measured: {measured}." if measured else ""))
+
+
+def extras_text(store, brand, items, *, motion=None, assets=None):
+    """Real evidence for the concepts, kept apart from the facts the brief may state: what audiences say (with engagement), how the winning videos move (measured), motion formats other creators used (with their
+    authors) and licence-safe pictures to point the creative team to. '' when there is none of it, so a brief for a brand without any of it is written exactly as before."""
+    parts = []
+    try:
+        voice = store.read_extra(brand.slug, "voice")
+    except Exception:                                                          # noqa: BLE001 - extra evidence never stops a brief
+        voice = None
+    lines = VOICE.prompt_lines(voice, 5) if voice else ""
+    if lines:
+        parts.append("What audiences are saying right now (real posts and their engagement; use the language and the worries, quote nobody by name, state no number from them):\n" + lines)
+    rule = PACE.rule_from([i.get("pace") for i in items])
+    if rule:
+        parts.append("How the reference videos move (measured with ffmpeg): " + rule)
+    shown = []
+    for entry in (motion or [])[:3]:
+        shown.append("- " + MOTION.line(entry))
+    if shown:
+        parts.append("Motion formats other creators have used (for the look and movement only; never copy; credit if used):\n" + "\n".join(shown))
+    got = [a for a in (assets or [])[:4] if a.get("url")]
+    if got:
+        parts.append("Licence-safe references the team may use (credit line shown):\n" + "\n".join(f"- {a['title']} [{a['license'].upper()}] {a['page'] or a['url']} | credit: {OPENVERSE.credit_line(a)}"[:260] for a in got))
+    return "\n\n".join(parts)
 
 
 def facts_line(handle, record):
@@ -117,14 +149,14 @@ def claim_lines(brand, ruleset, products):
     return "\n".join(lines)
 
 
-def build_prompt(brand, ask, items, products, ruleset, max_concepts):
+def build_prompt(brand, ask, items, products, ruleset, max_concepts, extras=""):
     def price(record):
         low, high = price_range(record)
         return "" if low is None else f" (${low:g})" if low == high else f" (${low:g}-${high:g})"
     product_lines = "\n".join(f'- {h}: {r.get("title", h)}{price(r)}' for h, r in sorted(products.items())) or "- (none)"
     return (f"Brand: {brand.name} ({brand.domain}).\nRequest: {ask}\nWrite between 3 and {max_concepts} concepts, about one for each reference idea.\n\n"
             f"Approved reference ideas:\n" + "\n".join(_item_text(i) for i in items) + f"\n\nProducts you may use:\n{product_lines}\n\n"
-            f"{claim_lines(brand, ruleset, products)}\n\nRules for this brief:\n{_rules_text(ruleset)}")
+            f"{claim_lines(brand, ruleset, products)}\n\nRules for this brief:\n{_rules_text(ruleset)}" + (f"\n\nEvidence for the concepts (not facts about our products):\n{extras}" if extras else ""))
 
 
 def clean_brief(raw, item_ids, handles, max_concepts):
@@ -214,7 +246,7 @@ def _violation_lines(violations):
     return "\n".join(f"- {v['where']}: {v['message']}" for v in violations)
 
 
-def write_brief(claude, brand, ask, items, products, ruleset, settings, budget):
+def write_brief(claude, brand, ask, items, products, ruleset, settings, budget, extras=""):
     """One model's brief: write, check against the rules, repair once. Returns (brief, violations, notes, calls used)."""
     ids, handles = {i["id"] for i in items}, set(products)
     calls, notes = 0, []
@@ -222,7 +254,7 @@ def write_brief(claude, brand, ask, items, products, ruleset, settings, budget):
         raise BriefError(f"the monthly Claude limit ({budget.cap} calls) is reached")
     calls += 1
     try:
-        raw = claude.json_task(BRIEF_SYSTEM, build_prompt(brand, ask, items, products, ruleset, settings.brief_max_concepts), max_tokens=6000)
+        raw = claude.json_task(BRIEF_SYSTEM, build_prompt(brand, ask, items, products, ruleset, settings.brief_max_concepts, extras), max_tokens=6000)
     except ProviderError as exc:
         raise BriefError(f"Claude could not write the brief: {exc}") from exc
     brief, fixes = clean_brief(raw, ids, handles, settings.brief_max_concepts)
@@ -365,6 +397,23 @@ def saved_pictures(items, drive, per_item):
     return images, notes
 
 
+def _motion_for(ask, items):
+    """Motion formats close to the ask and the approved ideas (from the prompt library: the checkout, else its snapshot). [] when none is close or the library cannot be read."""
+    try:
+        entries, _ = MOTION.read(CONN.external_dir() / "opus_video_prompts")
+        return MOTION.search(entries, " ".join([str(ask)] + [f"{i.get('mechanism', '')} {i.get('concept', '')} {i.get('visual_hook', '')}" for i in items]), 3)
+    except Exception:                                                          # noqa: BLE001
+        return []
+
+
+def _assets_of(store, brand):
+    try:
+        data = store.read_extra(brand.slug, "assets")
+    except Exception:                                                          # noqa: BLE001
+        return []
+    return list((data or {}).get("assets") or [])
+
+
 def make_brief(brand, store, *, brief_name, ask, ruleset, decisions, claude_for, settings, budget, now, drive=None,
                include_maybe=False, request_id=""):
     """Write, check and save one brief from the approved items. Returns the saved record. Raises BriefError with the fix if it cannot."""
@@ -382,9 +431,10 @@ def make_brief(brand, store, *, brief_name, ask, ruleset, decisions, claude_for,
     if not products:
         raise BriefError("no product in the catalogue is allowed by this brief's rules")
     candidates, notes, calls = [], [], 0
+    extras = extras_text(store, brand, items, motion=_motion_for(ask, items), assets=_assets_of(store, brand))
     for model in settings.brief_models:
         try:
-            brief, violations, model_notes, used = write_brief(claude_for(model), brand, ask, items, products, ruleset, settings, budget)
+            brief, violations, model_notes, used = write_brief(claude_for(model), brand, ask, items, products, ruleset, settings, budget, extras)
         except BriefError as exc:
             notes.append(f"{model}: {exc}")
             continue

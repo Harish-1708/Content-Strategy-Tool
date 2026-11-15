@@ -8,6 +8,7 @@ Three things are passed in, so the logic is tested without a network: `search(qu
 import re
 
 from . import benchmarks as bench
+from . import page_match as PM
 
 RESERVED = {"pages", "groups", "watch", "ads", "marketplace", "people", "public", "profile.php", "sharer", "sharer.php", "share", "events", "posts", "photo", "photos", "videos", "reel", "reels", "story.php",
             "login", "help", "policies", "privacy", "business", "gaming", "hashtag", "stories", "permalink.php", "l.php", "dialog", "plugins", "tr", "legal", "about"}
@@ -75,9 +76,12 @@ def looks_regional(brand, candidate):
 
 
 def rank(brand, candidates):
-    """Best first: the page whose address is the brand's own name, then the pages that do not look regional, then the rest, in the order the search gave them."""
+    """Best first: the page whose address is the brand's own name, then the pages that do not look regional, then the page whose name matches the brand most strongly (exact, then a shared word, then a contained one;
+    never a page that only shares a category word ahead of one that carries the brand's whole name), then the rest, in the order the search gave them. Each candidate gets a 'match' note (contentintel/page_match.py)."""
     want = bench.norm_name(brand).replace(" ", "")
-    return sorted(candidates, key=lambda c: (re.sub(r"[^a-z0-9]", "", c["slug"].lower()) != want, looks_regional(brand, c)))
+    for c, verdict in zip(candidates, PM.judge(brand, [c["title"] or c["slug"] for c in candidates])):
+        c["match"] = verdict
+    return sorted(candidates, key=lambda c: (re.sub(r"[^a-z0-9]", "", c["slug"].lower()) != want, looks_regional(brand, c), PM.sort_key(c["match"])))
 
 
 def read_page_id(html):
@@ -120,6 +124,11 @@ def lookup_main_page(name, search, review, read_id, label="the reviewer"):
         out.update(status="ambiguous", reason="the search found Facebook pages, but " + (verdict["reason"] or "the reviewer could not confirm one as the main official page"))
         return out
     chosen = next(c for c in ranked if c["url"] == verdict["choice"])
+    better = [c for c in ranked if c is not chosen and c.get("match") and c["match"]["strength"] in (PM.EXACT, PM.TOKEN) and not c["match"]["category_only"]]
+    cm = chosen.get("match") or {}
+    if better and cm and (cm.get("strength") == PM.NONE or cm.get("category_only")) and not (chosen.get("id") and cm.get("strength") != PM.NONE):
+        out.update(status="ambiguous", reason=f"the reviewer chose {chosen['url']} ({PM.explain(cm)}), while {better[0]['url']} carries the brand's name ({PM.explain(better[0]['match'])}); a person should decide which is the brand's own page")
+        return out
     others_main = [c for c in ranked if c is not chosen and not looks_regional(name, c)]
     if (verdict["regional"] or looks_regional(name, chosen)) and others_main:
         out.update(status="ambiguous", reason=f"the reviewer chose {chosen['url']}, which looks regional, while a page that does not ({others_main[0]['url']}) was also found; the standing rule is the main page, so a person decides")

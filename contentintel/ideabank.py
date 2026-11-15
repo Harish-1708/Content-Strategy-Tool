@@ -19,6 +19,9 @@ import yaml
 
 from .collectors import collected_rows
 from . import mediacheck
+from . import pace as PACE
+from . import videometa as VMETA
+from . import voice as VOICE
 from .drive import DriveError, DriveMismatch, folder_url, item_folder_name, safe_name
 from . import contract
 from .safety import is_public_url
@@ -725,7 +728,7 @@ def _video_seen(health, platform, now, status, note=""):
 BLOCKED_STREAK = 3          # after this many refusals in a row from one platform in one run, the rest of that platform waits for the next run
 
 
-def save_videos(bank, ids, brand_name, drive, settings, runner, cookies_path=None, brand_folder=None, health=None, now=""):
+def save_videos(bank, ids, brand_name, drive, settings, runner, cookies_path=None, brand_folder=None, health=None, now="", pace_fn=None):
     """Fetch and save the real video for each given item (at most `video_fetches_per_run` a run). Every outcome is recorded on the item as
     `video_status`: saved, none (the post has no video: an image or carousel), gone, blocked (the platform refused this server) or failed.
     Returns (saved, lines)."""
@@ -751,6 +754,12 @@ def save_videos(bank, ids, brand_name, drive, settings, runner, cookies_path=Non
         with tempfile.TemporaryDirectory() as tmp:
             found, why = runner(item["url"], tmp, cookies_path, settings.video_max_mb, settings.video_timeout_seconds)
             data = Path(found).read_bytes() if found else b""
+            profile = None
+            if found and pace_fn is not None:
+                try:
+                    profile = pace_fn(found)                       # measured while the file is on disk; a failure here never stops the saving
+                except Exception:                                  # noqa: BLE001
+                    profile = None
         if not found:
             head, _, browser_why = str(why).partition("; the browser route also failed: ")
             status, note = classify_failure(head, item["url"])
@@ -784,6 +793,8 @@ def save_videos(bank, ids, brand_name, drive, settings, runner, cookies_path=Non
         item.update({"drive_folder_id": folder, "drive_folder_url": folder_url(folder), "video_note": "", "video_status": "saved"})
         _record(item, name, file_id, md5, data, check, "page")
         _video_seen(health, platform, now, "saved")
+        if profile:
+            item["pace"] = profile
         saved += 1
     for platform, n in skipped.items():
         lines.append(f"{n} more {platform or 'platform'} video(s) skipped this run: it refused {BLOCKED_STREAK} downloads in a row from this server (they are tried again next run)")
@@ -840,13 +851,48 @@ def brand_context(brand, store):
     return " ".join(parts)
 
 
-def _item_line(item):
+def _evidence(item, voice=None):
+    """Measured facts about an item that the scoring and hook prompts may use: what yt-dlp read about the video, how it moves, and what people say about the same thing. '' when there are none (so an item without
+    them is described exactly as before)."""
+    bits = []
+    line = VMETA.line(item.get("video_meta"))
+    if line:
+        bits.append(line)
+    if item.get("pace"):
+        bits.append(PACE.describe(item["pace"]))
+    if voice:
+        hit = VOICE.evidence_for(voice, f"{item.get('title', '')} {item.get('text', '')}", 1)
+        if hit:
+            bits.append(f"people say ({hit[0]['source']}, {hit[0]['weight']} engagement): \"{hit[0]['title'][:100]}\"")
+    return "; ".join(bits)
+
+
+def _item_line(item, voice=None):
     m = item["metrics"]
     facts = ", ".join(f"{k} {v}" for k, v in m.items())
     if item.get("media_format"):
         facts = (facts + ", " if facts else "") + f"ad format {item['media_format']}"
+    extra = _evidence(item, voice)
     return (f'{item["id"]} [{item["kind"]}, {item["platform"]}] by {item["handle"] or "unknown"}: "{item["title"]}" - '
-            f'{item["text"][:300]}' + (f" ({facts})" if facts else ""))
+            f'{item["text"][:300]}' + (f" ({facts})" if facts else "") + (f" | measured: {extra}" if extra else ""))
+
+
+def _voice_of(store, brand):
+    """What audiences said, kept for this brand (contentintel/voice.py), or None."""
+    try:
+        data = store.read_extra(brand.slug, "voice")
+    except Exception:                                                          # noqa: BLE001 - extra evidence never stops the bank
+        return None
+    return data if isinstance(data, dict) and data.get("items") else None
+
+
+def _note_voice(bank, ids, voice):
+    """Remember, on each item, the strongest thing people said about the same subject (shown in the sheet)."""
+    for i in ids:
+        item = bank["items"][i]
+        hit = VOICE.evidence_for(voice, f"{item.get('title', '')} {item.get('text', '')}", 1) if voice else []
+        if hit:
+            item["people_say"] = f"{hit[0]['title'][:140]} ({hit[0]['source']}, {hit[0]['weight']} engagement)"
 
 
 def _percent(value):
@@ -913,6 +959,9 @@ def score_items(bank, ids, claude, brand, store, settings, budget, now, request=
     todo = [i for i in ids if needs_scoring(bank["items"][i])]
     todo.sort(key=lambda i: _interest(bank["items"][i]["metrics"]), reverse=True)
     context = brand_context(brand, store)
+    voice = _voice_of(store, brand)
+    if voice:
+        context += "\nWhat audiences say right now (real posts, with engagement): " + " ".join(VOICE.prompt_lines(voice, 4).split("\n- ")).strip("- ")
     ask = (f"\nRequest: {request['text']}" + (f" (occasion: {request['occasion']})" if request.get("occasion") else "")
            + (f"\nFormats wanted: {', '.join(request['formats'])}" if request.get("formats") else "")) if request else ""
     scored, lines, calls = 0, [], 0
@@ -925,7 +974,7 @@ def score_items(bank, ids, claude, brand, store, settings, budget, now, request=
             break
         batch = todo[start:start + settings.score_batch]
         calls += 1
-        user = f"{context}{ask}\n\nItems:\n" + "\n".join(_item_line(bank["items"][i]) for i in batch)
+        user = f"{context}{ask}\n\nItems:\n" + "\n".join(_item_line(bank["items"][i], voice) for i in batch)
         try:
             got = clean_scores(claude.json_task(SCORE_SYSTEM, user, max_tokens=2500), set(batch))
         except ProviderError as exc:
@@ -946,6 +995,7 @@ def score_items(bank, ids, claude, brand, store, settings, budget, now, request=
             if s["topic"] and not item["drive_folder_id"]:
                 item["topic"] = s["topic"]
             scored += 1
+        _note_voice(bank, list(got), voice)
         if len(got) < len(batch):
             lines.append(f"{len(batch) - len(got)} item(s) in a batch came back unusable and stay unscored")
     return scored, lines
@@ -1179,6 +1229,7 @@ def enrich_items(bank, claude, brand, store, settings, budget):
     if not todo or claude is None or budget is None or not settings.enrich_calls_per_run:
         return 0, []
     context, filled, lines, calls = brand_context(brand, store), 0, [], 0
+    voice = _voice_of(store, brand)
     for start in range(0, len(todo), settings.enrich_batch):
         if calls >= settings.enrich_calls_per_run:
             lines.append(f"{len(todo) - start} item(s) wait for their hook line and first test: this run's limit of {settings.enrich_calls_per_run} calls is reached")
@@ -1188,7 +1239,7 @@ def enrich_items(bank, claude, brand, store, settings, budget):
             break
         calls += 1
         batch = todo[start:start + settings.enrich_batch]
-        user = f"{context}\n\nItems:\n" + "\n".join(_item_line(bank["items"][i]) for i in batch)
+        user = f"{context}\n\nItems:\n" + "\n".join(_item_line(bank["items"][i], voice) for i in batch)
         try:
             got = clean_enrichment(claude.json_task(ENRICH_SYSTEM, user, max_tokens=2500), set(batch))
         except ProviderError as exc:
@@ -1390,7 +1441,7 @@ def rescue_items(bank, ids, drive=None):
 
 IDEABANK_COLUMNS = ["idea_id", "kind", "platform", "title", "handle", "url", "posted_at", "score", "fit", "idea", "format", "mechanism", "technique", "concept",
                     "summary", "how_to_use", "hook_line", "first_test", "audience", "channel", "risk", "topic", "region", "request_id", "likes", "comments", "shares", "views", "days_running",
-                    "signal", "preview", "visual_hook", "look", "drive_folder", "assets", "asset_note", "added_at", "scored_at"]
+                    "signal", "preview", "visual_hook", "look", "outlier", "sound", "pace", "people_say", "drive_folder", "assets", "asset_note", "added_at", "scored_at"]
 
 
 def sheet_rows(bank):
@@ -1410,6 +1461,7 @@ def sheet_rows(bank):
                          "shares": m.get("shares", ""), "views": m.get("views", ""), "days_running": m.get("days_running", ""),
                          "signal": m.get("signal", ""), "preview": preview_label(item),
                          "visual_hook": item.get("visual_hook", ""), "look": item.get("look", ""),
+                         "outlier": m.get("outlier", ""), "sound": (item.get("video_meta") or {}).get("music", ""), "pace": PACE.describe(item.get("pace")), "people_say": item.get("people_say", ""),
                          "drive_folder": item["drive_folder_url"], "assets": len(item["assets"]),
                          "asset_note": item["asset_note"], "added_at": item["added_at"], "scored_at": item["scored_at"]}
     return rows
@@ -1458,7 +1510,8 @@ def _counts(bank):
 
 
 def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=None, request=None, web_sources=None,
-                 dry_run=False, budget=None, since="", skip_brands=(), audit=False, video_runner=None, cookies=None, rescues=(), browser_factory=None, protected=None, health=None):
+                 dry_run=False, budget=None, since="", skip_brands=(), audit=False, video_runner=None, cookies=None, rescues=(), browser_factory=None, protected=None, health=None,
+                 video_facts=None, pace_fn=None):
     """Take new sourced items into the brand's bank, keep only what is useful, save its files and score it. Returns (new ids, summary lines).
 
     In order: leave out the brand's own content and copies; tidy what is already in the bank the same way; score what is not scored; keep
@@ -1492,6 +1545,15 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
     skipped_brands = tidy_skipped_brands(bank, skip_brands)
     copies = tidy_duplicates(bank)                           # before scoring, so no Claude call is spent on a copy
     revive_relevant(bank, settings)                          # before scoring too: an item that now reaches a lowered minimum is judged again
+    if video_facts is not None:                              # what yt-dlp knows about each video (views, sound, captions, comments, outlier) is read BEFORE scoring so the score can use it
+        try:
+            wanting_facts = [i for i, it in bank["items"].items() if it.get("state") != "removed" and VMETA.wants_facts(it)]
+            got_facts, notes = video_facts(bank["items"], wanting_facts)
+            lines += [f"{brand.slug}: {n}" for n in notes]
+            if got_facts:
+                lines.append(f"{brand.slug}: facts read for {got_facts} video(s) (views, sound, captions, who posted, outlier against the poster's followers)")
+        except Exception as exc:                                                   # noqa: BLE001 - extra evidence never stops the bank
+            lines.append(f"{brand.slug}: video facts skipped ({exc.__class__.__name__})")
     if claude is not None and budget is not None:
         unscored = [i for i, it in bank["items"].items() if needs_scoring(it)]
         scored, notes = score_items(bank, unscored, claude, brand, store, settings, budget, now, request)
@@ -1542,7 +1604,7 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
             elif wanting:
                 with tempfile.TemporaryDirectory() as tmp:
                     jar = cookie_file([(cookies or {}).get("instagram"), (cookies or {}).get("tiktok")], Path(tmp) / "cookies.txt")
-                    got, notes = save_videos(bank, wanting, brand.name, drive, settings, video_runner, jar, health=health, now=now)
+                    got, notes = save_videos(bank, wanting, brand.name, drive, settings, video_runner, jar, health=health, now=now, pace_fn=pace_fn)
                 lines += notes
                 lines.append(f"{brand.slug}: real videos saved for {got} item(s)")
         elif settings.save_assets and retry:

@@ -244,6 +244,17 @@ class Store:
         """A path inside a brand's data folder. Reading must not create folders, so this never mkdirs."""
         return brand_data_dir(self.data_dir, slug).joinpath(*parts)
 
+    def read_extra(self, slug, name):
+        """Evidence kept next to a brand's data (audience voice, licence-safe assets...): data/<brand>/extras/<name>.json, or None. Reading creates nothing."""
+        try:
+            data = _read(self._brand_file(slug, "extras", f"{name}.json"), None)
+        except ValueError:
+            return None
+        return data if isinstance(data, dict) else None
+
+    def write_extra(self, slug, name, data):
+        return _atomic_write(self._brand_file(slug, "extras", f"{name}.json"), data)
+
     def read_ideabank(self, slug):
         """{"next": n, "items": {"IB-0001": {...}}}: the brand's Idea Bank. Reading creates nothing."""
         try:

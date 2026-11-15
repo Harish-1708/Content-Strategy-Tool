@@ -28,6 +28,7 @@ from . import evidence as evidence_mod
 from . import health as health_mod
 from . import providers as providers_mod
 from . import research as research_mod
+from . import research_tools as tools_mod
 from . import sheets as sheets_mod
 from . import sources as sources_mod
 from . import sync as sync_mod
@@ -185,6 +186,8 @@ def build_parser():
     p.add_argument("--browser-config", default="browser.yaml")
     p.add_argument("--debug-dir", default="debug")
 
+    tools_mod.add_parsers(sub, _common)
+
     p = sub.add_parser("health", help="show how each source and route is doing, and which ones have earned trust")
     _common(p)
     p.add_argument("--json", action="store_true", help="print the rows as JSON")
@@ -309,6 +312,13 @@ def _claude(settings, model=None):
     key = (os.environ.get("ANTHROPIC_API_KEY") or "").strip()
     return Claude(key, model=model or settings.claude_model, max_tokens=settings.claude_max_tokens,
                   prompt_max_tokens=settings.claude_prompt_max_tokens) if key else None
+
+
+def _secondary_reader(args):
+    """The second reader of Meta Ad Library pages (facebook-ads-library-mcp's parser), or None when the owner has switched the connection off or the settings cannot be read."""
+    from . import adlibrary_secondary as second_mod
+    settings = _hub_settings(args)
+    return second_mod.make_reader(settings, collectors_mod._row) if settings is not None else None
 
 
 def _hub_settings(args):
@@ -495,6 +505,7 @@ def _ideabank(args, store):
     claude = _routed(_claude(csettings), "idea_bank", args, store)
     budget = ib_mod.ClaudeBudget(store, now, settings.claude_monthly_calls) if claude else None
     registry, ledger = _health(args, store)
+    video_facts, pace_fn = tools_mod.ideabank_hooks(args, store)
     for slug in list_brand_slugs(args.brands_dir) if args.all else [args.brand]:
         brand = load_brand(slug, args.brands_dir)
         rescues, note = _rescues(brand, store, args)
@@ -502,7 +513,7 @@ def _ideabank(args, store):
         _, lines = ib_mod.run_ideabank(brand, store, settings=settings, now=now, claude=claude, drive=drive, get=_get(),
                                        dry_run=args.dry_run, budget=budget, skip_brands=_skipped_brands(brand, args.brands_dir),
                                        audit=args.audit, video_runner=_video_runner(args), cookies=_cookie_secrets(), rescues=rescues, protected=protected,
-                                       browser_factory=_ad_browser_factory(args), health=ledger)
+                                       browser_factory=_ad_browser_factory(args), health=ledger, video_facts=video_facts, pace_fn=pace_fn)
         print("\n".join([n for n in (note, note2) if n] + lines))
     _save_health(ledger, store, args)
     return 0
@@ -873,7 +884,8 @@ def _collect(args, store):
         brands, store, browser_factory=factory, creds=creds, settings=settings, browser_cfg=browser_cfg,
         ledger_cls=research_mod.Ledger, sources=wanted, now=now, run_id=secrets.token_hex(4),
         dry_run=args.dry_run, root=args.brands_dir, apify=apify, claude=claude, backend=backend,
-        region=args.region.strip() or None, health=health_ledger, registry=registry, fresh=bool(args.fresh), page_finder=_page_finder(claude, args))
+        region=args.region.strip() or None, health=health_ledger, registry=registry, fresh=bool(args.fresh), page_finder=_page_finder(claude, args),
+        secondary=_secondary_reader(args))
     _save_health(health_ledger, store, args)
     ledger = None if args.dry_run else research_mod.Ledger(store.load_usage(), now[:7])
     print(collectors_mod.format_collect_report(result, settings, ledger))
@@ -1238,6 +1250,16 @@ def main(argv=None):
             code = obs_commands.run(args, store, ledger, sync_mod.utc_now())
             _save_health(ledger, store, args)
             return code
+        if args.cmd == "voice":
+            return tools_mod.run_voice(args, store, sync_mod.utc_now())
+        if args.cmd == "analyze":
+            return tools_mod.run_analyze(args)
+        if args.cmd == "pool":
+            return tools_mod.run_pool(args)
+        if args.cmd == "assets":
+            return tools_mod.run_assets(args, store, sync_mod.utc_now())
+        if args.cmd == "motion":
+            return tools_mod.run_motion(args)
         if args.cmd == "health":
             return _health_cmd(args, store)
         if args.cmd == "acceptance":

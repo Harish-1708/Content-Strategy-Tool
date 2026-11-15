@@ -58,7 +58,7 @@ STARTER_MANUAL = {PRODUCTS: ["Notes"], RESEARCH: ["Review"], COLLECTED: ["Review
                   IDEABANK: ["Decision", "Notes"], REQUESTS: ["Changes"], BRIEFS: ["Feedback"], REJECTED: ["Rescue"]}   # added only when a tab is brand new
 STAMP = "last_updated"                          # when the tool last changed that row
 
-NUMERIC = {"followers_change_pct", "price_min", "price_max", "price", "compare_at_price", "engagement_pct", "success_rate_7d", "avg_items", "multiple", "trend_multiple", "views_per_day", "spend_this_month_usd"}
+NUMERIC = {"outlier", "followers_change_pct", "price_min", "price_max", "price", "compare_at_price", "engagement_pct", "success_rate_7d", "avg_items", "multiple", "trend_multiple", "views_per_day", "spend_this_month_usd"}
 INTEGER = {"variant_count", "image_count", "times_seen", "best_rank", "likes", "comments", "shares", "attempts_7d", "acceptance_items",
            "views", "saves", "reach", "days_running", "variants", "page_followers", "score", "fit", "idea", "assets", "violations", "items_added",
            "products", "collections", "on_sale_products", "events_7d", "median", "approved_models", "requests_today", "daily_limit", "left_today", "requests_this_month",

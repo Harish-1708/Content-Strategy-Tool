@@ -1024,7 +1024,7 @@ def take_pages(urls, budget, cursor):
     return (list(urls[start:]) + list(urls[:start]))[:max(budget, 0)], len(urls)
 
 
-def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds, page_budget=None, cursor=0):
+def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds, page_budget=None, cursor=0, secondary=None):
     """Collect up to n ads or posts for one task. Returns (rows, stats).
 
     Each page gets an equal share of what is still needed, so a page that gives less than its
@@ -1037,6 +1037,7 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds, page_budget
     urls, pages_total = take_pages(seed_urls(task, site_cfg), page_budget, cursor)
     found, from_data, limited, via = {}, set(), False, {}
     fallbacks, page_errors, how = [], 0, []
+    second = {"seen": 0, "filled": 0, "added": 0}
     errors, challenges, settle = site_cfg.get("error_any", []), site_cfg.get("challenge_any", []), site_cfg.get("settle_seconds", 3)
 
     def search_instead(tag):
@@ -1074,6 +1075,12 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds, page_budget
                 raise LoginWall(f"{source}: the page asked for a login; the cookies may have expired")
         share = max(1, (n - len(found)) // (len(urls) - number))
         rows, data_ids, hit_limit = _gather(browser, source, site_cfg, scrolls, pause, share)
+        if source == "meta_ads" and secondary is not None and hasattr(browser, "html"):
+            added, facts = secondary(browser.html(), rows)                  # the second parse of the same page: adds what the first lacked, never overwrites
+            rows = rows + added
+            second["seen"] += facts["seen"]
+            second["filled"] += facts["filled"]
+            second["added"] += facts["added"]
         if tag is not None and not searched and not rows and browser.exists(errors):        # the error came after the first wait
             search_instead(tag)
             rows, data_ids, hit_limit = _gather(browser, source, site_cfg, scrolls, pause, share)
@@ -1101,7 +1108,8 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds, page_budget
     in_data = sum(1 for r in kept if r["item_id"] in from_data)
     return kept, {"json": in_data, "links": len(kept) - in_data, "state": state, "rate_limited": limited and len(kept) < n,
                   "fallbacks": fallbacks, "fallback_how": how, "page_errors": page_errors,
-                  "pages": len(urls) + len(how), "pages_planned": len(urls), "pages_total": pages_total}
+                  "pages": len(urls) + len(how), "pages_planned": len(urls), "pages_total": pages_total,
+                  **({"secondary": second} if secondary is not None and source == "meta_ads" else {})}
 
 
 def _snip(text):
@@ -1448,6 +1456,10 @@ def _page_notes(stats):
     if stats.get("pages_planned", 0) < stats.get("pages_total", 0):
         text += (f" - careful mode: opened {stats['pages_planned']} of {stats['pages_total']} pages this run (the page caps in browser.yaml); "
                  "the rest are taken on the next runs")
+    second = stats.get("secondary") or {}
+    if second.get("filled") or second.get("added"):
+        text += (f" - the second reader of the Ad Library page filled in details for {second.get('filled', 0)} ad(s)"
+                 + (f" and found {second['added']} ad(s) the first reader missed" if second.get("added") else ""))
     if stats.get("page_errors"):
         text += f" - {stats['page_errors']} page(s) still showed 'Something went wrong' (a block on the automated browser, or try again later)"
     return text
@@ -1496,7 +1508,7 @@ def format_benchmark_status(brand, store, auto, settings, now, root="brands"):
 
 def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg, ledger_cls, sources, now,
                 run_id, configs=None, dry_run=False, root="brands", apify=None, claude=None, backend="browser", region=None,
-                health=None, registry=None, fresh=False, page_finder=None):
+                health=None, registry=None, fresh=False, page_finder=None, secondary=None):
     """Plan and run collection tasks for each brand, within the caps in `settings`.
 
     backend: browser (the default), apify (Apify only) or fallback (the browser first, Apify when
@@ -1747,7 +1759,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                             if site not in opened:
                                 opened[site] = stack.enter_context(browser_factory(site))
                             rows, stats = run_browser_task(opened[site], task, n, site_cfg, browser_cfg, site_creds,
-                                                           page_budget=budget, cursor=page_log["cursor"].get(site, 0))
+                                                           page_budget=budget, cursor=page_log["cursor"].get(site, 0), secondary=secondary)
                             ledger.charge("collected_items", len(rows))
                             note_pages(site, stats)
                     except (LoginWall, Challenge) as exc:

@@ -55,6 +55,31 @@ CONNECTIONS = {
         "label": "YouTube Agent Skill", "repo": "https://github.com/Jakeschincariol/youtube-agent-skill", "kind": "git_data", "pinned": "", "probe": [], "secrets": (),
         "fallback": "the platform's own outlier ranking and trend speed", "needs": "nothing (data and dependency-free scripts)",
     },
+    "last30days": {
+        "label": "last30days-skill", "repo": "https://github.com/mvanhorn/last30days-skill", "kind": "git_data", "pinned": "", "probe": [], "secrets": ("GITHUB_TOKEN", "SERPER_API_KEY"),
+        "fallback": "the platform's own Hacker News and Reddit reader (contentintel/voice.py)",
+        "needs": "Python 3.12 or newer and nothing else for Reddit, Hacker News, YouTube, GitHub, Polymarket, Digg, Bluesky and dev.to; its TikTok, Instagram and Meta Ads lanes need a ScrapeCreators key and are not used",
+    },
+    "yt_dlp": {
+        "label": "yt-dlp", "repo": "https://github.com/yt-dlp/yt-dlp", "kind": "pip_cli", "pip": "yt-dlp", "binary": "yt-dlp", "pinned": "", "probe": ["--version"], "secrets": (),
+        "fallback": "no video facts (views, sound, captions, comments); cover pictures and page text only",
+        "needs": "nothing; the Instagram and TikTok cookies already held are used only when the owner lets the saved sessions be used",
+    },
+    "omniroute_catalog": {
+        "label": "OmniRoute free-tier catalogue (data only)", "repo": "https://github.com/cheaper-inference/OmniRoute", "kind": "git_data", "pinned": "", "probe": [], "secrets": (),
+        "fallback": "the snapshot of the catalogue kept in ai/omniroute-free-catalog.json",
+        "needs": "nothing: only one data file is read; OmniRoute itself is never run",
+    },
+    "opus_video_prompts": {
+        "label": "Awesome Opus 5.5 videos (prompt library)", "repo": "https://github.com/yihui-dev/awesome-opus5-5-videos", "kind": "git_data", "pinned": "", "probe": [], "secrets": (),
+        "fallback": "the snapshot of the prompts kept in reference/motion-prompts.json",
+        "needs": "nothing (data only)",
+    },
+    "fb_ads_library_mcp": {
+        "label": "Facebook Ad Library MCP (secondary reader)", "repo": "https://github.com/RamsesAguirre777/facebook-ads-library-mcp", "kind": "git_data", "pinned": "", "probe": [], "secrets": (),
+        "fallback": "the platform's own copy of its parser (contentintel/adlibrary_secondary.py)",
+        "needs": "nothing: only its parser functions are used, on a page the platform's own browser already read",
+    },
     "video_shotcraft": {
         "label": "Video Shotcraft", "repo": "https://github.com/Vincentwei1021/video-shotcraft", "kind": "git_data", "pinned": "", "probe": [], "secrets": (),
         "fallback": "none yet (Creative Studio is not built)", "needs": "Remotion (its own licence) and Node to render; nothing to read the cards and templates",
