@@ -40,7 +40,7 @@ on:
         options: [quick, deep]
         default: quick
       url:
-        description: "analyze: a public video address (TikTok, Instagram, Facebook, YouTube...). pageid: a Facebook page address, for example https://www.facebook.com/Chobani"
+        description: "analyze: a public video address (TikTok, Instagram, Facebook, YouTube...). pageid: a Facebook page address, for example https://www.facebook.com/Chobani (put the brand's name, Chobani, in the topic box so a regional page such as chobaniau can be recognised)"
         required: false
         default: ""
       kind:
@@ -49,7 +49,7 @@ on:
         options: [images, audio]
         default: images
       apify:
-        description: "voice (research mode): also ask Apify's TikTok and Instagram scrapers (ON by default; needs APIFY_TOKEN; at most 40 items in the whole run and 60 a month for voice, each call capped at 0.25 dollars, and never beyond the Collect step's Apify allowance in research.yaml). Untick to switch it off"
+        description: "voice (research and competitors modes): also ask Apify's TikTok and Instagram scrapers (ON by default; needs APIFY_TOKEN; at most 40 items in the whole run and 60 a month for voice, never beyond the Collect step's Apify allowance in research.yaml; each call has a cost ceiling Apify enforces: 0.50 dollars for TikTok, 0.25 for Instagram). Untick to switch it off"
         type: boolean
         default: true
       dry_run:
@@ -78,12 +78,17 @@ jobs:
           cache-dependency-path: requirements.txt
       - run: pip install -r requirements.txt
 
-      - name: Install ffmpeg (measures how a video moves; the runner does not have it)
+      - name: Install ffmpeg (measures how a video moves; the runner does not have it; the run FAILS if it cannot be installed)
         if: inputs.tool == 'analyze'
         shell: bash
         run: |
-          sudo apt-get update -qq || true
-          sudo apt-get install -y -qq ffmpeg || echo "ffmpeg could not be installed: pace will not be measured"
+          for attempt in 1 2 3; do
+            sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && break
+            echo "ffmpeg install attempt $attempt failed"
+            sleep 5
+          done
+          ffmpeg -version | head -1
+          ffprobe -version | head -1
 
       - name: Install the connections these tools use
         shell: bash
@@ -157,7 +162,7 @@ jobs:
               args=(assets --query "$TOPIC" --kind "$KIND")
               if [ -n "$BRAND" ] && [ "$BRAND" != "all" ]; then args+=(--brand "$BRAND"); fi ;;
             motion) args=(motion --query "$TOPIC") ;;
-            pageid) args=(pageid --url "$VIDEO_URL") ;;
+            pageid) args=(pageid --url "$VIDEO_URL"); if [ -n "$TOPIC" ]; then args+=(--name "$TOPIC"); fi ;;
             install) echo "Connections installed in the step above."; exit 0 ;;
           esac
           { echo "### ${TOOL}"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
