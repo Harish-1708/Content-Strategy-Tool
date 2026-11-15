@@ -35,7 +35,11 @@ class Lane:
     allow_experimental: bool
     max_tokens: int
     min_confidence: float
+    needs: tuple = ("text",)                    # what the job needs a model to be able to do (text, vision, tools): a model that cannot is never tried for this lane, whatever else is available
     use_pool: bool = True                       # after its own preferred routes, the lane may draw on the shared pool (every approved model, available everywhere)
+
+
+CAPABILITIES = ("text", "vision", "tools")
 
 
 def load_lanes(path=DEFAULT_PATH, registry=None):
@@ -52,7 +56,7 @@ def load_lanes(path=DEFAULT_PATH, registry=None):
     for name, d in raw["lanes"].items():
         where = f"lanes.{name}"
         allowed = ("description", "max_data_class", "chain", "claude_fallback", "claude_leads", "output", "forbid", "review", "review_sample_every",
-                   "allow_experimental", "max_tokens", "min_confidence", "claude_model", "use_pool")
+                   "allow_experimental", "max_tokens", "min_confidence", "claude_model", "use_pool", "needs")
         extra = sorted(set(d) - set(allowed))
         if extra:
             raise LaneError(f"{where}: unknown setting(s) {', '.join(extra)}")
@@ -85,6 +89,9 @@ def load_lanes(path=DEFAULT_PATH, registry=None):
             raise LaneError(f"{where}.claude_model {claude_model!r} is not an approved Claude model")
         if "use_pool" in d and not isinstance(d["use_pool"], bool):
             raise LaneError(f"{where}.use_pool must be true or false")
+        needs = d.get("needs", ["text"])
+        if not isinstance(needs, (list, tuple)) or not needs or any(n not in CAPABILITIES for n in needs):
+            raise LaneError(f"{where}.needs must be a list of {', '.join(CAPABILITIES)}")
         mc = d.get("min_confidence", 0)
         if isinstance(mc, bool) or not isinstance(mc, (int, float)) or not 0 <= mc <= 1:
             raise LaneError(f"{where}.min_confidence must be between 0 and 1")
@@ -92,7 +99,7 @@ def load_lanes(path=DEFAULT_PATH, registry=None):
                          claude_fallback=bool(d.get("claude_fallback", False)), claude_model=claude_model, claude_leads=bool(d.get("claude_leads", False)), output=output,
                          forbid=tuple(d.get("forbid") or ()), review=review, review_sample_every=int(d.get("review_sample_every", 0) or 0),
                          allow_experimental=bool(d.get("allow_experimental", False)), max_tokens=int(d.get("max_tokens", 1200)), min_confidence=float(mc),
-                         use_pool=bool(d.get("use_pool", True)))
+                         use_pool=bool(d.get("use_pool", True)), needs=tuple(dict.fromkeys(needs)))
     return out
 
 

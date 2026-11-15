@@ -89,12 +89,22 @@ class Router:
             chain.append({"provider": CLAUDE, "model": lane.claude_model, "gateway_model": lane.claude_model})
         return chain
 
+    def capable(self, lane, route):
+        """True when the route's model lists every capability the lane's job needs. Claude is taken as able to do all of them. A model with no capabilities written down is treated as text only."""
+        needs = getattr(lane, "needs", ("text",))
+        provider = self.registry.providers.get(route["provider"])
+        model = provider.model(route["model"]) if provider is not None else None
+        have = set(model.capabilities) if model is not None and model.capabilities else {"text"}
+        return set(needs) <= have
+
     def _eligible(self, lane, route, data_class, now, est_in=2000, ignore_rests=False):
         """ignore_rests: a live CHECK tries every route, even one that an earlier run left resting, because finding out which ones work is its whole purpose."""
         pid = route["provider"]
         ok, why = self.registry.eligibility(pid, data_class, model=route["model"])
         if not ok:
             return False, why
+        if pid != CLAUDE and not self.capable(lane, route):
+            return False, f"this model cannot do what the {lane.name} job needs ({', '.join(lane.needs)}): it is never tried for it"
         if pid not in self.clients:
             return False, "no credentials or client available on this machine"
         rest = None if ignore_rests else self.health.is_paused(f"ai:{pid}", "gateway", now)
@@ -134,6 +144,9 @@ class Router:
                 continue
             if result is not None:
                 return self._finish(lane, route, result, data_class, item_ids, now, base)
+        incapable = [s for s in base["skipped"] if "cannot do what the" in str(s.get("reason", ""))]
+        if incapable and not base["attempts"]:
+            return {**base, "status": "deferred", "reason": f"no provider that can do this job ({', '.join(lane.needs)}) was available: {len(incapable)} route(s) were skipped because they cannot do it and the others were unavailable; nothing was tried and nothing was guessed"}
         return {**base, "status": "deferred", "reason": "no route produced a usable answer; the task is deferred, nothing was guessed"}
 
     def run_route(self, lane_name, route, *, instructions, context=(), now, system="", ignore_rests=False):
