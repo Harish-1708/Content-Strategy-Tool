@@ -82,6 +82,7 @@ register_service("ai_gateway", label="AI Gateway (free-provider routing with Cla
 register_service("ai_internal_data", label="AI Gateway: Internal data to each provider (ON everywhere; OFF takes Internal data away from that provider and leaves Public as it is)", channels=GATEWAY_PROVIDERS, purposes=())
 from .. import connections as _CONN
 from .. import guards as _GUARDS
+register_service("openverse", label="Openverse (licence-safe pictures and audio for briefs and drafts; the platform's own backup is Wikimedia Commons)")
 register_service("guards", label="Guards (each protection that could stop a request; OFF never blocks)", channels=tuple(_GUARDS.GUARDS), purposes=(), channel_default=_GUARDS.legacy())
 _CONN.load_declared()                                  # connections declared in connections_extra.yaml join the registry before the controls are generated
 register_service("connections", label="External connections (the repositories themselves)", channels=tuple(_CONN.CONNECTIONS))
