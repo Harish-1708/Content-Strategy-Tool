@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OBS, AI = "contentintel/observatory/", "contentintel/ai/"
-TESTS = ["tests/test_observatory_*.py", "tests/test_sessions.py", "tests/test_session_live.py", "tests/test_sessions_sheet.py", "tests/test_social_profiles.py", "tests/test_contract.py", "tests/test_services.py", "tests/test_ytdlp_youtube.py", "tests/test_external_repository.py", "tests/test_platform_wiring.py", "tests/test_platform_matrix.py", "tests/test_reddit_routes.py", "tests/test_agent_reach_instagram.py", "tests/test_ai_github.py", "tests/test_ai_health_tab.py", "tests/test_ai_config.py", "tests/test_providers.py", "tests/test_agent_reach_catalog.py", "tests/test_owner_defaults.py", "tests/test_capability_matrix.py", "tests/test_research.py", "tests/test_sources.py", "tests/test_guards.py", "tests/test_connections.py", "tests/test_sheets.py", "tests/test_health.py", "tests/test_acceptance.py", "tests/test_acceptance_agent_reach.py", "tests/test_acceptance_fixes.py", "tests/test_ai_gateway.py", "tests/test_ai_commands.py", "tests/test_ai_core.py", "tests/test_ai_pacing.py", "tests/test_ai_pool.py", "tests/test_ai_internal_switch.py", "tests/test_fixes58.py", "tests/test_smoke_switches.py", "tests/test_update60.py", "tests/test_update61.py", "tests/test_catalog.py", "tests/test_update62.py", "tests/test_update63.py", "tests/test_collectors.py", "tests/test_ideabank.py", "tests/test_update64.py", "tests/test_brief.py", "tests/test_ai_github.py", "tests/test_ai_config.py", "tests/test_ai_health_tab.py"]
+TESTS = ["tests/test_observatory_*.py", "tests/test_sessions.py", "tests/test_session_live.py", "tests/test_sessions_sheet.py", "tests/test_social_profiles.py", "tests/test_contract.py", "tests/test_services.py", "tests/test_ytdlp_youtube.py", "tests/test_external_repository.py", "tests/test_platform_wiring.py", "tests/test_platform_matrix.py", "tests/test_reddit_routes.py", "tests/test_agent_reach_instagram.py", "tests/test_ai_github.py", "tests/test_ai_health_tab.py", "tests/test_ai_config.py", "tests/test_providers.py", "tests/test_agent_reach_catalog.py", "tests/test_owner_defaults.py", "tests/test_capability_matrix.py", "tests/test_research.py", "tests/test_sources.py", "tests/test_guards.py", "tests/test_connections.py", "tests/test_sheets.py", "tests/test_health.py", "tests/test_acceptance.py", "tests/test_acceptance_agent_reach.py", "tests/test_acceptance_fixes.py", "tests/test_ai_gateway.py", "tests/test_ai_commands.py", "tests/test_ai_core.py", "tests/test_ai_pacing.py", "tests/test_ai_pool.py", "tests/test_ai_internal_switch.py", "tests/test_fixes58.py", "tests/test_smoke_switches.py", "tests/test_update60.py", "tests/test_update61.py", "tests/test_catalog.py", "tests/test_update62.py", "tests/test_update63.py", "tests/test_collectors.py", "tests/test_ideabank.py", "tests/test_update64.py", "tests/test_update65.py", "tests/test_brief.py", "tests/test_ai_github.py", "tests/test_ai_config.py", "tests/test_ai_health_tab.py"]
 
 # (id, file, text found exactly once, replacement, what the bug simulates)
 MUTATIONS = [
@@ -925,6 +925,8 @@ from update63_mutations import U63 as _U63              # Update 63's own checks
 MUTATIONS.extend(_U63)
 from update64_mutations import U64 as _U64              # Update 64's own checks
 MUTATIONS.extend(_U64)
+from update65_mutations import U65 as _U65              # Update 65's own checks
+MUTATIONS.extend(_U65)
 
 
 def run_tests(workdir):
