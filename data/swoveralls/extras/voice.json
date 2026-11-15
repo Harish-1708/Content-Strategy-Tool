@@ -1,6 +1,186 @@
 {
  "items": [
   {
+   "cluster": "A user on TikTok shared what they got in their $150 (yes, that’s right) SKIMS advent calendar",
+   "engagement": {
+    "num_comments": 1700,
+    "score": 18501
+   },
+   "entity": "Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-03",
+   "source": "reddit",
+   "summary": "Not even a full pack of plain hair ties is taking me OUT Stop fucking giving the Kardashians money what is wrong with y'all What my cat brings out from underneath the couch Wow, I haven’t seen bra strap headbands since I was in middle school. Can’t believe someone paid $150 for a collection of things you could’ve found at the bottom of my school backpack in 1999.",
+   "title": "A user on TikTok shared what they got in their $150 (yes, that’s right) SKIMS advent calendar",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/popculturechat/comments/1xmkf22/a_user_on_tiktok_shared_what_they_got_in_their/",
+   "weight": 18501
+  },
+  {
+   "cluster": "Kim Kardashian's shapewear brand SKIMS offers refunds or store credit amid backlash over $148 advent calendar filled wit",
+   "engagement": {
+    "num_comments": 317,
+    "score": 5869
+   },
+   "entity": "Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-09",
+   "source": "reddit",
+   "summary": "The thing that's actually bothering me the most is that it's 12 windows in an \"Advent\" calendar. Advent is the 24 days leading up to Christmas. The 12 days of Christmas start on Christmas day! Why do people keep buying that families crap stuff? Stop! Every year theres a $10 banana ass celebrity that sells a shitty advent calender filled with stuff their maids found while cleaning for mortgage pric",
+   "title": "Kim Kardashian's shapewear brand SKIMS offers refunds or store credit amid backlash over $148 advent calendar filled with 'junk'",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/entertainment/comments/1xrwx9e/kim_kardashians_shapewear_brand_skims_offers/",
+   "weight": 5869
+  },
+  {
+   "cluster": "arkadiyt/bounty-targets-data (4.0K stars) - 0 open issues",
+   "engagement": {
+    "open_issues": 0,
+    "stars": 3995
+   },
+   "entity": "Gymshark",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-15",
+   "source": "github",
+   "summary": "Project: arkadiyt/bounty-targets-data (4.0K stars, 0 open issues, ) This repo contains hourly-updated data dumps of bug bounty platform scopes (like Hackerone/Bugcrowd/Intigriti/etc) that are eligible for reports README: # bounty-targets-data [![Last commit](https://img.shields.io/github/last-commit/arkadiyt/bounty-targets-data.svg)](https://github.com/arkadiyt/bounty-targets-data/commits/mast",
+   "title": "arkadiyt/bounty-targets-data (4.0K stars) - 0 open issues",
+   "topic": "Swoveralls",
+   "url": "https://github.com/arkadiyt/bounty-targets-data",
+   "weight": 3995
+  },
+  {
+   "cluster": "Kim Kardashian’s Skims offers refunds after backlash to $148 advent calendar",
+   "engagement": {
+    "num_comments": 522,
+    "score": 3723
+   },
+   "entity": "Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-09",
+   "source": "reddit",
+   "summary": "Anybody who still buys stuff from this horrible family shouldn't be surprised when they get scammed. they truly did a 15 second hand brush of the bottom of a car, gathered whatever they found, and said \"here damn...now give us $150\" This should have been an advent calendar for cats because this is all the shit my cat steals from me to hoard for herself.",
+   "title": "Kim Kardashian’s Skims offers refunds after backlash to $148 advent calendar",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/popculturechat/comments/1xs53om/kim_kardashians_skims_offers_refunds_after/",
+   "weight": 3723
+  },
+  {
+   "cluster": "Kim Kardashian’s SKIMS issuing refunds for its Advent Calendar following customer outrage, with many calling it “Fyre Fe",
+   "engagement": {
+    "num_comments": 205,
+    "score": 2707
+   },
+   "entity": "Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-09",
+   "source": "reddit",
+   "summary": "None",
+   "title": "Kim Kardashian’s SKIMS issuing refunds for its Advent Calendar following customer outrage, with many calling it “Fyre Festival of Advent Calendars.”",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/Fauxmoi/comments/1xrx7tm/kim_kardashians_skims_issuing_refunds_for_its/",
+   "weight": 2707
+  },
+  {
+   "cluster": "The SKIMS 2026 Advent Calendar Controversy",
+   "engagement": {
+    "num_comments": 303,
+    "score": 1791
+   },
+   "entity": "Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-10",
+   "source": "reddit",
+   "summary": "None",
+   "title": "The SKIMS 2026 Advent Calendar Controversy",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/DramaLlamaHQ/comments/1xs9py6/the_skims_2026_advent_calendar_controversy/",
+   "weight": 1791
+  },
+  {
+   "cluster": "new gymshark leggings!! so comfy",
+   "engagement": {
+    "num_comments": 71,
+    "score": 1573
+   },
+   "entity": "Gymshark",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-10-17",
+   "source": "reddit",
+   "summary": "Nice home gym. Carpet? Nice color pick they look amazing !",
+   "title": "new gymshark leggings!! so comfy",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/Gym_Fits/comments/1x8dunb/new_gymshark_leggings_so_comfy/",
+   "weight": 1573
+  },
+  {
+   "cluster": "Megan Thee Stallion in a new Q&A for GymShark!",
+   "engagement": {
+    "num_comments": 14,
+    "score": 1285
+   },
+   "entity": "Gymshark",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-06",
+   "source": "reddit",
+   "summary": "Yessss we are now calling 'Donkey Kicks' 'Stallion Kicks'! I fucking loveeee her down🥰 “You think i’m sexy now? This ain’t even my final form!” 🔥😭🔥 my birthday is in 76 days, let me start this 75 hard this weekend in meg's honor 😅🩷😭 she inspires me so much",
+   "title": "Megan Thee Stallion in a new Q&A for GymShark!",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/megantheestallion/comments/1xp77dr/megan_thee_stallion_in_a_new_qa_for_gymshark/",
+   "weight": 1285
+  },
+  {
+   "cluster": "DiJonai Carrington’s SKIMS photoshoot 🫡🤎",
+   "engagement": {
+    "num_comments": 42,
+    "score": 287
+   },
+   "entity": "Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-13",
+   "source": "reddit",
+   "summary": "None",
+   "title": "DiJonai Carrington’s SKIMS photoshoot 🫡🤎",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/WNBATalks/comments/1xvab6w/dijonai_carringtons_skims_photoshoot/",
+   "weight": 287
+  },
+  {
+   "cluster": "taxueseek/argo (265 stars) - 2 open issues",
+   "engagement": {
+    "open_issues": 2,
+    "stars": 265
+   },
+   "entity": "Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-12",
+   "source": "github",
+   "summary": "Project: taxueseek/argo (265 stars, 2 open issues, Python) Multi-engine search and deep research for AI agents across 300+ sources, 18 languages, and MCP / CLI. README: <p align=\"center\"> <img src=\"assets/readme/hero.svg\" width=\"100%\" alt=\"Argo: unified search and evidence verification for AI agents across hundreds of sources and 18 languages\"> </p> <p align=\"center\"> <strong>English</str",
+   "title": "taxueseek/argo (265 stars) - 2 open issues",
+   "topic": "Swoveralls",
+   "url": "https://github.com/taxueseek/argo",
+   "weight": 265
+  },
+  {
    "cluster": "",
    "engagement": {
     "num_comments": 92,
@@ -71,6 +251,24 @@
    "topic": "kids",
    "url": "https://zebra.rodeo/en/blog/marelleo/",
    "weight": 195
+  },
+  {
+   "cluster": "Ditto Oodie",
+   "engagement": {
+    "num_comments": 9,
+    "score": 170
+   },
+   "entity": "The Oodie",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-07",
+   "source": "reddit",
+   "summary": "$87 PLUS shipping 😩😩😩 I bought the blanket version from this site and I love it. It’s so soft and warm I have this and the blanket, so comfy and warm, defo worth the purchase 💜",
+   "title": "Ditto Oodie",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/DittoFans/comments/1xqjkfj/ditto_oodie/",
+   "weight": 170
   },
   {
    "cluster": "",
@@ -145,6 +343,60 @@
    "weight": 126
   },
   {
+   "cluster": "Gymshark’s soft motion",
+   "engagement": {
+    "num_comments": 54,
+    "score": 123
+   },
+   "entity": "Gymshark",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-10-27",
+   "source": "reddit",
+   "summary": "Okay I agree!! It doesn’t even feel like a dupe, it’s better imo I hate gymsharks logo so bad. It looks childish and cheap but making it tonal really helped. Idk why oner when away from tonal logos. It was so classy. I got them too and I like them more than Oners. They feel less fleecy and feel like they are not going to pill compared to oners. More buttery but thick",
+   "title": "Gymshark’s soft motion",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/OnerActive/comments/1xh6mr1/gymsharks_soft_motion/",
+   "weight": 123
+  },
+  {
+   "cluster": "Gymshark in trademark battle that threatens future of small fitness business",
+   "engagement": {
+    "num_comments": 40,
+    "score": 118
+   },
+   "entity": "Gymshark",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-15",
+   "source": "reddit",
+   "summary": "None",
+   "title": "Gymshark in trademark battle that threatens future of small fitness business",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/unitedkingdom/comments/1xws3cf/gymshark_in_trademark_battle_that_threatens/",
+   "weight": 118
+  },
+  {
+   "cluster": "TheMattBerman/seo-kit (100 stars) - 0 open issues",
+   "engagement": {
+    "open_issues": 0,
+    "stars": 100
+   },
+   "entity": "Gymshark",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-15",
+   "source": "github",
+   "summary": "Project: TheMattBerman/seo-kit (100 stars, 0 open issues, Shell) AI agent that finds keywords, writes content, monitors rankings, and self-improves. Two OpenClaw skills that chain into a compounding SEO loop. README: # SEO Kit for OpenClaw An AI agent that finds keywords, writes content, builds backlinks, monitors rankings, and self-improves. Four skills that chain into a compounding loop. *",
+   "title": "TheMattBerman/seo-kit (100 stars) - 0 open issues",
+   "topic": "Swoveralls",
+   "url": "https://github.com/TheMattBerman/seo-kit",
+   "weight": 100
+  },
+  {
    "cluster": "",
    "engagement": {
     "num_comments": 90,
@@ -217,6 +469,24 @@
    "weight": 56
   },
   {
+   "cluster": "Gymshark> Oner",
+   "engagement": {
+    "num_comments": 49,
+    "score": 17
+   },
+   "entity": "Gymshark",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-07",
+   "source": "reddit",
+   "summary": "None",
+   "title": "Gymshark> Oner",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/OnerActive/comments/1xqg6eu/gymshark_oner/",
+   "weight": 49
+  },
+  {
    "cluster": "",
    "engagement": {
     "num_comments": 28,
@@ -271,6 +541,24 @@
    "weight": 47
   },
   {
+   "cluster": "Burger and chips for breakfast",
+   "engagement": {
+    "num_comments": 46,
+    "score": 39
+   },
+   "entity": "The Oodie",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-13",
+   "source": "reddit",
+   "summary": "Having an oven in their house is the most pointless thing in the world. Absolute pair of fucking dustbags. He is looking old, dull and lack lustre So in a few years when Ad is older and he can't eat those food pouches anymore then what?? What will they feed him?",
+   "title": "Burger and chips for breakfast",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/justalittletreat/comments/1xv5426/burger_and_chips_for_breakfast/",
+   "weight": 46
+  },
+  {
    "cluster": "",
    "engagement": {
     "num_comments": 28,
@@ -305,6 +593,60 @@
    "topic": "core",
    "url": "https://github.com/cristianoc/TScert",
    "weight": 25
+  },
+  {
+   "cluster": "PSA: found the perfect birthing nightie at M&S",
+   "engagement": {
+    "num_comments": 12,
+    "score": 19
+   },
+   "entity": "The Oodie",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-10-29",
+   "source": "reddit",
+   "summary": "If only it had buttons for skin to skin / breastfeeding! I wore a light yellow nightie when i gave birth with my first. She came really fast so i didnt have time to change. Everything washed out and i packed it in my hospital bag for when i had my second. I also had him whilst wearing it :) I laboured in one of these! The material was perfect and you’re right very breathable",
+   "title": "PSA: found the perfect birthing nightie at M&S",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/PregnancyUK/comments/1xj0b6v/psa_found_the_perfect_birthing_nightie_at_ms/",
+   "weight": 19
+  },
+  {
+   "cluster": "The £1 oodie?",
+   "engagement": {
+    "num_comments": 18,
+    "score": 4
+   },
+   "entity": "The Oodie",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-04",
+   "source": "reddit",
+   "summary": "Did anyone actually get something for £1 today on the oodie website UK? I got to checkout and they were sold out, people I know also in the queue and sold out before getting to checkout. Did anyone actually get anything? Or was it all a marketing scheme?",
+   "title": "The £1 oodie?",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/askanything/comments/1xnxmy5/the_1_oodie/",
+   "weight": 18
+  },
+  {
+   "cluster": "JBW-byte/Cyberman-Dynamic-Foobar2000-Theme (17 stars) - 0 open issues",
+   "engagement": {
+    "open_issues": 0,
+    "stars": 17
+   },
+   "entity": "Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-15",
+   "source": "github",
+   "summary": "Project: JBW-byte/Cyberman-Dynamic-Foobar2000-Theme (17 stars, 0 open issues, JavaScript) Simple cool layout using the default user interface and plugins for the 64bit version of foobar2000 2.0+ portablemode. README: # Cyberman-Dynamic Skin Theme for Foobar2000 2.0+ (64-bit) ![Foobar2000](https://img.shields.io/badge/Foobar2000-v2.x-blue) ![Component](https://img.shields.io/badge/Spider%20Mon",
+   "title": "JBW-byte/Cyberman-Dynamic-Foobar2000-Theme (17 stars) - 0 open issues",
+   "topic": "Swoveralls",
+   "url": "https://github.com/JBW-byte/Cyberman-Dynamic-Foobar2000-Theme",
+   "weight": 17
   },
   {
    "cluster": "Different denim, key overalls",
@@ -403,7 +745,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2025-04-15",
    "source": "instagram comment",
@@ -447,6 +789,24 @@
    "title": "Chinese AI chipmaker Iluvatar CoreX says new GPU matches Nvidia's H200",
    "topic": "core",
    "url": "https://www.scmp.com/tech/tech-war/article/3372598/ai-chipmaker-iluvatar-corex-says-new-gpu-matches-nvidias-h200-home-grown-push-accelerates",
+   "weight": 8
+  },
+  {
+   "cluster": "People who don't like the feel of there fluffy oversized hooded blanket also called a Oodie",
+   "engagement": {
+    "num_comments": 8,
+    "score": 1
+   },
+   "entity": "The Oodie",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-10-28",
+   "source": "reddit",
+   "summary": "Anyone have a fluffy oversized hooded blanket also called an Oodie but but they don't like wearing it because of how it feels",
+   "title": "People who don't like the feel of there fluffy oversized hooded blanket also called a Oodie",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/teenagers/comments/1xhuijb/people_who_dont_like_the_feel_of_there_fluffy/",
    "weight": 8
   },
   {
@@ -576,6 +936,24 @@
    "weight": 6
   },
   {
+   "cluster": "How to clean random brown spots on oodie?",
+   "engagement": {
+    "num_comments": 6,
+    "score": 2
+   },
+   "entity": "The Oodie",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-10-26",
+   "source": "reddit",
+   "summary": "My oodie has been in storage room since last december or so, im now noticing random brown spots over all, how to do i get rid of it? First photo doesn't show it well but the spots are very visible.",
+   "title": "How to clean random brown spots on oodie?",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/CleaningTips/comments/1xfwn33/how_to_clean_random_brown_spots_on_oodie/",
+   "weight": 6
+  },
+  {
    "cluster": "",
    "engagement": {
     "num_comments": 0,
@@ -645,6 +1023,24 @@
    "title": "OpenAI's latest discoveries spark a backlash and Help My kid hates AI",
    "topic": "kids",
    "url": "https://text.npr.org/nx-s1-6022556",
+   "weight": 5
+  },
+  {
+   "cluster": "Shame on you Gymshark",
+   "engagement": {
+    "num_comments": 1,
+    "score": 5
+   },
+   "entity": "Gymshark",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-15",
+   "source": "reddit",
+   "summary": "None",
+   "title": "Shame on you Gymshark",
+   "topic": "Swoveralls",
+   "url": "https://www.reddit.com/r/Gymshark/comments/1xwub6x/shame_on_you_gymshark/",
    "weight": 5
   },
   {
@@ -762,7 +1158,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-02-19",
    "source": "instagram comment",
@@ -779,7 +1175,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-21",
    "source": "web comment",
@@ -796,7 +1192,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-21",
    "source": "web comment",
@@ -885,7 +1281,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-02-19",
    "source": "instagram comment",
@@ -902,7 +1298,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-08-06",
    "source": "instagram comment",
@@ -919,7 +1315,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-08-06",
    "source": "instagram comment",
@@ -936,7 +1332,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2025-05-15",
    "source": "instagram comment",
@@ -944,6 +1340,23 @@
    "title": "Free Father’s Day gift, Just send him this https://www.instagram.com/reel/DZ0XI3MxR7P/?igsh=a3RnZnBxN3pldHQ5",
    "topic": "Creative Father's Day gift wrapping",
    "url": "https://www.instagram.com/reel/DJruFhIx1bG/#c-76f9b4b1",
+   "weight": 1
+  },
+  {
+   "cluster": "Gym Team Member",
+   "engagement": {
+    "open_roles": 1
+   },
+   "entity": "Gymshark",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-10-27",
+   "source": "jobs",
+   "summary": "OVERVIEW: This isn’t just another gym role - this is your chance to be part of something first-of-its-kind . We’re launching our very first Gymshark gym in Wynwood Miami , and we’re looking for passionate, energetic Gym Team Members to help bring it to life. You’ll be at the heart of an entirely new fitness experience, shaping the culture, setting the standard, and creating a community that people",
+   "title": "Gym Team Member",
+   "topic": "Swoveralls",
+   "url": "https://job-boards.eu.greenhouse.io/gymshark/jobs/4875763101",
    "weight": 1
   },
   {
@@ -962,6 +1375,23 @@
    "title": "I wear your company's merch at Corgi Coffee,London UK for the days you book",
    "topic": "merch",
    "url": "https://corgiboy.co.uk/",
+   "weight": 1
+  },
+  {
+   "cluster": "Mobile Engineer - IOS",
+   "engagement": {
+    "open_roles": 1
+   },
+   "entity": "Gymshark",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-09-28",
+   "source": "jobs",
+   "summary": "OVERVIEW: This role exists to build and maintain the iOS app that a large share of Gymshark customers shop through, at a standard that holds under peak load. You will turn refined product work into features that are shipped, tested and observable, and improves the quality of the code you touch. WHAT YOU'LL BE DOING: CRAFT &nbsp; Writes production Swift confidently. Most new work is SwiftUI; the ap",
+   "title": "Mobile Engineer - IOS",
+   "topic": "Swoveralls",
+   "url": "https://job-boards.eu.greenhouse.io/gymshark/jobs/4988756101",
    "weight": 1
   },
   {
@@ -1007,7 +1437,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2025-05-15",
    "source": "instagram comment",
@@ -1024,7 +1454,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-23",
    "source": "web comment",
@@ -1041,7 +1471,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-03-09",
    "source": "web comment",
@@ -1058,7 +1488,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-11",
    "source": "web comment",
@@ -1075,7 +1505,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2025-04-12",
    "source": "instagram comment",
@@ -1092,7 +1522,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-18",
    "source": "web comment",
@@ -1109,7 +1539,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-10-31",
    "source": "instagram comment",
@@ -1126,7 +1556,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-23",
    "source": "web comment",
@@ -1143,7 +1573,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-18",
    "source": "web comment",
@@ -1151,6 +1581,36 @@
    "title": "Aap video bahut achcha banate Ho",
    "topic": "Dad says he needs nothing",
    "url": "https://www.instagram.com/reel/DZt09TSzoC2/#c-0acb536e",
+   "weight": 0
+  },
+  {
+   "cluster": "Bethenny Frankel Reacts to SKIMS Advent Calendar",
+   "engagement": {},
+   "entity": "Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "",
+   "source": "grounding",
+   "summary": "A woman visits a Skims store on Oxford Street to review the viral advent calendar, which she notes costs £158 and is said to be full of rubbish. She browses the ...",
+   "title": "Bethenny Frankel Reacts to SKIMS Advent Calendar",
+   "topic": "Swoveralls",
+   "url": "https://www.facebook.com/bethennyfrankel/videos/crisis-averted-adventcalendar-skims-skims/1133219055982657/",
+   "weight": 0
+  },
+  {
+   "cluster": "Burgundy Oodie™ Original",
+   "engagement": {},
+   "entity": "The Oodie",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-14",
+   "source": "grounding",
+   "summary": "Softest, Warmest Thing You'll Ever Wear ... The Oodie™ Original is pure comfort. So soft, warm, and toasty, it feels like a hug you'll never want to take off.",
+   "title": "Burgundy Oodie™ Original",
+   "topic": "Swoveralls",
+   "url": "https://theoodie.com/products/burgundy-oodie-original",
    "weight": 0
   },
   {
@@ -1169,13 +1629,28 @@
    "weight": 0
   },
   {
+   "cluster": "Good news",
+   "engagement": {},
+   "entity": "Madepants",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "",
+   "source": "grounding",
+   "summary": "Our vintage-inspired utility pants are fully restocked and ready to become your new favorite. Shop now via the link in our bio. #madepants #utilitypants. Built ...",
+   "title": "Good news",
+   "topic": "Swoveralls",
+   "url": "https://www.instagram.com/p/Des1xpTD6wu/",
+   "weight": 0
+  },
+  {
    "cluster": "To the Dads who deserve to be celebrated today and every day ...",
    "engagement": {
     "likes": 0
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-21",
    "source": "web comment",
@@ -1192,7 +1667,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-11",
    "source": "web comment",
@@ -1203,13 +1678,88 @@
    "weight": 0
   },
   {
+   "cluster": "Gymshark Arrival 5\" Shorts - Black",
+   "engagement": {},
+   "entity": "Gymshark",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-12",
+   "source": "grounding",
+   "summary": "Designed for lifting, running and HIIT. These shorts are slim fit and made from lightweight, sweat-wicking fabric. Lightweight. No weight, just freedom.",
+   "title": "Gymshark Arrival 5\" Shorts - Black",
+   "topic": "Swoveralls",
+   "url": "https://www.gymshark.com/products/gymshark-arrival-5-shorts-black-ss22?srsltid=AYCX9vIhRRM3uVozVj5rNUGjq0pHMWuXYfaKRhObstGJF_ZFeFm1D25C",
+   "weight": 0
+  },
+  {
+   "cluster": "Gymshark Everyday Seamless Leggings - Black",
+   "engagement": {},
+   "entity": "Gymshark",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-11",
+   "source": "grounding",
+   "summary": "$38 3.4(1698) Designed for any kind of training such as hybrid, lifting and studio. These leggings are high waisted and made from soft seamless fabric. Learn ...",
+   "title": "Gymshark Everyday Seamless Leggings - Black",
+   "topic": "Swoveralls",
+   "url": "https://www.gymshark.com/products/gymshark-everyday-seamless-leggings-black-aw23?srsltid=AYCX9vJ4qBe-mqipcc_iUJDM9imNM2WqJWnAzlB_jgMU4NXNCex967FQ",
+   "weight": 0
+  },
+  {
+   "cluster": "Gymshark Vengeance T-Shirt - Black/Carmine Red",
+   "engagement": {},
+   "entity": "Gymshark",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-10-26",
+   "source": "grounding",
+   "summary": "New Vengeance T-Shirt muscle fit $42 4.5(85) Designed for lifting. This top is compression fit and made from premium, stretchy fabric. Learn more Up to 50% off ...",
+   "title": "Gymshark Vengeance T-Shirt - Black/Carmine Red",
+   "topic": "Swoveralls",
+   "url": "https://www.gymshark.com/products/gymshark-vengeance-t-shirt-ss-tops-black-aw26?srsltid=AYCX9vKmaNMwvefvgvu98kY1kXHHvO-HG3jdvfLMaO2fRLqypynnqTuN",
+   "weight": 0
+  },
+  {
+   "cluster": "Gymshark on Instagram: \"January 2027. Wynwood Miami. ...",
+   "engagement": {},
+   "entity": "Gymshark",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "",
+   "source": "grounding",
+   "summary": "Gymshark is officially entering the gym space, with its first-ever fitness facility set to open in Wynwood, Miami, in January 2027.",
+   "title": "Gymshark on Instagram: \"January 2027. Wynwood Miami. ...",
+   "topic": "Swoveralls",
+   "url": "https://www.instagram.com/p/De9qa6dCIhE/",
+   "weight": 0
+  },
+  {
+   "cluster": "Gymshark x Sam Sulek",
+   "engagement": {},
+   "entity": "Gymshark",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "",
+   "source": "grounding",
+   "summary": "Sam Sulek X Gymshark Oct 22nd 2PM EST https://www.gymshark.com/ Exercise Scientist Examines Gen Z's Steroid Epidemic: Getting Huge Simple (10 Exercises)",
+   "title": "Gymshark x Sam Sulek",
+   "topic": "Swoveralls",
+   "url": "https://www.youtube.com/watch?v=nA7bcND3KSw",
+   "weight": 0
+  },
+  {
    "cluster": "",
    "engagement": {
     "likes": 0
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-10-31",
    "source": "instagram comment",
@@ -1226,7 +1776,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-10-31",
    "source": "instagram comment",
@@ -1243,7 +1793,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-08-06",
    "source": "instagram comment",
@@ -1260,7 +1810,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-10-31",
    "source": "instagram comment",
@@ -1277,7 +1827,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-08-06",
    "source": "instagram comment",
@@ -1294,7 +1844,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-10-31",
    "source": "instagram comment",
@@ -1311,7 +1861,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-08-18",
    "source": "instagram comment",
@@ -1328,7 +1878,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-01-25",
    "source": "instagram comment",
@@ -1345,7 +1895,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-02-19",
    "source": "instagram comment",
@@ -1356,13 +1906,28 @@
    "weight": 0
   },
   {
+   "cluster": "Moss Green Oodie™ Original",
+   "engagement": {},
+   "entity": "The Oodie",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-13",
+   "source": "grounding",
+   "summary": "Experience unparalleled comfort with the Oodie™ Original. A wearable blanket designed for endless snuggles and cosy moments.",
+   "title": "Moss Green Oodie™ Original",
+   "topic": "Swoveralls",
+   "url": "https://theoodie.com/products/moss-green-green-oodie-original",
+   "weight": 0
+  },
+  {
    "cluster": "Forget the traditional Father's Day bouquet—this year, give ...",
    "engagement": {
     "likes": 0
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-11",
    "source": "web comment",
@@ -1379,7 +1944,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-11",
    "source": "web comment",
@@ -1396,7 +1961,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-08-06",
    "source": "instagram comment",
@@ -1407,13 +1972,43 @@
    "weight": 0
   },
   {
+   "cluster": "New black cotton canvas overalls from Madepants. Double ...",
+   "engagement": {},
+   "entity": "Madepants",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "",
+   "source": "grounding",
+   "summary": "100% cotton overalls with a light weight linen type feel. Adjustable straps, cargo pockets and elastic across the back. Size small for $40.",
+   "title": "New black cotton canvas overalls from Madepants. Double ...",
+   "topic": "Swoveralls",
+   "url": "https://www.facebook.com/groups/anchoragelist/posts/29146693685014870/",
+   "weight": 0
+  },
+  {
+   "cluster": "Nothing beats seeing our customers happy in Madepants ...",
+   "engagement": {},
+   "entity": "Madepants",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "",
+   "source": "grounding",
+   "summary": "happy in Madepants! The material is a peached cotton, just like my joggers and these overalls are equipped with 11 pockets total: 2 Standard hip pockets 4 Back ...",
+   "title": "Nothing beats seeing our customers happy in Madepants ...",
+   "topic": "Swoveralls",
+   "url": "https://www.instagram.com/p/DfHsZBxj6G8/",
+   "weight": 0
+  },
+  {
    "cluster": "",
    "engagement": {
     "likes": 0
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-05-18",
    "source": "instagram comment",
@@ -1424,13 +2019,73 @@
    "weight": 0
   },
   {
+   "cluster": "SKIMS",
+   "engagement": {},
+   "entity": "Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-10-21",
+   "source": "grounding",
+   "summary": "Founded by Kim Kardashian in 2019, SKIMS quickly redefined the world of modern wardrobe essentials with its ultra-flattering fits and buttery fabrics.",
+   "title": "SKIMS",
+   "topic": "Swoveralls",
+   "url": "https://www.bloomingdales.com/shop/skims?id=1273844",
+   "weight": 0
+  },
+  {
+   "cluster": "SKIMS - Apps on Google Play",
+   "engagement": {},
+   "entity": "Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-05",
+   "source": "grounding",
+   "summary": "Your SKIMS fix, now at your fingertips. Get the SKIMS mobile app to start enjoying early access to new drops, free returns, and more exclusive, members-only ...",
+   "title": "SKIMS - Apps on Google Play",
+   "topic": "Swoveralls",
+   "url": "https://play.google.com/store/apps/details?id=com.skims.shop&hl=en_US",
+   "weight": 0
+  },
+  {
+   "cluster": "SKIMS Advent Calendar Is Getting ROASTED, Patrick Ta Is ...",
+   "engagement": {},
+   "entity": "Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "",
+   "source": "grounding",
+   "summary": "Kim Kardashian's SKIMS advent calendar is getting absolutely roasted online and after seeing what people are getting for $148,",
+   "title": "SKIMS Advent Calendar Is Getting ROASTED, Patrick Ta Is ...",
+   "topic": "Swoveralls",
+   "url": "https://www.youtube.com/watch?v=s6MeySeDiQ8",
+   "weight": 0
+  },
+  {
+   "cluster": "Skims' Advent Calendar Unboxing Reveals a Big Branding ...",
+   "engagement": {},
+   "entity": "Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-12",
+   "source": "grounding",
+   "summary": "Skims, the shapewear brand Kim Kardashian co-founded, ended up offering buyers a full refund with a return or store credit to keep the calendar.",
+   "title": "Skims' Advent Calendar Unboxing Reveals a Big Branding ...",
+   "topic": "Swoveralls",
+   "url": "https://www.inc.com/kachelle-pratcher/skims-148-advent-calendar-backlash-is-a-lesson-every-brand-should-learn/91434795",
+   "weight": 0
+  },
+  {
    "cluster": "Forget the traditional Father's Day bouquet—this year, give ...",
    "engagement": {
     "likes": 0
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-11",
    "source": "web comment",
@@ -1471,6 +2126,36 @@
    "weight": 0
   },
   {
+   "cluster": "Swoveralls Review: Sweats Meet Overalls Try - Val Taylor",
+   "engagement": {},
+   "entity": "Swoveralls vs Gymshark vs Madepants vs The Oodie vs Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "",
+   "source": "grounding",
+   "summary": "A creator reviews 'Swoveralls,' describing them as a hybrid of sweatpants and overalls. She emphasizes their comfort for cooler weather, highlights the ...",
+   "title": "Swoveralls Review: Sweats Meet Overalls Try - Val Taylor",
+   "topic": "Swoveralls",
+   "url": "https://www.facebook.com/valtaylor/videos/sweats-meet-overalls/4893958304212767/",
+   "weight": 0
+  },
+  {
+   "cluster": "Swoveralls Small Business Founder Story",
+   "engagement": {},
+   "entity": "Swoveralls vs Gymshark vs Madepants vs The Oodie vs Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "",
+   "source": "grounding",
+   "summary": "The result is a single outfit that looks like overalls but feels like sweatpants. The term “swoveralls” comes from combining “sweatpants” and “overalls.” ...",
+   "title": "Swoveralls Small Business Founder Story",
+   "topic": "Swoveralls",
+   "url": "https://www.tiktok.com/@swoveralls/video/7698424457131543839",
+   "weight": 0
+  },
+  {
    "cluster": "Swoveralls Unisex SweatShort Overalls | Relaxed Fit Bib ...",
    "engagement": {},
    "entity": "",
@@ -1486,13 +2171,58 @@
    "weight": 0
   },
   {
+   "cluster": "Swoveralls Unisex SweatShort Overalls | Relaxed Fit Bib ...",
+   "engagement": {},
+   "entity": "Swoveralls vs Gymshark vs Madepants vs The Oodie vs Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-11-06",
+   "source": "grounding",
+   "summary": "About this item. Free the Waistband – Made with a premium cotton blend and a touch of stretch, these sweatpant overalls move with you for all-day comfort.",
+   "title": "Swoveralls Unisex SweatShort Overalls | Relaxed Fit Bib ...",
+   "topic": "Swoveralls",
+   "url": "https://us.amazon.com/Swoveralls-UPGRADED-Sweatpants-Overalls-Comfort/dp/B0CZ24MYP4",
+   "weight": 0
+  },
+  {
+   "cluster": "Swoveralls: Brand Brief for AI Assistants",
+   "engagement": {},
+   "entity": "Swoveralls vs Gymshark vs Madepants vs The Oodie vs Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "2026-10-18",
+   "source": "grounding",
+   "summary": "Swoveralls makes the original sweatpant overalls: overalls built from sweatpant fabric, with no waistband. Price: $99 for core colors. walks, naps, travel,",
+   "title": "Swoveralls: Brand Brief for AI Assistants",
+   "topic": "Swoveralls",
+   "url": "https://swoveralls.com/pages/for-ai?srsltid=AYCX9vIeEAFY0e5BCvoZ8IrBiYkzCE-ZY87CvVFPLtILdUID7lfmn25r",
+   "weight": 0
+  },
+  {
+   "cluster": "Swoveralls: where sweats meet overalls. #ad I may earn a ...",
+   "engagement": {},
+   "entity": "Swoveralls vs Gymshark vs Madepants vs The Oodie vs Skims",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "",
+   "source": "grounding",
+   "summary": "Musician Benedict Beer presents a short fashion tutorial on how to wear \"Swoveralls,\" which he defines as comfortable overalls that are the same as sweatpants.",
+   "title": "Swoveralls: where sweats meet overalls. #ad I may earn a ...",
+   "topic": "Swoveralls",
+   "url": "https://www.facebook.com/valtaylor/posts/swoveralls-where-sweats-meet-overalls-ad-i-may-earn-a-commission-from-qualifying/1832551108302263/",
+   "weight": 0
+  },
+  {
    "cluster": "",
    "engagement": {
     "likes": 0
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-08-06",
    "source": "instagram comment",
@@ -1509,7 +2239,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-23",
    "source": "web comment",
@@ -1520,13 +2250,28 @@
    "weight": 0
   },
   {
+   "cluster": "The Oodie",
+   "engagement": {},
+   "entity": "The Oodie",
+   "first_seen": "2026-11-15T13:25:32Z",
+   "last_seen": "2026-11-15T13:25:32Z",
+   "mode": "competitors",
+   "published": "",
+   "source": "grounding",
+   "summary": "The Oodie was created by David and Todd Fogarty in Australia – it's basically a soft, warm blanket with a hood and cuffs, made of flannel fleece and sherpa ...",
+   "title": "The Oodie",
+   "topic": "Swoveralls",
+   "url": "https://www.facebook.com/TheOfficialOodie/posts/it-said-please-%EF%B8%8Fmeet-the-oodie-originalthe-wearable-blanket-loved-by-9-million-p/1617549703748571/",
+   "weight": 0
+  },
+  {
    "cluster": "Forget the traditional Father's Day bouquet—this year, give ...",
    "engagement": {
     "likes": 0
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-11",
    "source": "web comment",
@@ -1543,7 +2288,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-18",
    "source": "web comment",
@@ -1560,7 +2305,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-08-06",
    "source": "instagram comment",
@@ -1577,7 +2322,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-10-31",
    "source": "instagram comment",
@@ -1594,7 +2339,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-11",
    "source": "web comment",
@@ -1611,7 +2356,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-10-31",
    "source": "instagram comment",
@@ -1628,7 +2373,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-08-06",
    "source": "instagram comment",
@@ -1645,7 +2390,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-18",
    "source": "web comment",
@@ -1662,7 +2407,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-23",
    "source": "web comment",
@@ -1679,7 +2424,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-05-17",
    "source": "instagram comment",
@@ -1696,7 +2441,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-18",
    "source": "web comment",
@@ -1713,7 +2458,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-15T13:02:54Z",
-   "last_seen": "2026-11-15T13:02:54Z",
+   "last_seen": "2026-11-15T13:25:32Z",
    "mode": "comments",
    "published": "2026-06-11",
    "source": "web comment",
@@ -1725,11 +2470,11 @@
   }
  ],
  "seed_topics": [
-  "Mercury 3: Diffusion at scale",
-  "Moderna and Merck say their mRNA cancer vaccine cut death, recurrence by 42%",
-  "CoreWeave bond yield tops 16% as AI credit stress rises",
-  "Show HN: Marelleo, an open-source story box I built for my kids using ESP32",
-  "Being a kid making games in the early 2000s"
+  "A user on TikTok shared what they got in their $150 (yes, that’s right) SKIMS advent calendar",
+  "Kim Kardashian's shapewear brand SKIMS offers refunds or store credit amid backlash over $148 advent calendar filled wit",
+  "arkadiyt/bounty-targets-data (4.0K stars) - 0 open issues",
+  "Kim Kardashian’s Skims offers refunds after backlash to $148 advent calendar",
+  "Kim Kardashian’s SKIMS issuing refunds for its Advent Calendar following customer outrage, with many calling it “Fyre Fe"
  ],
- "updated": "2026-11-15T13:02:54Z"
+ "updated": "2026-11-15T13:25:32Z"
 }
