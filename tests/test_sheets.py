@@ -1,5 +1,6 @@
 import copy
 from contentintel import services  # noqa: E402
+from contentintel import connections as CONN  # noqa: E402
 import inspect
 import json
 
@@ -914,11 +915,11 @@ def test_dry_run_wording_reads_as_plain_english(swov, store):
     report, _ = one(swov, store, FakeClient(), dry_run=True)
     text = "\n".join(report.lines())
     assert "would create tabs: Products, Variants, Changes, Controls, Connections Health, Status" in text
-    assert f"would update 0 rows (0 cells), add {534 + len(services.CONTROLS) + 6} rows" in text and "would updated" not in text
+    assert f"would update 0 rows (0 cells), add {534 + len(services.CONTROLS) + len(CONN.IDS)} rows" in text and "would updated" not in text
     client = FakeClient()
     done, _ = one(swov, store, client)
     done_text = "\n".join(done.lines())
-    assert "created tabs:" in done_text and f"added {534 + len(services.CONTROLS) + 6} rows" in done_text and "would" not in done_text
+    assert "created tabs:" in done_text and f"added {534 + len(services.CONTROLS) + len(CONN.IDS)} rows" in done_text and "would" not in done_text
 
 
 # --- the Research tab -------------------------------------------------------------------------

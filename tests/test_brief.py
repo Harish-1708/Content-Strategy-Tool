@@ -588,3 +588,17 @@ def test_a_picture_is_taken_once_per_idea_even_when_more_are_wanted(store):
     client, fake, items = saved_items(store, kinds=("image", "image", "image"))
     images, notes = BR.saved_pictures(items, client, 3)
     assert images == {"IB-0001": PNG} and sum(1 for c in fake.calls if c["params"].get("alt") == "media") == 1
+
+
+def test_the_evidence_for_the_concepts_is_sent_to_the_model_when_there_is_some_and_not_when_there_is_none(store, swov, ruleset, usable):
+    from contentintel import voice as VOICE
+    plain = claude_with(good_brief())
+    make(store, swov, ruleset, {"claude-sonnet-5-5": plain})
+    assert "Evidence for the concepts" not in plain.json_calls[0][1]
+    voice, _ = VOICE.merge({}, [VOICE._item("reddit", "straps slip all day", "https://r/1", "", {"score": 410}, "", "", "t", "research")], NOW)
+    store.write_extra("swoveralls", "voice", voice)
+    rich = claude_with(good_brief())
+    make(store, swov, ruleset, {"claude-sonnet-5-5": rich})
+    sent = rich.json_calls[0][1]
+    assert "Evidence for the concepts (not facts about our products)" in sent and "What audiences are saying right now" in sent and "410 engagement" in sent
+    assert sent.index("Facts you may state") < sent.index("Evidence for the concepts")                  # the evidence is kept apart from, and after, the facts the brief may state
