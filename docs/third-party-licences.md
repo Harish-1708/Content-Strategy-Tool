@@ -11,7 +11,7 @@ Recorded on 15 November 2026 from each repository's own licence text. This is a 
 | aaron-marketing-skills | Apache-2.0 | free to use, notice kept | Batch 2 |
 | OmniRoute | MIT | free to use | catalogue data only |
 | MoneyPrinterTurbo | MIT | free to use | Batch 3 |
-| TimesFM | Apache-2.0 for 2.5 and earlier; the 3.0 weights are non-commercial and not for production use (README) | use 2.5 | Batch 3 |
+| TimesFM | Apache-2.0 for 2.5 and earlier; the 3.0 weights' README says non-commercial and not for production use | recorded only: this is a personal, non-commercial project, so 3.0 is not ruled out by it; 2.5 and 3.0 can both be tried, and whichever forecasts better on our own history is used | Batch 3 |
 | VibeVoice | MIT code; read the model weights' licence before use | check before use | Batch 2 |
 | Openverse | MIT (each asset has its own licence) | credit line kept with each asset | hosted API |
 | facebook-ads-library-mcp | MIT | free to use | secondary reader |
