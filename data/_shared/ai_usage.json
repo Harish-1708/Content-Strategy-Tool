@@ -422,6 +422,158 @@
     "tokens_in": 87,
     "tokens_out": 754
    }
+  },
+  "2026-11-15": {
+   "claude": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 8e-05,
+      "requests": 2,
+      "tokens": 44
+     }
+    },
+    "cost_usd": 8e-05,
+    "failures": 0,
+    "latency_ms": 2249,
+    "requests": 2,
+    "tokens_in": 36,
+    "tokens_out": 8
+   },
+   "cloudflare": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 44
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 321,
+    "requests": 1,
+    "tokens_in": 42,
+    "tokens_out": 2
+   },
+   "cohere": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 132
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 2021,
+    "requests": 4,
+    "tokens_in": 28,
+    "tokens_out": 104
+   },
+   "google": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 3,
+      "tokens": 27
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 23424,
+    "requests": 3,
+    "tokens_in": 24,
+    "tokens_out": 3
+   },
+   "groq": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 227
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 638,
+    "requests": 2,
+    "tokens_in": 156,
+    "tokens_out": 71
+   },
+   "kilo": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 107
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 1995,
+    "requests": 2,
+    "tokens_in": 46,
+    "tokens_out": 61
+   },
+   "nvidia": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 0
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 1,
+    "latency_ms": 0,
+    "requests": 1,
+    "tokens_in": 0,
+    "tokens_out": 0
+   },
+   "ollama": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 7,
+      "tokens": 0
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 7,
+    "latency_ms": 0,
+    "requests": 7,
+    "tokens_in": 0,
+    "tokens_out": 0
+   },
+   "openrouter": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 7,
+      "tokens": 493
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 6007,
+    "requests": 7,
+    "tokens_in": 137,
+    "tokens_out": 356
+   },
+   "zhipu": {
+    "by_lane": {
+     "canary": {
+      "cost_usd": 0.0,
+      "requests": 3,
+      "tokens": 357
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 45024,
+    "requests": 3,
+    "tokens_in": 37,
+    "tokens_out": 320
+   }
   }
  }
 }
