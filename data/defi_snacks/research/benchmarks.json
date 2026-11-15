@@ -3,52 +3,63 @@
   "chobani": {
    "candidates": [
     {
-     "ads": 2,
-     "likes": 1344558,
+     "ads": 0,
+     "likes": 0,
      "name": "Chobani",
-     "page_id": "112002018446346"
+     "page_id": "",
+     "url": "https://www.facebook.com/Chobani"
     },
     {
-     "ads": 1,
-     "likes": 1344558,
-     "name": "Chobani",
-     "page_id": "203224163148546"
+     "ads": 0,
+     "likes": 0,
+     "name": "Chobani (@ChobaniNZ)",
+     "page_id": "",
+     "url": "https://www.facebook.com/ChobaniNZ"
     }
    ],
-   "checked_at": "2026-11-04T15:45:26Z",
+   "checked_at": "2026-11-15T13:14:33Z",
    "kind": "benchmark",
    "name": "Chobani",
-   "page_id": "",
+   "page_id": "100064549155148",
    "page_likes": 0,
-   "page_name": "",
-   "reason": "2 pages have this name and none is clearly the main one",
-   "source": "auto",
-   "status": "ambiguous"
+   "page_name": "Chobani",
+   "reason": "found with Serper and confirmed as the main official page by the AI reviewer: The page at /Chobani is the brand's own primary page, while /ChobaniNZ is a New Zealand regional page. (https://www.facebook.com/Chobani)",
+   "source": "serper_review",
+   "status": "resolved"
   },
   "defisnacks": {
    "candidates": [
     {
-     "ads": 1,
-     "likes": 7591,
-     "name": "Kinective Fitness Club",
-     "page_id": "106236430817711"
+     "ads": 0,
+     "likes": 0,
+     "name": "DEFI Snacks (@DEFISnacks)",
+     "page_id": "",
+     "url": "https://www.facebook.com/DEFISnacks"
     },
     {
-     "ads": 2,
-     "likes": 248,
-     "name": "Enthuse Foundation",
-     "page_id": "1974900629477224"
+     "ads": 0,
+     "likes": 0,
+     "name": "DEFI Snacks (@DEFISnacks)",
+     "page_id": "",
+     "url": "https://www.facebook.com/149626962335790"
+    },
+    {
+     "ads": 0,
+     "likes": 0,
+     "name": "Tatyana Jones (@ttudan)",
+     "page_id": "",
+     "url": "https://www.facebook.com/ttudan"
     }
    ],
-   "checked_at": "2026-10-21T13:13:17Z",
+   "checked_at": "2026-11-15T13:14:33Z",
    "kind": "own",
    "name": "Defi Snacks",
-   "page_id": "",
+   "page_id": "100034777406193",
    "page_likes": 0,
-   "page_name": "",
-   "reason": "other advertisers turned up, but none has a name like this one",
-   "source": "auto",
-   "status": "unresolved"
+   "page_name": "DEFI Snacks (@DEFISnacks)",
+   "reason": "found with Serper and confirmed as the main official page by the AI reviewer: It is the DEFI Snacks page under the brand's own @DEFISnacks handle, with no regional qualifier. The numeric-ID candidate appears to be the same page, and the third candidate is the founder's personal (https://www.facebook.com/DEFISnacks)",
+   "source": "serper_review",
+   "status": "resolved"
   },
   "graza": {
    "candidates": [

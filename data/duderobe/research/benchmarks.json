@@ -96,27 +96,22 @@
   "duderobe": {
    "candidates": [
     {
-     "ads": 1,
-     "likes": 418070,
-     "name": "Melolo Freedrama-PH",
-     "page_id": "508233365703598"
-    },
-    {
-     "ads": 9,
-     "likes": 400249,
-     "name": "Pocket FM Stories",
-     "page_id": "191352894054471"
+     "ads": 0,
+     "likes": 0,
+     "name": "DudeRobe",
+     "page_id": "",
+     "url": "https://www.facebook.com/DudeRobe"
     }
    ],
-   "checked_at": "2026-10-28T14:29:45Z",
+   "checked_at": "2026-11-15T13:14:33Z",
    "kind": "own",
    "name": "DudeRobe",
-   "page_id": "",
+   "page_id": "100063811710266",
    "page_likes": 0,
-   "page_name": "",
-   "reason": "other advertisers turned up, but none has a name like this one",
-   "source": "auto",
-   "status": "unresolved"
+   "page_name": "DudeRobe",
+   "reason": "found with Serper and confirmed as the main official page by the AI reviewer: The page is named exactly DudeRobe, its description matches the brand's product (a modern bathrobe for guys), and it carries no regional marker. (https://www.facebook.com/DudeRobe)",
+   "source": "serper_review",
+   "status": "resolved"
   },
   "dudewipes": {
    "candidates": [
@@ -239,39 +234,22 @@
   "snuggie": {
    "candidates": [
     {
-     "ads": 3,
-     "likes": 1016049,
-     "name": "Hobbii",
-     "page_id": "1850489121669070"
-    },
-    {
-     "ads": 2,
-     "likes": 31678,
-     "name": "Sara Larsson",
-     "page_id": "102160321595985"
-    },
-    {
-     "ads": 1,
-     "likes": 18103,
-     "name": "Original Snuggle Puppy",
-     "page_id": "100402202168088"
-    },
-    {
-     "ads": 4,
-     "likes": 3977,
-     "name": "021 Originals",
-     "page_id": "106871044118109"
+     "ads": 0,
+     "likes": 0,
+     "name": "Snuggie Blanket",
+     "page_id": "",
+     "url": "https://www.facebook.com/Snuggie"
     }
    ],
-   "checked_at": "2026-10-28T14:29:45Z",
+   "checked_at": "2026-11-15T13:14:33Z",
    "kind": "benchmark",
    "name": "Snuggie",
-   "page_id": "",
+   "page_id": "100064696240642",
    "page_likes": 0,
-   "page_name": "",
-   "reason": "other advertisers turned up, but none has a name like this one",
-   "source": "auto",
-   "status": "unresolved"
+   "page_name": "Snuggie Blanket",
+   "reason": "found with Serper and confirmed as the main official page by the AI reviewer: The page is titled 'Snuggie Blanket', uses the brand's own name and trademark in its description, has a large following, and shows no regional or fan-page indicators. (https://www.facebook.com/Snuggie)",
+   "source": "serper_review",
+   "status": "resolved"
   }
  },
  "version": 1
