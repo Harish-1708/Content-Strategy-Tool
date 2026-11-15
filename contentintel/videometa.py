@@ -108,6 +108,30 @@ def fetch(url, *, run=subprocess.run, python=None, timeout=90, cookies=None, com
         raise K.Failure(K.UPSTREAM_BROKEN, "yt-dlp's answer could not be read") from None
 
 
+def fetch_file(url, folder, *, run=subprocess.run, python=None, timeout=240, cookies=None, max_mb=60):
+    """Download one public video into `folder` (at most ~720p and `max_mb` megabytes) so its pace can be measured. Returns the file path, or raises K.Failure with the platforms' codes."""
+    from pathlib import Path
+    args = [python or sys.executable, "-m", "yt_dlp", "--no-warnings", "--no-playlist", "-f", "b[height<=720]/b", "--max-filesize", f"{int(max_mb)}M", "--socket-timeout", "20", "--retries", "1",
+            "-o", str(Path(folder) / "video.%(ext)s")]
+    if cookies:
+        args += ["--cookies", str(cookies)]
+    try:
+        done = run(args + [url], capture_output=True, text=True, timeout=timeout)
+    except subprocess.TimeoutExpired:
+        raise K.Failure(K.TIMEOUT, f"the video did not download within {timeout} seconds") from None
+    except OSError as exc:
+        raise K.Failure(K.NEED_SETUP, f"yt-dlp could not start ({exc.__class__.__name__})") from None
+    if done.returncode != 0:
+        raise classify(done.stderr or done.stdout, done.returncode)
+    found = sorted(Path(folder).glob("video.*"))
+    if not found:
+        raise K.Failure(K.UPSTREAM_BROKEN, "yt-dlp finished but saved no file (the video may be larger than the limit)")
+    if found[0].stat().st_size > int(max_mb) * 1024 * 1024:
+        found[0].unlink()
+        raise K.Failure(K.UPSTREAM_BROKEN, f"the downloaded video is larger than {int(max_mb)} MB; it was deleted and not measured")
+    return str(found[0])
+
+
 VIDEO_HOSTS = ("tiktok.com", "instagram.com", "youtube.com", "youtu.be", "facebook.com", "fb.watch", "x.com", "twitter.com", "linkedin.com", "vimeo.com")
 
 

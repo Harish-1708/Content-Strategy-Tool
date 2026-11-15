@@ -3,7 +3,9 @@
 Every command here is read-only towards the platforms: it reads public data, keeps evidence next to the brand's data (data/<brand>/extras/), prints what it did and what failed, and changes nothing
 the owner has not switched on (each connection has its ON/OFF, route, version and secrets switches; contentintel/connections.py).
 """
+import argparse
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -62,6 +64,7 @@ def add_parsers(sub, common):
     p.add_argument("--depth", choices=("quick", "deep"), default="quick")
     p.add_argument("--max-peers", type=int, default=6, help="competitors mode: how many benchmark brands to compare (the engine takes up to 6)")
     p.add_argument("--max-topics", type=int, default=5, help="research mode: how many of the brand's own topics to ask about when none is given")
+    p.add_argument("--apify", action=argparse.BooleanOptionalAction, default=True, help="ON by default (research mode, needs APIFY_TOKEN; --no-apify switches it off): also ask Apify's TikTok and Instagram scrapers about each topic, within the voice allowance (60 items a month, 40 a workflow run in all, each call capped at 0.25 dollars) and never beyond the Collect step's Apify allowance from research.yaml")
     p.add_argument("--seed", action="store_true", help="discover mode: also add the discovered topics to the brand's auto seeds as Meta Ad Library keywords (only when auto seeds already exist)")
     p.add_argument("--dry-run", action="store_true", help="say what would be asked; ask nothing")
 
@@ -70,6 +73,11 @@ def add_parsers(sub, common):
     p.add_argument("--url", default="")
     p.add_argument("--file", default="")
     p.add_argument("--comments", action="store_true")
+    p.add_argument("--pace", action="store_true", help="with --url: download the video (about 720p at most) and measure how it moves; needs ffmpeg on the machine")
+
+    p = sub.add_parser("pageid", help="try the four places a Facebook page id can be read from and say what each one gave (public pages only; nothing is changed)")
+    common(p)
+    p.add_argument("--url", required=True, help="the page's address, for example https://www.facebook.com/Chobani")
 
     p = sub.add_parser("pool", help="free AI capacity worth adding to the pool, read from OmniRoute's catalogue as data (changes nothing)")
     common(p)
@@ -106,6 +114,31 @@ def _peer_names(store, slug, limit=6):
     return list(dict.fromkeys(names))[:limit]
 
 
+def _brand_yaml(args, slug):
+    import yaml
+    path = Path(getattr(args, "brands_dir", "brands")) / slug / "research.yaml"
+    try:
+        return (yaml.safe_load(path.read_text(encoding="utf-8")) or {}) if path.is_file() else {}
+    except (OSError, ValueError, yaml.YAMLError):
+        return {}
+
+
+def _seed_keywords(args, store, slug):
+    """Short search phrases the brand already uses to find its market: the keywords in its own research.yaml, then the auto seeds' direct and adjacent keywords. These are what an audience says, unlike the shop's category labels."""
+    ads = (_brand_yaml(args, slug).get("ads") or {})
+    mine = [str(k) for k in (ads.get("keywords") or []) if isinstance(k, str)]
+    seeds = store.read_auto_seeds(slug) or {}
+    auto = [k for scope in ("direct", "adjacent") for k in ((seeds.get("keywords") or {}).get(scope) or [])]
+    return list(dict.fromkeys([*mine, *auto]))
+
+
+def _skipped_names(args, slug):
+    """Benchmark brands the owner set to skip in research.yaml (ads.benchmark_pages: Name: skip): they are never asked about as competitors."""
+    from . import benchmarks as bench
+    pages = ((_brand_yaml(args, slug).get("ads") or {}).get("benchmark_pages")) or {}
+    return {bench.norm_name(n): str(n) for n, v in pages.items() if str(v).strip().lower() in bench.SKIP_WORDS} if isinstance(pages, dict) else {}
+
+
 def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, environ=None, clock=None):
     import os
     import time
@@ -118,39 +151,92 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
     if not slugs or slugs == [None]:
         print("Error: choose --brand NAME or --all")
         return 1
+    handed = [n for n in CONN.CONNECTIONS["last30days"]["secrets"] if n in CONN.external_env(settings, "last30days", environ)]
+    print("Keys the engine is given (names only, never values): " + (", ".join(handed) if handed else "none")
+          + f". SCRAPECREATORS_API_KEY is {'set in this run' if environ.get('SCRAPECREATORS_API_KEY') else 'NOT set in this run'}"
+          + (" and is handed to the engine, so TikTok, Instagram and Meta Ads are asked too." if "SCRAPECREATORS_API_KEY" in handed else "; those three lanes are off."))
     external = VOICE.ExternalLast30Days(settings, environ=environ, runner=runner)
     builtin = VOICE.BuiltinVoice(get, (clock or time.time)())
     worst = 0
+    apify_all = _apify_lane(args, store, now, environ, slugs) if args.apify and args.mode == "research" and not args.dry_run else (None, None)          # ONE lane for the whole run: the per-run allowance is shared by every brand under --all
     for slug in slugs:
         brand = load_brand(slug, args.brands_dir)
         if args.mode == "discover":
             jobs = [("", ())] if not args.topic else [(t, ()) for t in args.topic]
         elif args.mode == "competitors":
-            peers = tuple(x.strip() for x in args.peers.split(",") if x.strip()) or tuple(_peer_names(store, slug, args.max_peers))
+            skipped = _skipped_names(args, slug)
+            from . import benchmarks as bench
+            listed = tuple(x.strip() for x in args.peers.split(",") if x.strip())
+            pool = listed or tuple(_peer_names(store, slug, 50))
+            peers = tuple(n for n in pool if bench.norm_name(n) not in skipped and bench.norm_name(n) != bench.norm_name(brand.name))
+            peers = peers if listed else peers[:max(1, args.max_peers)]
+            dropped = [n for n in listed if n not in peers]
+            if dropped:
+                print(f"{slug}: not asked about (the brand itself, or set to skip in research.yaml; remove it from benchmark_pages skip to ask): {', '.join(dropped)}")
             jobs = [(brand.name, peers)] if peers else []
+            if peers:
+                print(f"{slug}: competitors asked about: {', '.join(peers)}" + (f" (left out because you set them to skip: {', '.join(sorted(skipped.values()))})" if skipped and not listed else ""))
             if not peers:
                 print(f"{slug}: competitors mode needs peers: none were given and the brand has no benchmark brands yet")
         else:
-            jobs = [(t, ()) for t in (args.topic or VOICE.topics_for(brand, store, limit=args.max_topics))]
+            jobs = [(t, ()) for t in (args.topic or VOICE.topics_for(brand, store, limit=args.max_topics, seeds=_seed_keywords(args, store, slug)))]
         if args.dry_run:
             for topic, peers in jobs:
                 print(f"{slug}: would ask {args.mode} about {topic or 'trending topics'!r}" + (f" against {', '.join(peers)}" if peers else ""))
             continue
         kept = store.read_extra(slug, "voice") or {}
         total_new = 0
+        run_entities = {}
+        apify_lane, ledger = apify_all if args.mode == "research" and args.apify else (None, None)
         for topic, peers in jobs:
             try:
                 items, status, which = VOICE.gather(settings, topic, mode=args.mode, peers=peers, depth=args.depth, now=now, external=external, builtin=builtin)
             except K.Failure as exc:
                 worst = max(worst, 0)
-                print(f"{slug}: {args.mode} {topic or 'trending'!r}: {exc.code}: {exc.message}")
+                print(f"{slug}: {args.mode} {topic or 'trending'!r}: {exc.code}: {exc.message}" + (f" (the last30days engine had also failed: {external.last_error})" if external.last_error else ""))
                 continue
             kept, fresh = VOICE.merge(kept, items, now)
             total_new += fresh
+            for it in items:
+                run_entities[it.get("entity") or ""] = run_entities.get(it.get("entity") or "", 0) + 1
+            if apify_lane is not None and args.mode == "research":
+                extra, notes = apify_lane.run(topic)
+                for note in notes:
+                    print(f"{slug}: {note}")
+                if extra:
+                    kept, fresh_a = VOICE.merge(kept, extra, now)
+                    total_new += fresh_a
+            if which != "builtin" and external.engine_notes and VOICE.failed_sources(status):
+                print(f"{slug}: some sources failed; the engine said: {external.engine_notes}")
+            if which == "builtin" and external.last_error:
+                print(f"{slug}: the last30days engine could not answer ({external.last_error}); the platform's own reader answered instead")
             bad = VOICE.failed_sources(status)
             print(f"{slug}: {args.mode} {topic or 'trending'!r}: {len(items)} item(s) from {which} ({fresh} new)" + (f"; sources that FAILED (not 'nothing said'): {', '.join(bad)}" if bad else "")
                   + "; " + ", ".join(f"{k} {v}" for k, v in sorted(status.items())))
-        if jobs:
+        if args.mode == "competitors" and jobs:
+            asked = jobs[0][1]
+            print(f"{slug}: this run, items per competitor: " + "; ".join(f"{p}: {run_entities.get(p, 0)}" for p in asked) + f"; the brand itself: {run_entities.get('', 0) + run_entities.get(jobs[0][0], 0)}")
+        if ledger is not None:
+            store.save_usage(ledger.usage)                                             # spent is spent: saved even if nothing usable came back
+        if args.mode != "discover":
+            from .collectors import collected_rows
+            posts = VOICE.reddit_items(collected_rows(store.read_collected(slug) or []))
+            if posts:
+                kept, fresh_r = VOICE.merge(kept, posts, now)
+                total_new += fresh_r
+                via = {}
+                for p in posts:
+                    via[p.get("via") or "unknown"] = via.get(p.get("via") or "unknown", 0) + 1
+                names = {"api": "official Reddit API", "agent_reach": "stored session through Agent-Reach", "unknown": "route not recorded"}
+                print(f"{slug}: {len(posts)} Reddit post(s) the platform already collected were added to the voice ({fresh_r} new); read through: " + ", ".join(f"{names.get(k, k)} {v}" for k, v in sorted(via.items())))
+            else:
+                print(f"{slug}: no Reddit posts are collected yet: Reddit refuses the runner's public read, so run Actions > Observatory > reddit (official API once Reddit approves the app, or the stored dummy-account session through Agent-Reach) and the next voice run adds them")
+            comments = VOICE.comment_items((store.read_ideabank(slug) or {}).get("items"))
+            if comments:
+                kept, fresh_c = VOICE.merge(kept, comments, now)
+                total_new += fresh_c
+                print(f"{slug}: {len(comments)} viewer comment(s) from videos already read were added to the voice ({fresh_c} new): the audience's own words, with their likes")
+        if jobs or args.mode != "discover":
             store.write_extra(slug, "voice", kept)
             top = VOICE.prompt_lines(kept, 3)
             kept["seed_topics"] = VOICE.seed_topics(kept)
@@ -164,6 +250,58 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
                 print(f"{slug}: topics people are discussing (suggested next research topics): " + "; ".join(kept["seed_topics"]))
             print(f"{slug}: audience voice now holds {len(kept.get('items', []))} item(s), {total_new} new this run." + (f"\n  Strongest:\n{top}" if top else ""))
     return worst
+
+
+def _collect_apify_cap(args, slugs=()):
+    """The monthly Apify items the owner configured for the Collect step: collectors.apify.monthly_items in research.yaml (the file Collect itself reads, one allowance for every brand). The built-in default only when the file cannot be read."""
+    from . import collectors as COL
+    try:
+        return COL.load_collector_settings(getattr(args, "research_config", None) or "research.yaml").apify_monthly_items
+    except Exception:                                                                  # noqa: BLE001 - an unreadable file falls back to the default
+        return COL.DEFAULT_COLLECTORS["apify"]["monthly_items"]
+
+
+def _apify_lane(args, store, now, environ, slugs=()):
+    """(the Apify voice lane, the usage ledger) or (None, None) with the reason printed. The lane exists only when the owner asked for it in this run and APIFY_TOKEN is set."""
+    token = environ.get("APIFY_TOKEN", "")
+    if not token:
+        print("Apify lane skipped: APIFY_TOKEN is not set in this run.")
+        return None, None
+    from . import collectors as COL
+    from . import research as research_mod
+    from .apify import Apify
+    ledger = research_mod.Ledger(store.load_usage(), now[:7])
+    shared = _collect_apify_cap(args, slugs)
+    lane = VOICE.ApifyVoice(Apify(token), ledger, per_run=int(environ.get("CONTENTINTEL_VOICE_APIFY_PER_RUN") or 40), monthly=int(environ.get("CONTENTINTEL_VOICE_APIFY_MONTHLY") or 60),
+                            shared_cap=shared, max_cost_usd=float(environ.get("CONTENTINTEL_VOICE_APIFY_COST") or 0.25), normalize=COL.normalize_items)
+    print(f"Apify lane ON for this run (switch off with --no-apify): at most {lane.per_run} items in this whole run, {lane.monthly} a month for voice (used so far this month: {ledger.month_used('voice_apify_items'):g}), "
+          f"and never beyond the Collect step's {shared} a month (used: {ledger.month_used('apify_items'):g}); each call is capped at {lane.max_cost:g} dollars.")
+    return lane, ledger
+
+
+def run_pageid(args, *, get=default_get):
+    """Read a Facebook page's id from each of the four places the finder tries, and say what each answered. Public addresses only; a login page or a refusal is reported, never worked around."""
+    from . import main_page as MP
+    url = args.url.strip()
+    numeric = re.search(r"facebook\.com/profile\.php\?id=(\d{6,})", url)
+    if numeric:
+        print(f"The address already carries the page id: {numeric.group(1)} (nothing to read; no page was asked)")
+        return 0
+    if not MP.slug_of(url):
+        print("Error: that is not a facebook.com page address")
+        return 1
+    region = MP.regional_hint(MP.slug_of(url))
+    if region:
+        print(f"WARNING: the address looks like a regional page ({region}). Its id belongs to that region, not to the brand's main page: do not use it for the main page.")
+    found = ""
+    for address in MP.page_id_addresses(url):
+        status, text = get(address, {"Accept": "text/html"})
+        page_id = MP.read_page_id(text) if status == 200 else ""
+        host = address.split("/")[2] + ("/plugins" if "/plugins/page.php" in address else "")
+        print(f"  {host}: HTTP {status}, {len(text):,} characters, " + (f"PAGE ID {page_id}" if page_id else ("a login page" if "log in" in text.lower()[:20000] or "login" in text.lower()[:3000] else "no page id in it")))
+        found = found or page_id
+    print(f"Result for {url}: " + (f"page id {found}" + (f" (a REGIONAL page: {region})" if region else "") if found else "no page id could be read from any of the four places (the main page is still confirmed by name; the id has to be chosen by a person)"))
+    return 0
 
 
 def seed_auto_seeds(store, slug, topics, limit=5):
@@ -197,13 +335,21 @@ def run_analyze(args, now="", *, runner=subprocess.run):
         except K.Failure as exc:
             print(f"Video facts: {exc.code}: {exc.message}")
             code = 0
-    if args.file:
-        try:
-            profile = PACE.analyse(args.file, runner)
-            print("Pace: " + PACE.describe(profile))
-            print(json.dumps({k: v for k, v in profile.items() if k != "cut_times"}, indent=1))
-        except PACE.PaceError as exc:
-            print(f"Pace: not measured: {exc}")
+    import tempfile
+    with tempfile.TemporaryDirectory(prefix="pace-") as tmp:                         # the downloaded video is deleted when this block ends, whatever happens
+        path = args.file
+        if args.url and getattr(args, "pace", False) and not path:
+            try:
+                path = VMETA.fetch_file(args.url, tmp, run=runner)
+            except K.Failure as exc:
+                print(f"Pace: the video could not be downloaded: {exc.code}: {exc.message}")
+        if path:
+            try:
+                profile = PACE.analyse(path, runner)
+                print("Pace: " + PACE.describe(profile))
+                print(json.dumps({k: v for k, v in profile.items() if k != "cut_times"}, indent=1))
+            except PACE.PaceError as exc:
+                print(f"Pace: not measured: {exc}")
     return code
 
 

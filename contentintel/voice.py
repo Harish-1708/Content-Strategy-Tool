@@ -9,6 +9,7 @@ Three modes: research (one topic), competitors (several named peers side by side
 data/<brand>/extras/voice.json and used four ways: as audience evidence when ideas are scored, as quotes in briefs, as seeds for further research, and in the competitor view.
 Nothing is made up: an empty answer is an empty answer, and a source that failed is reported as failed, never as "nothing said".
 """
+import hashlib
 import json
 import re
 import subprocess
@@ -28,7 +29,7 @@ SUMMARY = 400
 FAILED = {"rate-limited", "auth-failed", "unreachable", "timeout", "schema-drift", "error", "payment-required"}
 # What the engine may read without any key; the owner's other keys (a GitHub token, a search key) are handed over only if the connection's secrets switch is on.
 DEFAULT_SOURCES = ("reddit", "hackernews", "youtube", "github", "polymarket", "digg", "bluesky", "devto")
-# Three lanes the engine runs through the ScrapeCreators service (10,000 free calls, then pay as you go). They are added to every query ONLY when the owner has set SCRAPECREATORS_API_KEY and the connection's secrets switch is on.
+# Three lanes the engine runs through the ScrapeCreators service (100 free credits once, then paid from about 10 dollars a month). They are added to every query ONLY when the owner has set SCRAPECREATORS_API_KEY and the connection's secrets switch is on.
 KEYED_LANES = ("tiktok", "instagram", "meta_ads")
 SIGNALS = ("complaint", "praise", "question", "comparison")
 
@@ -102,9 +103,11 @@ class ExternalLast30Days:
 
     def __init__(self, settings, *, root=None, environ=None, runner=subprocess.run, python=None, timeout=420):
         self.settings, self.runner, self.timeout = settings, runner, timeout
-        self.root = Path(root) if root else CONN.external_dir() / "last30days"
+        self.root = (Path(root) if root else CONN.external_dir() / "last30days").resolve()          # absolute: the engine is started INSIDE this folder, so a relative script path would be looked for there a second time
         self.environ = environ if environ is not None else {}
         self.python = python or sys.executable
+        self.engine_notes = ""                     # what the engine said about sources that failed, even when other sources answered
+        self.last_error = ""                       # why the repository's own route failed on the last call, in words (the platform's backup answers; this is what the run reports)
 
     def command(self, topic, mode, plan_path, peers=(), depth="quick"):
         script = str(self.root / SCRIPT)
@@ -118,6 +121,14 @@ class ExternalLast30Days:
         return cmd + [f"--{depth}"] if depth in ("quick", "deep") and mode != "discover" else cmd
 
     def run(self, topic, mode="research", peers=(), depth="quick"):
+        self.last_error = self.engine_notes = ""
+        try:
+            return self._run(topic, mode, peers, depth)
+        except K.Failure as exc:
+            self.last_error = f"{exc.code}: {exc.message}"
+            raise
+
+    def _run(self, topic, mode, peers, depth):
         if not (self.root / SCRIPT).is_file():
             raise K.Failure(K.NEED_SETUP, "last30days is not installed here (run the connections install action)")
         env = CONN.external_env(self.settings, "last30days", self.environ)
@@ -135,6 +146,8 @@ class ExternalLast30Days:
                 raise K.Failure(K.NEED_SETUP, f"last30days could not start ({exc.__class__.__name__})") from None
         if done.returncode != 0:
             raise K.Failure(K.UPSTREAM_BROKEN, f"last30days stopped ({done.returncode}): {scrub((done.stderr or '')[-300:], 300)}")
+        engine_notes = " | ".join(ln.strip() for ln in (done.stderr or "").splitlines() if ln.strip() and any(w in ln.lower() for w in ("failed", "missing", "blocked", "error", "refused", "denied", "forbidden", "sign in", "not a bot", "401", "403", "429")))[-400:]
+        self.engine_notes = scrub(engine_notes, 400)
         text = (done.stdout or "").strip()
         start = text.find("{")
         try:
@@ -146,7 +159,8 @@ class ExternalLast30Days:
         items, status = normalise(report, topic, mode)
         bad = failed_sources(status)
         if not items and bad and len(bad) == len(status):
-            raise K.Failure(K.UPSTREAM_BROKEN, "every source last30days tried failed: " + ", ".join(f"{k} {status[k]}" for k in bad))
+            raise K.Failure(K.UPSTREAM_BROKEN, "every source last30days tried failed: " + ", ".join(f"{k} {status[k]}" for k in bad)
+                            + (f". The engine said: {scrub(engine_notes, 400)}" if engine_notes else ""))
         return items, status
 
 
@@ -248,14 +262,20 @@ def prompt_lines(voice, limit=5):
     return "\n".join(f"- ({i['source']}, {i['weight']} engagement) {i['title']}" + (f": {i['summary'][:160]}" if i.get("summary") else "") for i in top if i.get("title"))
 
 
-def topics_for(brand, store, extra=(), limit=5):
+GENERIC_LABELS = {"core", "merch", "kids", "other", "accessories", "gift", "gifts", "sale", "new", "bundle", "bundles", "all", "default", "uncategorised", "uncategorized"}
+
+
+def topics_for(brand, store, extra=(), limit=5, seeds=()):
     """Topics to ask about for a brand, from its own catalogue (its biggest product categories) and its name: nothing is hardcoded to a brand."""
     latest = store.load_latest(brand.slug) or {}
     cats = {}
     for p in (latest.get("products") or {}).values():
         if isinstance(p, dict) and not p.get("excluded") and p.get("category"):
             cats[p["category"]] = cats.get(p["category"], 0) + 1
-    out = [c for c, _ in sorted(cats.items(), key=lambda kv: -kv[1]) if c and c != "other"][:max(1, int(limit) - len(extra) - 1)]
+    labels = [c for c, _ in sorted(cats.items(), key=lambda kv: -kv[1]) if c and len(c) >= 4 and c.lower() not in GENERIC_LABELS]
+    room = max(1, int(limit) - len(extra) - 1)
+    # what people search for beats the shop's own category labels ('core', 'merch', 'kids' say nothing to an audience): the brand's seed keywords first, then real category names
+    out = list(dict.fromkeys([*(str(s).strip() for s in seeds if str(s).strip()), *labels]))[:room]
     return list(dict.fromkeys([*extra, *out, brand.name]))
 
 
@@ -278,3 +298,84 @@ def by_entity(voice):
             n[0] += 1
             n[1] += it.get("weight", 0)
     return out
+
+
+def comment_items(bank_items, limit_per_video=8):
+    """What viewers wrote under the videos the platform has already read (the top comments yt-dlp returned for each saved or collected video): the audience's own words, with the likes each comment got, from the very
+    platforms the brand is about (TikTok, Instagram, YouTube...). Needs no key and no extra reading: the comments are already in the Idea Bank items' video facts. Returns voice items."""
+    out = []
+    for item in (bank_items or {}).values():
+        meta = item.get("video_meta") or {}
+        for c in (meta.get("top_comments") or [])[:limit_per_video]:
+            text = " ".join(str(c.get("text") or "").split())
+            if len(text) < 8:
+                continue
+            likes = int(c.get("likes") or 0)
+            tag = hashlib.md5(text.encode("utf-8")).hexdigest()[:8]                       # one address per comment, so two comments under one video are two items
+            out.append(_item(f"{item.get('platform', 'video')} comment", text, f"{item.get('url', '')}#c-{tag}", item.get("title", ""), {"likes": likes}, meta.get("posted", ""),
+                             str(item.get("title") or "")[:80], item.get("topic") or "", "comments"))
+    return out
+
+
+def _row_item(row, source, topic, mode="apify"):
+    """A collected-style row (a TikTok or Instagram post, a Reddit post) as a voice item: the caption or title and the engagement it got."""
+    text = " ".join(str(row.get("text") or row.get("title") or "").split())
+    if len(text) < 8:
+        return None
+    eng = {k: row[k] for k in ("likes", "comments", "shares", "views") if isinstance(row.get(k), (int, float)) and not isinstance(row.get(k), bool)}
+    return _item(source, row.get("title") or text[:120], row.get("url", ""), text, eng, row.get("posted_at", ""), row.get("details", ""), topic, mode)
+
+
+class ApifyVoice:
+    """An extra lane: Apify's ready-made TikTok and Instagram scrapers, asked about one topic. It is OFF unless the owner asks for it in a run (voice --apify / the workflow's apify box), needs APIFY_TOKEN, and spends only
+    within its OWN monthly allowance (voice_apify_items, default 40) and never beyond the monthly Apify allowance the Collect step already uses (collectors.apify.monthly_items): both counters are charged for what was read,
+    and each Apify call carries a cost ceiling (default 0.25 dollars). `apify` is the platform's Apify provider; `ledger` is research.Ledger; `shared_cap` is the monthly items Collect may use."""
+    ACTORS = {"tiktok": "clockworks/tiktok-scraper", "instagram": "apify/instagram-hashtag-scraper"}
+
+    def __init__(self, apify, ledger, *, per_run=15, monthly=40, shared_cap=100, max_cost_usd=0.25, normalize=None):
+        self.apify, self.ledger, self.per_run, self.monthly, self.shared_cap, self.max_cost = apify, ledger, per_run, monthly, shared_cap, max_cost_usd
+        self.normalize = normalize
+        self.spent_this_run = 0
+
+    def room(self):
+        return max(0, min(self.per_run - self.spent_this_run, self.monthly - self.ledger.month_used("voice_apify_items"), self.shared_cap - self.ledger.month_used("apify_items")))
+
+    def run(self, topic):
+        """(items, notes). Each source asks for at most half the room left, so TikTok and Instagram share it. Raises nothing: a refusal or a missing allowance is a note."""
+        items, notes = [], []
+        tag = re.sub(r"[^a-z0-9]", "", topic.lower())
+        for source in ("tiktok", "instagram"):
+            n = self.room() // (2 if source == "tiktok" else 1)
+            if n < 1:
+                notes.append(f"apify {source}: no allowance left (this run {self.spent_this_run}/{self.per_run}, voice this month {self.ledger.month_used('voice_apify_items'):g}/{self.monthly}, Apify this month {self.ledger.month_used('apify_items'):g}/{self.shared_cap})")
+                continue
+            payload = {"searchQueries": [topic], "resultsPerPage": n} if source == "tiktok" else {"hashtags": [tag], "resultsType": "posts", "resultsLimit": n}
+            if source == "instagram" and not tag:
+                continue
+            try:
+                raw = self.apify.run(self.ACTORS[source], payload, max_items=n, max_cost_usd=self.max_cost)
+            except Exception as exc:                                              # noqa: BLE001 - a provider's refusal, quota or outage is reported, never raised
+                notes.append(f"apify {source}: {exc.__class__.__name__}: {scrub(str(exc), 200)}")
+                continue
+            self.ledger.charge("apify_items", len(raw))
+            self.ledger.charge("voice_apify_items", len(raw))
+            self.spent_this_run += len(raw)
+            rows, bad = self.normalize(source, raw) if self.normalize else ([], len(raw))
+            got = [i for i in (_row_item(r, f"apify {source}", topic) for r in rows) if i]
+            items += got
+            notes.append(f"apify {source}: {len(raw)} item(s) read, {len(got)} usable" + (f", {bad} unreadable" if bad else ""))
+        return items, notes
+
+
+def reddit_items(rows, limit=300):
+    """Reddit posts the platform already collected (Actions > Observatory > reddit, by the official API once approved or by the stored dummy-account session through Agent-Reach), as voice items with their score and comments."""
+    out = []
+    for r in (rows.values() if isinstance(rows, dict) else rows or []):
+        if isinstance(r, dict) and r.get("source") == "reddit" and (r.get("title") or r.get("text")):
+            item = _row_item(dict(r, text=" ".join(x for x in (str(r.get("title") or ""), str(r.get("text") or "")) if x)), "reddit", r.get("details", ""), "collected")
+            if item:
+                item["engagement"] = {"score": r.get("likes") or 0, "num_comments": r.get("comments") or 0}
+                item["via"] = r.get("found_via") or next((q for q in (str(r.get("queries") or "").split(" | ")) if q in ("api", "agent_reach")), "")          # collected rows keep the route among their 'queries'
+                item["weight"] = _engagement_total(item["engagement"])
+                out.append(item)
+    return sorted(out, key=lambda i: -i["weight"])[:limit]

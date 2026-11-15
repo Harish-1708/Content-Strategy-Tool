@@ -4,7 +4,7 @@ A saved competitor video becomes numbers instead of adjectives: "average shot 1.
 and visual-hook), into scoring, and into briefs ("match the winners: a visual change every 1.5 s").
 
 The idea is the one in ReelMimic's analysis scripts (https://github.com/edenfunf/reelmimic, MIT licence, copyright 2026 ReelMimic contributors: analyze.py and fingerprint.py take a reference
-video apart into shots, pace and audio). This is a slim re-write that needs nothing but ffmpeg and ffprobe (already on the GitHub runner), so it adds no Python packages. It reads a file, never a web address.
+video apart into shots, pace and audio). This is a slim re-write that needs nothing but ffmpeg and ffprobe (the workflows install it: the runner does not have it by default), so it adds no Python packages. It reads a file, never a web address.
 """
 import json
 import re

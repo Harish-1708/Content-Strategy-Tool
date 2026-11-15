@@ -1254,6 +1254,8 @@ def main(argv=None):
             return tools_mod.run_voice(args, store, sync_mod.utc_now())
         if args.cmd == "analyze":
             return tools_mod.run_analyze(args)
+        if args.cmd == "pageid":
+            return tools_mod.run_pageid(args)
         if args.cmd == "pool":
             return tools_mod.run_pool(args)
         if args.cmd == "assets":

@@ -6,6 +6,7 @@ No page or id is written into this code: everything comes from the search, the r
 
 Three things are passed in, so the logic is tested without a network: `search(query) -> [{url, title, snippet}]`, `review(name, candidates) -> {choice, is_main, regional, reason}` and `read_id(url) -> page id or ''`."""
 import re
+from urllib.parse import quote
 
 from . import benchmarks as bench
 from . import page_match as PM
@@ -82,6 +83,30 @@ def rank(brand, candidates):
     for c, verdict in zip(candidates, PM.judge(brand, [c["title"] or c["slug"] for c in candidates])):
         c["match"] = verdict
     return sorted(candidates, key=lambda c: (re.sub(r"[^a-z0-9]", "", c["slug"].lower()) != want, looks_regional(brand, c), PM.sort_key(c["match"])))
+
+
+def regional_hint(slug):
+    """The region a page address names (ChobaniAu -> 'au', chobani-nz -> 'nz'), or ''. A hint only: a capitalised or upper-case region tail after a lower-case stem, or a region after a separator. A plain name that merely ends
+    in region letters (Oodie, Graza) is not flagged."""
+    s = slug or ""
+    for sep in ("-", ".", "_"):
+        parts = s.lower().split(sep)
+        if len(parts) > 1 and parts[-1] in REGIONS:
+            return parts[-1]
+    for r in sorted(REGIONS, key=len, reverse=True):
+        stem, tail = s[:-len(r)], s[-len(r):]
+        if len(stem) >= 4 and tail.lower() == r and (tail == tail.capitalize() or tail == tail.upper()) and stem[-1].islower():
+            return r
+    return ""
+
+
+def page_id_addresses(url):
+    """The places a page id is looked for, in order: the page, its mobile address, its basic address and Facebook's public Page Plugin (the embed any website may show)."""
+    slug = slug_of(url)
+    if not slug:
+        return [url]
+    plugin = "https://www.facebook.com/plugins/page.php?href=" + quote(f"https://www.facebook.com/{slug}", safe="") + "&tabs&width=340&height=130&small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=false"
+    return list(dict.fromkeys([url, f"https://m.facebook.com/{slug}", f"https://mbasic.facebook.com/{slug}", plugin]))
 
 
 def read_page_id(html):
@@ -179,11 +204,11 @@ def make_finder(serper, claude, get_html, label="the AI reviewer"):
         return claude.json_task(REVIEW_SYSTEM, f"Brand: {name}\nCandidates:\n{listing}", max_tokens=500)
 
     def read_id(url):
-        """The page id from the page's own HTML, trying the page, its mobile address and its basic address; read_id.why says what each one did."""
-        slug = slug_of(url)
+        """The page id from the page's own HTML, trying the page, its mobile address, its basic address and Facebook's public Page Plugin (the embed any website may show: it needs no login and names the page it
+        draws); read_id.why says what each one did."""
         tried = []
-        for variant in dict.fromkeys([url, f"https://m.facebook.com/{slug}", f"https://mbasic.facebook.com/{slug}"] if slug else [url]):
-            host = variant.split("/")[2]
+        for variant in page_id_addresses(url):
+            host = variant.split("/")[2] + ("/plugins" if "/plugins/page.php" in variant else "")
             try:
                 found = read_page_id(get_html(variant))
             except Exception as exc:                                       # the kind of error only
