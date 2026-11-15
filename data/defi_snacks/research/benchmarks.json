@@ -218,45 +218,22 @@
   "magicspoon": {
    "candidates": [
     {
-     "ads": 1,
-     "likes": 2979429,
-     "name": "Shoptemu",
-     "page_id": "103219685846470"
-    },
-    {
-     "ads": 2,
-     "likes": 732048,
-     "name": "The Detox Dudes",
-     "page_id": "1027147340710624"
-    },
-    {
-     "ads": 4,
-     "likes": 217081,
-     "name": "ReciMe",
-     "page_id": "129214221876606"
-    },
-    {
-     "ads": 2,
-     "likes": 156788,
-     "name": "True Sea Moss Health",
-     "page_id": "101371852670671"
-    },
-    {
-     "ads": 1,
-     "likes": 20332,
-     "name": "American Spoon",
-     "page_id": "297218149185"
+     "ads": 0,
+     "likes": 0,
+     "name": "Magic Spoon Cereal (@magicspooncereal)",
+     "page_id": "",
+     "url": "https://www.facebook.com/magicspooncereal"
     }
    ],
-   "checked_at": "2026-10-21T13:13:17Z",
+   "checked_at": "2026-11-15T16:39:46Z",
    "kind": "benchmark",
    "name": "Magic Spoon",
-   "page_id": "",
+   "page_id": "100069341254071",
    "page_likes": 0,
-   "page_name": "",
-   "reason": "other advertisers turned up, but none has a name like this one",
-   "source": "auto",
-   "status": "unresolved"
+   "page_name": "Magic Spoon Cereal (@magicspooncereal)",
+   "reason": "found with Serper and confirmed as the main official page by the AI reviewer: The page is named Magic Spoon Cereal, its description matches the brand's high-protein, low-carb cereal, and it has no regional indicator in its name or address. (https://www.facebook.com/magicspooncereal)",
+   "source": "serper_review",
+   "status": "resolved"
   },
   "olipop": {
    "candidates": [
