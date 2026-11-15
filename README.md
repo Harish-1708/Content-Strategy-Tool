@@ -190,12 +190,13 @@ names marked set or not set, so you can see what the run can see (the values are
 | `SHEET_FOLDER_ID` | a Shared Drive folder for new sheets | optional | the folder's ID |
 | `SLACK_WEBHOOK_URL` | a Slack message when a run needs attention | optional | a Slack incoming-webhook address |
 
-**Research tools** (used by the Research tools workflow; both optional, because Openverse works without them at lower limits)
+**Research tools** (used by the Research tools workflow; all optional: Openverse works without an account at lower limits, and the three keyed audience-voice lanes stay off without a key)
 
 | Secret | What it is for | Needed? | What to paste |
 |---|---|---|---|
 | `OPENVERSE_CLIENT_ID` | higher limits on Openverse's licence-safe picture and audio search | optional | the client id Openverse gives you when you register a free application |
 | `OPENVERSE_CLIENT_SECRET` | the other half of the Openverse registration | optional | the client secret from the same registration |
+| `SCRAPECREATORS_API_KEY` | lets audience voice also read TikTok, Instagram and Meta Ads through the ScrapeCreators service (10,000 free calls, then pay as you go) | optional | the key from scrapecreators.com; leave it unset to keep those three lanes off |
 
 **Searching the web** (Actions > Research)
 
@@ -286,6 +287,12 @@ further. Paste the result into `GEMINI_COOKIES` and run Check straight away. Thi
 behaviour, not something the tool can confirm. A password cannot replace cookies for Google: Google blocks
 automated password sign-ins from servers, so the Gemini username and password are never used.
 
+**TikTok's security puzzle.** When TikTok shows its slider puzzle, no posts are loaded behind it (the page is empty
+placeholders). The tool never solves a puzzle. It presses the puzzle's own X button once (`challenge_dismiss` in
+`browser.yaml`) and, if the puzzle is still there, stops and says so. If TikTok keeps blocking the browser, run
+Collect with **backend** set to `fallback`: TikTok is then read through Apify (it uses your Apify credit) whenever
+the browser is blocked.
+
 **TikTok's puzzle and "Something went wrong".** In the automated browser TikTok's hashtag page can fail while a
 search by hand works: it showed "Something went wrong" in one Check and a slider puzzle in a Recon, and in both the
 list of posts behind the page came back empty. The tool never solves a puzzle. For each hashtag it now does what a
@@ -296,133 +303,6 @@ be found. It also looks again after the first read, because the error can appear
 Check say which tags were read by search and how many pages still failed; Recon saves what the search page sends.
 If TikTok blocks the search page as well, TikTok is blocking the automated browser, and Collect with **backend**
 `fallback` reads TikTok through Apify instead (it uses your Apify credit).
-
-**What a Deep Research report file tells you.** The test file (and the report saved for each run) says how the run
-went, not just what came back: whether Deep Research really switched on, whether the Start research button was
-pressed, whether a finished-report button appeared, how long it waited, and the sources found. If neither Start
-research nor a finished-report button was seen, it warns that the answer may be an ordinary chat answer and not a
-Deep Research report. The prompt Claude writes is never cut off: it has its own limit (`prompt_max_tokens`, 2000),
-a reply that runs out of room is asked again with twice the room, and if it still does not fit the question is sent
-as written and the report says so. Gemini's page text sometimes holds the report twice (a cut-off copy, then the
-complete one); the complete copy is kept and the raw text is saved beside it as `...-raw.md`.
-
-**Running it.** It runs by itself every Monday. To run it now: Actions > Research > Run workflow.
-"Dry run" is ticked by default when you run it by hand; untick it to search for real. You can
-untick a service to leave it out of that run.
-
-**Proving each service works.** In Actions > Research > Run workflow, tick **Provider check**
-(and leave the services you want ticked). It runs one web search and one news search on each
-ticked service, shows whether each worked, and counts the credits (about two per service; Dry run
-is ignored for this). Day to day, web searches go to Serper.dev and news searches to Tavily, so
-SerpApi only steps in as a fallback or when you tick it alone; that is by design, not a fault.
-If a check says "answered but returned no results", the bracket after it shows what the service
-actually sent back, which tells a genuinely empty answer from a misread one. The news check uses
-the broad word "overalls" over the last year, so an empty answer there deserves a closer look.
-
-**Comparing the three services.** Normally each search goes to one service. With **Compare** ticked
-(it is ticked by default when you run Research by hand), each of the first few searches (5 by
-default, `compare_queries` in `research.yaml`) is run on every ticked service, so you can see how
-they differ. The report shows, per search, how many results each service gave and how many only it
-found, then an overall summary of how much each pair of services agrees. That costs one credit per
-service per compared search (about 15 credits for the default), still inside every cap. Answers
-from the last 7 days are reused, so repeating a comparison is free. The weekly automatic run never
-compares.
-
-**Reading the results.** Each brand's sheet gets a **Research** tab: one row per page found, with
-when it was first and last seen, how often, which service and which search found it, and a
-**Review** column for your team (for example useful, irrelevant, saturated). Review marks are never
-overwritten. Addresses are shown without tracking codes (Google adds a new one to every result),
-so the same page found next week is the same row, with "times seen" going up. The raw findings are in `data/<brand>/research/searches.jsonl`.
-
-**If a run goes red:** a service rejected its key (the log names it; check the secret), or searches
-failed on every service. Running out of credits under your caps is a yellow warning, not a failure.
-Findings are facts about what the web returned: nothing is judged or summarised yet.
-
-## Secrets
-
-Add each one in GitHub: the repository's **Settings > Secrets and variables > Actions > New repository
-secret**. Type the name exactly as shown, paste the value, save. Every Collect run starts with a list of these
-names marked set or not set, so you can see what the run can see (the values are never shown).
-
-**Google Sheets and alerts** (used by Sync, Sheets, Research and Collect)
-
-| Secret | What it is for | Needed? | What to paste |
-|---|---|---|---|
-| `GOOGLE_SERVICE_ACCOUNT_JSON` | writing to the brands' Google Sheets | yes, for the sheets | the whole key file of the Google service account |
-| `SHEET_SHARE_EMAIL` | who the sheets are shared with when the tool creates them | optional | an email address |
-| `SHEET_FOLDER_ID` | a Shared Drive folder for new sheets | optional | the folder's ID |
-| `SLACK_WEBHOOK_URL` | a Slack message when a run needs attention | optional | a Slack incoming-webhook address |
-
-**Research tools** (used by the Research tools workflow; both optional, because Openverse works without them at lower limits)
-
-| Secret | What it is for | Needed? | What to paste |
-|---|---|---|---|
-| `OPENVERSE_CLIENT_ID` | higher limits on Openverse's licence-safe picture and audio search | optional | the client id Openverse gives you when you register a free application |
-| `OPENVERSE_CLIENT_SECRET` | the other half of the Openverse registration | optional | the client secret from the same registration |
-
-**Searching the web** (Actions > Research)
-
-| Secret | What it is for | Needed? | What to paste |
-|---|---|---|---|
-| `SERPER_API_KEY` | Serper.dev searches | at least one of the three; all three for Compare mode | the key from serper.dev |
-| `TAVILY_API_KEY` | Tavily searches | as above | the key from tavily.com |
-| `SERPAPI_API_KEY` | SerpApi searches | as above | the key from serpapi.com |
-
-**Ads, social posts and deep research** (Actions > Collect)
-
-| Secret | What it is for | Needed? | What to paste |
-|---|---|---|---|
-| `INSTAGRAM_COOKIES` | Instagram posts, logged in as the dummy account | for Instagram | the dummy account's cookies, exported as a JSON list |
-| `INSTAGRAM_USERNAME` and `INSTAGRAM_PASSWORD` | a backup way to log in: used when there are no cookies and, for Instagram and TikTok (`password_fallback: when_cookies_fail` in `browser.yaml`), when the site refuses the cookies | optional; both or neither | the dummy account's login |
-| `TIKTOK_COOKIES` | TikTok posts, logged in as the dummy account | for TikTok | cookies exported as a JSON list |
-| `TIKTOK_USERNAME` and `TIKTOK_PASSWORD` | a backup way to log in | optional; both or neither | the dummy account's login |
-| `GEMINI_COOKIES` | Gemini Deep Research, logged in as the dummy Google account | for Deep Research | cookies exported as a JSON list (Google blocks automated sign-in, so there is no password option) |
-| `ANTHROPIC_API_KEY` | Claude writing each brand's research seeds, the Deep Research prompt, and answering Gemini's questions | optional, recommended | the key from console.anthropic.com |
-| `APIFY_TOKEN` | the optional Apify extra | only if you switch Apify on | the API token from your Apify account |
-| `IDEA_BANK_FOLDER_ID` | the Shared Drive folder where each Idea Bank item's pictures and videos are saved | optional (without it the files are skipped; everything else works) | the id of a folder inside a Shared Drive (the part after `/folders/` in its address) |
-| `DEEP_RESEARCH_DOC_ID` | the Google Doc where every Deep Research report is added as a new tab | optional (reports are always saved in the repository too) | the Doc's address, or just the long id between `/d/` and `/edit` |
-
-**Needs no secret:** Meta Ad Library (public pages), the catalogue sync (public store data), and
-`GITHUB_TOKEN` (GitHub provides it automatically).
-
-**Adding them in a sensible order.** Meta Ad Library needs nothing, so start there: run Collect with mode
-`check` and only Meta ads ticked. Then add `INSTAGRAM_COOKIES` and `TIKTOK_COOKIES` and check again. Last, add
-`GEMINI_COOKIES` and `ANTHROPIC_API_KEY`, run `check` with Deep Research ticked, and finally `test_deep_research`.
-
-## Ads, social posts and deep research (Actions > Collect)
-
-Four more sources, each optional, each capped. They drive a real browser, the way a person would:
-
-| Source | How | Login |
-|---|---|---|
-| Competitor ads (Meta Ad Library) | the public Ad Library pages | none |
-| Instagram posts | a dummy Instagram account | `INSTAGRAM_COOKIES` (or `INSTAGRAM_USERNAME` + `INSTAGRAM_PASSWORD`) |
-| TikTok posts | a dummy TikTok account | `TIKTOK_COOKIES` (or `TIKTOK_USERNAME` + `TIKTOK_PASSWORD`) |
-| Gemini Deep Research | the Gemini web app, as a dummy Google account; it waits for the report (10+ minutes, up to 25) | `GEMINI_COOKIES` only (Google blocks automated sign-in) |
-
-**Setting up a dummy account's login (once per account).** Log in as the dummy account in an
-ordinary browser. With a cookie extension (for example Cookie-Editor) choose Export, then JSON. In the
-repository go to Settings > Secrets and variables > Actions, create the secret named in the table, and
-paste the JSON. Cookies, not passwords, are the reliable way: logins from GitHub's servers are often
-stopped with a code or a puzzle, and the username/password route is only a best-effort fallback. Cookies
-expire after days or weeks; when they do, **Check** says "not logged in" and names the secret to refresh.
-
-**Google (Gemini) cookies need extra care.** The check used to report a signed-out Gemini as logged in, because
-Gemini shows its prompt box to anyone; it now treats a visible Sign in link as "not logged in", and says so with
-facts about the cookies it was given (how many, for which sites, how many already expired, and which Google
-sign-in cookies are missing; names and counts only, never values). The commonly reported cause of Google cookies
-dying within minutes is that Google rotates them while the original browser stays open, so export them like this:
-open a private (incognito) window, log in as the dummy Google account, open gemini.google.com/app, export all
-cookies as JSON including hidden (HttpOnly) ones, then close the window without clicking Sign out or browsing
-further. Paste the result into `GEMINI_COOKIES` and run Check straight away. This is the commonly reported
-behaviour, not something the tool can confirm. A password cannot replace cookies for Google: Google blocks
-automated password sign-ins from servers, so the Gemini username and password are never used.
-
-**TikTok's security puzzle.** When TikTok shows its slider puzzle, no posts are loaded behind it (the page is empty
-placeholders). The tool never solves a puzzle. It presses the puzzle's own X button once (`challenge_dismiss` in
-`browser.yaml`) and, if the puzzle is still there, stops and says so. If TikTok keeps blocking the browser, run
-Collect with **backend** set to `fallback`: TikTok is then read through Apify (it uses your Apify credit) whenever
-the browser is blocked.
 
 **Where Deep Research reports are kept.** Every report is saved in the repository
 (`data/<brand>/research/deep/`), in the brand's **Collected** tab, and, when `DEEP_RESEARCH_DOC_ID` is set, as a
@@ -773,6 +653,15 @@ links Meta provides stop working after about a day, so open them soon, or ask fo
 `{{product.brand}}` in place of text. It is filled in only when the ad's own landing site confirms the
 advertiser is that brand (a page named Rhoback selling on rhoback.com); otherwise it is dropped, so the text
 is left blank rather than showing a token or a wrong brand.
+
+**What a Deep Research report file tells you.** The test file (and the report saved for each run) says how the run
+went, not just what came back: whether Deep Research really switched on, whether the Start research button was
+pressed, whether a finished-report button appeared, how long it waited, and the sources found. If neither Start
+research nor a finished-report button was seen, it warns that the answer may be an ordinary chat answer and not a
+Deep Research report. The prompt Claude writes is never cut off: it has its own limit (`prompt_max_tokens`, 2000),
+a reply that runs out of room is asked again with twice the room, and if it still does not fit the question is sent
+as written and the report says so. Gemini's page text sometimes holds the report twice (a cut-off copy, then the
+complete one); the complete copy is kept and the raw text is saved beside it as `...-raw.md`.
 
 ## Source health and live acceptance (Actions > Acceptance)
 
