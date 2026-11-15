@@ -258,6 +258,16 @@
     "at": "2026-11-15T05:23:50Z",
     "ms": 0,
     "ok": false
+   },
+   {
+    "at": "2026-11-15T13:02:52Z",
+    "ms": 0,
+    "ok": true
+   },
+   {
+    "at": "2026-11-15T13:02:54Z",
+    "ms": 11482,
+    "ok": true
    }
   ],
   "builtin_used": 5,
@@ -266,7 +276,7 @@
    "code": "UPSTREAM_BROKEN",
    "message": "last30days stopped (2): /opt/hostedtoolcache/Python/3.12.16/x64/bin/python: can't open file '/home/runner/work/Content-Strategy-Tool/Content-Strategy-Tool/external/last30days/external/last30days/skills/last30days/scripts/last30days.py': [Errno 2] No such file or directory\n"
   },
-  "last_success": "2026-11-15T05:23:48Z",
+  "last_success": "2026-11-15T13:02:54Z",
   "v": 2
  },
  "scrapling": {
