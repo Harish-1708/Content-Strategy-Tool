@@ -85,17 +85,27 @@ def rank(brand, candidates):
     return sorted(candidates, key=lambda c: (re.sub(r"[^a-z0-9]", "", c["slug"].lower()) != want, looks_regional(brand, c), PM.sort_key(c["match"])))
 
 
-def regional_hint(slug):
-    """The region a page address names (ChobaniAu -> 'au', chobani-nz -> 'nz'), or ''. A hint only: a capitalised or upper-case region tail after a lower-case stem, or a region after a separator. A plain name that merely ends
-    in region letters (Oodie, Graza) is not flagged."""
+COMMON_WORD_REGIONS = {"in", "it", "no", "my", "us", "id", "me"}        # region codes that are also ordinary words: written as a Capitalised tail (MadeIn, DoItNo) they are far more likely the word than the country
+
+
+def regional_hint(slug, brand=""):
+    """The region a page address names, or ''. A hint only. With the brand's name it is exact: the address is the brand's name plus a region in any letter case (chobaniau, ChobaniAu, CHOBANINZ -> 'au' / 'nz'), and the
+    brand's own plain address is never regional. Without the name, the address cannot be told from a plain name that happens to end in region letters (a lower-case 'snuggie' or 'theoodie' end in 'ie'), so only these
+    are flagged: a region after a separator (chobani-nz), and an upper-case or Capitalised tail on a lower-case stem (ChobaniAu, DudeWipesUS), except a Capitalised tail that is also an ordinary word (MadeIn)."""
     s = slug or ""
     for sep in ("-", ".", "_"):
         parts = s.lower().split(sep)
         if len(parts) > 1 and parts[-1] in REGIONS:
             return parts[-1]
+    want, have = re.sub(r"[^a-z0-9]", "", (brand or "").lower()), re.sub(r"[^a-z0-9]", "", s.lower())
+    if want:
+        if have == want:
+            return ""
+        if have.startswith(want) and have[len(want):] in REGIONS:
+            return have[len(want):]
     for r in sorted(REGIONS, key=len, reverse=True):
         stem, tail = s[:-len(r)], s[-len(r):]
-        if len(stem) >= 4 and tail.lower() == r and (tail == tail.capitalize() or tail == tail.upper()) and stem[-1].islower():
+        if len(stem) >= 4 and tail.lower() == r and stem[-1].islower() and (tail == tail.upper() or (tail == tail.capitalize() and r not in COMMON_WORD_REGIONS)):
             return r
     return ""
 
@@ -127,7 +137,50 @@ def clean_review(raw, candidates):
     return {"choice": choice, "is_main": raw.get("is_main") is True, "regional": raw.get("regional") is True, "reason": " ".join(str(raw.get("reason") or "").split())[:200]}
 
 
-def lookup_main_page(name, search, review, read_id, label="the reviewer"):
+ID_LINKS = (r"facebook\.com/people/[^/\s?]+/(\d{6,})", r"facebook\.com/profile\.php\?id=(\d{6,})", r"view_all_page_id=(\d{6,})", r"facebook\.com/pages/[^/\s?]+/(\d{6,})")
+ID_SEARCHES = ('"{name}" facebook.com/people', '"{name}" facebook page', '"{name}" Facebook Ad Library view_all_page_id')
+ID_REVIEW_SYSTEM = (
+    "You confirm which numeric Facebook page id belongs to a brand's MAIN official page. You are given the brand name, the address of the page already confirmed as its main official page, and candidate ids found in web search results "
+    "(the id, the address it came from, the title and snippet). A candidate id belongs to that page only if its address, title or snippet clearly names the SAME page: the brand's own primary, global page. A regional or country page (a name or "
+    "address that adds Au, NZ, UK, India or a country), a fan page, a reseller or a different brand is NOT the same page. If no candidate clearly matches, or two different ids both could, say so: do not guess. Answer with JSON only: "
+    "{\"choice\": the exact id of the chosen candidate, or null, \"same_page\": true or false, \"regional\": true or false, \"reason\": one short sentence}.")
+
+
+def id_candidates(results):
+    """Numeric page ids found in search results: in a people or pages address, a profile.php address, or an Ad Library view_all_page_id link. Each id once, with where it came from."""
+    seen, out = set(), []
+    for r in results:
+        blob = " ".join(str(r.get(k) or "") for k in ("url", "snippet", "title"))
+        for pattern in ID_LINKS:
+            for m in re.finditer(pattern, blob):
+                if m.group(1) not in seen:
+                    seen.add(m.group(1))
+                    out.append({"id": m.group(1), "url": r.get("url", ""), "title": r.get("title", ""), "snippet": r.get("snippet", "")})
+    return out
+
+
+def find_id_by_search(name, chosen_url, search, review_id):
+    """When the page's own HTML has no id: look for the numeric id in the search results about the page (people addresses, profile.php addresses, Ad Library links) and have the reviewer confirm it is the SAME main page.
+    Returns (id, reason) with the id empty when none is found or confirmed; the reason says why. The id must be one of the candidates found: a reviewer's invented id is refused."""
+    found = []
+    for query in ID_SEARCHES:
+        try:
+            found += list(search(query.format(name=name)) or [])
+        except Exception as exc:                                                    # a failed search is a reason, never a crash
+            return "", f"the search for the page's numeric id failed ({type(exc).__name__})"
+        if len(id_candidates(found)) >= 2:
+            break
+    cands = id_candidates(found)
+    if not cands:
+        return "", "a search for the page's numeric id found no address carrying one"
+    verdict = review_id(name, chosen_url, cands[:8]) or {}
+    choice = str(verdict.get("choice") or "")
+    if not choice or not verdict.get("same_page") or verdict.get("regional") or choice not in {c["id"] for c in cands}:
+        return "", f"a search found {len(cands)} numeric id(s) but the reviewer could not confirm one as this page" + (f" ({verdict.get('reason')})" if verdict.get("reason") else "")
+    return choice, f"the numeric id came from a search ({next(c['url'] for c in cands if c['id'] == choice)}) and the reviewer confirmed it is the same page: {verdict.get('reason') or 'no reason given'}"
+
+
+def lookup_main_page(name, search, review, read_id, label="the reviewer", review_id=None):
     """Resolve a brand's main official Facebook page, or say why not. Same result shape as benchmarks.resolve."""
     out = {"status": "unresolved", "page_id": "", "page_name": "", "page_likes": 0, "candidates": [], "reason": ""}
     found = []
@@ -163,12 +216,15 @@ def lookup_main_page(name, search, review, read_id, label="the reviewer"):
         out.update(status="ambiguous", reason=f"only regional pages were found ({chosen['url']} and {others_regional[0]['url']}) and none is the main one, so which region is meant is a person's decision")
         return out
     page_id = chosen.get("id") or read_id(chosen["url"])
+    how = ""
+    if not page_id and review_id is not None:
+        page_id, how = find_id_by_search(name, chosen["url"], search, review_id)
     if not page_id:
         why = getattr(read_id, "why", "")
-        out.update(status="ambiguous", reason=f"{chosen['url']} was confirmed as the main official page by {label} ({verdict['reason']}), but its page id could not be read from the page" + (f" ({why})" if why else ""))
+        out.update(status="ambiguous", reason=f"{chosen['url']} was confirmed as the main official page by {label} ({verdict['reason']}), but its page id could not be read from the page" + (f" ({why})" if why else "") + (f"; {how}" if how else ""))
         return out
     out.update(status="resolved", page_id=page_id, page_name=chosen["title"] or chosen["slug"], page_likes=0,
-               reason=f"found with Serper and confirmed as the main official page by {label}: {verdict['reason']} ({chosen['url']})")
+               reason=f"found with Serper and confirmed as the main official page by {label}: {verdict['reason']} ({chosen['url']})" + (f"; {how}" if how else ""))
     return out
 
 
@@ -221,4 +277,8 @@ def make_finder(serper, claude, get_html, label="the AI reviewer"):
         read_id.why = "tried " + "; ".join(tried)
         return ""
     read_id.why = ""
-    return lambda name: lookup_main_page(name, search, review, read_id, label)
+
+    def review_id(name, chosen_url, cands):
+        listing = "\n".join(f"- id {c['id']} | from {c['url']} | title: {c['title']} | snippet: {c['snippet']}" for c in cands)
+        return claude.json_task(ID_REVIEW_SYSTEM, f"Brand: {name}\nConfirmed main page: {chosen_url}\nCandidate ids:\n{listing}", max_tokens=400)
+    return lambda name: lookup_main_page(name, search, review, read_id, label, review_id)

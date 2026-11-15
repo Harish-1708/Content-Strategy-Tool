@@ -5,6 +5,7 @@ the owner has not switched on (each connection has its ON/OFF, route, version an
 """
 import argparse
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -19,6 +20,7 @@ from . import contract as K
 from . import motion_prompts as MOTION
 from . import openverse as OPENVERSE
 from . import pace as PACE
+from . import providers as providers_mod
 from . import poolcatalog as POOL
 from . import services as SERVICES
 from . import videometa as VMETA
@@ -78,6 +80,7 @@ def add_parsers(sub, common):
     p = sub.add_parser("pageid", help="try the four places a Facebook page id can be read from and say what each one gave (public pages only; nothing is changed)")
     common(p)
     p.add_argument("--url", required=True, help="the page's address, for example https://www.facebook.com/Chobani")
+    p.add_argument("--name", default="", help="the brand's name (Chobani): lets the check tell a regional page (ChobaniAu, chobaniau) from the brand's own")
 
     p = sub.add_parser("pool", help="free AI capacity worth adding to the pool, read from OmniRoute's catalogue as data (changes nothing)")
     common(p)
@@ -158,7 +161,7 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
     external = VOICE.ExternalLast30Days(settings, environ=environ, runner=runner)
     builtin = VOICE.BuiltinVoice(get, (clock or time.time)())
     worst = 0
-    apify_all = _apify_lane(args, store, now, environ, slugs) if args.apify and args.mode == "research" and not args.dry_run else (None, None)          # ONE lane for the whole run: the per-run allowance is shared by every brand under --all
+    apify_all = _apify_lane(args, store, now, environ, slugs) if args.apify and args.mode in ("research", "competitors") and not args.dry_run else (None, None)          # ONE lane for the whole run: the per-run allowance is shared by every brand under --all
     for slug in slugs:
         brand = load_brand(slug, args.brands_dir)
         if args.mode == "discover":
@@ -187,7 +190,7 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
         kept = store.read_extra(slug, "voice") or {}
         total_new = 0
         run_entities = {}
-        apify_lane, ledger = apify_all if args.mode == "research" and args.apify else (None, None)
+        apify_lane, ledger = apify_all if args.mode in ("research", "competitors") and args.apify else (None, None)
         for topic, peers in jobs:
             try:
                 items, status, which = VOICE.gather(settings, topic, mode=args.mode, peers=peers, depth=args.depth, now=now, external=external, builtin=builtin)
@@ -199,13 +202,18 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
             total_new += fresh
             for it in items:
                 run_entities[it.get("entity") or ""] = run_entities.get(it.get("entity") or "", 0) + 1
-            if apify_lane is not None and args.mode == "research":
-                extra, notes = apify_lane.run(topic)
-                for note in notes:
-                    print(f"{slug}: {note}")
-                if extra:
-                    kept, fresh_a = VOICE.merge(kept, extra, now)
-                    total_new += fresh_a
+            if apify_lane is not None:
+                asks = [(topic, "")] if args.mode == "research" else [(p, p) for p in peers]                # competitors: each competitor, never the brand itself (research mode covers the brand)
+                share = None if args.mode == "research" else max(2, apify_lane.per_run // max(1, len(asks)))               # the run's allowance is split between the competitors
+                for ask, entity in asks:
+                    extra, notes = apify_lane.run(ask, share=share, entity=entity)
+                    for note in notes:
+                        print(f"{slug}: {note}")
+                    if extra:
+                        kept, fresh_a = VOICE.merge(kept, extra, now)
+                        total_new += fresh_a
+                        for it in extra:
+                            run_entities[it.get("entity") or ""] = run_entities.get(it.get("entity") or "", 0) + 1
             if which != "builtin" and external.engine_notes and VOICE.failed_sources(status):
                 print(f"{slug}: some sources failed; the engine said: {external.engine_notes}")
             if which == "builtin" and external.last_error:
@@ -218,6 +226,7 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
             print(f"{slug}: this run, items per competitor: " + "; ".join(f"{p}: {run_entities.get(p, 0)}" for p in asked) + f"; the brand itself: {run_entities.get('', 0) + run_entities.get(jobs[0][0], 0)}")
         if ledger is not None:
             store.save_usage(ledger.usage)                                             # spent is spent: saved even if nothing usable came back
+            print(f"Apify usage after this run: voice {ledger.month_used('voice_apify_items'):g}/{apify_lane.monthly} items this month, all Apify use {ledger.month_used('apify_items'):g}/{apify_lane.shared_cap} (this run read {apify_lane.spent_this_run}).")
         if args.mode != "discover":
             from .collectors import collected_rows
             posts = VOICE.reddit_items(collected_rows(store.read_collected(slug) or []))
@@ -261,6 +270,18 @@ def _collect_apify_cap(args, slugs=()):
         return COL.DEFAULT_COLLECTORS["apify"]["monthly_items"]
 
 
+def _env_number(environ, name, default, low, high, cast):
+    """An override from the environment, kept inside [low, high]; a missing or unreadable value is the default. An override can tighten or loosen the lane only within these bounds."""
+    raw = (environ.get(name) or "").strip()
+    if not raw:
+        return default
+    try:
+        value = cast(raw)
+    except ValueError:
+        return default
+    return cast(min(high, max(low, value)))
+
+
 def _apify_lane(args, store, now, environ, slugs=()):
     """(the Apify voice lane, the usage ledger) or (None, None) with the reason printed. The lane exists only when the owner asked for it in this run and APIFY_TOKEN is set."""
     token = environ.get("APIFY_TOKEN", "")
@@ -272,14 +293,15 @@ def _apify_lane(args, store, now, environ, slugs=()):
     from .apify import Apify
     ledger = research_mod.Ledger(store.load_usage(), now[:7])
     shared = _collect_apify_cap(args, slugs)
-    lane = VOICE.ApifyVoice(Apify(token), ledger, per_run=int(environ.get("CONTENTINTEL_VOICE_APIFY_PER_RUN") or 40), monthly=int(environ.get("CONTENTINTEL_VOICE_APIFY_MONTHLY") or 60),
-                            shared_cap=shared, max_cost_usd=float(environ.get("CONTENTINTEL_VOICE_APIFY_COST") or 0.25), normalize=COL.normalize_items)
+    cost = _env_number(environ, "CONTENTINTEL_VOICE_APIFY_COST", None, 0.0, VOICE.ApifyVoice.HARD_CEILING, float)
+    lane = VOICE.ApifyVoice(Apify(token), ledger, per_run=_env_number(environ, "CONTENTINTEL_VOICE_APIFY_PER_RUN", 40, 1, 100, int), monthly=_env_number(environ, "CONTENTINTEL_VOICE_APIFY_MONTHLY", 60, 1, 200, int),
+                            shared_cap=shared, max_cost_usd=cost, normalize=COL.normalize_items)
     print(f"Apify lane ON for this run (switch off with --no-apify): at most {lane.per_run} items in this whole run, {lane.monthly} a month for voice (used so far this month: {ledger.month_used('voice_apify_items'):g}), "
-          f"and never beyond the Collect step's {shared} a month (used: {ledger.month_used('apify_items'):g}); each call is capped at {lane.max_cost:g} dollars.")
+          f"and never beyond the Collect step's {shared} a month (used: {ledger.month_used('apify_items'):g}); each call has a cost ceiling Apify enforces: {lane.ceiling('tiktok'):g} dollars for TikTok, {lane.ceiling('instagram'):g} for Instagram.")
     return lane, ledger
 
 
-def run_pageid(args, *, get=default_get):
+def run_pageid(args, *, get=default_get, search=None, environ=None):
     """Read a Facebook page's id from each of the four places the finder tries, and say what each answered. Public addresses only; a login page or a refusal is reported, never worked around."""
     from . import main_page as MP
     url = args.url.strip()
@@ -290,7 +312,7 @@ def run_pageid(args, *, get=default_get):
     if not MP.slug_of(url):
         print("Error: that is not a facebook.com page address")
         return 1
-    region = MP.regional_hint(MP.slug_of(url))
+    region = MP.regional_hint(MP.slug_of(url), getattr(args, "name", "") or "")
     if region:
         print(f"WARNING: the address looks like a regional page ({region}). Its id belongs to that region, not to the brand's main page: do not use it for the main page.")
     found = ""
@@ -300,6 +322,25 @@ def run_pageid(args, *, get=default_get):
         host = address.split("/")[2] + ("/plugins" if "/plugins/page.php" in address else "")
         print(f"  {host}: HTTP {status}, {len(text):,} characters, " + (f"PAGE ID {page_id}" if page_id else ("a login page" if "log in" in text.lower()[:20000] or "login" in text.lower()[:3000] else "no page id in it")))
         found = found or page_id
+    if not found:
+        if search is None:
+            serper = providers_mod.build_providers(dict(os.environ if environ is None else environ)).get("serper_dev")
+            search = (lambda query: [{"url": r.url, "title": r.title, "snippet": r.snippet} for r in serper.search(query, num=10)]) if serper is not None else None
+        if search is None:
+            print("Search for the numeric id: not tried (SERPER_API_KEY is not set in this run)")
+        else:
+            name = getattr(args, "name", "") or MP.slug_of(url)
+            results = []
+            for query in MP.ID_SEARCHES:
+                try:
+                    results += list(search(query.format(name=name)) or [])
+                except Exception as exc:                                              # noqa: BLE001 - a failed search is reported
+                    print(f"Search for the numeric id: failed ({type(exc).__name__})")
+                    break
+            cands = MP.id_candidates(results)
+            print(f"Search for the numeric id of '{name}': {len(cands)} candidate id(s) found in search results (the Collect step's reviewer confirms which, if any, is this page)")
+            for c in cands[:8]:
+                print(f"  id {c['id']} from {c['url']} | {c['title'][:80]}")
     print(f"Result for {url}: " + (f"page id {found}" + (f" (a REGIONAL page: {region})" if region else "") if found else "no page id could be read from any of the four places (the main page is still confirmed by name; the id has to be chosen by a person)"))
     return 0
 

@@ -327,43 +327,64 @@ def _row_item(row, source, topic, mode="apify"):
 
 
 class ApifyVoice:
-    """An extra lane: Apify's ready-made TikTok and Instagram scrapers, asked about one topic. It is OFF unless the owner asks for it in a run (voice --apify / the workflow's apify box), needs APIFY_TOKEN, and spends only
-    within its OWN monthly allowance (voice_apify_items, default 40) and never beyond the monthly Apify allowance the Collect step already uses (collectors.apify.monthly_items): both counters are charged for what was read,
-    and each Apify call carries a cost ceiling (default 0.25 dollars). `apify` is the platform's Apify provider; `ledger` is research.Ledger; `shared_cap` is the monthly items Collect may use."""
+    """An extra lane: Apify's ready-made TikTok and Instagram scrapers, asked about a topic (research mode) or about each competitor (competitors mode; the brand itself is not asked there). It is ON by default in voice (--no-apify or the workflow's
+    apify box switches it off) and needs APIFY_TOKEN. It reads only within its OWN monthly allowance (voice_apify_items, default 60), 40 items in a whole workflow run, and never beyond the monthly Apify allowance the Collect step
+    uses (collectors.apify.monthly_items): both counters are charged for what was read. Each Apify call carries a cost ceiling that Apify enforces by stopping the call: 0.50 dollars for TikTok (its actor refuses anything lower;
+    measured live) and 0.25 for Instagram (which returned 27 usable items for it). In one call TikTok asks for half of what is left to read and Instagram for the rest, so a call whose ceiling stops it early returns what the
+    money bought. `apify` is the platform's Apify provider; `ledger` is research.Ledger; `shared_cap` is the monthly items Collect may use."""
     ACTORS = {"tiktok": "clockworks/tiktok-scraper", "instagram": "apify/instagram-hashtag-scraper"}
+    CEILINGS = {"tiktok": 0.50, "instagram": 0.25}                      # the least each actor accepts per call
+    HARD_CEILING = 1.00                                                   # whatever an override says, a call can never be allowed more than this
 
-    def __init__(self, apify, ledger, *, per_run=15, monthly=40, shared_cap=100, max_cost_usd=0.25, normalize=None):
-        self.apify, self.ledger, self.per_run, self.monthly, self.shared_cap, self.max_cost = apify, ledger, per_run, monthly, shared_cap, max_cost_usd
+    def __init__(self, apify, ledger, *, per_run=40, monthly=60, shared_cap=100, max_cost_usd=None, normalize=None):
+        self.apify, self.ledger, self.per_run, self.monthly, self.shared_cap = apify, ledger, per_run, monthly, shared_cap
+        self.max_cost = max_cost_usd
         self.normalize = normalize
         self.spent_this_run = 0
+
+    def ceiling(self, source):
+        """The cost ceiling for a call: the actor's own minimum, or an override clamped between that minimum and the hard ceiling (an override cannot go below what the actor accepts, nor above 1 dollar)."""
+        low = self.CEILINGS[source]
+        if self.max_cost is None:
+            return low
+        return min(self.HARD_CEILING, max(low, float(self.max_cost)))
 
     def room(self):
         return max(0, min(self.per_run - self.spent_this_run, self.monthly - self.ledger.month_used("voice_apify_items"), self.shared_cap - self.ledger.month_used("apify_items")))
 
-    def run(self, topic):
-        """(items, notes). Each source asks for at most half the room left, so TikTok and Instagram share it. Raises nothing: a refusal or a missing allowance is a note."""
+    def run(self, topic, share=None, entity=""):
+        """(items, notes). `share` limits the items this one ask may read (competitors mode splits the run's allowance between the brand and its competitors). Raises nothing: a refusal or a missing allowance is a note."""
         items, notes = [], []
         tag = re.sub(r"[^a-z0-9]", "", topic.lower())
+        budget = self.room() if share is None else min(self.room(), int(share))
+        read_here = 0
         for source in ("tiktok", "instagram"):
-            n = self.room() // (2 if source == "tiktok" else 1)
+            n = min(self.room(), budget - read_here)
+            if source == "tiktok":
+                n = n // 2 if budget >= 2 else 0
             if n < 1:
-                notes.append(f"apify {source}: no allowance left (this run {self.spent_this_run}/{self.per_run}, voice this month {self.ledger.month_used('voice_apify_items'):g}/{self.monthly}, Apify this month {self.ledger.month_used('apify_items'):g}/{self.shared_cap})")
+                notes.append(f"apify {source} for {topic!r}: no allowance left (this ask {budget}, this run {self.spent_this_run}/{self.per_run}, voice this month {self.ledger.month_used('voice_apify_items'):g}/{self.monthly}, "
+                             f"Apify this month {self.ledger.month_used('apify_items'):g}/{self.shared_cap})")
                 continue
             payload = {"searchQueries": [topic], "resultsPerPage": n} if source == "tiktok" else {"hashtags": [tag], "resultsType": "posts", "resultsLimit": n}
             if source == "instagram" and not tag:
                 continue
             try:
-                raw = self.apify.run(self.ACTORS[source], payload, max_items=n, max_cost_usd=self.max_cost)
+                raw = self.apify.run(self.ACTORS[source], payload, max_items=n, max_cost_usd=self.ceiling(source))
             except Exception as exc:                                              # noqa: BLE001 - a provider's refusal, quota or outage is reported, never raised
-                notes.append(f"apify {source}: {exc.__class__.__name__}: {scrub(str(exc), 200)}")
+                notes.append(f"apify {source} for {topic!r}: {exc.__class__.__name__}: {scrub(str(exc), 200)}")
                 continue
             self.ledger.charge("apify_items", len(raw))
             self.ledger.charge("voice_apify_items", len(raw))
             self.spent_this_run += len(raw)
+            read_here += len(raw)
             rows, bad = self.normalize(source, raw) if self.normalize else ([], len(raw))
             got = [i for i in (_row_item(r, f"apify {source}", topic) for r in rows) if i]
+            for it in got:
+                if entity:
+                    it["entity"], it["mode"] = entity, "competitors"
             items += got
-            notes.append(f"apify {source}: {len(raw)} item(s) read, {len(got)} usable" + (f", {bad} unreadable" if bad else ""))
+            notes.append(f"apify {source} for {topic!r}: asked for {n}, {len(raw)} item(s) read within a {self.ceiling(source):g} dollar ceiling, {len(got)} usable" + (f", {bad} unreadable" if bad else ""))
         return items, notes
 
 
