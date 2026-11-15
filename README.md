@@ -190,6 +190,13 @@ names marked set or not set, so you can see what the run can see (the values are
 | `SHEET_FOLDER_ID` | a Shared Drive folder for new sheets | optional | the folder's ID |
 | `SLACK_WEBHOOK_URL` | a Slack message when a run needs attention | optional | a Slack incoming-webhook address |
 
+**Research tools** (used by the Research tools workflow; both optional, because Openverse works without them at lower limits)
+
+| Secret | What it is for | Needed? | What to paste |
+|---|---|---|---|
+| `OPENVERSE_CLIENT_ID` | higher limits on Openverse's licence-safe picture and audio search | optional | the client id Openverse gives you when you register a free application |
+| `OPENVERSE_CLIENT_SECRET` | the other half of the Openverse registration | optional | the client secret from the same registration |
+
 **Searching the web** (Actions > Research)
 
 | Secret | What it is for | Needed? | What to paste |
@@ -345,6 +352,13 @@ names marked set or not set, so you can see what the run can see (the values are
 | `SHEET_SHARE_EMAIL` | who the sheets are shared with when the tool creates them | optional | an email address |
 | `SHEET_FOLDER_ID` | a Shared Drive folder for new sheets | optional | the folder's ID |
 | `SLACK_WEBHOOK_URL` | a Slack message when a run needs attention | optional | a Slack incoming-webhook address |
+
+**Research tools** (used by the Research tools workflow; both optional, because Openverse works without them at lower limits)
+
+| Secret | What it is for | Needed? | What to paste |
+|---|---|---|---|
+| `OPENVERSE_CLIENT_ID` | higher limits on Openverse's licence-safe picture and audio search | optional | the client id Openverse gives you when you register a free application |
+| `OPENVERSE_CLIENT_SECRET` | the other half of the Openverse registration | optional | the client secret from the same registration |
 
 **Searching the web** (Actions > Research)
 

@@ -67,3 +67,16 @@ The platform's GitHub channel (`contentintel/github_reach.py`) reads repositorie
 ## Scrapling
 
 Scrapling (BSD-3-Clause) is used through an isolated worker process: HTTP and browser fetching, link extraction, and parser tools (css, xpath, text, regex and similar-element search). Its Spider engine is not used.
+
+
+## Update 64 (Batch 1): repositories connected, read as data, or re-written
+
+Each entry says what the platform does with the repository and under which licence. The owner has said this is a personal, non-commercial project, so a non-commercial licence is acceptable; licences are recorded here and never used as a reason to cut what a tool does.
+
+- **last30days-skill** (https://github.com/mvanhorn/last30days-skill, MIT). Connected (`last30days`): its own program is run from its own checkout for audience voice (contentintel/voice.py). Its page-matching method is re-written in contentintel/page_match.py.
+- **yt-dlp** (https://github.com/yt-dlp/yt-dlp, The Unlicense). Connected (`yt_dlp`): used for video facts as well as for saving videos (contentintel/videometa.py).
+- **ReelMimic** (https://github.com/edenfunf/reelmimic, MIT). Not run. Its idea of taking a reference video apart into shots, pace and sound is re-written with ffmpeg in contentintel/pace.py.
+- **OmniRoute** (https://github.com/cheaper-inference/OmniRoute, MIT). Data only (`omniroute_catalog`): the free-tier catalogue file is read and a snapshot kept in ai/omniroute-free-catalog.json (commit c5c90b955f). OmniRoute itself is never run.
+- **awesome-opus5-5-videos** (https://github.com/yihui-dev/awesome-opus5-5-videos, MIT). Data only (`opus_video_prompts`): a snapshot of its 703 prompts is kept in reference/motion-prompts.json. The prompts belong to their creators and are always shown with their author and link.
+- **facebook-ads-library-mcp** (https://github.com/RamsesAguirre777/facebook-ads-library-mcp, MIT). Connected as a secondary reader (`fb_ads_library_mcp`): its card parser is re-written in contentintel/adlibrary_secondary.py and checked against the original on the same input.
+- **Openverse** (https://github.com/WordPress/openverse, MIT; each asset carries its own licence). Its hosted public API is used through contentintel/openverse.py; the repository is not run. Wikimedia Commons is the backup.
