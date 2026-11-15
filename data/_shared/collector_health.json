@@ -5436,8 +5436,8 @@
   },
   "video_tiktok|layered": {
    "acceptance": null,
-   "consecutive_failures": 0,
-   "consecutive_successes": 3,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
    "history": [
     {
      "at": "2026-11-04T16:11:21Z",
@@ -5655,12 +5655,19 @@
      "items": 1,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-15T03:25:10Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-14T14:14:28Z",
+    "at": "2026-11-15T03:25:10Z",
     "code": "UPSTREAM_BROKEN",
-    "message": "the video has no picture track"
+    "message": "the file is not a picture or video we can read"
    },
    "last_success": "2026-11-14T14:14:28Z",
    "pause": null,

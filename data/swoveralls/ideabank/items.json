@@ -503,6 +503,7 @@
     "variants": 2
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (canvas, physics, audio) by KamStudioLabs: Build a 45-second machine that plays an original piece of music, where every note comes from a visible collision. [https://x.com/KamStudioLabs/status/2102899866762440893]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -3455,6 +3456,7 @@
     "variants": 3
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (shader, webgl, canvas, css) by reflex_cloud: You're a world-class motion designer, and this is your 15-second résumé reel. Make it dynamic and confident: open with a striking hook in the first second, build through a sequence of distinct techniq [https://x.com/reflex_cloud/status/21035528400",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -3729,6 +3731,7 @@
     "variants": 4
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (shader, webgl, canvas, css) by reflex_cloud: You're a world-class motion designer, and this is your 15-second résumé reel. Make it dynamic and confident: open with a striking hook in the first second, build through a sequence of distinct techniq [https://x.com/reflex_cloud/status/21035528400",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -3746,7 +3749,7 @@
    "source_item_id": "meta_ads:1088865537026760",
    "state": "kept",
    "summary": "A personified hook plus a precise scenario (blanket slips between rounds) gives a vivid problem-solution pairing. Four copy variants suggest active testing, though it has only run 27 days.",
-   "technique": "problem-first hook",
+   "technique": "Problem-first hook",
    "text": "Your blanket can't stay on between rounds. The Eden Hoodie can. It’s oversized, lined with sensory-friendly faux fur, slightly weighted at 4 lb, and designed to keep you comfortable without pinning you to the couch.",
    "title": "Your nervous system called…It wants this",
    "topic": "Your nervous system called…It wants this",
@@ -7404,6 +7407,7 @@
     "days_running": 13
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "explainer (threejs, canvas, audio) by aichrislee: Build me a human heart in interactive 3D, in one HTML file with Three.js. Make it look real: the deep red muscle with the red arteries and blue veins on top, and inside it the parts you never get to s [https://x.com/aichrislee/status/2107985027254378",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -9058,11 +9062,13 @@
    "media_format": "",
    "media_role": "",
    "media_url": "https://scontent-sjc3-1.cdninstagram.com/v/t51.82787-15/786429028_18336976018252217_4253667289954241490_n.jpg?stp=dst-jpegr_e35_tt6&_nc_cat=105&ig_cache_key=Mzk3MzI5OTE1MTE5MzMwNzA0MQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMjMxNi5oZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=Fa5d0V66QSQQ7kNvwGJNbVb&_nc_oc=AdoZai2bNSXImNAUdAThwHxMaNHTq-vdpF5eEigD_-io4C2P92EjJpkI2lNXy9Mo1YI&_nc_zt=23&_nc_ht=scontent-sjc3-1.cdninstagram.com&_nc_gid=RHWd5U5aunrAYnPxUiUsJw&_nc_ss=7b6a8&oh=00_AQO-ZuwnAUt-4SGQ6DgVf6VIdNlE7RWdj3nh5J5CqOUUfA&oe=6ADE9EC9",
+   "meta_tries": 1,
    "metrics": {
     "comments": 29,
     "likes": 92
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (threejs, canvas, pixel) by codrops: Everyone is sharing what Opus 5.5 can build this week, and it made us ask ourselves a different question: when making things becomes this easy, what do we actually want to make and why? Our answer was [https://x.com/codrops/status/2104217304611340299]",
    "occasion": "",
    "page_id": "",
    "platform": "instagram",
@@ -9577,6 +9583,7 @@
     "variants": 3
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (code) by diamai_: Make me a 30-second motion design video in code, 1080x1080, 60 fps. The music is [path to your track]. First measure the track with numpy. Find the BPM, the beat times and the drop, then cut 30 second [https://x.com/diamai_/status/2104195085508157697]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -9719,6 +9726,7 @@
     "signal": "worth studying: ran 275 days"
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (canvas) by eric_khun: I want you to create a \"Happy Mid-Autumn Festival\" video in hand drawn canvas animation style. You must use the attached Taiwan black bear as the main character representing Taiwan: flat black silhoue [https://x.com/eric_khun/status/2103112385380667455]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -11712,6 +11720,7 @@
     "days_running": 53
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (threejs, shader, svg) by anirockshady: Create a 3D animation of a Path Points in this case ball reaching approximation from crest to trough. Discuss the type of ML algorithm gradient descent is. Also list major use cases.And trasition can  [https://x.com/anirockshady/status/2103195903012032809]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -15877,6 +15886,7 @@
    "media_url": "",
    "metrics": {},
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (code) by generussai: animate golden ratios and mandlebrot sets, sacred geometry and cymatics in a well thought out eye candy javascript or 3js 3d animated video. use motion animation to show off your skills and push the l [https://x.com/generussai/status/2105921281673904308]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "web",
@@ -15999,6 +16009,7 @@
    "media_url": "",
    "metrics": {},
    "model": "claude-sonnet-5-5",
+   "motion_idea": "explainer (code) by ArchiveExplorer: Write my launch video as 9 beats: pain, reframe, name, how it works, objection, range, mechanism in numbers, offer, CTA – one line each. For every beat write 3 headline options and send them to Jev to [https://x.com/ArchiveExplorer/status/2106732275685560622]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "web",
@@ -16016,7 +16027,7 @@
    "source_item_id": "web:s_cc5c19199d2d",
    "state": "kept",
    "summary": "Apparel guide segments by dad type, including a lasting-loungewear pick for comfort-favoring dads. Clear persona structure that is easy to adapt.",
-   "technique": "gift guide by dad type",
+   "technique": "Gift guide by dad type",
    "text": "From rugged gear for the adventure-seeking dad to lasting loungewear for the guy who favors comfort, we're ready with classic gifts for every dad out there.",
    "title": "Father's Day Gift Guide - Shirts, Pants for Dads",
    "topic": "Gifts by dad personality type",
@@ -16182,6 +16193,7 @@
    "media_url": "",
    "metrics": {},
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (code) by egeberkina: Create a visually stunning 60-second video explaining how an earthquake happens through an interactive tectonic sandbox. Make it feel like we are watching someone explore a beautiful real-time simulat [https://x.com/egeberkina/status/2105029713445949521]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "web",
@@ -16199,7 +16211,7 @@
    "source_item_id": "web:s_aa3d5ceddeda",
    "state": "kept",
    "summary": "Guide uses a father's own voice and lifestyle details to make the list feel authentic. The humor and relatability are reusable.",
-   "technique": "real dad's gift list",
+   "technique": "Real person's habits gift picks",
    "text": "For the dad fueled by caffeine, backyard grilling, good denim, and uninterrupted TV time, here are 20 gifts worth wrapping this year.",
    "title": "GQ's Father's Day Gift Guide, According to a Father",
    "topic": "Gifts built from dad's habits",
@@ -17442,6 +17454,7 @@
     "views": 8500000
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (code) by 0xCodez: Create a single self-contained index.html: a ~2-minute animated piano performance in a hand-drawn crayon style. Scene: a cozy room at night, an upright piano, a small black cat playing it. Crayon text [https://x.com/0xCodez/status/2104257855142474136]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "tiktok",
@@ -17464,6 +17477,28 @@
    "title": "",
    "topic": "Ultimate dad gift novelty demo",
    "url": "https://www.tiktok.com/@talon.krebs/video/7642915593879932191",
+   "video_meta": {
+    "comments": 769,
+    "duration_s": 30,
+    "hashtags": [
+     "fathersdaygiftideas",
+     "fathersdaygift",
+     "whiskeyglass",
+     "giftfordad",
+     "spinningwhiskeyglass"
+    ],
+    "likes": 78200,
+    "music": "talon.krebs - original sound",
+    "posted": "2026-05-23",
+    "reposts": 4968,
+    "site": "TikTok",
+    "title": "The ultimate dad gift 🍻😂 #fathersdaygiftideas #fathersdaygift #whiske...",
+    "uploader": "talon.krebs",
+    "uploader_id": "6675852097696777222",
+    "url": "https://www.tiktok.com/@talon.krebs/video/7642915593879932191",
+    "views": 8600000
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 1,
@@ -17601,6 +17636,7 @@
     "likes": 605490
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (threejs, shader) by 0xWast3: Opus 5.5 turned one sentence into a 3D system that opens in Blender, rigged, textured and ready to animate. It does not render the object. It constructs it, part by part, the way a modeller would if t [https://x.com/0xWast3/status/2103513328077222104]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "instagram",
@@ -17623,6 +17659,68 @@
    "title": "",
    "topic": "Creative Father's Day gift wrapping",
    "url": "https://www.instagram.com/reel/DJruFhIx1bG/",
+   "video_meta": {
+    "comments": 686,
+    "hashtags": [
+     "fathersday",
+     "fathersdaygiftideas",
+     "giftwrapping",
+     "giftwrapideas",
+     "giftsforhim",
+     "giftsfordad",
+     "fathersdaypresent"
+    ],
+    "likes": 605119,
+    "posted": "2025-05-15",
+    "site": "Instagram",
+    "title": "Video by flipdaddie",
+    "top_comments": [
+     {
+      "author": "dont.usemystuff",
+      "likes": 1,
+      "text": "Free Father’s Day gift, Just send him this https://www.instagram.com/reel/DZ0XI3MxR7P/?igsh=a3RnZnBxN3pldHQ5"
+     },
+     {
+      "author": "handmadekeepsakecards",
+      "likes": 1,
+      "text": "So cool! 😍😍"
+     },
+     {
+      "author": "surbhi.gupta.95",
+      "likes": 0,
+      "text": "Fathers"
+     },
+     {
+      "author": "_asanwa",
+      "likes": 0,
+      "text": "Fathers"
+     },
+     {
+      "author": "marcia_jsf26",
+      "likes": 0,
+      "text": "Fathers"
+     },
+     {
+      "author": "________iab",
+      "likes": 0,
+      "text": "Fathers"
+     },
+     {
+      "author": "lonehennebjerg",
+      "likes": 0,
+      "text": "Fathers"
+     },
+     {
+      "author": "sarahkatefield",
+      "likes": 0,
+      "text": "Fathers"
+     }
+    ],
+    "uploader": "Christina Clericuzio",
+    "uploader_id": "45052465622",
+    "url": "https://www.instagram.com/reel/DJruFhIx1bG/"
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 1,
@@ -17968,6 +18066,7 @@
     "views": 2200000
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (code) by rossaxbt: <inputs> Ask me for: one question a user asks my product and its one-line answer, two album covers, a royalty-free song around 110 BPM with a quiet intro and a hard drop (Mixkit, free for commercial u [https://x.com/rossaxbt/status/2107483570885312793]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "tiktok",
@@ -17990,6 +18089,28 @@
    "title": "",
    "topic": "Gift for dad who never asks",
    "url": "https://www.tiktok.com/@siwusu_s/video/7641525818686033166",
+   "video_meta": {
+    "comments": 82,
+    "duration_s": 17,
+    "hashtags": [
+     "giftfordad",
+     "fathersdaygift",
+     "iloveyoudad",
+     "dadkeychain",
+     "fyp"
+    ],
+    "likes": 34600,
+    "music": "noahVelvey - original sound",
+    "posted": "2026-05-20",
+    "reposts": 683,
+    "site": "TikTok",
+    "title": "This keychain is for the dad who never asks for gifts but always show...",
+    "uploader": "siwusu_s",
+    "uploader_id": "7405825257765880874",
+    "url": "https://www.tiktok.com/@siwusu_s/video/7641525818686033166",
+    "views": 2200000
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 1,
@@ -18463,6 +18584,7 @@
     "views": 651300
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (threejs, shader, canvas) by anduraio: Claude Opus 5.5 is stupidly good at games, so I’m putting it on a streak. Dropping 10 browser games I built with it. One a day. Same characters. Same world. Different gameplay each day. Adventure game [https://x.com/anduraio/status/21038606097125707",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "tiktok",
@@ -18485,6 +18607,28 @@
    "title": "",
    "topic": "Father's Day gift guide",
    "url": "https://www.tiktok.com/@sugaricedtea/video/7646448403366300959",
+   "video_meta": {
+    "comments": 295,
+    "duration_s": 60,
+    "hashtags": [
+     "fathersday",
+     "fathersdaygiftideas",
+     "giftguide",
+     "fathersdaygiftguide",
+     "juneinspo"
+    ],
+    "likes": 21800,
+    "music": "🎵🎶 NINTENDO SOUND 🎵🎶 - sonido original",
+    "posted": "2026-06-01",
+    "reposts": 1182,
+    "site": "TikTok",
+    "title": "#fathersday #fathersdaygiftideas #giftguide #fathersdaygiftguide #jun...",
+    "uploader": "sugaricedtea",
+    "uploader_id": "7545320911610053645",
+    "url": "https://www.tiktok.com/@sugaricedtea/video/7646448403366300959",
+    "views": 660200
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 1,
@@ -19501,6 +19645,7 @@
     "views": 57300
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (code) by 0xKarmi: Picture a butterfly with no memory of its last wingbeat. Ask it for frame 720 and you get frame 0, pixel for pixel. 720 frames. 12 seconds. 6 counters. All at 0. Opus 5.5 can't hand over a video file, [https://x.com/0xKarmi/status/2108495927988129839]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "tiktok",
@@ -19523,6 +19668,28 @@
    "title": "",
    "topic": "Personal magazine for dad",
    "url": "https://www.tiktok.com/@atelier.buba/video/7685381651056135457",
+   "video_meta": {
+    "comments": 6,
+    "duration_s": 18,
+    "hashtags": [
+     "giftsfordad",
+     "dadbirthday",
+     "canvatemplate",
+     "diygift",
+     "birthdaysurprise"
+    ],
+    "likes": 1256,
+    "music": "ellzlyrics★ - original sound",
+    "posted": "2026-09-14",
+    "reposts": 365,
+    "site": "TikTok",
+    "title": "I collected photos and (funny) stories and turned it into an magazine...",
+    "uploader": "atelier.buba",
+    "uploader_id": "7360334502981485601",
+    "url": "https://www.tiktok.com/@atelier.buba/video/7685381651056135457",
+    "views": 72600
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "the file is not a picture or video we can read",
    "video_status": "failed",
    "video_tries": 2,
@@ -20048,6 +20215,7 @@
     "views": 5158
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "explainer (threejs, canvas, audio) by aichrislee: Build me a human heart in interactive 3D, in one HTML file with Three.js. Make it look real: the deep red muscle with the red arteries and blue veins on top, and inside it the parts you never get to s [https://x.com/aichrislee/status/2107985027254378",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "tiktok",
@@ -20070,6 +20238,28 @@
    "title": "",
    "topic": "Dad's five minutes on sofa",
    "url": "https://www.tiktok.com/@husbandfinds/video/7678681303981772035",
+   "video_meta": {
+    "comments": 16,
+    "duration_s": 13,
+    "hashtags": [
+     "dadlife",
+     "parentinghumor",
+     "parentsoftiktok",
+     "dadtok",
+     "toddlerlife"
+    ],
+    "likes": 128,
+    "music": "___lyrics.___ - In this shirt",
+    "posted": "2026-08-27",
+    "reposts": 131,
+    "site": "TikTok",
+    "title": "After a long day, all I want is 5 minutes on the sofa… #DadLife #Pare...",
+    "uploader": "husbandfinds",
+    "uploader_id": "7458605924375970849",
+    "url": "https://www.tiktok.com/@husbandfinds/video/7678681303981772035",
+    "views": 6629
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 1,
@@ -20249,11 +20439,13 @@
    "media_format": "",
    "media_role": "",
    "media_url": "https://scontent-sjc6-1.cdninstagram.com/v/t51.82787-15/723445190_17947955559193901_8990092239280217935_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=109&ig_cache_key=MzkxNzkwMzU3MjA1NzI0NDQzNQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTM2NS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=KqKYycwDHaIQ7kNvwGCTXtx&_nc_oc=AdqVuMY_rgsKswaKJWznyRT58KtTDdwJF9yVA_ClaE3rCNFAeXkU78nkbCDfvzhQeKc&_nc_zt=23&_nc_ht=scontent-sjc6-1.cdninstagram.com&_nc_gid=D_Mq8Q7T3_s_oCAv8kAEEQ&_nc_ss=7b6a8&oh=00_AQRiN3DJYD2jJYxlqScOzz6O54Mf0TOPikxrf2DRdVKmTg&oe=6AE7AB77",
+   "meta_tries": 1,
    "metrics": {
     "comments": 4,
     "likes": 336
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (code) by rossaxbt: <inputs> Ask me for: one question a user asks my product and its one-line answer, two album covers, a royalty-free song around 110 BPM with a quiet intro and a hard drop (Mixkit, free for commercial u [https://x.com/rossaxbt/status/2107483570885312793]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "instagram",
@@ -20271,7 +20463,7 @@
    "source_item_id": "instagram:DZfMIp0tMMT",
    "state": "kept",
    "summary": "Twenty gift ideas organised by dad type, including the dad who says he doesn't need anything. The persona segmentation is reusable. Comments were low (4).",
-   "technique": "gift guide by dad type",
+   "technique": "Gift guide by dad type",
    "text": "👔 Struggling to find the perfect gift for Dad? Here are 20 thoughtful gift ideas he’ll actually use, appreciate, and remember. 🎁 Whether he’s the practical dad, the hardworking dad, the traveling dad, or the dad who says he “doesn’t need anything”—there’s something here for every father. No more last-minute shopping. No more boring gifts. Just meaningful ideas that show your appreciation. ❤️ Save this before Father’s Day, his birthday, or the next special occasion. And tell me… which one would y",
    "title": "",
    "topic": "Gift guide by dad persona",
@@ -21139,8 +21331,12 @@
    "media_format": "",
    "media_role": "",
    "media_url": "",
-   "metrics": {},
+   "metrics": {
+    "comments": 46,
+    "likes": 3
+   },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (code) by 0xnicc0: <inputs> Ask me for: a one-word product name for the wordmark, one accent color, and a royalty-free track around 120 BPM (e.g. Mixkit, free for commercial use). </inputs> <direction> Product-launch UI [https://x.com/0xnicc0/status/2107217691505516612]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "web",
@@ -21163,6 +21359,64 @@
    "title": "Forget the traditional Father's Day bouquet—this year, give ...",
    "topic": "Clothing rolled as dad bouquet",
    "url": "https://www.instagram.com/reel/DZbfKHXquG4/",
+   "video_meta": {
+    "comments": 46,
+    "hashtags": [
+     "fathersdaygiftideas",
+     "fathersdaygift",
+     "fathersday2026"
+    ],
+    "likes": 3,
+    "posted": "2026-06-11",
+    "site": "Instagram",
+    "title": "Video by veenacrownholm",
+    "top_comments": [
+     {
+      "author": "chomps",
+      "likes": 1,
+      "text": "Thanks for including us! ❤️"
+     },
+     {
+      "author": "dashofting",
+      "likes": 0,
+      "text": "These are great ideas"
+     },
+     {
+      "author": "themodishmama",
+      "likes": 0,
+      "text": "My husband would definitely love a gift like this"
+     },
+     {
+      "author": "jesyka.harris",
+      "likes": 0,
+      "text": "😮😮😮Oh, wow! I love this!"
+     },
+     {
+      "author": "sammylouluxe",
+      "likes": 0,
+      "text": "Wow what a lucky Dad! 😍"
+     },
+     {
+      "author": "stefs_joyful_chaos",
+      "likes": 0,
+      "text": "So cool I love that tackle box idea!"
+     },
+     {
+      "author": "littledove.justine",
+      "likes": 0,
+      "text": "Great gift idea!"
+     },
+     {
+      "author": "therockymtnmomma",
+      "likes": 0,
+      "text": "My husband would love this gift basket"
+     }
+    ],
+    "uploader": "Veena Goel Crownholm",
+    "uploader_id": "42808384",
+    "url": "https://www.instagram.com/reel/DZbfKHXquG4/"
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 1,
@@ -22544,6 +22798,7 @@
    "media_url": "",
    "metrics": {},
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (code) by abyssallD: One prompt: a video of all progress, then n years into the future. A painted rocket, not a white tube. White nose. White body. A black band with a white triangle. Another dark ring lower down. Panel l [https://x.com/abyssallD/status/2106434250467602690]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "web",
@@ -23032,6 +23287,7 @@
    "media_url": "",
    "metrics": {},
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (code) by abyssallD: One prompt: a video of all progress, then n years into the future. A painted rocket, not a white tube. White nose. White body. A black band with a white triangle. Another dark ring lower down. Panel l [https://x.com/abyssallD/status/2106434250467602690]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "web",
@@ -23049,7 +23305,7 @@
    "source_item_id": "web:s_fd4a61c4503e",
    "state": "kept",
    "summary": "A wife's roundup of Father's Day gifts with proven daily use, including joggers and a waffle hoodie. The 'actually uses' framing is credible and fits comfy apparel.",
-   "technique": "real dad's gift list",
+   "technique": "Real person's habits gift picks",
    "text": "1. Personalized Bracelet · 2. Vuori Joggers · 3. Whiskey Wedge Glass · 4. A Travel Thermos · 5. Lightweight Waffle Hoodie · 6. Twillory AIR Suit · 7.",
    "title": "The Father's Day Gifts My Husband Actually Uses Constantly",
    "topic": "Gifts he actually uses constantly",
@@ -23463,6 +23719,7 @@
     "views": 941000
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (threejs, canvas, audio, pixel) by izmaelmag: What is going on 🤪 🎲 Dice Corners https://izmaelmag.me/dice-corners/ I’ve been a gamer since I was three, and the dream of making my own games is what led me into programing In 2008 I discovered GameM [https://x.com/izmaelmag/status/210407089",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "tiktok",
@@ -23485,6 +23742,27 @@
    "title": "",
    "topic": "Toddler Father's Day keepsake craft",
    "url": "https://www.tiktok.com/@mady.motherhood/video/7648829557398588703",
+   "video_meta": {
+    "comments": 37,
+    "duration_s": 14,
+    "hashtags": [
+     "fathersdaygift",
+     "toddlercrafts",
+     "babyactivities",
+     "keepsake"
+    ],
+    "likes": 15800,
+    "music": "Niko Moon - THESE ARE THE DAYS",
+    "posted": "2026-06-08",
+    "reposts": 5952,
+    "site": "TikTok",
+    "title": "Easy Father’s Day keepsake idea💙 send to someone who needs to make t...",
+    "uploader": "mady.motherhood",
+    "uploader_id": "7351483519266538538",
+    "url": "https://www.tiktok.com/@mady.motherhood/video/7648829557398588703",
+    "views": 958000
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 1,
@@ -24260,11 +24538,13 @@
    "media_format": "",
    "media_role": "",
    "media_url": "https://scontent-ord5-1.cdninstagram.com/v/t51.82787-15/722562743_18585885283021182_3031241472920875931_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=106&ig_cache_key=MzkxNjkzNjIxNTk2Njg0ODkyMg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTA4MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=rG46i6odViAQ7kNvwGLbJoi&_nc_oc=AdpioYbJrRtf5tvy-wpeMv14FpE57lH-MtV0MUaxqqAm1aAiu9ip9GxY2gnIZ24elVE&_nc_zt=23&_nc_ht=scontent-ord5-1.cdninstagram.com&_nc_gid=im1ZJlOxbpeft3RTyy5VEg&_nc_ss=7b6a8&oh=00_AQTcKYLayB-y3L_HYdOB-udJGdmbVY8n4gn68vhecveiLQ&oe=6AE7A4D5",
+   "meta_tries": 1,
    "metrics": {
     "comments": 829,
     "likes": 732
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (code) by ultimaxbt: <inputs> Ask me for: my product, the exact request a user types into it, 6 to 8 photos for the result cards, a royalty-free song around 130 BPM with a clear drop (Mixkit, free for commercial use), and [https://x.com/ultimaxbt/status/2108210884799549714]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "instagram",
@@ -25144,6 +25424,7 @@
     "likes": 61
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (code) by abyssallD: One prompt: a video of all progress, then n years into the future. A painted rocket, not a white tube. White nose. White body. A black band with a white triangle. Another dark ring lower down. Panel l [https://x.com/abyssallD/status/2106434250467602690]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "instagram",
@@ -25166,6 +25447,65 @@
    "title": "",
    "topic": "Hardworking dad's after-work comfort",
    "url": "https://www.instagram.com/reel/De5AoLLPwlb/",
+   "video_meta": {
+    "comments": 17,
+    "hashtags": [
+     "giftsfordad",
+     "hardworkingdad",
+     "tiredfeet",
+     "afterworkroutine"
+    ],
+    "likes": 68,
+    "posted": "2026-10-24",
+    "site": "Instagram",
+    "title": "Video by solevarelief",
+    "top_comments": [
+     {
+      "author": "v_1_n_y",
+      "likes": 0,
+      "text": "“DAD”"
+     },
+     {
+      "author": "rupa.vaidya.357",
+      "likes": 0,
+      "text": "Dad"
+     },
+     {
+      "author": "yam77_06",
+      "likes": 0,
+      "text": "Dad"
+     },
+     {
+      "author": "vinayaklatti",
+      "likes": 0,
+      "text": "Dad"
+     },
+     {
+      "author": "roselardneremily",
+      "likes": 0,
+      "text": "Dad"
+     },
+     {
+      "author": "roselardneremily",
+      "likes": 0,
+      "text": "Dad"
+     },
+     {
+      "author": "p.ramya_raghu",
+      "likes": 0,
+      "text": "Dad"
+     },
+     {
+      "author": "vadivelansankar",
+      "likes": 0,
+      "text": "Dad"
+     }
+    ],
+    "uploader": "Soleva",
+    "uploader_id": "44687696912",
+    "url": "https://www.instagram.com/reel/De5AoLLPwlb/"
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -26059,6 +26399,7 @@
     "variants": 2
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (code) by twoclipping: <inputs> Ask me for: a voiceover or song with a spoken line (the audio file) and its transcript, 10-12 small objects that sum up my life, two silhouettes to light like a heat camera (a head in profile [https://x.com/twoclipping/status/2107822293653041659]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "meta_ads",
@@ -26469,6 +26810,7 @@
     "views": 0
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "explainer (threejs, canvas, audio) by aichrislee: Build me a human heart in interactive 3D, in one HTML file with Three.js. Make it look real: the deep red muscle with the red arteries and blue veins on top, and inside it the parts you never get to s [https://x.com/aichrislee/status/2107985027254378",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "tiktok",
@@ -26491,6 +26833,29 @@
    "title": "",
    "topic": "Things a son never says",
    "url": "https://www.tiktok.com/@cannguyen3326/video/7701625265339796750",
+   "video_meta": {
+    "comments": 0,
+    "duration_s": 30,
+    "hashtags": [
+     "tomydad",
+     "giftfordad",
+     "dogtagnecklace",
+     "fatherandson",
+     "mydadismyhero",
+     "realgiftsoflove"
+    ],
+    "likes": 0,
+    "music": "Real Gifts of Love - original sound - Real Gifts of Love",
+    "posted": "2026-10-28",
+    "reposts": 0,
+    "site": "TikTok",
+    "title": "Five things a son never says out loud to his dad 🎖️ He may never hear...",
+    "uploader": "cannguyen3326",
+    "uploader_id": "7164459681304462382",
+    "url": "https://www.tiktok.com/@cannguyen3326/video/7701625265339796750",
+    "views": 4
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -26542,8 +26907,13 @@
    "media_format": "",
    "media_role": "",
    "media_url": "",
-   "metrics": {},
+   "metrics": {
+    "comments": 7,
+    "likes": 374,
+    "views": 11600
+   },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (code) by abyssallD: One prompt: a video of all progress, then n years into the future. A painted rocket, not a white tube. White nose. White body. A black band with a white triangle. Another dark ring lower down. Panel l [https://x.com/abyssallD/status/2106434250467602690]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "web",
@@ -26561,11 +26931,33 @@
    "source_item_id": "web:s_cc43e8332b20",
    "state": "kept",
    "summary": "A TikTok of a dad unwrapping a gift after a 'three, two, one' countdown, with a puzzled first reaction. Reaction reveals suit UGC and feel authentic.",
-   "technique": "gift opening reaction",
+   "technique": "Gift opening reaction",
    "text": "After a short countdown — “Three, two, one” — the dad opens his hands to find a wrapped present. His first response is puzzled: “What is that?",
    "title": "Father's Day Surprise Gift Reaction — Heartfelt Dad Reveal",
    "topic": "Dad gift-opening reaction",
    "url": "https://www.tiktok.com/@why.do.i.try.555/video/7693108799103618317",
+   "video_meta": {
+    "comments": 7,
+    "duration_s": 101,
+    "hashtags": [
+     "happyfathersday",
+     "dadssupportingdads",
+     "farhersonlove",
+     "viral",
+     "fyp"
+    ],
+    "likes": 374,
+    "music": "why.do.i.try.555 - original sound",
+    "posted": "2026-10-05",
+    "reposts": 1,
+    "site": "TikTok",
+    "title": "I would say this is the best Father’s Day gift ever but that would be...",
+    "uploader": "why.do.i.try.555",
+    "uploader_id": "7107271732345439278",
+    "url": "https://www.tiktok.com/@why.do.i.try.555/video/7693108799103618317",
+    "views": 11600
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -26678,8 +27070,13 @@
    "media_format": "",
    "media_role": "",
    "media_url": "",
-   "metrics": {},
+   "metrics": {
+    "comments": 68000,
+    "likes": 6600000,
+    "views": 29300000
+   },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (code) by _drishtantk: An orbital lounge to loop behind a 10 hour lofi coding stream, write a story for the window and score it. [https://x.com/_drishtantk/status/2103448068423356656]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "web",
@@ -26702,6 +27099,28 @@
    "title": "Father's Day Gift From Son: Allowance Saved for a ...",
    "topic": "Son saves allowance for dad",
    "url": "https://www.tiktok.com/@nep2une12/video/7653703607425961229",
+   "video_meta": {
+    "comments": 68000,
+    "duration_s": 195,
+    "hashtags": [
+     "happyfathersday",
+     "dadssupportingdads",
+     "farhersonlove",
+     "viral",
+     "fyp"
+    ],
+    "likes": 6600000,
+    "music": "Ragebaiter_master83 - sonido original",
+    "posted": "2026-06-21",
+    "reposts": 406600,
+    "site": "TikTok",
+    "title": "I would say this is the best Father’s Day gift ever but that would be...",
+    "uploader": "nep2une12",
+    "uploader_id": "6817987486393304070",
+    "url": "https://www.tiktok.com/@nep2une12/video/7653703607425961229",
+    "views": 29300000
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -26875,8 +27294,13 @@
    "media_format": "",
    "media_role": "",
    "media_url": "",
-   "metrics": {},
+   "metrics": {
+    "comments": 5,
+    "likes": 239,
+    "views": 36900
+   },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (canvas, particles) by ajith_io: Take reference from the given video (download it) and use the same visual style. and Research about Distilbook. Make a dynamic 30-second motion graphics video on Distilbook that shows what an incredib [https://x.com/ajith_io/status/2103541149709615243]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "web",
@@ -26894,11 +27318,29 @@
    "source_item_id": "web:s_26a6bd5a1488",
    "state": "kept",
    "summary": "The compilation plays on dads' typical muted reactions and asks whether the gift is useful. The humor is relatable and easy to repeat.",
-   "technique": "gift opening reaction",
+   "technique": "Gift opening reaction",
    "text": "Opening the first present usually reveals the pattern: a measured smile, a thankful “thank you,” and a quick assessment of use. When the gift is something hands ...",
    "title": "How Dads Open Father's Day Gifts: Funny Reel of Reactions",
    "topic": "Funny dad gift reactions compilation",
    "url": "https://www.tiktok.com/@be.lush/video/7645844450765278477",
+   "video_meta": {
+    "comments": 5,
+    "duration_s": 40,
+    "hashtags": [
+     "ratchetstraps"
+    ],
+    "likes": 239,
+    "music": "LUSH🪴 - original sound",
+    "posted": "2026-05-31",
+    "reposts": 32,
+    "site": "TikTok",
+    "title": "How dads open gifts on Father’s Day #ratchetstraps",
+    "uploader": "be.lush",
+    "uploader_id": "7326641203053806635",
+    "url": "https://www.tiktok.com/@be.lush/video/7645844450765278477",
+    "views": 36900
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -27409,8 +27851,12 @@
    "media_format": "",
    "media_role": "",
    "media_url": "",
-   "metrics": {},
+   "metrics": {
+    "comments": 4,
+    "likes": 15
+   },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (shader, webgl) by 0xSolty: i asked opus 5.5 to build me a planet. not a picture of a planet. a whole planet. it wrote a single html file. no libraries, no images, no 3d models. every ocean, every mountain and every city light i [https://x.com/0xSolty/status/2102888414219735200]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "web",
@@ -27428,11 +27874,51 @@
    "source_item_id": "web:s_d94af0943556",
    "state": "kept",
    "summary": "A repeatable running-gag format: the same gift each year and the same overjoyed reaction. The humour and the 'dad is easy to please' angle make it shareable.",
-   "technique": "same gift running gag",
+   "technique": "Same gift every year gag",
    "text": "Dad opening the exact same father's day gift for every year like its the greatest gift ever created #FathersDay #DadLife #BestDadEver #FathersDayGift # ...",
    "title": "To the Dads who deserve to be celebrated today and every day ...",
    "topic": "Dad loves the same gift yearly",
    "url": "https://www.instagram.com/reel/DZ2iiO9h1ZS/",
+   "video_meta": {
+    "comments": 4,
+    "hashtags": [
+     "fathersdaygift",
+     "personalizedgift",
+     "dadgift",
+     "giftfordad",
+     "custommug"
+    ],
+    "likes": 15,
+    "posted": "2026-06-21",
+    "site": "Instagram",
+    "title": "Video by typeleaguepress",
+    "top_comments": [
+     {
+      "author": "rokicki",
+      "likes": 2,
+      "text": "Adorable! ❤️"
+     },
+     {
+      "author": "chaitotherescue",
+      "likes": 2,
+      "text": "Happy Father’s Day!"
+     },
+     {
+      "author": "typeleaguepress",
+      "likes": 2,
+      "text": "🤍🤍"
+     },
+     {
+      "author": "chance.at.a.glance",
+      "likes": 0,
+      "text": "Great gift"
+     }
+    ],
+    "uploader": "Type League Press",
+    "uploader_id": "1940193341",
+    "url": "https://www.instagram.com/reel/DZ2iiO9h1ZS/"
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -27484,8 +27970,12 @@
    "media_format": "",
    "media_role": "",
    "media_url": "",
-   "metrics": {},
+   "metrics": {
+    "comments": 89,
+    "likes": 5452
+   },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (code) by aichrislee: Make a dynamic 15-second motion graphics video that shows off everything you can do as a motion designer. Treat it like the showreel for a job you really want. Go all out: something moves every second [https://x.com/aichrislee/status/2103878567540961335]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "web",
@@ -27503,11 +27993,71 @@
    "source_item_id": "web:s_9dc99349c608",
    "state": "kept",
    "summary": "The same gag as IB-0423 from a different post: a yearly repeat gift with an exaggerated happy reaction. It combines humour with family warmth.",
-   "technique": "same gift running gag",
+   "technique": "Same gift every year gag",
    "text": "Dad opening the exact same father's day gift for every year like its the greatest gift ever created #FathersDay #DadLife #BestDadEver # ...",
    "title": "This year for Father's Day, the kids and I decided ...",
    "topic": "Same gift every year reaction",
    "url": "https://www.instagram.com/reel/DZ6N4jupYNj/",
+   "video_meta": {
+    "comments": 89,
+    "hashtags": [
+     "fathersday",
+     "dadlife",
+     "familyvlog",
+     "parentinghumor",
+     "surprise"
+    ],
+    "likes": 5452,
+    "posted": "2026-06-23",
+    "site": "Instagram",
+    "title": "Video by rania_ziki",
+    "top_comments": [
+     {
+      "author": "fsf105",
+      "likes": 1,
+      "text": "😂😂😂"
+     },
+     {
+      "author": "tashakkorn",
+      "likes": 1,
+      "text": "So cute and funny 😁 😂 😀"
+     },
+     {
+      "author": "badhon_sheik",
+      "likes": 0,
+      "text": "😂😂"
+     },
+     {
+      "author": "aliiqbaledhi4",
+      "likes": 0,
+      "text": "@kiran_toufiq ye to mai hu😂"
+     },
+     {
+      "author": "marie07791",
+      "likes": 0,
+      "text": "😂😂😂😂😂😂😂"
+     },
+     {
+      "author": "had_577",
+      "likes": 0,
+      "text": "ام القرف"
+     },
+     {
+      "author": "sara_sofi_milan",
+      "likes": 0,
+      "text": "Thats a good idea loll"
+     },
+     {
+      "author": "sara_sofi_milan",
+      "likes": 0,
+      "text": "😂😂😂"
+     }
+    ],
+    "uploader": "Rania Musa",
+    "uploader_id": "2937112752",
+    "url": "https://www.instagram.com/reel/DZ6N4jupYNj/"
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -27728,8 +28278,10 @@
    "media_format": "",
    "media_role": "",
    "media_url": "",
+   "meta_tries": 1,
    "metrics": {},
    "model": "claude-sonnet-5-5",
+   "motion_idea": "explainer (code) by ArchiveExplorer: Write my launch video as 9 beats: pain, reframe, name, how it works, objection, range, mechanism in numbers, offer, CTA – one line each. For every beat write 3 headline options and send them to Jev to [https://x.com/ArchiveExplorer/status/2106732275685560622]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "web",
@@ -27803,8 +28355,12 @@
    "media_format": "",
    "media_role": "",
    "media_url": "",
-   "metrics": {},
+   "metrics": {
+    "comments": 14,
+    "likes": 1150
+   },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "explainer (code) by ArchiveExplorer: Write my launch video as 9 beats: pain, reframe, name, how it works, objection, range, mechanism in numbers, offer, CTA – one line each. For every beat write 3 headline options and send them to Jev to [https://x.com/ArchiveExplorer/status/2106732275685560622]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "web",
@@ -27827,6 +28383,65 @@
    "title": "POV: Dad says he doesn't need anything for Father's Day ...",
    "topic": "Dad says he needs nothing",
    "url": "https://www.instagram.com/reel/DZt09TSzoC2/",
+   "video_meta": {
+    "comments": 14,
+    "hashtags": [
+     "fathersday",
+     "flipkartminutes",
+     "daddeservesthebest",
+     "hoccoicecream"
+    ],
+    "likes": 1150,
+    "posted": "2026-06-18",
+    "site": "Instagram",
+    "title": "Video by ridima.singh",
+    "top_comments": [
+     {
+      "author": "aschaware",
+      "likes": 1,
+      "text": "❤️❤️"
+     },
+     {
+      "author": "anushkaatripathi_",
+      "likes": 1,
+      "text": "❤️"
+     },
+     {
+      "author": "dhoni_5943_",
+      "likes": 1,
+      "text": "Your father very cute"
+     },
+     {
+      "author": "guddubhaiya.aaa",
+      "likes": 1,
+      "text": "❤️❤️"
+     },
+     {
+      "author": "kashish_chouhan17",
+      "likes": 0,
+      "text": "look at my story for the $2500 code"
+     },
+     {
+      "author": "cool_sam_0007",
+      "likes": 0,
+      "text": "Uncle Good And Handsome Looking Hain❤️😍❤️😍❤️"
+     },
+     {
+      "author": "dhoni_5943_",
+      "likes": 0,
+      "text": "Aap video bahut achcha banate Ho"
+     },
+     {
+      "author": "yogesh_rajput_4019",
+      "likes": 0,
+      "text": "❤️❤️❤️❤️❤️"
+     }
+    ],
+    "uploader": "Ridima Singh (Milli)",
+    "uploader_id": "2285503087",
+    "url": "https://www.instagram.com/reel/DZt09TSzoC2/"
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -28964,6 +29579,7 @@
    "media_url": "",
    "metrics": {},
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (code) by hakimieiqbal: Create a pure javascript animation. 30s-60s whimsical hand drawn collage style with appropriate audio on the topic what is the purpose of life ? Entire video should be as high of a production value as [https://x.com/hakimieiqbal/status/2103456327636762926]",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "web",
@@ -29342,8 +29958,12 @@
    "media_format": "",
    "media_role": "",
    "media_url": "",
-   "metrics": {},
+   "metrics": {
+    "comments": 3,
+    "likes": 40
+   },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "explainer (threejs, shader, audio) by NathanWilbanks_: I asked opus 5.5 in @agnt_gg for the most realistic fire it could build using ONLY javascript. It wrote a real 3D fluid simulation that runs on the GPU. The flame colors come from blackbody physics, t [https://x.com/NathanWilbanks_/status/210388",
    "occasion": "Father's Day",
    "page_id": "",
    "platform": "web",
@@ -29366,6 +29986,24 @@
    "title": "If you're in fashion… And your entire ad account is static ...",
    "topic": "Fashion creative testing matrix",
    "url": "https://www.instagram.com/reel/DVrZRl6ifeZ/",
+   "video_meta": {
+    "comments": 3,
+    "likes": 40,
+    "posted": "2026-03-09",
+    "site": "Instagram",
+    "title": "Video by nathan.perdriau",
+    "top_comments": [
+     {
+      "author": "bronte.skye",
+      "likes": 1,
+      "text": "So much potential"
+     }
+    ],
+    "uploader": "Nathan Perdriau",
+    "uploader_id": "72172103509",
+    "url": "https://www.instagram.com/reel/DVrZRl6ifeZ/"
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -30327,6 +30965,7 @@
     "views": 10400000
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (code) by AGIOyaZ: Create a 37-second vertical short film (1080×1920, 30 fps) in three.js, titled \"White Space\". 【Experience】 Without showing a single human figure, let viewers physically feel how a life consumed by eff [https://x.com/AGIOyaZ/status/2103167623303397647]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -30344,11 +30983,32 @@
    "source_item_id": "tiktok:7690253230793641247",
    "state": "kept",
    "summary": "Moody, hashtag-led cozy scene with huge reach and heavy saves and shares. It sells a feeling, which suggests the mood itself is the draw.",
-   "technique": "mood scene, no pitch",
+   "technique": "Wordless mood scene",
    "text": "My kind of peaceful #cozyvibes #twilightvibes #moodyaesthetic #rainydayvibes",
    "title": "",
    "topic": "Cozy rainy evening mood",
    "url": "https://www.tiktok.com/@roamory/video/7690253230793641247",
+   "video_meta": {
+    "comments": 3172,
+    "duration_s": 11,
+    "hashtags": [
+     "cozyvibes",
+     "twilightvibes",
+     "moodyaesthetic",
+     "rainydayvibes"
+    ],
+    "likes": 2600000,
+    "music": "McKenna Barry - rainy day",
+    "posted": "2026-09-27",
+    "reposts": 112500,
+    "site": "TikTok",
+    "title": "My kind of peaceful #cozyvibes #twilightvibes #moodyaesthetic #rainyd...",
+    "uploader": "roamory",
+    "uploader_id": "7672526840536663054",
+    "url": "https://www.tiktok.com/@roamory/video/7690253230793641247",
+    "views": 10600000
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -30422,6 +31082,7 @@
     "views": 5600000
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (code) by 0xCodez: Create a single self-contained index.html: a ~2-minute animated piano performance in a hand-drawn crayon style. Scene: a cozy room at night, an upright piano, a small black cat playing it. Crayon text [https://x.com/0xCodez/status/2104257855142474136]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -30444,6 +31105,28 @@
    "title": "",
    "topic": "Seasonal cozy day ritual",
    "url": "https://www.tiktok.com/@cosyvera/video/7635561389922323734",
+   "video_meta": {
+    "comments": 2713,
+    "duration_s": 17,
+    "hashtags": [
+     "cozyvibes",
+     "fallvibes",
+     "octobermood",
+     "moodyvibes",
+     "halloweentok"
+    ],
+    "likes": 1100000,
+    "music": "🎄🍂 - why is this lowkey famous",
+    "posted": "2026-05-03",
+    "reposts": 113200,
+    "site": "TikTok",
+    "title": "Spooky sundays, sleepy hollow & making fluffy pancakes 🕯️🦇🎃#cozyvibes...",
+    "uploader": "cosyvera",
+    "uploader_id": "7570854897084662806",
+    "url": "https://www.tiktok.com/@cosyvera/video/7635561389922323734",
+    "views": 5600000
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -30581,6 +31264,7 @@
     "likes": 794732
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "explainer (threejs, canvas) by nybobs: 110k rigid bodies in real time, in a browser tab. Grab anything, fire cannonballs. Built with Claude Opus 5.5: Augmented Vertex Block Descent (SIGGRAPH 2025, Giles, Diaz & Yuksel) in WebGPU with @thre [https://x.com/nybobs/status/2103385835328680050]",
    "occasion": "",
    "page_id": "",
    "platform": "instagram",
@@ -30603,6 +31287,64 @@
    "title": "",
    "topic": "Only wearing this till spring",
    "url": "https://www.instagram.com/reel/DfJWyf2vViC/",
+   "video_meta": {
+    "comments": 552,
+    "hashtags": [
+     "coldweather",
+     "relatable",
+     "outfitideas"
+    ],
+    "likes": 888474,
+    "posted": "2026-10-31",
+    "site": "Instagram",
+    "title": "Video by gracemweston",
+    "top_comments": [
+     {
+      "author": "longfatigu",
+      "likes": 1,
+      "text": "ليش تذكرت frozen انا"
+     },
+     {
+      "author": "isla_7582",
+      "likes": 0,
+      "text": "What blanket is that I need to know!!!"
+     },
+     {
+      "author": "summer157148",
+      "likes": 0,
+      "text": "I did it almost choked probably to small the blanket"
+     },
+     {
+      "author": "nnrrrr1237",
+      "likes": 0,
+      "text": "Ha Ha Ha😂😂😂"
+     },
+     {
+      "author": "ch4rvm",
+      "likes": 0,
+      "text": "It chokes mee!!"
+     },
+     {
+      "author": "iitsjools",
+      "likes": 0,
+      "text": "Génial 😂😂😂"
+     },
+     {
+      "author": "christopher598095",
+      "likes": 0,
+      "text": "Love"
+     },
+     {
+      "author": "stellabrnrd",
+      "likes": 0,
+      "text": "You just made a Winterfell coat congratulations"
+     }
+    ],
+    "uploader": "Grace Weston",
+    "uploader_id": "1617440625",
+    "url": "https://www.instagram.com/reel/DfJWyf2vViC/"
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -30944,6 +31686,7 @@
     "likes": 142984
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (threejs, canvas, physics, playable) by froessell: PRD — Police Chase Arcade Game Working title: Heatwave Platform: iOS + Android Engine: Unity Genre: Top-down 3D arcade chase / survival Orientation: Portrait Input: One-thumb touch controls Business m [https://x.com/froessell/status/2103",
    "occasion": "",
    "page_id": "",
    "platform": "instagram",
@@ -30966,6 +31709,63 @@
    "title": "",
    "topic": "School survival comfy outfit",
    "url": "https://www.instagram.com/reel/Dbto9SUyDIJ/",
+   "video_meta": {
+    "comments": 385,
+    "hashtags": [
+     "comfyclothes",
+     "schoolfits"
+    ],
+    "likes": 143451,
+    "posted": "2026-08-06",
+    "site": "Instagram",
+    "title": "Video by marieloulou_official",
+    "top_comments": [
+     {
+      "author": "a47130790",
+      "likes": 1,
+      "text": "Can you make the inside of the hood silk so we dont get frizzy hair"
+     },
+     {
+      "author": "definitelynottabs_22",
+      "likes": 1,
+      "text": "Crys in school uniform 😭😭"
+     },
+     {
+      "author": "tutu438.mp3",
+      "likes": 0,
+      "text": "My school doesn't allow bc they only have school thin uniforms"
+     },
+     {
+      "author": "kuromi_is.sad",
+      "likes": 0,
+      "text": "Half of my classes are hot, half are freezing😭"
+     },
+     {
+      "author": "they_luv.shay14",
+      "likes": 0,
+      "text": "Want this"
+     },
+     {
+      "author": "hazel.minh",
+      "likes": 0,
+      "text": "bro these r so cute but I’m not abt to spend $98 on sweatpants🥲"
+     },
+     {
+      "author": "nevagonnalie12",
+      "likes": 0,
+      "text": "If this was school-proof, they’d know not to put a hoodie 😭"
+     },
+     {
+      "author": "bellayk67",
+      "likes": 0,
+      "text": "That would make me soo hot in two seconds"
+     }
+    ],
+    "uploader": "Marieloulou",
+    "uploader_id": "50130214155",
+    "url": "https://www.instagram.com/reel/Dbto9SUyDIJ/"
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -31831,6 +32631,7 @@
     "views": 170800
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (canvas) by twoclipping: <inputs> Ask me for: a one-word brand name for the wordmark (a verb works best), 9 to 12 high-res photos, a royalty-free song around 120 BPM with a drop and a quiet breakdown (Mixkit, free for commerc [https://x.com/twoclipping/status/2103835273813496100]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -31848,11 +32649,29 @@
    "source_item_id": "tiktok:7697686030081707278",
    "state": "kept",
    "summary": "A creator in denim overalls lounging on a couch, with 170.8k views. It sells a feeling over features. Same garment type as ours, but it shows little beyond the mood.",
-   "technique": "mood scene, no pitch",
+   "technique": "Wordless mood scene",
    "text": "you just gotta keep living, sunny couch hangout in denim overalls ☀️ #denimoveralls",
    "title": "",
    "topic": "Overalls couch hangout mood clip",
    "url": "https://www.tiktok.com/@barringtonmireille/video/7697686030081707278",
+   "video_meta": {
+    "comments": 42,
+    "duration_s": 6,
+    "hashtags": [
+     "denimoveralls"
+    ],
+    "likes": 6317,
+    "music": "Mireille Barrington - original sound",
+    "posted": "2026-10-17",
+    "reposts": 324,
+    "site": "TikTok",
+    "title": "you just gotta keep living, sunny couch hangout in denim overalls ☀️ ...",
+    "uploader": "barringtonmireille",
+    "uploader_id": "7692610606994719758",
+    "url": "https://www.tiktok.com/@barringtonmireille/video/7697686030081707278",
+    "views": 317900
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -32283,6 +33102,7 @@
     "likes": 10097
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (canvas) by eric_khun: I want you to create a \"Happy Mid-Autumn Festival\" video in hand drawn canvas animation style. You must use the attached Taiwan black bear as the main character representing Taiwan: flat black silhoue [https://x.com/eric_khun/status/2103112385380667455]",
    "occasion": "",
    "page_id": "",
    "platform": "instagram",
@@ -32305,6 +33125,67 @@
    "title": "",
    "topic": "Rachel Green overall shorts",
    "url": "https://www.instagram.com/reel/DIWLzXOzv90/",
+   "video_meta": {
+    "comments": 40,
+    "hashtags": [
+     "ootd",
+     "fitcheck",
+     "outfitinspo",
+     "overalls",
+     "friends",
+     "rachelgreen"
+    ],
+    "likes": 10104,
+    "posted": "2025-04-12",
+    "site": "Instagram",
+    "title": "Video by k.ityee",
+    "top_comments": [
+     {
+      "author": "kaae.cc",
+      "likes": 1,
+      "text": "qt"
+     },
+     {
+      "author": "taiania50",
+      "likes": 1,
+      "text": "Link"
+     },
+     {
+      "author": "jazzmynthrifts",
+      "likes": 1,
+      "text": "Yessssssss love it"
+     },
+     {
+      "author": "sunaina.saaa",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "_itssnichole",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "ashlyn_danielle_3",
+      "likes": 0,
+      "text": "link"
+     },
+     {
+      "author": "utkar__shhhhhh",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "closethedor2",
+      "likes": 0,
+      "text": "Link"
+     }
+    ],
+    "uploader": "kit yee ˖ ࣪⭑",
+    "uploader_id": "1075419448",
+    "url": "https://www.instagram.com/reel/DIWLzXOzv90/"
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -32425,6 +33306,7 @@
     "likes": 7402
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (code) by adrianduta96: Make a 20-second 16:9 motion graphics video that tells a little story with sound. For the first 12 seconds there is no sound at all: on a warm paper background, the words \"make it catchy.\" type themse [https://x.com/adrianduta96/status/2109187815195992248]",
    "occasion": "",
    "page_id": "",
    "platform": "instagram",
@@ -32447,6 +33329,66 @@
    "title": "",
    "topic": "First time in dungarees",
    "url": "https://www.instagram.com/reel/DcLWqOBJdjV/",
+   "video_meta": {
+    "comments": 247,
+    "hashtags": [
+     "fyp",
+     "viral",
+     "fitness",
+     "reels",
+     "fashion"
+    ],
+    "likes": 7417,
+    "posted": "2026-08-18",
+    "site": "Instagram",
+    "title": "Video by arshii.muse_07",
+    "top_comments": [
+     {
+      "author": "saniya_up54",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "_.anjali_mehta._77",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "annie_kunjechi",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "annie_kunjechi",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "annie_kunjechi",
+      "likes": 0,
+      "text": "N"
+     },
+     {
+      "author": "coco426477",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "riiya__agrahari143",
+      "likes": 0,
+      "text": "Link 🔗🖇️"
+     },
+     {
+      "author": "tkavana7",
+      "likes": 0,
+      "text": "Link"
+     }
+    ],
+    "uploader": "Arshi",
+    "uploader_id": "54560138872",
+    "url": "https://www.instagram.com/reel/DcLWqOBJdjV/"
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "the video is shorter than a second (0.0s)",
    "video_status": "failed",
    "video_tries": 2,
@@ -32716,6 +33658,7 @@
     "views": 6177
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (code) by rossaxbt: <inputs> Ask me for: a short label for the opening toggle, one hero word, a percentage for the graph, the text for the final card, one accent color, and a track with a clear beat. </inputs> <direction [https://x.com/rossaxbt/status/2107121188027707651]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -32738,6 +33681,27 @@
    "title": "",
    "topic": "Creator overalls fall outfit with code",
    "url": "https://www.tiktok.com/@ssums10/video/7701001960270351647",
+   "video_meta": {
+    "comments": 40,
+    "duration_s": 7,
+    "hashtags": [
+     "falloutfitinspo",
+     "overalls",
+     "edkited",
+     "fallseason"
+    ],
+    "likes": 1010,
+    "music": "Sskk¿ - sonido original - Sskk¿",
+    "posted": "2026-10-26",
+    "reposts": 2,
+    "site": "TikTok",
+    "title": "so electric 🩵⚡️ #falloutfitinspo #overalls #edkited #fallseason🍂 SSU...",
+    "uploader": "ssums10",
+    "uploader_id": "6589777939796344837",
+    "url": "https://www.tiktok.com/@ssums10/video/7701001960270351647",
+    "views": 6513
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -33642,6 +34606,7 @@
     "variants": 2
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (svg) by redpersongpt: Create a studio level motion design ad for my app mimicly. Show me the best you got. You are the lead creative strategist, product marketer, direct-response ad writer, and hands-on growth operator for [https://x.com/redpersongpt/status/2103807094554284430]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -33782,6 +34747,7 @@
     "days_running": 15
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (svg, gsap) by drrickio: I want you to create a highly professional SaaS product launch video. Go and find some SaaS, preferably just one that people know, so it's easier to identify with it. Pick that, and then make sure to  [https://x.com/drrickio/status/2103333836130009558]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -35033,6 +35999,7 @@
     "views": 2900000
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (code) by threeaus: 15s studio motion-design reel, 1920x1080. Warm off-white, black type, one orange accent only. A single orange circle with motion blur is the through-line and the cut. Show: toggle click, the word Moti [https://x.com/threeaus/status/2105152377057886343]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -35055,6 +36022,28 @@
    "title": "",
    "topic": "Breeze-in-the-air seasonal outfit hook",
    "url": "https://www.tiktok.com/@steffyweffy28/video/7666632924782955783",
+   "video_meta": {
+    "comments": 654,
+    "duration_s": 15,
+    "hashtags": [
+     "falloutfits",
+     "outfitideas",
+     "outfitinspo",
+     "fall",
+     "fallfashion"
+    ],
+    "likes": 285300,
+    "music": "nanafashionstyle - original sound",
+    "posted": "2026-07-26",
+    "reposts": 10400,
+    "site": "TikTok",
+    "title": "am I crazy or did I just feel a breeze in the air #falloutfits #outfi...",
+    "uploader": "steffyweffy28",
+    "uploader_id": "7176797680815326213",
+    "url": "https://www.tiktok.com/@steffyweffy28/video/7666632924782955783",
+    "views": 2900000
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -35468,6 +36457,7 @@
     "views": 423100
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "explainer (code) by deedydas: every single open source repo should have an explainer video like this 7min one for SQLite 1. explains what the repo does and why its useful 2. shows a high level map of the code (beautiful graphic!)  [https://x.com/deedydas/status/2104391577091407965]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -35490,6 +36480,28 @@
    "title": "",
    "topic": "What I wore this week",
    "url": "https://www.tiktok.com/@briannadayyy/video/7705950184668269837",
+   "video_meta": {
+    "comments": 127,
+    "duration_s": 17,
+    "hashtags": [
+     "ootd",
+     "falloutfits",
+     "outfitinspo",
+     "schooloutfit",
+     "outfitsoftheweek"
+    ],
+    "likes": 57200,
+    "music": "L - original sound",
+    "posted": "2026-11-08",
+    "reposts": 1627,
+    "site": "TikTok",
+    "title": "what i wore this week as a senior who doesn’t want to go to school 🤗 ...",
+    "uploader": "briannadayyy",
+    "uploader_id": "7393778776566514734",
+    "url": "https://www.tiktok.com/@briannadayyy/video/7705950184668269837",
+    "views": 441600
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -35827,6 +36839,7 @@
     "views": 126500
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "explainer (code) by ArchiveExplorer: Write my launch video as 9 beats: pain, reframe, name, how it works, objection, range, mechanism in numbers, offer, CTA – one line each. For every beat write 3 headline options and send them to Jev to [https://x.com/ArchiveExplorer/status/2106732275685560622]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -35849,6 +36862,28 @@
    "title": "",
    "topic": "Numbered where-to-buy series episodes",
    "url": "https://www.tiktok.com/@tayrankine/video/7629859088540650765",
+   "video_meta": {
+    "comments": 11,
+    "duration_s": 58,
+    "hashtags": [
+     "sweatsets",
+     "loungewear",
+     "closetstaples",
+     "closetbasics",
+     "wheretoshop"
+    ],
+    "likes": 6436,
+    "music": "Taylor Rankine - original sound",
+    "posted": "2026-04-17",
+    "reposts": 132,
+    "site": "TikTok",
+    "title": "WHERE TO BUY EPISODE: 25 #sweatsets #loungewear #closetstaples #close...",
+    "uploader": "tayrankine",
+    "uploader_id": "6916649554517066758",
+    "url": "https://www.tiktok.com/@tayrankine/video/7629859088540650765",
+    "views": 127000
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -35986,6 +37021,7 @@
     "likes": 9370
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (code) by AGIOyaZ: Create a 37-second vertical short film (1080×1920, 30 fps) in three.js, titled \"White Space\". 【Experience】 Without showing a single human figure, let viewers physically feel how a life consumed by eff [https://x.com/AGIOyaZ/status/2103167623303397647]",
    "occasion": "",
    "page_id": "",
    "platform": "instagram",
@@ -36003,11 +37039,64 @@
    "source_item_id": "instagram:C0MynUmL9dy",
    "state": "kept",
    "summary": "Part 2 of a series styling overalls, this time for fall. It invites tagged outfits and requests for part 3, and 9,370 likes show strong interest in overall styling.",
-   "technique": "one-garment styling series",
+   "technique": "One-garment styling series",
    "text": "Styling Overalls, Part 2! We left off styling overalls for the summer and spring and it was about time to move to some fall styling ideas for my favorite denim overalls. Overall Outfit Ideas are my favorite to see others put out, so tag me if you see some cute ones! Let me know if you’d like a part 3 for winter styling 🤎",
    "title": "",
    "topic": "Seasonal overalls styling series",
    "url": "https://www.instagram.com/reel/C0MynUmL9dy/",
+   "video_meta": {
+    "comments": 126,
+    "likes": 9371,
+    "posted": "2023-11-28",
+    "site": "Instagram",
+    "title": "Video by elisabethjoyco",
+    "top_comments": [
+     {
+      "author": "az.l.t",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "fhermann50",
+      "likes": 0,
+      "text": "❤️🔥👏"
+     },
+     {
+      "author": "fey_monroy",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "aleahmanzi",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "aleahmanzi",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "adrianaperez_01",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "jasmineriecken",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "madigracecampbell",
+      "likes": 0,
+      "text": "Link"
+     }
+    ],
+    "uploader": "Elisabeth Joy",
+    "uploader_id": "25145357",
+    "url": "https://www.instagram.com/reel/C0MynUmL9dy/"
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -36413,6 +37502,7 @@
     "likes": 600
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (canvas) by techhalla: You are a world-class motion designer doing a 20.00s kinetic identity bumper for TechHalla — an AI creator known for stealable workflows, not vibes. This piece must feel like the best designer in the  [https://x.com/techhalla/status/2103411244468498547]",
    "occasion": "",
    "page_id": "",
    "platform": "instagram",
@@ -36435,6 +37525,24 @@
    "title": "",
    "topic": "Wear this instead of sweats",
    "url": "https://www.instagram.com/reel/DT8Kqu9Ejra/",
+   "video_meta": {
+    "comments": 332,
+    "likes": 597,
+    "posted": "2026-01-25",
+    "site": "Instagram",
+    "title": "Video by naomiboyer",
+    "top_comments": [
+     {
+      "author": "agnesmalum",
+      "likes": 0,
+      "text": "Looks so soft. ❤️❤️❤️"
+     }
+    ],
+    "uploader": "Naomi Boyer",
+    "uploader_id": "7953692",
+    "url": "https://www.instagram.com/reel/DT8Kqu9Ejra/"
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -37096,6 +38204,7 @@
     "likes": 49
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (code) by 0xKarmi: Picture a butterfly with no memory of its last wingbeat. Ask it for frame 720 and you get frame 0, pixel for pixel. 720 frames. 12 seconds. 6 counters. All at 0. Opus 5.5 can't hand over a video file, [https://x.com/0xKarmi/status/2108495927988129839]",
    "occasion": "",
    "page_id": "",
    "platform": "instagram",
@@ -37118,6 +38227,65 @@
    "title": "",
    "topic": "Insider 'girlies that get it' overalls",
    "url": "https://www.instagram.com/reel/DJNeJRHvCe4/",
+   "video_meta": {
+    "comments": 17,
+    "hashtags": [
+     "tallgirlfashion",
+     "springootd",
+     "summerwardrobe",
+     "casualoutfitideas"
+    ],
+    "likes": 49,
+    "posted": "2025-05-03",
+    "site": "Instagram",
+    "title": "Video by salonishares",
+    "top_comments": [
+     {
+      "author": "shamnaiqbal765",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "m.r.i.t.h.a.p.s",
+      "likes": 0,
+      "text": "link"
+     },
+     {
+      "author": "devikaah02",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "mayathapa322",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "dugudo__",
+      "likes": 0,
+      "text": "🔗"
+     },
+     {
+      "author": "janani_nagarajan",
+      "likes": 0,
+      "text": "link"
+     },
+     {
+      "author": "sreya_k__",
+      "likes": 0,
+      "text": "Link"
+     },
+     {
+      "author": "rashisingh824",
+      "likes": 0,
+      "text": "Link"
+     }
+    ],
+    "uploader": "Saloni",
+    "uploader_id": "51246967982",
+    "url": "https://www.instagram.com/reel/DJNeJRHvCe4/"
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -38012,6 +39180,7 @@
     "days_running": 33
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (threejs, shader, svg, audio) by Acoramaa: CLAUDE OPUS 5.5 MADE ME A MAGIC EYE. It doesn't just look around. It listens. 72 plates wrapped around a mechanical eyeball, a 9-blade iris, a lens that slides out when the bass hits, two rings orbiti [https://x.com/Acoramaa/status/2104145227573248467]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -38029,7 +39198,7 @@
    "source_item_id": "meta_ads:1627531449156810",
    "state": "kept",
    "summary": "A problem-first hook on the loungewear-versus-pajamas dilemma. It is relevant to Swoveralls, but the copy is generic and the ad has run only 33 days, so the evidence is modest.",
-   "technique": "problem-first hook",
+   "technique": "Problem-first hook",
    "text": "😍 **Tired of Loungewear That Feels Comfortable but Looks Too Much Like Pajamas?** ❤️✨ Why should you have to choose between feeling cosy at home and looking beautifully put-together when you step outside? Ordinary lounge sets can feel shapeless, look too casual, or leave you wishing you had something a little more elegant to wear. Meet the Women's Cowl Neck Top & Wide-Leg Pants Set — where velvety softness, graceful draping, and effortless feminine style come together! 🍂💕 ✨ **Why you'll love it:",
    "title": "",
    "topic": "Comfort that doesn't look like pajamas",
@@ -38490,6 +39659,7 @@
     "views": 2400000
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (shader, webgl, canvas, css) by reflex_cloud: You're a world-class motion designer, and this is your 15-second résumé reel. Make it dynamic and confident: open with a striking hook in the first second, build through a sequence of distinct techniq [https://x.com/reflex_cloud/status/21035528400",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -38512,6 +39682,29 @@
    "title": "",
    "topic": "Single-shade obsession fit check",
    "url": "https://www.tiktok.com/@mariah.moreland/video/7516720233227226398",
+   "video_meta": {
+    "comments": 514,
+    "duration_s": 10,
+    "hashtags": [
+     "ootd",
+     "fitcheck",
+     "sweatpants",
+     "comfy",
+     "outfitinspo",
+     "fyp"
+    ],
+    "likes": 320000,
+    "music": "jacqueline.j - original sound",
+    "posted": "2025-06-17",
+    "reposts": 2372,
+    "site": "TikTok",
+    "title": "This shade of blue> #OOTD #fitcheck #sweatpants #comfy #outfitinspo #...",
+    "uploader": "mariah.moreland",
+    "uploader_id": "7461754820504847391",
+    "url": "https://www.tiktok.com/@mariah.moreland/video/7516720233227226398",
+    "views": 2400000
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -38857,6 +40050,7 @@
     "views": 239900
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (svg, gsap) by drrickio: I want you to create a highly professional SaaS product launch video. Go and find some SaaS, preferably just one that people know, so it's easier to identify with it. Pick that, and then make sure to  [https://x.com/drrickio/status/2103333836130009558]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -38879,6 +40073,29 @@
    "title": "",
    "topic": "Farm siblings in overalls",
    "url": "https://www.tiktok.com/@hellcat.acres/video/7535981336792796447",
+   "video_meta": {
+    "comments": 166,
+    "duration_s": 58,
+    "hashtags": [
+     "hellcatacres",
+     "mississippi",
+     "farmergandearl",
+     "overalls",
+     "libertyoveralls",
+     "siblings"
+    ],
+    "likes": 24300,
+    "music": "Hellcat Acres - original sound",
+    "posted": "2025-08-07",
+    "reposts": 182,
+    "site": "TikTok",
+    "title": "#hellcatacres #mississippi #farmergandearl #@Farmer G and Earl #overa...",
+    "uploader": "hellcat.acres",
+    "uploader_id": "7497325827102770207",
+    "url": "https://www.tiktok.com/@hellcat.acres/video/7535981336792796447",
+    "views": 239900
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -39551,6 +40768,7 @@
     "views": 2100000
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (code) by niirajrshah: Here is my life timeline. Turn it into a [45]-second motion graphics video, 1080 x 1350, for LinkedIn. One scene per moment. Show the year large and the moment in one line, and move between them. Buil [https://x.com/niirajrshah/status/2104551261270163739]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -39573,6 +40791,38 @@
    "title": "",
    "topic": "Persona-led day-in-life outfit",
    "url": "https://www.tiktok.com/@mrskaylabeaulieu/video/7429708271662927150",
+   "video_meta": {
+    "comments": 556,
+    "duration_s": 11,
+    "hashtags": [
+     "ootd",
+     "momootd",
+     "sahmootd",
+     "outfit",
+     "outfitinspo",
+     "fall",
+     "fallfashion",
+     "falloutfits",
+     "mom",
+     "momlife",
+     "momsoftiktok",
+     "minnesota",
+     "fyp",
+     "foryou",
+     "foryoupage"
+    ],
+    "likes": 26700,
+    "music": "Olly Alexander (Years, Years) - Breathe",
+    "posted": "2024-10-25",
+    "reposts": 736,
+    "site": "TikTok",
+    "title": "OOTD as a 27 year old SAHM of 4! The comfiest fit for this cold morni...",
+    "uploader": "mrskaylabeaulieu",
+    "uploader_id": "6846831583501698053",
+    "url": "https://www.tiktok.com/@mrskaylabeaulieu/video/7429708271662927150",
+    "views": 2100000
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -40098,6 +41348,7 @@
     "likes": 1599
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (threejs, shader) by 0xWast3: Opus 5.5 turned one sentence into a 3D system that opens in Blender, rigged, textured and ready to animate. It does not render the object. It constructs it, part by part, the way a modeller would if t [https://x.com/0xWast3/status/2103513328077222104]",
    "occasion": "",
    "page_id": "",
    "platform": "instagram",
@@ -40120,6 +41371,43 @@
    "title": "",
    "topic": "Overalls struggle relatable meme",
    "url": "https://www.instagram.com/reel/DIe-50EAETR/",
+   "video_meta": {
+    "comments": 4,
+    "hashtags": [
+     "overalls",
+     "girlsrelate",
+     "girls",
+     "struggle",
+     "struggles",
+     "struggleisreal",
+     "girlstruggles",
+     "girly",
+     "girl",
+     "ootd",
+     "ootsinspo",
+     "relatable",
+     "trending",
+     "trend",
+     "fyp",
+     "humor",
+     "funny"
+    ],
+    "likes": 1599,
+    "posted": "2025-04-15",
+    "site": "Instagram",
+    "title": "Video by savv.walker",
+    "top_comments": [
+     {
+      "author": "mikayla.w03",
+      "likes": 10,
+      "text": "The struggle is real overalls, rompers like why do I have to get fully undressed to pee 😭😭🤣🤦🏼‍♀️"
+     }
+    ],
+    "uploader": "Savanna Walker",
+    "uploader_id": "2120173279",
+    "url": "https://www.instagram.com/reel/DIe-50EAETR/"
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -40329,6 +41617,7 @@
     "views": 11300
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (canvas) by dale_vaz: create a self contained aesthetically pleasing, breathtaking animation of the Sahi Trading Terminal. it should start with a single dot on a black screen and then have multiple windows show up on the s [https://x.com/dale_vaz/status/2103290592679879074]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -40351,6 +41640,24 @@
    "title": "",
    "topic": "Overalls no-top backyard dance",
    "url": "https://www.tiktok.com/@talia164679/video/7702618770476387598",
+   "video_meta": {
+    "comments": 0,
+    "duration_s": 13,
+    "hashtags": [
+     "denimoveralls"
+    ],
+    "likes": 145,
+    "music": "Talia Donnelly - original sound",
+    "posted": "2026-10-31",
+    "reposts": 6,
+    "site": "TikTok",
+    "title": "denim overalls with no top, dancing in the backyard on a sunny fall d...",
+    "uploader": "talia164679",
+    "uploader_id": "7692131801611338765",
+    "url": "https://www.tiktok.com/@talia164679/video/7702618770476387598",
+    "views": 11800
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -41340,6 +42647,7 @@
     "likes": 3
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (svg, gsap) by daniel_mac8: I want to try something different here. You should act as a world-class animator and create an animation to go along with an X post that talks about how Ultra Code and Claude Code are now much more re [https://x.com/daniel_mac8/status/2103824976713306214]",
    "occasion": "",
    "page_id": "",
    "platform": "instagram",
@@ -41357,11 +42665,39 @@
    "source_item_id": "instagram:DU8XdfTjU3I",
    "state": "kept",
    "summary": "A styling post that reframes the problem as styling rather than a lack of clothes, and builds a series on overalls. The hook is relatable and repeatable.",
-   "technique": "one-garment styling series",
+   "technique": "One-garment styling series",
    "text": "It’s not your closet — it’s your styling: overalls edition 👖 I post more of these on Tik Tok if you’re looking for more! 🫶🏼",
    "title": "",
    "topic": "Overalls styling series reframe",
    "url": "https://www.instagram.com/reel/DU8XdfTjU3I/",
+   "video_meta": {
+    "comments": 3,
+    "likes": 3,
+    "posted": "2026-02-19",
+    "site": "Instagram",
+    "title": "Video by emilyharrisking",
+    "top_comments": [
+     {
+      "author": "carolinepandersonglick",
+      "likes": 3,
+      "text": "Need the link to the overalls! 😍"
+     },
+     {
+      "author": "livingwithtracy",
+      "likes": 1,
+      "text": "@emilyharrisking 🙌 Yes Queen! A series!!!"
+     },
+     {
+      "author": "carlynwilson84",
+      "likes": 0,
+      "text": "Love these overalls! Do you have a link??"
+     }
+    ],
+    "uploader": "Emily Harris King",
+    "uploader_id": "15762599",
+    "url": "https://www.instagram.com/reel/DU8XdfTjU3I/"
+   },
+   "video_meta_at": "2026-11-15T03:27:05Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,

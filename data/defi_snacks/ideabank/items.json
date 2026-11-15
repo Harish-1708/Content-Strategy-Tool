@@ -443,6 +443,7 @@
     "variants": 5
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (svg, gsap) by gouthamjay8: I want you to create a highly professional SaaS product launch video. Go and look up [website] Pick that, and then make sure to get actual assets and images and all of that stuff from the internet. Tu [https://x.com/gouthamjay8/status/2103816261339910269]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -710,6 +711,7 @@
     "signal": "worth studying: ran 204 days"
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (canvas, svg) by ik_builds: I WAS QUOTED $3000 FOR THIS!!! So I asked Opus 5.5 (medium) to create a launch video using Motion Graphics for us. here's the prompt that one-shots it: \"Create a 15s motion-graphics film explaining {{ [https://x.com/ik_builds/status/2103890476885585923]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -978,6 +980,7 @@
     "variants": 2
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (svg, gsap) by jhylee95: You're a world-class motion designer building a Supademo launch video. Research and land our core value and narrative. Scenes should be dynamic and confident: hook in the first second, then distinct b [https://x.com/jhylee95/status/2103604431627452427]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -1823,6 +1826,7 @@
     "signal": "worth studying: ran 61 days"
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (svg) by redpersongpt: Create a studio level motion design ad for my app mimicly. Show me the best you got. You are the lead creative strategist, product marketer, direct-response ad writer, and hands-on growth operator for [https://x.com/redpersongpt/status/2103807094554284430]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -2468,6 +2472,7 @@
     "days_running": 27
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (svg, gsap, css) by aschapmann: I couldn't resist to do it one more time, this time for RedShip.. and it's waaaaay better!! It took +1h for Opus 5.5 to do it. I used this prompt 👇 save it and try it for your SaaS: \"Act as a senior m [https://x.com/aschapmann/status/2104230888812724497]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -2668,6 +2673,7 @@
     "variants": 2
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (code) by apoorvjain25: make a 20-second video about anything, your call; make it crazy. The photon is born in the Sun's core and bounces around for up to 170,000 years before it gets out. Then it takes 8 min 19 s to reach E [https://x.com/apoorvjain25/status/2104818940467945542]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -2922,6 +2928,7 @@
     "signal": "worth studying: ran 577 days"
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (code) by 0xKarmi: Picture a butterfly with no memory of its last wingbeat. Ask it for frame 720 and you get frame 0, pixel for pixel. 720 frames. 12 seconds. 6 counters. All at 0. Opus 5.5 can't hand over a video file, [https://x.com/0xKarmi/status/2108495927988129839]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -2939,7 +2946,7 @@
    "source_item_id": "meta_ads:1398437501584213",
    "state": "kept",
    "summary": "A food ad that pairs a nostalgic taste hook with a stock-up four-pack pitch. It ran 577 days, so the framing seems to work. It moves buyers from a single unit to a bundle.",
-   "technique": "One is never enough",
+   "technique": "one is never enough",
    "text": "One bite of our Sour Cherry Preserves and you’re transported—warm summer days, homemade jam, and a touch of tart-sweet magic. Stock up with this four-pack, because one jar is never enough. 🍒✨",
    "title": "One Jar Will NOT Be Enough...",
    "topic": "One is never enough multipack",
@@ -3692,6 +3699,7 @@
     "signal": "worth studying: ran 62 days"
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (svg, gsap) by drrickio: I want you to create a highly professional SaaS product launch video. Go and find some SaaS, preferably just one that people know, so it's easier to identify with it. Pick that, and then make sure to  [https://x.com/drrickio/status/2103333836130009558]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -3757,6 +3765,7 @@
     "variants": 3
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (code) by deeprajO1: Create a dynamic 30sec launch vdo for your site url here. Make it feel like a high-end motion designer’s resume/showreel piece, bold, cinematic, polished, and visually impressive. Showcase the website [https://x.com/deeprajO1/status/2104490501340623150]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -3774,7 +3783,7 @@
    "source_item_id": "meta_ads:1076340321819711",
    "state": "kept",
    "summary": "A creator partnership framing protein snack bites around the after-school moment with a 'disappear fast' line. Clear occasion and relatable family use; 3 variants.",
-   "technique": "daily moment snack",
+   "technique": "daily moment snack routine",
    "text": "#SKIPPYBrandPartner Our favorite after-school snack is officially back. These Peanut Butter Protein Snack Bites disappear almost as fast as the kids walk through the door. Thanks to @skippybrand for making one of our favorite family recipes even better. 🥜✨",
    "title": "",
    "topic": "After-school snack moment",
@@ -3883,6 +3892,7 @@
     "days_running": 44
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (threejs, shader, particles) by ishuagra02: Create a stylistic 3D environment of a busy Santa Monica beach that adapts to the time of day. The art style must be a particle illustration, which uses thousands of tiny glowing specks rather than so [https://x.com/ishuagra02/status/2102920408743678129",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -3900,7 +3910,7 @@
    "source_item_id": "meta_ads:3777001239119069",
    "state": "kept",
    "summary": "A dietitian-led snack box video targeting afternoon crash and night snacking, with save and comment-for-recipe prompts. Problem-first hook and a clear engagement mechanic.",
-   "technique": "Single quick recipe demo",
+   "technique": "comment-keyword recipe gating",
    "text": "📌 Save For: Dietitian’s Superfood Snack Boxes With California Grapes (for back to school) (AD) 🍇Recipes: Like post and comment ‘recipe’! If you’re hitting that afternoon energy crash or can’t stop snacking at night, you need to make these Superfood Snack Boxes with California Grapes. As a Dietitian, the issue I often see in my practice is that my clients are not eating enough satisfying meals and snacks throughout the day. A snack box like these is a perfect solution - you can prep them ahead of",
    "title": "",
    "topic": "Dietitian snack box assembly",
@@ -4605,6 +4615,7 @@
     "signal": "worth studying: ran 76 days"
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (canvas, svg, gsap) by Fr_Sorrentino: @rexan_wong Agree with all of this. Ours wasn't one prompt either: built with Claude Code (Opus 5.5 + Fable 5.1) and Remotion, storyboard first, one still per beat, then many rounds of notes. The watc [https://x.com/Fr_Sorrentino/status/210392281225587101",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -4812,6 +4823,7 @@
     "variants": 3
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "explainer (svg, gsap) by alex_prompter: Adopt the role of an expert motion designer. Build a 30-second animated explainer for my business as a single HTML page. 5 scenes. The customer's problem, what I do, how it works in 3 steps, one proof [https://x.com/alex_prompter/status/2103499977632997524]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -5598,6 +5610,7 @@
     "views": 2500000
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (code) by superalesha: make an animated short that felt like Hedgehog in the Fog. I didn’t want to copy Yuri Norstein’s film, so we went with a new story. It runs for 6.5 minutes. All 9363 frames are drawn by JavaScript cod [https://x.com/superalesha/status/2103052154931970412]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -5615,11 +5628,30 @@
    "source_item_id": "tiktok:6880232331651697926",
    "state": "kept",
    "summary": "A creator presents a go-to daily snack tied to a diet tag with a speed promise. The routine framing and high views show the appeal of simple, habitual snacking.",
-   "technique": "daily moment snack",
+   "technique": "daily moment snack routine",
    "text": "My daily low-carb snack that I can make in 2 mins #keto #ketosnacks",
    "title": "",
    "topic": "Daily low-carb snack routine",
    "url": "https://www.tiktok.com/@realbalanced/video/6880232331651697926",
+   "video_meta": {
+    "comments": 294,
+    "duration_s": 16,
+    "hashtags": [
+     "keto",
+     "ketosnacks"
+    ],
+    "likes": 95100,
+    "music": "Elliot Van Coup - Say So (Instrumental Version) [Originally Performed by Doja Cat]",
+    "posted": "2020-10-05",
+    "reposts": 5917,
+    "site": "TikTok",
+    "title": "My daily low-carb snack that I can make in 2 mins #keto #ketosnacks",
+    "uploader": "realbalanced",
+    "uploader_id": "6800697973291451397",
+    "url": "https://www.tiktok.com/@realbalanced/video/6880232331651697926",
+    "views": 2500000
+   },
+   "video_meta_at": "2026-11-15T03:25:12Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -6165,6 +6197,7 @@
     "views": 360600
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (svg, gsap) by drrickio: I want you to create a highly professional SaaS product launch video. Go and find some SaaS, preferably just one that people know, so it's easier to identify with it. Pick that, and then make sure to  [https://x.com/drrickio/status/2103333836130009558]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -6182,11 +6215,34 @@
    "source_item_id": "tiktok:7485835858092821806",
    "state": "kept",
    "summary": "A 'which one are you choosing' lineup for athletes on the go. Pairs a specific audience with a choice prompt; saves are high relative to comments.",
-   "technique": "Audience pick-one prompt",
+   "technique": "pick-one audience poll",
    "text": "Snacks for on the go athletes! Which one are you choosing?! #soccer #soccerplayer #athlete #soccergirl #athletenutrition #healthysnacks @FAGE @Purely Elizabeth @Chomps @sabrahummusdips @Grillo’s Pickles",
    "title": "",
    "topic": "Athlete snack lineup choice",
    "url": "https://www.tiktok.com/@brittany1wilson/video/7485835858092821806",
+   "video_meta": {
+    "comments": 116,
+    "duration_s": 23,
+    "hashtags": [
+     "soccer",
+     "soccerplayer",
+     "athlete",
+     "soccergirl",
+     "athletenutrition",
+     "healthysnacks"
+    ],
+    "likes": 32800,
+    "music": "ur mom <3 - original sound",
+    "posted": "2025-03-25",
+    "reposts": 529,
+    "site": "TikTok",
+    "title": "Snacks for on the go athletes! Which one are you choosing?! #soccer #...",
+    "uploader": "brittany1wilson",
+    "uploader_id": "6720527953451910149",
+    "url": "https://www.tiktok.com/@brittany1wilson/video/7485835858092821806",
+    "views": 361800
+   },
+   "video_meta_at": "2026-11-15T03:25:12Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -7711,28 +7767,14 @@
    "approved": false,
    "asset_note": "",
    "asset_tries": 1,
-   "assets": [
-    {
-     "bytes": 205518,
-     "drive_id": "17BcXA-dJ8BtkqN4mjHLm7j3q9-QUff_K",
-     "duration": 0.0,
-     "height": 2187,
-     "kind": "image",
-     "md5": "910b31d3bb61391b64ce5c5b9de7d603",
-     "name": "IB-0117-image.jpg",
-     "sha256": "7b8a15f0b27a8d6dcefd9d589913060770d998d92c3813ae3f430e86cd8f6335",
-     "source": "media",
-     "verified": true,
-     "width": 1640
-    }
-   ],
+   "assets": [],
    "audience": "Health-aware snackers with a coffee or tea ritual",
    "category": "adjacent",
    "channel": "organic social",
    "concept": "Reveal that everyday snacks paired with a ritual are hidden calorie bombs, offer smart swaps, and gate extra ideas behind a keyword comment.",
-   "drive_folder_id": "1hEyT6Zc0zRcexbbkxN2Lyz3bLJAsWj9e",
-   "drive_folder_url": "https://drive.google.com/drive/folders/1hEyT6Zc0zRcexbbkxN2Lyz3bLJAsWj9e",
-   "duplicate_of": "",
+   "drive_folder_id": "",
+   "drive_folder_url": "",
+   "duplicate_of": "IB-0060",
    "fingerprint": "74295edff07c8217",
    "first_test": "Post a swap carousel with a comment keyword CTA to organic followers. Measure comments and DMs sent.",
    "fit": 55,
@@ -7750,6 +7792,7 @@
    "media_format": "",
    "media_role": "",
    "media_url": "https://scontent-sjc6-1.cdninstagram.com/v/t51.82787-15/581442488_18536596972041609_5342220665259470004_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=111&ig_cache_key=Mzc2ODI3Njc4NTYxNzMzODYwNA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTY0MC5zZHIucmVndWxhcl9waG90by5DMiJ9&_nc_ohc=WtUMFe_HKQwQ7kNvwEFov8T&_nc_oc=AdoqiV-XoT_19RJYhEkdJVU_rSLI403tAl7ja1wl702YpQO6ISr9YYf97YNeb6udQ2s&_nc_zt=23&_nc_ht=scontent-sjc6-1.cdninstagram.com&_nc_gid=vOt0WNvW5b6POohCE4wfCA&_nc_ss=7b6a8&oh=00_AQTQG3490-VS3TywqSg_TXmVW4zFLfV_wwPnQrt0UxcZ5g&oe=6AF1356F",
+   "meta_tries": 1,
    "metrics": {
     "comments": 27,
     "likes": 268
@@ -7762,7 +7805,7 @@
    "region": "",
    "relevance": 55,
    "removal_note": "",
-   "removed_reason": "",
+   "removed_reason": "another idea with the same technique (comment-keyword recipe gating) scored higher: IB-0060, IB-0184",
    "request_id": "",
    "rescued": false,
    "risk": "Calorie comparisons need accurate, substantiated numbers; avoid disparaging other products without proof.",
@@ -7770,12 +7813,28 @@
    "scored_at": "2026-11-04T16:11:21Z",
    "scoring_version": 2,
    "source_item_id": "instagram:DRLm8V2EoDs",
-   "state": "kept",
+   "state": "removed",
    "summary": "Pairs a daily ritual (chai) with a myth-bust on snacks that look light, then offers swaps and a comment keyword for more. The problem-first hook and comment trigger are reusable.",
    "technique": "",
    "text": "Comment TEA and I’ll send you more healthy snack ideas! Most of us love pairing our chai with something crunchy — but not everything that looks light is actually low-calorie. Some everyday snacks are silent calorie bombs, while a few smart swaps can keep your cravings satisfied without derailing your progress. Here’s how to make the smarter choice 👇 🍟 High-Calorie Snacks These are usually fried, packaged, or made with refined flour. Think mathri, pakora, bhujia, chips, biscuits… A single serving",
    "title": "",
    "topic": "Hidden calorie bombs, smart swaps",
+   "trashed_assets": [
+    {
+     "bytes": 205518,
+     "drive_id": "17BcXA-dJ8BtkqN4mjHLm7j3q9-QUff_K",
+     "duration": 0.0,
+     "height": 2187,
+     "kind": "image",
+     "md5": "910b31d3bb61391b64ce5c5b9de7d603",
+     "name": "IB-0117-image.jpg",
+     "sha256": "7b8a15f0b27a8d6dcefd9d589913060770d998d92c3813ae3f430e86cd8f6335",
+     "source": "media",
+     "verified": true,
+     "width": 1640
+    }
+   ],
+   "trashed_folder": "1hEyT6Zc0zRcexbbkxN2Lyz3bLJAsWj9e",
    "url": "https://www.instagram.com/p/DRLm8V2EoDs/",
    "video_note": "this post has no video",
    "video_status": "none",
@@ -8030,6 +8089,7 @@
     "variants": 2
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (shader, webgl, canvas, css) by reflex_cloud: You're a world-class motion designer, and this is your 15-second résumé reel. Make it dynamic and confident: open with a striking hook in the first second, build through a sequence of distinct techniq [https://x.com/reflex_cloud/status/21035528400",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
@@ -8047,7 +8107,7 @@
    "source_item_id": "meta_ads:4340149742942546",
    "state": "kept",
    "summary": "A problem-first hook aimed at people in a calorie deficit, followed by a macro proof point and a dessert-like taste claim. It ran 62 days in 2 variants, so someone was watching results.",
-   "technique": "Diet struggle then resolve",
+   "technique": "problem-first diet reframe",
    "text": "Struggling to find a snack that fits your calorie deficit? Blitz has your back! 21g protein to keep you full for longer with just 200 calories, AND it tastes like dessert",
    "title": "Blitz Bar",
    "topic": "Calorie-deficit snack that tastes like dessert",
@@ -8722,6 +8782,7 @@
     "views": 379400
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (threejs, shader, canvas) by anduraio: Claude Opus 5.5 is stupidly good at games, so I’m putting it on a streak. Dropping 10 browser games I built with it. One a day. Same characters. Same world. Different gameplay each day. Adventure game [https://x.com/anduraio/status/21038606097125707",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -8744,6 +8805,28 @@
    "title": "",
    "topic": "Rating exotic snacks reaction",
    "url": "https://www.tiktok.com/@tworiverview/video/7703713190919605535",
+   "video_meta": {
+    "comments": 221,
+    "duration_s": 257,
+    "hashtags": [
+     "mukbang",
+     "snacks",
+     "exoticsnacks",
+     "snackreview",
+     "chamoypickle"
+    ],
+    "likes": 33500,
+    "music": "Sol, Bella - original sound",
+    "posted": "2026-11-02",
+    "reposts": 509,
+    "site": "TikTok",
+    "title": "rating exotic snacks (america doesn’t have these) 👀 ft. @perfumesiren...",
+    "uploader": "tworiverview",
+    "uploader_id": "7681443298703344654",
+    "url": "https://www.tiktok.com/@tworiverview/video/7703713190919605535",
+    "views": 381700
+   },
+   "video_meta_at": "2026-11-15T03:25:12Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -8885,6 +8968,7 @@
     "views": 592200
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (code) by twoclipping: <inputs> Ask me for: my product's name (nightshift) (one lowercase word, it becomes a black wordmark with a period), the one job a user hands it before bed (book 10 sales calls this week), the three r [https://x.com/twoclipping/status/2105927781678747965]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -8907,6 +8991,43 @@
    "title": "",
    "topic": "Customizable chocolate gift personalization",
    "url": "https://www.tiktok.com/@chocolatelovershop/video/7247185120585731329",
+   "video_meta": {
+    "comments": 457,
+    "duration_s": 15,
+    "hashtags": [
+     "chocolatelovers",
+     "love",
+     "happybirthday",
+     "happyanniversary",
+     "happydays",
+     "cadburydairymilk",
+     "gifts",
+     "giftshop",
+     "giftideas",
+     "choices",
+     "best",
+     "video",
+     "viralvideo",
+     "viralreels",
+     "happylife",
+     "eidcollection",
+     "eid",
+     "boyfriend",
+     "girls",
+     "girlfriends"
+    ],
+    "likes": 4358,
+    "music": "Tafajjoll - original sound",
+    "posted": "2023-06-21",
+    "reposts": 6866,
+    "site": "TikTok",
+    "title": "নতুন ডিজাইন নিয়ে আবার ও চলে আসলাম । বিশেষ বিশেষ দিন গুলোতে প্রিয় ম...",
+    "uploader": "chocolatelovershop",
+    "uploader_id": "7195814127334573061",
+    "url": "https://www.tiktok.com/@chocolatelovershop/video/7247185120585731329",
+    "views": 592400
+   },
+   "video_meta_at": "2026-11-15T03:25:12Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -10346,11 +10467,13 @@
    "media_format": "",
    "media_role": "",
    "media_url": "https://scontent-sea5-1.cdninstagram.com/v/t51.82787-15/844278277_17900222787602700_8300805182246827373_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=110&_nc_map=urlgen_bucketless&ig_cache_key=NDAwNTQ0ODI4MzU2NzE0ODcwMA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTM2NS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=QgR1U7SY1jkQ7kNvwGkYGZS&_nc_oc=Adq2i4m2box4utJlvo8HluDeVQOLjfUIXhUKr_HFflsJsKfXXAyO_l1H911gFFNc7N4&_nc_zt=23&_nc_ht=scontent-sea5-1.cdninstagram.com&_nc_gid=Z74PKhDqjU8Dd7_6Tni1EA&_nc_ss=7b6a8&_nc_ct=RQosPBUIFQIlBAAAAA&oh=00_AQRbGSLt6uNVf-KZmB16Vw1GeD1bga2yJ6GcHO-DLHKhLA&oe=6AFDE18F",
+   "meta_tries": 1,
    "metrics": {
     "comments": 1,
     "likes": 19
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (code) by threeaus: 15s studio motion-design reel, 1920x1080. Warm off-white, black type, one orange accent only. A single orange circle with motion blur is the through-line and the cut. Show: toggle click, the word Moti [https://x.com/threeaus/status/2105152377057886343]",
    "occasion": "",
    "page_id": "",
    "platform": "instagram",
@@ -10368,7 +10491,7 @@
    "source_item_id": "instagram:DeWNf38N86c",
    "state": "kept",
    "summary": "A relatable humour hook turns snack hoarding into a relationship joke, with a reason to buy two boxes. Specific, shareable, and close to our category.",
-   "technique": "One is never enough",
+   "technique": "one is never enough",
    "text": "not me guarding these like a situationship i refuse to lose 🤎 two boxes because one has never once been enough. 12g protein, no refined sugar, zero chill. link in bio!",
    "title": "",
    "topic": "Guarding snacks like a situationship",
@@ -10616,11 +10739,13 @@
    "media_format": "",
    "media_role": "",
    "media_url": "https://scontent-sea5-2.cdninstagram.com/v/t51.82787-15/743940284_18076002551704848_7857240929980680281_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=104&_nc_map=urlgen_bucketless&ig_cache_key=Mzk0MTAyNTAyMTQ0Mzc2Mzk2OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTA4MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=u5iltfnPIbEQ7kNvwHbyH_h&_nc_oc=AdpAvcBDZSKmkLgluSq2buDEnF6zEI5AkQ34zku4JVhG8TgRVbg-hBP_jfzTjKhO21g&_nc_zt=23&_nc_ht=scontent-sea5-2.cdninstagram.com&_nc_gid=aOQea-hptsc50ucXeu2xJA&_nc_ss=7b6a8&_nc_ct=RQosPBUIFQIlBAAAAA&oh=00_AQR5mqupU8RJ1lauiZvnBxWSccdvmHPZBovbbglyDYyW4Q&oe=6AFDE275",
+   "meta_tries": 1,
    "metrics": {
     "comments": 2,
     "likes": 12
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (code) by abyssallD: One prompt: a video of all progress, then n years into the future. A painted rocket, not a white tube. White nose. White body. A black band with a white triangle. Another dark ring lower down. Panel l [https://x.com/abyssallD/status/2106434250467602690]",
    "occasion": "",
    "page_id": "",
    "platform": "instagram",
@@ -12060,6 +12185,7 @@
     "views": 8600000
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (code) by thejohnnyhuy: Build an Apple-keynote launch film as a single HTML file, then render it to MP4. <inputs> Ask me for: a one-word brand name for the wordmark (a verb works best), 9 to 12 high-res photos, a royalty-fre [https://x.com/thejohnnyhuy/status/2104149060588282154]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -12082,6 +12208,27 @@
    "title": "",
    "topic": "Debloat high-fiber chocolate dessert",
    "url": "https://www.tiktok.com/@balancedbyelii/video/7670267511157607702",
+   "video_meta": {
+    "comments": 1115,
+    "duration_s": 16,
+    "hashtags": [
+     "healthydessert",
+     "highfiber",
+     "guthealthy",
+     "healthysnacks"
+    ],
+    "likes": 484400,
+    "music": "Klyracapinig✿🍒𐙚 - original sound - Ms.Kly",
+    "posted": "2026-08-04",
+    "reposts": 69400,
+    "site": "TikTok",
+    "title": "🍓 DEBLOAT HIGH FIBER DESSERT 🍫 You need: • 150g raspberries • 250g Gr...",
+    "uploader": "balancedbyelii",
+    "uploader_id": "7499015491320038422",
+    "url": "https://www.tiktok.com/@balancedbyelii/video/7670267511157607702",
+    "views": 8600000
+   },
+   "video_meta_at": "2026-11-15T03:25:12Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -12279,6 +12426,7 @@
     "likes": 185320
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (code) by adomicael: Create an interactive explainer animation showing what happens when you ask an AI a question. Visualize the path from a phone, through fiber optic cables across the US, into a data center, passing thr [https://x.com/adomicael/status/2104977482818707503]",
    "occasion": "",
    "page_id": "",
    "platform": "instagram",
@@ -12296,11 +12444,64 @@
    "source_item_id": "instagram:DZKBNa_siN7",
    "state": "kept",
    "summary": "A healthy-snack roundup gated behind a comment keyword, producing very high comment volume. The mechanic is reusable for any snack-focused audience.",
-   "technique": "Saveable recipe list carousel",
+   "technique": "comment-keyword recipe gating",
    "text": "comment word “SNACK” and I’ll send you all these delicious homemade snack recipes straight into your DM! 🤎 ✨ Poha Chiwda ✨ Peri Peri Roasted Makhana ✨ No Sugar No Jaggery Dink Ladoo ✨ Desi Sweet & Salty Trail Mix ✨ Ragi Chocolate Chunk Cookies ✨ Energy Bars ✨ Seed Crackers ✨ Light Murmura Bhadang ✨ Baked Methi Mathri Perfect for tea time, lunchboxes, travel, festive gifting, healthy snacking and those little hunger cravings in between meals. Save this reel and share it with someone who is always",
    "title": "",
    "topic": "Comment 'SNACK' for recipe collection",
    "url": "https://www.instagram.com/reel/DZKBNa_siN7/",
+   "video_meta": {
+    "comments": 147596,
+    "likes": 167324,
+    "posted": "2026-06-04",
+    "site": "Instagram",
+    "title": "Video by shweta_sakode",
+    "top_comments": [
+     {
+      "author": "deepti_in",
+      "likes": 0,
+      "text": "Snack"
+     },
+     {
+      "author": "pearl_reality_",
+      "likes": 0,
+      "text": "Snacks"
+     },
+     {
+      "author": "dipalihallalikar",
+      "likes": 0,
+      "text": "Snack"
+     },
+     {
+      "author": "rohinishiyamsundar",
+      "likes": 0,
+      "text": "snack"
+     },
+     {
+      "author": "nehaparmarpatel",
+      "likes": 0,
+      "text": "Snacks"
+     },
+     {
+      "author": "apekshaa_m",
+      "likes": 0,
+      "text": "Snack"
+     },
+     {
+      "author": "official_sukhnjeet",
+      "likes": 0,
+      "text": "snack"
+     },
+     {
+      "author": "varshrekh",
+      "likes": 0,
+      "text": "SNACK"
+     }
+    ],
+    "uploader": "Shweta Sakode | Food & Culture Enthusiast",
+    "uploader_id": "467144576",
+    "url": "https://www.instagram.com/reel/DZKBNa_siN7/"
+   },
+   "video_meta_at": "2026-11-15T03:25:12Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -12778,6 +12979,7 @@
     "views": 103600
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (svg, gsap) by gouthamjay8: I want you to create a highly professional SaaS product launch video. Go and look up [website] Pick that, and then make sure to get actual assets and images and all of that stuff from the internet. Tu [https://x.com/gouthamjay8/status/2103816261339910269]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -12795,17 +12997,39 @@
    "source_item_id": "tiktok:7600186703755676958",
    "state": "kept",
    "summary": "A ranking with a 'which should be number 1' question drives comments and saves. The engagement rate is strong (8.5%) and the format is easy to repeat with our flavors.",
-   "technique": "Audience pick-one prompt",
+   "technique": "pick-one audience poll",
    "text": "Which one should’ve been number 1? #Asiansnacks #snacktok #drinktok #Grocerystore#Utica",
    "title": "",
    "topic": "Snack ranking debate prompt",
    "url": "https://www.tiktok.com/@nguyen.phat315/video/7600186703755676958",
+   "video_meta": {
+    "comments": 32,
+    "duration_s": 27,
+    "hashtags": [
+     "asiansnacks",
+     "snacktok",
+     "drinktok",
+     "grocerystore",
+     "utica"
+    ],
+    "likes": 7373,
+    "music": "Lil Uzi Vert - What You Saying",
+    "posted": "2026-01-27",
+    "reposts": 439,
+    "site": "TikTok",
+    "title": "Which one should’ve been number 1? #Asiansnacks #snacktok #drinktok #...",
+    "uploader": "nguyen.phat315",
+    "uploader_id": "6980871151779169286",
+    "url": "https://www.tiktok.com/@nguyen.phat315/video/7600186703755676958",
+    "views": 103700
+   },
+   "video_meta_at": "2026-11-15T03:25:12Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
    "visual_hook": "",
    "visual_quality": "",
-   "visual_tries": 1
+   "visual_tries": 2
   },
   "IB-0192": {
    "added_at": "2026-11-14T14:14:28Z",
@@ -12928,6 +13152,7 @@
     "views": 97500
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "interactive (code) by abyssallD: One prompt: a video of all progress, then n years into the future. A painted rocket, not a white tube. White nose. White body. A black band with a white triangle. Another dark ring lower down. Panel l [https://x.com/abyssallD/status/2106434250467602690]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -12945,14 +13170,36 @@
    "source_item_id": "tiktok:7678065052335328515",
    "state": "kept",
    "summary": "It rejects 'sad diet food' and promises satisfying snacks within goals. The saves are high (1,992), showing practical value. A good fit for a chocolate crispy bite.",
-   "technique": "Diet struggle then resolve",
+   "technique": "problem-first diet reframe",
    "text": "Being in a calorie deficit doesn’t mean living off sad little “diet foods” 🥲🫶🏼 Keep some easy, satisfying snacks on deck so you can actually enjoy what you eat while still working towards your goals. You don’t need to cut out carbs, fats, chocolate or your favourite foods — it’s about balance, portions and moderation. There’s room for everything in a healthy diet. 🤍 #healthyeating #caloriedefict #healthysnacks #fatloss #nutritiontips",
    "title": "",
    "topic": "Satisfying snacks while in deficit",
    "url": "https://www.tiktok.com/@itsremireyes/video/7678065052335328515",
+   "video_meta": {
+    "comments": 14,
+    "duration_s": 22,
+    "hashtags": [
+     "healthyeating",
+     "caloriedefict",
+     "healthysnacks",
+     "fatloss",
+     "nutritiontips"
+    ],
+    "likes": 2344,
+    "music": "spideya - original sound",
+    "posted": "2026-08-25",
+    "reposts": 129,
+    "site": "TikTok",
+    "title": "Being in a calorie deficit doesn’t mean living off sad little “diet f...",
+    "uploader": "itsremireyes",
+    "uploader_id": "7665167981748159510",
+    "url": "https://www.tiktok.com/@itsremireyes/video/7678065052335328515",
+    "views": 99500
+   },
+   "video_meta_at": "2026-11-15T03:25:12Z",
    "video_note": "the file is not a picture or video we can read",
    "video_status": "failed",
-   "video_tries": 1,
+   "video_tries": 2,
    "visual_hook": "Four-panel grid of snack bowls and plates (grapes, cheese, nuts, crackers, veggies, hummus, banana, strawberries). Overlay: \"7 Low calorie snacks for your calorie deficit\", \"That actually taste good\".",
    "visual_quality": "good",
    "visual_tries": 1
@@ -13287,6 +13534,7 @@
     "views": 23000
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "3d (threejs, shader) by techartist_: I wanted to see if beautiful destinations could become playable 3D experiences. Annecy, France became the prototype: a boat journey through canals, bridges, waterfront, and the mountain lake, built wi [https://x.com/techartist_/status/2103933640392786274]",
    "occasion": "",
    "page_id": "",
    "platform": "tiktok",
@@ -13309,6 +13557,28 @@
    "title": "",
    "topic": "No-bake kids snack recipe list",
    "url": "https://www.tiktok.com/@babytipsformoms/video/7673655807669554462",
+   "video_meta": {
+    "comments": 0,
+    "duration_s": 20,
+    "hashtags": [
+     "kidssnacks",
+     "toddlersnacks",
+     "healthykidssnacks",
+     "nobakesnacks",
+     "toddlerfood"
+    ],
+    "likes": 109,
+    "music": "Hank Deluca - Daisy Shuffle",
+    "posted": "2026-08-13",
+    "reposts": 9,
+    "site": "TikTok",
+    "title": "🍓 12 EASY NO-BAKE SNACKS FOR KIDS 🍌 Save this one! ❤️ Here are the si...",
+    "uploader": "babytipsformoms",
+    "uploader_id": "7544783006939595790",
+    "url": "https://www.tiktok.com/@babytipsformoms/video/7673655807669554462",
+    "views": 23400
+   },
+   "video_meta_at": "2026-11-15T03:25:12Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
@@ -13838,6 +14108,7 @@
     "likes": 5
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "explainer (code) by ArchiveExplorer: Write my launch video as 9 beats: pain, reframe, name, how it works, objection, range, mechanism in numbers, offer, CTA – one line each. For every beat write 3 headline options and send them to Jev to [https://x.com/ArchiveExplorer/status/2106732275685560622]",
    "occasion": "",
    "page_id": "",
    "platform": "instagram",
@@ -13860,12 +14131,44 @@
    "title": "",
    "topic": "Sample pack for first-timers",
    "url": "https://www.instagram.com/reel/De2sF_GtUMn/",
+   "video_meta": {
+    "comments": 1,
+    "hashtags": [
+     "wellbean",
+     "plantbasedsnacks",
+     "seedbased",
+     "healthysnacking",
+     "wholefoods",
+     "superfoodsnacks",
+     "cleaneating",
+     "vegansnacks",
+     "beanpower",
+     "samplepack",
+     "healthylifestyle",
+     "snacksmart"
+    ],
+    "likes": 5,
+    "posted": "2026-10-23",
+    "site": "Instagram",
+    "title": "Video by wellbean.life",
+    "top_comments": [
+     {
+      "author": "junesgirl7",
+      "likes": 0,
+      "text": "Best bars everrrrr!!!! Nothing comes close to your bars!"
+     }
+    ],
+    "uploader": "Bars made from Beans 🫘",
+    "uploader_id": "8795138951",
+    "url": "https://www.instagram.com/reel/De2sF_GtUMn/"
+   },
+   "video_meta_at": "2026-11-15T03:25:12Z",
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
    "visual_hook": "",
    "visual_quality": "",
-   "visual_tries": 1
+   "visual_tries": 2
   },
   "IB-0207": {
    "added_at": "2026-11-14T14:14:28Z",
@@ -14588,7 +14891,7 @@
    "id": "IB-0218",
    "idea": 50,
    "kind": "ad",
-   "link_refreshes": 1,
+   "link_refreshes": 2,
    "look": "",
    "mechanism": "discovery adventure framing",
    "media_format": "VIDEO",
@@ -14598,6 +14901,7 @@
     "days_running": 14
    },
    "model": "claude-sonnet-5-5",
+   "motion_idea": "motion (code) by 0xKarmi: Picture a butterfly with no memory of its last wingbeat. Ask it for frame 720 and you get frame 0, pixel for pixel. 720 frames. 12 seconds. 6 counters. All at 0. Opus 5.5 can't hand over a video file, [https://x.com/0xKarmi/status/2108495927988129839]",
    "occasion": "",
    "page_id": "",
    "platform": "meta_ads",
