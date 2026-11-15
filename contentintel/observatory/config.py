@@ -145,7 +145,7 @@ DEFAULTS = {
     "retry": {"attempts": 3, "backoff_seconds": 2},          # with the rest guard OFF: how many times a refusing site is tried, and the pause (seconds) that grows with each try, before it is marked failed and the run moves on
     "crawl": {"max_pages": 25, "depth": 2},                     # a site crawl through Scrapling (SV.scrapling_crawl, corpus --what crawl): pages at most (1-200) and links deep at most (0-6)
     "discovery": {
-        "enabled": True, "min_score": 40, "auto_monitor_score": 65, "auto_monitor_max": 6, "max_monitored": 10, "probe_max": 8,
+        "enabled": True, "min_score": 40, "auto_monitor_score": 65, "auto_monitor_max": 50, "max_monitored": 100, "probe_max": 8,
         "min_appearances": 1, "lookup_max": 8,
         # who a candidate is, from several sources, and an AI second opinion beside the rubric (a person reviews every verdict)
         "enrich": True, "enrich_max": 8, "min_confidence": 0.7, "agent_reach_calls": 12, "judge": True, "judge_max": 16,
