@@ -20,6 +20,7 @@ from urllib.parse import quote_plus
 
 from . import connections as CONN
 from . import contract as K
+from .apify import ApifyRunUnfinished
 from .safety import scrub
 
 SCRIPT = Path("skills") / "last30days" / "scripts" / "last30days.py"
@@ -340,7 +341,9 @@ class ApifyVoice:
     apify box switches it off) and needs APIFY_TOKEN. It reads only within its OWN monthly allowance (voice_apify_items, default 60), 40 items in a whole workflow run, and never beyond the monthly Apify allowance the Collect step
     uses (collectors.apify.monthly_items): both counters are charged for what was read. Each Apify call carries a cost ceiling that Apify enforces by stopping the call: 0.50 dollars for TikTok (its actor refuses anything lower;
     measured live) and 0.25 for Instagram (which returned 27 usable items for it). In one call TikTok asks for half of what is left to read and Instagram for the rest, so a call whose ceiling stops it early returns what the
-    money bought. `apify` is the platform's Apify provider; `ledger` is research.Ledger; `shared_cap` is the monthly items Collect may use."""
+    money bought. `apify` is the platform's Apify provider; `ledger` is research.Ledger; `shared_cap` is the monthly items Collect may use. Each source is asked about one
+    topic (one search query / one hashtag) per call, never one big call for several. A big ask runs asynchronously inside the Apify client (started, then polled); a run that has
+    not finished is never started twice, so the retry below only fires for a run that is over (timed-out), never for one that may still be going."""
     ACTORS = {"tiktok": "clockworks/tiktok-scraper", "instagram": "apify/instagram-hashtag-scraper"}
     CEILINGS = {"tiktok": 0.50, "instagram": 0.25}                      # the least each actor accepts per call
     HARD_CEILING = 1.00                                                   # whatever an override says, a call can never be allowed more than this
@@ -395,8 +398,8 @@ class ApifyVoice:
                 try:
                     raw = self.apify.run(self.ACTORS[source], payload_for(n), max_items=n, max_cost_usd=self.ceiling(source))
                 except Exception as exc:                                          # noqa: BLE001 - one retry, and only for an actor run that timed out on Apify's side (a smaller ask finishes sooner)
-                    if "timed-out" not in str(exc).lower() or n < 2:
-                        raise
+                    if "timed-out" not in str(exc).lower() or isinstance(exc, ApifyRunUnfinished) or n < 2:
+                        raise                                                   # an unfinished run may still be going server-side: starting it again would run, and charge, twice
                     n = n // 2
                     notes.append(f"apify {source} for {topic!r}: the actor run timed out on Apify's side; asking once more for {n}")
                     raw = self.apify.run(self.ACTORS[source], payload_for(n), max_items=n, max_cost_usd=self.ceiling(source))

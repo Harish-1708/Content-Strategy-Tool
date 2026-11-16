@@ -13,7 +13,9 @@ import copy
 import collections
 import hashlib
 import json
+import os
 import re
+import tempfile
 from contextlib import ExitStack
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
@@ -38,6 +40,9 @@ SITE_OF = {"meta_ads": "meta_ads", "tiktok": "tiktok", "instagram": "instagram",
 AD_LIBRARY = "https://www.facebook.com/ads/library"
 _TS = "%Y-%m-%dT%H:%M:%SZ"
 TEXT_LIMIT = 1000
+DEFERRED_QUEUE_NAME = "deferred-queue.json"      # missed items waiting for the next Collect, in data/_shared/
+DEFERRED_MAX_DEFERRALS = 3                       # a missed item is tried again at most 3 times, then dropped with a note
+DEFERRED_MAX_ENTRIES = 50                        # the queue never grows past this; the oldest entries go first
 
 
 class CollectError(Exception):
@@ -980,6 +985,15 @@ def _gather(browser, source, site_cfg, scrolls, pause, max_items):
     return list(rows.values())[:max_items], set(from_data), limited
 
 
+def _tag_in_url(url):
+    """The hashtag in a tag-page address (/tag/x or /tags/x), or None when this is not a tag page. Any source
+    with hashtag-style pages can use it; no source name is checked here."""
+    for part in ("/tag/", "/tags/"):
+        if part in url:
+            return unquote(url.split(part, 1)[1].split("?")[0].split("/")[0])
+    return None
+
+
 def seed_label(url):
     """A short name for the seed behind a page address: the search words, #hashtag, @profile."""
     parts = urlsplit(url)
@@ -1052,6 +1066,7 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds, page_budget
             urls = stealth_mod.shuffle_reads(urls, identity.get("rng"))
     found, from_data, limited, via = {}, set(), False, {}
     fallbacks, page_errors, how = [], 0, []
+    searched_first, how_first, tag_fallback = [], [], []     # tags searched first, how, and tags whose search gave nothing
     second = {"seen": 0, "filled": 0, "added": 0}
     errors, challenges, settle = site_cfg.get("error_any", []), site_cfg.get("challenge_any", []), site_cfg.get("settle_seconds", 3)
 
@@ -1060,34 +1075,50 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds, page_budget
         how.append(search_for_tag(browser, site_cfg, tag))
         browser.wait(settle)
 
+    def check_page(pressed_x):
+        """The page now showing must be readable: a puzzle its own X cannot clear, or a login wall, stops the task.
+        A puzzle is never solved."""
+        if source == "meta_ads":
+            browser.click(site_cfg.get("consent_any", []))
+            return
+        after = session_state(browser, site_cfg)
+        if after == "challenge" and not pressed_x and clear_challenge(browser, site_cfg):
+            after = session_state(browser, site_cfg)
+        if after == "challenge":
+            browser.screenshot(f"challenge-{source}")
+            raise Challenge(f"{source}: a security check appeared while collecting{_closed_note(site_cfg)}; clear it "
+                            "once in a normal browser as the dummy account and export fresh cookies")
+        if after == "login_wall":
+            browser.screenshot(f"login-wall-{source}")
+            raise LoginWall(f"{source}: the page asked for a login; the cookies may have expired")
+
     for number, url in enumerate(urls):
-        browser.open(url)
-        browser.wait(settle)
+        # A tag page can fail (an error, or a puzzle) while the same search works by hand, so a site can ask for the
+        # search instead, either when the tag page fails (hashtag_via_search_on_error) or first, with the tag page as
+        # the fallback when the search gives nothing (hashtag_via_search_first). Both flags are per site in
+        # browser.yaml and default off; without them the tag page is opened first, exactly as before. Search-first
+        # only runs when the site has a search to use (a search address or a search box); otherwise the tag page
+        # is opened as before.
+        tag = _tag_in_url(url) if site_cfg.get("hashtag_via_search_on_error") or site_cfg.get("hashtag_via_search_first") else None
+        searched = pressed_x = False
+        if tag is not None and site_cfg.get("hashtag_via_search_first") and (site_cfg.get("search_url") or site_cfg.get("search_box")):
+            how_first.append(search_for_tag(browser, site_cfg, tag))
+            searched_first.append("#" + tag)
+            searched = True
+            browser.wait(settle)
+        else:
+            browser.open(url)
+            browser.wait(settle)
         if source != "meta_ads":
             check_warning(browser, source, site_cfg)                  # a warning on any page stops the run at once
-        # In the automated browser a tag page can fail (an error, or a puzzle) while the same search works by hand.
-        tag = unquote(url.split("/tag/", 1)[1].split("?")[0]) if site_cfg.get("hashtag_via_search_on_error") and "/tag/" in url else None
-        searched = pressed_x = False
-        if tag is not None and (browser.exists(errors) or browser.exists(challenges)):
+        if tag is not None and not searched and (browser.exists(errors) or browser.exists(challenges)):
             if browser.exists(challenges):
                 clear_challenge(browser, site_cfg)
                 pressed_x = True                                      # once per page: never retried on this one
             if browser.exists(errors) or browser.exists(challenges):
                 search_instead(tag)
                 searched, pressed_x = True, False                     # the search page is a new page, with its own puzzle
-        if source == "meta_ads":
-            browser.click(site_cfg.get("consent_any", []))
-        else:
-            after = session_state(browser, site_cfg)
-            if after == "challenge" and not pressed_x and clear_challenge(browser, site_cfg):
-                after = session_state(browser, site_cfg)
-            if after == "challenge":
-                browser.screenshot(f"challenge-{source}")
-                raise Challenge(f"{source}: a security check appeared while collecting{_closed_note(site_cfg)}; clear it "
-                                "once in a normal browser as the dummy account and export fresh cookies")
-            if after == "login_wall":
-                browser.screenshot(f"login-wall-{source}")
-                raise LoginWall(f"{source}: the page asked for a login; the cookies may have expired")
+        check_page(pressed_x)
         share = max(1, (n - len(found)) // (len(urls) - number))
         rows, data_ids, hit_limit = _gather(browser, source, site_cfg, scrolls, pause, share)
         if source == "meta_ads" and secondary is not None and hasattr(browser, "html"):
@@ -1096,6 +1127,15 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds, page_budget
             second["seen"] += facts["seen"]
             second["filled"] += facts["filled"]
             second["added"] += facts["added"]
+        if tag is not None and searched and not rows:
+            # search-first gave nothing: the tag page is the fallback, opened once
+            tag_fallback.append("#" + tag)
+            browser.open(url)
+            browser.wait(settle)
+            if source != "meta_ads":
+                check_warning(browser, source, site_cfg)
+            check_page(False)
+            rows, data_ids, hit_limit = _gather(browser, source, site_cfg, scrolls, pause, share)
         if tag is not None and not searched and not rows and browser.exists(errors):        # the error came after the first wait
             search_instead(tag)
             rows, data_ids, hit_limit = _gather(browser, source, site_cfg, scrolls, pause, share)
@@ -1125,7 +1165,8 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds, page_budget
     stealth_summary = read_log.summary() if read_log is not None else None
     return kept, {"json": in_data, "links": len(kept) - in_data, "state": state, "rate_limited": limited and len(kept) < n,
                   "fallbacks": fallbacks, "fallback_how": how, "page_errors": page_errors,
-                  "pages": len(urls) + len(how), "pages_planned": len(urls), "pages_total": pages_total,
+                  "search_first": searched_first, "search_first_how": how_first, "tag_fallback": tag_fallback,
+                  "pages": len(urls) + len(how) + len(tag_fallback), "pages_planned": len(urls), "pages_total": pages_total,
                   **({"secondary": second} if secondary is not None and source == "meta_ads" else {}),
                   **({"stealth": stealth_summary} if stealth_summary else {})}
 
@@ -1359,14 +1400,30 @@ class CollectResult:
     follow: dict = field(default_factory=dict)        # brand slug -> bench.FollowPlan, as it stands at the end of the run
     resting: dict = field(default_factory=dict)       # site -> {until, at, reason}: accounts resting after a warning
     fresh: dict = field(default_factory=dict)         # brand slug -> {"items": collected this run, "new": of those not yet in the store}
+    skipped_sources: dict = field(default_factory=dict)  # site -> {reason, url, screenshot, human_score, egress_ip, message}: a security check or login wall stopped this source; the rest of the run carried on
+    deferred: dict = field(default_factory=lambda: {"new": [], "done": [], "dropped": [], "waiting": []})
+    # the deferred queue this run: missed items queued, collected after deferral, dropped at the cap, still waiting
 
     @property
     def needs_review(self):
         return sum(1 for plan in self.follow.values() for r in plan.review if r["status"] == "ambiguous")
 
     @property
+    def partial_success(self):
+        """Some tasks ran (or were already collected) while a source was skipped after a security check or login
+        wall: the run delivered, but not everything. This is not a failure."""
+        return bool(self.skipped_sources) and any(t.status in ("ran", "reused")
+                                                  for r in self.brands.values() for t in r)
+
+    @property
     def problems(self):
-        return bool(self.problems_for or any(t.status == "failed" for r in self.brands.values() for t in r))
+        if self.problems_for or any(t.status == "failed" for r in self.brands.values() for t in r):
+            return True
+        if self.skipped_sources:
+            # every source the run asked for was stopped by a security check or login wall and nothing was
+            # delivered: that is a failure, not a quiet skip
+            return not any(t.status in ("ran", "reused", "would_run") for r in self.brands.values() for t in r)
+        return False
 
 
 def _parse(ts):
@@ -1453,7 +1510,8 @@ def merge_routes(parts):
              "routes": {route: len(rows) for route, rows, _ in parts},
              "common": sum(len(rows) for _, rows, _ in parts) - len(merged),
              "rate_limited": any(p[2].get("rate_limited") for p in parts)}
-    for key in ("fallbacks", "fallback_how", "page_errors", "pages", "pages_planned", "pages_total"):
+    for key in ("fallbacks", "fallback_how", "search_first", "search_first_how", "tag_fallback",
+                "page_errors", "pages", "pages_planned", "pages_total"):
         if key in first:
             stats[key] = first[key]
     return merged, stats
@@ -1471,6 +1529,13 @@ def _page_notes(stats):
             .replace("address", "the search address")
         text += (f" - the page for {', '.join(stats['fallbacks'])} would not load (an error or a security check), "
                  f"so TikTok's search results were read instead ({way or 'searched'})")
+    if stats.get("search_first"):
+        way = " and ".join(sorted(set(stats.get("search_first_how") or []))).replace("typed", "typed into the search box, as a person would") \
+            .replace("address", "the search address")
+        text += (f" - {', '.join(stats['search_first'])} was searched first (hashtag_via_search_first), instead of "
+                 f"opening the tag page ({way or 'searched'})")
+        if stats.get("tag_fallback"):
+            text += f"; the search gave nothing for {', '.join(stats['tag_fallback'])}, so the tag page was opened instead"
     if stats.get("pages_planned", 0) < stats.get("pages_total", 0):
         text += (f" - careful mode: opened {stats['pages_planned']} of {stats['pages_total']} pages this run (the page caps in browser.yaml); "
                  "the rest are taken on the next runs")
@@ -1529,6 +1594,207 @@ def format_benchmark_status(brand, store, auto, settings, now, root="brands"):
     return "\n" + bench.format_follow_plan(_follow_plan(brand, cfg, auto, state, settings, now), brand.slug, brand.name)
 
 
+# ---------------------------------------------------------------------------------------
+# the deferred queue: missed items waiting for the next Collect
+# ---------------------------------------------------------------------------------------
+
+def deferred_queue_path(store):
+    """data/_shared/deferred-queue.json: runtime state, under data/ like the page log, so it is never committed
+    by hand and never grows into the repository's history."""
+    return Path(store.data_dir) / "_shared" / DEFERRED_QUEUE_NAME
+
+
+def load_deferred_queue(store):
+    """The missed items waiting for the next Collect, or an empty queue when there is none (or it cannot be read:
+    a half-written file is never a crash)."""
+    path = deferred_queue_path(store)
+    try:
+        data = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {}
+    except (ValueError, OSError):
+        return {"entries": []}
+    entries = data.get("entries") if isinstance(data, dict) else None
+    if not isinstance(entries, list):
+        return {"entries": []}
+    return {"entries": [e for e in entries if isinstance(e, dict) and e.get("brand") and e.get("source")]}
+
+
+def save_deferred_queue(store, queue):
+    """Write the queue atomically, only when it changed (the same shape as the store's own _shared files)."""
+    path = deferred_queue_path(store)
+    text = json.dumps(queue, ensure_ascii=False, sort_keys=True, indent=1)
+    if path.is_file() and path.read_text(encoding="utf-8") == text:
+        return False
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=str(path.parent), suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8", newline="") as fh:
+            fh.write(text)
+        os.replace(tmp, path)
+    except BaseException:
+        if os.path.exists(tmp):
+            os.unlink(tmp)
+        raise
+    return True
+
+
+def _deferred_seeds(task):
+    """The runnable seeds a missed task holds: hashtags, profiles and searches for a social source, page
+    addresses for the Ad Library. Anything else in the task (labels, page records) is not a seed to retry."""
+    seeds = {}
+    for key in ("hashtags", "profiles", "searches", "urls"):
+        values = (task.payload or {}).get(key)
+        if isinstance(values, list):
+            keep = [v for v in values if isinstance(v, str) and v.strip()]
+            if keep:
+                seeds[key] = keep
+    return seeds
+
+
+def _seeds_label(source, seeds):
+    count = sum(len(v) for v in seeds.values())
+    return f"{count} advertiser page(s)/keyword(s)" if source == "meta_ads" else f"{count} hashtag(s)/profile(s)/search(es)"
+
+
+def _seeds_covered(inner, outer):
+    """True when every seed in `inner` is also in `outer` (so retrying `outer` retries `inner` too)."""
+    if not inner:
+        return False
+    return all(v in (outer.get(key) or []) for key, values in inner.items() for v in values)
+
+
+def _seeds_overlap(left, right):
+    return any(v in (right.get(key) or []) for key, values in left.items() for v in values)
+
+
+def _deferred_task(entry):
+    """A waiting entry as a task to run first, or None when it holds nothing runnable."""
+    seeds = entry.get("seeds") or {}
+    if entry.get("source") == "meta_ads":
+        payload = {"urls": list(seeds.get("urls") or [])}
+    else:
+        payload = {k: list(seeds[k]) for k in ("hashtags", "profiles", "searches") if seeds.get(k)}
+    if not payload or not any(payload.values()):
+        return None
+    count = sum(len(v) for v in payload.values())
+    label = entry.get("label") or _seeds_label(entry["source"], payload)
+    return Task(entry["source"], label, payload, _key(entry["source"], payload), count)
+
+
+def include_deferred_tasks(tasks, queue, brand, sources):
+    """The missed items waiting for this brand, first in the plan: a waiting entry becomes its own task when the
+    planned tasks do not already cover it, or is carried by the planned task that does. Returns (tasks, retried)
+    where retried is [(entry, task label)] for the entries this run attempts."""
+    entries = [e for e in queue.get("entries", []) if e.get("brand") == brand and e.get("source") in sources]
+    if not entries:
+        return tasks, []
+    retried, extra = [], []
+    for entry in entries:
+        task = _deferred_task(entry)
+        if task is None:
+            continue
+        covering = next((t for t in tasks if t.source == entry["source"] and _seeds_covered(entry.get("seeds") or {}, _deferred_seeds(t))), None)
+        if covering is not None:
+            retried.append((entry, covering.seeds))
+        else:
+            extra.append(task)
+            retried.append((entry, task.seeds))
+    return extra + tasks, retried
+
+
+def defer_blocked(queue, brand, task, reason, detail, now):
+    """Queue a task the run could not collect (a security check or login wall stopped it). An entry whose seeds
+    overlap this miss is merged into it, keeping the highest deferral count; a miss deferred
+    DEFERRED_MAX_DEFERRALS times already is dropped instead, with a note. Returns (entry or None, dropped notes)."""
+    seeds = _deferred_seeds(task)
+    if not seeds:
+        return None, []
+    overlapping = [e for e in queue.get("entries", [])
+                   if e.get("brand") == brand and e.get("source") == task.source
+                   and _seeds_overlap(e.get("seeds") or {}, seeds)]
+    prior = max([e.get("deferrals", 1) for e in overlapping], default=0)
+    if prior >= DEFERRED_MAX_DEFERRALS:
+        queue["entries"] = [e for e in queue.get("entries", []) if not any(e is o for o in overlapping)]
+        note = (f"{brand} {task.source}: {task.seeds} was missed again after {prior} deferrals, so it is dropped "
+                "from the deferred queue (it will not be retried; collect it by hand if it still matters)")
+        return None, [note]
+    merged = {}
+    for entry in overlapping:
+        for key, values in (entry.get("seeds") or {}).items():
+            merged[key] = sorted(set(merged.get(key, [])) | set(values))
+    for key, values in seeds.items():
+        merged[key] = sorted(set(merged.get(key, [])) | set(values))
+    first = min([e.get("first_deferred", now) for e in overlapping], default=now)
+    queue["entries"] = [e for e in queue.get("entries", []) if not any(e is o for o in overlapping)]
+    entry = {"brand": brand, "source": task.source, "seeds": merged,
+             "label": task.seeds if not overlapping else _seeds_label(task.source, merged),
+             "reason": reason, "detail": (detail or "")[:200],
+             "first_deferred": first, "last_deferred": now, "deferrals": prior + 1}
+    queue.setdefault("entries", []).append(entry)
+    dropped = []
+    while len(queue["entries"]) > DEFERRED_MAX_ENTRIES:
+        oldest = min(queue["entries"], key=lambda e: (e.get("last_deferred", ""), e.get("first_deferred", "")))
+        queue["entries"].remove(oldest)
+        dropped.append(f"{oldest['brand']} {oldest['source']}: {oldest.get('label', '')} dropped: the deferred "
+                       f"queue is full ({DEFERRED_MAX_ENTRIES} entries)")
+    return entry, dropped
+
+
+def bump_deferred(queue, entry, now):
+    """A retried entry whose task failed outright counts as a failed retry: one more deferral, or dropped at the
+    cap. Returns the drop note, or None when it stays queued."""
+    entry["deferrals"] = entry.get("deferrals", 1) + 1
+    entry["last_deferred"] = now
+    if entry["deferrals"] > DEFERRED_MAX_DEFERRALS:
+        queue["entries"] = [e for e in queue.get("entries", []) if e is not entry]
+        return (f"{entry['brand']} {entry['source']}: {entry.get('label', '')} failed again after "
+                f"{DEFERRED_MAX_DEFERRALS} deferrals, so it is dropped from the deferred queue")
+    return None
+
+
+def resolve_deferred(retried, reports, queue, now, result):
+    """Settle the entries this brand's run attempted: collected (or already collected) drops out, a miss that was
+    deferred again under a wider miss is already gone, a hard failure counts as a failed retry, and a benign skip
+    (a cap, a gap, a rest) stays queued, untried, for the next run."""
+    for entry, label in retried:
+        if not any(e is entry for e in queue.get("entries", [])):
+            continue                    # already settled: re-deferred under a wider miss, or dropped at the cap
+        report = next((r for r in reports if r.source == entry["source"] and r.seeds == label), None)
+        if report is None:
+            continue
+        if report.status in ("ran", "reused"):
+            queue["entries"] = [e for e in queue.get("entries", []) if e is not entry]
+            result.deferred["done"].append(f"{entry['brand']} {entry['source']}: {label}")
+        elif report.status == "failed":
+            note = bump_deferred(queue, entry, now)
+            if note:
+                result.deferred["dropped"].append(note)
+
+
+def skip_details(site, exc, opened):
+    """What the run report says about a source stopped by a security check or login wall: the page that failed,
+    the screenshot, the human score and the egress IP, when the browser kept them. Never a cookie value."""
+    kind = "warning" if isinstance(exc, AccountWarning) else "challenge" if isinstance(exc, Challenge) else "login_wall"
+    shot = {"warning": f"warning-{site}", "challenge": f"challenge-{site}", "login_wall": f"login-wall-{site}"}[kind]
+    browser_obj = (opened or {}).get(site)
+    shots = getattr(browser_obj, "shots", None) or []
+    detail = {"reason": kind, "url": getattr(browser_obj, "url", "") or "",
+              "screenshot": shots[-1] if shots else shot, "message": str(exc)[:300],
+              "human_score": None, "egress_ip": None}
+    read_log = getattr(browser_obj, "read_log", None)
+    summary = None
+    if read_log is not None:
+        try:
+            summary = read_log.summary()
+        except Exception:
+            summary = None
+    if summary:
+        detail["human_score"] = summary.get("human_score")
+        detail["egress_ip"] = summary.get("egress_ip")
+        detail["engine"] = summary.get("engine")
+        detail["proxy"] = summary.get("proxy")
+    return detail
+
+
 def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg, ledger_cls, sources, now,
                 run_id, configs=None, dry_run=False, root="brands", apify=None, claude=None, backend="browser", region=None,
                 health=None, registry=None, fresh=False, page_finder=None, secondary=None):
@@ -1543,6 +1809,23 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
     from .research import load_brand_research         # local import: research imports this module
     ledger = ledger_cls(store.load_usage(), now[:7])
     result = CollectResult(run_id=run_id, now=now, dry_run=dry_run)
+    queue = load_deferred_queue(store)                # missed items waiting from the last run; saved again at the end
+    queue_changed = False
+    blocked = {}                                      # site -> "challenge" | "login_wall" | "warning": a security check or login wall stopped it this run; one attempt per source per run, never a retry loop
+
+    def defer_missed(brand_slug, task, reason, detail):
+        """Queue a missed task and note it for the report. True when the queue changed."""
+        nonlocal queue_changed
+        entry, dropped = defer_blocked(queue, brand_slug, task, reason, detail, now)
+        if entry is not None:
+            result.deferred["new"].append(f"{brand_slug} {task.source}: {entry['label']} "
+                                          f"(deferral {entry['deferrals']} of {DEFERRED_MAX_DEFERRALS})")
+        for note in dropped:
+            result.deferred["dropped"].append(note)
+        if entry is not None or dropped:
+            queue_changed = True
+        return entry is not None or bool(dropped)
+
     disabled, opened, deep_runs = {}, {}, 0
     apify_state = {"disabled": None, "exhausted": False}
     cooldowns = store.read_cooldowns()
@@ -1669,6 +1952,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                     result.notes.extend(f"{brand.slug}: {line}" for line in healed)
             follow = _follow_plan(brand, cfg, auto, state, settings, now) if settings.benchmarks_enabled else None
             tasks = plan_collections(cfg, auto, settings, follow)
+            tasks, retried = include_deferred_tasks(tasks, queue, brand.slug, sources)   # missed items first
             planned_pages = {str(p["page_id"]) for t in tasks for p in t.payload.get("pages", [])}
             for task in tasks:              # the list can grow: a brand found by a look-up is followed in the same run
                 if task.source not in sources:
@@ -1687,6 +1971,8 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                         routes = [r for r in routes if not resting[r]]
                 if not routes:
                     report.detail = why
+                    if site in blocked and not dry_run:     # the site is already stopped this run: this task's seeds are missed too
+                        defer_missed(brand.slug, task, blocked[site], why)
                     continue
                 days = settings.gemini_cache_days if deep else settings.browser_cache_days
                 if not fresh and _fresh(records, task.source, task.key, now, days):                # fresh: the owner asked for new results now, so the last days' collection is not reused
@@ -1736,6 +2022,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                         seen(task.source, "browser", items=1)
                     except (LoginWall, Challenge) as exc:
                         seen(task.source, "browser", exc=exc)
+                        result.skipped_sources.setdefault(site, skip_details(site, exc, opened))
                         message = str(exc) + (cookie_facts(site, site_creds)
                                               if isinstance(exc, LoginWall) and "Cookie facts" not in str(exc) else "") + rest_after(exc, site)
                         disabled[site] = message
@@ -1784,6 +2071,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                         report.detail += f" (careful mode: opens at most {careful} pages)"
                     continue
                 errors, rows, stats, via, hard, parts = [], None, None, None, False, []
+                blocked_here = False
                 for route, n in viable:
                     try:
                         if route == "apify":
@@ -1806,6 +2094,12 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                             note_pages(site, stats)
                     except (LoginWall, Challenge) as exc:
                         seen(task.source, route, exc=exc)
+                        # one source failing never fails the whole run: it is skipped, the other brands and sources
+                        # finish, and the run is a partial success (or a failure only when nothing was delivered)
+                        kind = "warning" if isinstance(exc, AccountWarning) else "challenge" if isinstance(exc, Challenge) else "login_wall"
+                        blocked[site] = kind
+                        blocked_here = True
+                        result.skipped_sources.setdefault(site, skip_details(site, exc, opened))
                         message = str(exc) + rest_after(exc, site)
                         disabled[site] = message
                         result.needs_you.setdefault(site, message)           # the account needs the owner (cookies, a suspended account): this source is skipped, the rest of the run is not a failure
@@ -1860,6 +2154,8 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                 if via is None:
                     report.status = "failed" if hard else "skipped"
                     report.detail = " | ".join(errors)[:400]
+                    if blocked_here and not dry_run:        # the missed seeds are queued for the next Collect
+                        defer_missed(brand.slug, task, blocked.get(site, "challenge"), errors[0] if errors else "")
                     continue
                 partial = stats.get("pages_planned", 0) < stats.get("pages_total", 0)
                 save(brand, task, rows, stats, via, {"partial": True, "pages_done": stats["pages_planned"],
@@ -1888,16 +2184,48 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                                  + (" - the site rate-limited further scrolling, so this is the first page of results only"
                                     if stats.get("rate_limited") else "")
                                  + _page_notes(stats))
+            if retried:
+                resolve_deferred(retried, reports, queue, now, result)
+                queue_changed = True
             if follow is not None and "meta_ads" in sources:
                 result.follow[brand.slug] = _follow_plan(brand, cfg, auto, state, settings, now)
+    if not dry_run and queue_changed:
+        save_deferred_queue(store, queue)              # a dry run never writes the queue
+    result.deferred["waiting"] = [f"{e['brand']} {e['source']}: {e.get('label', '')} "
+                                  f"(deferral {e.get('deferrals', 1)} of {DEFERRED_MAX_DEFERRALS}, "
+                                  f"last {str(e.get('last_deferred', ''))[:10]})" for e in queue.get("entries", [])]
     return result
 
 
 def format_collect_report(result, settings, ledger=None):
     lines = [f"Collection run {result.now}" + ("  [dry run: nothing was collected or saved]" if result.dry_run else "")]
+    if result.partial_success:
+        lines.append("PARTIAL SUCCESS: some sources were collected and some were skipped after a security check or "
+                     "login wall; the run is not a failure, and the missed items are queued for the next Collect "
+                     "(see SKIPPED SOURCES and the deferred queue below).")
+    if result.skipped_sources and not any(t.status in ("ran", "reused")
+                                          for r in result.brands.values() for t in r):
+        lines.append("FAILED: every source was stopped by a security check or login wall and nothing was collected; "
+                     "the missed items are queued for the next Collect.")
     for site, entry in sorted(result.resting.items()):
         lines.append(f"Resting: {site} until {entry['until'][:10]} after an account warning ({str(entry.get('reason', ''))[:100]}); "
                      "its browser tasks are skipped, and Apify still runs if it is switched on")
+    if result.skipped_sources:
+        lines.append("SKIPPED SOURCES (a security check or login wall stopped this source; the rest of the run carried on):")
+        for site, detail in sorted(result.skipped_sources.items()):
+            bits = [f"{site}: {detail['reason']}"]
+            if detail.get("url"):
+                bits.append(f"page {detail['url']}")
+            if detail.get("screenshot"):
+                bits.append(f"screenshot {detail['screenshot']}")
+            if detail.get("human_score") is not None:
+                bits.append(f"human score {detail['human_score']}/100")
+            if detail.get("egress_ip"):
+                bits.append(f"egress IP {detail['egress_ip']}")
+            lines.append("  " + "; ".join(bits))
+            lines.append(f"    {detail['message'][:200]}")
+            lines.append("    To clear it: log in once as the dummy account in a normal browser, clear the check "
+                         "by hand, export fresh cookies, then re-run Collect.")
     for slug, reports in result.brands.items():
         lines.append("")
         lines.append(f"=== {slug} ===")
@@ -1921,6 +2249,18 @@ def format_collect_report(result, settings, ledger=None):
                      f"Deep Research tasks {ledger.month_used('deep_research_tasks'):g}/{settings.monthly_tasks}, "
                      f"Claude calls {ledger.month_used('claude_calls'):g}/{settings.claude_monthly_calls}")
     lines.extend(f"note: {n}" for n in result.notes)
+    deferred = result.deferred or {}
+    if deferred.get("new") or deferred.get("done") or deferred.get("dropped") or deferred.get("waiting"):
+        lines.append(f"Deferred queue (data/_shared/{DEFERRED_QUEUE_NAME}): "
+                     f"{len(deferred.get('waiting') or [])} missed item(s) waiting for the next Collect.")
+        for label in deferred.get("done") or []:
+            lines.append(f"  collected after deferral: {label}")
+        for label in deferred.get("new") or []:
+            lines.append(f"  queued: {label}")
+        for note in deferred.get("dropped") or []:
+            lines.append(f"  dropped: {note}")
+        for label in deferred.get("waiting") or []:
+            lines.append(f"  waiting: {label}")
     if result.needs_you:
         lines.append("NEEDS YOU (these are skipped, the rest of the run is fine):")
         lines.extend(f"  {site}: {message}" for site, message in result.needs_you.items())

@@ -84,7 +84,9 @@ class TikTok(FakeBrowser):
 
 def read(cfg, browser):
     task = C.Task("tiktok", "tags", {"hashtags": ["overalls"]}, "k")
-    return C.run_browser_task(browser, task, 10, {**cfg["sites"]["tiktok"], "settle_seconds": 0}, cfg, {})
+    # These tests cover the on-error fallback (tag page first, search when it fails); search-first is covered in
+    # test_deferred_queue.py. The shipped browser.yaml has the flag on for TikTok, so it is switched off here.
+    return C.run_browser_task(browser, task, 10, {**cfg["sites"]["tiktok"], "settle_seconds": 0, "hashtag_via_search_first": False}, cfg, {})
 
 
 def test_a_puzzle_that_the_x_closes_lets_the_tag_page_be_read_and_nothing_is_searched(cfg):
@@ -162,7 +164,7 @@ def test_a_tag_page_with_no_posts_and_no_error_is_not_searched(cfg):
 def test_the_search_is_used_only_when_the_setting_allows_it(cfg):
     task = C.Task("tiktok", "tags", {"hashtags": ["overalls"]}, "k")
     b = TikTok(cfg, error_on={"tag"}, data_on={"typed"})
-    site = {**cfg["sites"]["tiktok"], "settle_seconds": 0, "hashtag_via_search_on_error": False}
+    site = {**cfg["sites"]["tiktok"], "settle_seconds": 0, "hashtag_via_search_on_error": False, "hashtag_via_search_first": False}
     rows, stats = C.run_browser_task(b, task, 10, site, cfg, {})
     assert rows == [] and b.typed_queries == [] and stats["page_errors"] == 1
 

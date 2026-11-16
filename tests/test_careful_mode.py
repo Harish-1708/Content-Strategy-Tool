@@ -198,7 +198,7 @@ def test_the_sites_own_scroll_limit_and_pause_are_what_the_browser_is_told(cfg):
     tt = site(cfg, "tiktok")
     t = FakeBrowser({"https://www.tiktok.com/tag/": {"json": []}}, present_always={tt["logged_in_any"][0]})
     C.run_browser_task(t, C.Task("tiktok", "t", {"hashtags": ["a"]}, "k"), 50, {**tt, "settle_seconds": 0}, cfg, CREDS["tiktok"])
-    assert t.scrolls == 8 and set(t.pauses) == {3}                                 # another site keeps the general settings
+    assert t.scrolls == 16 and set(t.pauses) == {3}                                # another site keeps the general settings; search-first reads two pages here (the search gives nothing, so the tag page is the fallback), each scrolled 8 times
 
 
 def test_the_notes_say_when_some_pages_were_left_for_next_time():
@@ -305,7 +305,7 @@ def test_tiktok_account_reads_are_capped_at_two_pages_a_run_since_update_68(tmp_
     f = world(cfg)
     result = go(store, tmp_path, swov, cfg, settings, f, data=data, sources=("tiktok",))
     assert statuses(result) == [("tiktok", "ran")] and "careful mode" in result.brands["swoveralls"][0].detail
-    assert len([u for u in f.browsers["tiktok"].opened if "/tag/" in u]) == 2                    # two of the five hashtag pages; the next run carries on
+    assert len([u for u in f.browsers["tiktok"].opened if "/search" in u or "/tag/" in u]) == 2    # two of the five hashtag reads; the next run carries on (search-first opens the search pages, not the tag pages)
 
 
 def test_a_dry_run_says_how_many_pages_it_would_open_and_writes_nothing(tmp_path, store, swov, cfg, settings):
@@ -325,7 +325,7 @@ def test_when_the_browser_is_capped_out_apify_in_fallback_mode_still_collects(tm
     http, apify = apify_world()
     f = ig_world(cfg)
     result = go(store, tmp_path, swov, cfg, settings, f, backend="fallback", apify=apify, data={"track_own_brand": False, "social": {"instagram": {"hashtags": ["a"]}}})
-    assert statuses(result) == [("instagram", "ran")] and f.opened == [] and len(http.calls) == 1
+    assert statuses(result) == [("instagram", "ran")] and f.opened == [] and len(http.calls) == 3     # one async Instagram run: start, status, dataset
     assert "via Apify (the browser failed: careful mode: instagram has opened its 4 pages for today" in result.brands["swoveralls"][0].detail
 
 
@@ -491,7 +491,9 @@ def test_the_real_factory_gives_each_site_its_own_pauses(monkeypatch, cfg):
 
 def test_a_page_opened_by_a_typed_search_counts_as_a_page_load_but_not_as_one_of_the_planned_pages(cfg):
     from test_tiktok_puzzle_and_search import TikTok
-    b = TikTok(cfg, error_on={"tag"}, data_on={"typed"})
+    # Search-first: the typed search runs first and gives nothing here, so the tag page is the fallback; the typed
+    # search still counts as a page load (pages=2) but not as one of the planned pages (pages_planned=1).
+    b = TikTok(cfg, error_on={"tag"}, data_on={"tag"})
     task = C.Task("tiktok", "tags", {"hashtags": ["overalls"]}, "k")
     _, stats = C.run_browser_task(b, task, 10, {**cfg["sites"]["tiktok"], "settle_seconds": 0}, cfg, {})
     assert (stats["pages"], stats["pages_planned"], stats["pages_total"]) == (2, 1, 1)
@@ -520,3 +522,4 @@ def test_the_next_run_gives_the_second_brand_its_turn(tmp_path, store, brands, c
         result = C.run_collect([brands["swoveralls"], brands["duderobe"]], store, browser_factory=f, creds=CREDS, settings=settings, browser_cfg=cfg,
                                ledger_cls=R.Ledger, sources=["instagram"], now=now, run_id="r", root=str(tmp_path / "brands"))
     assert statuses(result, "swoveralls") == [("instagram", "reused")] and statuses(result, "duderobe") == [("instagram", "ran")]
+

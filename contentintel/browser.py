@@ -61,8 +61,8 @@ _TYPES = {
     "needs_login": "bool", "secrets": "secrets", "home": "str", "hashtag_url": "str",
     "profile_url": "str", "search_url": "str", "app_url": "str", "settle_seconds": "num",
     "json_url_hints": "strs", "consent_any": "strs", "logged_in_any": "strs", "login_wall_any": "strs",
-    "challenge_any": "strs", "challenge_dismiss": "strs", "error_any": "strs", "hashtag_via_search_on_error": "bool", "search_box": "strs",
-    "warning_any": "strs", "warning_url_any": "strs",
+    "challenge_any": "strs", "challenge_dismiss": "strs", "error_any": "strs", "hashtag_via_search_on_error": "bool", "hashtag_via_search_first": "bool", "search_box": "strs",
+    "warning_any": "strs", "warning_url_any": "strs", "warmup": "warmup",
     "pacing": "pace", "max_scrolls_per_page": "whole", "max_pages_per_run": "whole", "max_pages_per_day": "whole", "min_hours_between_runs": "num",
     "deep_research_active_any": "strs", "signed_out_any": "strs", "link_contains": "strs", "prompt_box": "strs", "send": "strs",
     "start_research": "strs", "still_working_any": "strs", "done_any": "strs", "response": "strs",
@@ -127,6 +127,21 @@ def _check_value(kind, value, where):
             raise BrowserError(f"{where} must be a list of lists of selectors")
         for n, item in enumerate(value, start=1):
             _strs(item, f"{where} item {n}")
+    elif kind == "warmup":
+        if not isinstance(value, dict) or set(value) - {"enabled", "urls", "token", "wait_seconds", "poll_seconds"}:
+            raise BrowserError(f"{where} must have only: enabled, urls, token, wait_seconds, poll_seconds")
+        if "enabled" in value and not isinstance(value["enabled"], bool):
+            raise BrowserError(f"{where}.enabled must be true or false")
+        if "urls" in value:
+            _strs(value["urls"], f"{where}.urls")
+            for url in value["urls"]:
+                if not url.startswith("https://"):
+                    raise BrowserError(f"{where}.urls must be https:// addresses, got {url!r}")
+        if "token" in value and (not isinstance(value["token"], str) or not value["token"].strip()):
+            raise BrowserError(f"{where}.token must be a non-empty cookie name")
+        for key in ("wait_seconds", "poll_seconds"):
+            if key in value:
+                _num(value[key], f"{where}.{key}")
     elif kind == "secrets":
         if not isinstance(value, dict) or "cookies" not in value or set(value) - {"cookies", "username", "password"}:
             raise BrowserError(f"{where} must name a cookies secret, and optionally username and password")
@@ -646,6 +661,14 @@ def _start_patchright():
     xvfb = stealth_mod.Xvfb()
     xvfb.start()
     _XVFB["instance"] = xvfb
+    # The start attempt is logged plainly, so a run report can say whether
+    # the patchright browser really ran headed: a stale "Waiting" view is
+    # not the only thing that hides it — before this, nothing recorded
+    # whether Xvfb had started at all.
+    try:
+        print(xvfb.status_line())
+    except Exception:
+        pass
     try:
         from patchright.sync_api import sync_playwright
     except ImportError as exc:
@@ -689,7 +712,8 @@ def _try_stealth_engines(site, identity, stealth_cfg):
                 return engine, context, lambda context=context: (_close_context(context), _SHARED.release())
             driver = _PATCHRIGHT.acquire(_start_patchright)
             context = stealth_mod.launch_patchright(driver, identity, stealth_cfg,
-                                                    headless=not bool(os.environ.get("DISPLAY")))
+                                                    headless=not bool(os.environ.get("DISPLAY")),
+                                                    xvfb=_XVFB["instance"])
             return engine, context, lambda context=context: (_close_context(context), _PATCHRIGHT.release())
         except Exception as exc:
             last_error = exc
@@ -778,9 +802,27 @@ def open_browser(site, cfg, pacing, cookies_text, debug_dir, headless=True, huma
             identity["engine"] = engine
         browser_obj = PlaywrightBrowser(page, Path(debug_dir) / site, pacing, cfg.get("json_url_hints", []), human=person)
         browser_obj.identity = identity
+        # How the X server attempt went, when one was started for this run:
+        # the read log and the run report can show it, instead of leaving
+        # the headed/headless question unanswered.
+        xvfb_instance = _XVFB["instance"]
+        browser_obj.xvfb_status = getattr(xvfb_instance, "status", None) if xvfb_instance is not None else None
         if identity is not None and stealth_cfg.get("log_reads"):
             browser_obj.read_log = stealth_mod.ReadLog(site, engine, identity,
-                                                       egress_ip=stealth_mod.resolve_egress_ip(page))
+                                                       egress_ip=stealth_mod.resolve_egress_ip(page),
+                                                       xvfb_status=browser_obj.xvfb_status)
+        # Warm-up: visit the site's public video/profile pages and poll for
+        # its clearance cookie before any listing page is opened (see
+        # contentintel/warmup.py). It never fails the run, and with no
+        # warmup: block in the site config it does nothing at all.
+        try:
+            from . import warmup as warmup_mod
+            report = warmup_mod.warm_up(browser_obj, cfg)
+        except Exception:
+            report = None
+        if report is not None and report.get("visited"):
+            print(f"warm-up {site}: visited {len(report['visited'])} page(s), "
+                  f"clearance token found: {'yes' if report['token_found'] else 'no'}")
         yield browser_obj
     finally:
         if browser_obj is not None:

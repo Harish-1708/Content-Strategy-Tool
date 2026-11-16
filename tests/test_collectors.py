@@ -416,6 +416,7 @@ def test_meta_ads_need_no_login_and_dismiss_a_cookie_banner(cfg):
     task = C.Task("meta_ads", "t", {"urls": [C.ad_library_url("overalls", "us", "active")]}, "k")
     rows, stats = run_task(cfg, b, task, 10)
     assert [r["item_id"] for r in rows] == ["meta_ads:111", "meta_ads:112"] and stats == {"json": 2, "links": 0, "state": "ok", "rate_limited": False, "fallbacks": [], "fallback_how": [], "page_errors": 0,
+                                                                                             "search_first": [], "search_first_how": [], "tag_fallback": [],
                                                                                              "pages": 1, "pages_planned": 1, "pages_total": 1}
     assert len(b.opened) == 1 and b.clicks == [site(cfg, "meta_ads")["consent_any"][0]] and b.waits == [4]
 
@@ -671,7 +672,7 @@ def test_one_page_that_breaks_does_not_stop_the_others_and_costs_nothing(tmp_pat
     original = f.browsers["tiktok"].open
 
     def boom(url):
-        if "/tag/" in url:
+        if "/tag/" in url or "/search" in url:
             raise B.BrowserError("could not open the page")
         original(url)
     f.browsers["tiktok"].open = boom

@@ -13,7 +13,7 @@ import yaml
 sys.path.insert(0, str(Path(__file__).parent))
 from fake_browser import FakeBrowser                                      # noqa: E402
 from fake_http import FakeHttp                                            # noqa: E402
-from test_apify_backend import AP_AD, AP_IG, AP_TT, ADS_URL, IG_URL, SOURCES, TT_URL, run             # noqa: E402
+from test_apify_backend import AP_AD, AP_IG, AP_TT, ADS_URL, IG_URL, SOURCES, TT_URL, apify_async_routes, run             # noqa: E402
 from conftest import BRANDS_DIR                                           # noqa: E402
 from test_collectors import BROWSER_YAML, CREDS, NOW, LoginFake, site, world            # noqa: E402
 
@@ -111,9 +111,10 @@ def test_the_real_instagram_answer_of_the_first_run_turns_into_usable_rows():
 def test_a_whole_collection_through_apify_works_with_201_answers(tmp_path, cfg, settings, store, swov):
     http = FakeHttp()
     http.on("POST", ADS_URL, (201, [AP_AD])).on("POST", TT_URL, (201, [AP_TT])).on("POST", IG_URL, (201, [AP_IG]))
+    apify_async_routes(http)                                     # 30-item asks start async: start, status, dataset each
     result = run(store, tmp_path, swov, cfg, settings, world(cfg), apify=Apify("apify-secret-123", http=http, sleep=lambda s: None),
                  backend="apify", sources=SOURCES)
-    assert len(http.calls) == 3 and not result.problems
+    assert len(http.calls) == 9 and not result.problems
     assert [r.status for r in result.brands["swoveralls"]] == ["ran", "ran", "ran"] and all("via Apify" in r.detail for r in result.brands["swoveralls"])
     assert {r["via"] for r in store.read_collected("swoveralls")} == {"apify"}
 

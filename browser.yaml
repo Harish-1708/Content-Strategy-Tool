@@ -64,6 +64,8 @@ limits:
 
 sites:
   meta_ads:                     # public pages: no login needed
+    # No warmup: block here on purpose — the Ad Library reads are public pages, not a logged-in session, and
+    # there is no clearance token to mint for them. Warm-up is a TikTok/Instagram session step only.
     needs_login: false
     json_url_hints: [graphql]
     settle_seconds: 4
@@ -77,6 +79,17 @@ sites:
     settle_seconds: 10            # Instagram draws its grid slowly: wait this long after opening a page (the general default is 3)
     scroll_pause_seconds: 6       # and this long after each scroll, so more posts have loaded before the next read (Careful Mode's pacing, below, overrides it)
     hashtag_url: https://www.instagram.com/explore/tags/{tag}/
+    # Warm-up (see contentintel/warmup.py): one public profile page and one public post page, visited before any
+    # listing read, so the session arrives with its cookies refreshed by real page loads. Instagram has no WAF
+    # clearance cookie, so the poll looks for csrftoken only — it confirms the session cookies are present after
+    # a real page load. The post address is a public post used as an example: if it goes stale the visit is
+    # skipped and the run carries on — replace it with any live public post.
+    warmup:
+      enabled: true
+      urls: [https://www.instagram.com/instagram/, https://www.instagram.com/p/Cuw6X2mOqXG/]
+      token: csrftoken
+      wait_seconds: 5
+      poll_seconds: 10
     json_url_hints: [graphql, /api/v1/]
     link_contains: ['/p/', '/reel/']
     logged_in_any: ['a[href="/direct/inbox/"]', 'svg[aria-label="Home"]', 'a[href="/explore/"]']
@@ -120,11 +133,32 @@ sites:
     hashtag_url: https://www.tiktok.com/tag/{tag}
     profile_url: https://www.tiktok.com/@{name}
     search_url: https://www.tiktok.com/search?q={q}
+    # Warm-up (see contentintel/warmup.py): TikTok's WAF mints _waftokenid per page kind — a video-page token clears
+    # only video pages, a profile-page token only profile pages, and the homepage mints none. So one public video
+    # page and one public profile page are visited first, a few seconds each, and the cookie jar is polled for the
+    # token before any tag/search page is opened. The video is @tiktok's own, verified live 2026-11-16. A stale or
+    # missing page never fails the run: that visit is skipped and the run carries on.
+    warmup:
+      enabled: true
+      urls: [https://www.tiktok.com/@tiktok/video/7238789584926477594, https://www.tiktok.com/@tiktok]
+      token: _waftokenid
+      wait_seconds: 5
+      poll_seconds: 10
+    # Search-first for hashtags: search for "#tag" before opening the tag page, the way a person would. The
+    # collectors side reads this flag in run_browser_task; the flag defaults to false when absent.
+    hashtag_via_search_first: true
     json_url_hints: [/api/]
     link_contains: ['/video/']
     logged_in_any: ['[data-e2e="profile-icon"]', '[data-e2e="inbox-icon"]', 'a[href*="/upload"]']
     login_wall_any: ['[data-e2e="top-login-button"]', 'button:has-text("Log in")']
-    challenge_any: ['text=Verify to continue', 'text=Drag the slider', '#captcha-verify-image', 'text=Select 2 objects']
+    # The puzzle variant Collect #64 actually showed ("Drag the puzzle piece into place") was NOT in this list, so
+    # the tool never detected the challenge, never pressed its X, and never fell back to search. Verified against
+    # the run's own debug page (empty-tiktok.html): that text 1x, #captcha-verify-container-main-page 1x,
+    # #captcha_slide_button 1x, #captcha_close_button 1x — and the four older entries 0x each. The three new
+    # markers are those verified ones; the old four stay, because other variants may still occur. Honest limit:
+    # detection unlocks the close-once + search fallback, it does not guarantee posts — behind the Collect #64
+    # modal the page held no videos at all, so pressing X alone would not have saved that read.
+    challenge_any: ['text=Verify to continue', 'text=Drag the slider', '#captcha-verify-image', 'text=Select 2 objects', 'text=Drag the puzzle piece into place', '#captcha-verify-container-main-page', '#captcha_slide_button']
     # An ACCOUNT warning: the tool stops using the account at once and rests it. Strict phrases, not yet checked against a real one.
     warning_any: ['text=Maximum number of attempts reached', 'text=Your account has been suspended', 'text=Your account is temporarily restricted']
     challenge_dismiss: ['#captcha_close_button']      # the puzzle's own X: pressed once, the puzzle itself is never solved

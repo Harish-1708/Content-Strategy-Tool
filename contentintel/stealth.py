@@ -278,8 +278,16 @@ def parse_proxy(secret_name, env=None):
             f"the proxy secret {secret_name} is set but is not a usable proxy "
             "address (use http://, https:// or socks5:// with a host and port); "
             "the address itself is never shown")
+    try:
+        port = parsed.port
+    except ValueError:
+        # An out-of-range port (urlparse raises instead of returning one).
+        raise StealthError(
+            f"the proxy secret {secret_name} is set but is not a usable proxy "
+            "address (use http://, https:// or socks5:// with a host and port); "
+            "the address itself is never shown") from None
     proxy = {"server": f"{parsed.scheme}://{parsed.hostname}"
-             + (f":{parsed.port}" if parsed.port else "")}
+             + (f":{port}" if port else "")}
     if parsed.username:
         proxy["username"] = parsed.username
     if parsed.password:
@@ -357,12 +365,18 @@ def launch_camoufox(pw, identity, cfg):
     return NewBrowser(pw, **kwargs)
 
 
-def launch_patchright(driver, identity, cfg, headless=True):
+def launch_patchright(driver, identity, cfg, headless=True, xvfb=None):
     """Open a patchright persistent context for one account. Headed when an
     X server is available (headed is what removes the headless tell); headless
     when there is none, with the pinned user agent still applied.
+
+    ``xvfb`` is the X server this launch runs on, when one was started: its
+    outcome is recorded on the returned context as ``xvfb_status`` (``started``,
+    ``already_running``, ``not_available`` or ``failed``), so the run report
+    can show whether the browser really ran headed. Recording it never fails
+    the launch.
     """
-    return driver.chromium.launch_persistent_context(
+    context = driver.chromium.launch_persistent_context(
         user_data_dir=identity["profile_dir"],
         headless=headless,
         viewport={"width": identity["viewport"][0], "height": identity["viewport"][1]},
@@ -371,6 +385,12 @@ def launch_patchright(driver, identity, cfg, headless=True):
         locale=identity["locale"],
         proxy=identity["proxy"],
         args=["--no-sandbox"])
+    if xvfb is not None:
+        try:
+            context.xvfb_status = xvfb.status
+        except Exception:
+            pass
+    return context
 
 
 def launch_plain(pw, identity, headless=True):
@@ -393,17 +413,37 @@ class Xvfb:
     """A private X server for headed browsers, started only when one is
     needed and stopped when the run is done. Best effort: when Xvfb is not
     installed, ``start`` returns False and the caller falls back.
+
+    ``status`` records how the start attempt went, so a run report can show
+    it instead of leaving the headed/headless question unanswered: ``started``
+    (this run started one), ``already_running`` (DISPLAY was already set, so
+    no server was started), ``not_available`` (Xvfb is not installed),
+    ``failed`` (starting one was tried and did not work), or None before any
+    attempt. ``status_line()`` is the plain line for the run log.
     """
 
     def __init__(self):
         self.process = None
         self.display = None
         self._old_display = None
+        self.status = None
+
+    def status_line(self):
+        """One plain line about the start attempt, for the run log."""
+        return {
+            "started": "Xvfb: started",
+            "already_running": "Xvfb: already running (DISPLAY was already set) — patchright runs headed",
+            "not_available": "Xvfb: not available — patchright ran headless",
+            "failed": "Xvfb: failed to start — patchright ran headless",
+            None: "Xvfb: not attempted",
+        }.get(self.status, "Xvfb: unknown")
 
     def start(self):
         if os.environ.get("DISPLAY"):
+            self.status = "already_running"
             return True
         if shutil.which("Xvfb") is None:
+            self.status = "not_available"
             return False
         for number in range(99, 120):
             lock = f"/tmp/.X{number}-lock"
@@ -414,6 +454,7 @@ class Xvfb:
                     ["Xvfb", f":{number}", "-screen", "0", "1920x1080x24", "-nolisten", "tcp"],
                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             except OSError:
+                self.status = "failed"
                 return False
             for _ in range(50):
                 if os.path.exists(f"/tmp/.X11-unix/X{number}"):
@@ -428,7 +469,9 @@ class Xvfb:
             self.display = f":{number}"
             self._old_display = os.environ.get("DISPLAY")
             os.environ["DISPLAY"] = self.display
+            self.status = "started"
             return True
+        self.status = "failed"
         return False
 
     def stop(self):
@@ -513,11 +556,12 @@ class ReadLog:
     to the run's debug directory when the browser closes.
     """
 
-    def __init__(self, site, engine, identity, egress_ip=None):
+    def __init__(self, site, engine, identity, egress_ip=None, xvfb_status=None):
         self.site = site
         self.engine = engine
         self.identity = identity
         self.egress_ip = egress_ip
+        self.xvfb_status = xvfb_status       # how the X server attempt went (None when no X server was involved)
         self.entries = []
 
     def record(self, url, started_at, ended_at, content_chars=0, mouse_moves=0,
@@ -574,6 +618,7 @@ class ReadLog:
             "identity": self.identity["site"] if self.identity else None,
             "proxy": proxy_host(self.identity.get("proxy")) if self.identity else None,
             "egress_ip": self.egress_ip,
+            "xvfb": self.xvfb_status,
             "human_score": round(sum(scores) / len(scores)),
             "dwell_seconds": round(sum(dwells) / len(dwells), 1),
         }

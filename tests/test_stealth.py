@@ -206,6 +206,47 @@ def test_xvfb_is_skipped_cleanly_when_it_is_not_installed(monkeypatch):
     xvfb.stop()                                            # stopping what never started is a no-op
 
 
+def test_xvfb_records_how_its_start_attempt_went(monkeypatch):
+    monkeypatch.delenv("DISPLAY", raising=False)
+    monkeypatch.setattr(S.shutil, "which", lambda name: None)
+    xvfb = S.Xvfb()
+    assert xvfb.status is None                            # nothing attempted yet
+    assert xvfb.start() is False
+    assert xvfb.status == "not_available"
+    assert xvfb.status_line() == "Xvfb: not available — patchright ran headless"
+    monkeypatch.setenv("DISPLAY", ":0")
+    xvfb = S.Xvfb()
+    assert xvfb.start() is True
+    assert xvfb.status == "already_running"
+    assert "already running" in xvfb.status_line()
+    xvfb.stop()
+
+
+def test_launch_patchright_records_the_xvfb_outcome_on_the_context(tmp_path, monkeypatch):
+    calls, page = [], FakePage()
+    driver = FakePW(calls, page)
+    identity = {"profile_dir": str(tmp_path / "profile"), "viewport": [1366, 768],
+                "user_agent": "test-agent", "timezone_id": "Europe/London",
+                "locale": "en-GB", "proxy": None}
+
+    class Unavailable:
+        status = "not_available"
+
+    context = S.launch_patchright(driver, identity, S.resolve(None), headless=True, xvfb=Unavailable())
+    assert context.xvfb_status == "not_available"
+    assert [c for c in calls if c[0] == "persistent"][0][1]["headless"] is True
+
+
+def test_the_read_log_carries_the_xvfb_outcome(tmp_path):
+    identity = {"site": "instagram", "proxy": None}
+    log = S.ReadLog("instagram", "patchright", identity, xvfb_status="started")
+    log.record("https://example.test/a", 1000.0, 1010.0)
+    assert log.summary()["xvfb"] == "started"
+    plain = S.ReadLog("instagram", "plain", identity)
+    plain.record("https://example.test/a", 1000.0, 1010.0)
+    assert plain.summary()["xvfb"] is None          # no X server was involved, so nothing is claimed
+
+
 # --- fakes for the browser tests ------------------------------------------------------------------------
 
 

@@ -12,7 +12,7 @@ from contentintel import collectors as C
 from contentintel.store import Store
 
 from fake_browser import FakeBrowser
-from test_apify_backend import AP_AD, ONE, apify_world, run as run_collect_with
+from test_apify_backend import ADS_RUNS_URL, AP_AD, ONE, apify_world, run as run_collect_with
 from test_collectors import CREDS, site, statuses, used, world
 from test_follow_plan_run import ad, feed
 
@@ -164,7 +164,7 @@ def test_both_routes_run_and_the_result_is_their_merge(tmp_path, store, swov, cf
     assert record["via"] == "browser+apify" and sorted(i["item_id"] for i in record["items"]) == ["meta_ads:555", "meta_ads:556", "meta_ads:557", "meta_ads:558"]
     shared = next(i for i in record["items"] if i["item_id"] == "meta_ads:555")
     assert shared["media_url"] == "https://img.example/a.jpg"                           # the browser's copy had none; Apify's filled it
-    assert len(http.calls) == 1
+    assert len(http.calls) == 3                                                            # one async ads run: start, status, dataset
 
 
 def test_each_route_is_charged_to_its_own_budget(tmp_path, store, swov, cfg, settings):
@@ -188,7 +188,7 @@ def test_the_browser_failing_still_keeps_apifys_results_and_flags_the_failure(tm
 def test_apify_failing_still_keeps_the_browsers_results_and_switches_apify_off(tmp_path, store, swov, cfg, settings):
     http, apify = apify_world()
     http.routes = [r for r in http.routes if "facebook-ads" not in r[1]]
-    http.on("POST", "https://api.apify.com/v2/acts/apify~facebook-ads-scraper/run-sync-get-dataset-items", (401, {"error": {"message": "bad token"}}))
+    http.on("POST", ADS_RUNS_URL, (401, {"error": {"message": "bad token"}}))             # a 30-item ask starts async: the refusal is on the start call
     f = meta_world(cfg, ad("556", "100000000000500", "Acme"))
     result = go(store, tmp_path, swov, cfg, settings, f, apify)
     assert statuses(result) == [("meta_ads", "ran")] and "apify" in result.problems_for
@@ -236,4 +236,4 @@ def test_the_other_sources_follow_the_same_rule(tmp_path, store, swov, cfg, sett
     result = go(store, tmp_path, swov, cfg, settings, world(cfg), apify, sources=("tiktok", "instagram"), data=ONE)
     assert statuses(result) == [("tiktok", "ran"), ("instagram", "ran")]
     assert {r["via"] for r in store.read_collected("swoveralls")} == {"browser+apify"}
-    assert len(http.calls) == 2
+    assert len(http.calls) == 6                                                            # two async runs: start, status, dataset each

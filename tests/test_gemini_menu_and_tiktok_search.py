@@ -9,6 +9,7 @@ so a tag page that errors is read through TikTok's search instead.
 """
 from pathlib import Path
 
+import copy
 import pytest
 
 from contentintel import browser as B
@@ -163,9 +164,18 @@ def tiktok(cfg, pages):
     return FakeBrowser(pages, present_always={cfg["sites"]["tiktok"]["logged_in_any"][0]})
 
 
+def no_search_first(cfg):
+    """A copy of the settings with search-first off. The tests in this file cover the on-error fallback (tag page
+    first, search when it fails); search-first is covered in test_deferred_queue.py. The shipped browser.yaml has
+    the flag on for TikTok, so it is switched off here."""
+    cfg = copy.deepcopy(cfg)
+    cfg["sites"]["tiktok"]["hashtag_via_search_first"] = False
+    return cfg
+
+
 def read(cfg, browser, hashtags=("overalls",), site_cfg=None, profiles=()):
     task = C.Task("tiktok", "tags", {"hashtags": list(hashtags), "profiles": list(profiles)}, "k")
-    s = {**cfg["sites"]["tiktok"], "settle_seconds": 0, **(site_cfg or {})}
+    s = {**cfg["sites"]["tiktok"], "settle_seconds": 0, "hashtag_via_search_first": False, **(site_cfg or {})}
     return C.run_browser_task(browser, task, 10, s, cfg, {})
 
 
@@ -220,7 +230,7 @@ def test_a_tag_with_accents_is_searched_with_its_hash_and_encoded(cfg):
 
 
 def test_a_site_without_error_settings_never_looks_for_an_error(cfg):
-    plain = {k: v for k, v in cfg["sites"]["tiktok"].items() if k not in ("error_any", "hashtag_via_search_on_error")}
+    plain = {k: v for k, v in cfg["sites"]["tiktok"].items() if k not in ("error_any", "hashtag_via_search_on_error", "hashtag_via_search_first")}
     task = C.Task("tiktok", "tags", {"hashtags": ["overalls"]}, "k")
     b = tiktok(cfg, {TAG: {"present": [ERR]}, SEARCH: {"json": [TT_JSON]}})
     rows, stats = C.run_browser_task(b, task, 10, {**plain, "settle_seconds": 0}, cfg, {})
@@ -241,6 +251,7 @@ def test_the_check_tells_a_person_the_search_was_used(cfg, tmp_path):
     from contentintel import research as R
     from contentintel.store import Store
     settings = C.load_collector_settings("does-not-exist.yaml")
+    cfg = no_search_first(cfg)
     rows = {r["source"]: r for r in C.check_collectors(erroring_tiktok_world(cfg), CREDS, settings, cfg, Store(tmp_path / "data"),
                                                        R.Ledger, NOW, ["tiktok"])}
     assert rows["tiktok"]["ok"] is True
@@ -252,6 +263,7 @@ def test_the_run_report_tells_a_person_the_search_was_used(cfg, tmp_path, swov):
     from dataclasses import replace
     from contentintel.store import Store
     settings = replace(C.load_collector_settings("does-not-exist.yaml"), benchmarks_enabled=False)
+    cfg = no_search_first(cfg)
     result = collect(Store(tmp_path / "data"), tmp_path, [swov], {"social": {"tiktok": {"hashtags": ["overalls"]}}},
                      erroring_tiktok_world(cfg), cfg, settings, sources=("tiktok",))
     (task,) = result.brands["swoveralls"]

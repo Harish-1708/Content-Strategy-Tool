@@ -26,7 +26,7 @@ from fake_http import searches_only
 from fake_sheets import FakeSpreadsheet, read
 from media_fixtures import tiny_mp4
 from stage1_helpers import SHIPPED as ROOT_SOURCES, NOW as NOW_HEALTH, at, shipped
-from test_apify_backend import ADS_URL, ONE, apify_world
+from test_apify_backend import ADS_RUNS_URL, ONE, apify_world
 from test_collectors import BROWSER_YAML, CREDS, NOW, site, world, write_research
 from test_ideabank import S, getter
 from test_research import world as search_world
@@ -157,8 +157,8 @@ def test_a_page_that_opens_but_gives_nothing_is_a_failure_not_a_success(store, t
 
 def test_running_out_of_apify_credit_rests_only_the_apify_route(store, tmp_path, swov, cfg, settings, ledger):
     http, apify = apify_world()
-    http.routes = [r for r in http.routes if r[1] != ADS_URL]
-    http.on("POST", ADS_URL, (402, {"error": {"message": "limit"}}))
+    http.routes = [r for r in http.routes if "facebook-ads" not in r[1]]          # a 30-item ask starts async: the refusal is on the start call
+    http.on("POST", ADS_RUNS_URL, (402, {"error": {"message": "limit"}}))
     go(store, tmp_path, swov, cfg, settings, world(cfg), health=ledger, apify=apify, backend="apify", sources=("meta_ads",))
     e = entry(ledger, "meta_ads", "apify")
     assert e["history"][-1]["code"] == K.RATE_LIMITED and ledger.is_paused("meta_ads", "apify", at(NOW, minutes=59)) and not ledger.is_paused("meta_ads", "apify", at(NOW, hours=1))

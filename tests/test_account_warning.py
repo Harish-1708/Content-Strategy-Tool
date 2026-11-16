@@ -334,7 +334,7 @@ def test_while_an_account_rests_apify_in_fallback_mode_still_collects(tmp_path, 
     f = world(cfg)
     result = go(store, tmp_path, swov, cfg, settings, f, now="2026-10-21T07:00:00Z", backend="fallback", apify=apify)
     assert statuses(result) == [("instagram", "ran")] and "instagram" not in f.opened and not result.problems
-    assert result.brands["swoveralls"][0].detail == "1 items via Apify" and len(http.calls) == 1
+    assert result.brands["swoveralls"][0].detail == "1 items via Apify" and len(http.calls) == 3     # one async Instagram run: start, status, dataset
 
 
 def test_a_warning_in_fallback_mode_is_rescued_by_apify_but_still_flagged_and_rested(tmp_path, store, swov, cfg, settings):

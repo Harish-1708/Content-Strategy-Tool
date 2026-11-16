@@ -23,6 +23,9 @@ from test_collectors import BROWSER_YAML, CREDS, FULL, NOW, site, statuses, used
 ADS_URL = "https://api.apify.com/v2/acts/apify~facebook-ads-scraper/run-sync-get-dataset-items"
 TT_URL = "https://api.apify.com/v2/acts/clockworks~tiktok-scraper/run-sync-get-dataset-items"
 IG_URL = "https://api.apify.com/v2/acts/apify~instagram-hashtag-scraper/run-sync-get-dataset-items"
+ADS_RUNS_URL = "https://api.apify.com/v2/acts/apify~facebook-ads-scraper/runs"
+TT_RUNS_URL = "https://api.apify.com/v2/acts/clockworks~tiktok-scraper/runs"
+IG_RUNS_URL = "https://api.apify.com/v2/acts/apify~instagram-hashtag-scraper/runs"
 AP_AD = {"adArchiveID": "555", "pageName": "Acme", "startDate": 1760000000,
          "snapshot": {"body": {"text": "Apify ad text"}, "title": "T", "images": [{"originalImageUrl": "https://img.example/a.jpg"}]}}
 AP_TT = {"id": "8001", "text": "apify tiktok", "webVideoUrl": "https://www.tiktok.com/@acme/video/8001", "createTimeISO": "2026-10-01T10:00:00.000Z",
@@ -49,11 +52,27 @@ def settings():
     return replace(C.load_collector_settings("does-not-exist.yaml"), benchmarks_enabled=False)
 
 
+def apify_async_routes(http, ads=None, tt=None, ig=None):
+    """The async half of the Apify fake: starting a run, its SUCCEEDED status, and its dataset items.
+    A big ask (more than SYNC_MAX_ITEMS items) starts async, so a Collect world needs these as well
+    as the sync routes: one async run is three calls (start, status, dataset)."""
+    for tag, actor, items in (("ads", "apify~facebook-ads-scraper", [AP_AD] if ads is None else ads),
+                              ("tt", "clockworks~tiktok-scraper", [AP_TT] if tt is None else tt),
+                              ("ig", "apify~instagram-hashtag-scraper", [AP_IG] if ig is None else ig)):
+        http.on("POST", f"https://api.apify.com/v2/acts/{actor}/runs",
+                (201, {"data": {"id": f"run-{tag}", "status": "RUNNING", "defaultDatasetId": f"ds-{tag}"}}))
+        http.on("GET", f"https://api.apify.com/v2/actor-runs/run-{tag}",
+                (200, {"data": {"id": f"run-{tag}", "status": "SUCCEEDED", "defaultDatasetId": f"ds-{tag}"}}))
+        http.on("GET", f"https://api.apify.com/v2/datasets/ds-{tag}/items", (200, items))
+    return http
+
+
 def apify_world(ads=None, tt=None, ig=None):
     http = FakeHttp()
     http.on("POST", ADS_URL, (200, [AP_AD] if ads is None else ads))
     http.on("POST", TT_URL, (200, [AP_TT] if tt is None else tt))
     http.on("POST", IG_URL, (200, [AP_IG] if ig is None else ig))
+    apify_async_routes(http, ads, tt, ig)
     return http, Apify("apify-secret-123", http=http, sleep=lambda s: None)
 
 
@@ -284,8 +303,8 @@ def test_in_fallback_mode_a_used_up_apify_allowance_leaves_the_browser_failure_s
 
 def test_a_rejected_apify_token_switches_apify_off_for_the_run(tmp_path, store, swov, cfg, settings):
     http, apify = apify_world()
-    http.routes = [r for r in http.routes if r[1] != ADS_URL]
-    http.on("POST", ADS_URL, (401, {"error": {"message": "bad token"}}))
+    http.routes = [r for r in http.routes if "facebook-ads" not in r[1]]          # a 30-item ask starts async: the refusal is on the start call
+    http.on("POST", ADS_RUNS_URL, (401, {"error": {"message": "bad token"}}))
     result = run(store, tmp_path, swov, cfg, settings, world(cfg), apify=apify, backend="apify")
     assert statuses(result) == [("meta_ads", "failed"), ("tiktok", "skipped"), ("instagram", "skipped")]
     assert result.problems_for == ["apify"] and used(store) == {} and len(http.calls) == 1
@@ -293,8 +312,8 @@ def test_a_rejected_apify_token_switches_apify_off_for_the_run(tmp_path, store, 
 
 def test_running_out_of_apify_credit_is_not_a_failure(tmp_path, store, swov, cfg, settings):
     http, apify = apify_world()
-    http.routes = [r for r in http.routes if r[1] != ADS_URL]
-    http.on("POST", ADS_URL, (402, {"error": {"message": "limit"}}))
+    http.routes = [r for r in http.routes if "facebook-ads" not in r[1]]          # a 30-item ask starts async: the refusal is on the start call
+    http.on("POST", ADS_RUNS_URL, (402, {"error": {"message": "limit"}}))
     result = run(store, tmp_path, swov, cfg, settings, world(cfg), apify=apify, backend="apify")
     assert statuses(result) == [("meta_ads", "skipped"), ("tiktok", "skipped"), ("instagram", "skipped")] and not result.problems
     assert any("apify is out of credit" in n for n in result.notes) and result.brands["swoveralls"][1].detail == "Apify is out of credit this run"
