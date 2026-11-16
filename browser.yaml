@@ -45,7 +45,7 @@ human:
 # A plain headless browser with one fixed user agent and one fixed viewport, coming from a datacenter address, is the shape of an automated read —
 # and the shape an account warning names. This layer gives each account one stable identity (a pinned user agent, viewport, timezone and proxy,
 # written to data/_shared/stealth-identities.json the first time the account is seen and reused on every later run), and reads through a stealth
-# browser (Camoufox first, patchright headed under Xvfb next, plain Playwright last). It also logs every read (page, timing, IP, human score)
+# browser (Camoufox first IF it is installed, which it is not today because its latest release needs an older Playwright than this repo pins, so in practice patchright headed under Xvfb, then plain Playwright last). It also logs every read (page, timing, IP, human score)
 # to the run's debug directory, so a future warning can be traced back to what the account actually did.
 # Set `enabled: false` to turn the whole layer off: every read then behaves exactly as it did before it existed.
 stealth:
