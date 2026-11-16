@@ -13,7 +13,11 @@ on:
   workflow_dispatch:
     inputs:
       sabotage:
-        description: "Also run the sabotage check (several minutes)"
+        description: "Also run the UPDATED sabotage checks (everything written since Update 57), split into 3 parallel slices"
+        type: boolean
+        default: false
+      sabotage_full:
+        description: "Run EVERY sabotage check, split into 18 parallel slices (the first script has 1,884 checks and needs hours)"
         type: boolean
         default: false
 
@@ -78,10 +82,75 @@ jobs:
       - name: Tests
         run: python -m pytest -q -rs          # -rs: every skipped test is listed with its reason in the log
 
-      - name: Sabotage check
-        if: ${{ inputs.sabotage }}
-        run: python tests/sabotage/run_sabotage.py
+  # The sabotage checks break the code on purpose to prove the tests notice. They are split so that no job comes near GitHub's six-hour limit.
+  # (One job running both scripts one after the other could not finish: the first script alone has 1,884 checks, so the second script, which holds
+  # every check written since Update 57, never ran.)
+  #   sabotage       the UPDATED checks only (Update 57 on): the second script, in 3 slices
+  #   sabotage_full  EVERY check: the first script in 12 slices and the second script in 6 slices
 
-      - name: Sabotage check for the observatory, the AI additions and the sheet decisions
-        if: ${{ inputs.sabotage }}
+  sabotage-updated:
+    if: ${{ inputs.sabotage || inputs.sabotage_full }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: ["1/3", "2/3", "3/3"]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - name: Sabotage check, the updated checks (slice ${{ matrix.chunk }})
+        env:
+          SABOTAGE_SET: updated
+          SABOTAGE_CHUNK: ${{ matrix.chunk }}
+          SABOTAGE_WORKERS: "4"
         run: python tests/sabotage/run_observatory_sabotage.py
+
+  sabotage-full-observatory:
+    if: ${{ inputs.sabotage_full }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: ["1/6", "2/6", "3/6", "4/6", "5/6", "6/6"]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - name: Sabotage check, the observatory, AI and sheet checks (slice ${{ matrix.chunk }})
+        env:
+          SABOTAGE_CHUNK: ${{ matrix.chunk }}
+          SABOTAGE_WORKERS: "4"
+        run: python tests/sabotage/run_observatory_sabotage.py
+
+  sabotage-full-main:
+    if: ${{ inputs.sabotage_full }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: ["1/12", "2/12", "3/12", "4/12", "5/12", "6/12", "7/12", "8/12", "9/12", "10/12", "11/12", "12/12"]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - name: Sabotage check, the main checks (slice ${{ matrix.chunk }})
+        env:
+          SABOTAGE_CHUNK: ${{ matrix.chunk }}
+          SABOTAGE_WORKERS: "4"
+        run: python tests/sabotage/run_sabotage.py

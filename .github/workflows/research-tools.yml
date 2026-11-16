@@ -5,6 +5,7 @@
 #   assets     licence-safe pictures or sounds for a query (Openverse, with Wikimedia Commons as the backup)
 #   motion     motion formats close to a text, from the prompt library (awesome-opus5-5-videos)
 #   apify-budget  prints the money Apify says is left on each key and the item counters; spends nothing; says why if Apify's account endpoint cannot be read
+#   analytics  GA4 and Search Console per brand (read-only; NEEDS_INPUT until access is granted) and public Serper rank checks
 #   pageid     tries the four places a Facebook page id can be read from (Chobani is the first one to try) and says what each gave
 #   install    installs or updates the connections these tools use (also done automatically before each tool)
 # To run it: Actions > Research tools > Run workflow. Nothing here posts or changes anything on any platform; voice and assets keep what they found next to the brand's data.
@@ -16,7 +17,7 @@ on:
       tool:
         description: "What to run"
         type: choice
-        options: [voice, analyze, pool, assets, motion, pageid, apify-budget, install]
+        options: [voice, analyze, pool, assets, motion, pageid, apify-budget, analytics, install]
         default: voice
       brand:
         description: "voice and assets: brand folder name (for example swoveralls) or all (voice only)"
@@ -168,6 +169,7 @@ jobs:
               if [ -n "$BRAND" ] && [ "$BRAND" != "all" ]; then args+=(--brand "$BRAND"); fi ;;
             motion) args=(motion --query "$TOPIC") ;;
             apify-budget) args=(apify-budget) ;;
+            analytics) args=(analytics --brand "$BRAND") ;;
             pageid) args=(pageid --url "$VIDEO_URL"); if [ -n "$TOPIC" ]; then args+=(--name "$TOPIC"); fi ;;
             install) echo "Connections installed in the step above."; exit 0 ;;
           esac

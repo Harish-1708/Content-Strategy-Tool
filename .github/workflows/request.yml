@@ -108,7 +108,12 @@ jobs:
         run: |
           pip install -r requirements-browser.txt
           for attempt in 1 2 3; do
-            if playwright install --with-deps chromium; then exit 0; fi
+            if playwright install --with-deps chromium; then
+              # the stealth layer's own browser build and a private X server for the headed mode; neither is needed for a plain read, so a failure here is a warning, not a stop
+              patchright install chromium || echo "::warning::The patchright browser could not be installed: the stealth layer uses its other engines."
+              sudo apt-get install -y -qq xvfb || echo "::warning::Xvfb could not be installed: the stealth layer runs patchright headless."
+              exit 0
+            fi
             echo "The browser download failed (try $attempt of 3); trying again in 20 seconds"
             sleep 20
           done
@@ -228,6 +233,7 @@ jobs:
           git config user.name "catalogue-request"
           git config user.email "catalogue-request@users.noreply.github.com"
           git add -f data
+          git reset -q -- data/_shared/stealth-profiles 2>/dev/null || true          # a browser profile (session cookies) is never committed, wherever a setting puts it
           if git diff --cached --quiet; then
             echo "No data changes to save."
           else
