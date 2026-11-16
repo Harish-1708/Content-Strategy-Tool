@@ -3,9 +3,18 @@
 The collectors never touch Playwright directly. They use the small interface below, so the
 collection logic can be tested without a browser, and only this file knows about Playwright.
 Nothing here is ever printed or saved that contains a cookie value or a password.
+
+The stealth layer (Update 68, contentintel/stealth.py) gives a logged-in session a
+stable identity — one pinned user agent, viewport, timezone and proxy per account —
+and a stealth browser (Camoufox, then patchright headed under Xvfb, then plain
+Playwright). It is on by default and the owner can turn it off; with it off every
+read behaves exactly as it did before. The plain path below is unchanged: one
+Chromium per site on the shared Playwright, no automation-hiding flag, --no-sandbox
+only.
 """
 import collections
 import json
+import os
 import random
 import re
 import time
@@ -54,7 +63,7 @@ _TYPES = {
     "json_url_hints": "strs", "consent_any": "strs", "logged_in_any": "strs", "login_wall_any": "strs",
     "challenge_any": "strs", "challenge_dismiss": "strs", "error_any": "strs", "hashtag_via_search_on_error": "bool", "search_box": "strs",
     "warning_any": "strs", "warning_url_any": "strs",
-    "pacing": "pace", "max_scrolls_per_page": "whole", "max_pages_per_run": "whole", "max_pages_per_day": "whole",
+    "pacing": "pace", "max_scrolls_per_page": "whole", "max_pages_per_run": "whole", "max_pages_per_day": "whole", "min_hours_between_runs": "num",
     "deep_research_active_any": "strs", "signed_out_any": "strs", "link_contains": "strs", "prompt_box": "strs", "send": "strs",
     "start_research": "strs", "still_working_any": "strs", "done_any": "strs", "response": "strs",
     "deep_research_clicks": "strs_list", "login_steps": "steps", "wait": "wait", "password_fallback": "fallback",
@@ -72,7 +81,10 @@ _WAIT_KEYS = ("max_minutes", "plan_wait_seconds", "poll_seconds", "settle_second
               "question_settle_seconds")
 _PACE_KEYS = {"min_delay_seconds", "max_delay_seconds", "scroll_pause_seconds"}
 _STEP_ACTIONS = ("goto", "fill", "click", "click_optional", "wait")
-PASSWORD_FALLBACKS = ("no_cookies_only", "when_cookies_fail")
+# "never" is the stealth sessions' value: a cookie-only session never logs in
+# from the runner, so a missing or expired cookie means "nothing was read",
+# never a fresh login from a new device and IP.
+PASSWORD_FALLBACKS = ("no_cookies_only", "when_cookies_fail", "never")
 
 
 def _num(value, where, minimum=0):
@@ -151,7 +163,7 @@ def load_browser_settings(path="browser.yaml"):
     if not path.is_file():
         raise BrowserError(f"{path} is missing; it holds the page addresses and button names the browser uses")
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    extra = set(data) - {"pacing", "limits", "sites", "human"}
+    extra = set(data) - {"pacing", "limits", "sites", "human", "stealth"}
     if extra:
         raise BrowserError(f"browser.yaml: unknown {sorted(extra)}")
     pacing, limits = data.get("pacing") or {}, data.get("limits") or {}
@@ -167,6 +179,11 @@ def load_browser_settings(path="browser.yaml"):
     try:
         resolve_human(data.get("human"))
     except HumanConfigError as exc:
+        raise BrowserError(str(exc)) from exc
+    from . import stealth as stealth_mod
+    try:
+        stealth = stealth_mod.resolve(data.get("stealth"))
+    except stealth_mod.StealthError as exc:
         raise BrowserError(str(exc)) from exc
     sites = data.get("sites") or {}
     if set(sites) != set(SITES):
@@ -187,7 +204,12 @@ def load_browser_settings(path="browser.yaml"):
             merged = {**pacing, **cfg["pacing"]}
             if merged["min_delay_seconds"] > merged["max_delay_seconds"]:
                 raise BrowserError(f"{where}.pacing: min_delay_seconds cannot be more than max_delay_seconds")
-    return {"pacing": pacing, "limits": limits, "sites": sites, "human": resolve_human(data.get("human"))}
+    # The resolved stealth block is attached to every site's settings, so
+    # open_browser (which only sees one site) can use it without any caller
+    # changing. The block itself is also returned at the top level.
+    for cfg in sites.values():
+        cfg["stealth"] = stealth
+    return {"pacing": pacing, "limits": limits, "sites": sites, "human": resolve_human(data.get("human")), "stealth": stealth}
 
 
 def site_pacing(cfg, site):
@@ -344,6 +366,12 @@ class PlaywrightBrowser:
         self.human = human                                    # a Human (see human.py) for a logged-in session, else None: the plain pauses and jumps below
         self.hints = hints
         self._json, self._urls = [], []
+        # Set by open_browser when the stealth layer is on: the account's
+        # pinned identity, and the log of what its reads looked like.
+        self.identity = None
+        self.read_log = None
+        self._current_read = None
+        self._last_url = None
         page.on("response", self._on_response)
 
     def _on_response(self, response):
@@ -371,12 +399,53 @@ class PlaywrightBrowser:
             self.human.before_page(self.pacing)
         else:
             time.sleep(random.uniform(self.pacing["min_delay_seconds"], self.pacing["max_delay_seconds"]))
+        # A person arrives from somewhere: the page they were just on, when
+        # there is one. A session that opens every page from nowhere is the
+        # shape of a machine.
+        goto = {"wait_until": "domcontentloaded", "timeout": 60000}
+        if self._last_url and self._last_url != url:
+            goto["referer"] = self._last_url
         try:
-            self.page.goto(url, wait_until="domcontentloaded", timeout=60000)
+            self.page.goto(url, **goto)
         except Exception as exc:
             raise BrowserError(f"could not open {url}: {_short(exc)}") from exc
+        self._last_url = url
+        chars = 0
         if self.human is not None:
-            self.human.after_load(self.page)
+            try:
+                chars = len(self.page.content() or "")
+            except Exception:
+                chars = 0
+            # The dwell after the page opens is proportional to how much text
+            # the page holds, so a long page is read longer than a short one.
+            self.human.after_load(self.page, content_chars=chars)
+        if self.read_log is not None:
+            self._current_read = self.read_log.record(
+                url, time.time(), time.time(), content_chars=chars,
+                mouse_moves=self.human.moves if self.human is not None else 0,
+                scroll_events=self.human.scrolls if self.human is not None else 0,
+                pauses=self.human.pauses if self.human is not None else 0)
+
+    def _note_read(self):
+        """Refresh the current read-log entry with what the page's read has
+        looked like so far (the scrolling happens after the page opens)."""
+        if self.read_log is None or self._current_read is None:
+            return
+        human = self.human
+        self.read_log.update(self._current_read, ended_at=time.time(),
+                             mouse_moves=human.moves if human is not None else 0,
+                             scroll_events=human.scrolls if human is not None else 0,
+                             pauses=human.pauses if human is not None else 0)
+
+    def finish_read_log(self):
+        """Write the per-read log to the run's debug directory, if there is one. Never fails a run."""
+        if self.read_log is None:
+            return
+        self._note_read()
+        try:
+            self.read_log.write_jsonl(str(self.debug_dir / "read-log.jsonl"))
+        except Exception:
+            pass
 
     def wait(self, seconds):
         self.page.wait_for_timeout(int(seconds * 1000))
@@ -384,10 +453,12 @@ class PlaywrightBrowser:
     def scroll(self, times=1, pause=3):
         if self.human is not None:
             self.human.scroll(self.page, times, pause)
+            self._note_read()
             return
         for _ in range(times):
             self.page.mouse.wheel(0, random.randint(1800, 2600))
             self.page.wait_for_timeout(int(pause * 1000 * random.uniform(0.8, 1.3)))
+        self._note_read()
 
     def json_responses(self):
         return list(self._json)
@@ -432,7 +503,13 @@ class PlaywrightBrowser:
                 if loc.count() > 0:
                     box = loc.first
                     box.click(timeout=8000)
-                    box.fill(text)
+                    # A logged-in session types one keystroke at a time, with
+                    # the occasional typo that is noticed and corrected; long
+                    # text is pasted, the way a person pastes a long prompt.
+                    if self.human is not None:
+                        self.human.type_like_person(box, text)
+                    else:
+                        box.fill(text)
                     if submit:
                         box.press("Enter")
                     return True
@@ -478,7 +555,8 @@ class PlaywrightBrowser:
 
     def fetch_bytes(self, url, referer, max_bytes):
         """(status, body) of an address fetched with this browser's cookies, as the page itself would."""
-        resp = self.page.context.request.get(url, headers={"Referer": referer, "User-Agent": _UA}, timeout=90000)
+        user_agent = self.identity["user_agent"] if self.identity is not None else _UA
+        resp = self.page.context.request.get(url, headers={"Referer": referer, "User-Agent": user_agent}, timeout=90000)
         body = resp.body() if resp.status < 400 else b""
         return resp.status, (body if len(body) <= max_bytes else b"")
 
@@ -536,40 +614,176 @@ class _SharedPlaywright:
 _SHARED = _SharedPlaywright()
 
 
-def person_for(cookies, human_block):
-    """The Human a browser session gets: one for a session logged in with an account (cookies), none for a public one, and none when the owner set `human: enabled: false`."""
-    return Human(human_block) if cookies and resolve_human(human_block)["enabled"] else None
+def _close_browser(browser):
+    """Close a browser, never failing the run for it."""
+    if browser is None:
+        return
+    try:
+        browser.close()
+    except Exception:
+        pass
+
+
+def _close_context(context):
+    """Close a persistent context (which closes its browser with it), never failing the run for it."""
+    if context is None:
+        return
+    try:
+        context.close()
+    except Exception:
+        pass
+
+
+# The private X server patchright's headed browser runs on, started when the
+# first patchright browser opens and stopped when the last one closes.
+_XVFB = {"instance": None}
+
+
+def _start_patchright():
+    """Start patchright's driver: its own Playwright, patched so the browser does not advertise that it is automated. The X server is started
+    first when one is needed, so the browser can run headed (headed is what removes the headless tell); without an X server it runs headless."""
+    from . import stealth as stealth_mod
+    xvfb = stealth_mod.Xvfb()
+    xvfb.start()
+    _XVFB["instance"] = xvfb
+    try:
+        from patchright.sync_api import sync_playwright
+    except ImportError as exc:
+        xvfb.stop()
+        _XVFB["instance"] = None
+        raise BrowserError("patchright is not installed (pip install patchright, then patchright install chromium)") from exc
+    return sync_playwright().start()
+
+
+class _PatchrightPlaywright(_SharedPlaywright):
+    """patchright's driver, held the same way as the plain one, with the X server stopped when the last browser closes."""
+
+    def release(self):
+        super().release()
+        if self.users == 0:
+            xvfb = _XVFB["instance"]
+            _XVFB["instance"] = None
+            if xvfb is not None:
+                xvfb.stop()
+
+
+_PATCHRIGHT = _PatchrightPlaywright()
+
+
+def _try_stealth_engines(site, identity, stealth_cfg):
+    """Try the stealth engines in order for one account and return (engine, context, closer), or (None, None, None) when none of them could
+    be used — the caller then falls back to plain Playwright. A failed attempt stops whatever it started, so a later attempt can start a
+    different driver. Only one synchronous Playwright may run at a time, so an engine whose driver cannot start while another is running
+    simply fails its attempt and the next one is tried."""
+    from . import stealth as stealth_mod
+    candidates = stealth_mod.available_engines(stealth_cfg.get("engine", "auto"))
+    last_error = None
+    for engine in candidates:
+        if engine == "plain":
+            continue
+        driver = None
+        try:
+            if engine == "camoufox":
+                driver = _SHARED.acquire(_start_playwright)
+                context = stealth_mod.launch_camoufox(driver, identity, stealth_cfg)
+                return engine, context, lambda context=context: (_close_context(context), _SHARED.release())
+            driver = _PATCHRIGHT.acquire(_start_patchright)
+            context = stealth_mod.launch_patchright(driver, identity, stealth_cfg,
+                                                    headless=not bool(os.environ.get("DISPLAY")))
+            return engine, context, lambda context=context: (_close_context(context), _PATCHRIGHT.release())
+        except Exception as exc:
+            last_error = exc
+            if driver is not None:
+                if engine == "camoufox":
+                    _SHARED.release()
+                else:
+                    _PATCHRIGHT.release()
+            continue
+    if last_error is not None:
+        print(f"stealth: no stealth engine could be started for {site} ({type(last_error).__name__}); using plain Playwright")
+    return None, None, None
+
+
+def person_for(cookies, human_block, viewport=None):
+    """The Human a browser session gets: one for a session logged in with an account (cookies), none for a public one, and none when the owner set `human: enabled: false`. The viewport is the account's pinned one when the stealth layer gives it, the old fixed size otherwise."""
+    return Human(human_block, viewport=viewport) if cookies and resolve_human(human_block)["enabled"] else None
 
 
 @contextmanager
-def open_browser(site, cfg, pacing, cookies_text, debug_dir, headless=True, human=None):
-    """Start Chromium (logged in with the exported cookies, if there are any) for one site. `human` is the `human:` block of browser.yaml: a LOGGED-IN session then browses like a person
-    (human.py); a logged-out one (the public Meta Ads library) keeps its plain pauses, which have worked."""
+def open_browser(site, cfg, pacing, cookies_text, debug_dir, headless=True, human=None, identities_path=None):
+    """Start a browser (logged in with the exported cookies, if there are any) for one site. `human` is the `human:` block of browser.yaml: a LOGGED-IN session then browses like a person
+    (human.py); a logged-out one (the public Meta Ads library) keeps its plain pauses, which have worked.
+
+    With the stealth layer on (`stealth: enabled: true` in browser.yaml, the default), the session also gets the account's pinned identity — one
+    user agent, viewport, timezone and proxy per account — and the best stealth engine available (Camoufox, then patchright headed under Xvfb,
+    then plain Playwright). The engines degrade gracefully: a missing engine is skipped, and a failed launch falls to the next one. With the
+    layer off, or when no stealth engine can be started, the plain path below runs exactly as it did before: one Chromium per site on the shared
+    Playwright, no automation-hiding flag, --no-sandbox only. `identities_path` is for tests; runs use the identities file from browser.yaml.
+    """
     cookies = parse_cookies(cookies_text)
-    person = person_for(cookies, human)
+    stealth_cfg = cfg.get("stealth")
+    identity = None
+    if stealth_cfg and stealth_cfg.get("enabled"):
+        from . import stealth as stealth_mod
+        identity = stealth_mod.resolve_identity(site, stealth_cfg, identities_path=identities_path)
+    person = person_for(cookies, human, viewport=identity["viewport"] if identity is not None else None)
+    browser, context, closer, engine = None, None, None, "plain"
+    browser_obj = None
     try:
-        pw = _SHARED.acquire(_start_playwright)
-    except BrowserError:
-        raise
-    except Exception as exc:                      # the real reason is kept in the message, never replaced
-        raise BrowserError(f"could not start Playwright for {site}: {_short(exc)}") from exc
-    browser = None
-    try:
-        try:
-            browser = pw.chromium.launch(headless=headless,
-                                         args=["--no-sandbox"])
-            context = browser.new_context(viewport={"width": 1366, "height": 900}, locale="en-US",
-                                          user_agent=_UA, timezone_id="America/New_York")
-            if cookies:
-                context.add_cookies(cookies)
-            page = context.new_page()
-            page.set_default_timeout(30000)
-        except Exception as exc:
-            raise BrowserError(f"could not start the browser for {site}: {_short(exc)}") from exc
-        yield PlaywrightBrowser(page, Path(debug_dir) / site, pacing, cfg.get("json_url_hints", []), human=person)
+        if identity is not None:
+            engine, context, closer = _try_stealth_engines(site, identity, stealth_cfg)
+        if context is None:
+            engine = "plain"
+            try:
+                pw = _SHARED.acquire(_start_playwright)
+            except BrowserError:
+                raise
+            except Exception as exc:                      # the real reason is kept in the message, never replaced
+                raise BrowserError(f"could not start Playwright for {site}: {_short(exc)}") from exc
+            try:
+                browser = pw.chromium.launch(headless=headless,
+                                             args=["--no-sandbox"])
+                if identity is not None:
+                    # The plain engine still reads with the account's pinned
+                    # identity (its own user agent, viewport, timezone and
+                    # proxy), which is better than the old fixed values.
+                    context = browser.new_context(viewport={"width": identity["viewport"][0], "height": identity["viewport"][1]},
+                                                  user_agent=identity["user_agent"], timezone_id=identity["timezone_id"],
+                                                  locale=identity["locale"], proxy=identity["proxy"])
+                else:
+                    context = browser.new_context(viewport={"width": 1366, "height": 900}, locale="en-US",
+                                                  user_agent=_UA, timezone_id="America/New_York")
+                if cookies:
+                    context.add_cookies(cookies)
+                page = context.new_page()
+                page.set_default_timeout(30000)
+            except Exception as exc:
+                _close_browser(browser)
+                _SHARED.release()
+                raise BrowserError(f"could not start the browser for {site}: {_short(exc)}") from exc
+            closer = lambda browser=browser: (_close_browser(browser), _SHARED.release())
+        else:
+            # A stealth engine opened the context; the page still needs the
+            # cookies and the timeout, the same as the plain path.
+            try:
+                if cookies:
+                    context.add_cookies(cookies)
+                page = context.new_page()
+                page.set_default_timeout(30000)
+            except Exception as exc:
+                closer()
+                closer = None
+                raise BrowserError(f"could not start the browser for {site}: {_short(exc)}") from exc
+        if identity is not None:
+            identity["engine"] = engine
+        browser_obj = PlaywrightBrowser(page, Path(debug_dir) / site, pacing, cfg.get("json_url_hints", []), human=person)
+        browser_obj.identity = identity
+        if identity is not None and stealth_cfg.get("log_reads"):
+            browser_obj.read_log = stealth_mod.ReadLog(site, engine, identity,
+                                                       egress_ip=stealth_mod.resolve_egress_ip(page))
+        yield browser_obj
     finally:
-        try:
-            if browser:
-                browser.close()
-        finally:
-            _SHARED.release()
+        if browser_obj is not None:
+            browser_obj.finish_read_log()
+        if closer is not None:
+            closer()
