@@ -10,7 +10,9 @@
 # paste the JSON into the repository secret named below. The username/password route is a
 # fallback, controlled per site by `password_fallback`: no_cookies_only (the default) uses it only when no
 # cookies are given; when_cookies_fail also uses it when the site plainly rejected the cookies (a warning
-# line then asks you to refresh them). It can still stop at a code or a puzzle, and then the account rests.
+# line then asks you to refresh them); never never uses it. It can still stop at a code or a puzzle, and then the account rests.
+# With the stealth layer on (below, the default), a session is cookie-only whatever `password_fallback` says: a missing or expired cookie
+# means "nothing was read", never a fresh login from the runner. Turn the layer off and the old fallback behaviour returns exactly as before.
 # Google blocks automated sign-in, so Gemini uses cookies only.
 pacing:
   min_delay_seconds: 3          # a random pause before opening each page
@@ -33,8 +35,29 @@ human:
   distraction_chance: 0.08          # now and then a longer pause, as when someone looks away
   distraction_factor: [2.0, 4.0]
   mouse_moves: true
+  type_ms: [70, 180]            # the gap between keystrokes, in milliseconds (typing is one key at a time; long text is pasted)
+  typo_chance: 0.06             # now and then a typo that is noticed and corrected
+  dwell_wpm: 200                # the dwell after a page opens is proportional to how much text it holds, at about this many words a minute
   break_every_pages: [6, 10]        # a longer break after this many pages
   break_seconds: [20, 60]
+
+# Stealth / human-behaviour layer for the sessions that are LOGGED IN with an account: see contentintel/stealth.py and docs/platform/stealth.md.
+# A plain headless browser with one fixed user agent and one fixed viewport, coming from a datacenter address, is the shape of an automated read —
+# and the shape an account warning names. This layer gives each account one stable identity (a pinned user agent, viewport, timezone and proxy,
+# written to data/_shared/stealth-identities.json the first time the account is seen and reused on every later run), and reads through a stealth
+# browser (Camoufox first, patchright headed under Xvfb next, plain Playwright last). It also logs every read (page, timing, IP, human score)
+# to the run's debug directory, so a future warning can be traced back to what the account actually did.
+# Set `enabled: false` to turn the whole layer off: every read then behaves exactly as it did before it existed.
+stealth:
+  enabled: true
+  engine: auto                  # auto (Camoufox, then patchright, then plain), or one of camoufox, patchright, plain
+  humanize: true                # Camoufox: move the mouse and type the way a person does
+  geoip: true                   # Camoufox: derive the timezone and locale from the proxy's address, so the browser's story matches where it comes from
+  identities_file: data/_shared/stealth-identities.json
+  profiles_root: .stealth-profiles   # outside data/ on purpose: the workflows commit data/, and a browser profile holds session cookies and can be hundreds of megabytes (it is git-ignored)
+  proxy_secret: STEALTH_PROXY_URL   # the secret holding the proxy address; each account can also have its own STEALTH_PROXY_<SITE> (e.g. STEALTH_PROXY_INSTAGRAM)
+  log_reads: true               # write one line per read to the run's debug directory (read-log.jsonl) and add one line to the run report
+  shuffle_reads: true           # read the planned pages in a shuffled order (careful mode keeps its own rotation and is never shuffled)
 
 limits:
   max_scrolls_per_page: 8       # how far down a results page it will scroll
@@ -68,12 +91,13 @@ sites:
     # use. An address containing one of the parts below counts too.
     warning_any: ['text=detected automated behavior', 'text=no other users or tools have access to your account', 'text=We suspect automated behavior', 'text=Action Blocked', 'text=We restrict certain activity', 'text=Your account has been temporarily locked']
     warning_url_any: ['/accounts/suspended', '/accounts/disabled', '/challenge/']
-    # CAREFUL MODE for this account is OFF by default so it does not limit your results: Instagram is read as fast and as deep as TikTok.
-    # To switch it on (slower, smaller, spread over several runs), remove the # from the next four lines:
-    # pacing: {min_delay_seconds: 20, max_delay_seconds: 60, scroll_pause_seconds: 8}   # a long pause before each page and each scroll
-    # max_scrolls_per_page: 3          # scroll a little, not to the bottom
-    # max_pages_per_run: 2             # hashtag pages opened in one run; the next run carries on from where this one stopped
-    # max_pages_per_day: 4             # and never more than this many in a day, however often it is run
+    # CAREFUL MODE for this account is ON by default since Update 68 (the owner's decision after Meta's automation warning): slower, smaller, spread over several
+    # runs. To switch it off, put a # in front of the lines below.
+    pacing: {min_delay_seconds: 20, max_delay_seconds: 60, scroll_pause_seconds: 8}   # a long pause before each page and each scroll
+    max_scrolls_per_page: 3          # scroll a little, not to the bottom
+    max_pages_per_run: 2             # hashtag pages opened in one run; the next run carries on from where this one stopped
+    max_pages_per_day: 4             # and never more than this many in a day, however often it is run
+    min_hours_between_runs: 12       # and the account is not read again until this many hours after it was last read (the gap)
     login_steps:
       - {goto: 'https://www.instagram.com/accounts/login/'}
       - {wait: 3}
@@ -89,6 +113,9 @@ sites:
     needs_login: true
     secrets: {cookies: TIKTOK_COOKIES, username: TIKTOK_USERNAME, password: TIKTOK_PASSWORD}
     password_fallback: when_cookies_fail
+    max_pages_per_run: 2             # careful mode, as for Instagram: pages opened in one run
+    max_pages_per_day: 4             # and in a day
+    min_hours_between_runs: 12       # and the gap between runs
     home: https://www.tiktok.com/
     hashtag_url: https://www.tiktok.com/tag/{tag}
     profile_url: https://www.tiktok.com/@{name}
