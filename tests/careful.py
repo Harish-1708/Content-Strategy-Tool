@@ -11,7 +11,7 @@ def careful_text(text, gap=False):
         text = re.sub(r"^\s*min_hours_between_runs:.*\n", "", text, flags=re.M)
     for key in CAREFUL_KEYS:
         text = re.sub(rf"^(\s*)# ({key}:)", r"\1\2", text, flags=re.M)             # since Update 68 the shipped file already has them on: switching on is then a no-op
-        assert len(re.findall(rf"^\s*{key}:", text, flags=re.M)) >= 1, key
+        assert len(re.findall(rf"^\s*{key}:", text, flags=re.M)) == 2, key          # one for Instagram and one for TikTok in the shipped file
     return text
 
 
