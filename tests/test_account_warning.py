@@ -401,21 +401,21 @@ def test_a_damaged_memory_means_nothing_resting_never_a_crash(store, tmp_path, c
 
 # ---- the settings -----------------------------------------------------------------------------------------------------------
 
-def test_the_defaults_never_rest_instagram_and_rest_tiktok_for_three_days():
-    assert C.load_collector_settings("does-not-exist.yaml").cooldown_days == {"instagram": 0, "tiktok": 3}
-    assert C.load_collector_settings("research.yaml").cooldown_days == {"instagram": 0, "tiktok": 3}
+def test_the_defaults_rest_both_accounts_for_a_week():
+    assert C.load_collector_settings("does-not-exist.yaml").cooldown_days == {"instagram": 7, "tiktok": 7}          # Update 68: both accounts rest a week after a warning
+    assert C.load_collector_settings("research.yaml").cooldown_days == {"instagram": 7, "tiktok": 7}
 
 
 def test_one_site_can_be_changed_without_losing_the_other(tmp_path):
     path = tmp_path / "r.yaml"
-    path.write_text("collectors:\n  safety:\n    cooldown_days:\n      instagram: 7\n")
-    assert C.load_collector_settings(path).cooldown_days == {"instagram": 7, "tiktok": 3}
+    path.write_text("collectors:\n  safety:\n    cooldown_days:\n      instagram: 2\n")
+    assert C.load_collector_settings(path).cooldown_days == {"instagram": 2, "tiktok": 7}
 
 
 def test_zero_and_gemini_are_allowed(tmp_path):
     path = tmp_path / "r.yaml"
     path.write_text("collectors:\n  safety:\n    cooldown_days:\n      instagram: 0\n      gemini: 2\n")
-    assert C.load_collector_settings(path).cooldown_days == {"instagram": 0, "tiktok": 3, "gemini": 2}
+    assert C.load_collector_settings(path).cooldown_days == {"instagram": 0, "tiktok": 7, "gemini": 2}
 
 
 @pytest.mark.parametrize("body,match", [

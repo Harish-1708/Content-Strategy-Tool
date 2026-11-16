@@ -223,6 +223,15 @@ def test_with_cookies_a_page_that_looks_like_neither_is_not_logged_into_either(c
     assert b.typed == [] and b.opened == [ig["home"]] and b.shots == ["unknown-state-instagram"]
 
 
+def plain_cfg(cfg):
+    """The settings with Instagram's careful mode removed (it is ON since Update 68 and its own pacing overrides the waits these tests measure)."""
+    import copy
+    out = copy.deepcopy(cfg)
+    for key in ("pacing", "max_scrolls_per_page", "max_pages_per_run", "max_pages_per_day", "min_hours_between_runs"):
+        out["sites"]["instagram"].pop(key, None)
+    return out
+
+
 def test_without_cookies_the_password_is_still_the_backup(cfg):
     b = LoginFake(cfg)
     assert C.ensure_session(b, "instagram", site(cfg, "instagram"), {"cookies": "", "username": "u", "password": "p"}) == "ok"
@@ -492,6 +501,7 @@ def test_the_shipped_settings_keep_the_password_as_the_backup_for_instagram_and_
 # --- Instagram is given time to draw its grid -------------------------------------------------------------------------------------
 
 def test_instagram_waits_longer_after_opening_and_after_each_scroll_than_the_general_settings(cfg):
+    cfg = plain_cfg(cfg)
     ig = site(cfg, "instagram")
     pace = B.site_pacing(cfg, "instagram")
     assert ig["settle_seconds"] >= 8 and pace["scroll_pause_seconds"] >= 5
@@ -501,6 +511,7 @@ def test_instagram_waits_longer_after_opening_and_after_each_scroll_than_the_gen
 
 
 def test_a_real_instagram_read_uses_those_waits(cfg):
+    cfg = plain_cfg(cfg)
     ig = site(cfg, "instagram")
     b = FakeBrowser({"https://www.instagram.com/explore/tags/": {"json": []}}, present_always={ig["logged_in_any"][0]})
     C.run_browser_task(b, C.Task("instagram", "t", {"hashtags": ["a"]}, "k", 1), 50, ig, cfg, CREDS["instagram"])
@@ -520,6 +531,7 @@ def test_the_check_lets_the_page_draw_before_it_takes_its_picture(cfg, store, se
 
 
 def test_instagrams_scroll_wait_is_its_own_setting_so_careful_mode_can_still_take_the_pacing_block(cfg):
+    cfg = plain_cfg(cfg)                                                                         # careful mode is ON in the shipped file since Update 68: this test is about the plain setting
     ig = site(cfg, "instagram")
     assert "pacing" not in ig and ig["scroll_pause_seconds"] == 6              # `pacing` stays free for Careful Mode, which writes it
     assert B.site_pacing(cfg, "instagram")["scroll_pause_seconds"] == 6

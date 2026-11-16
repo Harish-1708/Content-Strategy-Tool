@@ -338,16 +338,17 @@ def test_the_run_uses_the_browser_route_end_to_end(store, swov, drive, monkeypat
 
 # ---- Instagram is on, and only as careful as you ask it to be ----------------------------------------------------------------------------------
 
-def test_instagram_ships_with_no_limits_and_no_automatic_rest():
+def test_instagram_and_tiktok_ship_careful_with_a_gap_and_a_week_of_rest_since_update_68():
     import yaml
-    from careful import CAREFUL_KEYS, careful_text
+    from careful import CAREFUL_KEYS
     from contentintel import collectors as C
     text = Path("browser.yaml").read_text(encoding="utf-8")
-    ig = yaml.safe_load(text)["sites"]["instagram"]
-    assert not set(CAREFUL_KEYS) & set(ig)
-    assert C.load_collector_settings("research.yaml").cooldown_days == {"instagram": 0, "tiktok": 3} == C.load_collector_settings("none.yaml").cooldown_days
-    on = yaml.safe_load(careful_text(text))["sites"]["instagram"]
-    assert on["max_pages_per_run"] == 2 and on["max_pages_per_day"] == 4 and on["max_scrolls_per_page"] == 3 and on["pacing"]["min_delay_seconds"] == 20
+    sites = yaml.safe_load(text)["sites"]
+    ig, tt = sites["instagram"], sites["tiktok"]
+    assert set(CAREFUL_KEYS) <= set(ig)                                                                       # careful mode is ON: the owner's decision after Meta's automation warning
+    assert ig["max_pages_per_run"] == 2 and ig["max_pages_per_day"] == 4 and ig["max_scrolls_per_page"] == 3 and ig["pacing"]["min_delay_seconds"] == 20 and ig["min_hours_between_runs"] == 12
+    assert tt["max_pages_per_run"] == 2 and tt["max_pages_per_day"] == 4 and tt["min_hours_between_runs"] == 12
+    assert C.load_collector_settings("research.yaml").cooldown_days == {"instagram": 7, "tiktok": 7} == C.load_collector_settings("none.yaml").cooldown_days
 
 
 def test_both_workflows_start_with_instagram_ticked():

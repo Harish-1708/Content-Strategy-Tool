@@ -70,7 +70,7 @@ def test_the_voice_run_says_which_keys_the_engine_got_and_why_the_backup_answere
     assert "the last30days engine could not answer (UPSTREAM_BROKEN: every source last30days tried failed" in out and "Sign in to confirm" in out and "answered instead" in out and "from builtin" in out
     RT.run_voice(_args(tmp_path, "--topic", "sweatpant overalls"), store, NOW, get=get, runner=Runner((FIX / "l30_research_mock_real.json").read_text()), environ={"SERPER_API_KEY": "s", "SCRAPECREATORS_API_KEY": "sc"}, clock=lambda: 1)
     out = capsys.readouterr().out
-    assert "SERPER_API_KEY, SCRAPECREATORS_API_KEY. SCRAPECREATORS_API_KEY is set in this run and is handed to the engine, so TikTok, Instagram and Meta Ads are asked too." in out
+    assert "SERPER_API_KEY, SCRAPECREATORS_API_KEY. SCRAPECREATORS_API_KEY is set in this run and is handed to the engine: when the engine answers (research and competitors modes), TikTok, Instagram and Meta Ads are asked too. Each keyed query spends ScrapeCreators credits (100 free, once): try one topic first." in out
     assert "from last30days" in out or "from external" in out and "could not answer" not in out
 
 
@@ -837,7 +837,7 @@ def test_several_apify_keys_fail_over_in_order_and_a_refused_key_is_not_asked_ag
     pool.clients = [Key("a", AuthError("Apify: the token was rejected")), Key("b", QuotaError("Apify: out of credits")), Key("c")]
     assert pool.run("x/y", {}, max_items=1, max_cost_usd=0.25) == [{"ok": "c"}] and calls == ["a", "b", "c"]
     assert pool.run("x/y", {}, max_items=1, max_cost_usd=0.25) == [{"ok": "c"}] and calls == ["a", "b", "c", "c"]                  # a and b are not asked again in this run
-    assert pool.events == ["Apify key 1 of 3 was refused (AuthError); key 2 answers instead", "Apify key 2 of 3 was refused (QuotaError); key 3 answers instead"]
+    assert pool.events == ["Apify key 1 of 3 was refused (AuthError); the next key answers instead", "Apify key 2 of 3 was refused (QuotaError); the next key answers instead"]
     pool = A.ApifyPool(["a", "b"])
     pool.clients = [Key("a", ProviderConfigError("the cost ceiling is below the minimum")), Key("b")]
     calls.clear()
@@ -869,7 +869,7 @@ def test_the_apify_voice_lane_reports_a_key_switch_and_the_extra_keys_reach_the_
     monkeypatch.setattr(A, "build_apify", lambda environ: pool)
     RT.run_voice(_args(tmp_path, "--topic", "sweatpant overalls"), store, "2026-11-15T00:00:00Z", get=Get({"algolia": (200, json.dumps({"hits": []}))}), runner=Runner("", 1, "boom"), environ={"APIFY_TOKEN": "a"}, clock=lambda: 1)
     out = capsys.readouterr().out
-    assert "Apify keys: Apify key 1 of 2 was refused (AuthError); key 2 answers instead" in out and len(good.calls) == 2
+    assert "Apify keys: Apify key 1 of 2 was refused (AuthError); the next key answers instead" in out and len(good.calls) == 2
     for name in ("collect.yml", "research-tools.yml", "request.yml"):
         body = (Path(".github/workflows") / name).read_text(encoding="utf-8")
         assert all(f"APIFY_TOKEN_{n}: ${{{{ secrets.APIFY_TOKEN_{n} }}}}" in body for n in (2, 3, 4)), name
@@ -913,7 +913,6 @@ def test_when_the_engine_and_the_backup_both_fail_the_apify_lane_still_asks_and_
     out = capsys.readouterr().out
     assert "the last30days engine had also failed" in out and len(fake.calls) == 2 and "Apify usage after this run: voice 40/60" in out and "item(s) from none" not in out
     assert store.load_usage()["months"]["2026-11"]["voice_apify_items"] == 40                           # saved after the ask
-    store2 = Store(tmp_path / "data2")
     under = FakeApify()
     real = under.run
 
@@ -926,12 +925,12 @@ def test_when_the_engine_and_the_backup_both_fail_the_apify_lane_still_asks_and_
     for idx, name in enumerate(["The Oodie", "Madepants", "SKIMS"]):
         items, _ = lane.run(name, share=max(2, lane.room() // (3 - idx)), entity=name)
         total += len(items)
-    assert total > 33 and lane.spent_this_run == total and store2 is not None                              # what Madepants did not read went to SKIMS
+    assert total > 33 and lane.spent_this_run == total                              # what Madepants did not read went to SKIMS
 
 
 def test_the_apify_lane_notes_an_empty_hashtag_clamps_its_own_limits_and_counts_its_asks():
     lane = VOICE.ApifyVoice(FakeApify(), _ledger(), per_run=1000, monthly=1000, shared_cap=100, normalize=lambda s, raw: (raw, 0))
-    assert (lane.per_run, lane.monthly) == (300, 600) and VOICE.ApifyVoice(FakeApify(), _ledger(), per_run=0, monthly=-5).per_run == 1
+    assert (lane.per_run, lane.monthly) == (300, 600) and (VOICE.ApifyVoice(FakeApify(), _ledger(), per_run=0, monthly=-5).per_run, VOICE.ApifyVoice(FakeApify(), _ledger(), per_run=0, monthly=-5).monthly) == (1, 1)
     items, notes = lane.run("!!! ???")
     assert any("not asked (the topic has no letters or digits to make a hashtag from)" in n for n in notes) and lane.asks_made == 1 and len(items) == 50
     lane.run("again")
@@ -1000,29 +999,8 @@ def test_three_keys_make_a_fifteen_dollar_month_reported_per_key_with_nothing_ca
     pool = A.ApifyPool(["a", "b", "c"])
     pool.clients = [A.Apify("a", http=_limits_http(5.0, 5)), A.Apify("b", http=_limits_http(2.0, 5)), A.Apify("c", http=_limits_http(0.5, 5, ends="2026-12-04T00:00:00.000Z"))]
     lines, left = A.budget_report(pool)
-    assert left == 7.5 and lines[0] == "Apify budget this cycle (each key's allowance is per monthly cycle and nothing carries forward): $7.50 left of $15.00 across 3 key(s)"
+    assert left == 7.5 and lines[0] == "Apify budget this cycle (each key's allowance is per monthly cycle and nothing carries forward): $7.50 left of $15.00 across 3 key(s); the keys' cycles end on different days (see each key), so this total is not one window"
     assert lines[1:] == ["  key 1: $5.00 of $5.00 used, cycle ends 2026-12-01", "  key 2: $2.00 of $5.00 used, cycle ends 2026-12-01", "  key 3: $0.50 of $5.00 used, cycle ends 2026-12-04"]
-
-
-def test_a_key_with_less_left_than_the_calls_ceiling_is_skipped_and_the_next_key_answers():
-    from contentintel import apify as A
-
-    class Key(A.Apify):
-        def __init__(self, left):
-            super().__init__("t", http=_limits_http(5 - left, 5))
-            self.calls = 0
-
-        def run(self, *a, **k):
-            self.calls += 1
-            return [{"ok": 1}]
-    pool = A.ApifyPool(["a", "b"])
-    pool.clients = [Key(0.30), Key(4.0)]
-    assert pool.run("x/y", {}, max_items=1, max_cost_usd=0.50) == [{"ok": 1}] and pool.clients[0].calls == 0 and pool.clients[1].calls == 1
-    assert pool.events == ["Apify key 1 of 2 has $0.30 left, less than this call's $0.5 ceiling; the next key is used"]
-    pool = A.ApifyPool(["a"])
-    pool.clients = [Key(0.10)]
-    with pytest.raises(A.AuthError, match="no key is available"):
-        pool.run("x/y", {}, max_items=1, max_cost_usd=0.50)
 
 
 def test_the_apify_lane_does_not_ask_when_apify_reports_less_money_left_than_the_ceiling():
@@ -1031,7 +1009,7 @@ def test_the_apify_lane_does_not_ask_when_apify_reports_less_money_left_than_the
     lane = VOICE.ApifyVoice(fake, _ledger(), normalize=lambda s, raw: (raw, 0), budget_fn=lambda: left["v"])
     items, notes = lane.run("sweatpant overalls")
     assert [c[0] for c in fake.calls] == ["apify/instagram-hashtag-scraper"]                         # TikTok needs 0.50, Instagram 0.25
-    assert "apify tiktok for 'sweatpant overalls': not asked (Apify reports $0.40 left this cycle, less than this call's $0.5 ceiling)" in notes[0]
+    assert "apify tiktok for 'sweatpant overalls': not asked (Apify reports $0.40 left on the best key this cycle, less than this call's $0.5 ceiling)" in notes[0]
     left["v"] = 0.10
     fake.calls.clear()
     assert lane.run("again")[0] == [] and fake.calls == []
@@ -1052,7 +1030,7 @@ def test_the_voice_run_prints_the_budget_before_asking_and_scales_its_limits_wit
     out = capsys.readouterr().out
     assert out.index("Apify budget this cycle") < out.index("Apify lane ON") and "$9.00 left of $15.00 across 3 key(s)" in out
     assert "at most 120 items in this whole run, 180 a month for voice" in out and "never beyond the Collect step's 300 a month" in out
-    assert "Apify key 1 of 3 has $0.00 left, less than this call's $0.5 ceiling; the next key is used" in out and len(fake.calls) == 2
+    assert "Apify key 1 of 3 has $0.00 left, less than the $0.25 the smallest call needs; the next key is used" in out and len(fake.calls) == 2
     assert "Apify usage after this run: voice 120/180 items this month, all Apify use 120/300 (this run read 120)." in out
 
 
@@ -1075,6 +1053,7 @@ def test_the_money_left_is_read_again_before_each_call_so_a_call_that_spent_it_s
 
     def run(actor, payload, *, max_items, max_cost_usd, timeout=280):
         calls.append(actor)
+        client.forget_usage()                                                                              # as the real run does: the next reading is a fresh one
         state["used"] += 4.9                                                                               # this call spent almost all of the key's five dollars
         return [{"text": "a caption about overalls", "likes": 5, "url": "https://x/1"}]
     client.run = run
@@ -1082,7 +1061,7 @@ def test_the_money_left_is_read_again_before_each_call_so_a_call_that_spent_it_s
     monkeypatch.setattr(COL, "normalize_items", lambda source, raw: (raw, 0))
     RT.run_voice(_args(tmp_path, "--topic", "sweatpant overalls"), store, "2026-11-15T00:00:00Z", get=Get({"algolia": (200, json.dumps({"hits": []}))}), runner=Runner("", 1, "boom"), environ={"APIFY_TOKEN": "a"}, clock=lambda: 1)
     out = capsys.readouterr().out
-    assert calls == ["clockworks/tiktok-scraper"] and "apify instagram for 'sweatpant overalls': not asked (Apify reports $0.10 left this cycle, less than this call's $0.25 ceiling)" in out
+    assert calls == ["clockworks/tiktok-scraper"] and "apify instagram for 'sweatpant overalls': not asked (Apify reports $0.10 left on the best key this cycle, less than this call's $0.25 ceiling)" in out
 
 
 def test_the_apify_budget_tool_prints_the_real_money_left_per_key_and_spends_nothing(tmp_path, capsys, monkeypatch):
@@ -1115,7 +1094,7 @@ def test_when_apifys_endpoint_cannot_be_read_the_budget_tool_says_why_and_that_t
 
 def test_the_research_tools_workflow_can_run_the_budget_check_and_the_voice_run_says_when_the_endpoint_failed(tmp_path, capsys, monkeypatch):
     body = Path(".github/workflows/research-tools.yml").read_text(encoding="utf-8")
-    assert "apify-budget) args=(apify-budget) ;;" in body and "apify-budget, install]" in body and "APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}" in body
+    assert "apify-budget) args=(apify-budget) ;;" in body and "apify-budget, analytics, install]" in body and "APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}" in body
     from contentintel import apify as A
     from contentintel import collectors as COL
     store = _voice_env(tmp_path, monkeypatch)

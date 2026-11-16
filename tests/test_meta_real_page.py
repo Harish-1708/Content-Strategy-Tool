@@ -228,7 +228,9 @@ def test_the_details_travel_to_the_collected_rows_and_update_in_place():
 
 def test_the_browser_install_is_pinned_cached_and_retried():
     text = open(".github/workflows/collect.yml", encoding="utf-8").read()
-    assert re.fullmatch(r"playwright==\d+\.\d+\.\d+\n", open("requirements-browser.txt").read())
+    # Both browser packages are pinned to exact versions: Playwright for the plain path, patchright for the stealth
+    # browser (Update 68). The file holds nothing else — a comment or an unpinned package would break this pin.
+    assert re.fullmatch(r"playwright==\d+\.\d+\.\d+\npatchright==\d+\.\d+\.\d+\n", open("requirements-browser.txt").read())
     assert "actions/cache@v4" in text and "~/.cache/ms-playwright" in text and "hashFiles('requirements-browser.txt')" in text
     assert "for attempt in 1 2 3" in text and "playwright install --with-deps chromium" in text and "sleep 20" in text
     assert "could not be downloaded after 3 tries" in text
