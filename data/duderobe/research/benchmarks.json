@@ -116,39 +116,22 @@
   "dudewipes": {
    "candidates": [
     {
-     "ads": 6,
-     "likes": 269434,
-     "name": "Carpe",
-     "page_id": "315614678610514"
-    },
-    {
-     "ads": 2,
-     "likes": 61317,
-     "name": "X Suit",
-     "page_id": "1603857093203672"
-    },
-    {
-     "ads": 1,
-     "likes": 3052,
-     "name": "Dettol Australia",
-     "page_id": "127245917377737"
-    },
-    {
-     "ads": 1,
-     "likes": 1057,
-     "name": "Blinkjoy",
-     "page_id": "103238872674155"
+     "ads": 0,
+     "likes": 0,
+     "name": "DUDE Wipes (@dudewipes)",
+     "page_id": "",
+     "url": "https://www.facebook.com/dudewipes"
     }
    ],
-   "checked_at": "2026-11-14T09:05:03Z",
+   "checked_at": "2026-11-16T05:17:13Z",
    "kind": "benchmark",
    "name": "Dude Wipes",
-   "page_id": "",
+   "page_id": "100064866812951",
    "page_likes": 0,
-   "page_name": "",
-   "reason": "other advertisers turned up, but none has a name like this one",
-   "source": "auto",
-   "status": "unresolved"
+   "page_name": "DUDE Wipes (@dudewipes)",
+   "reason": "found with Serper and confirmed as the main official page by the AI reviewer: The page is named DUDE Wipes, has the brand's own handle and tagline, mentions its Chicago origins and Shark Tank, and carries no regional qualifier. (https://www.facebook.com/dudewipes)",
+   "source": "serper_review",
+   "status": "resolved"
   },
   "gymshark": {
    "candidates": [

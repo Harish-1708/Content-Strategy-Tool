@@ -89,88 +89,49 @@
   "hukitchen": {
    "candidates": [
     {
-     "ads": 1,
-     "likes": 12373335,
-     "name": "Temu",
-     "page_id": "101886952638461"
-    },
-    {
-     "ads": 1,
-     "likes": 2990847,
-     "name": "Shoptemu",
-     "page_id": "103219685846470"
-    },
-    {
-     "ads": 1,
-     "likes": 2591156,
-     "name": "Discover Nanjing, China",
-     "page_id": "1515909005308067"
-    },
-    {
-     "ads": 1,
-     "likes": 1029386,
-     "name": "Popeyes",
-     "page_id": "36385509036"
-    },
-    {
-     "ads": 1,
-     "likes": 577502,
-     "name": "cozycozy.com",
-     "page_id": "293534674361657"
+     "ads": 0,
+     "likes": 0,
+     "name": "Hu Kitchen (@HuKitchen)",
+     "page_id": "",
+     "url": "https://www.facebook.com/HuKitchen"
     }
    ],
-   "checked_at": "2026-10-28T14:29:45Z",
+   "checked_at": "2026-11-16T05:17:13Z",
    "kind": "benchmark",
    "name": "Hu Kitchen",
-   "page_id": "",
+   "page_id": "100064252197325",
    "page_likes": 0,
-   "page_name": "",
-   "reason": "other advertisers turned up, but none has a name like this one",
-   "source": "auto",
-   "status": "unresolved"
+   "page_name": "Hu Kitchen (@HuKitchen)",
+   "reason": "found with Serper and confirmed as the main official page by the AI reviewer: The page handle and title match the brand name exactly, it has a large following, and the snippet reflects Hu's own brand messaging, with no regional qualifier. (https://www.facebook.com/HuKitchen)",
+   "source": "serper_review",
+   "status": "resolved"
   },
   "lilyssweets": {
    "candidates": [
     {
-     "ads": 1,
-     "likes": 520982,
-     "name": "The Big Dill",
-     "page_id": "1139703819542901"
+     "ads": 0,
+     "likes": 0,
+     "name": "Lily's Sweets (@LilysSweets)",
+     "page_id": "",
+     "url": "https://www.facebook.com/LilysSweets"
     },
     {
-     "ads": 1,
-     "likes": 213241,
-     "name": "Power of the Almond",
-     "page_id": "102283105023225"
-    },
-    {
-     "ads": 1,
-     "likes": 139636,
-     "name": "ऐसे शो जिन्हें आप छोड़ नहीं पाएंगे",
-     "page_id": "1069298389596894"
-    },
-    {
-     "ads": 1,
-     "likes": 98914,
-     "name": "Zona de Dramas Curtos",
-     "page_id": "834646206408419"
-    },
-    {
-     "ads": 1,
-     "likes": 35098,
-     "name": "Candy In Bulk",
-     "page_id": "638454072694732"
+     "ads": 0,
+     "likes": 0,
+     "name": "Lily's Sweets and More (@MarthaLiStuart)",
+     "page_id": "",
+     "url": "https://www.facebook.com/MarthaLiStuart"
     }
    ],
-   "checked_at": "2026-10-21T13:13:17Z",
+   "checked_at": "2026-11-16T05:17:13Z",
    "kind": "benchmark",
    "name": "Lily's Sweets",
-   "page_id": "",
+   "page_id": "100064742224394",
    "page_likes": 0,
-   "page_name": "",
-   "reason": "other advertisers turned up, but none has a name like this one",
-   "source": "auto",
-   "status": "unresolved"
+   "page_name": "Lily's Sweets (@LilysSweets)",
+   "reason": "found with Serper and confirmed as the main official page by the AI reviewer: The first candidate is the brand's own page with a large following and brand-consistent messaging, while the second is an unrelated local baker's page. (https://www.facebook.com/LilysSweets)",
+   "source": "serper_review",
+   "status": "resolved"
   },
   "liquiddeath": {
    "candidates": [
@@ -238,39 +199,22 @@
   "olipop": {
    "candidates": [
     {
-     "ads": 3,
-     "likes": 20491134,
-     "name": "Meta for Business",
-     "page_id": "185130644919625"
-    },
-    {
-     "ads": 2,
-     "likes": 20491134,
-     "name": "Meta for Business",
-     "page_id": "74100576336"
-    },
-    {
-     "ads": 2,
-     "likes": 1772312,
-     "name": "Thrive Market",
-     "page_id": "789439407744270"
-    },
-    {
-     "ads": 3,
-     "likes": 1342068,
-     "name": "Whirlpool",
-     "page_id": "152290218141343"
+     "ads": 0,
+     "likes": 0,
+     "name": "Olipop (@drinkolipop)",
+     "page_id": "",
+     "url": "https://www.facebook.com/drinkolipop"
     }
    ],
-   "checked_at": "2026-11-04T15:45:26Z",
+   "checked_at": "2026-11-16T05:17:13Z",
    "kind": "benchmark",
    "name": "Olipop",
-   "page_id": "",
+   "page_id": "100066140546867",
    "page_likes": 0,
-   "page_name": "",
-   "reason": "other advertisers turned up, but none has a name like this one",
-   "source": "auto",
-   "status": "unresolved"
+   "page_name": "Olipop (@drinkolipop)",
+   "reason": "found with Serper and confirmed as the main official page by the AI reviewer: The page is named Olipop (@drinkolipop), and its snippet describes the brand's own high-fiber, low-sugar soda with no regional marker, so it is the primary official page. (https://www.facebook.com/drinkolipop)",
+   "source": "serper_review",
+   "status": "resolved"
   },
   "rxbar": {
    "candidates": [
