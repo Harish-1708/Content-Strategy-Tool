@@ -512,20 +512,33 @@ def shuffle_reads(urls, rng=None):
 _IP_RE = re.compile(r"^(?:\d{1,3}\.){3}\d{1,3}$")
 
 
-def resolve_egress_ip(page):
+_EGRESS = {}                       # key (the proxy host, or "direct") -> (when, ip): one lookup per route, not one per browser open
+_EGRESS_FOUND_SECONDS, _EGRESS_MISSED_SECONDS = 900.0, 60.0
+
+
+def resolve_egress_ip(page, key=None):
     """The IP the account's traffic comes from, read through the browser's
     own context so it goes through the proxy when one is configured.
     Best effort: None when the check fails. The address is only ever written
     to the run's own debug directory.
+
+    With a `key` (the proxy host, or "direct") the answer is kept for 15 minutes (a failure for 1 minute, so a slow lookup is not repeated at every
+    browser open): a run opens a browser per site and per task, and the route has not changed in between.
     """
+    now = time.monotonic()
+    if key is not None and key in _EGRESS:
+        when, ip = _EGRESS[key]
+        if now - when < (_EGRESS_FOUND_SECONDS if ip else _EGRESS_MISSED_SECONDS):
+            return ip
     try:
         response = page.context.request.get("https://api.ipify.org", timeout=10000)
         text = (response.text() or "").strip()
     except Exception:
-        return None
-    if not isinstance(text, str):
-        return None
-    return text if _IP_RE.match(text) else None
+        text = None
+    ip = text if isinstance(text, str) and _IP_RE.match(text) else None
+    if key is not None:
+        _EGRESS[key] = (now, ip)
+    return ip
 
 
 def human_score(dwell_seconds, content_chars, mouse_moves, scroll_events, pauses):

@@ -427,12 +427,16 @@ class PlaywrightBrowser:
         self._last_url = url
         chars = 0
         if self.human is not None:
+            # The dwell after the page opens is proportional to how much TEXT a person could read: the visible text, not the page's HTML (which is tens
+            # of thousands of characters even on a photo grid and made every dwell the 20-second cap).
             try:
-                chars = len(self.page.content() or "")
+                chars = len(self.page.inner_text("body") or "")
             except Exception:
-                chars = 0
-            # The dwell after the page opens is proportional to how much text
-            # the page holds, so a long page is read longer than a short one.
+                try:
+                    chars = len(self.page.content() or "")
+                except Exception:
+                    chars = 0
+            # So a long page is read longer than a short one.
             self.human.after_load(self.page, content_chars=chars)
         if self.read_log is not None:
             self._current_read = self.read_log.record(
@@ -807,9 +811,11 @@ def open_browser(site, cfg, pacing, cookies_text, debug_dir, headless=True, huma
         # the headed/headless question unanswered.
         xvfb_instance = _XVFB["instance"]
         browser_obj.xvfb_status = getattr(xvfb_instance, "status", None) if xvfb_instance is not None else None
-        if identity is not None and stealth_cfg.get("log_reads"):
+        if stealth_cfg is None or stealth_cfg.get("log_reads", True):          # the per-read log does not depend on the stealth layer: with the layer off it still records pages, timing and the egress IP
+            from . import stealth as stealth_mod
+            proxy = stealth_mod.proxy_host(identity.get("proxy")) if identity else None
             browser_obj.read_log = stealth_mod.ReadLog(site, engine, identity,
-                                                       egress_ip=stealth_mod.resolve_egress_ip(page),
+                                                       egress_ip=stealth_mod.resolve_egress_ip(page, key=proxy or "direct"),
                                                        xvfb_status=browser_obj.xvfb_status)
         # Warm-up: visit the site's public video/profile pages and poll for
         # its clearance cookie before any listing page is opened (see

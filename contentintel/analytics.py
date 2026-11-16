@@ -102,10 +102,15 @@ def needs_input(report):
 def build_report(brands_dir, slug, key_json="", search=None, fetch=None):
     """The full picture for one brand: GA4 and Search Console (only with access) and the public Serper ranks. `fetch` is for tests (an already-connected (session, email))."""
     cfg = load_config(brands_dir, slug)
-    session, email = fetch if fetch is not None else ((None, "") if not (key_json or "").strip() else connect(key_json))
+    broken = ""
+    try:
+        session, email = fetch if fetch is not None else ((None, "") if not (key_json or "").strip() else connect(key_json))
+    except Exception as exc:                                                       # noqa: BLE001 - a damaged key is a reason in the report, never a crash
+        session, email, broken = None, "", f"GOOGLE_SERVICE_ACCOUNT_JSON could not be used ({type(exc).__name__}): check that the whole key file was pasted"
     if session is None:
-        ga4 = {"status": NO_ACCESS if cfg["ga4_property_id"] else NOT_CONFIGURED, "reason": "GOOGLE_SERVICE_ACCOUNT_JSON is not set in this run" if cfg["ga4_property_id"] else "no ga4_property_id in the brand's analytics.yaml", "rows": None}
-        gsc = {"status": NO_ACCESS if cfg["search_console_site"] else NOT_CONFIGURED, "reason": "GOOGLE_SERVICE_ACCOUNT_JSON is not set in this run" if cfg["search_console_site"] else "no search_console_site in the brand's analytics.yaml", "rows": None}
+        why = broken or "GOOGLE_SERVICE_ACCOUNT_JSON is not set in this run"
+        ga4 = {"status": (ERROR if broken else NO_ACCESS) if cfg["ga4_property_id"] else NOT_CONFIGURED, "reason": why if cfg["ga4_property_id"] else "no ga4_property_id in the brand's analytics.yaml", "rows": None}
+        gsc = {"status": (ERROR if broken else NO_ACCESS) if cfg["search_console_site"] else NOT_CONFIGURED, "reason": why if cfg["search_console_site"] else "no search_console_site in the brand's analytics.yaml", "rows": None}
     else:
         ga4, gsc = ga4_report(session, cfg["ga4_property_id"], email), search_console_report(session, cfg["search_console_site"], email)
     ranks = [serper_rank(search, k, cfg["domain"]) for k in cfg["rank_keywords"]] if search is not None and cfg["domain"] else []

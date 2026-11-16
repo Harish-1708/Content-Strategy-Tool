@@ -892,7 +892,7 @@ def _collect(args, store):
         brands, store, browser_factory=factory, creds=creds, settings=settings, browser_cfg=browser_cfg,
         ledger_cls=research_mod.Ledger, sources=wanted, now=now, run_id=secrets.token_hex(4),
         dry_run=args.dry_run, root=args.brands_dir, apify=apify, claude=claude, backend=backend,
-        region=args.region.strip() or None, health=health_ledger, registry=registry, fresh=bool(args.fresh), page_finder=_page_finder(claude, args),
+        region=args.region.strip() or None, health=health_ledger, registry=registry, fresh=bool(args.fresh), page_finder=_page_finder(claude, args), ignore_gap=bool(args.ignore_cooldown),
         secondary=_secondary_reader(args))
     _save_health(health_ledger, store, args)
     ledger = None if args.dry_run else research_mod.Ledger(store.load_usage(), now[:7])

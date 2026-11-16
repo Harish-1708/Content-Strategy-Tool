@@ -58,7 +58,7 @@ DEFAULT_APIFY_ACTORS = {"meta_ads": "apify/facebook-ads-scraper", "tiktok": "clo
 DEFAULT_COLLECTORS = {
     "browser": {"monthly_items": 0, "items_per_run": 30, "cache_days": 3},          # 0 = no monthly limit
     "gemini": {"monthly_tasks": 2, "tasks_per_run": 1, "cache_days": 14},
-    "apify": {"mode": "off", "monthly_items": 300, "items_per_run": 30, "max_cost_per_run_usd": 1.0, "check_max_cost_usd": 0.25,
+    "apify": {"mode": "off", "monthly_items": 300, "items_per_run": 30, "max_cost_per_run_usd": 1.0, "check_max_cost_usd": 0.5,
               "actors": DEFAULT_APIFY_ACTORS},
     "claude": {"model": "claude-sonnet-5-5", "monthly_calls": 60, "max_rounds": 3, "max_tokens": 700, "prompt_max_tokens": 2000, "review_rounds": 1,
                "prepare_prompt": True},
@@ -1548,8 +1548,12 @@ def _page_notes(stats):
     stealth = stats.get("stealth") or {}
     if stealth.get("pages"):
         proxy = f" through the proxy ({stealth['proxy']})" if stealth.get("proxy") else " with no proxy"
-        text += (f" - stealth: {stealth['pages']} page(s) read as {stealth.get('identity')} through {stealth.get('engine')}"
-                 f"{proxy}; human score {stealth.get('human_score')}/100")
+        if stealth.get("identity"):
+            text += (f" - stealth: {stealth['pages']} page(s) read as {stealth.get('identity')} through {stealth.get('engine')}"
+                     f"{proxy}; human score {stealth.get('human_score')}/100")
+        else:                                                                      # the layer is off: the read log still says what was read, and from where
+            text += (f" - read log: {stealth['pages']} page(s) read through {stealth.get('engine')} (stealth off){proxy}; "
+                     f"egress IP {stealth.get('egress_ip') or 'not read'}; human score {stealth.get('human_score')}/100")
     return text
 
 
@@ -1797,7 +1801,7 @@ def skip_details(site, exc, opened):
 
 def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg, ledger_cls, sources, now,
                 run_id, configs=None, dry_run=False, root="brands", apify=None, claude=None, backend="browser", region=None,
-                health=None, registry=None, fresh=False, page_finder=None, secondary=None):
+                health=None, registry=None, fresh=False, page_finder=None, secondary=None, ignore_gap=False):
     """Plan and run collection tasks for each brand, within the caps in `settings`.
 
     backend: browser (the default), apify (Apify only) or fallback (the browser first, Apify when
@@ -1850,7 +1854,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
     def gap_left(site, site_cfg):
         """Hours still to wait before the account may be read again (0 when no gap is set or it has passed): `min_hours_between_runs` in browser.yaml."""
         hours, last = site_cfg.get("min_hours_between_runs"), page_log.get("last", {}).get(site)
-        if not hours or not last:
+        if ignore_gap or not hours or not last:                       # the owner asked for this run to ignore the gap (Collect's ignore_cooldown): the page caps still apply
             return 0
         try:
             gone = (datetime.fromisoformat(now.replace("Z", "+00:00")) - datetime.fromisoformat(str(last).replace("Z", "+00:00"))).total_seconds() / 3600
@@ -1884,7 +1888,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
         if not isinstance(exc, AccountWarning):
             return ""
         days = settings.cooldown_days.get(site, 0)
-        if days <= 0 or dry_run or not guards.on("rest_after_refusal"):
+        if days <= 0 or dry_run:                                          # the owner's switch for this rest is collectors.safety.cooldown_days (0 = this run only); it does not wait for a general guard that ships OFF
             return " It will not be used again in this run."
         entry = {"until": rest_until(now, days), "at": now, "reason": exc.reason[:200]}
         cooldowns[site] = entry
