@@ -197,7 +197,11 @@ def lookup_main_page(name, search, review, read_id, label="the reviewer", review
         out["reason"] = "searching for this brand's Facebook page found no Facebook page address"
         return out
     out["candidates"] = [{"page_id": "", "name": c["title"] or c["slug"], "likes": 0, "ads": 0, "url": c["url"]} for c in ranked]
-    verdict = clean_review(review(name, ranked), ranked)
+    try:
+        verdict = clean_review(review(name, ranked), ranked)
+    except Exception as exc:                                                       # a reviewer that fails leaves the brand unresolved, never crashes the run (as for the id reviewer)
+        out.update(status="ambiguous", reason=f"the search found Facebook pages, but the reviewer could not be asked ({type(exc).__name__})")
+        return out
     if not verdict["choice"] or not verdict["is_main"]:
         out.update(status="ambiguous", reason="the search found Facebook pages, but " + (verdict["reason"] or "the reviewer could not confirm one as the main official page"))
         return out
@@ -262,30 +266,31 @@ def make_finder(serper, claude, get_html, label="the AI reviewer"):
         return claude.json_task(REVIEW_SYSTEM, f"Brand: {name}\nCandidates:\n{listing}", max_tokens=500)
 
     def read_id(url):
-        """The page id from the page's own HTML, trying the page, its mobile address, its basic address and Facebook's public Page Plugin (the embed any website may show: it needs no login and names the page it
-        draws); read_id.why says what each one did."""
+        """The page id from the page's own HTML. The page itself is asked first with the tool's own identity and, only if that gives no id or fails, with the earlier browser identity that read the ids of Defi Snacks,
+        Magic Spoon and Chobani; then its mobile address, its basic address and Facebook's public Page Plugin (the embed any website may show: it needs no login and names the page it draws).
+        read_id.why says what each one did, in the order they were tried."""
         tried = []
         alt = getattr(get_html, "alt", None)
+
+        def attempt(fetch, variant, label):
+            try:
+                html = fetch(variant) or ""
+            except Exception as exc:                                       # the kind of error only
+                tried.append(f"{label}: {type(exc).__name__}")
+                return ""
+            found = read_page_id(html)
+            if not found:
+                tried.append(f"{label}: no page id in the page ({len(html):,} characters)")
+            return found
+
         for variant in page_id_addresses(url):
             host = variant.split("/")[2] + ("/plugins" if "/plugins/page.php" in variant else "")
-            try:
-                html = get_html(variant) or ""
-                found = read_page_id(html)
-            except Exception as exc:                                       # the kind of error only
-                tried.append(f"{host}: {type(exc).__name__}")
-                continue
-            if not found and alt is not None and variant == url:                   # the page itself is also asked in the browser identity that read the earlier ids; a failure there is a reason too
-                try:
-                    html2 = alt(variant) or ""
-                    found = read_page_id(html2)
-                    if not found:
-                        tried.append(f"{host} as a browser: no page id in the page ({len(html2):,} characters)")
-                except Exception as exc:
-                    tried.append(f"{host} as a browser: {type(exc).__name__}")
+            found = attempt(get_html, variant, host)
+            if not found and alt is not None and variant == url:           # a failed honest fetch is also 'no id read': the browser identity gets its turn either way
+                found = attempt(alt, variant, f"{host} as a browser")
             if found:
                 read_id.why = ""
                 return found
-            tried.append(f"{host}: no page id in the page ({len(html):,} characters)")
         read_id.why = "tried " + "; ".join(tried)
         return ""
     read_id.why = ""

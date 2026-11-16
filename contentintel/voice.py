@@ -107,6 +107,7 @@ class ExternalLast30Days:
         self.environ = environ if environ is not None else {}
         self.python = python or sys.executable
         self.engine_notes = ""                     # what the engine said about sources that failed, even when other sources answered
+        self.sc_out_of_credits = False             # ScrapeCreators answered 402 'payment required': its credits are spent
         self.engine_summary = ""                   # its own account of the run: research quality, bonus sources (TikTok, Instagram) that were unavailable or returned nothing
         self.last_error = ""                       # why the repository's own route failed on the last call, in words (the platform's backup answers; this is what the run reports)
 
@@ -123,6 +124,7 @@ class ExternalLast30Days:
 
     def run(self, topic, mode="research", peers=(), depth="quick"):
         self.last_error = self.engine_notes = self.engine_summary = ""
+        self.sc_out_of_credits = False
         try:
             return self._run(topic, mode, peers, depth)
         except K.Failure as exc:
@@ -138,7 +140,7 @@ class ExternalLast30Days:
             plan = Path(tmp) / "plan.json"
             lanes = DEFAULT_SOURCES + (KEYED_LANES if env.get("SCRAPECREATORS_API_KEY") else ())          # env holds the key only if the owner allows it
             if "meta_ads" in lanes:                                                                         # the engine runs Meta Ads only when it is also opted in (a key alone is not enough)
-                env["INCLUDE_SOURCES"] = ",".join(sorted({*(s for s in (env.get("INCLUDE_SOURCES") or "").split(",") if s), "meta_ads"}))
+                env["INCLUDE_SOURCES"] = "meta_ads"
             plan.write_text(json.dumps(build_plan(topic, lanes)), encoding="utf-8")
             cmd = self.command(topic, mode, plan, peers, depth)
             try:
@@ -147,11 +149,14 @@ class ExternalLast30Days:
                 raise K.Failure(K.TIMEOUT, f"last30days did not finish within {self.timeout} seconds") from None
             except OSError as exc:
                 raise K.Failure(K.NEED_SETUP, f"last30days could not start ({exc.__class__.__name__})") from None
+        stderr_lines = [ln.strip() for ln in (done.stderr or "").splitlines() if ln.strip()]
+        keep = ("research quality", "bonus source", "missing", "returned 0", "returned no", "no results", "unavailable", "skipped", "credit", "payment", "402", "not configured", "rate limit", "errored", "failed")
+        self.engine_summary = scrub(" | ".join(ln for ln in stderr_lines if any(w in ln.lower() for w in keep))[:500], 500)     # read BEFORE the exit code is judged: a hard failure keeps the engine's account too
+        self.sc_out_of_credits = bool(re.search(r"(scrapecreators|\bSC\b)[^\n]*(402|payment required)|payment required", done.stderr or "", re.I))
         if done.returncode != 0:
             raise K.Failure(K.UPSTREAM_BROKEN, f"last30days stopped ({done.returncode}): {scrub((done.stderr or '')[-300:], 300)}")
         engine_notes = " | ".join(ln.strip() for ln in (done.stderr or "").splitlines() if ln.strip() and any(w in ln.lower() for w in ("failed", "missing", "blocked", "error", "refused", "denied", "forbidden", "sign in", "not a bot", "401", "403", "429")))[-400:]
         self.engine_notes = scrub(engine_notes, 400)
-        self.engine_summary = scrub(" | ".join(ln.strip() for ln in (done.stderr or "").splitlines() if ln.strip().startswith(("Research quality", "Bonus source", "Missing")) or "returned 0" in ln or "unavailable" in ln.lower())[:500], 500)
         text = (done.stdout or "").strip()
         start = text.find("{")
         try:
@@ -342,10 +347,11 @@ class ApifyVoice:
 
     def __init__(self, apify, ledger, *, per_run=40, monthly=60, shared_cap=100, max_cost_usd=None, normalize=None, budget_fn=None):
         self.apify, self.ledger = apify, ledger
-        self.per_run, self.monthly, self.shared_cap = (max(1, min(300, int(per_run))), max(1, min(600, int(monthly))), max(0, int(shared_cap)))          # clamped here too, not only by the caller
+        self.per_run, self.monthly, self.shared_cap = (max(1, min(300, int(per_run))), max(1, min(600, int(monthly))), max(0, min(10000, int(shared_cap))))          # clamped here too, not only by the caller
         self.budget_fn = budget_fn                                           # () -> dollars Apify says are left across all keys, or None when unknown
         self.max_cost = None if max_cost_usd is None else max(0.0, float(max_cost_usd))
         self.asks_made = 0
+        self.attempted = 0                                                   # calls actually made to Apify (an ask that every source refused makes none)
         self.normalize = normalize
         self.spent_this_run = 0
 
@@ -360,7 +366,7 @@ class ApifyVoice:
         return max(0, min(self.per_run - self.spent_this_run, self.monthly - self.ledger.month_used("voice_apify_items"), self.shared_cap - self.ledger.month_used("apify_items")))
 
     def run(self, topic, share=None, entity=""):
-        """(items, notes). `share` limits the items this one ask may read (competitors mode splits the run's allowance between the brand and its competitors). Raises nothing: a refusal or a missing allowance is a note."""
+        """(items, notes). `share` limits the items this one ask may read (competitors mode splits the run's allowance between the competitors; the brand itself is not asked). Raises nothing: a refusal or a missing allowance is a note."""
         items, notes = [], []
         self.asks_made += 1
         tag = re.sub(r"[^a-z0-9]", "", topic.lower())
@@ -374,16 +380,26 @@ class ApifyVoice:
                 notes.append(f"apify {source} for {topic!r}: no allowance left (this ask {budget}, this run {self.spent_this_run}/{self.per_run}, voice this month {self.ledger.month_used('voice_apify_items'):g}/{self.monthly}, "
                              f"Apify this month {self.ledger.month_used('apify_items'):g}/{self.shared_cap})")
                 continue
-            left = self.budget_fn() if self.budget_fn is not None else None
-            if left is not None and left < self.ceiling(source):
-                notes.append(f"apify {source} for {topic!r}: not asked (Apify reports ${left:.2f} left this cycle, less than this call's ${self.ceiling(source):g} ceiling)")
-                continue
-            payload = {"searchQueries": [topic], "resultsPerPage": n} if source == "tiktok" else {"hashtags": [tag], "resultsType": "posts", "resultsLimit": n}
-            if source == "instagram" and not tag:
+            if source == "instagram" and not tag:                                   # decided before any money is looked at: nothing to ask, nothing to read
                 notes.append(f"apify instagram for {topic!r}: not asked (the topic has no letters or digits to make a hashtag from)")
                 continue
+            left = self.budget_fn() if self.budget_fn is not None else None          # the best single key's money: a call runs on ONE key
+            if left is not None and left < self.ceiling(source):
+                notes.append(f"apify {source} for {topic!r}: not asked (Apify reports ${left:.2f} left on the best key this cycle, less than this call's ${self.ceiling(source):g} ceiling)")
+                continue
+
+            def payload_for(count):
+                return {"searchQueries": [topic], "resultsPerPage": count} if source == "tiktok" else {"hashtags": [tag], "resultsType": "posts", "resultsLimit": count}
+            self.attempted += 1
             try:
-                raw = self.apify.run(self.ACTORS[source], payload, max_items=n, max_cost_usd=self.ceiling(source))
+                try:
+                    raw = self.apify.run(self.ACTORS[source], payload_for(n), max_items=n, max_cost_usd=self.ceiling(source))
+                except Exception as exc:                                          # noqa: BLE001 - one retry, and only for an actor run that timed out on Apify's side (a smaller ask finishes sooner)
+                    if "timed-out" not in str(exc).lower() or n < 2:
+                        raise
+                    n = n // 2
+                    notes.append(f"apify {source} for {topic!r}: the actor run timed out on Apify's side; asking once more for {n}")
+                    raw = self.apify.run(self.ACTORS[source], payload_for(n), max_items=n, max_cost_usd=self.ceiling(source))
             except Exception as exc:                                              # noqa: BLE001 - a provider's refusal, quota or outage is reported, never raised
                 notes.append(f"apify {source} for {topic!r}: {exc.__class__.__name__}: {scrub(str(exc), 200)}")
                 continue

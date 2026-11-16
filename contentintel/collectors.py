@@ -62,7 +62,7 @@ DEFAULT_COLLECTORS = {
     "benchmarks": {"enabled": True, "max_pages": 6, "discovery_per_run": 3, "items_per_name": 10,
                    "items_per_page": 8, "retry_days": 30},
     # days an account rests after a warning (0: only the rest of that run). Other settings keep the defaults.
-    "safety": {"cooldown_days": {"instagram": 0, "tiktok": 3}},
+    "safety": {"cooldown_days": {"instagram": 7, "tiktok": 7}},
 }
 COOLDOWN_SITES = ("instagram", "tiktok", "gemini")
 AUTO_SCOPES = ("direct", "adjacent", "cross_industry")
@@ -906,9 +906,16 @@ def ensure_session(browser, site, site_cfg, creds):
     #   no_cookies_only (the default): only when no cookies were given;
     #   when_cookies_fail: also when cookies were given and the site plainly did not accept them (the page shows its login
     #   wall). A page that merely looks unfamiliar is never logged into, because that is not proof the cookies failed.
+    #   never: never — a stealth session is cookie-only, so a missing or expired cookie means "nothing was read", never a
+    #   fresh login from a new device and IP. The identity's own flag says the same thing, and either one stops the login.
     # A site's login can still stop at a security check or a warning; both are caught below and the account is rested.
     cookies_given = bool(creds.get("cookies"))
     password_ok = (not cookies_given) or (site_cfg.get("password_fallback", "no_cookies_only") == "when_cookies_fail" and state == "login_wall")
+    if site_cfg.get("password_fallback") == "never":
+        password_ok = False
+    identity = getattr(browser, "identity", None)
+    if identity is not None and not identity.get("allow_login", True):
+        password_ok = False
     if state != "ok" and password_ok and creds.get("username") and creds.get("password") and site_cfg.get("login_steps"):
         if cookies_given:
             print(f"::warning::{site}: the cookies in {cookies_name} were not accepted, so the username and password were used instead. "
@@ -1035,6 +1042,14 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds, page_budget
     if source != "meta_ads":
         state = ensure_session(browser, source, site_cfg, creds)
     urls, pages_total = take_pages(seed_urls(task, site_cfg), page_budget, cursor)
+    if page_budget is None:
+        # A person does not work through a list in exactly the same order
+        # every time. Careful mode keeps its own rotation and is never
+        # shuffled. A fake browser has no identity, so this is a no-op there.
+        identity = getattr(browser, "identity", None)
+        if identity is not None and identity.get("shuffle_reads", True):
+            from . import stealth as stealth_mod
+            urls = stealth_mod.shuffle_reads(urls, identity.get("rng"))
     found, from_data, limited, via = {}, set(), False, {}
     fallbacks, page_errors, how = [], 0, []
     second = {"seen": 0, "filled": 0, "added": 0}
@@ -1106,10 +1121,13 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds, page_budget
     if not kept:
         browser.screenshot(f"empty-{source}")
     in_data = sum(1 for r in kept if r["item_id"] in from_data)
+    read_log = getattr(browser, "read_log", None)
+    stealth_summary = read_log.summary() if read_log is not None else None
     return kept, {"json": in_data, "links": len(kept) - in_data, "state": state, "rate_limited": limited and len(kept) < n,
                   "fallbacks": fallbacks, "fallback_how": how, "page_errors": page_errors,
                   "pages": len(urls) + len(how), "pages_planned": len(urls), "pages_total": pages_total,
-                  **({"secondary": second} if secondary is not None and source == "meta_ads" else {})}
+                  **({"secondary": second} if secondary is not None and source == "meta_ads" else {}),
+                  **({"stealth": stealth_summary} if stealth_summary else {})}
 
 
 def _snip(text):
@@ -1462,6 +1480,11 @@ def _page_notes(stats):
                  + (f" and found {second['added']} ad(s) the first reader missed" if second.get("added") else ""))
     if stats.get("page_errors"):
         text += f" - {stats['page_errors']} page(s) still showed 'Something went wrong' (a block on the automated browser, or try again later)"
+    stealth = stats.get("stealth") or {}
+    if stealth.get("pages"):
+        proxy = f" through the proxy ({stealth['proxy']})" if stealth.get("proxy") else " with no proxy"
+        text += (f" - stealth: {stealth['pages']} page(s) read as {stealth.get('identity')} through {stealth.get('engine')}"
+                 f"{proxy}; human score {stealth.get('human_score')}/100")
     return text
 
 
@@ -1533,13 +1556,30 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
     def page_budget(site, site_cfg):
         """Pages a careful site may still open: under its per-run cap and its per-day cap. None means no caps."""
         left = []
+        if gap_left(site, site_cfg) > 0 and run_pages.get(site, 0) == 0:
+            return 0                                                   # the gap since the account was last read has not passed: no page is opened (the next run continues)
         if site_cfg.get("max_pages_per_run"):
             left.append(site_cfg["max_pages_per_run"] - run_pages.get(site, 0))
         if site_cfg.get("max_pages_per_day"):
             left.append(site_cfg["max_pages_per_day"] - page_log["days"].get(today, {}).get(site, 0))
         return max(0, min(left)) if left else None
 
+    def gap_left(site, site_cfg):
+        """Hours still to wait before the account may be read again (0 when no gap is set or it has passed): `min_hours_between_runs` in browser.yaml."""
+        hours, last = site_cfg.get("min_hours_between_runs"), page_log.get("last", {}).get(site)
+        if not hours or not last:
+            return 0
+        try:
+            gone = (datetime.fromisoformat(now.replace("Z", "+00:00")) - datetime.fromisoformat(str(last).replace("Z", "+00:00"))).total_seconds() / 3600
+        except ValueError:
+            return 0
+        return max(0.0, hours - gone)
+
     def cap_message(site, site_cfg):
+        wait = gap_left(site, site_cfg)
+        if wait > 0 and run_pages.get(site, 0) == 0:
+            return (f"careful mode: {site} was last read {site_cfg['min_hours_between_runs'] - wait:.1f} hours ago; it is read at most once every "
+                    f"{site_cfg['min_hours_between_runs']:g} hours (min_hours_between_runs in browser.yaml), so this run leaves it for about {wait:.1f} more hours")
         per_run = site_cfg.get("max_pages_per_run")
         if per_run and run_pages.get(site, 0) >= per_run:
             return f"careful mode: {site} has opened its {per_run} pages for this run; the next run continues"
@@ -1552,6 +1592,8 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
         day = page_log["days"].setdefault(today, {})
         day[site] = day.get(site, 0) + opened
         page_log["cursor"][site] = page_log["cursor"].get(site, 0) + stats.get("pages_planned", opened)
+        if opened:
+            page_log.setdefault("last", {})[site] = now                    # when the account was last read: the gap is counted from here
         store.write_page_log(page_log)
 
     def rest_after(exc, site):

@@ -80,6 +80,10 @@ def add_parsers(sub, common):
     p.add_argument("--comments", action="store_true")
     p.add_argument("--pace", action="store_true", help="with --url: download the video (about 720p at most) and measure how it moves; needs ffmpeg on the machine")
 
+    p = sub.add_parser("analytics", help="GA4 and Search Console for each brand, read-only and only with access (otherwise NEEDS_INPUT, never a made-up number), plus public Serper rank checks")
+    common(p)
+    p.add_argument("--brand", default="all")
+
     p = sub.add_parser("apify-budget", help="print the money Apify says is left on each key (no Apify call is made that costs anything); says why when Apify's account endpoint cannot be read")
     common(p)
 
@@ -87,6 +91,7 @@ def add_parsers(sub, common):
     common(p)
     p.add_argument("--url", required=True, help="the page's address, for example https://www.facebook.com/Chobani")
     p.add_argument("--name", default="", help="the brand's name (Chobani): lets the check tell a regional page (ChobaniAu, chobaniau) from the brand's own")
+    p.add_argument("--cross-check", action="store_true", help="also list the numeric ids a search finds when an id was read from the page, to compare them (uses Serper searches)")
 
     p = sub.add_parser("pool", help="free AI capacity worth adding to the pool, read from OmniRoute's catalogue as data (changes nothing)")
     common(p)
@@ -163,7 +168,7 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
     handed = [n for n in CONN.CONNECTIONS["last30days"]["secrets"] if n in CONN.external_env(settings, "last30days", environ)]
     print("Keys the engine is given (names only, never values): " + (", ".join(handed) if handed else "none")
           + f". SCRAPECREATORS_API_KEY is {'set in this run' if environ.get('SCRAPECREATORS_API_KEY') else 'NOT set in this run'}"
-          + (" and is handed to the engine, so TikTok, Instagram and Meta Ads are asked too." if "SCRAPECREATORS_API_KEY" in handed else "; those three lanes are off."))
+          + (" and is handed to the engine: when the engine answers (research and competitors modes), TikTok, Instagram and Meta Ads are asked too. Each keyed query spends ScrapeCreators credits (100 free, once): try one topic first." if "SCRAPECREATORS_API_KEY" in handed else "; those three lanes are off."))
     external = VOICE.ExternalLast30Days(settings, environ=environ, runner=runner)
     builtin = VOICE.BuiltinVoice(get, (clock or time.time)())
     worst = 0
@@ -225,6 +230,8 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
                 print(f"{slug}: some sources failed; the engine said: {external.engine_notes}")
             if which not in ("builtin", "none") and external.engine_summary and "SCRAPECREATORS_API_KEY" in handed:
                 print(f"{slug}: the engine's own account of the keyed lanes: {external.engine_summary}")
+            if external.sc_out_of_credits and "SCRAPECREATORS_API_KEY" in handed:
+                print(f"{slug}: ScrapeCreators answered 'payment required' (HTTP 402): its credits are spent, so the keyed lanes return nothing until credits are added; check the balance on its dashboard.")
             if which == "builtin" and external.last_error:
                 print(f"{slug}: the last30days engine could not answer ({external.last_error}); the platform's own reader answered instead")
             bad = VOICE.failed_sources(status)
@@ -268,7 +275,7 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
             print(f"{slug}: audience voice now holds {len(kept.get('items', []))} item(s), {total_new} new this run." + (f"\n  Strongest:\n{top}" if top else ""))
     if apify_all[0] is not None and apify_all[0].asks_made:                              # once per run, after every brand, and only when something was asked
         lane, led = apify_all
-        print(f"Apify usage after this run: voice {led.month_used('voice_apify_items'):g}/{lane.monthly} items this month, all Apify use {led.month_used('apify_items'):g}/{lane.shared_cap} (this run read {lane.spent_this_run}).")
+        print(f"Apify usage after this run: voice {led.month_used('voice_apify_items'):g}/{lane.monthly} items this month, all Apify use {led.month_used('apify_items'):g}/{lane.shared_cap} (this run read {lane.spent_this_run}" + ("; no call was made: every ask was refused, see the notes above" if not lane.attempted else "") + ").")
         for event in getattr(lane.apify, "events", []):
             print(f"Apify keys: {event}")
     return worst
@@ -310,18 +317,39 @@ def _apify_lane(args, store, now, environ, slugs=()):
     lines, left = apify_mod.budget_report(client)
     for line in lines:
         print(line)
-    state = {"left": left}
 
-    def budget_fn():                                                                                   # re-read before each call: what an earlier ask spent is already counted by Apify
-        if state["left"] is None:
-            return None
-        state["left"] = apify_mod.budget_report(client)[1]
-        return state["left"]
+    def budget_fn():                                                                                   # re-read before each call (a transient failure at set-up no longer switches the guard off for the run); the best single key, since a call runs on one key
+        return apify_mod.best_key_left(client)
     lane = VOICE.ApifyVoice(client, ledger, per_run=_env_number(environ, "CONTENTINTEL_VOICE_APIFY_PER_RUN", 40 * keys, 1, 300, int), monthly=_env_number(environ, "CONTENTINTEL_VOICE_APIFY_MONTHLY", 60 * keys, 1, 600, int),
                             shared_cap=shared, max_cost_usd=cost, normalize=COL.normalize_items, budget_fn=budget_fn)
+    for env_name, attr in (("CONTENTINTEL_VOICE_APIFY_PER_RUN", "per_run"), ("CONTENTINTEL_VOICE_APIFY_MONTHLY", "monthly")):      # an override outside the lane's bounds is changed: say so
+        raw = (environ.get(env_name) or "").strip()
+        if raw.isdigit() and int(raw) != getattr(lane, attr):
+            print(f"Note: {env_name}={raw} is outside what the lane allows (1 to {300 if attr == 'per_run' else 600}); {getattr(lane, attr)} is used.")
     print(f"Apify lane ON for this run (switch off with --no-apify): at most {lane.per_run} items in this whole run, {lane.monthly} a month for voice (used so far this month: {ledger.month_used('voice_apify_items'):g}), "
           f"and never beyond the Collect step's {shared} a month (used: {ledger.month_used('apify_items'):g}); each call has a cost ceiling Apify enforces: {lane.ceiling('tiktok'):g} dollars for TikTok, {lane.ceiling('instagram'):g} for Instagram.")
     return lane, ledger
+
+
+def run_analytics(args, store, now, *, environ=None, search=None, fetch=None):
+    """GA4 and Search Console per brand (read-only, only with access) and the public Serper ranks. A source without access is reported as such and has NO numbers: the report is saved with its needs_input lines for the skills that need the stores' own data."""
+    from . import analytics as AN
+    environ = dict(os.environ if environ is None else environ)
+    slugs = list_brand_slugs(args.brands_dir) if args.brand in ("", "all") else [args.brand]
+    if search is None:
+        serper = providers_mod.build_providers(environ).get("serper_dev")
+        search = (lambda query: [{"url": r.url, "title": r.title} for r in serper.search(query, num=10)]) if serper is not None else None
+    for slug in slugs:
+        report = AN.build_report(args.brands_dir, slug, environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", ""), search=search, fetch=fetch)
+        for name, label in (("ga4", "GA4"), ("search_console", "Search Console")):
+            part = report[name]
+            print(f"{slug}: {label}: {part['status']}" + (f" ({part['reason']})" if part["reason"] else f", {len(part['rows'] or [])} row(s)"))
+        for r in report["serper_ranks"]:
+            print(f"{slug}: public signal (Serper): '{r['keyword']}': " + (f"position {r['position']} ({r['url']})" if r["position"] else "not in the first results"))
+        for line in report["needs_input"]:
+            print(f"{slug}: {line}")
+        store.write_extra(slug, "analytics", {**report, "at": now})
+    return 0
 
 
 def run_apify_budget(args, *, environ=None):
@@ -357,7 +385,7 @@ def run_pageid(args, *, get=default_get, search=None, environ=None):
         print("Error: that is not a facebook.com page address")
         return 1
     name = " ".join(str(getattr(args, "name", "") or "").split())
-    if name and ("://" in name or "/" in name or len(name) > 60):
+    if name and ("://" in name or "/" in name or len(name) > 60 or len(name.split()) > 4):
         print(f"The brand name {name[:40]!r} does not look like a name (a web address or a long phrase): it is ignored. Put just the brand's name, for example Chobani, in the topic box.")
         name = ""
     if not name:
@@ -372,7 +400,7 @@ def run_pageid(args, *, get=default_get, search=None, environ=None):
         host = address.split("/")[2] + ("/plugins" if "/plugins/page.php" in address else "")
         print(f"  {host}: HTTP {status}, {len(text):,} characters, " + (f"PAGE ID {page_id}" if page_id else ("a login page" if "log in" in text.lower()[:20000] or "login" in text.lower()[:3000] else "no page id in it")))
         found = found or page_id
-    if not found:
+    if not found or getattr(args, "cross_check", False):                           # --cross-check also lists the search's candidates when an id WAS read, to compare them
         if search is None:
             serper = providers_mod.build_providers(dict(os.environ if environ is None else environ)).get("serper_dev")
             search = (lambda query: [{"url": r.url, "title": r.title, "snippet": r.snippet} for r in serper.search(query, num=10)]) if serper is not None else None
@@ -391,7 +419,7 @@ def run_pageid(args, *, get=default_get, search=None, environ=None):
             print(f"Search for the numeric id of '{name}': {len(cands)} candidate id(s) found in search results (the Collect step's reviewer confirms which, if any, is this page)")
             for c in cands[:8]:
                 print(f"  id {c['id']} from {c['url']} | {c['title'][:80]}")
-    print(f"Result for {url}: " + (f"page id {found}" + (f" (a REGIONAL page: {region})" if region else "") if found else "no page id could be read from any of the four places (the main page is still confirmed by name; the Collect finder searches for the id itself and its reviewer confirms it)"))
+    print(f"Result for {url}: " + (f"page id {found}" + (f" (a REGIONAL page: {region})" if region else "") if found else "no page id could be read from any of the four places (the Collect finder searches for the id itself and its reviewer confirms it)"))
     return 0
 
 

@@ -3,6 +3,7 @@ research.yaml (collectors.apify.mode). Needs APIFY_TOKEN.
 
 Apify's synchronous endpoint answers 201 Created (not 200) with the dataset items when the run succeeded, 400 with an
 error type when the request is refused, and 408 when the run did not finish in 300 seconds."""
+import time
 import re
 
 from .providers import AuthError, Provider, ProviderConfigError, ProviderError, QuotaError
@@ -16,6 +17,7 @@ class Apify(Provider):
 
     def run(self, actor, payload, *, max_items, max_cost_usd, timeout=280):
         """Run an actor and wait for its items (Apify allows up to 300 seconds)."""
+        self.forget_usage()                                                          # the call is about to spend money: the next reading must be a fresh one
         url = f"{self.base}/acts/{actor.replace('/', '~')}/run-sync-get-dataset-items"
         params = {"timeout": timeout, "maxItems": max_items, "maxTotalChargeUsd": max_cost_usd}
         try:
@@ -39,6 +41,9 @@ class Apify(Provider):
         """What Apify itself says about this key's month: {'used': dollars spent, 'limit': dollars allowed, 'ends': the day the cycle ends} from its account limits endpoint, or None when it cannot be read (the platform then
         relies on its item counters alone). Nothing carries over: Apify's allowance is per monthly cycle, and what is not spent lapses."""
         self.usage_error = ""
+        cached = getattr(self, "_usage_cache", None)
+        if cached is not None and time.monotonic() - cached[0] < 20:                      # a reading younger than 20 seconds is reused (one call asks about it twice); a call that spent money forgets it
+            return cached[1]
         try:
             body = self._call("GET", f"{self.base}/users/me/limits", headers={"Authorization": f"Bearer {self.api_key}"}, ok=(200,))
         except ProviderError as exc:
@@ -47,9 +52,15 @@ class Apify(Provider):
         data = body.get("data", body) if isinstance(body, dict) else {}
         used, limit = (data.get("current") or {}).get("monthlyUsageUsd"), (data.get("limits") or {}).get("maxMonthlyUsageUsd")
         if not all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in (used, limit)):
-            self.usage_error = "Apify answered, but its reply has no monthlyUsageUsd / maxMonthlyUsageUsd numbers (fields seen: " + ", ".join(sorted(str(k) for k in (data if isinstance(data, dict) else {})))[:120] + ")"
+            seen = sorted(f"{k}.{j}" if isinstance(v, dict) and v else str(k) for k, v in (data if isinstance(data, dict) else {}).items() for j in (v if isinstance(v, dict) and v else [None]))
+            self.usage_error = "Apify answered, but its reply has no monthlyUsageUsd / maxMonthlyUsageUsd numbers (fields seen: " + ", ".join(s.replace(".None", "") for s in seen)[:160] + ")"
             return None
-        return {"used": float(used), "limit": float(limit), "ends": str((data.get("monthlyUsageCycle") or {}).get("endAt") or "")[:10]}
+        reading = {"used": float(used), "limit": float(limit), "ends": str((data.get("monthlyUsageCycle") or {}).get("endAt") or "")[:10]}
+        self._usage_cache = (time.monotonic(), reading)
+        return reading
+
+    def forget_usage(self):
+        self._usage_cache = None
 
 
 KEY_NAMES = ("APIFY_TOKEN", "APIFY_TOKEN_2", "APIFY_TOKEN_3", "APIFY_TOKEN_4")
@@ -72,25 +83,43 @@ class ApifyPool:
         """One usage reading per key (None where unreadable), in key order."""
         return [c.usage() if hasattr(c, "usage") else None for c in self.clients]
 
+    def _note(self, text):
+        if text not in self.events:                                                       # the events are the run's only record: each is said once
+            self.events.append(text)
+
     def run(self, actor, payload, *, max_items, max_cost_usd, timeout=280):
-        last = None
+        last, short = None, False
         for i, client in enumerate(self.clients):
             if i in self.dropped:
                 continue
+            later = any(j > i and j not in self.dropped for j in range(len(self.clients)))
             reading = client.usage() if hasattr(client, "usage") else None
-            if reading is not None and reading["limit"] - reading["used"] < max_cost_usd:        # a key with less left than this call's ceiling is not asked: no wasted refusal, no overspend
-                self.dropped[i] = "OutOfBudget"
-                self.events.append(f"Apify key {i + 1} of {len(self.clients)} has ${max(0.0, reading['limit'] - reading['used']):.2f} left, less than this call's ${max_cost_usd:g} ceiling; the next key is used")
+            floor = min(max_cost_usd, 0.25)                                               # Apify returns partial results up to what is left: only a key below the smallest ceiling we ever use is skipped
+            if reading is not None and reading["limit"] - reading["used"] < floor:
+                short = True                                                              # skipped for THIS call only, never dropped for the run: a later call re-reads it
+                self._note(f"Apify key {i + 1} of {len(self.clients)} has ${max(0.0, reading['limit'] - reading['used']):.2f} left, less than the ${floor:g} the smallest call needs; " + ("the next key is used" if later else "no other key is left"))
                 continue
             try:
-                return client.run(actor, payload, max_items=max_items, max_cost_usd=max_cost_usd, **({} if timeout == 280 else {"timeout": timeout}))
+                got = client.run(actor, payload, max_items=max_items, max_cost_usd=max_cost_usd, **({} if timeout == 280 else {"timeout": timeout}))
+                if hasattr(client, "forget_usage"):
+                    client.forget_usage()                                                 # the call spent money: the next reading is a fresh one
+                return got
             except (AuthError, QuotaError) as exc:
                 self.dropped[i] = exc.__class__.__name__
-                nxt = next((j for j in range(len(self.clients)) if j not in self.dropped), None)
-                self.events.append(f"Apify key {i + 1} of {len(self.clients)} was refused ({exc.__class__.__name__}); " + (f"key {nxt + 1} answers instead" if nxt is not None else "no other key is left"))
+                self._note(f"Apify key {i + 1} of {len(self.clients)} was refused ({exc.__class__.__name__}); " + ("the next key answers instead" if later else "no other key is left"))
                 last = exc
+            except ProviderConfigError:
+                raise
+            except ProviderError as exc:
+                if "429" not in str(exc):                                                 # a plain 429 (after the provider's own retries) is a rate or credit limit: the next key may answer
+                    raise
+                self.dropped[i] = "RateLimited"
+                self._note(f"Apify key {i + 1} of {len(self.clients)} was rate-limited (HTTP 429); " + ("the next key answers instead" if later else "no other key is left"))
+                last = QuotaError(f"{self.label}: HTTP 429")
         if last is not None:
             raise type(last)(f"{self.label}: every key was refused ({'; '.join(self.events)})") from None
+        if short:
+            raise QuotaError(f"{self.label}: no key has enough money left ({'; '.join(self.events)})")
         raise AuthError(f"{self.label}: no key is available")
 
 
@@ -114,4 +143,13 @@ def budget_report(client):
     if not known:
         return ["Apify budget: Apify did not report the money left, so only the item counters guard the spending (the item allowances still apply):"] + lines, None
     left = sum(max(0.0, r["limit"] - r["used"]) for r in known)
-    return [f"Apify budget this cycle (each key's allowance is per monthly cycle and nothing carries forward): ${left:.2f} left of ${sum(r['limit'] for r in known):.2f} across {len(known)} key(s)"] + lines, left
+    ends = {r["ends"] for r in known if r["ends"]}
+    different = "; the keys' cycles end on different days (see each key), so this total is not one window" if len(ends) > 1 else ""
+    return [f"Apify budget this cycle (each key's allowance is per monthly cycle and nothing carries forward): ${left:.2f} left of ${sum(r['limit'] for r in known):.2f} across {len(known)} key(s){different}"] + lines, left
+
+
+def best_key_left(client):
+    """Dollars left on the single key with the most (a call runs on ONE key, so this, not the total, is what a call can spend), or None when Apify does not say."""
+    readings = client.usages() if hasattr(client, "usages") else [client.usage() if hasattr(client, "usage") else None]
+    known = [max(0.0, r["limit"] - r["used"]) for r in readings if r is not None]
+    return max(known) if known else None

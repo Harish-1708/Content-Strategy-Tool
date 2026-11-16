@@ -381,13 +381,13 @@ class Store:
         except ValueError:
             data = {}
         data = data if isinstance(data, dict) else {}
-        days, cursor = data.get("days"), data.get("cursor")
-        return {"days": days if isinstance(days, dict) else {}, "cursor": cursor if isinstance(cursor, dict) else {}}
+        days, cursor, last = data.get("days"), data.get("cursor"), data.get("last")
+        return {"days": days if isinstance(days, dict) else {}, "cursor": cursor if isinstance(cursor, dict) else {}, "last": last if isinstance(last, dict) else {}}
 
     def write_page_log(self, data):
         keep = sorted(data.get("days", {}))[-14:]                       # two weeks is plenty
         return _atomic_write(self.data_dir / "_shared" / "page_log.json",
-                             {"days": {d: data["days"][d] for d in keep}, "cursor": data.get("cursor", {})})
+                             {"days": {d: data["days"][d] for d in keep}, "cursor": data.get("cursor", {}), "last": data.get("last", {})})
 
     def write_export(self, slug, name, text):
         """Write one file under catalogue/. Returns True only if the content changed."""

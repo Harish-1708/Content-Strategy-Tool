@@ -748,7 +748,7 @@ def _real_factory(browser_cfg, creds, debug_dir):
     return factory
 
 
-EXTRA_SECRETS = ("ANTHROPIC_API_KEY", "APIFY_TOKEN", "SERPER_API_KEY")
+EXTRA_SECRETS = ("ANTHROPIC_API_KEY", "APIFY_TOKEN", "APIFY_TOKEN_2", "APIFY_TOKEN_3", "APIFY_TOKEN_4", "SERPER_API_KEY")
 
 
 def _secrets_status(browser_cfg, env):
@@ -787,6 +787,9 @@ def _collect(args, store):
         plain.for_purpose = lambda purpose: _routed(plain, purpose, args, store)
     claude = _routed(plain, "autoseeds", args, store)
     backend = collectors_mod.effective_backend(args.backend, settings)
+    if apify is not None and backend != "browser":
+        for line in apify_budget_lines(apify):                                         # the money Apify says is left, before any Apify call of this run
+            print(line)
     if not args.find_pages and not args.dry_run and not args.seeds and not args.check and not args.recon and not args.test_deep_research:
         print("Benchmark page finder: " + ("ON (Serper search, then a reviewer through our AI tools confirms the main official page)" if _page_finder_status(claude, args)[0] else "OFF: " + _page_finder_status(claude, args)[1]))
     print("Secrets this run can see (names only; values are never shown):")
@@ -1184,6 +1187,11 @@ def _acceptance_cmd(args, store):
     return 1 if failed else 0
 
 
+def apify_budget_lines(apify):
+    """The Apify budget lines for a run that may spend Apify money (empty with no key)."""
+    return apify_mod.budget_report(apify)[0] if apify is not None else []
+
+
 def main(argv=None):
     args = build_parser().parse_args(argv)
     store = Store(args.data_dir)
@@ -1259,6 +1267,8 @@ def main(argv=None):
             return tools_mod.run_voice(args, store, sync_mod.utc_now())
         if args.cmd == "analyze":
             return tools_mod.run_analyze(args)
+        if args.cmd == "analytics":
+            return tools_mod.run_analytics(args, store, sync_mod.utc_now())
         if args.cmd == "apify-budget":
             return tools_mod.run_apify_budget(args)
         if args.cmd == "pageid":
