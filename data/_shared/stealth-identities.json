@@ -1,0 +1,30 @@
+{
+ "meta_ads": {
+  "fingerprint_preset": null,
+  "locale": "en-US",
+  "os": "macos",
+  "profile_dir": ".stealth-profiles/meta_ads",
+  "proxy_secret": "STEALTH_PROXY_META_ADS",
+  "site": "meta_ads",
+  "timezone_id": "America/New_York",
+  "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+  "viewport": [
+   2560,
+   1440
+  ]
+ },
+ "tiktok": {
+  "fingerprint_preset": null,
+  "locale": "en-GB",
+  "os": "macos",
+  "profile_dir": ".stealth-profiles/tiktok",
+  "proxy_secret": "STEALTH_PROXY_TIKTOK",
+  "site": "tiktok",
+  "timezone_id": "Europe/London",
+  "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+  "viewport": [
+   2560,
+   1440
+  ]
+ }
+}
