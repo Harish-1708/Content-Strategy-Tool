@@ -53,6 +53,15 @@
    "count": 1024,
    "file": "20261114T132500Z.json.gz",
    "hash": "ecad0898c886c5f2aee5"
+  },
+  {
+   "bytes": 14717,
+   "captured_at": "2026-11-16T13:15:07Z",
+   "complete": true,
+   "confirmed_at": "2026-11-16T13:15:07Z",
+   "count": 1018,
+   "file": "20261116T131507Z.json.gz",
+   "hash": "77f28d4006a3cf9e6d4d"
   }
  ],
  "version": 1
