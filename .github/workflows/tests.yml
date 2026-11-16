@@ -89,7 +89,7 @@ jobs:
   #   sabotage_full  EVERY check: the first script in 12 slices and the second script in 6 slices
 
   sabotage-updated:
-    if: ${{ inputs.sabotage || inputs.sabotage_full }}
+    if: ${{ inputs.sabotage && !inputs.sabotage_full }}          # the full run already contains the updated checks: not twice
     runs-on: ubuntu-latest
     timeout-minutes: 330
     strategy:
@@ -104,6 +104,17 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-dev.txt
       - run: pip install -r requirements-dev.txt
+      - name: Install ffmpeg (the pace checks need it; the run FAILS if it cannot be installed)
+        shell: bash
+        run: |
+          for attempt in 1 2 3; do
+            sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && break
+            echo "ffmpeg install attempt $attempt failed"
+            sleep 5
+          done
+          command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null || { echo "ffmpeg or ffprobe is missing after 3 attempts: failing this run"; exit 1; }
+          ffmpeg -version | head -1
+          ffprobe -version | head -1
       - name: Sabotage check, the updated checks (slice ${{ matrix.chunk }})
         env:
           SABOTAGE_SET: updated
@@ -127,6 +138,17 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-dev.txt
       - run: pip install -r requirements-dev.txt
+      - name: Install ffmpeg (the pace checks need it; the run FAILS if it cannot be installed)
+        shell: bash
+        run: |
+          for attempt in 1 2 3; do
+            sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && break
+            echo "ffmpeg install attempt $attempt failed"
+            sleep 5
+          done
+          command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null || { echo "ffmpeg or ffprobe is missing after 3 attempts: failing this run"; exit 1; }
+          ffmpeg -version | head -1
+          ffprobe -version | head -1
       - name: Sabotage check, the observatory, AI and sheet checks (slice ${{ matrix.chunk }})
         env:
           SABOTAGE_CHUNK: ${{ matrix.chunk }}
@@ -149,6 +171,17 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-dev.txt
       - run: pip install -r requirements-dev.txt
+      - name: Install ffmpeg (the pace checks need it; the run FAILS if it cannot be installed)
+        shell: bash
+        run: |
+          for attempt in 1 2 3; do
+            sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && break
+            echo "ffmpeg install attempt $attempt failed"
+            sleep 5
+          done
+          command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null || { echo "ffmpeg or ffprobe is missing after 3 attempts: failing this run"; exit 1; }
+          ffmpeg -version | head -1
+          ffprobe -version | head -1
       - name: Sabotage check, the main checks (slice ${{ matrix.chunk }})
         env:
           SABOTAGE_CHUNK: ${{ matrix.chunk }}

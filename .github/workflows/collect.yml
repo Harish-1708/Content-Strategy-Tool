@@ -70,7 +70,7 @@ on:
         type: boolean
         default: false
       ignore_cooldown:
-        description: "Use accounts that are resting after an account warning (only once you have dealt with the warning)"
+        description: "Use accounts that are resting after an account warning (only once you have dealt with the warning); also skips the 12-hour gap between reads of an account for this run (the 2-pages-a-run and 4-a-day caps still apply)"
         type: boolean
         default: false
       backend:
@@ -313,7 +313,7 @@ jobs:
           git config user.name "catalogue-collect"
           git config user.email "catalogue-collect@users.noreply.github.com"
           git add -f data
-          git reset -q -- data/_shared/stealth-profiles 2>/dev/null || true          # a browser profile (session cookies) is never committed, wherever a setting puts it
+          git reset -q -- data/_shared/stealth-profiles 2>/dev/null || true          # a browser profile (session cookies) is never committed: the profile directory is .stealth-profiles, outside data/; this line also unstages the OLD default path if a copy still uses it
           if git diff --cached --quiet; then
             echo "No data changes to save."
           else

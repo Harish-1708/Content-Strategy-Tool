@@ -233,7 +233,7 @@ jobs:
           git config user.name "catalogue-request"
           git config user.email "catalogue-request@users.noreply.github.com"
           git add -f data
-          git reset -q -- data/_shared/stealth-profiles 2>/dev/null || true          # a browser profile (session cookies) is never committed, wherever a setting puts it
+          git reset -q -- data/_shared/stealth-profiles 2>/dev/null || true          # a browser profile (session cookies) is never committed: the profile directory is .stealth-profiles, outside data/; this line also unstages the OLD default path if a copy still uses it
           if git diff --cached --quiet; then
             echo "No data changes to save."
           else
