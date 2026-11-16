@@ -1,16 +1,17 @@
-"""Careful mode for Instagram is OFF in the shipped browser.yaml (it limits what a run can collect), and a person can switch it on by removing
-the # from four lines. The careful-mode tests exercise exactly that: they run against a copy of the shipped file with those four lines switched on."""
+"""Careful mode for Instagram is ON in the shipped browser.yaml since Update 68 (it was off before; the owner chose slower, smaller, spread-out reads after an automation warning). These helpers still switch the four lines on if a copy has them commented. The careful-mode tests exercise exactly that: they run against a copy of the shipped file with those four lines switched on."""
 import re
 from pathlib import Path
 
 CAREFUL_KEYS = ("pacing", "max_scrolls_per_page", "max_pages_per_run", "max_pages_per_day")
 
 
-def careful_text(text):
-    """The shipped browser.yaml with Instagram's careful-mode lines switched on."""
+def careful_text(text, gap=False):
+    """The shipped browser.yaml with Instagram's careful-mode lines switched on. The 12-hour gap between runs (min_hours_between_runs) is taken out unless gap=True: the caps tests run several runs on one simulated day."""
+    if not gap:
+        text = re.sub(r"^\s*min_hours_between_runs:.*\n", "", text, flags=re.M)
     for key in CAREFUL_KEYS:
-        text, n = re.subn(rf"^(\s*)# ({key}:)", r"\1\2", text, flags=re.M)
-        assert n == 1, key
+        text = re.sub(rf"^(\s*)# ({key}:)", r"\1\2", text, flags=re.M)             # since Update 68 the shipped file already has them on: switching on is then a no-op
+        assert len(re.findall(rf"^\s*{key}:", text, flags=re.M)) >= 1, key
     return text
 
 
