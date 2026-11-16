@@ -4458,6 +4458,16 @@ def one(mutation):
         return mid, "ERROR", f"{exc.__class__.__name__}: {exc}", what
 
 
+def select_chunk(items, chunk):
+    """The share of `items` for chunk "i/n" (1-based, taken in turn so every chunk gets a mix of old and new checks); everything when no chunk is given. Chunks never overlap and together cover all of it."""
+    if not chunk:
+        return list(items)
+    i, n = (int(x) for x in str(chunk).split("/"))
+    if not 1 <= i <= n:
+        raise SystemExit(f"SABOTAGE_CHUNK must look like 3/8 (chunk 3 of 8); got {chunk!r}")
+    return [m for k, m in enumerate(items) if k % n == i - 1]
+
+
 def main():
     with tempfile.TemporaryDirectory() as tmp:
         work = Path(tmp) / "p"
@@ -4468,7 +4478,7 @@ def main():
         print("The unmodified project fails its own tests; fix that before sabotage testing.")
         return 1
     only = tuple(p for p in (sys.argv[1] if len(sys.argv) > 1 else "").split(",")) or ("",)   # "u14-,u15-": ids starting with any of these
-    chosen = [m for m in MUTATIONS if m[0].startswith(only)]
+    chosen = select_chunk([m for m in MUTATIONS if m[0].startswith(only)], os.environ.get("SABOTAGE_CHUNK", ""))          # SABOTAGE_CHUNK=3/12: one slice of the whole set, so it can be split across jobs
     # Results are written to SABOTAGE_RESULTS (one JSON line each) as they finish, and mutations already recorded there are skipped, so a restart loses nothing.
     log = Path(os.environ.get("SABOTAGE_RESULTS", ""))
     done = {}

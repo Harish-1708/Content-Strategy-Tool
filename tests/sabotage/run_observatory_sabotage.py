@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OBS, AI = "contentintel/observatory/", "contentintel/ai/"
-TESTS = ["tests/test_observatory_*.py", "tests/test_sessions.py", "tests/test_session_live.py", "tests/test_sessions_sheet.py", "tests/test_social_profiles.py", "tests/test_contract.py", "tests/test_services.py", "tests/test_ytdlp_youtube.py", "tests/test_external_repository.py", "tests/test_platform_wiring.py", "tests/test_platform_matrix.py", "tests/test_reddit_routes.py", "tests/test_agent_reach_instagram.py", "tests/test_ai_github.py", "tests/test_ai_health_tab.py", "tests/test_ai_config.py", "tests/test_providers.py", "tests/test_agent_reach_catalog.py", "tests/test_owner_defaults.py", "tests/test_capability_matrix.py", "tests/test_research.py", "tests/test_sources.py", "tests/test_guards.py", "tests/test_connections.py", "tests/test_sheets.py", "tests/test_health.py", "tests/test_acceptance.py", "tests/test_acceptance_agent_reach.py", "tests/test_acceptance_fixes.py", "tests/test_ai_gateway.py", "tests/test_ai_commands.py", "tests/test_ai_core.py", "tests/test_ai_pacing.py", "tests/test_ai_pool.py", "tests/test_ai_internal_switch.py", "tests/test_fixes58.py", "tests/test_smoke_switches.py", "tests/test_update60.py", "tests/test_update61.py", "tests/test_catalog.py", "tests/test_update62.py", "tests/test_update63.py", "tests/test_collectors.py", "tests/test_ideabank.py", "tests/test_update64.py", "tests/test_update65.py", "tests/test_brief.py", "tests/test_ai_github.py", "tests/test_ai_config.py", "tests/test_ai_health_tab.py"]
+TESTS = ["tests/test_update68.py", "tests/test_analytics.py", "tests/test_stealth.py", "tests/test_observatory_*.py", "tests/test_sessions.py", "tests/test_session_live.py", "tests/test_sessions_sheet.py", "tests/test_social_profiles.py", "tests/test_contract.py", "tests/test_services.py", "tests/test_ytdlp_youtube.py", "tests/test_external_repository.py", "tests/test_platform_wiring.py", "tests/test_platform_matrix.py", "tests/test_reddit_routes.py", "tests/test_agent_reach_instagram.py", "tests/test_ai_github.py", "tests/test_ai_health_tab.py", "tests/test_ai_config.py", "tests/test_providers.py", "tests/test_agent_reach_catalog.py", "tests/test_owner_defaults.py", "tests/test_capability_matrix.py", "tests/test_research.py", "tests/test_sources.py", "tests/test_guards.py", "tests/test_connections.py", "tests/test_sheets.py", "tests/test_health.py", "tests/test_acceptance.py", "tests/test_acceptance_agent_reach.py", "tests/test_acceptance_fixes.py", "tests/test_ai_gateway.py", "tests/test_ai_commands.py", "tests/test_ai_core.py", "tests/test_ai_pacing.py", "tests/test_ai_pool.py", "tests/test_ai_internal_switch.py", "tests/test_fixes58.py", "tests/test_smoke_switches.py", "tests/test_update60.py", "tests/test_update61.py", "tests/test_catalog.py", "tests/test_update62.py", "tests/test_update63.py", "tests/test_collectors.py", "tests/test_ideabank.py", "tests/test_update64.py", "tests/test_update65.py", "tests/test_brief.py", "tests/test_ai_github.py", "tests/test_ai_config.py", "tests/test_ai_health_tab.py"]
 
 # (id, file, text found exactly once, replacement, what the bug simulates)
 MUTATIONS = [
@@ -927,6 +927,10 @@ from update64_mutations import U64 as _U64              # Update 64's own checks
 MUTATIONS.extend(_U64)
 from update65_mutations import U65 as _U65              # Update 65's own checks
 MUTATIONS.extend(_U65)
+from update68_mutations import SUPERSEDED, U68 as _U68          # Update 68's own checks, and the 17 older entries they replace (their code moved)
+MUTATIONS[:] = [m for m in MUTATIONS if m[0] not in SUPERSEDED]
+MUTATIONS.extend(_U68)
+UPDATED_IDS = {m[0] for m in [*U57_LOCAL, *_U57, *_U58, *_U59, *_U60, *_U61, *_U62, *_U63, *_U64, *_U65, *_U68]} - set(SUPERSEDED)          # the checks written since Update 57: SABOTAGE_SET=updated runs only these
 
 
 def run_tests(workdir):
@@ -962,10 +966,23 @@ def one(mutation):
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def select_chunk(items, chunk):
+    """The share of `items` for chunk "i/n" (1-based, taken in turn so every chunk gets a mix of old and new checks); everything when no chunk is given. Chunks never overlap and together cover all of it."""
+    if not chunk:
+        return list(items)
+    i, n = (int(x) for x in str(chunk).split("/"))
+    if not 1 <= i <= n:
+        raise SystemExit(f"SABOTAGE_CHUNK must look like 3/8 (chunk 3 of 8); got {chunk!r}")
+    return [m for k, m in enumerate(items) if k % n == i - 1]
+
+
 def main():
     only = {x for x in os.environ.get("SABOTAGE_ONLY", "").split(",") if x}      # run chosen breaks only, for example after fixing a gap
     if only:
         MUTATIONS[:] = [m for m in MUTATIONS if m[0] in only]
+    if os.environ.get("SABOTAGE_SET") == "updated":                              # only the checks written since Update 57 (the ones the live run never reached)
+        MUTATIONS[:] = [m for m in MUTATIONS if m[0] in UPDATED_IDS]
+    MUTATIONS[:] = select_chunk(MUTATIONS, os.environ.get("SABOTAGE_CHUNK", ""))      # SABOTAGE_CHUNK=3/6: one slice, so the run can be split across jobs
     tmp, work = copy_project()
     try:
         ok, tail = run_tests(work)
