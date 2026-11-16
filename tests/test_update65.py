@@ -624,10 +624,12 @@ def test_every_ffmpeg_install_step_fails_the_run_when_the_install_fails():
     for name in ("collect.yml", "tests.yml", "research-tools.yml"):
         wf = yaml.safe_load((Path(".github/workflows") / name).read_text(encoding="utf-8"))
         steps = [s for job in wf["jobs"].values() for s in job["steps"] if str(s.get("name", "")).startswith("Install ffmpeg")]
-        assert len(steps) == 1, name
-        run = steps[0]["run"]
-        assert "sudo apt-get install -y -qq ffmpeg" in run and "for attempt in 1 2 3" in run and "|| true" not in run and "|| echo" not in run, name       # nothing is swallowed
-        assert run.rstrip().endswith("ffprobe -version | head -1") and "ffmpeg -version | head -1" in run and "FAILS" in steps[0]["name"], name           # no binary: the step (and the run) fails
+        assert len(steps) == (4 if name == "tests.yml" else 1), name          # tests.yml: the main job and the three sabotage jobs (Update 68)
+        for step in steps:                                                                                                          # EVERY copy, not only the first (the three sabotage jobs carry one each)
+            run = step["run"]
+            assert "sudo apt-get install -y -qq ffmpeg" in run and "for attempt in 1 2 3" in run and "|| true" not in run and "|| echo" not in run, name       # nothing is swallowed
+            assert run.rstrip().endswith("ffprobe -version | head -1") and "ffmpeg -version | head -1" in run and "FAILS" in step["name"], name           # no binary: the step (and the run) fails
+            assert "command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null" in run and "exit 1" in run, name                  # the explicit check that stops the run
         if name == "research-tools.yml":
             assert steps[0]["if"] == "inputs.tool == 'analyze'"
 
@@ -976,7 +978,7 @@ def test_the_apify_usage_line_is_printed_only_when_something_was_asked(tmp_path,
     assert "competitors mode needs peers" in out and "Apify usage after this run" not in out
 
 
-# ---- Update 67: the Apify budget in real dollars, three keys, every month its own --------------------------------------------------------------------
+# ---- Update 67: the Apify budget in real dollars, several keys (three planned, four held since), every month its own --------------------------------------------------------------------
 
 def _limits_http(used, limit, ends="2026-12-01T00:00:00.000Z", status=200, body=None):
     def http(method, url, *, params=None, json_body=None, headers=None, timeout=30):

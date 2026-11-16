@@ -348,7 +348,7 @@ def test_the_check_can_prove_the_apify_route_with_a_handful_of_items(store, cfg,
     rows = check(store, cfg, settings, f, apify=apify, backend="apify", sources=SOURCES)
     assert all(r["ok"] for r in rows.values()) and rows["meta_ads"]["detail"] == "via Apify: 3 items, 3 readable" and f.opened == []
     for call in http.calls:
-        assert call["params"]["maxItems"] == 3 and call["params"]["maxTotalChargeUsd"] == 0.25
+        assert call["params"]["maxItems"] == 3 and call["params"]["maxTotalChargeUsd"] == 0.5          # the check ceiling ships at 0.50 since Update 69
     assert used(store) == {"apify_items": 5}
 
 

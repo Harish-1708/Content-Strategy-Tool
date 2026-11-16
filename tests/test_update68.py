@@ -321,3 +321,4 @@ def test_the_collect_command_hands_fresh_to_the_run_only_when_asked(tmp_path, mo
     cli.main(base)
     cli.main(base + ["--fresh"])
     assert seen == [False, True]
+

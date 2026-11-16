@@ -169,6 +169,7 @@ def test_a_server_error_is_still_retried_as_before():
 
 
 def test_the_check_skips_a_route_whose_actor_needs_more_than_the_check_ceiling(cfg, store, settings):
+    settings = replace(settings, apify_check_max_cost_usd=0.25)                       # the shipped ceiling is 0.50 since Update 69 (the TikTok actor's minimum); a lower one is still refused and skipped
     http = FakeHttp()
     http.on("POST", TT_URL, (400, MINIMUM))
     row = C.check_collectors(world(cfg), CREDS, settings, cfg, store, R.Ledger, NOW, ["tiktok"],
@@ -189,16 +190,16 @@ def test_the_check_ceiling_is_its_own_setting_and_never_exceeds_the_run_ceiling(
         assert http.calls[0]["params"]["maxTotalChargeUsd"] == expected
 
 
-def test_the_check_ceiling_default_is_the_old_25_cents_and_is_validated(tmp_path):
-    assert C.load_collector_settings("does-not-exist.yaml").apify_check_max_cost_usd == 0.25
-    assert C.load_collector_settings(str(ROOT / "research.yaml")).apify_check_max_cost_usd == 0.25
+def test_the_check_ceiling_default_is_fifty_cents_since_update_69_and_is_validated(tmp_path):
+    assert C.load_collector_settings("does-not-exist.yaml").apify_check_max_cost_usd == 0.5                                 # was 0.25, below the TikTok actor's own minimum
+    assert C.load_collector_settings(str(ROOT / "research.yaml")).apify_check_max_cost_usd == 0.5
     bad = tmp_path / "r.yaml"
     bad.write_text("collectors:\n  apify:\n    check_max_cost_usd: 0\n")
     with pytest.raises(C.CollectError, match="check_max_cost_usd"):
         C.load_collector_settings(str(bad))
     ok = tmp_path / "ok.yaml"
-    ok.write_text("collectors:\n  apify:\n    check_max_cost_usd: 0.5\n")
-    assert C.load_collector_settings(str(ok)).apify_check_max_cost_usd == 0.5
+    ok.write_text("collectors:\n  apify:\n    check_max_cost_usd: 0.25\n")
+    assert C.load_collector_settings(str(ok)).apify_check_max_cost_usd == 0.25
 
 
 def test_an_http_408_or_504_in_a_message_is_a_timeout():

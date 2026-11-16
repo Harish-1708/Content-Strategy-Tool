@@ -209,10 +209,10 @@ def test_the_notes_say_when_some_pages_were_left_for_next_time():
 
 # ---- a run in careful mode ----------------------------------------------------------------------------------------------------
 
-def go(store, tmp_path, swov, cfg, settings, f, *, now=NOW, backend="browser", apify=None, dry_run=False, data=FIVE, sources=("instagram",)):
+def go(store, tmp_path, swov, cfg, settings, f, *, now=NOW, backend="browser", apify=None, dry_run=False, data=FIVE, sources=("instagram",), ignore_gap=False):
     write_research(tmp_path, swov, data)
     return C.run_collect([swov], store, browser_factory=f, creds=CREDS, settings=settings, browser_cfg=cfg, ledger_cls=R.Ledger,
-                         sources=list(sources), now=now, run_id="r", root=str(tmp_path / "brands"), dry_run=dry_run, apify=apify, backend=backend)
+                         sources=list(sources), now=now, run_id="r", root=str(tmp_path / "brands"), dry_run=dry_run, apify=apify, backend=backend, ignore_gap=ignore_gap)
 
 
 def ig_world(cfg):

@@ -464,6 +464,8 @@ def test_a_session_read_uses_camoufox_when_it_is_available(tmp_path, monkeypatch
 
 
 def test_patchright_is_used_when_camoufox_is_missing(tmp_path, monkeypatch):
+    monkeypatch.delenv("DISPLAY", raising=False)                                   # not dependent on the machine: no display, and exactly patchright installed
+    monkeypatch.setattr(S, "_importable", lambda name: name == "patchright.sync_api")
     calls, page = [], FakePage()
     driver = FakePW(calls, page)
 
@@ -494,6 +496,8 @@ def test_patchright_is_used_when_camoufox_is_missing(tmp_path, monkeypatch):
 
 
 def test_plain_playwright_is_the_fallback_when_no_stealth_engine_is_installed(tmp_path, monkeypatch):
+    monkeypatch.delenv("DISPLAY", raising=False)
+    monkeypatch.setattr(S, "_importable", lambda name: False)                      # whatever is installed on this machine
     assert "camoufox.sync_api" not in sys.modules and "patchright.sync_api" not in sys.modules
     calls, page = [], FakePage()
     fake_pw = FakePW(calls, page)
@@ -516,7 +520,7 @@ def test_with_the_layer_off_a_read_is_exactly_as_before(tmp_path, monkeypatch):
     fake_pw = FakePW(calls, page)
     monkeypatch.setattr(B, "_start_playwright", lambda: fake_pw)
     with B.open_browser("instagram", {"json_url_hints": []}, PACING, "", tmp_path) as browser:
-        assert browser.identity is None and browser.read_log is None
+        assert browser.identity is None and browser.read_log is not None          # Update 69: the read log no longer needs the layer (the browsing below is unchanged)
     context = [c for c in calls if c[0] == "new_context"][0][1]
     assert context == {"viewport": {"width": 1366, "height": 900}, "locale": "en-US",
                        "user_agent": B._UA, "timezone_id": "America/New_York"}
