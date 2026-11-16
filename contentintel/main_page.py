@@ -93,16 +93,15 @@ def regional_hint(slug, brand=""):
     brand's own plain address is never regional. Without the name, the address cannot be told from a plain name that happens to end in region letters (a lower-case 'snuggie' or 'theoodie' end in 'ie'), so only these
     are flagged: a region after a separator (chobani-nz), and an upper-case or Capitalised tail on a lower-case stem (ChobaniAu, DudeWipesUS), except a Capitalised tail that is also an ordinary word (MadeIn)."""
     s = slug or ""
+    want, have = re.sub(r"[^a-z0-9]", "", (brand or "").lower()), re.sub(r"[^a-z0-9]", "", s.lower())
+    if want and have == want:                                          # the brand's own address is never regional, however it is punctuated (made-in, made.in for the brand 'Made In')
+        return ""
     for sep in ("-", ".", "_"):
         parts = s.lower().split(sep)
         if len(parts) > 1 and parts[-1] in REGIONS:
             return parts[-1]
-    want, have = re.sub(r"[^a-z0-9]", "", (brand or "").lower()), re.sub(r"[^a-z0-9]", "", s.lower())
-    if want:
-        if have == want:
-            return ""
-        if have.startswith(want) and have[len(want):] in REGIONS:
-            return have[len(want):]
+    if want and have.startswith(want) and have[len(want):] in REGIONS:
+        return have[len(want):]
     for r in sorted(REGIONS, key=len, reverse=True):
         stem, tail = s[:-len(r)], s[-len(r):]
         if len(stem) >= 4 and tail.lower() == r and stem[-1].islower() and (tail == tail.upper() or (tail == tail.capitalize() and r not in COMMON_WORD_REGIONS)):
@@ -162,18 +161,19 @@ def id_candidates(results):
 def find_id_by_search(name, chosen_url, search, review_id):
     """When the page's own HTML has no id: look for the numeric id in the search results about the page (people addresses, profile.php addresses, Ad Library links) and have the reviewer confirm it is the SAME main page.
     Returns (id, reason) with the id empty when none is found or confirmed; the reason says why. The id must be one of the candidates found: a reviewer's invented id is refused."""
-    found = []
-    for query in ID_SEARCHES:
+    found, failed = [], ""
+    for query in ID_SEARCHES:                                                       # all three: the Ad Library query is never skipped because the first two found something
         try:
             found += list(search(query.format(name=name)) or [])
         except Exception as exc:                                                    # a failed search is a reason, never a crash
-            return "", f"the search for the page's numeric id failed ({type(exc).__name__})"
-        if len(id_candidates(found)) >= 2:
-            break
-    cands = id_candidates(found)
+            failed = f"the search for the page's numeric id failed ({type(exc).__name__})"
+    cands = id_candidates(found)[:8]
     if not cands:
-        return "", "a search for the page's numeric id found no address carrying one"
-    verdict = review_id(name, chosen_url, cands[:8]) or {}
+        return "", failed or "a search for the page's numeric id found no address carrying one"
+    try:
+        verdict = review_id(name, chosen_url, cands) or {}                           # the reviewer sees exactly the candidates the answer is checked against
+    except Exception as exc:                                                        # a reviewer that fails leaves the brand unresolved, never crashes the run
+        return "", f"a search found {len(cands)} numeric id(s) but the reviewer could not be asked ({type(exc).__name__})"
     choice = str(verdict.get("choice") or "")
     if not choice or not verdict.get("same_page") or verdict.get("regional") or choice not in {c["id"] for c in cands}:
         return "", f"a search found {len(cands)} numeric id(s) but the reviewer could not confirm one as this page" + (f" ({verdict.get('reason')})" if verdict.get("reason") else "")
@@ -219,6 +219,8 @@ def lookup_main_page(name, search, review, read_id, label="the reviewer", review
     how = ""
     if not page_id and review_id is not None:
         page_id, how = find_id_by_search(name, chosen["url"], search, review_id)
+    elif not page_id:
+        how = "no reviewer is available to confirm a numeric id found by search, so none was looked for"
     if not page_id:
         why = getattr(read_id, "why", "")
         out.update(status="ambiguous", reason=f"{chosen['url']} was confirmed as the main official page by {label} ({verdict['reason']}), but its page id could not be read from the page" + (f" ({why})" if why else "") + (f"; {how}" if how else ""))
@@ -263,17 +265,27 @@ def make_finder(serper, claude, get_html, label="the AI reviewer"):
         """The page id from the page's own HTML, trying the page, its mobile address, its basic address and Facebook's public Page Plugin (the embed any website may show: it needs no login and names the page it
         draws); read_id.why says what each one did."""
         tried = []
+        alt = getattr(get_html, "alt", None)
         for variant in page_id_addresses(url):
             host = variant.split("/")[2] + ("/plugins" if "/plugins/page.php" in variant else "")
             try:
-                found = read_page_id(get_html(variant))
+                html = get_html(variant) or ""
+                found = read_page_id(html)
             except Exception as exc:                                       # the kind of error only
                 tried.append(f"{host}: {type(exc).__name__}")
                 continue
+            if not found and alt is not None and variant == url:                   # the page itself is also asked in the browser identity that read the earlier ids; a failure there is a reason too
+                try:
+                    html2 = alt(variant) or ""
+                    found = read_page_id(html2)
+                    if not found:
+                        tried.append(f"{host} as a browser: no page id in the page ({len(html2):,} characters)")
+                except Exception as exc:
+                    tried.append(f"{host} as a browser: {type(exc).__name__}")
             if found:
                 read_id.why = ""
                 return found
-            tried.append(f"{host}: no page id in the page")
+            tried.append(f"{host}: no page id in the page ({len(html):,} characters)")
         read_id.why = "tried " + "; ".join(tried)
         return ""
     read_id.why = ""

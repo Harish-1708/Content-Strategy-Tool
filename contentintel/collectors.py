@@ -53,7 +53,7 @@ DEFAULT_APIFY_ACTORS = {"meta_ads": "apify/facebook-ads-scraper", "tiktok": "clo
 DEFAULT_COLLECTORS = {
     "browser": {"monthly_items": 0, "items_per_run": 30, "cache_days": 3},          # 0 = no monthly limit
     "gemini": {"monthly_tasks": 2, "tasks_per_run": 1, "cache_days": 14},
-    "apify": {"mode": "off", "monthly_items": 100, "items_per_run": 30, "max_cost_per_run_usd": 1.0, "check_max_cost_usd": 0.25,
+    "apify": {"mode": "off", "monthly_items": 300, "items_per_run": 30, "max_cost_per_run_usd": 1.0, "check_max_cost_usd": 0.25,
               "actors": DEFAULT_APIFY_ACTORS},
     "claude": {"model": "claude-sonnet-5-5", "monthly_calls": 60, "max_rounds": 3, "max_tokens": 700, "prompt_max_tokens": 2000, "review_rounds": 1,
                "prepare_prompt": True},

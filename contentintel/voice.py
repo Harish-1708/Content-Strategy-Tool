@@ -107,6 +107,7 @@ class ExternalLast30Days:
         self.environ = environ if environ is not None else {}
         self.python = python or sys.executable
         self.engine_notes = ""                     # what the engine said about sources that failed, even when other sources answered
+        self.engine_summary = ""                   # its own account of the run: research quality, bonus sources (TikTok, Instagram) that were unavailable or returned nothing
         self.last_error = ""                       # why the repository's own route failed on the last call, in words (the platform's backup answers; this is what the run reports)
 
     def command(self, topic, mode, plan_path, peers=(), depth="quick"):
@@ -121,7 +122,7 @@ class ExternalLast30Days:
         return cmd + [f"--{depth}"] if depth in ("quick", "deep") and mode != "discover" else cmd
 
     def run(self, topic, mode="research", peers=(), depth="quick"):
-        self.last_error = self.engine_notes = ""
+        self.last_error = self.engine_notes = self.engine_summary = ""
         try:
             return self._run(topic, mode, peers, depth)
         except K.Failure as exc:
@@ -136,6 +137,8 @@ class ExternalLast30Days:
             env["HOME"], env["LAST30DAYS_MEMORY_DIR"], env["XDG_CONFIG_HOME"] = tmp, "", tmp         # nothing is saved outside this folder; the engine's own config is never read
             plan = Path(tmp) / "plan.json"
             lanes = DEFAULT_SOURCES + (KEYED_LANES if env.get("SCRAPECREATORS_API_KEY") else ())          # env holds the key only if the owner allows it
+            if "meta_ads" in lanes:                                                                         # the engine runs Meta Ads only when it is also opted in (a key alone is not enough)
+                env["INCLUDE_SOURCES"] = ",".join(sorted({*(s for s in (env.get("INCLUDE_SOURCES") or "").split(",") if s), "meta_ads"}))
             plan.write_text(json.dumps(build_plan(topic, lanes)), encoding="utf-8")
             cmd = self.command(topic, mode, plan, peers, depth)
             try:
@@ -148,6 +151,7 @@ class ExternalLast30Days:
             raise K.Failure(K.UPSTREAM_BROKEN, f"last30days stopped ({done.returncode}): {scrub((done.stderr or '')[-300:], 300)}")
         engine_notes = " | ".join(ln.strip() for ln in (done.stderr or "").splitlines() if ln.strip() and any(w in ln.lower() for w in ("failed", "missing", "blocked", "error", "refused", "denied", "forbidden", "sign in", "not a bot", "401", "403", "429")))[-400:]
         self.engine_notes = scrub(engine_notes, 400)
+        self.engine_summary = scrub(" | ".join(ln.strip() for ln in (done.stderr or "").splitlines() if ln.strip().startswith(("Research quality", "Bonus source", "Missing")) or "returned 0" in ln or "unavailable" in ln.lower())[:500], 500)
         text = (done.stdout or "").strip()
         start = text.find("{")
         try:
@@ -327,7 +331,7 @@ def _row_item(row, source, topic, mode="apify"):
 
 
 class ApifyVoice:
-    """An extra lane: Apify's ready-made TikTok and Instagram scrapers, asked about a topic (research mode) or about each competitor (competitors mode; the brand itself is not asked there). It is ON by default in voice (--no-apify or the workflow's
+    """An extra lane: Apify's ready-made TikTok and Instagram scrapers, asked about a topic (research mode) or about each competitor (competitors mode; the brand itself is not asked there, and the run's allowance is split between the competitors only). It is ON by default in voice (--no-apify or the workflow's
     apify box switches it off) and needs APIFY_TOKEN. It reads only within its OWN monthly allowance (voice_apify_items, default 60), 40 items in a whole workflow run, and never beyond the monthly Apify allowance the Collect step
     uses (collectors.apify.monthly_items): both counters are charged for what was read. Each Apify call carries a cost ceiling that Apify enforces by stopping the call: 0.50 dollars for TikTok (its actor refuses anything lower;
     measured live) and 0.25 for Instagram (which returned 27 usable items for it). In one call TikTok asks for half of what is left to read and Instagram for the rest, so a call whose ceiling stops it early returns what the
@@ -336,9 +340,12 @@ class ApifyVoice:
     CEILINGS = {"tiktok": 0.50, "instagram": 0.25}                      # the least each actor accepts per call
     HARD_CEILING = 1.00                                                   # whatever an override says, a call can never be allowed more than this
 
-    def __init__(self, apify, ledger, *, per_run=40, monthly=60, shared_cap=100, max_cost_usd=None, normalize=None):
-        self.apify, self.ledger, self.per_run, self.monthly, self.shared_cap = apify, ledger, per_run, monthly, shared_cap
-        self.max_cost = max_cost_usd
+    def __init__(self, apify, ledger, *, per_run=40, monthly=60, shared_cap=100, max_cost_usd=None, normalize=None, budget_fn=None):
+        self.apify, self.ledger = apify, ledger
+        self.per_run, self.monthly, self.shared_cap = (max(1, min(300, int(per_run))), max(1, min(600, int(monthly))), max(0, int(shared_cap)))          # clamped here too, not only by the caller
+        self.budget_fn = budget_fn                                           # () -> dollars Apify says are left across all keys, or None when unknown
+        self.max_cost = None if max_cost_usd is None else max(0.0, float(max_cost_usd))
+        self.asks_made = 0
         self.normalize = normalize
         self.spent_this_run = 0
 
@@ -355,6 +362,7 @@ class ApifyVoice:
     def run(self, topic, share=None, entity=""):
         """(items, notes). `share` limits the items this one ask may read (competitors mode splits the run's allowance between the brand and its competitors). Raises nothing: a refusal or a missing allowance is a note."""
         items, notes = [], []
+        self.asks_made += 1
         tag = re.sub(r"[^a-z0-9]", "", topic.lower())
         budget = self.room() if share is None else min(self.room(), int(share))
         read_here = 0
@@ -366,8 +374,13 @@ class ApifyVoice:
                 notes.append(f"apify {source} for {topic!r}: no allowance left (this ask {budget}, this run {self.spent_this_run}/{self.per_run}, voice this month {self.ledger.month_used('voice_apify_items'):g}/{self.monthly}, "
                              f"Apify this month {self.ledger.month_used('apify_items'):g}/{self.shared_cap})")
                 continue
+            left = self.budget_fn() if self.budget_fn is not None else None
+            if left is not None and left < self.ceiling(source):
+                notes.append(f"apify {source} for {topic!r}: not asked (Apify reports ${left:.2f} left this cycle, less than this call's ${self.ceiling(source):g} ceiling)")
+                continue
             payload = {"searchQueries": [topic], "resultsPerPage": n} if source == "tiktok" else {"hashtags": [tag], "resultsType": "posts", "resultsLimit": n}
             if source == "instagram" and not tag:
+                notes.append(f"apify instagram for {topic!r}: not asked (the topic has no letters or digits to make a hashtag from)")
                 continue
             try:
                 raw = self.apify.run(self.ACTORS[source], payload, max_items=n, max_cost_usd=self.ceiling(source))

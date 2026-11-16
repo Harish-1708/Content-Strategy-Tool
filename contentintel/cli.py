@@ -13,7 +13,7 @@ import os
 from . import acceptance as acceptance_mod
 from . import autoseeds as autoseeds_mod
 from . import browser as browser_mod
-from .apify import Apify
+from . import apify as apify_mod
 from .claude_client import Claude
 from .contract import Failure, classify_message
 from . import contract as contract_mod
@@ -382,7 +382,13 @@ def _page_finder_status(claude, args):
     getter = _get()
 
     def get_html(url):
+        # First the tool says what it is: the same honest identity Research tools > pageid sends, which Facebook answered with the public page that carries the id (1.2 million characters for Hu Kitchen and Dude Wipes).
+        return getter(url, headers={"User-Agent": "Mozilla/5.0 (compatible; content-strategy-tool; read-only research)", "Accept": "text/html", "Accept-Language": "en-US,en;q=0.9"}, timeout=25).text
+
+    def get_html_as_browser(url):
+        # The earlier identity, kept as a second try only: it is what read the ids that Collect #61 followed (Defi Snacks, Magic Spoon, Chobani, DudeRobe, Snuggie), so nothing that worked is lost.
         return getter(url, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36", "Accept-Language": "en-US,en;q=0.9"}, timeout=20).text
+    get_html.alt = get_html_as_browser
     from . import main_page
     return main_page.make_finder(serper, claude, get_html), ""
 
@@ -557,8 +563,7 @@ def _run_request(args, store, brand, request, settings, csettings, claude, budge
     rsettings = dataclasses.replace(research_mod.load_settings(args.research_config), region_override=research_mod._country(request["region"], "region"))
     browser_cfg = browser_mod.load_browser_settings(args.browser_config)
     creds = _site_creds(browser_cfg, os.environ)
-    apify_token = (os.environ.get("APIFY_TOKEN") or "").strip()
-    apify = Apify(apify_token) if apify_token else None
+    apify = apify_mod.build_apify(os.environ)
     factory = (_BROWSER_FACTORY or _real_factory)(browser_cfg, creds, args.debug_dir)
     drive, missing = _drive()
     started = now
@@ -775,8 +780,8 @@ def _collect(args, store):
         print(f"Error: unknown source {', '.join(unknown)} (choose from {', '.join(collectors_mod.SOURCES)})")
         return 1
     creds = _site_creds(browser_cfg, os.environ)
-    apify_token, claude_key = (os.environ.get("APIFY_TOKEN") or "").strip(), (os.environ.get("ANTHROPIC_API_KEY") or "").strip()
-    apify = Apify(apify_token) if apify_token else None
+    claude_key = (os.environ.get("ANTHROPIC_API_KEY") or "").strip()
+    apify = apify_mod.build_apify(os.environ)
     plain = Claude(claude_key, model=settings.claude_model, max_tokens=settings.claude_max_tokens, prompt_max_tokens=settings.claude_prompt_max_tokens) if claude_key else None
     if plain is not None:                                  # each purpose has its own switch: seed words are one, the deep check of a research report is another
         plain.for_purpose = lambda purpose: _routed(plain, purpose, args, store)
@@ -1085,8 +1090,8 @@ def _acceptance_context(args, store, registry, now):
     rsettings = research_mod.load_settings(args.research_config)
     browser_cfg = browser_mod.load_browser_settings(args.browser_config)
     creds = _site_creds(browser_cfg, os.environ)
-    apify_token, claude_key = (os.environ.get("APIFY_TOKEN") or "").strip(), (os.environ.get("ANTHROPIC_API_KEY") or "").strip()
-    apify = Apify(apify_token) if apify_token else None
+    claude_key = (os.environ.get("ANTHROPIC_API_KEY") or "").strip()
+    apify = apify_mod.build_apify(os.environ)
     claude = _claude(settings) if claude_key else None
     providers = providers_mod.build_providers(os.environ)
     ctx = acceptance_mod.Context(registry=registry, providers=tuple(sorted(providers)))
@@ -1254,6 +1259,8 @@ def main(argv=None):
             return tools_mod.run_voice(args, store, sync_mod.utc_now())
         if args.cmd == "analyze":
             return tools_mod.run_analyze(args)
+        if args.cmd == "apify-budget":
+            return tools_mod.run_apify_budget(args)
         if args.cmd == "pageid":
             return tools_mod.run_pageid(args)
         if args.cmd == "pool":
