@@ -1,7 +1,7 @@
 # The store's own numbers, read only (Google Analytics 4 and Search Console), and the keywords whose public ranking is checked through Serper.
 # Fill these in when the store owner has added the tool's Google service account (the client_email inside GOOGLE_SERVICE_ACCOUNT_JSON) as a Viewer on the GA4 property
 # and as a user on the Search Console property. Until then every skill that needs these numbers stays on NEEDS_INPUT: nothing is estimated or invented.
-ga4_property_id:            # the numeric property id, for example 123456789 (GA4 > Admin > Property settings)
-search_console_site:        # exactly as Search Console writes it, for example sc-domain:example.com or https://www.example.com/
-domain: ""                  # the store's own domain, for the public Serper rank checks (no access needed), for example example.com
-rank_keywords: []           # keywords whose public ranking for the domain is checked, for example [bib overalls, sweatpant overalls]
+ga4_property_id:            # the numeric property id for THIS brand's store, for example 123456789 (GA4 > Admin > Property settings)
+search_console_site:        # exactly as Search Console writes it for this brand, for example sc-domain:defi-snacks.com or https://www.defi-snacks.com/
+domain: ""                  # this brand's own domain for the public Serper rank checks (no access needed), for example defi-snacks.com
+rank_keywords: []           # keywords whose public ranking is checked for this brand, for example [protein snack, high protein dark chocolate]
