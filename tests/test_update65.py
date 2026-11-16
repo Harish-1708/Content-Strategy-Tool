@@ -378,8 +378,8 @@ def test_the_voice_command_uses_the_apify_lane_by_default_unless_switched_off_an
     assert fake.calls == [] and "Apify lane" not in capsys.readouterr().out                                    # switched off: not used
     RT.run_voice(_args(tmp_path, "--topic", "sweatpant overalls"), store, "2026-11-15T00:00:00Z", get=get, runner=Runner("", 1, "boom"), environ={"APIFY_TOKEN": "t"}, clock=lambda: 1_790_000_000)
     out = capsys.readouterr().out
-    assert "Apify lane ON for this run (switch off with --no-apify): at most 40 items in this whole run, 60 a month for voice (used so far this month: 0)" in out and "never beyond the Collect step's 100 a month" in out and len(fake.calls) == 2 and [c[3] for c in fake.calls] == [0.50, 0.25]          # each Apify call carries its actor's cost ceiling
-    assert "0.5 dollars for TikTok, 0.25 for Instagram" in out and "Apify usage after this run: voice 40/60 items this month, all Apify use 40/100 (this run read 40)." in out
+    assert "Apify lane ON for this run (switch off with --no-apify): at most 40 items in this whole run, 60 a month for voice (used so far this month: 0)" in out and "never beyond the Collect step's 300 a month" in out and len(fake.calls) == 2 and [c[3] for c in fake.calls] == [0.50, 0.25]          # each Apify call carries its actor's cost ceiling
+    assert "0.5 dollars for TikTok, 0.25 for Instagram" in out and "Apify usage after this run: voice 40/60 items this month, all Apify use 40/300 (this run read 40)." in out
     assert store.load_usage()["months"]["2026-11"]["voice_apify_items"] == fake.calls[0][2] + fake.calls[1][2]            # the spending is saved
     RT.run_voice(_args(tmp_path, "--topic", "x"), store, "2026-11-15T00:00:00Z", get=get, runner=Runner("", 1, "boom"), environ={}, clock=lambda: 1)
     assert "Apify lane skipped: APIFY_TOKEN is not set in this run." in capsys.readouterr().out
@@ -521,10 +521,10 @@ def test_the_apify_cap_is_the_owners_configured_collect_cap_and_the_per_run_allo
     cfg = tmp_path / "research.yaml"
     cfg.write_text("collectors:\n  apify:\n    monthly_items: 50\n", encoding="utf-8")
     assert RT._collect_apify_cap(type("A", (), {"research_config": str(cfg)})()) == 50
-    assert RT._collect_apify_cap(type("A", (), {"research_config": str(tmp_path / "missing.yaml")})()) == 100          # no file: the built-in default
+    assert RT._collect_apify_cap(type("A", (), {"research_config": str(tmp_path / "missing.yaml")})()) == 300          # no file: the built-in default
     cfg.write_text("collectors:\n  apify:\n    monthly_items: not-a-number\n", encoding="utf-8")
-    assert RT._collect_apify_cap(type("A", (), {"research_config": str(cfg)})()) == 100                               # unreadable: the default
-    assert RT._collect_apify_cap(cli.build_parser().parse_args(["voice", "--brand", "x"])) == 100                      # the repository's own research.yaml says 100
+    assert RT._collect_apify_cap(type("A", (), {"research_config": str(cfg)})()) == 300                               # unreadable: the default
+    assert RT._collect_apify_cap(cli.build_parser().parse_args(["voice", "--brand", "x"])) == 300                      # the repository's own research.yaml says 300: three keys, five dollars each
     store = _voice_env(tmp_path, monkeypatch)
     fake = FakeApify()
     import contentintel.apify as A
@@ -613,10 +613,10 @@ def test_competitors_mode_asks_apify_about_each_competitor_never_the_brand_and_s
     asked = [c[1].get("searchQueries", [None])[0] or c[1]["hashtags"][0] for c in fake.calls]
     assert asked == ["The Oodie", "theoodie", "Madepants", "madepants", "SKIMS", "skims"] and "Swoveralls" not in asked and "swoveralls" not in asked          # the brand gets nothing here
     pairs = [fake.calls[i][2] + fake.calls[i + 1][2] for i in range(0, len(fake.calls), 2)]
-    assert sum(c[2] for c in fake.calls) <= 40 and len(pairs) == 3 and all(p <= 13 for p in pairs)           # 40 for the run, split three ways: each ask (TikTok and Instagram together) reads at most 13
+    assert pairs == [13, 13, 14] and sum(pairs) == 40                                                          # 40 for the run: what is left is split between the competitors still to ask, so nothing is stranded
     kept = store.read_extra("swoveralls", "voice")["items"]
     assert any(i["entity"] == "The Oodie" and i["mode"] == "competitors" and i["source"].startswith("apify ") for i in kept)
-    assert "this run, items per competitor: The Oodie: " in out and "The Oodie: 0;" not in out and "the brand itself: 0" in out and "Apify usage after this run: voice 3" in out
+    assert "this run, items per competitor: The Oodie: " in out and "The Oodie: 0;" not in out and "the brand itself: 0" in out and out.count("Apify usage after this run:") == 1 and "Apify usage after this run: voice 40/60 items this month, all Apify use 40/300 (this run read 40)." in out
     assert "(research and competitors modes)" in Path(".github/workflows/research-tools.yml").read_text(encoding="utf-8")
 
 
@@ -645,7 +645,7 @@ def test_the_apify_usage_is_counted_across_runs_and_the_start_line_shows_it(tmp_
         assert f"(used so far this month: {expected_before})" in out                                  # the start line shows the earlier runs; the run's own reading is in the end line
     usage = store.load_usage()["months"]["2026-11"]
     assert usage["voice_apify_items"] == 60 and usage["apify_items"] == 60                              # 40, then the 20 the monthly allowance had left
-    assert "Apify usage after this run: voice 60/60 items this month, all Apify use 60/100 (this run read 20)." in out
+    assert "Apify usage after this run: voice 60/60 items this month, all Apify use 60/300 (this run read 20)." in out
 
 
 def test_the_collect_time_finder_already_knows_a_regional_address_from_the_brand_name_in_any_letter_case():
@@ -737,3 +737,399 @@ def test_the_page_id_check_lists_the_numeric_ids_a_search_finds_when_the_four_pl
     RT.run_pageid(args, get=get, search=None, environ={})
     assert "Search for the numeric id: not tried (SERPER_API_KEY is not set in this run)" in capsys.readouterr().out
     RT.run_pageid(args, get=lambda url, headers=None: (200, '{"pageID":"123456789"}'), search=lambda q: pytest.fail("not needed when an id is read"))
+
+
+# ---- Update 67: the planner's review of the live round of Update 66 ----------------------------------------------------------------------------------
+
+def _finder_with(monkeypatch, page_for):
+    from contentintel import cli as CLI
+    seen = []
+
+    class Page:
+        def __init__(self, text):
+            self.text = text
+
+    def getter(url, headers=None, timeout=0):
+        seen.append((url, headers["User-Agent"]))
+        return Page(page_for(url, headers["User-Agent"]))
+
+    class Serper:
+        def search(self, query, num=10):
+            return [Result(rank=1, title="Hu Kitchen | Facebook", url="https://www.facebook.com/HuKitchen", snippet="Hu")]
+
+    class Claude:
+        def json_task(self, system, user, max_tokens=0):
+            return {"choice": "https://www.facebook.com/HuKitchen", "is_main": True, "regional": False, "reason": "the brand's own page"}
+    monkeypatch.setattr(CLI, "_HTTP_GET", getter)
+    monkeypatch.setattr(CLI, "_search_providers", lambda args, purpose: {"serper_dev": Serper()})
+    finder, why = CLI._page_finder_status(Claude(), type("A", (), {})())
+    assert why == ""
+    return finder("Hu Kitchen"), seen
+
+
+HONEST = "Mozilla/5.0 (compatible; content-strategy-tool; read-only research)"
+
+
+def test_the_collect_finder_asks_with_the_tools_own_honest_identity_first_and_stops_when_it_reads_the_id(monkeypatch):
+    out, seen = _finder_with(monkeypatch, lambda url, ua: '{"pageID":"100064252197325"}' if ua == HONEST and "m." not in url else "<html>Log in</html>")
+    assert out["status"] == "resolved" and out["page_id"] == "100064252197325" and seen == [("https://www.facebook.com/HuKitchen", HONEST)]          # one request: nothing more is asked once the id is read
+
+
+def test_the_collect_finder_keeps_the_browser_identity_as_a_second_try_so_nothing_that_worked_is_lost(monkeypatch):
+    out, seen = _finder_with(monkeypatch, lambda url, ua: '{"pageID":"100034777406193"}' if "Chrome" in ua else "<html>Log in</html>")        # a page only the earlier identity could read (Defi Snacks, Magic Spoon, Chobani in Collect #61)
+    assert out["status"] == "resolved" and out["page_id"] == "100034777406193"
+    assert [ua for _, ua in seen] == [HONEST, "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"] and all(u == "https://www.facebook.com/HuKitchen" for u, _ in seen)
+    none, seen = _finder_with(monkeypatch, lambda url, ua: "<html>Log in</html>")
+    assert none["status"] == "ambiguous" and "www.facebook.com as a browser: no page id in the page (19 characters)" in none["reason"] and len(seen) == 5            # honest, browser, mobile, basic, plugin
+
+
+def test_the_finders_reason_says_how_many_characters_each_address_returned():
+    out = MP.lookup_main_page("Hu Kitchen", lambda q: [{"url": "https://www.facebook.com/HuKitchen", "title": "Hu Kitchen | Facebook", "snippet": "Hu"}],
+                              lambda n, c: {"choice": "https://www.facebook.com/HuKitchen", "is_main": True, "regional": False, "reason": "main"}, lambda url: "", "the reviewer")
+    assert out["status"] == "ambiguous"
+    read = MP.make_finder(type("S", (), {"search": lambda self, q, num=10: [Result(rank=1, title="Hu Kitchen | Facebook", url="https://www.facebook.com/HuKitchen", snippet="Hu")]})(),
+                          type("C", (), {"json_task": lambda self, s, u, max_tokens=0: {"choice": "https://www.facebook.com/HuKitchen", "is_main": True, "regional": False, "reason": "main"}})(), lambda url: "x" * 1234)("Hu Kitchen")
+    assert "www.facebook.com: no page id in the page (1,234 characters)" in read["reason"] and "www.facebook.com/plugins: no page id in the page (1,234 characters)" in read["reason"]
+
+
+def test_the_engines_own_account_of_the_keyed_lanes_is_kept_and_meta_ads_is_opted_in_with_the_key(tmp_path):
+    stderr = "Research quality: 3/4 core sources.\nBonus source unavailable: Instagram.\n  - Instagram returned 0 reels despite SC being configured.\n[Planner] fine\n"
+    seen = []
+
+    def runner(cmd, **kw):
+        seen.append(kw["env"])
+        return subprocess.CompletedProcess(cmd, 0, (FIX / "l30_research_mock_real.json").read_text(), stderr)
+    root = checkout(tmp_path)
+    with_key = VOICE.ExternalLast30Days(SETTINGS, root=root, environ={"SCRAPECREATORS_API_KEY": "k", "INCLUDE_SOURCES": "threads"}, runner=runner)
+    with_key.run("x")
+    assert "Research quality: 3/4 core sources." in with_key.engine_summary and "Bonus source unavailable: Instagram." in with_key.engine_summary and "returned 0 reels" in with_key.engine_summary and "fine" not in with_key.engine_summary
+    assert seen[0]["INCLUDE_SOURCES"] == "meta_ads"                                                       # the platform sets its own opt-in; nothing else is passed through
+    VOICE.ExternalLast30Days(SETTINGS, root=root, environ={}, runner=runner).run("x")
+    assert "INCLUDE_SOURCES" not in seen[1]                                                              # no key: no opt-in, no keyed lane
+
+
+def test_the_voice_run_prints_the_engines_account_of_the_keyed_lanes_when_the_key_is_handed_over(tmp_path, capsys, monkeypatch):
+    store = _voice_env(tmp_path, monkeypatch)
+    stderr = "Research quality: 3/4 core sources.\nBonus source unavailable: Instagram.\n"
+    RT.run_voice(_args(tmp_path, "--topic", "sweatpant overalls", "--no-apify"), store, NOW, get=Get({}), runner=Runner((FIX / "l30_research_mock_real.json").read_text(), 0, stderr), environ={"SCRAPECREATORS_API_KEY": "k"}, clock=lambda: 1)
+    assert "the engine's own account of the keyed lanes: Research quality: 3/4 core sources. | Bonus source unavailable: Instagram." in capsys.readouterr().out
+    RT.run_voice(_args(tmp_path, "--topic", "sweatpant overalls", "--no-apify"), store, NOW, get=Get({}), runner=Runner((FIX / "l30_research_mock_real.json").read_text(), 0, stderr), environ={}, clock=lambda: 1)
+    assert "the engine's own account" not in capsys.readouterr().out
+
+
+def test_several_apify_keys_fail_over_in_order_and_a_refused_key_is_not_asked_again():
+    from contentintel import apify as A
+    from contentintel.providers import AuthError, ProviderConfigError, QuotaError
+    assert A.build_apify({}) is None and isinstance(A.build_apify({"APIFY_TOKEN": "a"}), A.Apify) and isinstance(A.build_apify({"APIFY_TOKEN": "a", "APIFY_TOKEN_2": "b"}), A.ApifyPool)
+    assert isinstance(A.build_apify({"APIFY_TOKEN": "a", "APIFY_TOKEN_2": "a", "APIFY_TOKEN_3": " "}), A.Apify)                  # the same key twice counts once; a blank is no key
+    calls = []
+
+    class Key:
+        def __init__(self, name, error=None):
+            self.name, self.error = name, error
+
+        def run(self, actor, payload, *, max_items, max_cost_usd, timeout=280):
+            calls.append(self.name)
+            if self.error:
+                raise self.error
+            return [{"ok": self.name}]
+    pool = A.ApifyPool(["a", "b", "c"])
+    pool.clients = [Key("a", AuthError("Apify: the token was rejected")), Key("b", QuotaError("Apify: out of credits")), Key("c")]
+    assert pool.run("x/y", {}, max_items=1, max_cost_usd=0.25) == [{"ok": "c"}] and calls == ["a", "b", "c"]
+    assert pool.run("x/y", {}, max_items=1, max_cost_usd=0.25) == [{"ok": "c"}] and calls == ["a", "b", "c", "c"]                  # a and b are not asked again in this run
+    assert pool.events == ["Apify key 1 of 3 was refused (AuthError); key 2 answers instead", "Apify key 2 of 3 was refused (QuotaError); key 3 answers instead"]
+    pool = A.ApifyPool(["a", "b"])
+    pool.clients = [Key("a", ProviderConfigError("the cost ceiling is below the minimum")), Key("b")]
+    calls.clear()
+    with pytest.raises(ProviderConfigError):
+        pool.run("x/y", {}, max_items=1, max_cost_usd=0.01)
+    assert calls == ["a"] and not pool.events                                                          # a refusal another key cannot cure is raised at once
+    pool = A.ApifyPool(["secret-1", "secret-2"])
+    pool.clients = [Key("a", AuthError("x")), Key("b", AuthError("y"))]
+    with pytest.raises(AuthError) as exc:
+        pool.run("x/y", {}, max_items=1, max_cost_usd=0.25)
+    assert "every key was refused" in str(exc.value) and "secret" not in str(exc.value)
+    cli_source = Path("contentintel/cli.py").read_text(encoding="utf-8")
+    assert "Apify(apify_token)" not in cli_source and cli_source.count("apify_mod.build_apify(os.environ)") == 3
+
+
+def test_the_apify_voice_lane_reports_a_key_switch_and_the_extra_keys_reach_the_workflows(tmp_path, capsys, monkeypatch):
+    store = _voice_env(tmp_path, monkeypatch)
+    from contentintel import apify as A
+    from contentintel import collectors as COL
+    from contentintel.providers import AuthError
+    monkeypatch.setattr(COL, "normalize_items", lambda source, raw: (raw, 0))
+    good = FakeApify()
+
+    class Bad:
+        def run(self, *a, **k):
+            raise AuthError("Apify: the token was rejected")
+    pool = A.ApifyPool(["a", "b"])
+    pool.clients = [Bad(), good]
+    monkeypatch.setattr(A, "build_apify", lambda environ: pool)
+    RT.run_voice(_args(tmp_path, "--topic", "sweatpant overalls"), store, "2026-11-15T00:00:00Z", get=Get({"algolia": (200, json.dumps({"hits": []}))}), runner=Runner("", 1, "boom"), environ={"APIFY_TOKEN": "a"}, clock=lambda: 1)
+    out = capsys.readouterr().out
+    assert "Apify keys: Apify key 1 of 2 was refused (AuthError); key 2 answers instead" in out and len(good.calls) == 2
+    for name in ("collect.yml", "research-tools.yml", "request.yml"):
+        body = (Path(".github/workflows") / name).read_text(encoding="utf-8")
+        assert all(f"APIFY_TOKEN_{n}: ${{{{ secrets.APIFY_TOKEN_{n} }}}}" in body for n in (2, 3, 4)), name
+    assert "APIFY_TOKEN_2" in Path("README.md").read_text(encoding="utf-8")
+
+
+def test_a_brands_own_punctuated_address_is_never_regional_and_the_id_search_survives_its_reviewer():
+    for slug in ("made-in", "made_in", "made.in"):
+        assert MP.regional_hint(slug, "Made In") == "", slug
+    assert MP.regional_hint("something-us", "Something US") == "" and MP.regional_hint("chobani-nz", "Chobani") == "nz" and MP.regional_hint("made-in", "") == "in"
+    queries = []
+
+    def search(query):
+        queries.append(query)
+        return [{"url": f"https://www.facebook.com/people/Hu-Kitchen/10006377509822{len(queries)}/", "title": "Hu Kitchen", "snippet": ""}] if len(queries) < 3 else [{"url": "https://www.facebook.com/ads/library/?view_all_page_id=102637398978655", "title": "Ads", "snippet": ""}]
+    page_id, why = MP.find_id_by_search("Hu Kitchen", "https://www.facebook.com/HuKitchen", search, lambda *a: {"choice": None, "same_page": False, "regional": False, "reason": "none match"})
+    assert len(queries) == 3 and "view_all_page_id" in queries[2] and page_id == "" and "3 numeric id(s)" in why and "(none match)" in why              # the Ad Library query ran although the first two found ids
+    seen = []
+
+    def boom(name, url, cands):
+        seen.append(cands)
+        raise RuntimeError("the reviewer is down")
+    page_id, why = MP.find_id_by_search("Hu Kitchen", "https://www.facebook.com/HuKitchen", search, boom)
+    assert page_id == "" and "the reviewer could not be asked (RuntimeError)" in why
+    many = lambda q: [{"url": f"https://www.facebook.com/people/Hu-Kitchen/{100000000 + i}/", "title": "t", "snippet": ""} for i in range(12)]          # noqa: E731
+    page_id, why = MP.find_id_by_search("Hu Kitchen", "u", many, lambda n, u, cands: {"choice": "100000011", "same_page": True, "regional": False, "reason": "x"})
+    assert page_id == "" and "could not confirm" in why                                                    # the 12th candidate was never shown to the reviewer, so it cannot be chosen
+    out = MP.lookup_main_page("Hu Kitchen", lambda q: [{"url": "https://www.facebook.com/HuKitchen", "title": "Hu Kitchen | Facebook", "snippet": "Hu"}],
+                              lambda n, c: {"choice": "https://www.facebook.com/HuKitchen", "is_main": True, "regional": False, "reason": "main"}, lambda url: "", "the reviewer")
+    assert "no reviewer is available to confirm a numeric id found by search, so none was looked for" in out["reason"]
+
+
+def test_when_the_engine_and_the_backup_both_fail_the_apify_lane_still_asks_and_the_allowance_is_not_stranded(tmp_path, capsys, monkeypatch):
+    store = _voice_env(tmp_path, monkeypatch)
+    import contentintel.apify as A
+    from contentintel import collectors as COL
+    fake = FakeApify()
+    monkeypatch.setattr(A, "Apify", lambda token: fake)
+    monkeypatch.setattr(COL, "normalize_items", lambda source, raw: (raw, 0))
+    RT.run_voice(_args(tmp_path, "--topic", "sweatpant overalls"), store, "2026-11-15T00:00:00Z", get=Get({"algolia": (500, ""), "reddit.com": (500, "")}), runner=Runner(ALL_FAILED, 0, ENGINE_STDERR), environ={"APIFY_TOKEN": "t"}, clock=lambda: 1)
+    out = capsys.readouterr().out
+    assert "the last30days engine had also failed" in out and len(fake.calls) == 2 and "Apify usage after this run: voice 40/60" in out and "item(s) from none" not in out
+    assert store.load_usage()["months"]["2026-11"]["voice_apify_items"] == 40                           # saved after the ask
+    store2 = Store(tmp_path / "data2")
+    under = FakeApify()
+    real = under.run
+
+    def run(actor, payload, *, max_items, max_cost_usd):
+        got = real(actor, payload, max_items=max_items, max_cost_usd=max_cost_usd)
+        return got[:2] if "Madepants" in str(payload) or "madepants" in str(payload) else got              # one competitor reads less
+    under.run = run
+    lane = VOICE.ApifyVoice(under, _ledger(), normalize=lambda s, raw: (raw, 0))
+    total = 0
+    for idx, name in enumerate(["The Oodie", "Madepants", "SKIMS"]):
+        items, _ = lane.run(name, share=max(2, lane.room() // (3 - idx)), entity=name)
+        total += len(items)
+    assert total > 33 and lane.spent_this_run == total and store2 is not None                              # what Madepants did not read went to SKIMS
+
+
+def test_the_apify_lane_notes_an_empty_hashtag_clamps_its_own_limits_and_counts_its_asks():
+    lane = VOICE.ApifyVoice(FakeApify(), _ledger(), per_run=1000, monthly=1000, shared_cap=100, normalize=lambda s, raw: (raw, 0))
+    assert (lane.per_run, lane.monthly) == (300, 600) and VOICE.ApifyVoice(FakeApify(), _ledger(), per_run=0, monthly=-5).per_run == 1
+    items, notes = lane.run("!!! ???")
+    assert any("not asked (the topic has no letters or digits to make a hashtag from)" in n for n in notes) and lane.asks_made == 1 and len(items) == 50
+    lane.run("again")
+    assert lane.asks_made == 2
+
+
+def test_the_page_id_check_validates_the_brand_name_and_says_when_none_was_given(capsys):
+    get = lambda url, headers=None: (200, '{"pageID":"123456789"}')           # noqa: E731
+    RT.run_pageid(cli.build_parser().parse_args(["pageid", "--url", "https://www.facebook.com/Chobani"]), get=get)
+    assert "No brand name was given: only the unambiguous signs of a regional page are checked" in capsys.readouterr().out
+    for bad in ("https://www.facebook.com/Chobani", "x" * 70):
+        RT.run_pageid(cli.build_parser().parse_args(["pageid", "--url", "https://www.facebook.com/Chobani", "--name", bad]), get=get)
+        out = capsys.readouterr().out
+        assert "does not look like a name" in out and "it is ignored" in out and "No brand name was given" in out
+    RT.run_pageid(cli.build_parser().parse_args(["pageid", "--url", "https://www.facebook.com/Chobani", "--name", "Chobani"]), get=get)
+    assert "No brand name was given" not in capsys.readouterr().out
+    RT.run_pageid(cli.build_parser().parse_args(["pageid", "--url", "https://www.facebook.com/HuKitchen", "--name", "Hu Kitchen"]), get=lambda u, headers=None: (200, "log in"), search=lambda q: [])
+    out = capsys.readouterr().out
+    assert "the Collect finder searches for the id itself and its reviewer confirms it" in out and "has to be chosen by a person" not in out
+
+
+def test_every_ffmpeg_step_checks_explicitly_for_both_programs_and_the_docs_hold_no_manual_id_instruction():
+    for name in ("collect.yml", "tests.yml", "research-tools.yml"):
+        body = (Path(".github/workflows") / name).read_text(encoding="utf-8")
+        assert 'command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null || { echo "ffmpeg or ffprobe is missing after 3 attempts: failing this run"; exit 1; }' in body, name
+        wf = yaml.safe_load(body)
+        step = [s for job in wf["jobs"].values() for s in job["steps"] if str(s.get("name", "")).startswith("Install ffmpeg")][0]
+        assert "continue-on-error" not in step and not any(job.get("continue-on-error") for job in wf["jobs"].values()), name
+    docs = Path("docs/platform/batch1-research-upgrade.md").read_text(encoding="utf-8")
+    assert "benchmark_pages: Chobani" not in docs and "a person choosing the page" not in docs and "Nothing is added by hand" in docs and "nothing is ever entered by hand" in docs
+    update65_row = [l for l in docs.split("\n") if l.startswith("| Apify as a voice lane")][0]
+    assert "0.50 dollars for TikTok" not in update65_row and "competitors" not in update65_row.split("The live round")[0] and "0.25 dollars" in update65_row
+    help_text = [x for x in cli.build_parser()._subparsers._group_actions[0].choices["voice"]._actions if "--apify" in x.option_strings][0].help
+    assert "0.25 dollars)" not in help_text.split("0.50")[0] and "competitors" in help_text and "0.50 dollars for TikTok" in help_text
+
+
+def test_the_apify_usage_line_is_printed_only_when_something_was_asked(tmp_path, capsys, monkeypatch):
+    store = _voice_env(tmp_path, monkeypatch)
+    import contentintel.apify as A
+    monkeypatch.setattr(A, "Apify", lambda token: FakeApify())
+    RT.run_voice(_args(tmp_path, "--mode", "competitors"), store, "2026-11-15T00:00:00Z", get=Get({}), runner=Runner("", 1, "boom"), environ={"APIFY_TOKEN": "t"}, clock=lambda: 1)
+    out = capsys.readouterr().out
+    assert "competitors mode needs peers" in out and "Apify usage after this run" not in out
+
+
+# ---- Update 67: the Apify budget in real dollars, three keys, every month its own --------------------------------------------------------------------
+
+def _limits_http(used, limit, ends="2026-12-01T00:00:00.000Z", status=200, body=None):
+    def http(method, url, *, params=None, json_body=None, headers=None, timeout=30):
+        assert method == "GET" and url == "https://api.apify.com/v2/users/me/limits" and headers["Authorization"].startswith("Bearer ")
+        return status, body if body is not None else {"data": {"current": {"monthlyUsageUsd": used}, "limits": {"maxMonthlyUsageUsd": limit}, "monthlyUsageCycle": {"endAt": ends}}}, None
+    return http
+
+
+def test_apify_reports_its_own_monthly_dollars_and_says_so_when_it_cannot():
+    from contentintel import apify as A
+    assert A.Apify("t", http=_limits_http(1.25, 5)).usage() == {"used": 1.25, "limit": 5.0, "ends": "2026-12-01"}
+    assert A.Apify("t", http=_limits_http(0, 5, status=500, body={"error": "x"}), sleep=lambda s: None).usage() is None
+    assert A.Apify("t", http=_limits_http(0, 5, body={"data": {"current": {}, "limits": {}}})).usage() is None
+    lines, left = A.budget_report(type("C", (), {"usages": lambda self: [None]})())
+    assert left is None and lines[0] == "Apify budget: Apify did not report the money left, so only the item counters guard the spending (the item allowances still apply):" and lines[1] == "  key 1: usage could not be read"
+
+
+def test_three_keys_make_a_fifteen_dollar_month_reported_per_key_with_nothing_carried_forward():
+    from contentintel import apify as A
+    pool = A.ApifyPool(["a", "b", "c"])
+    pool.clients = [A.Apify("a", http=_limits_http(5.0, 5)), A.Apify("b", http=_limits_http(2.0, 5)), A.Apify("c", http=_limits_http(0.5, 5, ends="2026-12-04T00:00:00.000Z"))]
+    lines, left = A.budget_report(pool)
+    assert left == 7.5 and lines[0] == "Apify budget this cycle (each key's allowance is per monthly cycle and nothing carries forward): $7.50 left of $15.00 across 3 key(s)"
+    assert lines[1:] == ["  key 1: $5.00 of $5.00 used, cycle ends 2026-12-01", "  key 2: $2.00 of $5.00 used, cycle ends 2026-12-01", "  key 3: $0.50 of $5.00 used, cycle ends 2026-12-04"]
+
+
+def test_a_key_with_less_left_than_the_calls_ceiling_is_skipped_and_the_next_key_answers():
+    from contentintel import apify as A
+
+    class Key(A.Apify):
+        def __init__(self, left):
+            super().__init__("t", http=_limits_http(5 - left, 5))
+            self.calls = 0
+
+        def run(self, *a, **k):
+            self.calls += 1
+            return [{"ok": 1}]
+    pool = A.ApifyPool(["a", "b"])
+    pool.clients = [Key(0.30), Key(4.0)]
+    assert pool.run("x/y", {}, max_items=1, max_cost_usd=0.50) == [{"ok": 1}] and pool.clients[0].calls == 0 and pool.clients[1].calls == 1
+    assert pool.events == ["Apify key 1 of 2 has $0.30 left, less than this call's $0.5 ceiling; the next key is used"]
+    pool = A.ApifyPool(["a"])
+    pool.clients = [Key(0.10)]
+    with pytest.raises(A.AuthError, match="no key is available"):
+        pool.run("x/y", {}, max_items=1, max_cost_usd=0.50)
+
+
+def test_the_apify_lane_does_not_ask_when_apify_reports_less_money_left_than_the_ceiling():
+    left = {"v": 0.40}
+    fake = FakeApify()
+    lane = VOICE.ApifyVoice(fake, _ledger(), normalize=lambda s, raw: (raw, 0), budget_fn=lambda: left["v"])
+    items, notes = lane.run("sweatpant overalls")
+    assert [c[0] for c in fake.calls] == ["apify/instagram-hashtag-scraper"]                         # TikTok needs 0.50, Instagram 0.25
+    assert "apify tiktok for 'sweatpant overalls': not asked (Apify reports $0.40 left this cycle, less than this call's $0.5 ceiling)" in notes[0]
+    left["v"] = 0.10
+    fake.calls.clear()
+    assert lane.run("again")[0] == [] and fake.calls == []
+
+
+def test_the_voice_run_prints_the_budget_before_asking_and_scales_its_limits_with_the_keys(tmp_path, capsys, monkeypatch):
+    from contentintel import apify as A
+    from contentintel import collectors as COL
+    store = _voice_env(tmp_path, monkeypatch)
+    fake = FakeApify()
+    pool = A.ApifyPool(["a", "b", "c"])
+    pool.clients = [A.Apify("a", http=_limits_http(5.0, 5)), A.Apify("b", http=_limits_http(1.0, 5)), A.Apify("c", http=_limits_http(0.0, 5))]
+    pool.clients[1].run = fake.run
+    pool.clients[2].run = fake.run
+    monkeypatch.setattr(A, "build_apify", lambda environ: pool)
+    monkeypatch.setattr(COL, "normalize_items", lambda source, raw: (raw, 0))
+    RT.run_voice(_args(tmp_path, "--topic", "sweatpant overalls"), store, "2026-11-15T00:00:00Z", get=Get({"algolia": (200, json.dumps({"hits": []}))}), runner=Runner("", 1, "boom"), environ={"APIFY_TOKEN": "a"}, clock=lambda: 1)
+    out = capsys.readouterr().out
+    assert out.index("Apify budget this cycle") < out.index("Apify lane ON") and "$9.00 left of $15.00 across 3 key(s)" in out
+    assert "at most 120 items in this whole run, 180 a month for voice" in out and "never beyond the Collect step's 300 a month" in out
+    assert "Apify key 1 of 3 has $0.00 left, less than this call's $0.5 ceiling; the next key is used" in out and len(fake.calls) == 2
+    assert "Apify usage after this run: voice 120/180 items this month, all Apify use 120/300 (this run read 120)." in out
+
+
+def test_every_month_is_its_own_budget_and_nothing_is_carried_forward():
+    from contentintel.research import Ledger
+    led = Ledger({"months": {"2026-11": {"apify_items": 300, "voice_apify_items": 180}}, "lifetime": {}}, "2026-12")
+    assert led.month_used("apify_items") == 0 and led.month_used("voice_apify_items") == 0
+    lane = VOICE.ApifyVoice(FakeApify(), led, per_run=40, monthly=60, shared_cap=300)
+    assert lane.room() == 40                                                                             # December starts at zero whatever November spent
+    docs = Path("docs/platform/batch1-research-upgrade.md").read_text(encoding="utf-8")
+    assert "Every month is its own budget, nothing is carried forward" in docs and "$15.00 across 3 key(s)" in docs and "has not been read live yet" in docs
+
+
+def test_the_money_left_is_read_again_before_each_call_so_a_call_that_spent_it_stops_the_next(tmp_path, capsys, monkeypatch):
+    from contentintel import apify as A
+    from contentintel import collectors as COL
+    store = _voice_env(tmp_path, monkeypatch)
+    state, calls = {"used": 0.0}, []
+    client = A.Apify("a", http=lambda method, url, *, params=None, json_body=None, headers=None, timeout=30: (200, {"data": {"current": {"monthlyUsageUsd": state["used"]}, "limits": {"maxMonthlyUsageUsd": 5}}}, None))
+
+    def run(actor, payload, *, max_items, max_cost_usd, timeout=280):
+        calls.append(actor)
+        state["used"] += 4.9                                                                               # this call spent almost all of the key's five dollars
+        return [{"text": "a caption about overalls", "likes": 5, "url": "https://x/1"}]
+    client.run = run
+    monkeypatch.setattr(A, "build_apify", lambda environ: client)
+    monkeypatch.setattr(COL, "normalize_items", lambda source, raw: (raw, 0))
+    RT.run_voice(_args(tmp_path, "--topic", "sweatpant overalls"), store, "2026-11-15T00:00:00Z", get=Get({"algolia": (200, json.dumps({"hits": []}))}), runner=Runner("", 1, "boom"), environ={"APIFY_TOKEN": "a"}, clock=lambda: 1)
+    out = capsys.readouterr().out
+    assert calls == ["clockworks/tiktok-scraper"] and "apify instagram for 'sweatpant overalls': not asked (Apify reports $0.10 left this cycle, less than this call's $0.25 ceiling)" in out
+
+
+def test_the_apify_budget_tool_prints_the_real_money_left_per_key_and_spends_nothing(tmp_path, capsys, monkeypatch):
+    from contentintel import apify as A
+    pool = A.ApifyPool(["a", "b", "c"])
+    pool.clients = [A.Apify("a", http=_limits_http(0.0, 5)), A.Apify("b", http=_limits_http(3.25, 5)), A.Apify("c", http=_limits_http(5.0, 5, ends="2026-12-04T00:00:00.000Z"))]
+    monkeypatch.setattr(A, "build_apify", lambda environ: pool)
+    args = cli.build_parser().parse_args(["apify-budget", "--data-dir", str(tmp_path / "data")])
+    assert RT.run_apify_budget(args, environ={"APIFY_TOKEN": "a"}) == 0
+    out = capsys.readouterr().out
+    assert "$6.75 left of $15.00 across 3 key(s)" in out and "key 2: $3.25 of $5.00 used, cycle ends 2026-12-01" in out and "key 3: $5.00 of $5.00 used, cycle ends 2026-12-04" in out
+    assert "Item counters (this calendar month, always applied): all Apify use 0, voice 0" in out
+
+
+def test_when_apifys_endpoint_cannot_be_read_the_budget_tool_says_why_and_that_the_item_counters_still_guard(tmp_path, capsys, monkeypatch):
+    from contentintel import apify as A
+    client = A.Apify("a", http=_limits_http(0, 5, status=403, body={"error": {"type": "forbidden", "message": "token cannot read limits"}}), sleep=lambda s: None)
+    monkeypatch.setattr(A, "build_apify", lambda environ: client)
+    args = cli.build_parser().parse_args(["apify-budget", "--data-dir", str(tmp_path / "data")])
+    assert RT.run_apify_budget(args, environ={"APIFY_TOKEN": "a"}) == 1
+    out = capsys.readouterr().out
+    assert "so only the item counters guard the spending (the item allowances still apply)" in out and "key 1: usage could not be read (" in out and "Item counters (this calendar month, always applied)" in out
+    odd = A.Apify("a", http=_limits_http(0, 5, body={"data": {"somethingElse": 1}}))
+    monkeypatch.setattr(A, "build_apify", lambda environ: odd)
+    RT.run_apify_budget(args, environ={"APIFY_TOKEN": "a"})
+    assert "no monthlyUsageUsd / maxMonthlyUsageUsd numbers (fields seen: somethingElse)" in capsys.readouterr().out
+    monkeypatch.setattr(A, "build_apify", lambda environ: None)
+    assert RT.run_apify_budget(args, environ={}) == 1 and "no Apify key is set in this run" in capsys.readouterr().out
+
+
+def test_the_research_tools_workflow_can_run_the_budget_check_and_the_voice_run_says_when_the_endpoint_failed(tmp_path, capsys, monkeypatch):
+    body = Path(".github/workflows/research-tools.yml").read_text(encoding="utf-8")
+    assert "apify-budget) args=(apify-budget) ;;" in body and "apify-budget, install]" in body and "APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}" in body
+    from contentintel import apify as A
+    from contentintel import collectors as COL
+    store = _voice_env(tmp_path, monkeypatch)
+    client = A.Apify("a", http=_limits_http(0, 5, status=500, body={"error": "x"}), sleep=lambda s: None)
+    client.run = FakeApify().run
+    monkeypatch.setattr(A, "build_apify", lambda environ: client)
+    monkeypatch.setattr(COL, "normalize_items", lambda source, raw: (raw, 0))
+    RT.run_voice(_args(tmp_path, "--topic", "sweatpant overalls"), store, "2026-11-15T00:00:00Z", get=Get({"algolia": (200, json.dumps({"hits": []}))}), runner=Runner("", 1, "boom"), environ={"APIFY_TOKEN": "a"}, clock=lambda: 1)
+    out = capsys.readouterr().out
+    assert "did not report the money left, so only the item counters guard the spending" in out and "usage could not be read (" in out and "Apify lane ON" in out        # the lane still runs, guarded by the counters
+
+
+def test_the_budget_command_runs_through_the_command_line_entry(tmp_path, capsys, monkeypatch):
+    from contentintel import apify as A
+    monkeypatch.setattr(A, "build_apify", lambda environ: A.Apify("a", http=_limits_http(1.0, 5)))
+    assert cli.main(["apify-budget", "--data-dir", str(tmp_path / "data")]) == 0
+    assert "$4.00 left of $5.00 across 1 key(s)" in capsys.readouterr().out

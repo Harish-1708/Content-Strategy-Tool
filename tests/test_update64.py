@@ -667,7 +667,7 @@ def test_the_research_tools_workflow_offers_every_tool_installs_the_right_connec
     text = Path(".github/workflows/research-tools.yml").read_text(encoding="utf-8")
     wf = yaml.safe_load(text)
     inputs = wf[True]["workflow_dispatch"]["inputs"]
-    assert inputs["tool"]["options"] == ["voice", "analyze", "pool", "assets", "motion", "pageid", "install"] and inputs["mode"]["options"] == list(VOICE.MODES)
+    assert inputs["tool"]["options"] == ["voice", "analyze", "pool", "assets", "motion", "pageid", "apify-budget", "install"] and inputs["mode"]["options"] == list(VOICE.MODES)
     for tool, key in (("voice", "last30days"), ("analyze", "yt_dlp"), ("pool", "omniroute_catalog"), ("motion", "opus_video_prompts")):
         assert f"{tool}) keys=({key}) ;;" in text and key in CONN.CONNECTIONS
     assert "install) keys=(last30days yt_dlp omniroute_catalog opus_video_prompts fb_ads_library_mcp)" in text

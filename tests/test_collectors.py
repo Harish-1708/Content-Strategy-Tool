@@ -757,7 +757,7 @@ def test_the_report_lists_each_task_and_the_month_so_far(tmp_path, store, swov, 
     result = collect(store, tmp_path, [swov], FULL, world(cfg), cfg, settings)
     text = C.format_collect_report(result, settings, R.Ledger(store.load_usage(), "2026-10"))
     assert "=== swoveralls ===" in text and "meta_ads      ran       2 advertiser pages/keywords -> 2 items" in text
-    assert "items 6 (no monthly cap), Apify items 0/100, Deep Research tasks 0/2, Claude calls 0/60" in text
+    assert "items 6 (no monthly cap), Apify items 0/300, Deep Research tasks 0/2, Claude calls 0/60" in text
     empty = collect(store, tmp_path / "e", [swov], {}, world(cfg), cfg, settings)
     assert "nothing to collect" in C.format_collect_report(empty, settings)
 
@@ -1002,9 +1002,9 @@ def test_the_check_is_not_refused_for_a_used_up_month_when_there_is_no_limit(sto
 def test_the_report_says_there_is_no_monthly_cap_or_shows_the_cap(tmp_path, store, swov, cfg, settings):
     free = collect(store, tmp_path, [swov], ONE_AD_SEARCH, world(cfg, meta=many("meta", 5)), cfg, replace(settings, monthly_items=0), sources=("meta_ads",))
     text = C.format_collect_report(free, replace(settings, monthly_items=0), R.Ledger(store.load_usage(), "2026-10"))
-    assert "items 5 (no monthly cap), Apify items 0/100" in text
+    assert "items 5 (no monthly cap), Apify items 0/300" in text
     capped = C.format_collect_report(free, replace(settings, monthly_items=50), R.Ledger(store.load_usage(), "2026-10"))
-    assert "items 5/50, Apify items 0/100" in capped and "no monthly cap" not in capped
+    assert "items 5/50, Apify items 0/300" in capped and "no monthly cap" not in capped
 
 
 def test_the_report_says_how_many_collected_items_are_new_to_the_collected_tab_and_how_many_were_already_there(tmp_path, store, swov, cfg, settings):
