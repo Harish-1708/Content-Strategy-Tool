@@ -4469,6 +4469,10 @@ def select_chunk(items, chunk):
 
 
 def main():
+    from retargets69 import apply as _apply_retargets
+    MUTATIONS[:], parked = _apply_retargets(MUTATIONS)
+    if parked:
+        print(f"PARKED: {len(parked)} check(s) are not run because their target moved and has not been retargeted yet (tests/sabotage/retargets69.py): " + ", ".join(parked[:6]) + (" ..." if len(parked) > 6 else ""))
     with tempfile.TemporaryDirectory() as tmp:
         work = Path(tmp) / "p"
         prepare_copy(work)
