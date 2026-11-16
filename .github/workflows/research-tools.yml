@@ -4,6 +4,7 @@
 #   pool       free AI capacity worth adding to the pool, from OmniRoute's catalogue read as data (changes nothing)
 #   assets     licence-safe pictures or sounds for a query (Openverse, with Wikimedia Commons as the backup)
 #   motion     motion formats close to a text, from the prompt library (awesome-opus5-5-videos)
+#   apify-budget  prints the money Apify says is left on each key and the item counters; spends nothing; says why if Apify's account endpoint cannot be read
 #   pageid     tries the four places a Facebook page id can be read from (Chobani is the first one to try) and says what each gave
 #   install    installs or updates the connections these tools use (also done automatically before each tool)
 # To run it: Actions > Research tools > Run workflow. Nothing here posts or changes anything on any platform; voice and assets keep what they found next to the brand's data.
@@ -15,7 +16,7 @@ on:
       tool:
         description: "What to run"
         type: choice
-        options: [voice, analyze, pool, assets, motion, pageid, install]
+        options: [voice, analyze, pool, assets, motion, pageid, apify-budget, install]
         default: voice
       brand:
         description: "voice and assets: brand folder name (for example swoveralls) or all (voice only)"
@@ -87,6 +88,7 @@ jobs:
             echo "ffmpeg install attempt $attempt failed"
             sleep 5
           done
+          command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null || { echo "ffmpeg or ffprobe is missing after 3 attempts: failing this run"; exit 1; }
           ffmpeg -version | head -1
           ffprobe -version | head -1
 
@@ -138,6 +140,9 @@ jobs:
           DRY_RUN: ${{ inputs.dry_run }}
           USE_APIFY: ${{ inputs.apify }}
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          APIFY_TOKEN_2: ${{ secrets.APIFY_TOKEN_2 }}
+          APIFY_TOKEN_3: ${{ secrets.APIFY_TOKEN_3 }}
+          APIFY_TOKEN_4: ${{ secrets.APIFY_TOKEN_4 }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
           SCRAPECREATORS_API_KEY: ${{ secrets.SCRAPECREATORS_API_KEY }}
@@ -162,6 +167,7 @@ jobs:
               args=(assets --query "$TOPIC" --kind "$KIND")
               if [ -n "$BRAND" ] && [ "$BRAND" != "all" ]; then args+=(--brand "$BRAND"); fi ;;
             motion) args=(motion --query "$TOPIC") ;;
+            apify-budget) args=(apify-budget) ;;
             pageid) args=(pageid --url "$VIDEO_URL"); if [ -n "$TOPIC" ]; then args+=(--name "$TOPIC"); fi ;;
             install) echo "Connections installed in the step above."; exit 0 ;;
           esac

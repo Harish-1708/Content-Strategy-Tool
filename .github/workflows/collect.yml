@@ -111,6 +111,7 @@ jobs:
             echo "ffmpeg install attempt $attempt failed"
             sleep 5
           done
+          command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null || { echo "ffmpeg or ffprobe is missing after 3 attempts: failing this run"; exit 1; }
           ffmpeg -version | head -1
           ffprobe -version | head -1
 
@@ -161,6 +162,9 @@ jobs:
           GEMINI_COOKIES: ${{ secrets.GEMINI_COOKIES }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          APIFY_TOKEN_2: ${{ secrets.APIFY_TOKEN_2 }}
+          APIFY_TOKEN_3: ${{ secrets.APIFY_TOKEN_3 }}
+          APIFY_TOKEN_4: ${{ secrets.APIFY_TOKEN_4 }}
           SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
         run: |
           set +e

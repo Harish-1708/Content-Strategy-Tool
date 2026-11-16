@@ -46,6 +46,7 @@ jobs:
             echo "ffmpeg install attempt $attempt failed"
             sleep 5
           done
+          command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null || { echo "ffmpeg or ffprobe is missing after 3 attempts: failing this run"; exit 1; }
           ffmpeg -version | head -1
           ffprobe -version | head -1
 
