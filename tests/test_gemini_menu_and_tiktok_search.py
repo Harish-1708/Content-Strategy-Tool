@@ -207,6 +207,7 @@ def test_only_the_tag_that_errored_is_searched(cfg):
     rows, stats = read(cfg, b, hashtags=("good", "bad"))
     assert stats["fallbacks"] == ["#bad"] and "https://www.tiktok.com/search?q=%23bad" in b.opened
     assert "https://www.tiktok.com/search?q=%23good" not in b.opened and len(rows) == 2
+    assert stats["pages"] == 4                                   # every page the run loaded, the search typed instead of the bad tag page included (the count was 3 when typed searches were left out)
 
 
 def test_an_error_on_a_profile_page_does_not_trigger_the_tag_fallback(cfg):
