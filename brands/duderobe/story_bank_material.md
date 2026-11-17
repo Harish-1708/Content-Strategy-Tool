@@ -1,4 +1,4 @@
-# Story Bank Material — Swoveralls, DudeRobe, DeFi Snacks
+# Story Bank Material — DudeRobe
 
 Compiled 2026-11-16 from published public sources only. Every item cites its source with URL and date. Quotes are exact. Nothing here is invented. Anything unverified is in each brand's Gaps section, not filled in.
 
