@@ -71,6 +71,7 @@ def test_search_first_reads_from_search_and_never_opens_the_tag_page(cfg):
     assert len(rows) == 2 and b.typed_queries == ["#overalls"] and TAG not in b.opened
     assert stats["search_first"] == ["#overalls"] and stats["search_first_how"] == ["typed"]
     assert stats["tag_fallback"] == [] and stats["fallbacks"] == []
+    assert stats["pages"] == 1                                   # the one search that was typed counts as a page, though the tag page was never opened
     assert all(r["found_via"] == "#overalls" for r in rows)
 
 
