@@ -1189,6 +1189,26 @@ def _acceptance_cmd(args, store):
     return 1 if failed else 0
 
 
+def _registry_clients(args, store):
+    """(claude, search, get) for `canon --action refresh` and `foundation`: the routed AI client (free gateway first, Claude within its caps), Serper search under the owner's search switches, and a plain
+    page fetch that says honestly what it is. Any of the three is None when it is not available in this run."""
+    csettings = collectors_mod.load_collector_settings(getattr(args, "research_config", "research.yaml"))
+    claude = _routed(_claude(csettings), "foundation", args, store)
+    try:
+        serper = _search_providers(args, "discovery").get("serper_dev")
+    except Exception:                                                                  # noqa: BLE001 - no search settings: no search
+        serper = None
+    search = (lambda query: [{"url": r.url, "title": r.title} for r in serper.search(query, num=10)]) if serper is not None else None
+    getter = _get()
+
+    def get(url):
+        reply = getter(url, headers={"User-Agent": "Mozilla/5.0 (compatible; content-strategy-tool; read-only research)", "Accept": "text/html"}, timeout=25)
+        if isinstance(reply, tuple):
+            return reply[1] if reply[0] == 200 else None
+        return reply.text if getattr(reply, "status_code", 0) == 200 else None
+    return claude, search, get
+
+
 def apify_budget_lines(apify):
     """The Apify budget lines for a run that may spend Apify money (empty with no key)."""
     return apify_mod.budget_report(apify)[0] if apify is not None else []
@@ -1272,7 +1292,7 @@ def main(argv=None):
         if args.cmd == "skills":
             return batch2_mod.run_skills(args, store, sync_mod.utc_now())
         if args.cmd == "canon":
-            return batch2_mod.run_canon(args, store, sync_mod.utc_now())
+            return batch2_mod.run_canon(args, store, sync_mod.utc_now(), clients=lambda: _registry_clients(args, store))
         if args.cmd == "analytics":
             return tools_mod.run_analytics(args, store, sync_mod.utc_now())
         if args.cmd == "apify-budget":

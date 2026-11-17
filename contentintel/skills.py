@@ -118,8 +118,8 @@ def verify(cfg, root, runner=subprocess.run):
         want = str(cfg["repo"].get("url") or "")
         if want and _norm_url(remote) != _norm_url(want):
             problems.append(f"the checkout's origin is {remote}, not {want}: a fork with the same commit is not accepted")
-    except (SkillsError, OSError, subprocess.SubprocessError):
-        notes.append("the checkout's changes and origin could not be read (it may have no origin remote)")
+    except (SkillsError, OSError, subprocess.SubprocessError) as exc:                  # fail CLOSED: a checkout whose edits or origin cannot be read is not trusted
+        problems.append(f"the checkout's uncommitted changes or origin could not be read ({type(exc).__name__}): it has no origin remote, so it cannot be shown to be the pinned repository")
     found = discover(root)
     expected = int(cfg["repo"].get("expected_skills") or 0)
     if expected and len(found) != expected:
@@ -148,7 +148,7 @@ def catalogue(cfg, root):
         state = "unlisted" if policy is None else (policy["state"] if meta is not None else "missing")           # a skill the policy does not know, or one the repository no longer has, is never ready
         rows.append({"path": path, "present": meta is not None, "name": (meta or {}).get("name", ""), "version": (meta or {}).get("version", ""), "sha256": (meta or {}).get("sha256", ""),
                      "verdict": (policy or {}).get("verdict", "unlisted"), "state": state, "auto_run": bool((policy or {}).get("auto_run", False)) and meta is not None,
-                     "needs": (policy or {}).get("needs", ""), "routes_to": (policy or {}).get("routes_to", "")})
+                     "needs": (policy or {}).get("needs", ""), "routes_to": (policy or {}).get("routes_to", ""), "oversize": bool((meta or {}).get("oversize"))})
     return rows
 
 

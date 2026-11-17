@@ -1802,13 +1802,11 @@ def skip_details(site, exc, opened):
     detail = {"reason": kind, "url": getattr(browser_obj, "url", "") or "",
               "screenshot": shots[-1] if shots else shot, "message": str(exc)[:300],
               "human_score": None, "egress_ip": None}
-    read_log = getattr(browser_obj, "read_log", None)
     summary = None
-    if read_log is not None:
-        try:
-            summary = read_log.summary()
-        except Exception:
-            summary = None
+    try:
+        summary = final_read_summary(browser_obj)                                  # after the last read's figures are final, as in the run report
+    except Exception:
+        summary = None
     if summary:
         detail["human_score"] = summary.get("human_score")
         detail["egress_ip"] = summary.get("egress_ip")
