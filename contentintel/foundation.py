@@ -8,6 +8,7 @@ checkable statements nothing verifies is proposed WITH that note. Every result i
 import re
 
 from . import skills as SK
+from .story_refresh import for_job, redact
 
 CHAIN = (
     ("positioning", "launch/research/positioning-mapper"),
@@ -54,9 +55,8 @@ def _prompt(skill, brand_text, story_text, reg, section, feedback=""):
 
 
 def _why(exc):
-    """The kind of error and its message, short, with anything that looks like a key removed (the model call's own words are what makes a failure diagnosable)."""
-    text = re.sub(r"(?i)(bearer\s+|key[=: ]+|token[=: ]+)[A-Za-z0-9._\-]{12,}", r"\1[hidden]", str(exc))
-    return f"{type(exc).__name__}: {text[:300]}"
+    """The kind of error and its message, short, with any key or token removed (even a short one): the model call's own words are what makes a failure diagnosable."""
+    return f"{type(exc).__name__}: {redact(str(exc))[:300]}"
 
 
 def _route(claude):
@@ -75,7 +75,7 @@ def _ask(claude, user, budget, retry_wait=0.0):
         if budget[0] is not None:
             budget[0] -= 1
         try:
-            return claude.json_task(SYSTEM, user, 3500), None
+            return for_job(claude, "foundation").json_task(SYSTEM, user, 3500), None
         except Exception as exc:                                                           # noqa: BLE001
             route = _route(claude)
             last = f"{_why(exc)}" + (f"; route tried: {', '.join(route)}" if route else "") + (f"; attempt {attempt} of 2" if attempt == 1 else "; attempt 2 of 2")
