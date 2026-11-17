@@ -258,6 +258,11 @@ def _read_competitor_decisions(spreadsheet, brand, store, now, report, dry_run):
         report.notes.append(f"Competitor decisions not read: {exc}")
 
 
+CANON_TAB_TITLE, CLAIMS_TAB_TITLE = "Canon", "Claims"
+CANON_CHOICES = ["approve", "reject"]
+CLAIM_CHOICES = ["verified", "blocked", "unverified", "conflicted"]
+
+
 def _canon_tabs(brand, store, now, report):
     """The Canon and Claims tabs (the registries, Batch 2): none before the brand has registry events. Never stops the rest of the sheet."""
     try:
@@ -278,13 +283,26 @@ def _read_canon_decisions(spreadsheet, brand, store, now, report, dry_run):
         titles = [w.title for w in _call(spreadsheet.worksheets)]
         if canon.CANON_TAB not in titles and canon.CLAIMS_TAB not in titles:
             return
+        if not canon.Registry(store.data_dir, brand.slug).state()["claims"] and not canon.Registry(store.data_dir, brand.slug).state()["canon"]:
+            report.notes.append("Canon and Claims tabs exist in the sheet but this brand has no registry events: the tabs are left as they are (nothing was removed)")      # M164
         read = lambda title: canon.rows_from_sheet(_call(_call(spreadsheet.worksheet, title).get_all_values)) if title in titles else []      # noqa: E731
         canon_rows, claim_rows = read(canon.CANON_TAB), read(canon.CLAIMS_TAB)
         if dry_run:
             report.notes.append(f"Canon and Claims decisions: {max(0, len(canon_rows) - 1)} + {max(0, len(claim_rows) - 1)} row(s) seen (dry run: none applied)")
             return
         done = canon.Registry(store.data_dir, brand.slug).owner_decisions(canon_rows, claim_rows, at=now)
+        cleared, clear_note = 0, ""
+        try:
+            for title, key in ((canon.CANON_TAB, "canon"), (canon.CLAIMS_TAB, "claims")):                # a decision that is now reflected in the Status column is cleared from the Decision cell
+                if title in titles and done["settled"][key]:
+                    cleared += _clear_settled_decisions(_call(spreadsheet.worksheet, title), set(done["settled"][key]))
+        except Exception as exc:                                                                         # noqa: BLE001 - the decisions are applied and recorded; only the tidy-up failed
+            clear_note = f"Canon and Claims: applied Decision cell(s) could not be cleared ({exc.__class__.__name__}); the decisions themselves were applied"
+        if cleared:
+            report.notes.append(f"Canon and Claims: {cleared} applied Decision cell(s) cleared (the Status column shows the result)")
         report.notes.append(f"Canon and Claims decisions read from the sheet: {done['applied']} applied" + (f"; {len(done['ignored'])} ignored: {'; '.join(done['ignored'][:3])}" + (f" (and {len(done['ignored']) - 3} more)" if len(done["ignored"]) > 3 else "") if done["ignored"] else ""))
+        if clear_note:
+            report.notes.append(clear_note)
     except Exception as exc:
         report.notes.append(f"Canon and Claims decisions not read: {exc}")
 
@@ -609,13 +627,29 @@ def _drop_unknown_rows(spreadsheet, ws, key_col, known_keys):
     return dropped
 
 
-def _decision_dropdown(sp, ws):
-    """A Use / Maybe / Skip list on the Decision column, so a decision is picked, not typed. Only when the tab is new."""
+def _clear_settled_decisions(ws, ids):
+    """Clear the Decision cell of each row whose id is in `ids` (the decision was applied: the Status column holds the result). Only the Decision cell; Notes and every other cell stay. Returns how many were cleared."""
+    values = _call(ws.get_all_values)
+    if not values:
+        return 0
+    header = values[0]
+    col = next((i for i, h in enumerate(header) if str(h).startswith("Decision")), None)
+    if col is None:
+        return 0
+    letter = gspread.utils.rowcol_to_a1(1, col + 1).rstrip("0123456789")
+    ranges = [f"{letter}{n}" for n, row in enumerate(values[1:], start=2) if row and str(row[0]) in ids and len(row) > col and str(row[col]).strip()]
+    if ranges:
+        _call(ws.batch_clear, ranges)
+    return len(ranges)
+
+
+def _decision_dropdown(sp, ws, choices=None):
+    """A list on the Decision column (Use / Maybe / Skip for the Idea Bank; the words the Canon and Claims tabs understand for those), so a decision is picked, not typed."""
     header = _call(ws.get_all_values)[0]
-    if "Decision" not in header:
+    if "Decision" not in header and not any(str(h).startswith("Decision") for h in header):
         return
-    col = header.index("Decision")
-    rule = {"condition": {"type": "ONE_OF_LIST", "values": [{"userEnteredValue": d} for d in DECISIONS]}, "showCustomUi": True, "strict": False}
+    col = header.index("Decision") if "Decision" in header else next(i for i, h in enumerate(header) if str(h).startswith("Decision"))
+    rule = {"condition": {"type": "ONE_OF_LIST", "values": [{"userEnteredValue": d} for d in (choices or DECISIONS)]}, "showCustomUi": True, "strict": False}
     _call(sp.batch_update, {"requests": [{"setDataValidation": {
         "range": {"sheetId": ws.id, "startRowIndex": 1, "endRowIndex": 5000, "startColumnIndex": col, "endColumnIndex": col + 1},
         "rule": rule}}]})
@@ -858,8 +892,17 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
     for tab in _observatory_tabs(brand, store, now, report) + _canon_tabs(brand, store, now, report) + _controls_tabs(brand, store, now, report) + _connection_tabs(store, now, report) + _session_tabs(store, now, report) + _ai_tabs(store, now, report):     # what the competitor observatory has found, and how the AI providers are doing
         ws = _ensure_tab(spreadsheet, tab["title"], report, dry_run, created)
         rows = {key: {c: _typed(c, _plain(row.get(c))) for c in tab["columns"]} for key, row in tab["rows_by_key"].items()}
-        _sync_table(ws, tab=tab["title"], columns=tab["columns"], rows_by_key=rows, key_col=tab["key_col"], report=report, dry_run=dry_run,
-                    starter_manual=tab["starter_manual"], stamp=(STAMP, now))
+        try:
+            _sync_table(ws, tab=tab["title"], columns=tab["columns"], rows_by_key=rows, key_col=tab["key_col"], report=report, dry_run=dry_run,
+                        starter_manual=tab["starter_manual"], stamp=(STAMP, now))
+        except Exception as exc:                                                       # noqa: BLE001 - one tab that cannot be synced (say, its id column was deleted) never stops the others
+            report.notes.append(f"{tab['title']}: not synced ({exc.__class__.__name__}: {str(exc)[:160]}); the other tabs were")
+            continue
+        if ws is not None and not dry_run and tab["title"] in (CANON_TAB_TITLE, CLAIMS_TAB_TITLE):
+            try:
+                _decision_dropdown(spreadsheet, ws, CANON_CHOICES if tab["title"] == CANON_TAB_TITLE else CLAIM_CHOICES)
+            except Exception as exc:                                                   # noqa: BLE001 - the list is a convenience
+                report.notes.append(f"{tab['title']}: the Decision list was not set ({exc.__class__.__name__})")
         if tab.get("drop_unknown") and ws is not None and not dry_run:
             try:
                 dropped = _drop_unknown_rows(spreadsheet, ws, tab["key_col"], set(rows))
