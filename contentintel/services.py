@@ -639,6 +639,10 @@ def ai_stack(store, ledger, environ, *, providers_config="ai_providers.yaml", la
 JOB_LANES = {"foundation": "foundation_json", "story_extract": "story_extract_json", "story_review": "story_review_json", "conflict_check": "conflict_check_json"}
 
 
+class GatewayUnavailable(Exception):
+    """The free pool could not be used in this run; the message says why (no secrets, no build, no provider with a credential). The routed client records it as a note and Claude answers."""
+
+
 class _JobClient:
     """The routed client for one job: json_task asks that job's ranked lane; everything else (calls, notes, complete, close) is the routed client's own, so one gateway serves every job."""
 
@@ -668,8 +672,10 @@ class RoutedClaude:
         if self._stack is None:
             try:
                 self._stack = self._factory() or False
+                if not self._stack:
+                    self.notes.append("AI Gateway not available: not set up in this run, so Claude answered")
             except Exception as exc:                # noqa: BLE001  (the gateway is an extra; the module must go on without it)
-                self.notes.append(f"AI Gateway not available: {exc.__class__.__name__}: {str(exc)[:120]}")
+                self.notes.append(f"AI Gateway not available: {exc.__class__.__name__}: {str(exc)[:600]}")
                 self._stack = False
             if self._stack:
                 import atexit
