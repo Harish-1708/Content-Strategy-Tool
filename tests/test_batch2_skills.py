@@ -12,6 +12,7 @@ from contentintel import cli
 from contentintel import skills as SK
 from contentintel.store import Store
 
+REPO_URL = "https://example.test/skills.git"
 SKILL = "---\nname: {name}\nslug: aaron-{name}\nversion: \"1.0\"\ndescription: 'Use when {name}'\n---\n\n# {name}\n\nBody of {name}.\n"
 
 
@@ -32,6 +33,7 @@ def make_repo(tmp_path, names=("alpha", "beta")):
     (root / "scripts").mkdir()
     (root / "scripts" / "rubric-score.py").write_text("print('x')\n", encoding="utf-8")
     subprocess.run(["git", "init", "-q", str(root)], check=True)
+    git(root, "remote", "add", "origin", REPO_URL)                                                   # a real checkout has an origin: verify refuses one that has none
     git(root, "add", "-A")
     git(root, "commit", "-q", "-m", "first")
     return root
@@ -40,7 +42,7 @@ def make_repo(tmp_path, names=("alpha", "beta")):
 def config(root, names=("alpha", "beta"), **over):
     skills = {f"fam/phase/{n}": {"n": i + 1, "verdict": "useful", "state": "ready", "auto_run": True} for i, n in enumerate(names)}
     skills.update(over.pop("skills", {}))                                                               # a waiting skill must say what it needs
-    return {"repo": {"url": "x", "pinned_commit": head(root), "expected_skills": len(skills), "max_skill_chars": 60000, **over.pop("repo", {})}, "runtime_files": over.pop("runtime_files", ["scripts/rubric-score.py"]), "skills": skills}
+    return {"repo": {"url": REPO_URL, "pinned_commit": head(root), "expected_skills": len(skills), "max_skill_chars": 60000, **over.pop("repo", {})}, "runtime_files": over.pop("runtime_files", ["scripts/rubric-score.py"]), "skills": skills}
 
 
 def test_the_shipped_policy_covers_all_120_skills_with_the_agreed_states():
@@ -54,7 +56,7 @@ def test_the_shipped_policy_covers_all_120_skills_with_the_agreed_states():
     assert all(s["needs"] for s in skills.values() if s["state"] == SK.WAITING) and "ad-test-designer" not in waiting                  # each says what it waits for; the test designer needs no numbers
     assert {p for p, s in skills.items() if not s["auto_run"]} == {p for p, s in skills.items() if s["verdict"] == "not_useful"}          # reachable, never auto-run
     assert any(p.endswith("cold-outbound-sequencer") and not s["auto_run"] and "outreach tool" in s["routes_to"] for p, s in skills.items())
-    assert cfg["repo"]["pinned_commit"] == "7932adf5176a9a3ba0e8995be0b3bdee97a330ff" and cfg["repo"]["licence"] if "licence" in cfg["repo"] else True
+    assert cfg["repo"]["pinned_commit"] == "7932adf5176a9a3ba0e8995be0b3bdee97a330ff" and cfg["repo"]["licence"] == "Apache-2.0"          # unconditional: removing the licence key must fail it
 
 
 def test_a_policy_file_that_is_damaged_or_has_a_short_commit_is_refused_in_words(tmp_path):
@@ -132,7 +134,7 @@ def test_the_lock_is_real_a_skill_that_may_not_start_cannot_be_read_around_it(tm
 
 def test_verify_refuses_edited_skill_text_a_fork_and_ignores_a_root_level_skill_file(tmp_path):
     root = make_repo(tmp_path)
-    git(root, "remote", "add", "origin", "https://github.com/someone/fork.git")
+    git(root, "remote", "set-url", "origin", "https://github.com/someone/fork.git")
     cfg = config(root, repo={"url": "https://github.com/aaron-he-zhu/aaron-marketing-skills"})
     assert "origin is https://github.com/someone/fork.git, not https://github.com/aaron-he-zhu/aaron-marketing-skills: a fork" in " ".join(SK.verify(cfg, root)["problems"])
     git(root, "remote", "set-url", "origin", "git@github.com:aaron-he-zhu/aaron-marketing-skills.git")
@@ -237,7 +239,7 @@ def test_the_commands_say_it_plainly_and_fail_when_the_connection_cannot_be_trus
 def test_the_workflow_checks_out_the_pinned_commit_and_fails_a_verify_that_fails():
     wf = yaml.safe_load(Path(".github/workflows/skills.yml").read_text(encoding="utf-8"))
     inputs = wf[True]["workflow_dispatch"]["inputs"]
-    assert inputs["action"]["options"] == ["status", "verify", "update-report", "catalogue", "seed-claims", "claims-status", "gate"]
+    assert inputs["action"]["options"] == ["status", "verify", "update-report", "catalogue", "seed-claims", "claims-status", "gate", "refresh-story-bank", "foundation"]
     steps = wf["jobs"]["skills"]["steps"]
     text = Path(".github/workflows/skills.yml").read_text(encoding="utf-8")
     assert "git clone --quiet --filter=blob:none --no-checkout" in text and 'git -C "$path" checkout --quiet "$sha"' in text and "set -o pipefail" in text
@@ -305,3 +307,47 @@ def test_the_real_command_forms_print_something_and_do_the_work(tmp_path):
         done = subprocess.run([sys.executable, *form, "canon", "--action", "seed", "--brand", "swoveralls", "--brands-dir", "brands", "--data-dir", str(tmp_path / "data")], capture_output=True, text=True, env=env)
         assert done.returncode == 0 and "claims seeded from the story-bank gaps: " in done.stdout, (form, done.stdout, done.stderr)       # both forms: a silent success is worse than a failure
     assert (tmp_path / "data" / "swoveralls" / "registry" / "events.ndjson").exists()
+
+
+def test_a_checkout_with_no_origin_is_not_trusted_and_the_read_door_checks_provenance_first(tmp_path, capsys):
+    root = make_repo(tmp_path)
+    cfg = config(root)
+    assert SK.verify(cfg, root)["ok"]
+    git(root, "remote", "remove", "origin")
+    result = SK.verify(cfg, root)
+    assert not result["ok"] and "no origin remote, so it cannot be shown to be the pinned repository" in " ".join(result["problems"])           # fail CLOSED
+    cfg_path = tmp_path / "policy.yaml"
+    cfg_path.write_text(yaml.safe_dump({"repo": cfg["repo"], "runtime_files": cfg["runtime_files"], "skills": cfg["skills"]}), encoding="utf-8")
+    base = ["skills", "--skills-config", str(cfg_path), "--skills-dir", str(root), "--data-dir", str(tmp_path / "data")]
+    assert cli.main(base + ["--action", "read", "--skill", "fam/phase/alpha"]) == 1
+    out = capsys.readouterr().out
+    assert "the skill text is NOT handed over" in out and "<skill" not in out                          # no provenance, no text
+
+
+def test_the_catalogue_keeps_the_oversize_flag_so_an_unread_skill_does_not_look_ordinary(tmp_path):
+    root = make_repo(tmp_path)
+    big = root / "fam" / "phase" / "huge"
+    big.mkdir(parents=True)
+    (big / "SKILL.md").write_bytes(b"x" * (SK.MAX_FILE_BYTES + 1))
+    cfg = config(root, skills={"fam/phase/huge": {"n": 9, "verdict": "useful", "state": "ready", "auto_run": True}}, repo={"expected_skills": 3})
+    rows = {r["path"]: r for r in SK.catalogue(cfg, root)}
+    assert rows["fam/phase/huge"]["oversize"] is True and rows["fam/phase/alpha"]["oversize"] is False
+
+
+def test_the_workflow_step_is_run_for_real_and_prints_what_the_commands_print(tmp_path):
+    wf = yaml.safe_load(Path(".github/workflows/skills.yml").read_text(encoding="utf-8"))
+    script = next(s["run"] for s in wf["jobs"]["skills"]["steps"] if s.get("name") == "Run it")
+    root = make_repo(tmp_path)                                                                       # a checkout that is NOT the pinned commit: verify must fail, and say so
+    work = tmp_path / "work"
+    work.mkdir()
+    for name in ("external_skills.yaml", "brands", "claims_gate.yaml"):
+        src = Path(name)
+        (work / name).symlink_to(src.resolve(), target_is_directory=src.is_dir())
+    env = {**os.environ, "PYTHONPATH": os.getcwd(), "AARON_SKILLS_DIR": str(root), "TEXT": "Featured on Good Morning America."}
+    verify = subprocess.run(["bash", "-e", "-c", script], cwd=work, env={**env, "ACTION": "verify", "BRAND": "all"}, capture_output=True, text=True)
+    assert verify.returncode == 1 and "skills: PROBLEM: " in verify.stdout and "skills: NOT OK" in verify.stdout, (verify.stdout, verify.stderr)     # the step's command ran, printed, and failed the run
+    status = subprocess.run(["bash", "-e", "-c", script], cwd=work, env={**env, "ACTION": "claims-status", "BRAND": "swoveralls"}, capture_output=True, text=True)
+    assert status.returncode == 0 and "canon: swoveralls: claims " in status.stdout, (status.stdout, status.stderr)
+    gate = subprocess.run(["bash", "-e", "-c", script], cwd=work, env={**env, "ACTION": "gate", "BRAND": "defi_snacks"}, capture_output=True, text=True)
+    assert gate.returncode == 2 or "canon: defi_snacks:" in gate.stdout                                 # a gate with an empty ledger may not block, but it must print
+    assert "canon: defi_snacks:" in gate.stdout

@@ -371,5 +371,9 @@ def test_seeding_with_no_seed_file_says_so_and_fails_and_history_reads_the_git_l
     (empty / "x").mkdir(parents=True)
     assert cli.main(["canon", "--action", "seed", "--brand", "x", "--brands-dir", str(empty), "--data-dir", str(tmp_path / "data")]) == 1
     assert "NO claims seed" in capsys.readouterr().out
-    assert cli.main(["canon", "--action", "history", "--brand", "swoveralls", "--brands-dir", "brands", "--data-dir", str(tmp_path / "data")]) == 0
-    assert "swoveralls: " in capsys.readouterr().out and " commit(s) touched the registry" in capsys.readouterr().out + " commit(s) touched the registry"
+    assert cli.main(["canon", "--action", "history", "--brand", "swoveralls", "--brands-dir", "brands", "--data-dir", "data"]) == 0           # inside the repository: its git log is read
+    assert "swoveralls: " in capsys.readouterr().out
+    assert cli.main(["canon", "--action", "history", "--brand", "swoveralls", "--brands-dir", "brands", "--data-dir", str(tmp_path / "data")]) == 1
+    assert "outside this repository, so its git history cannot be read" in capsys.readouterr().out                                           # an absolute path elsewhere is said, not a git error
+    assert cli.main(["canon", "--action", "status", "--brand", "all", "--brands-dir", str(tmp_path / "no-brands"), "--data-dir", str(tmp_path / "data")]) == 1
+    assert "no brand folders found" in capsys.readouterr().out                                                                               # a missing brands directory is a failure, not a silent success

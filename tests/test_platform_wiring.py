@@ -159,7 +159,7 @@ def test_every_claude_client_a_module_receives_is_built_through_the_routing_adap
     for node, name, fn, parents in calls_with_parents("contentintel/cli.py"):
         if name == "_routed" and len(node.args) >= 2 and isinstance(node.args[1], ast.Constant):
             purposes[fn] = purposes.get(fn, set()) | {node.args[1].value}
-    assert purposes == {"_ideabank": {"idea_bank"}, "_request": {"planning"}, "_brief": {"brief"}, "_collect": {"autoseeds"}}
+    assert purposes == {"_ideabank": {"idea_bank"}, "_request": {"planning"}, "_brief": {"brief"}, "_collect": {"autoseeds"}, "_registry_clients": {"foundation"}}          # Update 70: the story-bank refresh and the foundation chain
 
 
 def test_search_providers_are_built_only_through_the_shared_interface():
