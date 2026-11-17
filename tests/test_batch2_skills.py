@@ -54,7 +54,7 @@ def test_the_shipped_policy_covers_all_120_skills_with_the_agreed_states():
     assert waiting == {"audience-segment-builder", "campaign-architect", "search-term-miner", "attribution-reconciler", "fatigue-frequency-manager", "offsite-signal-analyzer", "performance-monitor", "rank-tracker",
                        "dark-social-attributor", "social-measurement-loop", "paid-measurement-loop", "list-segment-builder", "performance-analyzer", "roi-calculator", "launch-retro-analyzer"}          # 15 since Update 70
     assert all(s["needs"] for s in skills.values() if s["state"] == SK.WAITING) and "ad-test-designer" not in waiting                  # each says what it waits for; the test designer needs no numbers
-    assert {p for p, s in skills.items() if not s["auto_run"]} == {p for p, s in skills.items() if s["verdict"] == "not_useful"}          # reachable, never auto-run
+    assert {p for p, s in skills.items() if not s["auto_run"]} == {p for p, s in skills.items() if s["verdict"] == "not_useful" or s["state"] == SK.WAITING}          # reachable, never auto-run; the waiting ones carry a second lock
     assert any(p.endswith("cold-outbound-sequencer") and not s["auto_run"] and "outreach tool" in s["routes_to"] for p, s in skills.items())
     assert cfg["repo"]["pinned_commit"] == "7932adf5176a9a3ba0e8995be0b3bdee97a330ff" and cfg["repo"]["licence"] == "Apache-2.0"          # unconditional: removing the licence key must fail it
 
@@ -227,7 +227,7 @@ def test_the_commands_say_it_plainly_and_fail_when_the_connection_cannot_be_trus
     assert cli.main(base + ["--action", "verify"]) == 0 and "skills: OK: 2 skills at " in capsys.readouterr().out
     assert cli.main(base + ["--action", "status"]) == 0
     out = capsys.readouterr().out
-    assert "2 skills (1 not_useful, 1 useful); 1 built ready and waiting for access (NEEDS_INPUT), 1 reachable but never auto-run" in out and "waiting for the stores' own numbers: fam/phase/beta" in out
+    assert "2 skills (1 not_useful, 1 useful); 1 built ready and waiting for access (NEEDS_INPUT), 0 reachable but never auto-run" in out and "waiting for the stores' own numbers: fam/phase/beta" in out
     assert cli.main(base + ["--action", "catalogue"]) == 0
     saved = __import__("json").loads((tmp_path / "data" / "_shared" / "skills_catalogue.json").read_text(encoding="utf-8"))
     assert saved["ok"] is True and len(saved["rows"]) == 2 and saved["rows"][0]["sha256"]
@@ -239,7 +239,7 @@ def test_the_commands_say_it_plainly_and_fail_when_the_connection_cannot_be_trus
 def test_the_workflow_checks_out_the_pinned_commit_and_fails_a_verify_that_fails():
     wf = yaml.safe_load(Path(".github/workflows/skills.yml").read_text(encoding="utf-8"))
     inputs = wf[True]["workflow_dispatch"]["inputs"]
-    assert inputs["action"]["options"] == ["status", "verify", "update-report", "catalogue", "seed-claims", "claims-status", "gate", "refresh-story-bank", "foundation"]
+    assert inputs["action"]["options"] == ["status", "verify", "update-report", "catalogue", "seed-claims", "claims-status", "gate", "refresh-story-bank", "foundation", "reclassify-conflicts"]
     steps = wf["jobs"]["skills"]["steps"]
     text = Path(".github/workflows/skills.yml").read_text(encoding="utf-8")
     assert "git clone --quiet --filter=blob:none --no-checkout" in text and 'git -C "$path" checkout --quiet "$sha"' in text and "set -o pipefail" in text
