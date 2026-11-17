@@ -52,6 +52,7 @@ class Provider:
     price_per_million: dict
     models: tuple
     direct: dict = field(default_factory=dict)      # a provider called straight from this tool (not through the gateway): {base_url}
+    omniroute: dict = field(default_factory=dict)   # {provider}: held by OmniRoute (the second gateway) under that provider id; its model ids are `provider/model`
     retired: dict = field(default_factory=dict)     # {date, source, reason}: withdrawn by its provider for good. The record is kept; it is never enabled, routed to or called
 
     @property
@@ -149,7 +150,7 @@ def load_registry(path=DEFAULT_PATH):
         if not isinstance(d, dict):
             raise RegistryError(f"{where} must be a list of settings")
         _only(d, ("label", "enabled", "experimental", "paid", "ceiling", "owner_override", "approved_classes", "credentials", "gateway_platform",
-                  "terms", "limits", "price_per_million", "models", "direct", "retired"), where)
+                  "terms", "limits", "price_per_million", "models", "direct", "retired", "omniroute"), where)
         retired = d.get("retired") or {}
         if retired:
             _only(retired, ("date", "source", "reason"), f"{where}.retired")
@@ -218,13 +219,18 @@ def load_registry(path=DEFAULT_PATH):
                 raise RegistryError(f"{where}.direct.base_url must be one of the endpoints this tool knows: {', '.join(DIRECT_ENDPOINTS)}")
             if pid == CLAUDE:
                 raise RegistryError(f"{where}: Claude has its own client")
+        omni = d.get("omniroute") or {}
+        if omni:
+            _only(omni, ("provider",), f"{where}.omniroute")
+            if not str(omni.get("provider", "")).strip() or direct:
+                raise RegistryError(f"{where}.omniroute needs the OmniRoute provider id, and a provider is either direct or held by OmniRoute, not both")
         paid = bool(d.get("paid", False))
         if paid and not (price or all(m.price for m in models if m.approved)):
             raise RegistryError(f"{where}: a paid provider needs price_per_million, for the provider or for every approved model")
         out[pid] = Provider(id=pid, label=str(d.get("label") or pid), enabled=bool(d.get("enabled", False)), experimental=bool(d.get("experimental", False)),
                             paid=paid, ceiling=ceiling, override=override, approved_classes=approved,
                             credential_env=tuple((d.get("credentials") or {}).get("env", [])), gateway_platform=str(d.get("gateway_platform") or pid),
-                            terms=terms, limits=limits, price_per_million=price, models=tuple(models), direct=dict(direct), retired=dict(retired))
+                            terms=terms, limits=limits, price_per_million=price, models=tuple(models), direct=dict(direct), omniroute=dict(omni), retired=dict(retired))
     if not out:
         raise RegistryError(f"{path}: providers must name at least one provider")
     return Registry(providers=out, daily_usd=_num(budgets.get("daily_usd", 0), "budgets.daily_usd"), monthly_usd=_num(budgets.get("monthly_usd", 0), "budgets.monthly_usd"), pacing=pacing)
