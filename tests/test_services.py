@@ -13,7 +13,7 @@ from contentintel.observatory import worker_client as WC
 ON = dict(OC.SCRAPLING_ON_DEFAULTS)                                   # every per-request option is on by default
 RESOLVED = {k: v for k, v in ON.items() if k != "proxy"}                # a central proxy default is skipped while no proxy is listed
 
-PURPOSES = ("competitors", "discovery", "social_discovery", "content_research", "youtube_research", "general_research", "idea_bank", "planning", "brief", "deep_check", "autoseeds", "collectors")
+PURPOSES = ("competitors", "discovery", "social_discovery", "content_research", "youtube_research", "general_research", "idea_bank", "planning", "brief", "deep_check", "autoseeds", "collectors", "foundation")
 
 
 def load(tmp_path, services=None, **extra):
@@ -30,14 +30,14 @@ def test_the_initial_defaults_turn_every_service_channel_and_purpose_on_and_use_
     assert s["scrapling"] == {"enabled": True, "use_for": {p: True for p in PURPOSES}, "defaults": ON, "overrides": []}
     assert s["agent_reach"] == {"enabled": True, "channels": {c: True for c in CAT.integrated()}, "use_for": {p: True for p in PURPOSES}}
     assert s["search"] == {"enabled": True, "use_for": {p: True for p in PURPOSES}, "channels": {n: True for n in ("serper_dev", "tavily", "serpapi", "exa", "exa_mcp", "agent_reach_reddit", "agent_reach_youtube")}}
-    assert s["ai_gateway"]["routes"] == {p: "gateway_first" for p in ("general_research", "idea_bank", "planning", "brief", "deep_check", "autoseeds", "collectors")}          # on for every purpose: the free providers first, Claude when none can answer
+    assert s["ai_gateway"]["routes"] == {p: "gateway_first" for p in ("general_research", "idea_bank", "planning", "brief", "deep_check", "autoseeds", "collectors", "foundation")}          # on for every purpose: the free providers first, Claude when none can answer
     assert s["page_readers"]["routes"] == {p: "auto" for p in PURPOSES}                     # Scrapling first when installed, then Jina, then the built-in reader, for every purpose
     assert OC.load_settings("missing.yaml")["engine"]["pages"] == "core"                       # the older single switch is only a way to make Scrapling the sole reader; the routes above are the full control
 
 
 def test_every_control_has_a_default_that_matches_the_settings_defaults():
     settings = OC.load_settings("missing.yaml")
-    assert len(SV.CONTROLS) == len(SV.BY_KEY) == 232        # Update 64: +20 for the five new connections (last30days, yt_dlp, omniroute_catalog, opus_video_prompts, fb_ads_library_mcp: switch, route, version, secrets each) and +13 for Openverse (1 master + 12 purposes); before that: the stored login sessions service (1 master + 8 platforms) + 5 services x (1 master + 12 purposes) + 27 channels (22 + the five providers added in Update 57) + the Internal-data service (1 master + 10 providers) + the guards service (1 master + 5 guards) + the connections services (master and 12 purposes, 6 on/off, 6 routes, 6 versions, 6 secrets, 3 masters) + 19 routes + 15 central defaults + 6 request switches + 1 engine
+    assert len(SV.CONTROLS) == len(SV.BY_KEY) == 241        # Update 64: +20 for the five new connections (last30days, yt_dlp, omniroute_catalog, opus_video_prompts, fb_ads_library_mcp: switch, route, version, secrets each) and +13 for Openverse (1 master + 12 purposes); before that: the stored login sessions service (1 master + 8 platforms) + 5 services x (1 master + 12 purposes) + 27 channels (22 + the five providers added in Update 57) + the Internal-data service (1 master + 10 providers) + the guards service (1 master + 5 guards) + the connections services (master and 12 purposes, 6 on/off, 6 routes, 6 versions, 6 secrets, 3 masters) + 19 routes + 15 central defaults + 6 request switches + 1 engine
     for defn in SV.CONTROLS:
         assert SV.current(settings, defn["key"]) == defn["default"], defn["key"]
 
@@ -330,7 +330,7 @@ def test_registration_rules_and_the_built_in_services_cannot_be_removed():
     before = len(SV.CONTROLS)
     SV.register_service("temp_one")
     SV.register_service("temp_one", channels=("x",))                                            # registering again refines the entry rather than duplicating it
-    assert len([c for c in SV.CONTROLS if c["key"].startswith("services.temp_one.")]) == 12 + 1 + 1
+    assert len([c for c in SV.CONTROLS if c["key"].startswith("services.temp_one.")]) == 13 + 1 + 1
     SV.unregister_service("temp_one")
     assert len(SV.CONTROLS) == before and "temp_one" not in OC.load_settings("missing.yaml")["services"]
 
