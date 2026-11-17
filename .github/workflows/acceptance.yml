@@ -52,6 +52,29 @@ jobs:
   acceptance:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      FREEAPI_ENCRYPTION_KEY: ${{ secrets.FREEAPI_ENCRYPTION_KEY }}
+      FREEAPI_ADMIN_PASSWORD: ${{ secrets.FREEAPI_ADMIN_PASSWORD }}
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+      NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+      ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+      OLLAMA_API_KEY: ${{ secrets.OLLAMA_API_KEY }}
+      COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      SAMBANOVA_API_KEY: ${{ secrets.SAMBANOVA_API_KEY }}
+      NARA_API_KEY: ${{ secrets.NARA_API_KEY }}
+      XKIRO_API_KEY: ${{ secrets.XKIRO_API_KEY }}
+      LLM7_API_KEY: ${{ secrets.LLM7_API_KEY }}
+      SILICONFLOW_API_KEY: ${{ secrets.SILICONFLOW_API_KEY }}
+      POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
+      API_AIRFORCE_API_KEY: ${{ secrets.API_AIRFORCE_API_KEY }}
+      BLUESMINDS_API_KEY: ${{ secrets.BLUESMINDS_API_KEY }}
+      BAZAARLINK_API_KEY: ${{ secrets.BAZAARLINK_API_KEY }}
     steps:
       - uses: actions/checkout@v6
 
@@ -64,6 +87,9 @@ jobs:
             requirements-browser.txt
 
       - run: pip install -r requirements.txt
+
+      - name: Set up the free provider pool
+        uses: ./.github/actions/ai-pool
 
       - name: Remember the downloaded browser
         if: inputs.plan != true
