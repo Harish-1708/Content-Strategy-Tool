@@ -25,6 +25,14 @@ The honest state: until the pool retest has run, the order inside each of these 
 3. Order the chain best first in `ai_lanes.yaml`, with the evidence (date, runs, results) in the lane's description, and remove the "NOT YET MEASURED" words. A provider that fails the job is left out of that lane's list, not just ranked last.
 4. A new build adds its job to `JOB_LANES` and its lane to `ai_lanes.yaml` in the same change; a test fails if the code asks for a job that has no lane, or a lane is unused.
 
+## The pool retest
+
+`python -m contentintel ai rank --jobs all --runs 2 --apply` (Actions > Pool retest) runs each job's real prompts, with inputs whose right answers are known, against every provider and model that can serve it (FreeLLMAPI's and OmniRoute's together). Each answer is scored by a check the code can make (a quotation really in the page, a right verdict, a matching label, a text that avoids a blocked claim). With `--apply` the measured order is written to `data/_shared/ai_rankings.json`; every later run reorders that job's list from it: measured providers best first, a provider that passed nothing left out of that job's list, providers not measured after them in their seeded order. A job that measured nothing keeps its earlier measured order.
+
+## Every workflow uses the pool
+
+Every workflow job that runs `python -m contentintel` sets up the pool with `.github/actions/ai-pool` and carries the provider secrets in its env, except jobs that never call a model (listed with the reason in `tests/test_ranking.py`). A test fails for any new workflow that has neither. A pool that cannot be set up never fails the job; the run prints why Claude answered.
+
 ## Not done yet
 
-OmniRoute as a second gateway is not wired (see `omniroute-free-providers.md`): the lists can include its providers only after the live proof. No provider has been measured per job yet.
+No provider has been measured per job yet: run the pool retest once the keys are in.
