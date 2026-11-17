@@ -1,0 +1,50 @@
+# OmniRoute's free providers (the planner's research of 2026-11-17, merged into the project; NOT re-verified by the tool: no sign-up and no live call was made).
+# This file is a RECORD, read by nobody at run time: ai_providers.yaml is still what the tool routes by. A provider is switched on only by the owner, with a key and a read of its terms.
+# Free tiers change constantly: re-verify each figure at wiring time. The pool retest is where live confirmation happens (and it must exercise FAILOVER, not one call per provider).
+note_on_new: "new: true means not enabled in the pool today. nara, xkiro, sambanova, llm7, siliconflow and pollinations are already LISTED in ai_providers.yaml (disabled, terms unverified, no approved model); opencode-zen is not listed."
+source: "planner's research, Part 7 of the Update 70 stage 2 developer message, 2026-11-17"
+catalogue: "380 providers in OmniRoute's newest provider reference (v3.8.53, 2026-10-29); repository cheaper-inference/OmniRoute (was diegosouzapw/OmniRoute), MIT, self-hosted; local endpoint http://localhost:20128/v1"
+direction: "all available free providers at once, tested together in the pool retest; the routed client stays pool first, Claude as the fallback"
+pin_model_ids: "pin the free model id per provider rather than relying on auto: a rotating roster (Kilo, OpenCode Zen) must not silently swap models"
+confirmed_recurring:        # already in ai_providers.yaml unless new: true
+  - {id: mistral, new: false, limit: "about 1B tokens a month (console-verified by OmniRoute's owner, NOT published); no card", caution: "training on data applies by default (opt-out available); personal needs only, no key sharing"}
+  - {id: groq, new: false, limit: "per model 30 RPM / 1,000 RPD / 8K TPM / 200K TPD (gpt-oss-120b/20b, qwen3.8-27b); Whisper and Orpheus TTS free; Llama models are Enterprise now", caution: "no reselling"}
+  - {id: google-gemini, new: false, limit: "Flash 3.8/3.6 5 RPM, 20 RPD; Flash-Lite 10 RPM, 500 RPD (Google publishes no numbers now)", caution: "free-tier content is used to improve Google's products"}
+  - {id: cloudflare-workers-ai, new: false, limit: "10,000 Neurons a day, hard stop on Free", caution: "newer frontier models need Workers Paid"}
+  - {id: nvidia-nim, new: false, limit: "about 40 RPM per model, 10,000 requests a day per account (probe-verified 2026-11-12)", caution: "some 402 'credits expired' reports; prototyping only"}
+  - {id: openrouter, new: false, limit: "20 RPM / 50 RPD with no credits; 1,000 RPD after a one-time $10 purchase (a paid step)", caution: ""}
+  - {id: cohere, new: false, limit: "trial key, 1,000 calls a month", caution: "trial keys are not for production or commercial use (a personal tool fits)"}
+  - {id: zhipu-glm-flash, new: false, limit: "GLM-4-Flash / GLM-4.7-Flash free, about 1 request a second; phone verification", caution: ""}
+  - {id: sambanova, new: true, limit: "20 RPM / 20 RPD / 200K TPD per model (about 30M a month) with no payment method linked", caution: "no reselling"}
+  - {id: nararouter, new: true, limit: "one shared 7M tokens a day bucket over 8 models (about 210M a month), 15 RPM", caution: "free access needs a Telegram link and joining the byNara AI channel (or a $1 top-up)"}
+  - {id: xkiro, new: true, limit: "5M tokens a day per account (about 150M a month), 39 free models", caution: "gpt-5.3-codex-spark deliberately excluded (no provenance)"}
+  - {id: llm7, new: true, limit: "DISPUTED: OmniRoute says up to 5M tokens a day with a token; an independent tracker says 100,000 tokens a day (verified 2026-10-31)", caution: "limits UNCONFIRMED: settle live before relying on either figure"}
+  - {id: kilo-gateway-lane, new: true, limit: "keyless, 200 requests an hour per IP; the free lineup rotates", caution: "Auto Free may route to providers that log or train on prompts: no personal or confidential data on it"}
+  - {id: opencode-zen, new: true, limit: "rotating 10-14 free models, no sign-in, no published limits", caution: "usable only from OpenCode or with OpenCode's identity headers (403 or 400 otherwise): PROVE it from this tool first"}
+  - {id: pollinations, new: true, limit: "keyless Classic API is thin (text GPT-OSS 20B only, one request at a time at least 30 s apart; image one model); the gen API needs a key; hourly-refill free Pollen ended 2026-07-10", caution: "weakest lane, reliability doubts (401 via OmniRoute, Cloudflare 1010 direct): test it last. NOT a reliable free VIDEO route"}
+  - {id: siliconflow, new: true, limit: "$0 models on siliconflow.cn, 1,000 RPM", caution: "needs real-name verification with Chinese-issued documents: skip unless that is answered"}
+one_time_credits_not_free_tiers: [deepseek-5M-30d, zai-20M-1mo, longcat-10M-kyc, cerebras-5usd-card-required]
+excluded_not_free_now:
+  - {id: cerebras, why: "one-time $5 only, card required"}
+  - {id: together-ai, why: "free tier withdrawn; $25 credit removed; minimum $15 first purchase"}
+  - {id: github-models, why: "retired 2026-07-30"}
+  - {id: ollama-cloud, why: "free plan ended; credits required from 2026-11-09 (local Ollama stays free)"}
+  - {id: hugging-face-inference, why: "free Inference Providers credits removed 2026-10-07"}
+do_not_wire:                # terms of service forbid it: never wired, whatever else is decided
+  - {id: kiro, why: "prohibits proxy or harness use"}
+  - {id: duckduckgo-ai-chat, why: "prohibits automated querying"}
+  - {id: blackbox, why: "prohibits proxy or harness use"}
+  - {id: coze, why: "prohibits proxy or harness use"}
+  - {id: muse-spark-web, why: "prohibits proxy or harness use"}
+unconfirmed_in_catalogue: [api-airforce, bluesminds, bazaarlink, ovh-ai-endpoints, ai-horde, uncloseai, auggie, cloudflare-playground, codex-app-server, devin-cli-agentic, veoaifree-web, zcode]
+retest_order:
+  - "the three big new pools first: nararouter, xkiro, sambanova"
+  - "llm7 with a live limit check (settle the 5M versus 100K dispute)"
+  - "the keyless lanes: kilo-gateway-lane, then opencode-zen (prove the identity-header question)"
+  - "pollinations last (weakest, most likely to fail)"
+  - "siliconflow only if the real-name-verification question is answered"
+  - "and the failover path: take each provider down in turn and show the next one answers; if none can, the run says so plainly"
+video:
+  finding: "FreeLLMAPI is a text-chat gateway only (ai_providers.yaml has no image or video modality). OmniRoute carries video-tagged providers (Pollinations, Runway, Haiper, Leonardo, Minimax, Together AI), but none is a reliable FREE video route: Pollinations' free video needs a key and its hourly free Pollen ended 2026-07-10; Together's free tier was withdrawn; Runway and Haiper are trial credits."
+  free_options_found: "consumer web apps with daily credits (PixVerse 60 plus 30 a day up to 540p; Kling 66 daily credits up to 720p; Runway 125 one-time) have no scriptable free API; Zhipu CogVideoX-Flash is free on the China-side platform only (international Z.ai lists paid video models); open models (Wan, LTX-2, HunyuanVideo) need a host."
+  decision: "Pollinations is NOT a free video go: test it as a text and image lane, last. Concat and MoneyPrinterTurbo drafts (stock footage) need no paid model."
