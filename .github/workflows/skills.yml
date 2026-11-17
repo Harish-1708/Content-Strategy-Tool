@@ -55,10 +55,13 @@ jobs:
           url=$(python -c "import yaml; print(yaml.safe_load(open('external_skills.yaml'))['repo']['url'])")
           sha=$(python -c "import yaml; print(yaml.safe_load(open('external_skills.yaml'))['repo']['pinned_commit'])")
           path=$(python -c "import yaml; print(yaml.safe_load(open('external_skills.yaml'))['repo']['checkout_path'])")
+          case "$sha" in *[!0-9a-f]*|"") echo "::error::pinned_commit in external_skills.yaml is not a 40-character commit hash"; exit 1 ;; esac
+          [ "${#sha}" -eq 40 ] || { echo "::error::pinned_commit in external_skills.yaml is not a 40-character commit hash"; exit 1; }
           mkdir -p "$(dirname "$path")"
           # a partial clone keeps the history (the update report needs it) without downloading every file twice
           git clone --quiet --filter=blob:none --no-checkout "$url" "$path"
           git -C "$path" checkout --quiet "$sha"
+          [ "$(git -C "$path" rev-parse HEAD)" = "$sha" ] || { echo "::error::the checkout is not at the pinned commit"; exit 1; }
           echo "Skills repository at $(git -C "$path" rev-parse HEAD)"
 
       - name: Run it
@@ -72,10 +75,10 @@ jobs:
           brand_args=()
           if [ -n "$BRAND" ] && [ "$BRAND" != "all" ]; then brand_args=(--brand "$BRAND"); fi
           case "$ACTION" in
-            status|verify|update-report|catalogue) python -m contentintel.cli skills --action "$ACTION" ;;
-            seed-claims) python -m contentintel.cli canon --action seed "${brand_args[@]}" ;;
-            claims-status) python -m contentintel.cli canon --action status "${brand_args[@]}" ;;
-            gate) python -m contentintel.cli canon --action gate --text "$TEXT" "${brand_args[@]}" ;;
+            status|verify|update-report|catalogue) python -m contentintel skills --action "$ACTION" ;;
+            seed-claims) python -m contentintel canon --action seed "${brand_args[@]}" ;;
+            claims-status) python -m contentintel canon --action status "${brand_args[@]}" ;;
+            gate) python -m contentintel canon --action gate --text "$TEXT" "${brand_args[@]}" ;;
           esac
 
       - name: Save the data
@@ -84,7 +87,10 @@ jobs:
         run: |
           git config user.name "skills"
           git config user.email "skills@users.noreply.github.com"
-          git add -f data
+          git add -f data/_shared/skills_catalogue.json 2>/dev/null || true          # only the files this tool writes, not the whole data tree
+          for d in data/*/registry; do
+            if [ -d "$d" ]; then git add -f "$d"; fi
+          done
           if git diff --cached --quiet; then
             echo "No data changes to save."
           else
