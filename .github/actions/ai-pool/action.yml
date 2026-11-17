@@ -1,0 +1,55 @@
+name: AI pool
+description: >
+  Sets up the free provider pool for a job: Node 22, the pinned FreeLLMAPI gateway (built from source at the recorded commit) and the pinned OmniRoute (installed from npm, cached). The job's own env must
+  carry the secrets (FREEAPI_ENCRYPTION_KEY, FREEAPI_ADMIN_PASSWORD and the providers' keys). Every step is allowed to fail: a pool that cannot be set up never fails the job, and the tool says in its own
+  output why the pool was not used and that Claude answered instead.
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      continue-on-error: true
+      with:
+        node-version: "22"
+
+    - name: Build the pinned gateway (FreeLLMAPI)
+      if: env.FREEAPI_ENCRYPTION_KEY != '' && hashFiles('gateway-src/server/dist/index.js') == ''
+      continue-on-error: true
+      shell: bash
+      run: |
+        export CONTENTINTEL_GATEWAY_DIR=gateway-src
+        if ! python -m contentintel observatory connections --all --what install --key freellmapi; then
+          echo "::warning::The newest gateway could not be built here; using the recorded one"
+          rm -rf gateway-src
+          commit=$(python -c "import json;print(json.load(open('ai/gateway.lock.json'))['gateway']['commit'])")
+          mkdir gateway-src && cd gateway-src
+          git init --quiet
+          git remote add origin https://github.com/tashfeenahmed/freellmapi
+          git fetch --quiet --depth 1 origin "$commit"
+          git checkout --quiet FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$commit" || { echo "::error::The fetched gateway is not the pinned commit"; exit 1; }
+          npm ci --workspace=shared --workspace=server --include-workspace-root --no-audit --no-fund
+          npm run build -w server
+          cd ..
+        fi
+        echo "CONTENTINTEL_GATEWAY_DIR=$PWD/gateway-src" >> "$GITHUB_ENV"
+
+    - name: Restore OmniRoute
+      id: omniroute-cache
+      uses: actions/cache@v4
+      continue-on-error: true
+      with:
+        path: omniroute-src
+        key: omniroute-${{ runner.os }}-${{ hashFiles('contentintel/ai/omniroute.py') }}
+
+    - name: Install the pinned OmniRoute
+      if: steps.omniroute-cache.outputs.cache-hit != 'true'
+      continue-on-error: true
+      shell: bash
+      run: |
+        version=$(python -c "from contentintel.ai.omniroute import PINNED_VERSION; print(PINNED_VERSION)")
+        mkdir -p omniroute-src && cd omniroute-src
+        npm install "omniroute@${version}" --no-audit --no-fund --loglevel=error
+
+    - name: Tell the tool where the gateways are
+      shell: bash
+      run: echo "CONTENTINTEL_OMNIROUTE_DIR=$PWD/omniroute-src" >> "$GITHUB_ENV"
