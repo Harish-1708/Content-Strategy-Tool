@@ -6000,7 +6000,7 @@
    "variant_count": 7,
    "variants": [
     {
-     "available": true,
+     "available": false,
      "compare_at_price": 120.0,
      "id": 53166813413487,
      "options": [
@@ -10961,7 +10961,7 @@
      "title": "2XL / Nightshade Plum"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53160030175343,
      "options": [
