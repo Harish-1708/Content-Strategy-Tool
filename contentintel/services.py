@@ -635,6 +635,23 @@ def ai_stack(store, ledger, environ, *, providers_config="ai_providers.yaml", la
     return router, usage, review, side, notes, finish
 
 
+# The jobs that have a ranked lane of their own (ai_lanes.yaml): each is ranked from what works live for that exact job; a new feature that uses AI adds its job here AND its lane there.
+JOB_LANES = {"foundation": "foundation_json", "story_extract": "story_extract_json", "story_review": "story_review_json", "conflict_check": "conflict_check_json"}
+
+
+class _JobClient:
+    """The routed client for one job: json_task asks that job's ranked lane; everything else (calls, notes, complete, close) is the routed client's own, so one gateway serves every job."""
+
+    def __init__(self, routed, lane):
+        self._routed, self._lane = routed, lane
+
+    def json_task(self, system, user, max_tokens=None):
+        return self._routed.json_task(system, user, max_tokens, lane=self._lane)
+
+    def __getattr__(self, name):
+        return getattr(self._routed, name)
+
+
 class RoutedClaude:
     """A Claude-compatible client (complete, json_task, json_task_with_images and everything else the wrapped client has) that, for a purpose the owner routed gateway_first, asks the AI Gateway first and
     falls back to the wrapped client when the gateway has no usable answer. Modules keep calling the same three methods and need no change. Pictures always go to the wrapped client: the free providers
@@ -682,8 +699,15 @@ class RoutedClaude:
         self.calls.append("claude")
         return self.inner.complete(system, user, max_tokens)
 
-    def json_task(self, system, user, max_tokens=None):
-        res = self._ask("general_json", system, user)
+    def for_job(self, job):
+        """The same routed client, asking the lane that is ranked for ONE job (foundation, story_extract, story_review, conflict_check ...); a job with no lane of its own uses general_json."""
+        return _JobClient(self, JOB_LANES.get(job, "general_json"))
+
+    def json_task(self, system, user, max_tokens=None, *, lane="general_json"):
+        stack = self._router()
+        if lane != "general_json" and stack is not None and lane not in getattr(stack[0], "lanes", {lane: 1}):
+            lane = "general_json"                                                              # an install whose lanes file has no lane for this job asks the general one
+        res = self._ask(lane, system, user)
         if res and isinstance(res.get("output"), (dict, list)) and res["output"]:
             self.calls.append("gateway")
             return res["output"]
