@@ -251,7 +251,7 @@ def test_the_shipped_lanes_load_against_the_allowlist_and_cover_the_ten_kinds_of
     reg = R.load_registry(SHIPPED_P)
     got = L.load_lanes(SHIPPED_L, reg)
     assert list(got) == ["research_extraction", "competitor_intelligence", "audience_voice", "formula_analysis", "trend_opportunity", "strategic_reasoning",
-                         "content_ideation", "brief_generation", "production_support", "validation_qa", "general_text", "general_json"]       # the ten kinds of work, then the two platform lanes
+                         "content_ideation", "brief_generation", "production_support", "validation_qa", "general_text", "general_json", "foundation_json", "story_extract_json", "story_review_json", "conflict_check_json"]       # the ten kinds of work, the two platform lanes, then one ranked lane per job of the refresh and the foundation chain
     assert got["general_text"].max_data_class == "internal" and got["general_json"].max_data_class == "internal" and not got["general_text"].claude_fallback and not got["general_json"].claude_fallback
     assert got["general_text"].review == "none" and got["general_json"].review == "none" and all(r["provider"] != "claude" for r in got["general_text"].chain + got["general_json"].chain)
     for lane in got.values():
@@ -329,7 +329,7 @@ def test_no_retired_model_is_approved_and_every_lane_route_uses_an_approved_mode
     used = {(r["provider"], r["model"]) for lane in lanes.values() for r in lane.get("chain", [])}
     assert not RETIRED & used and used <= approved                                          # and no lane routes to a model nobody approved
     assert {("groq", "openai/gpt-oss-120b"), ("groq", "openai/gpt-oss-20b"), ("google", "gemini-3.5-flash"), ("openrouter", "openrouter/free")} <= approved
-    assert [r["model"] for lane in lanes.values() for r in lane.get("chain", []) if r["provider"] == "openrouter"] == ["openrouter/free"] * 3     # OpenRouter free models rotate every few days: the lane asks for the free router and the client picks today's free models
+    assert [r["model"] for lane in lanes.values() for r in lane.get("chain", []) if r["provider"] == "openrouter"] == ["openrouter/free"] * 7     # OpenRouter free models rotate every few days: the lane asks for the free router and the client picks today's free models
 
 
 # ---- Update 57: the five providers added, and what is recorded for each ------------------------------------------------------------------------------
