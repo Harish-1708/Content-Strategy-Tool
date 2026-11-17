@@ -24,6 +24,10 @@ on:
         description: "Also use rows marked Maybe"
         type: boolean
         default: false
+      refresh_story_bank:
+        description: "Refresh the brand's story bank from public sources first (it only ever ADDS unverified facts and conflicts; a failure never stops the brief)"
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -46,6 +50,21 @@ jobs:
           cache-dependency-path: requirements.txt
 
       - run: pip install -r requirements.txt
+
+      - name: Refresh the story bank first
+        if: inputs.refresh_story_bank
+        continue-on-error: true
+        shell: bash
+        env:
+          BRAND: ${{ inputs.brand }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
+        run: |
+          { echo "### Story-bank refresh"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          python -m contentintel canon --action refresh --brand "$BRAND" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
 
       - name: Write the brief
         id: brief
