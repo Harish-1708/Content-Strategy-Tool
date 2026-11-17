@@ -167,7 +167,7 @@ def ai(tmp_path, monkeypatch, capsys):
 
 def test_providers_lists_what_is_on_and_all_with_a_flag(ai):
     code, out = ai("providers")
-    assert code == 0 and "claude" in out and "groq" not in out and "86 providers in the registry, 1 enabled" in out
+    assert code == 0 and "claude" in out and "groq" not in out and "87 providers in the registry, 1 enabled" in out
     code, out = ai("providers", "--all")
     assert "groq" in out and "kilo" in out and "exp" in out and out.count("\n") > 80
 
@@ -444,7 +444,7 @@ def test_the_cli_module_does_not_import_the_ai_package_at_start_up():
 
 def test_the_shipped_providers_command_shows_the_rolled_out_providers_with_their_recorded_decision(ai):
     code, out = ai("providers", providers=ROOT / "ai_providers.yaml")
-    assert code == 0 and "86 providers in the registry, 11 enabled, 1 retired (kept as a record, never called)" in out
+    assert code == 0 and "87 providers in the registry, 19 enabled, 1 retired (kept as a record, never called)" in out
     assert "RETIRED" in next(l for l in out.splitlines() if l.strip().startswith("github "))
     for pid in ("cloudflare", "google", "groq", "mistral", "openrouter"):
         line = next(l for l in out.splitlines() if l.strip().startswith(pid + " "))
@@ -548,9 +548,9 @@ def test_the_status_block_lists_every_provider_in_use_the_owners_switched_off_on
     lines = [ln.strip() for ln in block.splitlines()]
     assert lines[0].startswith("Provider status (a green run does not mean a provider is live")
     order = [ln.split()[0] for ln in lines[1:-1]]
-    assert order == ["LIVE", "LIVE", "FAILED"] + ["SKIPPED"] * 7 + ["DISABLED", "RETIRED"]                          # live first, retired last
-    assert [ln.split()[1] for ln in lines[1:-1]] == ["groq", "openrouter", "google", "claude", "cohere", "kilo", "mistral", "nvidia", "ollama", "zhipu", "cloudflare", "github"]
-    assert lines[-1] == "2 LIVE, 1 FAILED, 7 SKIPPED, 1 DISABLED, 1 RETIRED"
+    assert order == ["LIVE", "LIVE", "FAILED"] + ["SKIPPED"] * 15 + ["DISABLED", "RETIRED"]                          # live first, retired last
+    assert [ln.split()[1] for ln in lines[1:-1]] == ["groq", "openrouter", "google", "airforce", "bazaarlink", "bluesminds", "claude", "cohere", "kilo", "llm7", "mistral", "nara", "nvidia", "ollama", "pollinations", "sambanova", "xkiro", "zhipu", "cloudflare", "github"]
+    assert lines[-1] == "2 LIVE, 1 FAILED, 15 SKIPPED, 1 DISABLED, 1 RETIRED"
     assert "RETIRED" in next(ln for ln in lines if ln.endswith("never called") and ln.split()[1] == "github")
     mock = CM.provider_status_block(reg, {"groq": {"ok": 1, "failed": [], "skipped": []}}, "mock", set(), [])
-    assert not [ln for ln in mock.splitlines() if ln.strip().startswith("LIVE ")] and mock.splitlines()[-1].strip() == "0 LIVE, 1 MOCK, 0 FAILED, 10 SKIPPED, 1 RETIRED"
+    assert not [ln for ln in mock.splitlines() if ln.strip().startswith("LIVE ")] and mock.splitlines()[-1].strip() == "0 LIVE, 1 MOCK, 0 FAILED, 18 SKIPPED, 1 RETIRED"
