@@ -229,7 +229,7 @@ def test_a_warned_account_stops_the_run_for_that_site_and_is_rested(tmp_path, st
     detail = result.brands["swoveralls"][2].detail
     assert "instagram showed an account warning (We suspect automated behavior" in detail
     assert "The account will rest until 2026-10-23 (3 days)" in detail and "collectors.safety.cooldown_days" in detail
-    assert store.read_cooldowns() == {"instagram": {"until": THREE_DAYS, "at": NOW, "reason": WARNING}}
+    assert store.read_cooldowns() == {"instagram": {"until": THREE_DAYS, "at": NOW, "reason": WARNING, "kind": "account_warning"}}
     assert result.resting["instagram"]["until"] == THREE_DAYS
 
 
@@ -245,7 +245,7 @@ def test_the_next_run_skips_the_resting_account_without_calling_it_a_failure(tmp
 
 
 def test_the_report_says_which_accounts_are_resting_and_that_apify_still_runs(tmp_path, store, swov, cfg, settings):
-    store.write_cooldowns({"instagram": {"until": THREE_DAYS, "at": NOW, "reason": WARNING}})
+    store.write_cooldowns({"instagram": {"until": THREE_DAYS, "at": NOW, "reason": WARNING, "kind": "account_warning"}})
     result = go(store, tmp_path, swov, cfg, settings, world(cfg), now="2026-10-21T07:00:00Z")
     text = C.format_collect_report(result, settings)
     assert text.splitlines()[1].startswith("Resting: instagram until 2026-10-23 after an account warning (We suspect automated behavior")
@@ -253,7 +253,7 @@ def test_the_report_says_which_accounts_are_resting_and_that_apify_still_runs(tm
 
 
 def test_a_rest_that_has_ended_is_over(tmp_path, store, swov, cfg, settings):
-    store.write_cooldowns({"instagram": {"until": THREE_DAYS, "at": NOW, "reason": WARNING}})
+    store.write_cooldowns({"instagram": {"until": THREE_DAYS, "at": NOW, "reason": WARNING, "kind": "account_warning"}})
     f = world(cfg)
     result = go(store, tmp_path, swov, cfg, settings, f, now="2026-10-23T07:00:01Z")
     assert statuses(result) == [("instagram", "ran")] and result.resting == {} and "instagram" in f.opened
@@ -315,7 +315,7 @@ def test_a_plain_security_check_is_not_an_account_warning_and_starts_no_rest(tmp
 
 
 def test_a_dry_run_shows_a_rest_but_never_starts_or_changes_one(tmp_path, store, swov, cfg, settings):
-    store.write_cooldowns({"instagram": {"until": THREE_DAYS, "at": NOW, "reason": WARNING}})
+    store.write_cooldowns({"instagram": {"until": THREE_DAYS, "at": NOW, "reason": WARNING, "kind": "account_warning"}})
     before = (tmp_path / "data" / "_shared" / "cooldowns.json").read_text()
     result = go(store, tmp_path, swov, cfg, settings, world(cfg), now="2026-10-21T07:00:00Z", dry_run=True)
     assert statuses(result) == [("instagram", "skipped")] and (tmp_path / "data" / "_shared" / "cooldowns.json").read_text() == before
@@ -329,7 +329,7 @@ def test_a_dry_run_never_writes_a_new_rest(tmp_path, store, swov, cfg, settings)
 # ---- with Apify ---------------------------------------------------------------------------------------------------------------
 
 def test_while_an_account_rests_apify_in_fallback_mode_still_collects(tmp_path, store, swov, cfg, settings):
-    store.write_cooldowns({"instagram": {"until": THREE_DAYS, "at": NOW, "reason": WARNING}})
+    store.write_cooldowns({"instagram": {"until": THREE_DAYS, "at": NOW, "reason": WARNING, "kind": "account_warning"}})
     http, apify = apify_world()
     f = world(cfg)
     result = go(store, tmp_path, swov, cfg, settings, f, now="2026-10-21T07:00:00Z", backend="fallback", apify=apify)
@@ -348,7 +348,7 @@ def test_a_warning_in_fallback_mode_is_rescued_by_apify_but_still_flagged_and_re
 
 
 def test_in_extra_mode_a_resting_account_is_apify_alone(tmp_path, store, swov, cfg, settings):
-    store.write_cooldowns({"instagram": {"until": THREE_DAYS, "at": NOW, "reason": WARNING}})
+    store.write_cooldowns({"instagram": {"until": THREE_DAYS, "at": NOW, "reason": WARNING, "kind": "account_warning"}})
     http, apify = apify_world()
     f = world(cfg)
     result = go(store, tmp_path, swov, cfg, settings, f, now="2026-10-21T07:00:00Z", backend="extra", apify=apify)

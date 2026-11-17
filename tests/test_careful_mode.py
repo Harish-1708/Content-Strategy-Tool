@@ -375,7 +375,7 @@ def test_a_run_with_a_damaged_page_log_just_starts_again(tmp_path, store, swov, 
 def test_resting_by_hand_starts_a_rest_without_opening_anything(store, settings):
     lines = C.rest_by_hand(store, "instagram", NOW, 7, settings)
     assert lines == ["instagram: resting until 2026-10-27 (7 days), as you asked; nothing was opened"]
-    assert store.read_cooldowns() == {"instagram": {"until": "2026-10-27T07:00:00Z", "at": NOW, "reason": "rested by hand"}}
+    assert store.read_cooldowns() == {"instagram": {"until": "2026-10-27T07:00:00Z", "at": NOW, "reason": "rested by hand", "kind": "owner"}}
 
 
 @pytest.mark.parametrize("sites,expected", [("instagram", ["instagram"]), ("tiktok", ["tiktok"]), (" Instagram , TIKTOK ", ["instagram", "tiktok"]),

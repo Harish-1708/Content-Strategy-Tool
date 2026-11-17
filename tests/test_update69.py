@@ -43,7 +43,9 @@ def test_the_egress_ip_is_looked_up_once_per_route_and_a_failure_is_not_retried_
     assert [S.resolve_egress_ip(page, key="direct") for _ in range(4)] == ["203.0.113.9"] * 4 and page.context.request.calls == 1
     assert S.resolve_egress_ip(page, key="proxy.example:8000") == "203.0.113.9" and page.context.request.calls == 2          # another route: its own lookup
     down = PageWithIp(ip=None)
-    assert [S.resolve_egress_ip(down, key="direct2") for _ in range(3)] == [None] * 3 and down.context.request.calls == 1      # a miss is kept for a minute
+    assert [S.resolve_egress_ip(down, key="direct2") for _ in range(3)] == [None] * 3 and down.context.request.calls == 3      # a miss is NEVER kept: each open asks again
+    good = PageWithIp()
+    assert S.resolve_egress_ip(good, key="direct2") == "203.0.113.9"                                                          # so a failure earlier with the same key cannot blank a later read
     clock = {"t": 1000.0}
     monkeypatch.setattr(S.time, "monotonic", lambda: clock["t"])
     monkeypatch.setattr(S, "_EGRESS", {})
