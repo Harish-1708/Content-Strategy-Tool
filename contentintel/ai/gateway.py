@@ -45,7 +45,7 @@ def build_config(registry, environ, baseline_models):
         raise GatewayError("FREEAPI_ADMIN_PASSWORD (at least 8 characters) is required: without an admin the gateway prints an open setup code")
     keys, skipped, models = [], [], []
     for p in registry.providers.values():
-        if p.id == "claude" or p.direct:
+        if p.id == "claude" or p.direct or p.omniroute:
             continue                                    # Claude, and providers with a direct client, are never sent through the gateway
         if not p.enabled:
             continue
@@ -57,7 +57,7 @@ def build_config(registry, environ, baseline_models):
             keys.append({"platform": p.gateway_platform, "key": cred, "label": "actions", "enabled": True})
         else:                                           # a key-less provider (Kilo): an entry with no key makes the gateway store its own 'no-key' row; without one it reports 'no key configured for their platform'
             keys.append({"platform": p.gateway_platform, "label": "actions", "enabled": True})
-    live = {k["platform"] for k in keys} | {p.gateway_platform for p in registry.providers.values() if p.enabled and not p.credential_env and p.id != "claude" and not p.direct}
+    live = {k["platform"] for k in keys} | {p.gateway_platform for p in registry.providers.values() if p.enabled and not p.credential_env and p.id != "claude" and not p.direct and not p.omniroute}
     for platform, ids in sorted(baseline_models.items()):
         provider = next((p for p in registry.providers.values() if p.gateway_platform == platform), None)
         for model_id in ids:
@@ -139,7 +139,7 @@ class Sidecar:
         status, rows, _ = self.http("GET", self.base_url + "/api/models", headers=auth, body=None, timeout=20)
         have = {(r.get("platform"), r.get("model_id") or r.get("modelId")) for r in (rows if isinstance(rows, list) else [])}
         for p in registry.providers.values():
-            if p.id == "claude" or p.direct or not p.enabled:
+            if p.id == "claude" or p.direct or p.omniroute or not p.enabled:
                 continue
             if p.credential_env and _credential(p, environ) is None:
                 continue                                    # no credential here: nothing of this provider is switched on, so nothing is added
