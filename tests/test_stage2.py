@@ -1,6 +1,7 @@
 """Batch 2, stage 2: the story-bank refresh (append-only, unverified-only, conflicts kept, every fact sourced and reviewed) and the per-brand foundation chain (proposals only, through the skill lock and the gate);
 plus the registry additions they rely on (a log integrity chain, safe ids, conflicts, a wider medical filter, claim names)."""
 import json
+import re
 from pathlib import Path
 
 from contentintel import canon as C
@@ -28,6 +29,12 @@ PAGE = ("<html><head><style>x{}</style></head><body><h1>Swoveralls in the news</
 QUOTE = "Swoveralls founder Kyle Bergman said the company sold $230,000 of overalls in its first year."
 
 
+def pair_answer(user, decide):
+    """The reviewer's answer for a batch of pairs: one relation per `PAIR n:` block, chosen by `decide(block text)`."""
+    blocks = re.split(r"PAIR (\d+):", user)[1:]
+    return {"relations": [{"i": int(blocks[k]), "relation": decide(blocks[k + 1])} for k in range(0, len(blocks), 2)]}
+
+
 class Claude:
     """A scripted model: extraction answers by page, review answers by flag."""
     def __init__(self, facts, supported=True, about=True, relation="unrelated"):
@@ -35,8 +42,8 @@ class Claude:
 
     def json_task(self, system, user, max_tokens=None):
         self.calls.append(system[:20])
-        if "Two statements" in system:
-            return {"relation": self.relation}
+        if "Pairs of statements" in system:
+            return pair_answer(user, lambda block: self.relation)
         if "extract" in system.lower():
             return {"facts": self.facts}
         n = user.count("QUOTATION:")
