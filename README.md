@@ -234,6 +234,15 @@ names marked set or not set, so you can see what the run can see (the values are
 | `OLLAMA_API_KEY` | Ollama Cloud's free starter models | only if you switch Ollama on |
 | `COHERE_API_KEY` | Cohere's trial key (personal evaluation and development; not for production) | only if you switch Cohere on |
 | `GEMINI_API_KEY` | Google Gemini through the gateway (free tier may train on prompts: Public data only) | only if you switch Gemini on | aistudio.google.com > Get API key |
+| `SAMBANOVA_API_KEY` | SambaNova's free tier (about 20 requests a minute per model; no reselling), through OmniRoute or the gateway | only if you switch SambaNova on |
+| `NARA_API_KEY` | NaraRouter's free pool (free access is unlocked through its Telegram channel), through OmniRoute | only if you switch NaraRouter on |
+| `XKIRO_API_KEY` | xKiro's free models (about 5 million tokens a day), through OmniRoute | only if you switch xKiro on |
+| `LLM7_API_KEY` | LLM7.io's free tier (its stated limit is disputed: measure it in the pool retest), through OmniRoute | only if you switch LLM7 on |
+| `SILICONFLOW_API_KEY` | SiliconFlow's free models (real-name verification may be needed) | only if you switch SiliconFlow on |
+| `POLLINATIONS_API_KEY` | Pollinations' API (a text and image lane to test last; not a free video route) | only if you switch Pollinations on |
+| `API_AIRFORCE_API_KEY` | Api.Airforce's free plan (1 request a minute, 1,000 a day), through OmniRoute | only if you switch Api.Airforce on |
+| `BLUESMINDS_API_KEY` | BluesMinds' free plan (about 300 requests a day; its terms are ambiguous), through OmniRoute | only if you switch BluesMinds on |
+| `BAZAARLINK_API_KEY` | BazaarLink's free models (60 weighted units a day; no reselling or sharing keys), through OmniRoute | only if you switch BazaarLink on |
 | `CEREBRAS_API_KEY` | Cerebras through the gateway | optional | cloud.cerebras.ai |
 | `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` | Cloudflare Workers AI through the gateway | optional; both or neither | the Cloudflare dashboard > Workers AI |
 | `YOUTUBE_API_KEY` | public YouTube video details through YouTube's official Data API (free quota, no card) | optional | Google Cloud console > APIs and services > Credentials (docs/acceptance-fixes.md) |
@@ -251,16 +260,6 @@ names marked set or not set, so you can see what the run can see (the values are
 | `REDDIT_CLIENT_ID` | the id of a Reddit app, for the official Reddit API route (it runs only once Reddit has approved your use and you have recorded that in `observatory.yaml`) | optional | reddit.com/prefs/apps, after Reddit approves your access |
 | `REDDIT_CLIENT_SECRET` | the secret of that Reddit app | optional, with the id | the same page |
 | `JINA_API_KEY` | raises Jina Reader's free limit from 20 to 500 requests a minute | optional | jina.ai > API key (the reader works without one) |
-
-**Video trials** (used by the Video trial workflow; all optional — without a site's cookies that site reports NOT SET UP and nothing opens)
-
-| Secret | What it is for | Needed? | What to paste |
-|---|---|---|---|
-| `PIXVERSE_COOKIES` | PixVerse, logged in as the dummy account | for the PixVerse trial | the dummy account's cookies, exported as a JSON list |
-| `GOOGLE_FLOW_COOKIES` | Google Flow, logged in as the dummy Google account | for the Google Flow trial | the dummy account's cookies, exported as a JSON list |
-| `DREAMINA_COOKIES` | Dreamina, logged in as the dummy account | for the Dreamina trial | the dummy account's cookies, exported as a JSON list |
-| `KLING_COOKIES` | Kling, logged in as the dummy account | for the Kling trial | the dummy account's cookies, exported as a JSON list |
-| `LUMA_COOKIES` | Luma, logged in as the dummy account | for the Luma trial (the trial-credit amount is only visible after sign-in) | the dummy account's cookies, exported as a JSON list |
 
 **Needs no secret:** Meta Ad Library (public pages), the catalogue sync (public store data), and
 `GITHUB_TOKEN` (GitHub provides it automatically).
@@ -698,7 +697,7 @@ Unit tests prove the code handles an answer correctly. They cannot prove that Ti
 
 Claude is the coordinator. A pinned, local copy of the open-source FreeLLMAPI gateway (v0.16.17, commit in `ai/gateway.lock.json`) can reach many free providers, but **nothing is switched on until a person approves it**. Comparison and setup: `docs/ai/` (`freellmapi-version-comparison.md`, `provider-comparison.md`, `provider_inventory.json`, `setup-instructions.md`).
 
-**Files you edit.** `ai_providers.yaml` lists all 84 platforms of the pinned gateway, OpenRouter (called directly, not through the gateway), GitHub Models (retired by GitHub on 30 July 2026: kept as a record, never called) and Claude, 86 in all: whether each is on, the highest data class its terms allow, which classes you approved, and the **approved-model allowlist** (a model is used only if it is listed there; the gateway's remote catalogue is switched off, and even if it were on it could not make a model usable). `ai_lanes.yaml` defines ten kinds of work and, for each, a fixed chain of providers and models, how the output is checked and whether a person must review it. `ai_eval_tasks.yaml` holds the sample tasks used to compare models.
+**Files you edit.** `ai_providers.yaml` lists all 84 platforms of the pinned gateway, OpenRouter (called directly, not through the gateway), GitHub Models (retired by GitHub on 30 July 2026: kept as a record, never called) and Claude, 87 in all: whether each is on, the highest data class its terms allow, which classes you approved, and the **approved-model allowlist** (a model is used only if it is listed there; the gateway's remote catalogue is switched off, and even if it were on it could not make a model usable). `ai_lanes.yaml` defines ten kinds of work and, for each, a fixed chain of providers and models, how the output is checked and whether a person must review it. `ai_eval_tasks.yaml` holds the sample tasks used to compare models.
 
 **Data classes.** Public, Internal, Restricted. A provider receives data only if its ceiling (set by its checked terms) and your approval both allow that class; unknown means Restricted. Restricted data can go to Claude only. You can raise a ceiling for a provider with a dated `owner_override` naming who decided and why; the tool does what you record.
 
