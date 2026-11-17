@@ -7,7 +7,8 @@
 #   claims-status  counts per brand
 #   gate           checks the text in 'text' against the brand's claims ledger (OK / NEEDS_REVIEW / BLOCKED); the run FAILS on BLOCKED
 #   refresh-story-bank  public-source research per brand (also monthly, on the 2nd): new facts enter ONLY as UNVERIFIED claims with their source and quotation; a disagreement keeps BOTH as a conflict for the owner; nothing is deleted, verified or made canon
-#   foundation     the per-brand foundation chain: proposes canon sections (never approved by the tool); at most max_steps steps per run
+#   foundation     the per-brand foundation chain: proposes canon sections (never approved by the tool); at most max_steps steps and max_calls model calls per run; a failed call is asked once more and its error is printed in full
+#   reclassify-conflicts  re-checks the conflicts the refresh created: a pair that is not really a disagreement goes back to UNVERIFIED (nothing deleted, the old claim untouched, the owner's decisions never overridden)
 # The skills repository is checked out at the pinned commit, with its scripts and references. Its text is read as data; none of its scripts is run by this workflow.
 # To run it: Actions > Skills and registries > Run workflow. Nothing here posts or changes anything on any platform.
 name: Skills and registries
@@ -20,7 +21,7 @@ on:
       action:
         description: "What to run"
         type: choice
-        options: [status, verify, update-report, catalogue, seed-claims, claims-status, gate, refresh-story-bank, foundation]
+        options: [status, verify, update-report, catalogue, seed-claims, claims-status, gate, refresh-story-bank, foundation, reclassify-conflicts]
         default: status
       brand:
         description: "Brand folder name (for example swoveralls) or all"
@@ -35,9 +36,13 @@ on:
         required: false
         default: ""
       max_steps:
-        description: "foundation: at most this many steps in one run (the AI calls are limited; the next run continues)"
+        description: "foundation: at most this many steps in one run (the next run continues)"
         required: false
         default: "3"
+      max_calls:
+        description: "foundation and reclassify-conflicts: at most this many model calls in one run (a retry or a correction counts; 0 = no limit)"
+        required: false
+        default: "6"
 
 permissions:
   contents: write
@@ -84,6 +89,7 @@ jobs:
           TEXT: ${{ inputs.text }}
           STEPS: ${{ inputs.steps }}
           MAX_STEPS: ${{ inputs.max_steps || '3' }}
+          MAX_CALLS: ${{ inputs.max_calls || '6' }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
         run: |
@@ -96,11 +102,12 @@ jobs:
             claims-status) python -m contentintel canon --action status "${brand_args[@]}" ;;
             gate) python -m contentintel canon --action gate --text "$TEXT" "${brand_args[@]}" ;;
             refresh-story-bank) python -m contentintel canon --action refresh "${brand_args[@]}" ;;
-            foundation) python -m contentintel canon --action foundation --steps "$STEPS" --max-steps "$MAX_STEPS" "${brand_args[@]}" ;;
+            foundation) python -m contentintel canon --action foundation --steps "$STEPS" --max-steps "$MAX_STEPS" --max-calls "$MAX_CALLS" "${brand_args[@]}" ;;
+            reclassify-conflicts) python -m contentintel canon --action reclassify-conflicts --max-calls "$MAX_CALLS" "${brand_args[@]}" ;;
           esac
 
       - name: Save the data
-        if: always() && (inputs.action == 'catalogue' || inputs.action == 'seed-claims' || inputs.action == 'foundation' || inputs.action == 'refresh-story-bank' || github.event_name == 'schedule')
+        if: always() && (inputs.action == 'catalogue' || inputs.action == 'seed-claims' || inputs.action == 'foundation' || inputs.action == 'refresh-story-bank' || inputs.action == 'reclassify-conflicts' || github.event_name == 'schedule')
         shell: bash
         run: |
           git config user.name "skills"
