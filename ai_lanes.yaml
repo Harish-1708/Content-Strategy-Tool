@@ -162,6 +162,58 @@ lanes:
     output: {format: json, schema: {type: object}}
     max_tokens: 8000
 
+  foundation_json:
+    description: "The foundation chain: one section of the brand's positioning and messaging (long, careful writing as JSON: text, needs_input, claims_used). RANKING NOT YET MEASURED: seeded with general_json's chain; reorder it from the pool retest's live results for this exact job."
+    max_data_class: internal
+    chain:
+      - {provider: groq, model: openai/gpt-oss-120b}
+      - {provider: zhipu, model: glm-4.7-flash}
+      - {provider: mistral, model: mistral-small-latest}
+      - {provider: openrouter, model: "openrouter/free"}
+      - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
+    claude_fallback: false      # the module falls back to its own Claude client, under its own spending cap, when this lane (and the shared pool after it) has no answer
+    output: {format: json, schema: {type: object}}
+    max_tokens: 8000
+
+  story_extract_json:
+    description: "The story-bank refresh: pull checkable facts, each with the exact sentence it rests on, out of one public page. RANKING NOT YET MEASURED: seeded with general_json's chain; reorder it from the pool retest's live results for this exact job."
+    max_data_class: internal
+    chain:
+      - {provider: groq, model: openai/gpt-oss-120b}
+      - {provider: zhipu, model: glm-4.7-flash}
+      - {provider: mistral, model: mistral-small-latest}
+      - {provider: openrouter, model: "openrouter/free"}
+      - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
+    claude_fallback: false      # the module falls back to its own Claude client, under its own spending cap, when this lane (and the shared pool after it) has no answer
+    output: {format: json, schema: {type: object}}
+    max_tokens: 8000
+
+  story_review_json:
+    description: "The story-bank refresh: a reviewer confirms each extracted fact is supported by its quotation and is about the brand. RANKING NOT YET MEASURED: seeded with general_json's chain; reorder it from the pool retest's live results for this exact job."
+    max_data_class: internal
+    chain:
+      - {provider: groq, model: openai/gpt-oss-120b}
+      - {provider: zhipu, model: glm-4.7-flash}
+      - {provider: mistral, model: mistral-small-latest}
+      - {provider: openrouter, model: "openrouter/free"}
+      - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
+    claude_fallback: false      # the module falls back to its own Claude client, under its own spending cap, when this lane (and the shared pool after it) has no answer
+    output: {format: json, schema: {type: object}}
+    max_tokens: 8000
+
+  conflict_check_json:
+    description: "The refresh and the conflict re-check: say whether pairs of statements are the same, unrelated or cannot both be true (many pairs per call). RANKING NOT YET MEASURED: seeded with general_json's chain; reorder it from the pool retest's live results for this exact job."
+    max_data_class: internal
+    chain:
+      - {provider: groq, model: openai/gpt-oss-120b}
+      - {provider: zhipu, model: glm-4.7-flash}
+      - {provider: mistral, model: mistral-small-latest}
+      - {provider: openrouter, model: "openrouter/free"}
+      - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
+    claude_fallback: false      # the module falls back to its own Claude client, under its own spending cap, when this lane (and the shared pool after it) has no answer
+    output: {format: json, schema: {type: object}}
+    max_tokens: 8000
+
 # THE SHARED POOL: every approved model, in one list, available to every lane (after the lane's own preferred routes above), and to every future stage, tool and the website, without
 # any of them needing its own wiring. A model is approved once in ai_providers.yaml and listed once here; it is not the property of any lane. A route is still used only if its provider
 # is enabled and approved for the data class, has a credential and is not resting, and is paced to the provider's own limits. The proven providers come first, then the new ones. Lanes that
