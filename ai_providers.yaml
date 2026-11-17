@@ -1,5 +1,5 @@
 # AI providers: every platform in the pinned FreeLLMAPI v0.16.17 (84 ids), GitHub Models (called directly), and Claude: 86 in all.
-# Switched on at present: cloudflare, cohere, google, groq, kilo, mistral, nvidia, ollama, openrouter, zhipu and claude. A test keeps this line equal to the enabled flags below. GitHub Models is retired (see its retired: record): kept, never enabled or called.
+# Switched on at present: airforce, bazaarlink, bluesminds, cloudflare, cohere, google, groq, kilo, llm7, mistral, nara, nvidia, ollama, openrouter, pollinations, sambanova, xkiro, zhipu and claude. A test keeps this line equal to the enabled flags below. GitHub Models is retired (see its retired: record): kept, never enabled or called.
 #
 # NOTHING is on unless it says enabled: true. A provider carries the terms found when it was checked (terms.status says
 # how well: verified = the provider's own page; verified_secondary = quoted by other sites; upstream_documented = the gateway
@@ -692,20 +692,6 @@ providers:
       status: unverified
       date: '2026-11-03'
       note: declared by the upstream project only; not checked against the provider
-  airforce:
-    label: airforce
-    enabled: false
-    experimental: false
-    ceiling: public
-    approved_classes: []
-    credentials:
-      env:
-      - AIRFORCE_API_KEY
-    gateway_platform: airforce
-    terms:
-      status: unverified
-      date: '2026-11-03'
-      note: declared by the upstream project only; not checked against the provider
   dreamprompting:
     label: dreamprompting
     enabled: false
@@ -966,19 +952,50 @@ providers:
       - tools
       note: present in the gateway baseline; not approved
   sambanova:
-    label: SambaNova
-    enabled: false
+    label: "SambaNova"
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-03'
+      reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
       - SAMBANOVA_API_KEY
-    gateway_platform: sambanova
+    omniroute:
+      provider: sambanova
     terms:
-      status: unverified
-      date: '2026-11-03'
-      note: free tier permanently retired upstream (V23); kept in the type union only
+      status: upstream_documented
+      date: '2026-11-17'
+      trains_on_data: "not verified: OmniRoute flags this provider as caution in its catalogue; read its own terms before keeping it"
+      retention: 'not verified'
+      business_use: "free tier per OmniRoute's catalogue (recurring daily); the earlier note in this file said the free tier was retired upstream: the connection test settles which is true"
+      note: "recorded from the OmniRoute provider catalogue and the planner research of 2026-11-17, not from the provider own terms page"
+    limits:
+      requests_per_minute: 20
+      requests_per_day: 20
+    models:
+    - id: "sambanova/gpt-oss-120b"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as sambanova/gpt-oss-120b"
+    - id: "sambanova/Meta-Llama-3.3-70B-Instruct"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as sambanova/Meta-Llama-3.3-70B-Instruct"
+    - id: "sambanova/DeepSeek-V3.2"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as sambanova/DeepSeek-V3.2"
+
   openrouter:
     label: OpenRouter
     enabled: true
@@ -1614,46 +1631,83 @@ providers:
       - text
       note: 'approved 2026-11-14 as a CANDIDATE: listed in Kilo''s own model list (473 models) in the catalog run of 2026-11-14. Not in the pinned gateway''s catalogue, so the gateway''s add-model call adds it. It has NOT answered live yet; the next live check decides, and a model that is gone rests alone while its provider keeps working'
   pollinations:
-    label: Pollinations
-    enabled: false
+    label: "Pollinations"
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-03'
+      reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
       - POLLINATIONS_API_KEY
-    gateway_platform: pollinations
+    omniroute:
+      provider: pollinations
     terms:
-      status: unverified
-      date: '2026-11-03'
-      note: declared by the upstream project only; not checked against the provider
+      status: upstream_documented
+      date: '2026-11-17'
+      trains_on_data: "not verified: OmniRoute flags this provider as caution in its catalogue; read its own terms before keeping it"
+      retention: 'not verified'
+      business_use: "the weakest lane: reliability doubts, about one request at a time; its free video is gone, this is the text lane only"
+      note: "recorded from the OmniRoute provider catalogue and the planner research of 2026-11-17, not from the provider own terms page"
+    limits:
+      requests_per_minute: 2
     models:
-    - id: openai-fast
-      approved: false
+    - id: "pollinations/openai-fast"
+      approved: true
       capabilities:
       - text
-      note: present in the gateway baseline; not approved
+      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as pollinations/openai-fast"
+    - id: "pollinations/mistral"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as pollinations/mistral"
+
   llm7:
-    label: LLM7.io
-    enabled: false
+    label: "LLM7.io"
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-03'
+      reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
       - LLM7_API_KEY
-    gateway_platform: llm7
+    omniroute:
+      provider: llm7
     terms:
-      status: unverified
-      date: '2026-11-03'
-      note: declared by the upstream project only; not checked against the provider
+      status: upstream_documented
+      date: '2026-11-17'
+      trains_on_data: "not verified: OmniRoute flags this provider as caution in its catalogue; read its own terms before keeping it"
+      retention: 'not verified'
+      business_use: "its limit is disputed (100,000 tokens a day by an independent tracker, up to 5 million by OmniRoute's owner): the lower figure is used until the connection test shows otherwise"
+      note: "recorded from the OmniRoute provider catalogue and the planner research of 2026-11-17, not from the provider own terms page"
+    limits:
+      tokens_per_day: 100000
     models:
-    - id: codestral-latest
-      approved: false
+    - id: "llm7/gpt-4o-mini-2024-07-18"
+      approved: true
       capabilities:
       - text
-      - tools
-      note: present in the gateway baseline; not approved
+      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as llm7/gpt-4o-mini-2024-07-18"
+    - id: "llm7/deepseek-r1-0528"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as llm7/deepseek-r1-0528"
+
   huggingface:
     label: Hugging Face Router
     enabled: false
@@ -1791,6 +1845,8 @@ providers:
       status: unverified
       date: '2026-11-03'
       note: declared by the upstream project only; not checked against the provider
+    # 2026-11-17: not in OmniRoute's catalogue (checked), so it cannot be mapped through OmniRoute; it needs real-name verification with Chinese-issued documents: it stays off
+
   routeway:
     label: Routeway
     enabled: false
@@ -1806,19 +1862,40 @@ providers:
       date: '2026-11-03'
       note: declared by the upstream project only; not checked against the provider
   bazaarlink:
-    label: BazaarLink
-    enabled: false
+    label: "BazaarLink"
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-03'
+      reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
       - BAZAARLINK_API_KEY
-    gateway_platform: bazaarlink
+    omniroute:
+      provider: bazaarlink
     terms:
-      status: unverified
-      date: '2026-11-03'
-      note: declared by the upstream project only; not checked against the provider
+      status: upstream_documented
+      date: '2026-11-17'
+      trains_on_data: 'not verified'
+      retention: 'not verified'
+      business_use: "10 requests a minute and 60 weighted units a day; its terms ban reselling or sharing keys (a personal tool is fine)"
+      note: 'recorded from the OmniRoute provider catalogue and the research report of 2026-11-17, not from the provider own terms page'
+    limits:
+      requests_per_minute: 10
+      requests_per_day: 60
+    models:
+    - id: "bazaarlink/auto:free"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by the OmniRoute catalogue (2026-11-17); routed through OmniRoute as bazaarlink/auto:free"
+
   ainative:
     label: AINative Studio
     enabled: false
@@ -1876,19 +1953,55 @@ providers:
       date: '2026-11-03'
       note: declared by the upstream project only; not checked against the provider
   nara:
-    label: NaraRouter
-    enabled: false
+    label: "NaraRouter"
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-03'
+      reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
       - NARA_API_KEY
-    gateway_platform: nara
+    omniroute:
+      provider: nara
     terms:
-      status: unverified
-      date: '2026-11-03'
-      note: declared by the upstream project only; not checked against the provider
+      status: upstream_documented
+      date: '2026-11-17'
+      trains_on_data: "not verified: OmniRoute flags this provider as caution in its catalogue; read its own terms before keeping it"
+      retention: 'not verified'
+      business_use: "one shared daily bucket across its free models; free access is unlocked through its Telegram channel"
+      note: "recorded from the OmniRoute provider catalogue and the planner research of 2026-11-17, not from the provider own terms page"
+    limits:
+      requests_per_minute: 15
+      tokens_per_day: 7000000
+    models:
+    - id: "nara/mistral-large"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as nara/mistral-large"
+    - id: "nara/qwen3.8-27b"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as nara/qwen3.8-27b"
+    - id: "nara/mistral-medium-3-5"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as nara/mistral-medium-3-5"
+    - id: "nara/minimax-m3-free"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as nara/minimax-m3-free"
+
   sealion:
     label: SEA-LION (AI Singapore)
     enabled: false
@@ -1932,19 +2045,54 @@ providers:
       date: '2026-11-03'
       note: declared by the upstream project only; not checked against the provider
   xkiro:
-    label: xKiro
-    enabled: false
+    label: "xKiro"
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-03'
+      reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
       - XKIRO_API_KEY
-    gateway_platform: xkiro
+    omniroute:
+      provider: xkiro
     terms:
-      status: unverified
-      date: '2026-11-03'
-      note: declared by the upstream project only; not checked against the provider
+      status: upstream_documented
+      date: '2026-11-17'
+      trains_on_data: "not verified: OmniRoute flags this provider as caution in its catalogue; read its own terms before keeping it"
+      retention: 'not verified'
+      business_use: "about 5 million tokens a day on its free models"
+      note: "recorded from the OmniRoute provider catalogue and the planner research of 2026-11-17, not from the provider own terms page"
+    limits:
+      tokens_per_day: 5000000
+    models:
+    - id: "xkiro/minimax/minimax-m3:free"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as xkiro/minimax/minimax-m3:free"
+    - id: "xkiro/mistralai/mistral-large-2512"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as xkiro/mistralai/mistral-large-2512"
+    - id: "xkiro/deepseek/deepseek-v3.2"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as xkiro/deepseek/deepseek-v3.2"
+    - id: "xkiro/qwen/qwen3.6-plus:free"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as xkiro/qwen/qwen3.6-plus:free"
+
   modelscope:
     label: ModelScope (Alibaba)
     enabled: false
@@ -2100,3 +2248,83 @@ providers:
         input: 10.0
         output: 50.0
       note: 'not approved: $10/$50 per million tokens'
+  airforce:
+    label: "Api.Airforce"
+    enabled: true
+    experimental: false
+    ceiling: public
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-03'
+      reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
+    credentials:
+      env:
+      - API_AIRFORCE_API_KEY
+    omniroute:
+      provider: api-airforce
+    terms:
+      status: upstream_documented
+      date: '2026-11-17'
+      trains_on_data: 'not verified'
+      retention: 'not verified'
+      business_use: "free plan: 1 request a minute and 1,000 a day on basic models (confirmed on a third-party directory, 2026-11-17, not on the provider's own page); reviewers report downtime"
+      note: 'recorded from the OmniRoute provider catalogue and the research report of 2026-11-17, not from the provider own terms page'
+    limits:
+      requests_per_minute: 1
+      requests_per_day: 1000
+    models:
+    - id: "api-airforce/qwen/qwen3-32b"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by the OmniRoute catalogue (2026-11-17); routed through OmniRoute as api-airforce/qwen/qwen3-32b"
+    - id: "api-airforce/moonshot/kimi-k2.6"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by the OmniRoute catalogue (2026-11-17); routed through OmniRoute as api-airforce/moonshot/kimi-k2.6"
+
+  bluesminds:
+    label: "BluesMinds"
+    enabled: true
+    experimental: false
+    ceiling: public
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-03'
+      reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
+    credentials:
+      env:
+      - BLUESMINDS_API_KEY
+    omniroute:
+      provider: bluesminds
+    terms:
+      status: upstream_documented
+      date: '2026-11-17'
+      trains_on_data: 'not verified'
+      retention: 'not verified'
+      business_use: "about 20 requests a minute and 300 a day (from the research report; OmniRoute flags its terms as ambiguous): confirm with the connection test"
+      note: 'recorded from the OmniRoute provider catalogue and the research report of 2026-11-17, not from the provider own terms page'
+    limits:
+      requests_per_minute: 20
+      requests_per_day: 300
+    models:
+    - id: "bluesminds/gpt-4.1-mini"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by the OmniRoute catalogue (2026-11-17); routed through OmniRoute as bluesminds/gpt-4.1-mini"
+    - id: "bluesminds/deepseek-chat"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by the OmniRoute catalogue (2026-11-17); routed through OmniRoute as bluesminds/deepseek-chat"
+
