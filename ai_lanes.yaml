@@ -251,3 +251,24 @@ pool:
   - {provider: openrouter, model: nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free}
   - {provider: openrouter, model: google/gemma-4-26b-a4b-it:free}
   - {provider: openrouter, model: google/gemma-4-31b-it:free}
+  # OmniRoute's providers (2026-11-17): each is used only when the owner has given it a key; without one it is skipped with a printed note
+  - {provider: sambanova, model: "sambanova/gpt-oss-120b"}
+  - {provider: sambanova, model: "sambanova/Meta-Llama-3.3-70B-Instruct"}
+  - {provider: sambanova, model: "sambanova/DeepSeek-V3.2"}
+  - {provider: nara, model: "nara/mistral-large"}
+  - {provider: nara, model: "nara/qwen3.8-27b"}
+  - {provider: nara, model: "nara/mistral-medium-3-5"}
+  - {provider: nara, model: "nara/minimax-m3-free"}
+  - {provider: xkiro, model: "xkiro/minimax/minimax-m3:free"}
+  - {provider: xkiro, model: "xkiro/mistralai/mistral-large-2512"}
+  - {provider: xkiro, model: "xkiro/deepseek/deepseek-v3.2"}
+  - {provider: xkiro, model: "xkiro/qwen/qwen3.6-plus:free"}
+  - {provider: llm7, model: "llm7/gpt-4o-mini-2024-07-18"}
+  - {provider: llm7, model: "llm7/deepseek-r1-0528"}
+  - {provider: pollinations, model: "pollinations/openai-fast"}
+  - {provider: pollinations, model: "pollinations/mistral"}
+  - {provider: airforce, model: "api-airforce/qwen/qwen3-32b"}
+  - {provider: airforce, model: "api-airforce/moonshot/kimi-k2.6"}
+  - {provider: bluesminds, model: "bluesminds/gpt-4.1-mini"}
+  - {provider: bluesminds, model: "bluesminds/deepseek-chat"}
+  - {provider: bazaarlink, model: "bazaarlink/auto:free"}
