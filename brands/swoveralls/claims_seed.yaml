@@ -1,0 +1,67 @@
+# Claims the story-bank research could NOT stand behind for this brand (13): each is a gap the research itself recorded, copied from its 'Gaps / not found' section. Nothing is invented.
+# The tool loads these into the claims ledger as blocked / unverified / conflicted (never verified); only the owner marks a claim verified, in the Claims tab's Decision column.
+- text: Thrillist article
+  category: press
+  status: blocked
+  reason: 'Thrillist article: the breakthrough feature is confirmed by Side Hustle School, but the Thrillist article itself (date, URL, headline) was not found. Do not cite a Thrillist date or link until verified.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Fatherly / Business Insider first articles
+  category: press
+  status: blocked
+  reason: 'Fatherly / Business Insider first articles: confirmed only by the founder''s account in Starter Story; the article URLs and dates were not verified.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Reddit customer stories
+  category: press
+  status: unverified
+  reason: 'Reddit customer stories: a site:reddit.com search for Swoveralls returned no results. No Reddit threads were found to quote. (This does not prove none exist — only that none were found via search.)'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Awards
+  category: award
+  status: blocked
+  reason: 'Awards: no awards found in any source searched. Do not claim any.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Funding / valuation beyond crowdfunding
+  category: figure
+  status: blocked
+  reason: 'Funding / valuation beyond crowdfunding: no outside investment found. The "$4 million annual revenue (late 2023)" and "$5 million net worth (2025)" figures come from third-party Shark Tank recap sites (Shark Tank Recap, Shark Tank Blog, Geeks Around Globe), not from the founder or the brand — treat as estimates, not facts.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Conflicting figures — flag before using
+  category: other
+  status: conflicted
+  reason: 'Conflicting figures — flag before using:'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: 'First-year sales: Starter Story (founder) and Side Hustle School say ~$65,000; W'
+  category: figure
+  status: conflicted
+  reason: 'First-year sales: Starter Story (founder) and Side Hustle School say ~$65,000; Washington Square News (2019-04-24) says "over $230,000 in the first year". The $230,000 figure is consistently reported elsewhere as total sales by the April 2019 pitch. Use $65k for year one and $230k for sales-to-pitch.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: 'Sample price: Starter Story says the single sample was "about $80"; Side Hustle '
+  category: figure
+  status: conflicted
+  reason: 'Sample price: Starter Story says the single sample was "about $80"; Side Hustle School says quoted $150, negotiated down to $111. Do not use a sample price without noting the conflict.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: 'Kickstarter totals: $75,000 (Kickstarter) + $33,000 (Indiegogo) = ~$108,000 per '
+  category: figure
+  status: conflicted
+  reason: 'Kickstarter totals: $75,000 (Kickstarter) + $33,000 (Indiegogo) = ~$108,000 per the founder; some recap sites report $108,396 (Indiegogo alone) or add ~$75,000 from Backer Club. Use the founder''s figures.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Giveback org list on the About page
+  category: origin
+  status: unverified
+  reason: 'Giveback org list on the About page: the page text ("We are proud supporters and members of the following organizations:") did not render the list in the crawl. The three orgs named here (1% for the Planet, Urban Pathways, Israel Lacrosse Association) come from the 360 Magazine release — verify against the live About page before using the list as complete.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Exact first-sale date
+  category: origin
+  status: unverified
+  reason: 'Exact first-sale date: only "September 2017" (pitch) / "~18 months before April 2019" (Starter Story). No exact day published.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Founder interviews beyond the above
+  category: press
+  status: unverified
+  reason: 'Founder interviews beyond the above: no podcast appearances other than Side Hustle School (episodes 394 and 3042) were found. No TV appearances beyond Shark Tank were found.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Customer interviews beyond Elizabeth and Lance
+  category: press
+  status: unverified
+  reason: 'Customer interviews beyond Elizabeth and Lance: the brand''s Comfy Interviews page and Customer of the Month pages exist but the full index of entries was not enumerated. More customer stories may exist on swoveralls.com/pages/comfyinterviews and the customer-of-the-month pages.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
