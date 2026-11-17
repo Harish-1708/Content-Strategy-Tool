@@ -32,6 +32,13 @@ _STOP = set("a an the of and or to in on for with is are was were be by it its t
 
 # A line containing one of these never enters a story-bank file: a customer's own medical condition (the plan said EXCLUDE it; the review stays on the brand's site, not in our material).
 EXCLUDE_MARKERS = ("CRPS & nerve damage",)
+# ... and any line where a customer discloses their OWN medical condition (first person + a condition), so a differently worded disclosure in a future refresh is kept out as well.
+MEDICAL_DISCLOSURE = re.compile(r"\b(I|I've|my)\b[^.\n]{0,80}\b(CRPS|nerve damage|cancer|arthritis|diabet\w*|disabilit\w*|disabled|chronic (pain|illness|fatigue|condition)|fibromyalgia|multiple sclerosis|epilep\w*|"
+                                r"depress\w*|anxiety disorder|PTSD|autis\w*|ADHD|diagnos\w*|chemo\w*|surgery|surgeries|amputat\w*|wheelchair|lupus|crohn\w*|migraine\w*)", re.I)
+
+
+def is_medical_disclosure(line):
+    return any(marker in line for marker in EXCLUDE_MARKERS) or bool(MEDICAL_DISCLOSURE.search(line))
 
 
 class CanonError(Exception):
@@ -98,16 +105,28 @@ def _expand(sentence, gate):
     return out
 
 
+def claim_key(text):
+    """A claim's NAME: what comes before the first colon or dash ("Sample price: Starter Story says ..." is named "Sample price"), at most 12 words. The long explanation after it is not what identifies the claim."""
+    key = re.split(r"\s*[:—]\s+", (text or "").strip(), maxsplit=1)[0]
+    return " ".join(key.split()[:12])
+
+
 def _anchors(claim, gate):
-    """The distinctive words of a claim's own title (its name): what makes a sentence about THIS claim, whatever its wording."""
+    """The distinctive words of a claim's NAME: what makes a sentence about THIS claim, whatever its wording. Taken from the name only, never from the long explanation that follows it (a word like
+    'quoted' deep in an explanation once blocked an unrelated sentence)."""
     skip = set(gate["generic_words"])
-    return {w for w in _words(claim["text"]) if len(w) >= 4 and w not in skip and not w.isdigit()} | {w for w in _words(claim["text"]) if re.search(r"\d", w) and len(w) >= 2}
+    name = claim_key(claim["text"])
+    return {w for w in _words(name) if len(w) >= 4 and w not in skip and not w.isdigit()} | {w for w in _words(name) if re.search(r"\d", w) and len(w) >= 2}
 
 
 def _share(sentence_words, claim):
     """How much of the sentence is made of the claim's own text and reason."""
     claim_words = _words(claim["text"] + " " + (claim.get("reason") or ""))
     return len(sentence_words & claim_words) / len(sentence_words) if sentence_words else 0.0
+
+
+def _line_hash(line):
+    return hashlib.sha256(line.strip().encode("utf-8")).hexdigest()[:16]
 
 
 def claim_id(brand, text):
@@ -121,22 +140,26 @@ class Registry:
         self.brand, self.path = brand, _dir(data_root, brand) / "events.ndjson"
         self.gate_settings = gate if gate is not None else load_gate()
         self.damaged = 0
+        self.chain_problems = []                                                   # lines that do not follow the line before them (an edit, a deletion or a reordering of the log)
         self.rejected = []                                                         # events the replay ignored because they break the rules (a decision by a non-owner, a transition that is not allowed)
         self._events = self._read()
 
     def _read(self):
-        events, self.damaged = [], 0
+        events, self.damaged, self.chain_problems, before = [], 0, [], None
         if self.path.is_file():
-            for line in self.path.read_text(encoding="utf-8").splitlines():
+            for number, line in enumerate(self.path.read_text(encoding="utf-8").splitlines(), 1):
                 if not line.strip():
                     continue
                 try:
                     event = json.loads(line)
                     if not isinstance(event, dict) or "kind" not in event:
                         raise ValueError
+                    if "prev" in event and before is not None and event["prev"] != _line_hash(before):
+                        self.chain_problems.append(f"line {number} does not follow the line before it: the log was edited, shortened or reordered")
                     events.append(event)
                 except ValueError:
                     self.damaged += 1                                            # a damaged line is counted and skipped, never a crash and never rewritten
+                before = line
         return events
 
     def append(self, kind, actor, at, **payload):
@@ -145,6 +168,12 @@ class Registry:
         if not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", str(at or "")):
             raise CanonError(f"{at!r} is not a UTC timestamp like 2026-11-17T08:00:00Z")
         event = {"n": len(self._events) + 1, "at": at, "kind": kind, "actor": actor, **payload}
+        last = None
+        if self.path.is_file():
+            lines = [l for l in self.path.read_text(encoding="utf-8").splitlines() if l.strip()]
+            last = lines[-1] if lines else None
+        if last is not None:
+            event["prev"] = _line_hash(last)                                       # each line carries the hash of the line before it: an edit in the middle shows
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with self.path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(event, ensure_ascii=False, sort_keys=True) + "\n")
@@ -158,7 +187,7 @@ class Registry:
         for e in self._events:
             kind = e["kind"]
             if kind == "canon_proposed":
-                canon[e["id"]] = {"id": e["id"], "section": e["section"], "text": e["text"], "status": "proposed", "source": e.get("source", ""), "source_sha": e.get("source_sha", ""), "proposed_at": e["at"], "decided_at": ""}
+                canon[e["id"]] = {"id": e["id"], "section": e["section"], "text": e["text"], "status": "proposed", "source": e.get("source", ""), "source_sha": e.get("source_sha", ""), "proposed_at": e["at"], "decided_at": "", "gate_note": e.get("note", "")}
             elif kind == "canon_decided" and e.get("id") in canon:
                 if e.get("actor") != OWNER or canon[e["id"]]["status"] != "proposed" or e.get("decision") not in ("approved", "rejected"):
                     self.rejected.append(f"event {e.get('n')}: a canon decision that is not the owner's, or not on a proposal, was ignored")
@@ -174,6 +203,9 @@ class Registry:
                     self.rejected.append(f"event {e.get('n')}: a claim added as verified by someone other than the owner was ignored")
                     continue
                 claims.setdefault(e["id"], {"id": e["id"], "text": e["text"], "category": e["category"], "status": e["status"], "source": e.get("source", ""), "reason": e.get("reason", ""), "added_at": e["at"], "decided_at": ""})
+            elif kind == "claim_conflict" and e.get("id") in claims and e.get("with") in claims:
+                claims[e["id"]].setdefault("conflicts_with", []).append(e["with"])
+                claims[e["with"]].setdefault("conflicts_with", []).append(e["id"])                  # both sides know about it; neither changes status
             elif kind == "claim_status" and e.get("id") in claims:
                 if e.get("status") == "verified" and e.get("actor") != OWNER:
                     self.rejected.append(f"event {e.get('n')}: a verification by someone other than the owner was ignored")
@@ -182,13 +214,14 @@ class Registry:
         return {"canon": canon, "claims": claims}
 
     # ---- the canon ------------------------------------------------------------------------------------------
-    def propose_canon(self, section, text, source, source_sha, at):
+    def propose_canon(self, section, text, source, source_sha, at, note=""):
         """A skill's output, PROPOSED. It is not canonical until the owner approves it."""
         if not (section or "").strip() or not (text or "").strip():
             raise CanonError("a canon proposal needs a section and a text")
-        used = [int(m.group(1)) for e in self._events if e["kind"] == "canon_proposed" for m in [re.fullmatch(r"canon-(\d+)", str(e.get("id")))] if m]
+        raw = self.path.read_text(encoding="utf-8") if self.path.is_file() else ""
+        used = [int(n) for n in re.findall(r"canon-(\d+)", raw)]                         # every id ever written, even on a damaged line
         n = 1 + max(used or [0])                                                       # one more than the highest id ever used: a skipped damaged line cannot make an id repeat
-        return self.append("canon_proposed", TOOL, at, id=f"canon-{n:04d}", section=section.strip(), text=text.strip(), source=source, source_sha=source_sha)["id"]
+        return self.append("canon_proposed", TOOL, at, id=f"canon-{n:04d}", section=section.strip(), text=text.strip(), source=source, source_sha=source_sha, note=note)["id"]
 
     def decide_canon(self, entry_id, decision, actor, at, note=""):
         if actor != OWNER:
@@ -223,6 +256,26 @@ class Registry:
         if status == "verified" and actor != OWNER:
             raise CanonError("only the owner marks a claim verified")
         return self.append("claim_status", actor, at, id=cid, status=status, source=source, reason=reason)
+
+    def add_conflict(self, text, category, source, reason, against_id, at):
+        """New research disagrees with a claim already in the ledger: the NEW version is added as conflicted and linked to the old one. The old claim is never touched (a verified one stays verified);
+        both stay for the owner to decide."""
+        if against_id not in self.state()["claims"]:
+            raise CanonError(f"{against_id} is not in the ledger")
+        cid = self.add_claim(text, category, "conflicted", source, reason, TOOL, at)
+        if not any(e["kind"] == "claim_conflict" and e.get("id") == cid and e.get("with") == against_id for e in self._events):
+            self.append("claim_conflict", TOOL, at, id=cid, **{"with": against_id})
+        return cid
+
+    def record_sources(self, urls, at):
+        """The pages a refresh has already read (so the next refresh does not read them again)."""
+        seen = self.refresh_seen()
+        for url in urls:
+            if url not in seen:
+                self.append("refresh_source", TOOL, at, url=url)
+
+    def refresh_seen(self):
+        return {e["url"] for e in self._events if e["kind"] == "refresh_source" and e.get("url")}
 
     def gate(self, text):
         """{verdict, findings}. Each sentence that says something checkable (an award, press, a ranking, a health claim, a figure, a customer count) is read against the ledger:
@@ -320,7 +373,7 @@ def split_story_bank(md):
         if needle not in part.lower():
             raise CanonError(f"the {slug} part of the story bank does not mention the brand: the file's order changed")
         own_header = re.sub(r"^#[^\n]*", f"# Story Bank Material — {titles[slug]}", header, count=1)           # each brand's file carries its own title, not the combined one
-        kept = [l for l in part.split("\n") if not any(marker in l for marker in EXCLUDE_MARKERS)]
+        kept = [l for l in part.split("\n") if not is_medical_disclosure(l)]
         out[slug] = own_header + "\n\n---\n\n" + "\n".join(kept).strip() + "\n"
     return out
 
