@@ -1,0 +1,21 @@
+# How the claims gate (contentintel/canon.py) reads a piece of text against a brand's claims ledger. Change a value here, not in the code.
+# A sentence is only looked at when it says something checkable (an award, press, a ranking, a health claim, a figure, a customer count: the patterns below).
+threshold: 0.6                    # a sentence whose words are at least this share of a claim's text and reason counts as that claim
+# Short forms people use for a claim's name: the gate reads the long form (so "GMA" is "Good Morning America").
+aliases:
+  gma: good morning america
+  si: sports illustrated
+  gq: gq magazine
+  bi: business insider
+  nyt: new york times
+# A sentence that denies something is not repeating it: it is sent to review, never blocked on its own.
+negations: ["no", "not", "never", "without", "zero", "none", "n't", "nor"]          # quoted: an unquoted no is read by YAML as false
+# Words too common in a claim's title to identify it (everything else in the title is a distinctive word of that claim).
+generic_words: [article, articles, claimed, claims, figure, figures, found, public, information, media, features, first, customer, customers, stories, story, interviews, interview, beyond, brand, brands,
+                exact, date, dates, full, name, spelling, detail, details, team, manufacturing, retailer, retailers, locations, threads, discussion, forum, presence, independent, citation, estimate,
+                conflicts, conflicting, flag, before, using, year, wording, month, size, price, sample, launch, segment, involvement, founder, founders, text, retrievable, case, studies, long, form,
+                there, their, these, those, which, while, with, from, have, been, were, would, about, other, some, such, only, also]
+# Extra wording that makes a sentence checkable, added to the built-in patterns (a regular expression per category).
+extra_sensitive:
+  press: 'quoted (in|by)|\bmagazine\b|\beditor|top pick|\bsports illustrated\b|\bthrillist\b|\bbusiness insider\b|\bfatherly\b'
+  award: '\bwin\b|\bwins\b|\bwinners?\b|\bfinalists?\b|\bshelfies?\b'
