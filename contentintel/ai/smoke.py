@@ -41,7 +41,7 @@ def expected_enabled(registry, environ):
     provider called directly are never sent through the gateway. Every other model must be off."""
     out = set()
     for p in registry.providers.values():
-        if p.id == "claude" or p.direct or not p.enabled:
+        if p.id == "claude" or p.direct or p.omniroute or not p.enabled:
             continue
         if p.credential_env and gw._credential(p, environ) is None:
             continue
@@ -63,7 +63,7 @@ def keyless_check(rows, registry):
     """(ok, detail): every approved model of an enabled key-less provider (Kilo) must sit on a platform that holds the gateway's stored 'no-key' row, or the gateway answers 'no key configured for their
     platform' (live check #21, Kilo). Rows the gateway does not list are not judged."""
     seen = {(r.get("platform"), r.get("modelId") or r.get("model_id")): int(r.get("keyCount") or 0) for r in rows if r.get("platform") != "custom"}
-    wanted = [(p.gateway_platform, m.id) for p in registry.providers.values() if p.enabled and p.id != "claude" and not p.direct and not p.credential_env for m in p.models if m.approved]
+    wanted = [(p.gateway_platform, m.id) for p in registry.providers.values() if p.enabled and p.id != "claude" and not p.direct and not p.omniroute and not p.credential_env for m in p.models if m.approved]
     missing = sorted(k for k in wanted if k in seen and seen[k] < 1)
     return not missing, f"{sum(1 for k in wanted if seen.get(k, 0) >= 1)} key-less model(s) have their stored row" + (": missing for " + ", ".join(f"{p}/{m}" for p, m in missing[:4]) if missing else "")
 
