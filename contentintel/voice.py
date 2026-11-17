@@ -348,11 +348,13 @@ class ApifyVoice:
     CEILINGS = {"tiktok": 0.50, "instagram": 0.25}                      # the least each actor accepts per call
     HARD_CEILING = 1.00                                                   # whatever an override says, a call can never be allowed more than this
 
-    def __init__(self, apify, ledger, *, per_run=40, monthly=60, shared_cap=100, max_cost_usd=None, normalize=None, budget_fn=None):
+    def __init__(self, apify, ledger, *, per_run=40, monthly=60, shared_cap=100, max_cost_usd=None, normalize=None, budget_fn=None, run_usd_cap=3.0):
         self.apify, self.ledger = apify, ledger
         self.per_run, self.monthly, self.shared_cap = (max(1, min(300, int(per_run))), max(1, min(600, int(monthly))), max(0, min(10000, int(shared_cap))))          # clamped here too, not only by the caller
         self.budget_fn = budget_fn                                           # () -> dollars Apify says are left across all keys, or None when unknown
         self.max_cost = None if max_cost_usd is None else max(0.0, float(max_cost_usd))
+        self.run_usd_cap = max(0.25, min(10.0, float(run_usd_cap)))               # the most one workflow run may COMMIT (the sum of the ceilings of its calls): items are capped, but many small calls would otherwise add up in money
+        self.committed_usd = 0.0
         self.asks_made = 0
         self.attempted = 0                                                   # calls actually made to Apify (an ask that every source refused makes none)
         self.normalize = normalize
@@ -386,6 +388,9 @@ class ApifyVoice:
             if source == "instagram" and not tag:                                   # decided before any money is looked at: nothing to ask, nothing to read
                 notes.append(f"apify instagram for {topic!r}: not asked (the topic has no letters or digits to make a hashtag from)")
                 continue
+            if self.committed_usd + self.ceiling(source) > self.run_usd_cap:
+                notes.append(f"apify {source} for {topic!r}: not asked (this run has already committed ${self.committed_usd:.2f} of its ${self.run_usd_cap:.2f} spending cap; a call's ceiling is what it can cost at most)")
+                continue
             left = self.budget_fn() if self.budget_fn is not None else None          # the best single key's money: a call runs on ONE key
             if left is not None and left < self.ceiling(source):
                 notes.append(f"apify {source} for {topic!r}: not asked (Apify reports ${left:.2f} left on the best key this cycle, less than this call's ${self.ceiling(source):g} ceiling)")
@@ -394,6 +399,7 @@ class ApifyVoice:
             def payload_for(count):
                 return {"searchQueries": [topic], "resultsPerPage": count} if source == "tiktok" else {"hashtags": [tag], "resultsType": "posts", "resultsLimit": count}
             self.attempted += 1
+            self.committed_usd += self.ceiling(source)
             try:
                 try:
                     raw = self.apify.run(self.ACTORS[source], payload_for(n), max_items=n, max_cost_usd=self.ceiling(source))
@@ -401,6 +407,10 @@ class ApifyVoice:
                     if "timed-out" not in str(exc).lower() or isinstance(exc, ApifyRunUnfinished) or n < 2:
                         raise                                                   # an unfinished run may still be going server-side: starting it again would run, and charge, twice
                     n = n // 2
+                    if self.committed_usd + self.ceiling(source) > self.run_usd_cap:
+                        notes.append(f"apify {source} for {topic!r}: the actor run timed out and a second try would pass this run's ${self.run_usd_cap:.2f} spending cap, so it was not made")
+                        raise
+                    self.committed_usd += self.ceiling(source)
                     notes.append(f"apify {source} for {topic!r}: the actor run timed out on Apify's side; asking once more for {n}")
                     raw = self.apify.run(self.ACTORS[source], payload_for(n), max_items=n, max_cost_usd=self.ceiling(source))
             except Exception as exc:                                              # noqa: BLE001 - a provider's refusal, quota or outage is reported, never raised
