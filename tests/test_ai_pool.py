@@ -43,7 +43,7 @@ def test_every_lane_draws_on_the_pool_except_the_three_that_stay_with_claude():
     assert {n for n, lane in LANE_MAP.items() if not lane.use_pool} == CLAUDE_LANES
     for name in CLAUDE_LANES:
         assert [c["provider"] for c in LANE_MAP[name].chain] == ["claude"] and LANE_MAP[name].claude_leads
-    assert len([n for n, lane in LANE_MAP.items() if lane.use_pool]) == 9
+    assert len([n for n, lane in LANE_MAP.items() if lane.use_pool]) == 13
 
 
 def test_a_lane_has_its_own_preferred_routes_first_then_the_pool_without_repeats_then_claude(tmp_path):
@@ -116,9 +116,9 @@ def test_the_pool_loader_refuses_what_would_make_the_pool_unsafe_or_confusing(tm
 
 def test_the_lane_caps_are_raised_so_the_stronger_models_can_be_used_fully():
     caps = {n: lane.max_tokens for n, lane in LANE_MAP.items()}
-    assert caps == {name: 8000 for name in LANE_MAP} and len(caps) == 12                                              # every lane, none left lower: quality comes first
+    assert caps == {name: 8000 for name in LANE_MAP} and len(caps) == 16                                              # every lane, none left lower: quality comes first
     was = {"research_extraction": 1500, "competitor_intelligence": 1500, "audience_voice": 1500, "formula_analysis": 800, "trend_opportunity": 2000, "strategic_reasoning": 2500,
-           "content_ideation": 1800, "brief_generation": 3000, "production_support": 1500, "validation_qa": 1200, "general_text": 2000, "general_json": 2500}
+           "content_ideation": 1800, "brief_generation": 3000, "production_support": 1500, "validation_qa": 1200, "general_text": 2000, "general_json": 2500, "foundation_json": 2500, "story_extract_json": 2500, "story_review_json": 2500, "conflict_check_json": 2500}
     assert all(caps[n] >= 2 * was[n] for n in caps) and min(caps.values()) == 8000
 
 
