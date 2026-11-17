@@ -14,6 +14,7 @@ from . import acceptance as acceptance_mod
 from . import autoseeds as autoseeds_mod
 from . import browser as browser_mod
 from . import apify as apify_mod
+from . import batch2_cli as batch2_mod
 from .claude_client import Claude
 from .contract import Failure, classify_message
 from . import contract as contract_mod
@@ -187,6 +188,7 @@ def build_parser():
     p.add_argument("--debug-dir", default="debug")
 
     tools_mod.add_parsers(sub, _common)
+    batch2_mod.add_parsers(sub, _common)
 
     p = sub.add_parser("health", help="show how each source and route is doing, and which ones have earned trust")
     _common(p)
@@ -1267,6 +1269,10 @@ def main(argv=None):
             return tools_mod.run_voice(args, store, sync_mod.utc_now())
         if args.cmd == "analyze":
             return tools_mod.run_analyze(args)
+        if args.cmd == "skills":
+            return batch2_mod.run_skills(args, store, sync_mod.utc_now())
+        if args.cmd == "canon":
+            return batch2_mod.run_canon(args, store, sync_mod.utc_now())
         if args.cmd == "analytics":
             return tools_mod.run_analytics(args, store, sync_mod.utc_now())
         if args.cmd == "apify-budget":

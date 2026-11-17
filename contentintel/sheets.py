@@ -258,6 +258,35 @@ def _read_competitor_decisions(spreadsheet, brand, store, now, report, dry_run):
         report.notes.append(f"Competitor decisions not read: {exc}")
 
 
+def _canon_tabs(brand, store, now, report):
+    """The Canon and Claims tabs (the registries, Batch 2): none before the brand has registry events. Never stops the rest of the sheet."""
+    try:
+        from . import canon
+        return canon.sheet_tabs(store.data_dir, brand.slug)
+    except Exception as exc:
+        report.notes.append(f"Canon and Claims tabs skipped: {exc}")
+        return []
+
+
+def _read_canon_decisions(spreadsheet, brand, store, now, report, dry_run):
+    """Read the owner's Decision column in the Canon and Claims tabs (approve / reject, verified / blocked ...) and record it, before the tabs are rewritten. Only the owner can approve canon or verify a
+    claim: this is the one place those decisions enter. Never stops the sheet update."""
+    try:
+        from . import canon
+        titles = [w.title for w in _call(spreadsheet.worksheets)]
+        if canon.CANON_TAB not in titles and canon.CLAIMS_TAB not in titles:
+            return
+        read = lambda title: canon.rows_from_sheet(_call(_call(spreadsheet.worksheet, title).get_all_values)) if title in titles else []      # noqa: E731
+        canon_rows, claim_rows = read(canon.CANON_TAB), read(canon.CLAIMS_TAB)
+        if dry_run:
+            report.notes.append(f"Canon and Claims decisions: {max(0, len(canon_rows) - 1)} + {max(0, len(claim_rows) - 1)} row(s) seen (dry run: none applied)")
+            return
+        done = canon.Registry(store.data_dir, brand.slug).owner_decisions(canon_rows, claim_rows, at=now)
+        report.notes.append(f"Canon and Claims decisions read from the sheet: {done['applied']} applied" + (f"; ignored: {'; '.join(done['ignored'][:3])}" if done["ignored"] else ""))
+    except Exception as exc:
+        report.notes.append(f"Canon and Claims decisions not read: {exc}")
+
+
 def _read_controls(spreadsheet, brand, store, now, report, dry_run):
     """Read the values a person changed in the Controls tab (on/off, numbers, text) and record them, before the tab is rewritten. Never stops the sheet update."""
     if spreadsheet is None:                                      # a dry run for a sheet that does not exist yet has nothing to read
@@ -823,7 +852,8 @@ def update_brand_sheet(brand, store, spreadsheet, now, dry_run=False, report=Non
 
     _read_competitor_decisions(spreadsheet, brand, store, now, report, dry_run)
     _read_controls(spreadsheet, brand, store, now, report, dry_run)
-    for tab in _observatory_tabs(brand, store, now, report) + _controls_tabs(brand, store, now, report) + _connection_tabs(store, now, report) + _session_tabs(store, now, report) + _ai_tabs(store, now, report):     # what the competitor observatory has found, and how the AI providers are doing
+    _read_canon_decisions(spreadsheet, brand, store, now, report, dry_run)
+    for tab in _observatory_tabs(brand, store, now, report) + _canon_tabs(brand, store, now, report) + _controls_tabs(brand, store, now, report) + _connection_tabs(store, now, report) + _session_tabs(store, now, report) + _ai_tabs(store, now, report):     # what the competitor observatory has found, and how the AI providers are doing
         ws = _ensure_tab(spreadsheet, tab["title"], report, dry_run, created)
         rows = {key: {c: _typed(c, _plain(row.get(c))) for c in tab["columns"]} for key, row in tab["rows_by_key"].items()}
         _sync_table(ws, tab=tab["title"], columns=tab["columns"], rows_by_key=rows, key_col=tab["key_col"], report=report, dry_run=dry_run,
