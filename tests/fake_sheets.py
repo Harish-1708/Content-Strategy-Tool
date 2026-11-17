@@ -101,6 +101,15 @@ class FakeWorksheet:
             self._write_block(top, left, item["values"])
         self.write_calls.append("batch_update")
 
+    def batch_clear(self, ranges):
+        for ref in ranges:
+            top, left = split_a1(ref.split(":")[0])
+            bottom, right = split_a1(ref.split(":")[-1])
+            for r in range(top, bottom + 1):
+                for c in range(left, right + 1):
+                    self.cells.pop((r, c), None)
+        self.write_calls.append("batch_clear")
+
     def append_rows(self, values, value_input_option=ValueInputOption.raw, table_range=None):
         live = self._live()
         start = max((r for r, _ in live), default=0) + 1
