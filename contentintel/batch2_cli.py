@@ -27,7 +27,7 @@ def add_parsers(sub, common):
     p.add_argument("--max-queries", type=int, default=12, help="refresh: searches per brand")
     p.add_argument("--max-pages", type=int, default=12, help="refresh: pages read per brand")
     p.add_argument("--max-new", type=int, default=20, help="refresh: new entries added per brand in one refresh (the pages after that are left for the next refresh and spend no AI calls)")
-    p.add_argument("--max-calls", type=int, default=0, help="foundation and reclassify-conflicts: at most this many model calls in one run (0 = no limit); a retry counts")
+    p.add_argument("--max-calls", type=int, default=0, help="at most this many model calls in one run (a retry counts; one batch of up to 20 pairs is one call). 0 = no limit for foundation and reclassify-conflicts, 48 for refresh")
     p.add_argument("--skills-config", default=SK.CONFIG_FILE, help="foundation: the skills policy file")
     p.add_argument("--skills-dir", default="", help="foundation: the checkout of the skills repository")
 
@@ -131,7 +131,7 @@ def run_canon(args, store, now, *, clients=None):
             except Exception:                                                                  # noqa: BLE001 - a brand file problem must not stop the refresh
                 name = slug
             seeds = [s["text"] for s in CANON.load_seed(Path(args.brands_dir) / slug / "claims_seed.yaml")]
-            rep = SR.run(reg, name, seeds, search=search, get=get, claude=claude, now=now, max_queries=args.max_queries, max_pages=args.max_pages, max_new=args.max_new)
+            rep = SR.run(reg, name, seeds, search=search, get=get, claude=claude, now=now, max_queries=args.max_queries, max_pages=args.max_pages, max_new=args.max_new, max_calls=args.max_calls or 48)
             print(f"canon: {slug}: refresh: {rep['queries']} searches, {rep['pages']} pages read, {rep['facts_seen']} facts seen: {rep['added']} added as UNVERIFIED, {rep['conflicts']} kept as CONFLICTS "
                   f"for you to decide, {rep['duplicates']} already known, {len(rep['rejected'])} dropped (no source, quotation not in the page, or not confirmed); {rep['calls']} AI call(s). "
                   "Nothing was deleted or changed, and nothing is verified or canon.")
@@ -180,31 +180,20 @@ def run_canon(args, store, now, *, clients=None):
                 worst = max(worst, 1)
                 continue
             report = {"calls": 0, "errors": 0, "notes": []}
-            taken_back = kept = 0
             claims = reg.state()["claims"]
-            for cid, c in list(claims.items()):
-                if c["status"] != "conflicted" or c.get("decided_at") or not str(c.get("source", "")).startswith("http") or not c.get("conflicts_with"):
-                    continue
-                if args.max_calls and report["calls"] >= args.max_calls:
-                    print(f"canon: {slug}: the limit of {args.max_calls} model call(s) was reached; run it again to continue")
-                    break
-                real = False
-                for other in c["conflicts_with"]:
-                    report["calls"] += 1
-                    try:
-                        relation = (claude.json_task(SR.RELATION_SYSTEM, f"Brand: {slug}\nA (already in the ledger): {claims[other]['text']} {claims[other].get('reason') or ''}\nB (new): {c['text']}", 200) or {}).get("relation")
-                    except Exception as exc:                                                    # noqa: BLE001
-                        report["errors"] += 1
-                        relation = "contradicts"                                                  # no answer: keep it as a conflict for the owner, never decide for them
-                        print(f"canon:   {cid}: could not be re-checked ({SR._why(exc)}): left as a conflict")
-                    if relation == "contradicts":
-                        real = True
-                        break
-                if real:
+            todo = [(cid, other) for cid, c in claims.items() if c["status"] == "conflicted" and not c.get("decided_at") and str(c.get("source", "")).startswith("http") and c.get("conflicts_with")
+                    for other in c["conflicts_with"] if other in claims]
+            relations = SR.classify_pairs(claude, slug, [(claims[o]["text"] + " " + (claims[o].get("reason") or ""), claims[c]["text"]) for c, o in todo], report=report, fallback="contradicts", max_calls=args.max_calls or None)
+            real = {c for (c, _o), r in zip(todo, relations) if r == "contradicts"}                # no answer: it stays a conflict, the owner decides
+            taken_back = kept = 0
+            for cid in dict.fromkeys(c for c, _o in todo):
+                if cid in real:
                     kept += 1
                 else:
                     reg.reconsider_conflict(cid, now, "re-checked: the two statements are about different things or say the same thing; not a conflict")
                     taken_back += 1
+            for note in report["notes"]:
+                print(f"canon:   note: {note}")
             print(f"canon: {slug}: conflicts re-checked: {kept} kept as real conflicts, {taken_back} taken back to UNVERIFIED (the link and the old claim are untouched; nothing deleted); {report['calls']} AI call(s)")
             if report["errors"] and not (kept or taken_back):
                 worst = max(worst, 1)
