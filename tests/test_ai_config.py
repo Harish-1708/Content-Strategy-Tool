@@ -168,12 +168,12 @@ def test_missing_lanes_file_is_refused(tmp_path):
 
 # ---- the shipped files -----------------------------------------------------------------------------------------------------------
 
-ROLLED_OUT = ["cloudflare", "cohere", "google", "groq", "kilo", "mistral", "nvidia", "ollama", "openrouter", "zhipu"]        # the providers the owner has approved (Update 57 added cohere, kilo, nvidia, ollama and zhipu)
+ROLLED_OUT = ["airforce", "bazaarlink", "bluesminds", "cloudflare", "cohere", "google", "groq", "kilo", "llm7", "mistral", "nara", "nvidia", "ollama", "openrouter", "pollinations", "sambanova", "xkiro", "zhipu"]        # the providers the owner has approved (Update 57 added cohere, kilo, nvidia, ollama and zhipu)
 
 
 def test_the_shipped_registry_enables_only_checked_providers_and_claude():
     reg = R.load_registry(SHIPPED_P)
-    assert len(reg.providers) == 86
+    assert len(reg.providers) == 87
     assert sorted(p.id for p in reg.providers.values() if p.enabled) == sorted(ROLLED_OUT + ["claude"])
     for p in reg.providers.values():
         if p.retired:
@@ -226,7 +226,7 @@ def test_claude_is_the_only_provider_that_may_receive_restricted_data_and_unappr
 def test_every_platform_in_the_pinned_gateway_is_in_the_registry_and_nowhere_else():
     reg = R.load_registry(SHIPPED_P)
     ids = {p["id"] for p in INVENTORY["platforms"]}
-    through_gateway = {pid for pid, p in reg.providers.items() if not p.direct and not p.retired}
+    through_gateway = {pid for pid, p in reg.providers.items() if not p.direct and not p.retired and not (p.omniroute and pid not in ids)}          # a provider only OmniRoute carries (BluesMinds) is not a platform of the pinned gateway
     assert len(ids) == 84 and through_gateway == (ids - {"openrouter"}) | {"claude"} and {pid for pid, p in reg.providers.items() if p.direct} == {"openrouter"}      # OpenRouter is called directly (GitHub Models, retired, has no endpoint)
     for pid in ids:
         assert reg.provider(pid).gateway_platform == pid
@@ -239,12 +239,12 @@ def test_the_registry_allowlist_is_a_subset_of_the_models_the_pinned_gateway_shi
     reg = R.load_registry(SHIPPED_P)
     shipped = {p["id"]: {m["modelId"] for m in p["models"]} for p in INVENTORY["platforms"]}
     for p in reg.providers.values():
-        if p.id == "claude" or p.direct or p.retired:                                       # a retired provider is a record: the pinned gateway no longer ships it
+        if p.id == "claude" or p.direct or p.retired or p.omniroute:                         # a retired provider is a record: the pinned gateway no longer ships it; an OmniRoute provider is not on FreeLLMAPI's platform list
             continue
         extra = {m.id for m in p.models} - shipped[p.id]
         assert extra == ADDED.get(p.id, set()), p.id                                           # only Kilo's two free routes are not in the pinned catalogue; the gateway's add-model call adds them
         assert all("add-model call adds it" in m.note for m in p.models if m.id in extra), p.id
-    assert sum(len(p.models) for p in reg.providers.values() if p.id != "claude" and not p.direct and not p.retired) == 87
+    assert sum(len(p.models) for p in reg.providers.values() if p.id != "claude" and not p.direct and not p.retired and not p.omniroute) == 85
 
 
 def test_the_shipped_lanes_load_against_the_allowlist_and_cover_the_ten_kinds_of_work_and_the_two_platform_lanes():
