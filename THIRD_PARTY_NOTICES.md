@@ -80,3 +80,8 @@ Each entry says what the platform does with the repository and under which licen
 - **awesome-opus5-5-videos** (https://github.com/yihui-dev/awesome-opus5-5-videos, MIT). Data only (`opus_video_prompts`): a snapshot of its 703 prompts is kept in reference/motion-prompts.json. The prompts belong to their creators and are always shown with their author and link.
 - **facebook-ads-library-mcp** (https://github.com/RamsesAguirre777/facebook-ads-library-mcp, MIT). Connected as a secondary reader (`fb_ads_library_mcp`): its card parser is re-written in contentintel/adlibrary_secondary.py and checked against the original on the same input.
 - **Openverse** (https://github.com/WordPress/openverse, MIT; each asset carries its own licence). Its hosted public API is used through contentintel/openverse.py; the repository is not run. Wikimedia Commons is the backup.
+
+## Update 70 (Batch 2): the Aaron marketing skills, connected externally
+
+- **aaron-marketing-skills** (https://github.com/aaron-he-zhu/aaron-marketing-skills, Apache-2.0). Connected externally and read-only (contentintel/skills.py): the whole repository is checked out at a pinned commit by the Skills and registries workflow and read at run time; nothing is copied or re-written here, so a skill is never stale, and its scripts are not run by the connection. Its skill texts are handed to the model as data. The licence is recorded, never used to cut scope: the tool is a personal, non-commercial project.
+

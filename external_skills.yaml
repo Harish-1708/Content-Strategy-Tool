@@ -1,0 +1,143 @@
+# The Aaron marketing skills, connected EXTERNALLY (Batch 2): the whole repository is checked out at a pinned commit and read at run time; nothing is copied or rebuilt here,
+# so a skill is never stale, and a change upstream shows up in the update report before anything adopts it.
+#
+# Skill text is DATA: it is read, hashed and handed to the model as a method to apply to the brand's own inputs. It never runs as a command of this tool, and the
+# repository's scripts are not run by this stage.
+repo:
+  url: https://github.com/aaron-he-zhu/aaron-marketing-skills
+  pinned_commit: 7932adf5176a9a3ba0e8995be0b3bdee97a330ff      # the commit this catalogue was built from (2026-11-16); change it only after reading the update report
+  checkout_path: external/aaron-marketing-skills   # where the workflows check it out (git-ignored); the AARON_SKILLS_DIR variable overrides it
+  licence: Apache-2.0       # recorded, never used to cut scope: the tool is a personal, non-commercial project
+  expected_skills: 120
+  max_skill_chars: 60000    # a skill text longer than this is cut and says so
+# Files the skills' auditors and registries need at run time (without them an auditor returns NOT_SCORED): the whole repository is checked out, these are verified present.
+runtime_files:
+  - scripts/rubric-score.py
+  - scripts/validate-audit-artifact.py
+  - scripts/registry-events.py
+  - scripts/connectors/experiment.py
+  - references/auditor-runbook.md
+# state: ready = can run on public data and the brand's own inputs now; waiting_for_access = built ready, paused until the stores' own numbers (GA4, Search Console, customer or
+# platform exports) exist: it stays on NEEDS_INPUT and never invents a number. auto_run: false = reachable on request, never started by a schedule or a chain (the 21 the report
+# judged not useful for this tool; cold-outbound-sequencer belongs to the separate email outreach tool).
+skills:
+  ad/activate/ad-account-auditor: {n: 1, verdict: conditional, state: ready, auto_run: true}
+  ad/activate/conversion-signal-qa: {n: 2, verdict: conditional, state: ready, auto_run: true}
+  ad/activate/conversion-value-mapper: {n: 3, verdict: not_useful, state: ready, auto_run: false}
+  ad/activate/placement-exclusion-manager: {n: 4, verdict: not_useful, state: ready, auto_run: false}
+  ad/orchestrate/ad-creative-builder: {n: 5, verdict: useful, state: ready, auto_run: true}
+  ad/orchestrate/ad-test-designer: {n: 6, verdict: useful, state: ready, auto_run: true}
+  ad/orchestrate/bid-strategy-planner: {n: 7, verdict: not_useful, state: ready, auto_run: false}
+  ad/orchestrate/landing-experience-checker: {n: 8, verdict: useful, state: ready, auto_run: true}
+  ad/research/audience-segment-builder: {n: 9, verdict: useful, state: waiting_for_access, auto_run: true}
+  ad/research/campaign-architect: {n: 10, verdict: conditional, state: waiting_for_access, auto_run: true}
+  ad/research/product-feed-optimizer: {n: 11, verdict: useful, state: ready, auto_run: true}
+  ad/research/search-term-miner: {n: 12, verdict: conditional, state: waiting_for_access, auto_run: true}
+  ad/scale/attribution-reconciler: {n: 13, verdict: conditional, state: waiting_for_access, auto_run: true}
+  ad/scale/budget-pacing-monitor: {n: 14, verdict: not_useful, state: ready, auto_run: false}
+  ad/scale/fatigue-frequency-manager: {n: 15, verdict: conditional, state: waiting_for_access, auto_run: true}
+  ad/scale/paid-measurement-loop: {n: 16, verdict: useful, state: ready, auto_run: true}
+  email/deliver/cold-outbound-sequencer: {n: 17, verdict: not_useful, state: ready, auto_run: false}
+  email/deliver/email-quality-auditor: {n: 18, verdict: conditional, state: ready, auto_run: true}
+  email/deliver/inbox-placement-monitor: {n: 19, verdict: not_useful, state: ready, auto_run: false}
+  email/deliver/send-experiment-designer: {n: 20, verdict: useful, state: ready, auto_run: true}
+  email/engage/dynamic-content-personalizer: {n: 21, verdict: conditional, state: ready, auto_run: true}
+  email/engage/email-creative-builder: {n: 22, verdict: useful, state: ready, auto_run: true}
+  email/engage/email-render-builder: {n: 23, verdict: not_useful, state: ready, auto_run: false}
+  email/engage/subject-line-lab: {n: 24, verdict: useful, state: ready, auto_run: true}
+  email/nurture/email-sequence-designer: {n: 25, verdict: conditional, state: ready, auto_run: true}
+  email/nurture/newsletter-monetization-planner: {n: 26, verdict: not_useful, state: ready, auto_run: false}
+  email/nurture/preference-frequency-manager: {n: 27, verdict: not_useful, state: ready, auto_run: false}
+  email/nurture/reactivation-specialist: {n: 28, verdict: conditional, state: ready, auto_run: true}
+  email/setup/deliverability-qa: {n: 29, verdict: not_useful, state: ready, auto_run: false}
+  email/setup/list-growth-designer: {n: 30, verdict: conditional, state: ready, auto_run: true}
+  email/setup/list-hygiene-monitor: {n: 31, verdict: not_useful, state: ready, auto_run: false}
+  email/setup/list-segment-builder: {n: 32, verdict: conditional, state: ready, auto_run: true}
+  influencer/activate/content-amplifier: {n: 33, verdict: useful, state: ready, auto_run: true}
+  influencer/activate/contract-helper: {n: 34, verdict: not_useful, state: ready, auto_run: false}
+  influencer/activate/creator-content-auditor: {n: 35, verdict: useful, state: ready, auto_run: true}
+  influencer/activate/outreach-manager: {n: 36, verdict: conditional, state: ready, auto_run: true}
+  influencer/report/landing-optimizer: {n: 37, verdict: conditional, state: ready, auto_run: true}
+  influencer/report/performance-analyzer: {n: 38, verdict: useful, state: ready, auto_run: true}
+  influencer/report/report-generator: {n: 39, verdict: conditional, state: ready, auto_run: true}
+  influencer/report/roi-calculator: {n: 40, verdict: useful, state: ready, auto_run: true}
+  influencer/scout/audience-mapper: {n: 41, verdict: useful, state: ready, auto_run: true}
+  influencer/scout/fit-scorer: {n: 42, verdict: useful, state: ready, auto_run: true}
+  influencer/scout/influencer-discovery: {n: 43, verdict: useful, state: ready, auto_run: true}
+  influencer/scout/trend-spotter: {n: 44, verdict: useful, state: ready, auto_run: true}
+  influencer/target/brief-generator: {n: 45, verdict: useful, state: ready, auto_run: true}
+  influencer/target/budget-optimizer: {n: 46, verdict: conditional, state: ready, auto_run: true}
+  influencer/target/campaign-planner: {n: 47, verdict: useful, state: ready, auto_run: true}
+  influencer/target/competitor-tracker: {n: 48, verdict: useful, state: ready, auto_run: true}
+  launch/assemble/launch-asset-packager: {n: 49, verdict: useful, state: ready, auto_run: true}
+  launch/assemble/message-house-builder: {n: 50, verdict: useful, state: ready, auto_run: true}
+  launch/assemble/pricing-packaging-planner: {n: 51, verdict: conditional, state: ready, auto_run: true}
+  launch/assemble/sales-enablement-kit: {n: 52, verdict: not_useful, state: ready, auto_run: false}
+  launch/mobilize/community-launch-runner: {n: 53, verdict: conditional, state: ready, auto_run: true}
+  launch/mobilize/launch-day-conductor: {n: 54, verdict: conditional, state: ready, auto_run: true}
+  launch/mobilize/launch-readiness-auditor: {n: 55, verdict: useful, state: ready, auto_run: true}
+  launch/mobilize/press-media-relations: {n: 56, verdict: conditional, state: ready, auto_run: true}
+  launch/prove/launch-feedback-synthesizer: {n: 57, verdict: useful, state: ready, auto_run: true}
+  launch/prove/launch-monitor: {n: 58, verdict: useful, state: ready, auto_run: true}
+  launch/prove/launch-retro-analyzer: {n: 59, verdict: useful, state: ready, auto_run: true}
+  launch/prove/momentum-planner: {n: 60, verdict: useful, state: ready, auto_run: true}
+  launch/research/early-access-designer: {n: 61, verdict: conditional, state: ready, auto_run: true}
+  launch/research/launch-tier-planner: {n: 62, verdict: useful, state: ready, auto_run: true}
+  launch/research/launch-window-planner: {n: 63, verdict: conditional, state: ready, auto_run: true}
+  launch/research/positioning-mapper: {n: 64, verdict: useful, state: ready, auto_run: true}
+  narrative/architect/brand-language-codifier: {n: 65, verdict: useful, state: ready, auto_run: true}
+  narrative/architect/message-system-architect: {n: 66, verdict: useful, state: ready, auto_run: true}
+  narrative/architect/story-bank-builder: {n: 67, verdict: useful, state: ready, auto_run: true}
+  narrative/architect/strategic-narrative-designer: {n: 68, verdict: useful, state: ready, auto_run: true}
+  narrative/evaluate/message-test-designer: {n: 69, verdict: conditional, state: ready, auto_run: true}
+  narrative/evaluate/narrative-drift-monitor: {n: 70, verdict: useful, state: ready, auto_run: true}
+  narrative/evaluate/narrative-quality-auditor: {n: 71, verdict: useful, state: ready, auto_run: true}
+  narrative/evaluate/narrative-resonance-monitor: {n: 72, verdict: useful, state: ready, auto_run: true}
+  narrative/land/narrative-cascade-planner: {n: 73, verdict: useful, state: ready, auto_run: true}
+  narrative/land/narrative-enablement-kit: {n: 74, verdict: conditional, state: ready, auto_run: true}
+  narrative/land/pitch-narrative-builder: {n: 75, verdict: not_useful, state: ready, auto_run: false}
+  narrative/land/proof-point-packager: {n: 76, verdict: useful, state: ready, auto_run: true}
+  narrative/trace/audience-belief-mapper: {n: 77, verdict: useful, state: ready, auto_run: true}
+  narrative/trace/category-narrative-mapper: {n: 78, verdict: useful, state: ready, auto_run: true}
+  narrative/trace/narrative-baseline-mapper: {n: 79, verdict: conditional, state: ready, auto_run: true}
+  narrative/trace/positioning-truth-tracer: {n: 80, verdict: conditional, state: ready, auto_run: true}
+  protocol/channel-registry: {n: 81, verdict: useful, state: ready, auto_run: true}
+  protocol/consent-registry: {n: 82, verdict: not_useful, state: ready, auto_run: false}
+  protocol/creator-registry: {n: 83, verdict: conditional, state: ready, auto_run: true}
+  protocol/entity-registry: {n: 84, verdict: useful, state: ready, auto_run: true}
+  protocol/launch-registry: {n: 85, verdict: conditional, state: ready, auto_run: true}
+  protocol/memory-management: {n: 86, verdict: not_useful, state: ready, auto_run: false}
+  protocol/narrative-registry: {n: 87, verdict: useful, state: ready, auto_run: true}
+  protocol/offer-claims-registry: {n: 88, verdict: useful, state: ready, auto_run: true}
+  seo-geo/evaluate/domain-authority-auditor: {n: 89, verdict: conditional, state: ready, auto_run: true}
+  seo-geo/evaluate/offsite-signal-analyzer: {n: 90, verdict: useful, state: waiting_for_access, auto_run: true}
+  seo-geo/evaluate/performance-monitor: {n: 91, verdict: useful, state: waiting_for_access, auto_run: true}
+  seo-geo/evaluate/rank-tracker: {n: 92, verdict: useful, state: waiting_for_access, auto_run: true}
+  seo-geo/implement/content-writer: {n: 93, verdict: useful, state: ready, auto_run: true}
+  seo-geo/implement/geo-content-optimizer: {n: 94, verdict: useful, state: ready, auto_run: true}
+  seo-geo/implement/page-play-builder: {n: 95, verdict: useful, state: ready, auto_run: true}
+  seo-geo/implement/serp-markup-builder: {n: 96, verdict: useful, state: ready, auto_run: true}
+  seo-geo/survey/competitor-analysis: {n: 97, verdict: useful, state: ready, auto_run: true}
+  seo-geo/survey/content-gap-analysis: {n: 98, verdict: useful, state: ready, auto_run: true}
+  seo-geo/survey/keyword-research: {n: 99, verdict: useful, state: ready, auto_run: true}
+  seo-geo/survey/serp-analysis: {n: 100, verdict: useful, state: ready, auto_run: true}
+  seo-geo/tune/content-quality-auditor: {n: 101, verdict: useful, state: ready, auto_run: true}
+  seo-geo/tune/on-page-seo-checker: {n: 102, verdict: conditional, state: ready, auto_run: true}
+  seo-geo/tune/site-structure-optimizer: {n: 103, verdict: conditional, state: ready, auto_run: true}
+  seo-geo/tune/technical-seo-checker: {n: 104, verdict: conditional, state: ready, auto_run: true}
+  social/craft/advocacy-program-designer: {n: 105, verdict: not_useful, state: ready, auto_run: false}
+  social/craft/short-video-scripter: {n: 106, verdict: useful, state: ready, auto_run: true}
+  social/craft/social-calendar-builder: {n: 107, verdict: conditional, state: ready, auto_run: true}
+  social/craft/social-creative-builder: {n: 108, verdict: useful, state: ready, auto_run: true}
+  social/explore/channel-portfolio-planner: {n: 109, verdict: conditional, state: ready, auto_run: true}
+  social/explore/participation-warmup-planner: {n: 110, verdict: not_useful, state: ready, auto_run: false}
+  social/explore/platform-norm-profiler: {n: 111, verdict: useful, state: ready, auto_run: true}
+  social/explore/voice-dossier-builder: {n: 112, verdict: useful, state: ready, auto_run: true}
+  social/host/crisis-response-planner: {n: 113, verdict: not_useful, state: ready, auto_run: false}
+  social/host/engagement-inbox-manager: {n: 114, verdict: not_useful, state: ready, auto_run: false}
+  social/host/social-quality-auditor: {n: 115, verdict: useful, state: ready, auto_run: true}
+  social/host/social-selling-planner: {n: 116, verdict: not_useful, state: ready, auto_run: false}
+  social/observe/dark-social-attributor: {n: 117, verdict: conditional, state: waiting_for_access, auto_run: true}
+  social/observe/share-of-voice-tracker: {n: 118, verdict: useful, state: ready, auto_run: true}
+  social/observe/social-measurement-loop: {n: 119, verdict: useful, state: waiting_for_access, auto_run: true}
+  social/observe/social-pulse-monitor: {n: 120, verdict: useful, state: ready, auto_run: true}

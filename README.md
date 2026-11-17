@@ -756,3 +756,8 @@ and every call to Google. The sheet logic was tested against a strict stand-in t
 anything the real library would reject, and the "no Drive storage" error was reproduced from
 a real run's log; the first real run with your own spreadsheets is the real test. The Shared
 Drive option is untested.
+
+## Batch 2 (in progress): the external skills and the registries
+
+The 120 Aaron marketing skills are connected externally (the whole repository at a pinned commit, read as data) and each brand has a narrative canon and an offer-claims ledger that only the owner can approve. Run them from **Actions > Skills and registries**. See `docs/platform/batch2-external-skills.md`.
+
