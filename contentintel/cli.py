@@ -226,7 +226,7 @@ def build_parser():
 
     p = sub.add_parser("ai", help="the AI layer: plan, providers, usage, review, ask, check, eval, smoke, catalog (mock unless --live; catalog reads each provider's own model list and changes nothing)")
     _common(p)
-    p.add_argument("action", choices=["plan", "providers", "usage", "review", "ask", "check", "eval", "smoke", "catalog"])
+    p.add_argument("action", choices=["plan", "providers", "usage", "review", "ask", "check", "eval", "smoke", "catalog", "rank", "connect"])
     p.add_argument("--providers-config", default="ai_providers.yaml")
     p.add_argument("--lanes-config", default="ai_lanes.yaml")
     p.add_argument("--tasks-config", default="ai_eval_tasks.yaml")
@@ -238,6 +238,9 @@ def build_parser():
     p.add_argument("--text", default="", help="ask: the instruction")
     p.add_argument("--only", default="", help="check/eval: comma-separated providers")
     p.add_argument("--include-claude", action="store_true", help="eval: also run the Claude routes (they cost money)")
+    p.add_argument("--jobs", default="all", help="rank: comma-separated jobs (foundation_json, story_extract_json, story_review_json, conflict_check_json) or all")
+    p.add_argument("--runs", type=int, default=2, help="rank: runs of each probe per route")
+    p.add_argument("--apply", action="store_true", help="rank: write the measured order to data/_shared/ai_rankings.json (the order every later run uses)")
     p.add_argument("--strict", action="store_true", help="check: exit 1 on an external provider problem too")
     p.add_argument("--approve", default="", help="review: approve this item id")
     p.add_argument("--reject", default="", help="review: reject this item id")
@@ -341,11 +344,12 @@ def _routed(claude, purpose, args, store):
 
     def stack():
         _, ledger = _health(args, store)
-        router, _usage, _review, side, _notes, finish = services.ai_stack(store, ledger, os.environ, settings=hub)
+        router, _usage, _review, side, stack_notes, finish = services.ai_stack(store, ledger, os.environ, settings=hub)
         if not any(name != "claude" for name in getattr(router, "clients", {})):          # no free provider has a credential here: nothing to try first, Claude answers as it always did (and nothing is written)
             if side is not None:
                 side.stop()
-            return None
+            why = "; ".join(str(n) for n in stack_notes if str(n).startswith(("APPLICATION", "SKIPPED"))) or "no free provider has a credential in this run"
+            raise services.GatewayUnavailable(why)                                            # said out loud: a run never silently falls back to Claude
         return router, finish
     return services.ai_client(hub, purpose, claude, stack_factory=stack, now_fn=sync_mod.utc_now)
 
