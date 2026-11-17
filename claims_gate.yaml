@@ -11,7 +11,7 @@ aliases:
 # A sentence that denies something is not repeating it: it is sent to review, never blocked on its own.
 negations: ["no", "not", "never", "without", "zero", "none", "n't", "nor"]          # quoted: an unquoted no is read by YAML as false
 # Words too common in a claim's title to identify it (everything else in the title is a distinctive word of that claim).
-generic_words: [article, articles, claimed, claims, figure, figures, found, public, information, media, features, first, customer, customers, stories, story, interviews, interview, beyond, brand, brands,
+generic_words: [above, below, list, lists, page, pages, more, most, many, much, very, really, article, articles, claimed, claims, figure, figures, found, public, information, media, features, first, customer, customers, stories, story, interviews, interview, beyond, brand, brands,
                 exact, date, dates, full, name, spelling, detail, details, team, manufacturing, retailer, retailers, locations, threads, discussion, forum, presence, independent, citation, estimate,
                 conflicts, conflicting, flag, before, using, year, wording, month, size, price, sample, launch, segment, involvement, founder, founders, text, retrievable, case, studies, long, form,
                 there, their, these, those, which, while, with, from, have, been, were, would, about, other, some, such, only, also]
