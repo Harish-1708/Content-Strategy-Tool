@@ -243,7 +243,7 @@ def test_the_workflow_checks_out_the_pinned_commit_and_fails_a_verify_that_fails
     steps = wf["jobs"]["skills"]["steps"]
     text = Path(".github/workflows/skills.yml").read_text(encoding="utf-8")
     assert "git clone --quiet --filter=blob:none --no-checkout" in text and 'git -C "$path" checkout --quiet "$sha"' in text and "set -o pipefail" in text
-    assert [s.get("name") for s in steps if s.get("name")] == ["Check out the skills repository at the pinned commit", "Run it", "Save the data"]
+    assert [s.get("name") for s in steps if s.get("name")] == ["Set up the free provider pool", "Check out the skills repository at the pinned commit", "Run it", "Save the data"]
     assert wf["permissions"] == {"contents": "write"} and wf["concurrency"]["group"] == "catalogue-data"
 
 
