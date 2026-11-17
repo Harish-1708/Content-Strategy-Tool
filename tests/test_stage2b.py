@@ -15,7 +15,7 @@ from contentintel import skills as SK
 from contentintel import story_refresh as SR
 from contentintel.store import Store
 
-from test_stage2 import AT, NAME, PAGE, Claude, fake_cfg, reg, search_for, seeded
+from test_stage2 import AT, NAME, PAGE, Claude, fake_cfg, pair_answer, reg, search_for, seeded
 
 KIDS = {"fact": "Swoveralls launched a kids line.", "quote": "The brand also launched a kids line. Unrelated paragraph about weather", "category": "other"}
 
@@ -58,7 +58,7 @@ def test_without_a_reviewer_no_conflict_is_called_and_a_failing_comparison_is_na
         def json_task(self, *a, **k):
             raise TimeoutError("slow")
     assert SR.compare(r, "Swoveralls sold $230,000 in its first year.", "figure", name=NAME, claude=Broken(), report=report) == ("new", [])
-    assert report["errors"] == 1 and "treated as unrelated" in report["notes"][0]
+    assert report["errors"] == 1 and "treated as unrelated" in report["notes"][0] and "TimeoutError: slow" in report["notes"][0]
 
 
 def test_the_commands_take_back_a_conflict_the_tool_made_by_mistake_and_never_touch_a_decided_one(tmp_path, capsys):
@@ -73,7 +73,7 @@ def test_the_commands_take_back_a_conflict_the_tool_made_by_mistake_and_never_to
     class Judge:
         def json_task(self, system, user, max_tokens=None):
             seen.append(user)
-            return {"relation": "contradicts" if "30 days" in user else "unrelated"}
+            return pair_answer(user, lambda block: "contradicts" if "30 days" in block else "unrelated")
     args = cli.build_parser().parse_args(["canon", "--action", "reclassify-conflicts", "--brand", "swoveralls", "--brands-dir", "brands", "--data-dir", str(tmp_path / "data")])
     r2 = C.Registry(tmp_path / "data", "swoveralls")
     assert r2.state()["claims"][mistaken]["status"] == "conflicted"
@@ -82,7 +82,7 @@ def test_the_commands_take_back_a_conflict_the_tool_made_by_mistake_and_never_to
     out = capsys.readouterr().out
     assert code == 0 and "1 kept as real conflicts, 1 taken back to UNVERIFIED" in out and "nothing deleted" in out
     assert state[mistaken]["status"] == "unverified" and "not a conflict" in state[mistaken]["reason"] and state[real]["status"] == "conflicted"
-    assert state[decided]["decided_at"] and state[old]["status"] == "unverified" and len(seen) == 2          # the owner's decided claim was not even re-asked
+    assert state[decided]["decided_at"] and state[old]["status"] == "unverified" and len(seen) == 1 and "Another disputed figure" not in seen[0]          # ONE call for both pairs; the owner's decided claim was not even re-asked
     try:
         r2.reconsider_conflict(decided, AT, "x")
         raised = False
@@ -451,7 +451,7 @@ def test_a_claim_about_another_thing_is_never_sent_to_the_reviewer_so_no_ai_call
     class Judge:
         def json_task(self, system, user, max_tokens=None):
             asked.append(user)
-            return {"relation": "contradicts"}
+            return pair_answer(user, lambda block: "contradicts")
     assert SR.compare(r, "Swoveralls offers free returns on every pair.", "other", name=NAME, claude=Judge()) == ("new", []) and asked == []          # nothing is about returns: no call
     r.add_claim("Free returns within 30 days", "other", "unverified", "https://c.example", "", C.TOOL, AT)
     kind, ids = SR.compare(r, "Swoveralls offers free returns on every pair.", "other", name=NAME, claude=Judge())
@@ -470,4 +470,197 @@ def test_a_conflict_that_could_not_be_re_checked_stays_a_conflict_for_the_owner(
     code = B2.run_canon(args, Store(tmp_path / "data"), AT, clients=lambda: (Down(), None, None))
     out = capsys.readouterr().out
     assert C.Registry(tmp_path / "data", "swoveralls").state()["claims"][pending]["status"] == "conflicted"        # no answer: the tool never decides for the owner
-    assert "could not be re-checked (TimeoutError: busy): left as a conflict" in out and "1 kept as real conflicts, 0 taken back" in out and code == 0
+    assert "1 pair(s) could not be compared (TimeoutError: busy): treated as contradicts" in out and "1 kept as real conflicts, 0 taken back" in out and code == 0
+
+
+# ---- round 4: the free pool first (F7), batching (M236, M237), short tokens (M238), the save step (M232), the prompt (M235) ------------------------------------
+
+def test_the_refresh_and_the_foundation_chain_ask_the_free_pool_first_and_claude_only_as_the_fallback(tmp_path, monkeypatch):
+    from contentintel.observatory import config as OC
+    from contentintel import services as SV
+    from test_platform_wiring import args_for
+    assert "foundation" in OC.PURPOSES and "foundation" in OC.AI_PURPOSES
+    routes = yaml.safe_load(Path("observatory.yaml").read_text(encoding="utf-8"))["services"]["ai_gateway"]
+    assert routes["routes"]["foundation"] == "gateway_first" and routes["use_for"]["foundation"] is True
+    a = args_for(tmp_path)
+    plain = Claude([])
+    monkeypatch.setattr(cli, "_claude", lambda settings: plain)
+    claude = cli._registry_clients(a, Store(tmp_path / "data"))[0]
+    assert isinstance(claude, SV.RoutedClaude) and claude.purpose == "foundation" and claude.inner is plain          # NOT plain Claude: the pool is asked first
+    SV.save_overrides(a.data_dir, {"services.ai_gateway.routes.foundation": "claude"}, "owner", "2026-11-17T10:00:00Z", "all Claude")
+    assert cli._registry_clients(a, Store(tmp_path / "data"))[0] is plain                                          # the owner can still send it to Claude only
+
+
+def test_when_the_pool_has_no_answer_the_routed_client_falls_back_to_claude_and_says_so_in_its_route(tmp_path):
+    from contentintel import services as SV
+    inner = Flaky([{"text": "From Claude.", "needs_input": []}])
+
+    class NoPool:
+        def run(self, *a, **k):
+            return {"status": "failed", "reason": "no provider could answer"}
+    routed = SV.RoutedClaude(inner, "foundation", lambda: (NoPool(),), lambda: AT)
+    answer = routed.json_task("s", "u", 100)
+    assert answer["text"] == "From Claude." and routed.calls == ["claude"] and any("Claude was used" in n for n in routed.notes)          # failover is recorded, and `_route` reports it
+
+
+def test_all_the_pairs_of_a_page_go_to_the_reviewer_in_one_call_and_the_calls_never_pass_the_limit(tmp_path):
+    r = reg(tmp_path)
+    for i in range(45):
+        r.add_claim(f"Overalls fact number {i} about stitching", "other", "unverified", f"https://s{i}.example", "", C.TOOL, AT)
+    facts = [(f"Swoveralls says stitching fact {i} is new.", "other") for i in range(3)]
+    calls = []
+
+    class Judge:
+        def json_task(self, system, user, max_tokens=None):
+            calls.append(user.count("PAIR "))
+            return pair_answer(user, lambda block: "unrelated")
+    report = {"calls": 0, "errors": 0, "notes": []}
+    out = SR.compare_many(r, facts, name=NAME, claude=Judge(), report=report)
+    assert [k for k, _ in out] == ["new"] * 3 and report["calls"] == len(calls) and 1 <= len(calls) <= 2 and max(calls) <= SR.PAIRS_PER_CALL      # up to 20 pairs per call, nothing per pair
+    limited = {"calls": 0, "errors": 0, "notes": []}
+    pairs = [(f"A {i}", f"B {i}") for i in range(45)]
+    answers = SR.classify_pairs(Judge(), NAME, pairs, report=limited, fallback="contradicts", max_calls=1)
+    assert limited["calls"] == 1 and answers[:20] == ["unrelated"] * 20 and answers[20:] == ["contradicts"] * 25          # ONE call, and the pairs it did not reach stay conflicts for the owner
+    assert "the call limit of 1 was reached: 25 pair(s) were not compared" in limited["notes"][0]
+
+
+def test_the_reclassify_command_uses_one_call_per_twenty_pairs_and_never_more_than_its_limit(tmp_path, capsys):
+    r = reg(tmp_path)
+    old = r.add_claim("Free returns for 365 days", "figure", "unverified", "https://a.example", "", C.TOOL, AT)
+    for i in range(25):
+        r.add_conflict(f"Disputed return figure {i}", "figure", f"https://c{i}.example", "read", old, AT)
+    calls = []
+
+    class Judge:
+        def json_task(self, system, user, max_tokens=None):
+            calls.append(1)
+            return pair_answer(user, lambda block: "unrelated")
+    args = cli.build_parser().parse_args(["canon", "--action", "reclassify-conflicts", "--brand", "swoveralls", "--brands-dir", "brands", "--data-dir", str(tmp_path / "data"), "--max-calls", "1"])
+    assert B2.run_canon(args, Store(tmp_path / "data"), AT, clients=lambda: (Judge(), None, None)) == 0
+    out = capsys.readouterr().out
+    assert len(calls) == 1 and "20 taken back to UNVERIFIED" in out and "5 kept as real conflicts" in out and "1 AI call(s)" in out          # a limit of 1 means 1 call, not 1 per claim
+    args2 = cli.build_parser().parse_args(["canon", "--action", "reclassify-conflicts", "--brand", "swoveralls", "--brands-dir", "brands", "--data-dir", str(tmp_path / "data")])
+    B2.run_canon(args2, Store(tmp_path / "data"), AT, clients=lambda: (Judge(), None, None))
+    assert len(calls) == 2 and "5 taken back to UNVERIFIED" in capsys.readouterr().out                      # all 25 would have been one call each way: 20 + 5
+
+
+def test_the_refresh_stops_reading_pages_when_its_model_call_limit_is_reached_and_says_so(tmp_path):
+    r = reg(tmp_path)
+    claude = Claude([KIDS])
+    rep = SR.run(r, NAME, [], search=search_for([f"https://news.example/p{i}" for i in range(6)]), get=lambda u: PAGE, claude=claude, now=AT, max_queries=1, max_calls=5)
+    assert rep["calls"] <= 5 and rep["pages"] < 6 and any("limit of 5 model calls for one refresh was reached" in n for n in rep["notes"])
+    assert len(r.refresh_seen()) == rep["pages"]                                                            # the pages not read are read next time
+    big = reg(tmp_path / "b")
+    rep2 = SR.run(big, NAME, [], search=search_for([f"https://news.example/p{i}" for i in range(6)]), get=lambda u: PAGE, claude=Claude([KIDS]), now=AT, max_queries=1)
+    assert rep2["pages"] == 6 and not any("model calls for one refresh" in n for n in rep2["notes"])          # no limit asked: no limit applied
+    args = cli.build_parser().parse_args(["canon", "--action", "refresh", "--brand", "swoveralls"])
+    assert args.max_calls == 0                                                                              # the command turns 0 into a default of 48 for the refresh
+
+
+def test_a_short_key_or_token_in_an_error_never_reaches_the_log():
+    for secret in ("key=abc123", "token: x9y8", "Bearer ab12", "password=hunter2", "sk-ant-api03-abcdefghijkl", "xoxb-1234567890-abcdef"):
+        shown = SR.redact(f"HTTP 401 for {secret} on the request")
+        assert secret.split("=")[-1].split(": ")[-1].split(" ")[-1] not in shown or "[hidden]" in shown, secret
+        assert "[hidden]" in shown, secret
+    assert SR.redact("HTTP 429: rate limited") == "HTTP 429: rate limited" and "RuntimeError: " in SR._why(RuntimeError("bad key=a1b2"))
+    assert "a1b2" not in FD._why(RuntimeError("bad key=a1b2"))
+
+
+def test_the_save_step_keeps_a_failed_foundation_runs_proposals_and_stages_only_the_registry_files():
+    wf = yaml.safe_load(Path(".github/workflows/skills.yml").read_text(encoding="utf-8"))
+    step = next(s for s in wf["jobs"]["skills"]["steps"] if s.get("name") == "Save the data")
+    assert step["if"].startswith("always() && (") and "'foundation'" in step["if"] and "'reclassify-conflicts'" in step["if"]
+    assert "git add -f data/_shared/skills_catalogue.json" in step["run"] and 'git add -f "$d"' in step["run"] and "git add -A" not in step["run"] and "git add -f data\n" not in step["run"]
+    assert "append-only" in Path("docs/platform/batch2-external-skills.md").read_text(encoding="utf-8")
+
+
+def test_the_docs_say_the_prompt_has_an_unconfirmed_section_and_say_why():
+    doc = Path("docs/platform/batch2-external-skills.md").read_text(encoding="utf-8")
+    assert "UNCONFIRMED" in doc and "never state them as fact" in doc
+
+
+def test_the_same_fact_twice_on_one_page_is_added_once(tmp_path):
+    r = reg(tmp_path)
+    rep = SR.run(r, NAME, [], search=search_for(["https://news.example/a"]), get=lambda u: PAGE, claude=Claude([KIDS, dict(KIDS)]), now=AT, max_queries=1)
+    assert rep["added"] == 1 and rep["duplicates"] == 1 and len(r.state()["claims"]) == 1
+
+
+def test_a_relation_word_the_reviewer_made_up_counts_as_no_answer(tmp_path):
+    class Odd:
+        def json_task(self, system, user, max_tokens=None):
+            return {"relations": [{"i": 0, "relation": "maybe"}, {"i": 1, "relation": "same"}, {"i": 7, "relation": "same"}, "junk", {"i": 2}]}
+    assert SR.classify_pairs(Odd(), NAME, [("a", "b")] * 4, fallback="contradicts") == ["contradicts", "same", "contradicts", "contradicts"]          # 'maybe', a missing word and an out-of-range number are all ignored
+
+
+def test_the_refresh_command_gives_the_refresh_its_own_default_call_limit_unless_one_is_asked(tmp_path, monkeypatch):
+    seen = []
+    monkeypatch.setattr(SR, "run", lambda *a, **k: (seen.append(k["max_calls"]) or {"queries": 0, "pages": 0, "pages_ok": 1, "facts_seen": 0, "added": 0, "conflicts": 0, "duplicates": 0, "rejected": [], "calls": 0, "errors": 0, "notes": []}))
+    for extra, expected in (([], 48), (["--max-calls", "9"], 9)):
+        args = cli.build_parser().parse_args(["canon", "--action", "refresh", "--brand", "swoveralls", "--brands-dir", "brands", "--data-dir", str(tmp_path / "data"), *extra])
+        B2.run_canon(args, Store(tmp_path / "data"), AT, clients=lambda: (Claude([]), search_for([]), lambda u: PAGE))
+    assert seen == [48, 9]
+
+
+# ---- one ranked lane per job (the pool is never random: a ranked list per job, backups in order, Claude last) -----------------------------------------------------
+
+class FakeStack:
+    def __init__(self, lanes, answers):
+        self.lanes, self.asked, self.answers = lanes, [], answers
+
+    def run(self, lane, **kw):
+        self.asked.append(lane)
+        a = self.answers.pop(0) if self.answers else None
+        return {"status": "ok", "output": a} if a is not None else {"status": "deferred", "reason": "no route answered"}
+
+
+def routed_with(stack, inner):
+    from contentintel import services as SV
+    return SV.RoutedClaude(inner, "foundation", lambda: (stack,), lambda: AT)
+
+
+def test_every_job_has_a_ranked_lane_of_its_own_whose_chain_names_only_approved_providers_and_which_says_it_is_not_yet_measured():
+    from contentintel import services as SV
+    from contentintel.ai import lanes as L, registry as R
+    lanes = L.load_lanes("ai_lanes.yaml", R.load_registry("ai_providers.yaml"))                             # the loader refuses a route to a model nobody approved
+    assert set(SV.JOB_LANES) == {"foundation", "story_extract", "story_review", "conflict_check"}
+    for job, lane in SV.JOB_LANES.items():
+        assert lane in lanes and len(lanes[lane].chain) >= 3 and len({(r["provider"], r["model"]) for r in lanes[lane].chain}) == len(lanes[lane].chain), job          # ranked backups, no repeats
+        assert "RANKING NOT YET MEASURED" in lanes[lane].description, lane                                   # honest: the order is seeded, not measured, until the pool retest
+    import re
+    used = set()
+    for path in ("contentintel/story_refresh.py", "contentintel/foundation.py"):
+        used |= set(re.findall(r'for_job\(\w+, "(\w+)"\)', Path(path).read_text(encoding="utf-8")))
+    assert used == set(SV.JOB_LANES)                                                                       # every job the code asks for has a lane, and no lane is unused
+
+
+def test_the_routed_client_asks_each_jobs_own_lane_shares_one_gateway_and_falls_back_in_order():
+    from contentintel import services as SV
+    lanes = {n: 1 for n in ("general_json", *SV.JOB_LANES.values())}
+    stack = FakeStack(lanes, [{"x": 1}, None, {"y": 2}, None])
+    inner = Flaky([{"from": "claude"}] * 3)
+    routed = routed_with(stack, inner)
+    assert routed.for_job("story_extract").json_task("s", "u") == {"x": 1}
+    assert routed.for_job("conflict_check").json_task("s", "u") == {"from": "claude"}                       # that lane's ranked list had no answer: Claude is the final fallback
+    assert routed.for_job("foundation").json_task("s", "u") == {"y": 2}
+    assert routed.json_task("s", "u") == {"from": "claude"} and routed.for_job("nothing").json_task("s", "u") == {"from": "claude"}
+    assert stack.asked == ["story_extract_json", "conflict_check_json", "foundation_json", "general_json", "general_json"]
+    assert routed.calls == ["gateway", "claude", "gateway", "claude", "claude"]                              # one list of calls for every job: `_route` reports it
+    old = FakeStack({"general_json": 1}, [{"z": 3}])
+    assert routed_with(old, inner).for_job("foundation").json_task("s", "u") == {"z": 3} and old.asked == ["general_json"]          # an install without the lane asks the general one
+
+
+def test_the_refresh_and_the_chain_really_ask_their_own_lanes(tmp_path):
+    from contentintel import services as SV
+    lanes = {n: 1 for n in ("general_json", *SV.JOB_LANES.values())}
+    answers = [{"facts": [KIDS]}, {"verdicts": [{"i": 0, "supported": True, "about_brand": True}]}]
+    stack = FakeStack(lanes, answers)
+    r = reg(tmp_path)
+    SR.run(r, NAME, [], search=search_for(["https://news.example/a"]), get=lambda u: PAGE, claude=routed_with(stack, Flaky([])), now=AT, max_queries=1)
+    assert stack.asked == ["story_extract_json", "story_review_json"] and len(r.state()["claims"]) == 1
+    r.add_claim("Kids line launched earlier.", "other", "unverified", "https://old.example", "", C.TOOL, AT)
+    stack2 = FakeStack(lanes, [{"relations": [{"i": 0, "relation": "unrelated"}]}])
+    SR.classify_pairs(routed_with(stack2, Flaky([])), NAME, [("a", "b")])
+    assert stack2.asked == ["conflict_check_json"]
+    stack3 = FakeStack(lanes, [{"text": "A plain sentence about overalls.", "needs_input": []}])
+    rep = run_chain(reg(tmp_path / "f"), routed_with(stack3, Flaky([])), tmp_path, only={"positioning"})
+    assert rep[0]["result"] == "proposed" and stack3.asked == ["foundation_json"]
