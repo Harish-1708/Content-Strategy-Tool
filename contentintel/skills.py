@@ -114,12 +114,15 @@ def verify(cfg, root, runner=subprocess.run):
         dirty = [line for line in _git(root, "status", "--porcelain", "--untracked-files=no", runner=runner).splitlines() if line.strip()]          # not stripped as a whole: a line starts with a space
         if dirty:
             problems.append("the checkout has uncommitted changes (" + ", ".join(line[3:] for line in dirty[:3]) + "): it is not the pinned commit's text")
+    except (SkillsError, OSError, subprocess.SubprocessError) as exc:                  # fail CLOSED: a checkout whose edits cannot be read is not trusted
+        problems.append(f"the checkout's uncommitted changes could not be read ({type(exc).__name__}): it cannot be shown to be the pinned commit's text")
+    try:
         remote = _git(root, "remote", "get-url", "origin", runner=runner).strip()
         want = str(cfg["repo"].get("url") or "")
         if want and _norm_url(remote) != _norm_url(want):
             problems.append(f"the checkout's origin is {remote}, not {want}: a fork with the same commit is not accepted")
-    except (SkillsError, OSError, subprocess.SubprocessError) as exc:                  # fail CLOSED: a checkout whose edits or origin cannot be read is not trusted
-        problems.append(f"the checkout's uncommitted changes or origin could not be read ({type(exc).__name__}): it has no origin remote, so it cannot be shown to be the pinned repository")
+    except (SkillsError, OSError, subprocess.SubprocessError) as exc:                  # fail CLOSED: no readable origin, no trust
+        problems.append(f"the checkout's origin could not be read ({type(exc).__name__}): it has no origin remote, so it cannot be shown to be the pinned repository")
     found = discover(root)
     expected = int(cfg["repo"].get("expected_skills") or 0)
     if expected and len(found) != expected:
