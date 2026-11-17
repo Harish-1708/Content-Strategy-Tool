@@ -1,0 +1,52 @@
+# Claims the story-bank research could NOT stand behind for this brand (10): each is a gap the research itself recorded, copied from its 'Gaps / not found' section. Nothing is invented.
+# The tool loads these into the claims ledger as blocked / unverified / conflicted (never verified); only the owner marks a claim verified, in the Claims tab's Decision column.
+- text: No Reddit threads
+  category: press
+  status: unverified
+  reason: No Reddit threads about DudeRobe found (site:reddit.com search returned nothing).
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: No Trustpilot, BBB or Sitejabber presence
+  category: customer
+  status: unverified
+  reason: No Trustpilot, BBB or Sitejabber presence found for DudeRobe. A Nov 2023 review-aggregator page (fortyreviews.com) scored Trustpilot 0, BBB 0, Sitejabber 0 — i.e. no profiles exist there. All review material therefore comes from the brand's own site/Shop app.
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: No independent (non-brand) customer stories
+  category: customer
+  status: unverified
+  reason: No independent (non-brand) customer stories beyond the Yawnder wear-test review. All customer quotes above are brand-hosted.
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Indiegogo month conflicts
+  category: figure
+  status: conflicted
+  reason: 'Indiegogo month conflicts: Gazette Review says the Indiegogo campaign launched August 2017; Shark Tank Blog dates the $77,360 raise to November 2017. The amount is consistent; the month is not. Do not state a month without resolving this.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Revenue $2M is an estimate
+  category: figure
+  status: blocked
+  reason: Revenue $2M is an estimate from Shark Tank tracker sites, not an audited or company-reported figure. Do not present it as confirmed.
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Media features claimed by the brand
+  category: press
+  status: blocked
+  reason: Media features claimed by the brand (Good Morning America, CNBC, Fox News, GQ, Men's Health, Esquire, Inked, Newsweek) — no individual article from any of those outlets was found. Do not cite them as verified coverage.
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: UFC launch date
+  category: origin
+  status: unverified
+  reason: 'UFC launch date: announced 23 Aug 2025 on Instagram; no press release or dated launch announcement found.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: University of Michigan robe launch date
+  category: origin
+  status: unverified
+  reason: 'University of Michigan robe launch date: undated; product page exists.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: No public information found
+  category: award
+  status: unverified
+  reason: 'No public information found on: current team size, headquarters location, current manufacturing partners (beyond "manufacturing in Pakistan" in 2020), or any awards.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Founder's Under Armour involvement
+  category: origin
+  status: blocked
+  reason: Founder's Under Armour involvement is his own account as told on Shark Tank; not independently verified.
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
