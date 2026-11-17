@@ -48,3 +48,28 @@ video:
   finding: "FreeLLMAPI is a text-chat gateway only (ai_providers.yaml has no image or video modality). OmniRoute carries video-tagged providers (Pollinations, Runway, Haiper, Leonardo, Minimax, Together AI), but none is a reliable FREE video route: Pollinations' free video needs a key and its hourly free Pollen ended 2026-07-10; Together's free tier was withdrawn; Runway and Haiper are trial credits."
   free_options_found: "consumer web apps with daily credits (PixVerse 60 plus 30 a day up to 540p; Kling 66 daily credits up to 720p; Runway 125 one-time) have no scriptable free API; Zhipu CogVideoX-Flash is free on the China-side platform only (international Z.ai lists paid video models); open models (Wan, LTX-2, HunyuanVideo) need a host."
   decision: "Pollinations is NOT a free video go: test it as a text and image lane, last. Concat and MoneyPrinterTurbo drafts (stock footage) need no paid model."
+
+# ---- the second research pass (Muse, 2026-11-17: OmniRoute's full catalogue beyond the first 16) and what this tool did with it ------------------------------------------------------------------------
+# "Confirmed" there means against the provider's published page, not by calling it. This tool checked each finding once against OmniRoute's own catalogue (free-models list of v3.8.53) and, for the ones it wired,
+# against one outside page; the provider test (Actions > Provider test) is where live confirmation happens.
+second_pass:
+  wired_through_omniroute:        # on in ai_providers.yaml; each needs its key (a GitHub secret) before it can be tried
+    - {id: airforce, omniroute_id: api-airforce, limit: "1 request a minute, 1,000 a day (outside directory page confirms; reviewers report downtime)", models: ["qwen/qwen3-32b", "moonshot/kimi-k2.6"], secret: API_AIRFORCE_API_KEY, note: "its ~24M tokens a month is OmniRoute's estimate, not a provider figure; it also serves Claude models free, which this tool does not route to"}
+    - {id: bluesminds, omniroute_id: bluesminds, limit: "20 requests a minute, 300 a day (research report; OmniRoute flags its terms as ambiguous)", models: ["gpt-4.1-mini", "deepseek-chat"], secret: BLUESMINDS_API_KEY}
+    - {id: bazaarlink, omniroute_id: bazaarlink, limit: "10 requests a minute, 60 weighted units a day (not ~150)", models: ["auto:free"], secret: BAZAARLINK_API_KEY, note: "its terms ban reselling or sharing keys; the catalogue lists one model id for the free tier (auto:free), the report names 4: the test shows which answer"}
+  confirmed_free_not_wired_yet:
+    - {id: ovhcloud, why: "keyless (anonymous, 2 requests a minute per IP per model): the tool's OmniRoute start needs a credential today; keyless handling must be proven live first", catalogue: "present (5 models)"}
+    - {id: aihorde, why: "keyless community capacity, AGPL-3.0: queue times vary; keyless handling not proven", catalogue: "present (3 models)"}
+    - {id: uncloseai, why: "keyless, no signup, model rotates: not proven", catalogue: "present (1 model)"}
+    - {id: morph, why: "code-editing tools only, not general chat: no job in this tool uses it", catalogue: "present"}
+    - {id: baidu-ernie, why: "$0 Speed/Lite/Tiny but Chinese phone or real-name verification is typical and the monthly cap is unverified", catalogue: "present (ernie-4.0-8k only)"}
+    - {id: nous-portal, why: "$0 Free plan, free models only: not in OmniRoute's free-models list, so there is no OmniRoute id to map yet", catalogue: "absent"}
+    - {id: gitlawb-twigpine, why: "Nemotron 3.5 Super VL at $0 and MiMo V2.6-Pro 30 requests per 5 hours: not in OmniRoute's free-models list", catalogue: "absent"}
+  search_and_scrape_not_text_models: {exa: "$10 credits a month", firecrawl: "1,000 credits a month, no card", tavily: "1,000 credits a month, no card", note: "Exa and Tavily are already search providers in this tool; Firecrawl is not wired"}
+  not_free_do_not_rely_on: [{id: sensenova, why: "free public beta only, mainland China only, identity verification, ends with the beta"}]
+  updates_to_existing_providers: {cloudflare_workers_ai: "10,000 Neurons a day confirmed (no change to the routes)", zhipu: "free GLM models now 4.7-Flash, 4.5-Flash and 4.6V-Flash at $0: only models in the pinned FreeLLMAPI catalogue can be approved, so 4.5-Flash waits for a gateway pin that ships it"}
+  rejected_do_not_wire: [auggie, cloudflare-playground, codex-app-server, devin-cli, veoaifree, zcode, arcee-ai, huggingchat, publicai, reka, stepfun, baichuan, tencent, liquid, freemodel-dev, monsterapi, byteplus, 360ai, aimlapi, nomic, voyage-ai]
+  unconfirmed_do_not_wire: [doubao, nlpcloud, inference-net, jina-reader, gitlawb-gmi]
+  never_wire_via_a_proxy: [nlpcloud]
+  corrections_to_the_first_report: ["HuggingChat is dead (free credit removed 2026-10-07)", "Nous Portal's $0.10 is now $0", "Doubao's 2M a day is unsupported", "Tencent Lite is closed to new customers", "BazaarLink is 60 weighted units a day, not ~150", "api-airforce's ~24M a month is OmniRoute's estimate"]
+  cautions: ["BazaarLink's terms ban reselling or sharing keys", "AI Horde is AGPL-3.0", "Baidu and SenseNova need Chinese phone or real-name verification"]
