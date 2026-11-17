@@ -829,7 +829,7 @@ def active_cooldowns(data, now):
         try:
             if not isinstance(entry, dict) or not _parse(entry["until"]) > _parse(now):
                 continue
-            by_the_tool = entry.get("kind") in ("account_warning", "owner") or bool(entry.get("reason"))
+            by_the_tool = entry.get("kind") in ("account_warning", "owner") or (bool(entry.get("reason")) and bool(entry.get("at")))          # an entry the tool wrote before the kind field existed carries BOTH a reason and the time it was written
             if by_the_tool or guards.on("rest_after_refusal"):
                 out[site] = entry
         except (KeyError, ValueError, TypeError):
