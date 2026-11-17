@@ -17,8 +17,10 @@ SKIP_HOSTS = ("facebook.com", "instagram.com", "tiktok.com", "x.com", "twitter.c
 EXTRACT_SYSTEM = ("You extract checkable facts about ONE brand from the text of a web page. Reply with JSON only: "
                   '{"facts": [{"fact": "<one plain sentence>", "quote": "<the EXACT sentence copied from the page that supports it>", "category": "award|press|ranking|figure|customer|origin|health|other"}]}. '
                   "Only facts about the named brand. Never invent, round, merge or paraphrase a number. If the page says nothing checkable about the brand, reply {\"facts\": []}.")
-RELATION_SYSTEM = ('Two statements about the same brand. Reply with JSON only: {"relation": "same|contradicts|unrelated"}. same = they state the same fact (wording or rounding may differ). contradicts = they cannot both be true '
-                   "(for example two different values for the same thing: a year, a price, a count, a ranking). unrelated = they are about different things, even if both contain numbers. When in doubt, answer unrelated.")
+RELATION_SYSTEM = ('Pairs of statements about the same brand. For EACH pair reply with JSON only: {"relations": [{"i": 0, "relation": "same|contradicts|unrelated"}, ...]} with one entry per pair, i being the pair number. same = they state the '
+                   "same fact (wording or rounding may differ). contradicts = they cannot both be true (for example two different values for the same thing: a year, a price, a count, a ranking). unrelated = they are about different "
+                   "things, even if both contain numbers. When in doubt, answer unrelated.")
+PAIRS_PER_CALL = 20
 REVIEW_SYSTEM = ('You are a strict reviewer. For each item you get a fact about a brand and the exact quotation it rests on. Reply with JSON only: {"verdicts": [{"i": <number>, "supported": true|false, "about_brand": true|false}]}. '
                  "supported is true only if the quotation, read on its own, clearly states the fact (same numbers, same names). about_brand is true only if the quotation is about the named brand, not about another company.")
 
@@ -89,32 +91,89 @@ def related(reg, name, fact, category=""):
     return chosen
 
 
-def compare(reg, fact, category, *, name="", claude=None, report=None):
-    """('duplicate'|'conflict'|'new', [existing claim ids]). A duplicate is decided without any model: almost the same words and the same numbers. A conflict needs the claims to be about the same thing AND a
-    reviewer to say the two statements cannot both be true: two facts that both contain numbers are NOT a conflict (a rating and a return window are different things). Without a reviewer nothing is called
-    a conflict, so the owner is never asked to decide something that is not one."""
-    words = C._words(fact)
-    ids = []
-    for claim in related(reg, name, fact, category):
-        mine, theirs = _numbers(fact), _numbers(claim["text"] + " " + (claim.get("reason") or ""))
-        if C._share(words, claim) >= 0.8 and (not mine or mine <= theirs):
-            return "duplicate", [claim["id"]]
-        if claude is None:
-            continue
+def redact(text):
+    """An error text with anything that looks like a key or token removed (even a short one) and any `sk-...` style secret."""
+    text = re.sub(r"(?i)(bearer\s+|key[=: ]+|token[=: ]+|secret[=: ]+|password[=: ]+)[^\s,;\"')]{3,}", r"\1[hidden]", str(text))
+    return re.sub(r"\b(sk|pk|rk|xox[a-z]|ghp|gho|AKIA)[-_A-Za-z0-9]{8,}", "[hidden]", text)
+
+
+def _why(exc):
+    """The kind of error and its message, short, with any key or token removed."""
+    return f"{type(exc).__name__}: {redact(exc)[:240]}"
+
+
+def for_job(claude, job):
+    """The client for one job's ranked lane when the client is the routed one; any other client (plain Claude, a test's) is returned as it is."""
+    return claude.for_job(job) if callable(getattr(claude, "for_job", None)) else claude
+
+
+def classify_pairs(claude, name, pairs, *, report=None, fallback="unrelated", max_calls=None):
+    """One relation per pair ((existing text, new text)), asked in batches of PAIRS_PER_CALL pairs per model call: 'same', 'contradicts' or 'unrelated'. A call that fails or is not allowed by the call limit, and a pair the
+    answer leaves out, get `fallback` (the refresh: unrelated, so no false conflict; the re-check: contradicts, so the owner still decides)."""
+    out = [fallback] * len(pairs)
+    claude = for_job(claude, "conflict_check")
+    for start in range(0, len(pairs), PAIRS_PER_CALL):
+        if report is not None and max_calls and report["calls"] >= max_calls:
+            report["notes"].append(f"the call limit of {max_calls} was reached: {len(pairs) - start} pair(s) were not compared (treated as {fallback})")
+            break
+        chunk = pairs[start:start + PAIRS_PER_CALL]
+        body = "\n".join(f"PAIR {i}:\n  A (already in the ledger): {a}\n  B (new): {b}" for i, (a, b) in enumerate(chunk))
         try:
             if report is not None:
                 report["calls"] += 1
-            relation = (claude.json_task(RELATION_SYSTEM, f"Brand: {name}\nA (already in the ledger): {claim['text']} {claim.get('reason') or ''}\nB (new): {fact}", 200) or {}).get("relation")
-        except Exception as exc:                                                       # noqa: BLE001 - no answer: not a conflict, and it is named
+            answer = (claude.json_task(RELATION_SYSTEM, f"Brand: {name}\n{body}", 100 + 40 * len(chunk)) or {}).get("relations") or []
+        except Exception as exc:                                                       # noqa: BLE001 - no answer: the fallback, and it is named
             if report is not None:
                 report["errors"] += 1
-                report["notes"].append(f"could not compare with {claim['id']} ({type(exc).__name__}): treated as unrelated")
+                report["notes"].append(f"{len(chunk)} pair(s) could not be compared ({_why(exc)}): treated as {fallback}")
             continue
-        if relation == "same":
-            return "duplicate", [claim["id"]]
-        if relation == "contradicts":
-            ids.append(claim["id"])
-    return ("conflict", ids) if ids else ("new", [])
+        for item in answer if isinstance(answer, list) else []:
+            i = item.get("i") if isinstance(item, dict) else None
+            if isinstance(i, int) and 0 <= i < len(chunk) and item.get("relation") in ("same", "contradicts", "unrelated"):
+                out[start + i] = item["relation"]
+    return out
+
+
+def _duplicate_of(reg, name, fact, category):
+    """The id of a claim that says the same thing in almost the same words with the same numbers (no model needed), or None."""
+    words, mine = C._words(fact), _numbers(fact)
+    for claim in related(reg, name, fact, category):
+        if C._share(words, claim) >= 0.8 and (not mine or mine <= _numbers(claim["text"] + " " + (claim.get("reason") or ""))):
+            return claim["id"]
+    return None
+
+
+def compare_many(reg, facts, *, name="", claude=None, report=None, max_calls=None):
+    """For each (fact, category): ('duplicate'|'conflict'|'new', [existing claim ids]). A duplicate is decided without any model. A conflict needs the claims to be about the same thing AND a reviewer to say the two
+    statements cannot both be true: two facts that both contain numbers are NOT a conflict. All the pairs of all the facts go to the reviewer together (PAIRS_PER_CALL pairs per call). Without a reviewer nothing is
+    called a conflict, so the owner is never asked to decide something that is not one."""
+    results, pairs = [None] * len(facts), []
+    for i, (fact, category) in enumerate(facts):
+        dup = _duplicate_of(reg, name, fact, category)
+        if dup:
+            results[i] = ("duplicate", [dup])
+            continue
+        pairs.extend((i, claim) for claim in related(reg, name, fact, category))
+    relations = {}
+    if pairs and claude is not None:
+        answers = classify_pairs(claude, name, [(c["text"] + " " + (c.get("reason") or ""), facts[i][0]) for i, c in pairs], report=report, fallback="unrelated", max_calls=max_calls)
+        for (i, claim), relation in zip(pairs, answers):
+            relations.setdefault(i, []).append((claim["id"], relation))
+    for i in range(len(facts)):
+        if results[i] is not None:
+            continue
+        items = relations.get(i, [])
+        same = next((cid for cid, relation in items if relation == "same"), None)
+        if same:
+            results[i] = ("duplicate", [same])
+            continue
+        ids = [cid for cid, relation in items if relation == "contradicts"]
+        results[i] = ("conflict", ids) if ids else ("new", [])
+    return results
+
+
+def compare(reg, fact, category, *, name="", claude=None, report=None):
+    return compare_many(reg, [(fact, category)], name=name, claude=claude, report=report)[0]
 
 
 def _short(text, limit):
@@ -122,13 +181,14 @@ def _short(text, limit):
     return text if len(text) <= limit else text[:limit].rsplit(" ", 1)[0] + " ..."
 
 
-def run(reg, name, seed_titles, *, search, get, claude, now, max_queries=12, max_pages=12, max_new=20, today=None):
+def run(reg, name, seed_titles, *, search, get, claude, now, max_queries=12, max_pages=12, max_new=20, max_calls=None, today=None):
     """One refresh for one brand. Returns a report dict. `search(query)` -> [{url,title}], `get(url)` -> page html or None, `claude.json_task(system, user)` -> dict.
     Everything it writes is appended to the registry; nothing is ever removed or changed. `errors` counts every search, fetch, extraction, review or comparison that failed, so a refresh in which nothing
     worked can be told from one that found nothing."""
     today = today or now[:10]
     seen = reg.refresh_seen()
     report = {"queries": 0, "pages": 0, "pages_ok": 0, "facts_seen": 0, "added": 0, "conflicts": 0, "duplicates": 0, "rejected": [], "calls": 0, "errors": 0, "notes": []}
+    out_of_calls = False
     candidates, urls_this_run = [], set()
     for query in watch_queries(name, seed_titles, max_queries):
         report["queries"] += 1
@@ -149,6 +209,9 @@ def run(reg, name, seed_titles, *, search, get, claude, now, max_queries=12, max
     for url, title in candidates[:max_pages]:
         if capped:
             break                                                                                   # no more pages are fetched, extracted or reviewed: no more AI calls are spent
+        if max_calls and report["calls"] + 2 > max_calls:                                           # a page needs at least an extraction and a review
+            out_of_calls = True
+            break
         try:
             html = get(url)
         except Exception as exc:                                                       # noqa: BLE001
@@ -165,7 +228,7 @@ def run(reg, name, seed_titles, *, search, get, claude, now, max_queries=12, max
                 continue
             try:
                 report["calls"] += 1
-                facts = (claude.json_task(EXTRACT_SYSTEM, f"Brand: {name}\nPage address: {url}\nPage text:\n{text}", 1500) or {}).get("facts") or []
+                facts = (for_job(claude, "story_extract").json_task(EXTRACT_SYSTEM, f"Brand: {name}\nPage address: {url}\nPage text:\n{text}", 1500) or {}).get("facts") or []
             except Exception as exc:                                                   # noqa: BLE001 - an AI failure is named, never fatal
                 report["errors"] += 1
                 report["notes"].append(f"{url}: the extraction failed ({_why(exc)})")
@@ -189,21 +252,24 @@ def run(reg, name, seed_titles, *, search, get, claude, now, max_queries=12, max
             try:
                 report["calls"] += 1
                 items = "\n".join(f"{i}. FACT: {fact}\n   QUOTATION: {quote}" for i, (fact, quote, _c) in enumerate(checked))
-                verdicts = (claude.json_task(REVIEW_SYSTEM, f"Brand: {name}\nSource: {url}\n{items}", 800) or {}).get("verdicts") or []
+                verdicts = (for_job(claude, "story_review").json_task(REVIEW_SYSTEM, f"Brand: {name}\nSource: {url}\n{items}", 800) or {}).get("verdicts") or []
             except Exception as exc:                                                   # noqa: BLE001 - no reviewer, no entry
                 report["errors"] += 1
                 report["notes"].append(f"{url}: the reviewer could not be asked ({_why(exc)}), so nothing from this page was added")
                 continue
             report["pages_ok"] += 1
             ok = {v.get("i") for v in verdicts if isinstance(v, dict) and v.get("supported") is True and v.get("about_brand") is True}
+            confirmed = [(fact, quote, cat) for i, (fact, quote, cat) in enumerate(checked) if i in ok]
             for i, (fact, quote, cat) in enumerate(checked):
                 if i not in ok:
                     report["rejected"].append(f"{url}: the reviewer did not confirm \"{fact[:60]}\"")
-                    continue
+            verdicts_for = compare_many(reg, [(fact, cat) for fact, _q, cat in confirmed], name=name, claude=claude, report=report, max_calls=max_calls)          # every pair of the page goes to the reviewer together
+            for (fact, quote, cat), (kind, existing) in zip(confirmed, verdicts_for):
                 if report["added"] + report["conflicts"] >= max_new:
                     capped, record = True, False                                         # this page was not finished: it is NOT marked as read, so the next refresh takes it again
                     break
-                kind, existing = compare(reg, fact, cat, name=name, claude=claude, report=report)
+                if kind != "duplicate" and _duplicate_of(reg, name, fact, cat):          # the same fact twice on one page
+                    kind = "duplicate"
                 reason = f"read {today}: \"{_short(quote, 1000)}\""
                 if kind == "duplicate":
                     report["duplicates"] += 1
@@ -219,12 +285,9 @@ def run(reg, name, seed_titles, *, search, get, claude, now, max_queries=12, max
         finally:
             if record:
                 reg.record_sources([url], now)                                             # recorded as soon as the page was handled: an exception later cannot make the next refresh read it again
+    if out_of_calls:
+        report["notes"].append(f"the limit of {max_calls} model calls for one refresh was reached: the pages not yet read are left for the next refresh")
     if capped:
         report["notes"].append(f"the limit of {max_new} new entries for one refresh was reached: the rest (the facts not yet added and the pages not yet read) is left for the next refresh, and no more AI calls were spent")
     return report
 
-
-def _why(exc):
-    """The kind of error and its message, short and with anything that looks like a key removed."""
-    text = re.sub(r"(?i)(bearer\s+|key[=: ]+|token[=: ]+)[A-Za-z0-9._\-]{12,}", r"\1[hidden]", str(exc))
-    return f"{type(exc).__name__}: {text[:240]}"
