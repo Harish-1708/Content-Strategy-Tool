@@ -1,0 +1,67 @@
+# Claims the story-bank research could NOT stand behind for this brand (13): each is a gap the research itself recorded, copied from its 'Gaps / not found' section. Nothing is invented.
+# The tool loads these into the claims ledger as blocked / unverified / conflicted (never verified); only the owner marks a claim verified, in the Claims tab's Decision column.
+- text: Exact founding date
+  category: origin
+  status: unverified
+  reason: Exact founding date. Only the product launch (November 2024) is published. Company formation date, and when Tatyana left corporate, are not published.
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Shelfies win vs finalist
+  category: award
+  status: blocked
+  reason: Shelfies win vs finalist. Startup CPG's own page confirms DEFI as a 2025 Shelfie *finalist* (Aug 2025). The brand's Jan 2026 release claims a "Shelfies Award Winner". No winners list was found to confirm a win. Treat as finalist until confirmed.
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: 'RangeMe #3 ranking, Food & Beverage Magazine Editor''s Top Pick, Sports Illustrated quote'
+  category: press
+  status: unverified
+  reason: 'RangeMe #3 ranking, Food & Beverage Magazine Editor''s Top Pick, Sports Illustrated quote. All appear only in the brand''s own materials (press release / homepage). No independent article found for any of the three.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Mintel award year wording
+  category: award
+  status: conflicted
+  reason: Mintel award year wording. CPG Latest (Nov 2026) and the brand's store say "2026 Mintel Most Innovative Product award" winner. The brand's Facebook unboxing video (Jul 2026) describes the physical box as the "2025 Mintel Most Innovative Award". Minor discrepancy — likely the award-cycle year vs the announcement year. Do not overstate; cite as "2026 Mintel Most Innovative Product award (reported Nov 2026)".
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Good Morning America segment
+  category: press
+  status: blocked
+  reason: Good Morning America segment. Verified only via the brand's own Instagram reel and its press release. No ABC/GMA page or clip link found. Do not cite a GMA URL.
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Funding
+  category: figure
+  status: unverified
+  reason: Funding. Only the $1.5M target (announced Jan 2026). No closed round, no investor names, no valuation published. The Enthuse prize ($250K+ cash and in-kind; $15K cash check) is the only confirmed funding-type inflow.
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Revenue / sales figures
+  category: figure
+  status: blocked
+  reason: Revenue / sales figures. None published. The Enthuse reel mentions a "$100K to $250K in projected revenue in one year" *competition bracket* — that is a bracket, not actual revenue. Do not use it as a sales figure.
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: No customer case studies or long-form interviews
+  category: press
+  status: unverified
+  reason: 'No customer case studies or long-form interviews. What exists: short store/TikTok reviews, creator reels, and podcast interviews with the founder. No published in-depth customer story (e.g. a named customer transformation story) was found.'
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: No team, manufacturing, or HQ detail beyond Chatham, NJ
+  category: origin
+  status: unverified
+  reason: No team, manufacturing, or HQ detail beyond Chatham, NJ. Headcount, co-packer/manufacturer, and office details are not published.
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: No Reddit threads or forum discussion found
+  category: press
+  status: blocked
+  reason: No Reddit threads or forum discussion found for DEFI Snacks in this pass (searched reviews/testimonials generally; Reddit returned nothing). Do not claim Reddit sentiment either way.
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: RangeMe article full text not retrievable
+  category: press
+  status: unverified
+  reason: RangeMe article full text not retrievable. Title, author (Joe Tarnowski) and date (2026-07-14) confirmed via RangeMe's own index pages; the article page returned the blog index when fetched. Quotes from it are therefore NOT included above.
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: The "16 permanent locations and 100 NYC retailer trials" figure
+  category: other
+  status: blocked
+  reason: The "16 permanent locations and 100 NYC retailer trials" figure comes from a single third-party listicle (Adventures Frugal Mom, Apr 2026, describing the first ~3 months). Not corroborated elsewhere. Use with that attribution.
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
+- text: Founder's full name spelling
+  category: origin
+  status: unverified
+  reason: Founder's full name spelling. "Tatyana Jones" is consistent across the brand, press and LinkedIn. One podcast transcript index spells it "Tatiana" — that is a transcription error, not an alternate spelling.
+  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
