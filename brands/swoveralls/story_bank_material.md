@@ -1,4 +1,4 @@
-# Story Bank Material — Swoveralls, DudeRobe, DeFi Snacks
+# Story Bank Material — Swoveralls
 
 Compiled 2026-11-16 from published public sources only. Every item cites its source with URL and date. Quotes are exact. Nothing here is invented. Anything unverified is in each brand's Gaps section, not filled in.
 
@@ -100,7 +100,6 @@ All quotes below are verbatim from the brand's own published review sections and
 
 **Site reviews (swoveralls.com, verified-buyer reviews):**
 - Aarren S., verified buyer, on Dark Athletic Grey (M): "Very soft and comfy. I ordered medium and it ended up being great after you extend the shoulder straps. Probably could have been fine with a large but overall happy!"
-- Danila B., verified buyer, on Otter Romp (XL): "Not only is it cute, but very practical. I love the fun designs. The idea for the inner pocket & being able to zip up the buckles is something most designers would never think about. I have CRPS & nerve damage in my leg & need to wear comfy, soft, oversized clothing. Seams are the worst, along with jeans because it feels like sandpaper." (Review continues beyond the visible excerpt.)
 - Buyer on Nightshade Plum (4XL): "Good fit. Excellent comfort. These fit great even for someone as big as me 6'4 300lbs also they're buttery soft."
 - Robert, on Cosmic (3XL): "Absolutely amazing! These are so comfy, cute and the just give off so much joy. Are they silly? Absolutely. They are so practical, though. Great to lounge in, great to do chores in, or even out in the wild. Cosmic is my third pair of swoveralls and I just love them."
 - Buyer on Buffalo Plaid (S): "I am a OverAll kinda Gal !! When You get to be My age ( senior ) it's all about Comfort ! And Y'all got it right !! Not only is the fit perfect OMGOODNESS...the fabric, soft as Butter."

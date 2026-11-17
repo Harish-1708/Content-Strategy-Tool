@@ -1,4 +1,4 @@
-# Claims the story-bank research could NOT stand behind for this brand (13): each is a gap the research itself recorded, copied from its 'Gaps / not found' section. Nothing is invented.
+# Claims the story-bank research could NOT stand behind for this brand (12): each is a gap the research itself recorded, copied from its 'Gaps / not found' section. Nothing is invented.
 # The tool loads these into the claims ledger as blocked / unverified / conflicted (never verified); only the owner marks a claim verified, in the Claims tab's Decision column.
 - text: Thrillist article
   category: press
@@ -25,22 +25,17 @@
   status: blocked
   reason: 'Funding / valuation beyond crowdfunding: no outside investment found. The "$4 million annual revenue (late 2023)" and "$5 million net worth (2025)" figures come from third-party Shark Tank recap sites (Shark Tank Recap, Shark Tank Blog, Geeks Around Globe), not from the founder or the brand — treat as estimates, not facts.'
   source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
-- text: Conflicting figures — flag before using
-  category: other
-  status: conflicted
-  reason: 'Conflicting figures — flag before using:'
-  source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
-- text: 'First-year sales: Starter Story (founder) and Side Hustle School say ~$65,000; W'
+- text: 'First-year sales: Starter Story (founder) and Side Hustle School say ~$65,000; Washington Square ...'
   category: figure
   status: conflicted
   reason: 'First-year sales: Starter Story (founder) and Side Hustle School say ~$65,000; Washington Square News (2019-04-24) says "over $230,000 in the first year". The $230,000 figure is consistently reported elsewhere as total sales by the April 2019 pitch. Use $65k for year one and $230k for sales-to-pitch.'
   source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
-- text: 'Sample price: Starter Story says the single sample was "about $80"; Side Hustle '
+- text: 'Sample price: Starter Story says the single sample was "about $80"; Side Hustle School says quoted ...'
   category: figure
   status: conflicted
   reason: 'Sample price: Starter Story says the single sample was "about $80"; Side Hustle School says quoted $150, negotiated down to $111. Do not use a sample price without noting the conflict.'
   source: Story-Bank-Material.md (compiled 2026-11-16), Gaps / not found
-- text: 'Kickstarter totals: $75,000 (Kickstarter) + $33,000 (Indiegogo) = ~$108,000 per '
+- text: 'Kickstarter totals: $75,000 (Kickstarter) + $33,000 (Indiegogo) = ~$108,000 per the founder; some ...'
   category: figure
   status: conflicted
   reason: 'Kickstarter totals: $75,000 (Kickstarter) + $33,000 (Indiegogo) = ~$108,000 per the founder; some recap sites report $108,396 (Indiegogo alone) or add ~$75,000 from Backer Club. Use the founder''s figures.'
