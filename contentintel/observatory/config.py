@@ -13,11 +13,11 @@ DEFAULT_PATH = "observatory.yaml"
 USER_AGENT_TOKEN = "KelsonResearchBot"
 
 # What the platform's shared services are used for. A module asks for a service with one of these purposes, and the owner can switch each service on or off per purpose.
-PURPOSES = ("competitors", "discovery", "social_discovery", "content_research", "youtube_research", "general_research", "idea_bank", "planning", "brief", "deep_check", "autoseeds", "collectors")
+PURPOSES = ("competitors", "discovery", "social_discovery", "content_research", "youtube_research", "general_research", "idea_bank", "planning", "brief", "deep_check", "autoseeds", "collectors", "foundation")
 from .. import agent_reach_catalog as _AR_CATALOG
 AR_CHANNELS = _AR_CATALOG.integrated()          # every Agent-Reach channel the platform runs (the catalogue says how, and why any other is not)
 SEARCH_PROVIDERS = ("serper_dev", "tavily", "serpapi", "exa", "exa_mcp", "agent_reach_reddit", "agent_reach_youtube")
-AI_PURPOSES = ("general_research", "idea_bank", "planning", "brief", "deep_check", "autoseeds", "collectors")        # the purposes whose language-model calls the AI Gateway can take
+AI_PURPOSES = ("general_research", "idea_bank", "planning", "brief", "deep_check", "autoseeds", "collectors", "foundation")        # the purposes whose language-model calls the AI Gateway can take
 PAGE_ENGINES = ("jina", "core", "scrapling", "auto")
 PAGE_ENGINE_DEFAULTS = {}                       # every purpose defaults to auto: Scrapling first when its worker is installed, then Jina Reader, then the built-in reader
 
