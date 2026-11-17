@@ -17,7 +17,7 @@ runtime_files:
   - scripts/registry-events.py
   - scripts/connectors/experiment.py
   - references/auditor-runbook.md
-# state: ready = can run on public data and the brand's own inputs now; waiting_for_access = built ready, paused until the stores' own numbers (GA4, Search Console, customer or
+# state: ready = can run on public data and the brand's own inputs now; waiting_for_access = built ready (and also auto_run: false, a second lock beside may_start), paused until the stores' own numbers (GA4, Search Console, customer or
 # platform exports) exist: it stays on NEEDS_INPUT and never invents a number. auto_run: false = reachable on request, never started by a schedule or a chain (the 21 the report
 # judged not useful for this tool; cold-outbound-sequencer carries routes_to: the separate email outreach tool, and never starts here). needs: says what a waiting skill is waiting for.
 # Update 70 re-judged the waiting list row by row: 15 skills need measured results, platform or CRM exports, GA4 or Search Console (ad-test-designer, #6, designs tests from a brief and needs none of them: ready).
@@ -30,14 +30,14 @@ skills:
   ad/orchestrate/ad-test-designer: {n: 6, verdict: useful, state: ready, auto_run: true}
   ad/orchestrate/bid-strategy-planner: {n: 7, verdict: not_useful, state: ready, auto_run: false}
   ad/orchestrate/landing-experience-checker: {n: 8, verdict: useful, state: ready, auto_run: true}
-  ad/research/audience-segment-builder: {n: 9, verdict: useful, state: waiting_for_access, auto_run: true, needs: "a customer or CRM export"}
-  ad/research/campaign-architect: {n: 10, verdict: conditional, state: waiting_for_access, auto_run: true, needs: "GA4 and search-terms exports"}
+  ad/research/audience-segment-builder: {n: 9, verdict: useful, state: waiting_for_access, auto_run: false, needs: "a customer or CRM export"}
+  ad/research/campaign-architect: {n: 10, verdict: conditional, state: waiting_for_access, auto_run: false, needs: "GA4 and search-terms exports"}
   ad/research/product-feed-optimizer: {n: 11, verdict: useful, state: ready, auto_run: true}
-  ad/research/search-term-miner: {n: 12, verdict: conditional, state: waiting_for_access, auto_run: true, needs: "search-terms or Search Console exports"}
-  ad/scale/attribution-reconciler: {n: 13, verdict: conditional, state: waiting_for_access, auto_run: true, needs: "platform and GA4 numbers"}
+  ad/research/search-term-miner: {n: 12, verdict: conditional, state: waiting_for_access, auto_run: false, needs: "search-terms or Search Console exports"}
+  ad/scale/attribution-reconciler: {n: 13, verdict: conditional, state: waiting_for_access, auto_run: false, needs: "platform and GA4 numbers"}
   ad/scale/budget-pacing-monitor: {n: 14, verdict: not_useful, state: ready, auto_run: false}
-  ad/scale/fatigue-frequency-manager: {n: 15, verdict: conditional, state: waiting_for_access, auto_run: true, needs: "a creative engagement time-series from the ad platform"}
-  ad/scale/paid-measurement-loop: {n: 16, verdict: useful, state: waiting_for_access, auto_run: true, needs: "platform and GA4 results"}
+  ad/scale/fatigue-frequency-manager: {n: 15, verdict: conditional, state: waiting_for_access, auto_run: false, needs: "a creative engagement time-series from the ad platform"}
+  ad/scale/paid-measurement-loop: {n: 16, verdict: useful, state: waiting_for_access, auto_run: false, needs: "platform and GA4 results"}
   email/deliver/cold-outbound-sequencer: {n: 17, verdict: not_useful, state: ready, auto_run: false, routes_to: "the separate email outreach tool (Email-Outreach-Automation)"}
   email/deliver/email-quality-auditor: {n: 18, verdict: conditional, state: ready, auto_run: true}
   email/deliver/inbox-placement-monitor: {n: 19, verdict: not_useful, state: ready, auto_run: false}
@@ -53,15 +53,15 @@ skills:
   email/setup/deliverability-qa: {n: 29, verdict: not_useful, state: ready, auto_run: false}
   email/setup/list-growth-designer: {n: 30, verdict: conditional, state: ready, auto_run: true}
   email/setup/list-hygiene-monitor: {n: 31, verdict: not_useful, state: ready, auto_run: false}
-  email/setup/list-segment-builder: {n: 32, verdict: conditional, state: waiting_for_access, auto_run: true, needs: "a list or CRM export"}
+  email/setup/list-segment-builder: {n: 32, verdict: conditional, state: waiting_for_access, auto_run: false, needs: "a list or CRM export"}
   influencer/activate/content-amplifier: {n: 33, verdict: useful, state: ready, auto_run: true}
   influencer/activate/contract-helper: {n: 34, verdict: not_useful, state: ready, auto_run: false}
   influencer/activate/creator-content-auditor: {n: 35, verdict: useful, state: ready, auto_run: true}
   influencer/activate/outreach-manager: {n: 36, verdict: conditional, state: ready, auto_run: true}
   influencer/report/landing-optimizer: {n: 37, verdict: conditional, state: ready, auto_run: true}
-  influencer/report/performance-analyzer: {n: 38, verdict: useful, state: waiting_for_access, auto_run: true, needs: "measured performance numbers"}
+  influencer/report/performance-analyzer: {n: 38, verdict: useful, state: waiting_for_access, auto_run: false, needs: "measured performance numbers"}
   influencer/report/report-generator: {n: 39, verdict: conditional, state: ready, auto_run: true}
-  influencer/report/roi-calculator: {n: 40, verdict: useful, state: waiting_for_access, auto_run: true, needs: "the store's revenue and ad-cost numbers"}
+  influencer/report/roi-calculator: {n: 40, verdict: useful, state: waiting_for_access, auto_run: false, needs: "the store's revenue and ad-cost numbers"}
   influencer/scout/audience-mapper: {n: 41, verdict: useful, state: ready, auto_run: true}
   influencer/scout/fit-scorer: {n: 42, verdict: useful, state: ready, auto_run: true}
   influencer/scout/influencer-discovery: {n: 43, verdict: useful, state: ready, auto_run: true}
@@ -80,7 +80,7 @@ skills:
   launch/mobilize/press-media-relations: {n: 56, verdict: conditional, state: ready, auto_run: true}
   launch/prove/launch-feedback-synthesizer: {n: 57, verdict: useful, state: ready, auto_run: true}
   launch/prove/launch-monitor: {n: 58, verdict: useful, state: ready, auto_run: true}
-  launch/prove/launch-retro-analyzer: {n: 59, verdict: useful, state: waiting_for_access, auto_run: true, needs: "the launch's measured results"}
+  launch/prove/launch-retro-analyzer: {n: 59, verdict: useful, state: waiting_for_access, auto_run: false, needs: "the launch's measured results"}
   launch/prove/momentum-planner: {n: 60, verdict: useful, state: ready, auto_run: true}
   launch/research/early-access-designer: {n: 61, verdict: conditional, state: ready, auto_run: true}
   launch/research/launch-tier-planner: {n: 62, verdict: useful, state: ready, auto_run: true}
@@ -111,9 +111,9 @@ skills:
   protocol/narrative-registry: {n: 87, verdict: useful, state: ready, auto_run: true}
   protocol/offer-claims-registry: {n: 88, verdict: useful, state: ready, auto_run: true}
   seo-geo/evaluate/domain-authority-auditor: {n: 89, verdict: conditional, state: ready, auto_run: true}
-  seo-geo/evaluate/offsite-signal-analyzer: {n: 90, verdict: useful, state: waiting_for_access, auto_run: true, needs: "GA4 referral data for its AI-referral half"}
-  seo-geo/evaluate/performance-monitor: {n: 91, verdict: useful, state: waiting_for_access, auto_run: true, needs: "GA4 and Search Console"}
-  seo-geo/evaluate/rank-tracker: {n: 92, verdict: useful, state: waiting_for_access, auto_run: true, needs: "Search Console (true rankings; the public Serper rank check is separate)"}
+  seo-geo/evaluate/offsite-signal-analyzer: {n: 90, verdict: useful, state: waiting_for_access, auto_run: false, needs: "GA4 referral data for its AI-referral half"}
+  seo-geo/evaluate/performance-monitor: {n: 91, verdict: useful, state: waiting_for_access, auto_run: false, needs: "GA4 and Search Console"}
+  seo-geo/evaluate/rank-tracker: {n: 92, verdict: useful, state: waiting_for_access, auto_run: false, needs: "Search Console (true rankings; the public Serper rank check is separate)"}
   seo-geo/implement/content-writer: {n: 93, verdict: useful, state: ready, auto_run: true}
   seo-geo/implement/geo-content-optimizer: {n: 94, verdict: useful, state: ready, auto_run: true}
   seo-geo/implement/page-play-builder: {n: 95, verdict: useful, state: ready, auto_run: true}
@@ -138,7 +138,7 @@ skills:
   social/host/engagement-inbox-manager: {n: 114, verdict: not_useful, state: ready, auto_run: false}
   social/host/social-quality-auditor: {n: 115, verdict: useful, state: ready, auto_run: true}
   social/host/social-selling-planner: {n: 116, verdict: not_useful, state: ready, auto_run: false}
-  social/observe/dark-social-attributor: {n: 117, verdict: conditional, state: waiting_for_access, auto_run: true, needs: "GA4 and platform referral data"}
+  social/observe/dark-social-attributor: {n: 117, verdict: conditional, state: waiting_for_access, auto_run: false, needs: "GA4 and platform referral data"}
   social/observe/share-of-voice-tracker: {n: 118, verdict: useful, state: ready, auto_run: true}
-  social/observe/social-measurement-loop: {n: 119, verdict: useful, state: waiting_for_access, auto_run: true, needs: "platform and GA4 results"}
+  social/observe/social-measurement-loop: {n: 119, verdict: useful, state: waiting_for_access, auto_run: false, needs: "platform and GA4 results"}
   social/observe/social-pulse-monitor: {n: 120, verdict: useful, state: ready, auto_run: true}
