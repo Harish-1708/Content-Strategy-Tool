@@ -39,14 +39,16 @@ MEDICAL_DISCLOSURE = re.compile(r"\b(I|I've|my)\b[^.\n]{0,80}\b(CRPS|nerve damag
 
 CONDITIONS = (r"CRPS|nerve damage|cancer|arthritis|diabet\w*|disabilit\w*|disabled|chronic (pain|illness|fatigue|condition)|fibromyalgia|multiple sclerosis|epilep\w*|depress\w*|anxiety disorder|PTSD|autis\w*|ADHD|"
               r"diagnos\w*|chemo\w*|surgery|surgeries|amputat\w*|wheelchair|lupus|crohn\w*|migraine\w*|cerebral palsy|down syndrome|dementia|alzheimer\w*|parkinson\w*|stroke|ostomy|colostomy|hernia|dyslexi\w*|"
-              r"eating disorder|bipolar|schizophreni\w*|OCD|sensory (processing|issues)|incontinen\w*|mastectomy|dialysis|transplant")
-MEDICAL_THIRD_PERSON = re.compile(r"\b(my|his|her|their|our)\s+(son|daughter|child|kid|wife|husband|partner|mother|mom|father|dad|friend|brother|sister|grandmother|grandfather|patient|client)\b[^.\n]{0,80}\b(" + CONDITIONS + r")", re.I)
-MEDICAL_SELF = re.compile(r"\b(I|I've|I'm|my)\b[^.\n]{0,80}\b(" + CONDITIONS + r")", re.I)
+              r"eating disorder|bipolar|schizophreni\w*|OCD|sensory (processing|issues)|incontinen\w*|mastectomy|dialysis|transplant|asthma\w*|COPD|scoliosis|psoriasis|osteoporosis|endometriosis|insomnia|chronic \w+|"
+              r"panic attacks?|hearing loss|vision loss|blind(ness)?|deaf(ness)?|celiac|crohns|colitis|IBS|tinnitus|vertigo|sciatica|herniated|slipped disc|spina bifida|MS")
+MEDICAL_THIRD_PERSON = re.compile(r"\b(my|his|her|their|our)\s+(son|daughter|child|kid|wife|husband|partner|mother|mom|father|dad|friend|brother|sister|grandmother|grandfather|patient|client)\b[^.\n]{0,80}\b(" + CONDITIONS + r")\b", re.I)
+MEDICAL_NO_PRONOUN = re.compile(r"\b(living with|lives with|suffer(?:s|ed|ing)? from|diagnosed with|diagnosis of|struggl(?:e|es|ed|ing) with|battl(?:e|es|ed|ing) with|dealing with|recovering from|managing)\b[^.\n]{0,40}\b(" + CONDITIONS + r")\b", re.I)
+MEDICAL_SELF = re.compile(r"\b(I|I've|I'm|my)\b[^.\n]{0,80}\b(" + CONDITIONS + r")\b", re.I)
 
 
 def is_medical_disclosure(line):
     """A line where someone discloses a medical condition: their own (first person) or a family member's or friend's (third person), from a list of conditions, or the exact marker once removed by hand."""
-    return any(marker in line for marker in EXCLUDE_MARKERS) or bool(MEDICAL_SELF.search(line)) or bool(MEDICAL_THIRD_PERSON.search(line))
+    return any(marker in line for marker in EXCLUDE_MARKERS) or bool(MEDICAL_SELF.search(line)) or bool(MEDICAL_THIRD_PERSON.search(line)) or bool(MEDICAL_NO_PRONOUN.search(line))
 
 
 class CanonError(Exception):
@@ -367,7 +369,7 @@ class Registry:
 
     def owner_decisions(self, canon_rows=None, claim_rows=None, at=""):
         """Apply the Decision column of the two tabs (rows as read back from the sheet). Returns {applied, ignored}: a decision that is blank, unknown or not allowed is ignored and named."""
-        applied, ignored = 0, []
+        applied, ignored, settled = 0, [], {"canon": [], "claims": []}                   # settled: the rows whose Decision is now reflected in their status (the sheet clears those cells)
         for row in (canon_rows or [])[1:]:
             entry_id, decision = str(row[0]), str(row[-1]).strip().lower()
             if not decision:
@@ -377,9 +379,11 @@ class Registry:
                 if not word:
                     raise CanonError(f"{decision!r} is not approve or reject")
                 if self.state()["canon"].get(entry_id, {}).get("status") == word:
+                    settled["canon"].append(entry_id)
                     continue                                                        # the Decision cell still shows what was already applied: nothing to do
                 self.decide_canon(entry_id, word, OWNER, at)
                 applied += 1
+                settled["canon"].append(entry_id)
             except CanonError as exc:
                 ignored.append(f"{entry_id}: {exc}")
         for row in (claim_rows or [])[1:]:
@@ -388,12 +392,14 @@ class Registry:
                 continue
             try:
                 if self.state()["claims"].get(cid, {}).get("status") == decision:
+                    settled["claims"].append(cid)
                     continue
                 self.set_claim_status(cid, decision, OWNER, at)
                 applied += 1
+                settled["claims"].append(cid)
             except CanonError as exc:
                 ignored.append(f"{cid}: {exc}")
-        return {"applied": applied, "ignored": ignored}
+        return {"applied": applied, "ignored": ignored, "settled": settled}
 
 
 # ---- the story bank: split per brand and the Gaps sections turned into ledger seeds ----------------------------
