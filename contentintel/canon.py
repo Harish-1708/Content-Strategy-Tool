@@ -37,8 +37,16 @@ MEDICAL_DISCLOSURE = re.compile(r"\b(I|I've|my)\b[^.\n]{0,80}\b(CRPS|nerve damag
                                 r"depress\w*|anxiety disorder|PTSD|autis\w*|ADHD|diagnos\w*|chemo\w*|surgery|surgeries|amputat\w*|wheelchair|lupus|crohn\w*|migraine\w*)", re.I)
 
 
+CONDITIONS = (r"CRPS|nerve damage|cancer|arthritis|diabet\w*|disabilit\w*|disabled|chronic (pain|illness|fatigue|condition)|fibromyalgia|multiple sclerosis|epilep\w*|depress\w*|anxiety disorder|PTSD|autis\w*|ADHD|"
+              r"diagnos\w*|chemo\w*|surgery|surgeries|amputat\w*|wheelchair|lupus|crohn\w*|migraine\w*|cerebral palsy|down syndrome|dementia|alzheimer\w*|parkinson\w*|stroke|ostomy|colostomy|hernia|dyslexi\w*|"
+              r"eating disorder|bipolar|schizophreni\w*|OCD|sensory (processing|issues)|incontinen\w*|mastectomy|dialysis|transplant")
+MEDICAL_THIRD_PERSON = re.compile(r"\b(my|his|her|their|our)\s+(son|daughter|child|kid|wife|husband|partner|mother|mom|father|dad|friend|brother|sister|grandmother|grandfather|patient|client)\b[^.\n]{0,80}\b(" + CONDITIONS + r")", re.I)
+MEDICAL_SELF = re.compile(r"\b(I|I've|I'm|my)\b[^.\n]{0,80}\b(" + CONDITIONS + r")", re.I)
+
+
 def is_medical_disclosure(line):
-    return any(marker in line for marker in EXCLUDE_MARKERS) or bool(MEDICAL_DISCLOSURE.search(line))
+    """A line where someone discloses a medical condition: their own (first person) or a family member's or friend's (third person), from a list of conditions, or the exact marker once removed by hand."""
+    return any(marker in line for marker in EXCLUDE_MARKERS) or bool(MEDICAL_SELF.search(line)) or bool(MEDICAL_THIRD_PERSON.search(line))
 
 
 class CanonError(Exception):
@@ -125,8 +133,15 @@ def _share(sentence_words, claim):
     return len(sentence_words & claim_words) / len(sentence_words) if sentence_words else 0.0
 
 
+GENESIS = "0" * 16
+
+
 def _line_hash(line):
     return hashlib.sha256(line.strip().encode("utf-8")).hexdigest()[:16]
+
+
+def _lines_digest(lines):
+    return hashlib.sha256("\n".join(l.strip() for l in lines).encode("utf-8")).hexdigest()[:32]
 
 
 def claim_id(brand, text):
@@ -145,7 +160,7 @@ class Registry:
         self._events = self._read()
 
     def _read(self):
-        events, self.damaged, self.chain_problems, before = [], 0, [], None
+        events, self.damaged, self.chain_problems, before, seen = [], 0, [], None, []
         if self.path.is_file():
             for number, line in enumerate(self.path.read_text(encoding="utf-8").splitlines(), 1):
                 if not line.strip():
@@ -154,12 +169,18 @@ class Registry:
                     event = json.loads(line)
                     if not isinstance(event, dict) or "kind" not in event:
                         raise ValueError
-                    if "prev" in event and before is not None and event["prev"] != _line_hash(before):
-                        self.chain_problems.append(f"line {number} does not follow the line before it: the log was edited, shortened or reordered")
+                    if "prev" in event:
+                        expected = GENESIS if before is None else _line_hash(before)
+                        if event["prev"] != expected:
+                            self.chain_problems.append(f"line {number} does not follow the line before it: the log was edited, shortened or reordered" if before is not None
+                                                       else f"line {number} is the first line but is not the start of the chain: the lines before it were deleted")
+                    if event.get("kind") == "seal" and event.get("digest") != _lines_digest(seen[: int(event.get("upto") or 0)]):
+                        self.chain_problems.append(f"line {number}: the lines before the seal were edited, shortened or reordered since it was written")
                     events.append(event)
                 except ValueError:
                     self.damaged += 1                                            # a damaged line is counted and skipped, never a crash and never rewritten
                 before = line
+                seen.append(line)
         return events
 
     def append(self, kind, actor, at, **payload):
@@ -168,12 +189,15 @@ class Registry:
         if not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", str(at or "")):
             raise CanonError(f"{at!r} is not a UTC timestamp like 2026-11-17T08:00:00Z")
         event = {"n": len(self._events) + 1, "at": at, "kind": kind, "actor": actor, **payload}
-        last = None
-        if self.path.is_file():
-            lines = [l for l in self.path.read_text(encoding="utf-8").splitlines() if l.strip()]
-            last = lines[-1] if lines else None
-        if last is not None:
-            event["prev"] = _line_hash(last)                                       # each line carries the hash of the line before it: an edit in the middle shows
+        lines = [l for l in self.path.read_text(encoding="utf-8").splitlines() if l.strip()] if self.path.is_file() else []
+        if lines and not any('"prev"' in l or '"kind": "seal"' in l for l in lines):          # a log that began before the chain existed: SEAL what is there first, so the old lines are covered too
+            seal = {"n": len(self._events) + 1, "at": at, "kind": "seal", "actor": TOOL, "upto": len(lines), "digest": _lines_digest(lines), "prev": _line_hash(lines[-1])}
+            with self.path.open("a", encoding="utf-8") as fh:
+                fh.write(json.dumps(seal, ensure_ascii=False, sort_keys=True) + "\n")
+            self._events.append(seal)
+            event["n"] = len(self._events) + 1
+            lines.append(json.dumps(seal, ensure_ascii=False, sort_keys=True))
+        event["prev"] = _line_hash(lines[-1]) if lines else GENESIS                  # each line carries the hash of the line before it (the first one, GENESIS): an edit, a deletion or a reordering shows
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with self.path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(event, ensure_ascii=False, sort_keys=True) + "\n")
@@ -182,12 +206,16 @@ class Registry:
 
     # ---- state, replayed from the events ------------------------------------------------------------------
     def state(self):
-        canon, claims = {}, {}
+        canon, claims, foundation = {}, {}, {}
         self.rejected = []
         for e in self._events:
             kind = e["kind"]
             if kind == "canon_proposed":
-                canon[e["id"]] = {"id": e["id"], "section": e["section"], "text": e["text"], "status": "proposed", "source": e.get("source", ""), "source_sha": e.get("source_sha", ""), "proposed_at": e["at"], "decided_at": "", "gate_note": e.get("note", "")}
+                canon[e["id"]] = {"id": e["id"], "section": e["section"], "text": e["text"], "status": "proposed", "source": e.get("source", ""), "source_sha": e.get("source_sha", ""), "proposed_at": e["at"], "decided_at": "", "gate_note": e.get("note", ""), "needs": e.get("needs", []), "claims_used": e.get("claims_used", [])}
+            elif kind == "canon_superseded" and e.get("id") in canon and e.get("actor") == TOOL and canon[e["id"]]["status"] == "proposed":
+                canon[e["id"]]["status"] = "superseded"
+            elif kind in ("foundation_needs_input", "foundation_rejected"):
+                foundation[kind] = foundation.get(kind, 0) + 1
             elif kind == "canon_decided" and e.get("id") in canon:
                 if e.get("actor") != OWNER or canon[e["id"]]["status"] != "proposed" or e.get("decision") not in ("approved", "rejected"):
                     self.rejected.append(f"event {e.get('n')}: a canon decision that is not the owner's, or not on a proposal, was ignored")
@@ -211,17 +239,21 @@ class Registry:
                     self.rejected.append(f"event {e.get('n')}: a verification by someone other than the owner was ignored")
                     continue
                 claims[e["id"]].update(status=e["status"], decided_at=e["at"], source=e.get("source") or claims[e["id"]]["source"], reason=e.get("reason") or claims[e["id"]]["reason"])
-        return {"canon": canon, "claims": claims}
+        return {"canon": canon, "claims": claims, "foundation": foundation}
 
     # ---- the canon ------------------------------------------------------------------------------------------
-    def propose_canon(self, section, text, source, source_sha, at, note=""):
+    def propose_canon(self, section, text, source, source_sha, at, note="", needs=None, claims_used=None):
         """A skill's output, PROPOSED. It is not canonical until the owner approves it."""
         if not (section or "").strip() or not (text or "").strip():
             raise CanonError("a canon proposal needs a section and a text")
         raw = self.path.read_text(encoding="utf-8") if self.path.is_file() else ""
         used = [int(n) for n in re.findall(r"canon-(\d+)", raw)]                         # every id ever written, even on a damaged line
         n = 1 + max(used or [0])                                                       # one more than the highest id ever used: a skipped damaged line cannot make an id repeat
-        return self.append("canon_proposed", TOOL, at, id=f"canon-{n:04d}", section=section.strip(), text=text.strip(), source=source, source_sha=source_sha, note=note)["id"]
+        for entry in self.state()["canon"].values():                                      # a new proposal replaces the tool's own earlier UNAPPROVED one for the section (an approved text only changes by the owner's approval)
+            if entry["section"] == section.strip() and entry["status"] == "proposed":
+                self.append("canon_superseded", TOOL, at, id=entry["id"])
+        return self.append("canon_proposed", TOOL, at, id=f"canon-{n:04d}", section=section.strip(), text=text.strip(), source=source, source_sha=source_sha, note=note,
+                           needs=[str(x)[:300] for x in (needs or [])][:20], claims_used=[str(x)[:200] for x in (claims_used or [])][:20])["id"]
 
     def decide_canon(self, entry_id, decision, actor, at, note=""):
         if actor != OWNER:
@@ -257,14 +289,17 @@ class Registry:
             raise CanonError("only the owner marks a claim verified")
         return self.append("claim_status", actor, at, id=cid, status=status, source=source, reason=reason)
 
-    def add_conflict(self, text, category, source, reason, against_id, at):
-        """New research disagrees with a claim already in the ledger: the NEW version is added as conflicted and linked to the old one. The old claim is never touched (a verified one stays verified);
-        both stay for the owner to decide."""
-        if against_id not in self.state()["claims"]:
-            raise CanonError(f"{against_id} is not in the ledger")
+    def add_conflict(self, text, category, source, reason, against, at):
+        """New research disagrees with one or more claims already in the ledger (`against`: an id or a list of ids): the NEW version is added as conflicted and linked to EACH of them. The old claims are never
+        touched (a verified one stays verified); all stay for the owner to decide."""
+        ids = [against] if isinstance(against, str) else list(against)
+        for against_id in ids:
+            if against_id not in self.state()["claims"]:
+                raise CanonError(f"{against_id} is not in the ledger")
         cid = self.add_claim(text, category, "conflicted", source, reason, TOOL, at)
-        if not any(e["kind"] == "claim_conflict" and e.get("id") == cid and e.get("with") == against_id for e in self._events):
-            self.append("claim_conflict", TOOL, at, id=cid, **{"with": against_id})
+        for against_id in ids:
+            if not any(e["kind"] == "claim_conflict" and e.get("id") == cid and e.get("with") == against_id for e in self._events):
+                self.append("claim_conflict", TOOL, at, id=cid, **{"with": against_id})
         return cid
 
     def record_sources(self, urls, at):
@@ -276,6 +311,14 @@ class Registry:
 
     def refresh_seen(self):
         return {e["url"] for e in self._events if e["kind"] == "refresh_source" and e.get("url")}
+
+    def reconsider_conflict(self, cid, at, reason):
+        """The tool takes back a conflict it created itself (a refresh fact linked to an old claim) when a better check finds there was no real disagreement: the claim goes to UNVERIFIED with the reason
+        written down. The link stays in the log; nothing is deleted; a claim the owner decided is never touched."""
+        claim = self.state()["claims"].get(cid)
+        if not claim or claim["status"] != "conflicted" or claim.get("decided_at"):
+            raise CanonError(f"{cid} is not a conflict the tool may take back")
+        return self.append("claim_status", TOOL, at, id=cid, status="unverified", reason=reason[:300])
 
     def gate(self, text):
         """{verdict, findings}. Each sentence that says something checkable (an award, press, a ranking, a health claim, a figure, a customer count) is read against the ledger:
@@ -315,8 +358,8 @@ class Registry:
 
     # ---- the Sheets projection and the owner's decisions read back ------------------------------------------
     def canon_rows(self):
-        head = ["ID", "Section", "Text", "Status", "Source", "Proposed", "Decision (approve / reject)"]
-        return [head] + [[e["id"], e["section"], e["text"], e["status"], e["source"], e["proposed_at"], ""] for e in self.state()["canon"].values()]
+        head = ["ID", "Section", "Text", "Status", "Source", "Proposed", "Gate note", "Decision (approve / reject)"]
+        return [head] + [[e["id"], e["section"], e["text"], e["status"], e["source"], e["proposed_at"], e.get("gate_note", ""), ""] for e in self.state()["canon"].values()]
 
     def claim_rows(self):
         head = ["ID", "Claim", "Category", "Status", "Source", "Reason", "Decision (verified / unverified / blocked / conflicted)"]
@@ -441,7 +484,7 @@ def seed_from_story_bank(brand_slug, brand_md):
 
 # ---- the Sheets tabs -------------------------------------------------------------------------------------------
 CANON_TAB, CLAIMS_TAB = "Canon", "Claims"
-CANON_COLUMNS = ["id", "section", "text", "status", "source", "proposed_at"]
+CANON_COLUMNS = ["id", "section", "text", "status", "source", "proposed_at", "gate_note"]
 CLAIM_COLUMNS = ["id", "claim", "category", "status", "source", "reason"]
 
 
@@ -452,7 +495,7 @@ def sheet_tabs(data_root, brand):
     if not state["canon"] and not state["claims"]:
         return []
     return [{"title": CANON_TAB, "columns": CANON_COLUMNS, "key_col": "id", "starter_manual": ["Decision", "Notes"],
-             "rows_by_key": {e["id"]: {"id": e["id"], "section": e["section"], "text": e["text"], "status": e["status"], "source": e["source"], "proposed_at": e["proposed_at"]} for e in state["canon"].values()}},
+             "rows_by_key": {e["id"]: {"id": e["id"], "section": e["section"], "text": e["text"], "status": e["status"], "source": e["source"], "proposed_at": e["proposed_at"], "gate_note": e.get("gate_note", "")} for e in state["canon"].values()}},
             {"title": CLAIMS_TAB, "columns": CLAIM_COLUMNS, "key_col": "id", "starter_manual": ["Decision", "Notes"],
              "rows_by_key": {c["id"]: {"id": c["id"], "claim": c["text"], "category": c["category"], "status": c["status"], "source": c["source"], "reason": c["reason"]} for c in state["claims"].values()}}]
 
@@ -480,10 +523,14 @@ def load_seed(path):
 
 
 def apply_seed(reg, seeds, at):
-    """Add the seeds to the ledger as the TOOL (never as verified). Returns (added, already_there)."""
-    added = 0
+    """Add the seeds to the ledger as the TOOL (never as verified). Returns (added, already in the ledger, of those already there how many carry another status or category than the seed says: the ledger is
+    append-only, so a seed never changes an existing claim)."""
+    added, differs = 0, 0
     for s in seeds:
-        before = len(reg.state()["claims"])
-        reg.add_claim(s["text"], s["category"], s["status"], s.get("source", ""), s.get("reason", ""), TOOL, at)
-        added += len(reg.state()["claims"]) - before
-    return added, len(seeds) - added
+        before = reg.state()["claims"]
+        cid = reg.add_claim(s["text"], s["category"], s["status"], s.get("source", ""), s.get("reason", ""), TOOL, at)
+        if cid not in before:
+            added += 1
+        elif (before[cid]["category"], before[cid]["status"]) != (s["category"], s["status"]):
+            differs += 1
+    return added, len(seeds) - added, differs
