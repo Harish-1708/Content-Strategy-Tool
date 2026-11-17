@@ -56,8 +56,8 @@ services:
     channels: {serper_dev: true, tavily: true, serpapi: true, exa: true, exa_mcp: true, agent_reach_reddit: true, agent_reach_youtube: true}
   ai_gateway:
     enabled: true
-    use_for: {competitors: true, discovery: true, social_discovery: true, content_research: true, youtube_research: true, general_research: true, idea_bank: true, planning: true, brief: true, deep_check: true, autoseeds: true, collectors: true}
-    routes: {general_research: gateway_first, idea_bank: gateway_first, planning: gateway_first, brief: gateway_first, deep_check: gateway_first, autoseeds: gateway_first, collectors: gateway_first}
+    use_for: {competitors: true, discovery: true, social_discovery: true, content_research: true, youtube_research: true, general_research: true, idea_bank: true, planning: true, brief: true, deep_check: true, autoseeds: true, collectors: true, foundation: true}
+    routes: {general_research: gateway_first, idea_bank: gateway_first, planning: gateway_first, brief: gateway_first, deep_check: gateway_first, autoseeds: gateway_first, collectors: gateway_first, foundation: gateway_first}
   page_readers:
     enabled: true
     use_for: {competitors: true, discovery: true, social_discovery: true, content_research: true, youtube_research: true, general_research: true, idea_bank: true, planning: true, brief: true, deep_check: true, autoseeds: true, collectors: true}
