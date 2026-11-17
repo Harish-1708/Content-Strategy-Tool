@@ -1,0 +1,94 @@
+# Batch 2: the Aaron marketing skills, connected EXTERNALLY, and the two registries (the narrative canon and the offer-claims ledger).
+#   status         the skills, how many are ready, waiting for the stores' own numbers (NEEDS_INPUT) or never auto-run; whether the checkout is the pinned commit
+#   verify         the same checks, and the run FAILS if the connection cannot be trusted (not the pinned commit, a skill or a runtime file missing)
+#   update-report  what changed upstream since the pinned commit; nothing is adopted until external_skills.yaml's pinned_commit is changed by hand
+#   catalogue      writes data/_shared/skills_catalogue.json (each skill's hash; git keeps the history)
+#   seed-claims    loads each brand's claims seed (the story-bank gaps) into its ledger as blocked / unverified / conflicted, never verified
+#   claims-status  counts per brand
+#   gate           checks the text in 'text' against the brand's claims ledger (OK / NEEDS_REVIEW / BLOCKED); the run FAILS on BLOCKED
+# The skills repository is checked out at the pinned commit, with its scripts and references. Its text is read as data; none of its scripts is run by this workflow.
+# To run it: Actions > Skills and registries > Run workflow. Nothing here posts or changes anything on any platform.
+name: Skills and registries
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "What to run"
+        type: choice
+        options: [status, verify, update-report, catalogue, seed-claims, claims-status, gate]
+        default: status
+      brand:
+        description: "Brand folder name (for example swoveralls) or all"
+        required: false
+        default: "all"
+      text:
+        description: "gate: the text to check against the claims ledger"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalogue-data
+  cancel-in-progress: false
+
+jobs:
+  skills:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: pip install -r requirements.txt
+
+      - name: Check out the skills repository at the pinned commit
+        if: inputs.action == 'status' || inputs.action == 'verify' || inputs.action == 'update-report' || inputs.action == 'catalogue'
+        shell: bash
+        run: |
+          url=$(python -c "import yaml; print(yaml.safe_load(open('external_skills.yaml'))['repo']['url'])")
+          sha=$(python -c "import yaml; print(yaml.safe_load(open('external_skills.yaml'))['repo']['pinned_commit'])")
+          path=$(python -c "import yaml; print(yaml.safe_load(open('external_skills.yaml'))['repo']['checkout_path'])")
+          mkdir -p "$(dirname "$path")"
+          # a partial clone keeps the history (the update report needs it) without downloading every file twice
+          git clone --quiet --filter=blob:none --no-checkout "$url" "$path"
+          git -C "$path" checkout --quiet "$sha"
+          echo "Skills repository at $(git -C "$path" rev-parse HEAD)"
+
+      - name: Run it
+        shell: bash
+        env:
+          ACTION: ${{ inputs.action }}
+          BRAND: ${{ inputs.brand }}
+          TEXT: ${{ inputs.text }}
+        run: |
+          set -o pipefail
+          brand_args=()
+          if [ -n "$BRAND" ] && [ "$BRAND" != "all" ]; then brand_args=(--brand "$BRAND"); fi
+          case "$ACTION" in
+            status|verify|update-report|catalogue) python -m contentintel.cli skills --action "$ACTION" ;;
+            seed-claims) python -m contentintel.cli canon --action seed "${brand_args[@]}" ;;
+            claims-status) python -m contentintel.cli canon --action status "${brand_args[@]}" ;;
+            gate) python -m contentintel.cli canon --action gate --text "$TEXT" "${brand_args[@]}" ;;
+          esac
+
+      - name: Save the data
+        if: inputs.action == 'catalogue' || inputs.action == 'seed-claims'
+        shell: bash
+        run: |
+          git config user.name "skills"
+          git config user.email "skills@users.noreply.github.com"
+          git add -f data
+          if git diff --cached --quiet; then
+            echo "No data changes to save."
+          else
+            git commit -m "Skills and registries $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase
+            git push
+          fi
