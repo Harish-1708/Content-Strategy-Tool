@@ -1300,3 +1300,8 @@ def main(argv=None):
         print(f"Error: {exc}")
         return 1
     return 1
+
+
+if __name__ == "__main__":                                  # `python -m contentintel.cli ...` used to import the file and exit 0 doing nothing: a silent success is worse than a failure
+    import sys
+    sys.exit(main())

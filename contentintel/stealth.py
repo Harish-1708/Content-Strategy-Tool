@@ -512,8 +512,8 @@ def shuffle_reads(urls, rng=None):
 _IP_RE = re.compile(r"^(?:\d{1,3}\.){3}\d{1,3}$")
 
 
-_EGRESS = {}                       # key (the proxy host, or "direct") -> (when, ip): one lookup per route, not one per browser open
-_EGRESS_FOUND_SECONDS, _EGRESS_MISSED_SECONDS = 900.0, 60.0
+_EGRESS = {}                       # key (the proxy host, or "direct") -> (when, ip): one lookup per route, not one per browser open (a FOUND address only)
+_EGRESS_FOUND_SECONDS = 900.0
 
 
 def resolve_egress_ip(page, key=None):
@@ -522,13 +522,13 @@ def resolve_egress_ip(page, key=None):
     Best effort: None when the check fails. The address is only ever written
     to the run's own debug directory.
 
-    With a `key` (the proxy host, or "direct") the answer is kept for 15 minutes (a failure for 1 minute, so a slow lookup is not repeated at every
-    browser open): a run opens a browser per site and per task, and the route has not changed in between.
+    With a `key` (the proxy host, or "direct") a FOUND address is kept for 15 minutes: a run opens a browser per site and per task, and the route has not changed in between.
+    A failed lookup is never kept: the next open asks again, so one failure cannot blank the address in every read that follows.
     """
     now = time.monotonic()
     if key is not None and key in _EGRESS:
         when, ip = _EGRESS[key]
-        if now - when < (_EGRESS_FOUND_SECONDS if ip else _EGRESS_MISSED_SECONDS):
+        if ip and now - when < _EGRESS_FOUND_SECONDS:
             return ip
     try:
         response = page.context.request.get("https://api.ipify.org", timeout=10000)
@@ -536,7 +536,7 @@ def resolve_egress_ip(page, key=None):
     except Exception:
         text = None
     ip = text if isinstance(text, str) and _IP_RE.match(text) else None
-    if key is not None:
+    if key is not None and ip:
         _EGRESS[key] = (now, ip)
     return ip
 

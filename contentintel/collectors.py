@@ -24,8 +24,8 @@ from urllib.parse import parse_qs, quote, quote_plus, unquote, urlsplit
 
 import yaml
 
-from . import guards
 from . import benchmarks as bench
+from . import guards
 from . import main_page
 from . import contract
 from . import deepcheck
@@ -804,14 +804,33 @@ def check_warning(browser, site, site_cfg):
         raise AccountWarning(site, reason)
 
 
+def final_read_summary(browser):
+    """The read log's summary for the run report, taken AFTER the last page's dwell and score are final (they are only final when the next operation or the close notes them: a summary taken
+    before showed 53/100 for reads whose log averaged 63)."""
+    read_log = getattr(browser, "read_log", None)
+    if read_log is None:
+        return None
+    note_read = getattr(browser, "_note_read", None)
+    if callable(note_read):
+        try:
+            note_read()
+        except Exception:
+            pass
+    return read_log.summary()
+
+
 def active_cooldowns(data, now):
-    """site -> entry for the accounts still resting at `now` (none unless the owner turned the rest guard ON)."""
+    """site -> entry for the accounts still resting at `now`. A rest THE TOOL WROTE for an account (after an account warning, or by hand: it carries kind account_warning or owner, or, for the ones written
+    before that field existed, a reason) is always honoured: it exists because the owner's own setting (collectors.safety.cooldown_days) or the owner's own command asked for it. Any other entry (a
+    site or route rested after a refusal) is honoured only when the owner has turned the general rest guard ON. Before, the guard (shipped OFF) hid the account rests too, so a written rest was
+    invisible to every later run."""
     out = {}
-    if not guards.on("rest_after_refusal"):
-        return out
     for site, entry in (data if isinstance(data, dict) else {}).items():
         try:
-            if isinstance(entry, dict) and _parse(entry["until"]) > _parse(now):
+            if not isinstance(entry, dict) or not _parse(entry["until"]) > _parse(now):
+                continue
+            by_the_tool = entry.get("kind") in ("account_warning", "owner") or bool(entry.get("reason"))
+            if by_the_tool or guards.on("rest_after_refusal"):
                 out[site] = entry
         except (KeyError, ValueError, TypeError):
             continue
@@ -835,7 +854,7 @@ def rest_by_hand(store, sites, now, days, settings):
     data, lines = store.read_cooldowns(), []
     for site in names:
         length = days or settings.cooldown_days.get(site) or 3
-        entry = {"until": rest_until(now, length), "at": now, "reason": "rested by hand"}
+        entry = {"until": rest_until(now, length), "at": now, "reason": "rested by hand", "kind": "owner"}
         data[site] = entry
         lines.append(f"{site}: resting until {entry['until'][:10]} ({length} days), as you asked; nothing was opened")
     store.write_cooldowns(data)
@@ -1161,8 +1180,7 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds, page_budget
     if not kept:
         browser.screenshot(f"empty-{source}")
     in_data = sum(1 for r in kept if r["item_id"] in from_data)
-    read_log = getattr(browser, "read_log", None)
-    stealth_summary = read_log.summary() if read_log is not None else None
+    stealth_summary = final_read_summary(browser)
     return kept, {"json": in_data, "links": len(kept) - in_data, "state": state, "rate_limited": limited and len(kept) < n,
                   "fallbacks": fallbacks, "fallback_how": how, "page_errors": page_errors,
                   "search_first": searched_first, "search_first_how": how_first, "tag_fallback": tag_fallback,
@@ -1890,7 +1908,7 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
         days = settings.cooldown_days.get(site, 0)
         if days <= 0 or dry_run:                                          # the owner's switch for this rest is collectors.safety.cooldown_days (0 = this run only); it does not wait for a general guard that ships OFF
             return " It will not be used again in this run."
-        entry = {"until": rest_until(now, days), "at": now, "reason": exc.reason[:200]}
+        entry = {"until": rest_until(now, days), "at": now, "reason": exc.reason[:200], "kind": "account_warning"}
         cooldowns[site] = entry
         store.write_cooldowns(cooldowns)
         result.resting[site] = entry

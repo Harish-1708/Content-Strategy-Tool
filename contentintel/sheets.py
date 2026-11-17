@@ -271,6 +271,8 @@ def _canon_tabs(brand, store, now, report):
 def _read_canon_decisions(spreadsheet, brand, store, now, report, dry_run):
     """Read the owner's Decision column in the Canon and Claims tabs (approve / reject, verified / blocked ...) and record it, before the tabs are rewritten. Only the owner can approve canon or verify a
     claim: this is the one place those decisions enter. Never stops the sheet update."""
+    if spreadsheet is None:                                                                  # a dry run before the sheet exists: nothing to read
+        return
     try:
         from . import canon
         titles = [w.title for w in _call(spreadsheet.worksheets)]
@@ -282,7 +284,7 @@ def _read_canon_decisions(spreadsheet, brand, store, now, report, dry_run):
             report.notes.append(f"Canon and Claims decisions: {max(0, len(canon_rows) - 1)} + {max(0, len(claim_rows) - 1)} row(s) seen (dry run: none applied)")
             return
         done = canon.Registry(store.data_dir, brand.slug).owner_decisions(canon_rows, claim_rows, at=now)
-        report.notes.append(f"Canon and Claims decisions read from the sheet: {done['applied']} applied" + (f"; ignored: {'; '.join(done['ignored'][:3])}" if done["ignored"] else ""))
+        report.notes.append(f"Canon and Claims decisions read from the sheet: {done['applied']} applied" + (f"; {len(done['ignored'])} ignored: {'; '.join(done['ignored'][:3])}" + (f" (and {len(done['ignored']) - 3} more)" if len(done["ignored"]) > 3 else "") if done["ignored"] else ""))
     except Exception as exc:
         report.notes.append(f"Canon and Claims decisions not read: {exc}")
 
