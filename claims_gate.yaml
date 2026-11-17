@@ -17,5 +17,5 @@ generic_words: [article, articles, claimed, claims, figure, figures, found, publ
                 there, their, these, those, which, while, with, from, have, been, were, would, about, other, some, such, only, also]
 # Extra wording that makes a sentence checkable, added to the built-in patterns (a regular expression per category).
 extra_sensitive:
-  press: 'quoted (in|by)|\bmagazine\b|\beditor|top pick|\bsports illustrated\b|\bthrillist\b|\bbusiness insider\b|\bfatherly\b'
+  press: 'quoted (in|by)|\bmagazine\b|\beditor.?s (top )?(pick|choice)\b|top pick|\bsports illustrated\b|\bthrillist\b|\bbusiness insider\b|\bfatherly\b|\bnew york times\b|\bwall street journal\b|\bwashington post\b|\bgq magazine\b'
   award: '\bwin\b|\bwins\b|\bwinners?\b|\bfinalists?\b|\bshelfies?\b'
