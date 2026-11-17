@@ -93,6 +93,18 @@ def run_skills(args, store, now, *, environ=None, runner=None):
     return 0 if result["ok"] else 1
 
 
+def route_report(slug, claude, label):
+    """After a run that asked a model: how many calls the free pool answered and how many Claude did, and every note the routed client recorded (a pool that could not be used is said, never silent)."""
+    calls = list(getattr(claude, "calls", []) or [])
+    notes = list(dict.fromkeys(getattr(claude, "notes", []) or []))
+    if not calls and not notes:
+        return
+    pool, plain = calls.count("gateway"), calls.count("claude")
+    print(f"canon: {slug}: {label}: model route: {pool} call(s) answered by the free pool, {plain} by Claude")
+    for note in notes[:10]:
+        print(f"canon:   route note: {note}")
+
+
 def run_canon(args, store, now, *, clients=None):
     """clients: a function returning (claude, search, get) for the refresh and the foundation chain (the CLI builds it from the routed AI client and Serper)."""
     slugs = list_brand_slugs(args.brands_dir) if args.brand in ("", "all") else [args.brand]
@@ -144,6 +156,7 @@ def run_canon(args, store, now, *, clients=None):
             if rep["errors"] and not rep["pages_ok"]:
                 print(f"canon: {slug}: the refresh FAILED: {rep['errors']} error(s) and not one page was read and reviewed to the end (see the notes above)")
                 worst = max(worst, 1)
+            route_report(slug, claude, "refresh")
         elif args.action == "foundation":
             from . import foundation as FD
             cfg_path, trusted_root = args.skills_config, None
@@ -168,6 +181,7 @@ def run_canon(args, store, now, *, clients=None):
                 print(line)
             proposed = sum(1 for r in rep if r["result"] == "proposed")
             print(f"canon: {slug}: foundation: {proposed} section(s) PROPOSED for your decision in the Canon tab; nothing is canonical until you approve it")
+            route_report(slug, claude, "foundation")
             if any("is not a section of the chain" in r["detail"] for r in rep):
                 worst = max(worst, 2)
             elif any(r["result"] in ("failed", "rejected", "refused") and "limit" not in r["detail"] for r in rep if r["result"] != "refused" or "NEEDS_INPUT" not in r["detail"]):
@@ -195,6 +209,7 @@ def run_canon(args, store, now, *, clients=None):
             for note in report["notes"]:
                 print(f"canon:   note: {note}")
             print(f"canon: {slug}: conflicts re-checked: {kept} kept as real conflicts, {taken_back} taken back to UNVERIFIED (the link and the old claim are untouched; nothing deleted); {report['calls']} AI call(s)")
+            route_report(slug, claude, "conflict re-check")
             if report["errors"] and not (kept or taken_back):
                 worst = max(worst, 1)
         elif args.action == "history":
