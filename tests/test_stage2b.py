@@ -1,11 +1,13 @@
 """Update 70 round 3: the fixes for the stage 2 review (M201-M233) and the live findings F1-F5."""
 import json
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
 
 import yaml
+from types import SimpleNamespace
 
 from contentintel import batch2_cli as B2
 from contentintel import canon as C
@@ -436,8 +438,9 @@ def test_the_omniroute_research_is_recorded_without_wiring_anything_and_the_forb
     assert "NOT a reliable free VIDEO route" in recurring["pollinations"]["caution"] and "NOT a free video go" in data["video"]["decision"]
     assert "disputed" in recurring["llm7"]["limit"].lower()
     providers = yaml.safe_load(Path("ai_providers.yaml").read_text(encoding="utf-8"))["providers"]
-    for key in ("nara", "xkiro", "sambanova", "llm7", "siliconflow", "pollinations"):                       # already LISTED in the provider file, and still switched OFF with unverified terms and no approved model:
-        assert providers[key]["enabled"] is False and providers[key]["terms"]["status"] == "unverified" and not any(m.get("approved") for m in providers[key].get("models", []))      # the owner switches them on
+    for key in ("nara", "xkiro", "sambanova", "llm7", "pollinations"):                                      # mapped through OmniRoute on 2026-11-17 with recorded terms and approved models (see tests/test_connect.py)
+        assert providers[key]["omniroute"]["provider"] == key and providers[key]["terms"]["status"] == "upstream_documented" and any(m.get("approved") for m in providers[key]["models"])
+    assert providers["siliconflow"]["enabled"] is False and providers["siliconflow"]["terms"]["status"] == "unverified"        # not in OmniRoute's catalogue: it stays off
     assert "opencode-zen" not in providers
     assert Path("docs/ai/omniroute-free-providers.md").read_text(encoding="utf-8").count("Kiro, DuckDuckGo AI Chat, Blackbox, Coze, Muse Spark web") == 1
 
@@ -664,3 +667,135 @@ def test_the_refresh_and_the_chain_really_ask_their_own_lanes(tmp_path):
     stack3 = FakeStack(lanes, [{"text": "A plain sentence about overalls.", "needs_input": []}])
     rep = run_chain(reg(tmp_path / "f"), routed_with(stack3, Flaky([])), tmp_path, only={"positioning"})
     assert rep[0]["result"] == "proposed" and stack3.asked == ["foundation_json"]
+
+
+# ---- round 5: the medical filter without a pronoun (M190), the checkout and Save steps run for real (M183) ----------------------------------------------------------
+
+def test_the_medical_filter_also_catches_a_disclosure_without_a_pronoun_and_leaves_fit_information_and_look_alike_words():
+    for line in ("Living with asthma is hard and these overalls help.", "Diagnosed with scoliosis last year; the straps are gentle.", "Suffering from insomnia, I wear them to bed.", "Recovering from surgery, so the stretch waist matters."):
+        assert C.is_medical_disclosure(line), line
+    for line in ("Managing MSRP changes is part of my job.", "Dealing with ibsen quotes in class.", "I paid the MSRP and it was worth it.", "My items arrived early.", "Great for lounging, soft fabric.", "I'm 6'4 and 300lbs and the XXL fits well.", "The chronology of the launch is clear.", "Pregnant buyer: I'm living in these while pregnant!"):
+        assert not C.is_medical_disclosure(line), line
+
+
+def step_script(name):
+    wf = yaml.safe_load(Path(".github/workflows/skills.yml").read_text(encoding="utf-8"))
+    return next(s["run"] for s in wf["jobs"]["skills"]["steps"] if s.get("name") == name)
+
+
+def git(cwd, *args):
+    return subprocess.run(["git", "-C", str(cwd), "-c", "user.name=t", "-c", "user.email=t@example.com", *args], capture_output=True, text=True, check=True).stdout.strip()
+
+
+def test_the_checkout_step_clones_at_the_pinned_commit_and_refuses_a_bad_hash_or_a_checkout_at_another_commit(tmp_path):
+    origin = tmp_path / "origin"
+    origin.mkdir()
+    subprocess.run(["git", "init", "-q", str(origin)], check=True)
+    (origin / "SKILL.md").write_text("one", encoding="utf-8")
+    git(origin, "add", "-A")
+    git(origin, "commit", "-q", "-m", "one")
+    pinned = git(origin, "rev-parse", "HEAD")
+    work = tmp_path / "work"
+    work.mkdir()
+    cfg = yaml.safe_load(Path("external_skills.yaml").read_text(encoding="utf-8"))
+
+    def run(sha):
+        cfg["repo"].update({"url": f"file://{origin}", "pinned_commit": sha, "checkout_path": str(tmp_path / "checkout" / "skills")})
+        (work / "external_skills.yaml").write_text(yaml.safe_dump(cfg), encoding="utf-8")
+        return subprocess.run(["bash", "-e", "-c", step_script("Check out the skills repository at the pinned commit")], cwd=work, capture_output=True, text=True, env={**os.environ, "PYTHONPATH": os.getcwd()})
+    done = run(pinned)
+    assert done.returncode == 0 and f"Skills repository at {pinned}" in done.stdout and git(tmp_path / "checkout" / "skills", "rev-parse", "HEAD") == pinned, (done.stdout, done.stderr)
+    for bad in ("not-a-hash", pinned[:39], ""):
+        shutil.rmtree(tmp_path / "checkout", ignore_errors=True)
+        refused = run(bad)
+        assert refused.returncode == 1 and "not a 40-character commit hash" in refused.stdout + refused.stderr, bad
+    shutil.rmtree(tmp_path / "checkout", ignore_errors=True)
+    missing = run("0" * 40)
+    assert missing.returncode != 0                                                                              # a commit the repository does not have is an error
+
+
+def test_the_save_step_commits_only_the_registry_files_and_the_catalogue_and_pushes_them_and_says_when_there_is_nothing(tmp_path):
+    bare = tmp_path / "bare.git"
+    subprocess.run(["git", "init", "-q", "--bare", "-b", "main", str(bare)], check=True)
+    clone = tmp_path / "clone"
+    subprocess.run(["git", "clone", "-q", str(bare), str(clone)], check=True, capture_output=True)
+    (clone / "README.md").write_text("x", encoding="utf-8")
+    git(clone, "add", "-A")
+    git(clone, "commit", "-q", "-m", "start")
+    git(clone, "push", "-q", "origin", "HEAD:main")
+    script = step_script("Save the data")
+    env = {**os.environ, "GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@example.com", "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@example.com"}
+    nothing = subprocess.run(["bash", "-e", "-c", script], cwd=clone, capture_output=True, text=True, env=env)
+    assert nothing.returncode == 0 and "No data changes to save." in nothing.stdout
+    (clone / "data" / "swoveralls" / "registry").mkdir(parents=True)
+    (clone / "data" / "swoveralls" / "registry" / "events.ndjson").write_text('{"n": 1}\n', encoding="utf-8")
+    (clone / "data" / "_shared").mkdir(parents=True)
+    (clone / "data" / "_shared" / "skills_catalogue.json").write_text("{}", encoding="utf-8")
+    (clone / "data" / "swoveralls" / "other.json").write_text("{}", encoding="utf-8")                       # not a file this tool writes
+    (clone / "stray.txt").write_text("x", encoding="utf-8")
+    saved = subprocess.run(["bash", "-e", "-c", script], cwd=clone, capture_output=True, text=True, env=env)
+    assert saved.returncode == 0, (saved.stdout, saved.stderr)
+    changed = git(bare, "show", "--stat", "--format=%s", "main").splitlines()
+    assert changed[0].startswith("Skills and registries ") and any("registry/events.ndjson" in l for l in changed) and any("skills_catalogue.json" in l for l in changed)
+    assert not any("other.json" in l or "stray.txt" in l for l in changed)                                    # only what this tool writes was committed and pushed
+
+
+def test_a_run_without_a_usable_pool_says_so_in_a_note_and_claude_answers(tmp_path, monkeypatch):
+    from contentintel import services as SV
+    from test_platform_wiring import args_for
+    inner = Flaky([{"from": "claude"}])
+    none_routed = SV.RoutedClaude(inner, "foundation", lambda: None, lambda: AT)
+    assert none_routed.json_task("s", "u") == {"from": "claude"} and none_routed.notes == ["AI Gateway not available: not set up in this run, so Claude answered"]
+    # through the real adapter in cli: the stack builder reports the reasons it had no free provider
+    a = args_for(tmp_path)
+    monkeypatch.setattr(cli, "_health", lambda args, store: (None, None))
+    monkeypatch.setattr(SV, "ai_stack", lambda *args, **kw: (SimpleNamespace(clients={"claude": 1}), None, None, None,
+                                                           ["APPLICATION: FREEAPI_ENCRYPTION_KEY and FREEAPI_ADMIN_PASSWORD are needed to start the gateway", "NOTE: something else"], lambda: None))
+    plain = Flaky([{"from": "claude"}])
+    routed = cli._routed(plain, "foundation", a, Store(tmp_path / "data"))
+    assert routed.json_task("s", "u") == {"from": "claude"}
+    assert any("GatewayUnavailable: APPLICATION: FREEAPI_ENCRYPTION_KEY and FREEAPI_ADMIN_PASSWORD are needed to start the gateway" in n for n in routed.notes) and not any("something else" in n for n in routed.notes)
+    assert routed.calls == ["claude"]
+
+
+def test_a_decision_cell_is_cleared_only_in_rows_that_actually_hold_one():
+    from fake_sheets import FakeSpreadsheet
+    sp = FakeSpreadsheet("s9", blank_tab=False)
+    ws = sp.add_worksheet("Canon", 20, 4)
+    for r, row in enumerate([["ID", "Text", "Decision"], ["canon-1", "a", "approve"], ["canon-2", "b", ""]], 1):
+        for c, v in enumerate(row, 1):
+            ws.cells[(r, c)] = v
+    from contentintel import sheets as SH
+    assert SH._clear_settled_decisions(ws, {"canon-1", "canon-2"}) == 1 and (2, 3) not in ws.cells and ws.cells[(3, 2)] == "b"
+
+
+def test_every_model_using_command_says_how_many_calls_the_pool_answered_and_how_many_claude_did(tmp_path, capsys):
+    claude = Claude([])
+    claude.calls, claude.notes = ["gateway", "gateway", "claude"], ["AI Gateway had no answer for foundation (no route answered); Claude was used", "AI Gateway had no answer for foundation (no route answered); Claude was used"]
+    B2.route_report("swoveralls", claude, "refresh")
+    out = capsys.readouterr().out
+    assert "canon: swoveralls: refresh: model route: 2 call(s) answered by the free pool, 1 by Claude" in out and out.count("route note: AI Gateway had no answer") == 1          # a repeated note is said once
+    B2.route_report("swoveralls", Claude([]), "refresh")
+    assert capsys.readouterr().out == ""                                                                       # a client that kept no record prints nothing
+    args = cli.build_parser().parse_args(["canon", "--action", "refresh", "--brand", "swoveralls", "--brands-dir", "brands", "--data-dir", str(tmp_path / "data")])
+    routed = Claude([])
+    routed.calls, routed.notes = ["claude"], ["AI Gateway not available: GatewayUnavailable: no free provider has a credential in this run"]
+    B2.run_canon(args, Store(tmp_path / "data"), AT, clients=lambda: (routed, search_for([]), lambda u: PAGE))
+    assert "refresh: model route: 0 call(s) answered by the free pool, 1 by Claude" in capsys.readouterr().out
+
+
+def test_the_second_research_pass_is_recorded_wired_providers_match_the_registry_and_nothing_rejected_or_unconfirmed_is_in_it():
+    data = yaml.safe_load(Path("ai/omniroute_free_providers.yaml").read_text(encoding="utf-8"))["second_pass"]
+    from contentintel.ai import registry as R
+    reg = R.load_registry("ai_providers.yaml")
+    wired = {p["id"]: p for p in data["wired_through_omniroute"]}
+    assert set(wired) == {"airforce", "bluesminds", "bazaarlink"}
+    for pid, row in wired.items():
+        p = reg.providers[pid]
+        assert p.omniroute["provider"] == row["omniroute_id"] and p.enabled and row["secret"] in p.credential_env
+        assert {m.id for m in p.models if m.approved} == {f"{row['omniroute_id']}/{m}" for m in row["models"]}, pid
+    names = {n.replace("-", "").replace("_", "") for n in list(reg.providers)}
+    for bad in data["rejected_do_not_wire"] + data["unconfirmed_do_not_wire"]:
+        assert bad.replace("-", "").replace("_", "") not in names or not reg.providers[next(k for k in reg.providers if k.replace("-", "").replace("_", "") == bad.replace("-", "").replace("_", ""))].enabled, bad          # never switched on
+    assert "nlpcloud" in data["never_wire_via_a_proxy"] and {r["id"] for r in data["confirmed_free_not_wired_yet"]} >= {"ovhcloud", "aihorde", "uncloseai"}
+    assert Path("docs/platform/test-round-run-order.md").read_text(encoding="utf-8").count("Provider test") >= 1 and "never uses the repository's Claude key" in Path("docs/platform/test-round-run-order.md").read_text(encoding="utf-8")
