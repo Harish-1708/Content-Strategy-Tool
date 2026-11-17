@@ -321,7 +321,7 @@ def _apify_lane(args, store, now, environ, slugs=()):
     def budget_fn():                                                                                   # re-read before each call (a transient failure at set-up no longer switches the guard off for the run); the best single key, since a call runs on one key
         return apify_mod.best_key_left(client)
     lane = VOICE.ApifyVoice(client, ledger, per_run=_env_number(environ, "CONTENTINTEL_VOICE_APIFY_PER_RUN", 40 * keys, 1, 300, int), monthly=_env_number(environ, "CONTENTINTEL_VOICE_APIFY_MONTHLY", 60 * keys, 1, 600, int),
-                            shared_cap=shared, max_cost_usd=cost, normalize=COL.normalize_items, budget_fn=budget_fn)
+                            shared_cap=shared, max_cost_usd=cost, normalize=COL.normalize_items, budget_fn=budget_fn, run_usd_cap=_env_number(environ, "CONTENTINTEL_VOICE_APIFY_RUN_USD", 3.0, 0.25, 10.0, float))
     for env_name, attr in (("CONTENTINTEL_VOICE_APIFY_PER_RUN", "per_run"), ("CONTENTINTEL_VOICE_APIFY_MONTHLY", "monthly")):      # an override outside the lane's bounds is changed: say so
         raw = (environ.get(env_name) or "").strip()
         if raw.isdigit() and int(raw) != getattr(lane, attr):
