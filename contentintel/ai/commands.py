@@ -79,6 +79,9 @@ def build_stack(args, store, health, *, mode, clients):
     pool = lanes_mod.load_pool(args.lanes_config, registry)                                  # the shared pool: every approved model, available to every lane that draws on it
     lanes = {**lanes, "canary": canary_lane()}
     shared = Path(store.data_dir) / "_shared" if mode == "live" else Path(args.workdir) / "mock-state"     # a mock run never touches the real spending ledger
+    if mode == "live":                                                                      # the measured order of each job's list (the pool retest), where one has been measured
+        from . import ranking as rk
+        lanes, _ranked = rk.apply_overlay(lanes, Path(store.data_dir) / "_shared" / rk.RANKINGS_FILE)
     usage, review = usage_mod.UsageLedger(shared / "ai_usage.json"), review_mod.ReviewQueue(shared / "ai_review.json")
     return registry, lanes, usage, review, router_mod.Router(registry, lanes, usage, health, clients, review, pool=pool)
 
@@ -98,7 +101,7 @@ def mock_clients(registry, lanes):
 def live_clients(registry, environ, gateway_dir, workdir, notes):
     """Real clients for enabled providers that have a credential. Starts the gateway on localhost when any gateway provider is usable."""
     clients, side = {}, None
-    gateway_providers = [p for p in registry.providers.values() if p.enabled and p.id != "claude" and not p.direct]
+    gateway_providers = [p for p in registry.providers.values() if p.enabled and p.id != "claude" and not p.direct and not p.omniroute]
     for p in registry.providers.values():                    # providers called straight from here (GitHub Models), with the credential from the environment
         if p.enabled and p.direct:
             token = next((environ[n].strip() for n in p.credential_env if environ.get(n, "").strip()), "")
@@ -137,7 +140,50 @@ def live_clients(registry, environ, gateway_dir, workdir, notes):
                 for p in gateway_providers:
                     if p.gateway_platform in report["keys"] or not p.credential_env:
                         clients[p.id] = client
+    omni_side = _start_omniroute(registry, environ, clients, workdir, notes)
+    if omni_side is not None:
+        from .omniroute import Sidecars
+        side = Sidecars(side, omni_side) if side is not None else omni_side
     return clients, side
+
+
+def _start_omniroute(registry, environ, clients, workdir, notes):
+    """OmniRoute (the second gateway) when an enabled provider is held by it and has a credential here; every reason it is not started is a note, never silent."""
+    from . import omniroute as om
+    wanted = [p for p in registry.providers.values() if p.enabled and p.omniroute]
+    if not wanted:
+        return None
+    ready = [p for p in wanted if any(environ.get(n, "").strip() for n in p.credential_env)]
+    for p in wanted:
+        if p not in ready:
+            notes.append("SKIPPED: " + p.id + ": no credential in the environment (" + ", ".join(p.credential_env) + "), so it is not tried; add the secret to use it")
+    if not ready:
+        return None
+    omni_dir = environ.get("CONTENTINTEL_OMNIROUTE_DIR", "")
+    if om.entry_point(omni_dir) is None:
+        notes.append("APPLICATION: OmniRoute is not installed at " + (omni_dir or "(CONTENTINTEL_OMNIROUTE_DIR is not set)") + ", so " + ", ".join(p.id for p in ready) + " cannot be tried")
+        return None
+    side = om.OmniRouteSidecar(omni_dir)
+    try:
+        side.start(gw.free_port(), Path(workdir) / "omniroute-data", Path(workdir) / "omniroute.log")
+        side.wait_ready()
+        key = side.bootstrap()
+        client = om.OmniRouteClient(side.base_url, key)
+    except om.OmniRouteError as exc:
+        notes.append("APPLICATION: OmniRoute could not be started: " + str(exc)[:300])
+        side.stop()
+        return None
+    for p in ready:                                                                      # one provider OmniRoute does not accept never takes the others down with it
+        token = next(environ[n].strip() for n in p.credential_env if environ.get(n, "").strip())
+        try:
+            side.add_provider(p.omniroute["provider"], p.id, token)
+            clients[p.id] = client
+        except om.OmniRouteError as exc:
+            notes.append(f"APPLICATION: OmniRoute did not accept {p.id} (provider id {p.omniroute['provider']}): {str(exc)[:200]}")
+    if not any(p.id in clients for p in ready):
+        side.stop()
+        return None
+    return side
 
 
 def _fmt_rows(rows, keys):
@@ -218,11 +264,17 @@ def run_ai(args, store, health, now):
     workdir.mkdir(parents=True, exist_ok=True)
     notes, side = [], None
     try:
+        environ = os.environ
+        if action == "connect":                                                           # the connection test tries every provider, switched on or not, and NEVER with the repository's Claude key
+            registry = all_providers_on(registry)
+            environ = {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}
         if mode == "mock":
             clients = mock_clients(registry, lanes)
         else:
-            clients, side = live_clients(registry, os.environ, args.gateway_dir, workdir, notes)
+            clients, side = live_clients(registry, environ, args.gateway_dir, workdir, notes)
         registry2, lanes2, usage, review, router = build_stack(args, store, health, mode=mode, clients=clients)
+        if action == "connect":
+            router.registry.providers.update(all_providers_on(router.registry).providers)
         if action == "ask":
             res = router.run(args.lane, data_class=args.data_class, instructions=args.text, now=now)
             print(f"[{mode.upper()}] status {res['status']}" + (f" via {res['route']['provider']}/{res['route']['model']}" if res["route"] else "") + (f": {res.get('reason')}" if res.get("reason") else ""))
@@ -247,10 +299,65 @@ def run_ai(args, store, health, now):
             return 0
         if action == "check":
             return _check(args, registry2, lanes2, router, usage, review, health, store, now, mode, notes)
+        if action == "rank":
+            return _rank(args, lanes2, router, usage, review, health, store, now, mode, notes)
+        if action == "connect":
+            return _connect(registry2, lanes2, router, usage, review, health, store, now, mode, notes)
     finally:
         if side is not None:
             side.stop()
     return 1
+
+
+def all_providers_on(registry):
+    """The same registry with every provider except Claude switched on, for the connection test only (nothing is written back): a provider the owner has not enabled yet can still be tried with its key."""
+    import dataclasses
+    for pid, p in list(registry.providers.items()):
+        if pid != "claude" and not p.enabled and p.terms.get("status") not in ("unverified", "declared_only") and not p.retired:
+            registry.providers[pid] = dataclasses.replace(p, enabled=True)
+    return registry
+
+
+def _connect(registry, lanes, router, usage, review, health, store, now, mode, notes):
+    """Try every route of every provider once with a tiny prompt and report, per provider: connected (how many routes, how fast), failed (why) or not tried (why). Claude is never used."""
+    from . import connect as cn
+    if mode != "live":
+        print("AI connect needs live mode (do not pass --mock)")
+        return 2
+    report = cn.run_connect(router, registry, lanes, notes, now)
+    print(cn.format_report(report))
+    save_state(usage, review, health, store, mode)
+    return 0
+
+
+def _rank(args, lanes, router, usage, review, health, store, now, mode, notes):
+    """The pool retest: measure each job's providers on that job's real prompts and, with --apply, write the measured order (data/_shared/ai_rankings.json) that every later run uses."""
+    from . import ranking as rk
+    jobs = [j.strip() for j in args.jobs.split(",") if j.strip() and j.strip() != "all"] or list(rk.JOBS)
+    unknown = [j for j in jobs if j not in rk.JOBS]
+    if unknown:
+        print(f"AI rank: no such job: {', '.join(unknown)}; the jobs are: {', '.join(rk.JOBS)}")
+        return 2
+    if mode != "live":
+        print("AI rank needs live mode (do not pass --mock): a scripted stand-in measures nothing about a provider")
+        return 2
+    print(f"AI rank, LIVE: {len(jobs)} job(s), {args.runs} run(s) per probe and route (public synthetic inputs only):")
+    for n in notes:
+        print("  " + n)
+    only = {x.strip() for x in args.only.split(",") if x.strip()} or None
+    report = rk.run_ranking(router, lanes, jobs, now=now, runs=args.runs, only_providers=only)
+    print(rk.format_report(report))
+    save_state(usage, review, health, store, mode)
+    measured = sum(job["routes_tried"] for job in report.values())
+    if args.apply and measured:
+        path = Path(store.data_dir) / "_shared" / rk.RANKINGS_FILE
+        previous = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {"jobs": {}}
+        merged = {**(previous.get("jobs") or {}), **{k: v for k, v in report.items() if v["ranking"]}}          # a job that measured nothing keeps its earlier measured order
+        rk.save(path, merged, now)
+        print(f"AI rank: the measured order was written to {path} for: {', '.join(k for k, v in report.items() if v['ranking']) or 'no job'}")
+    elif args.apply:
+        print("AI rank: nothing could be measured (no provider answered), so no order was written and the seeded orders stay")
+    return 0 if measured else 1
 
 
 def _check(args, registry, lanes, router, usage, review, health, store, now, mode, notes):
