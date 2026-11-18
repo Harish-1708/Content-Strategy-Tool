@@ -112,11 +112,19 @@ DRIVERS = {
             "duration 1-15s (default 5s); 2 concurrent generations",
             "generations land in the Library; download from there",
         ],
-        "prompt_selectors": ["textarea", "textarea[placeholder*=\"prompt\" i]",
+        "prompt_selectors": ["textarea[placeholder*=\"Describe\" i]", "textarea",
+                            "textarea[placeholder*=\"prompt\" i]",
                             "div[contenteditable=\"true\"]", "div[role=\"textbox\"]",
                             "input[placeholder*=\"prompt\" i]"],
+        # A promo modal (Black Friday, Nov 2026) covers the page and its
+        # backdrop intercepts every click, so the prompt box cannot be
+        # typed into until the modal is closed. The close button is the
+        # X at the top-right of the open dialog; dismissed best-effort
+        # (if no modal is showing, nothing matches and we carry on).
+        "dismiss_selectors": ["div[data-open][role=\"dialog\"] button.absolute.right-6.top-6"],
         "model_steps": [],            # V6 is the app default; nothing to select
-        "generate_selectors": ["button:has-text(\"Generate\")", "text=Generate"],
+        "generate_selectors": ["button:has-text(\"Create\")", "button:has-text(\"Generate\")",
+                               "text=Generate"],
         "done_markers": ["video[src]", "a[href$=\".mp4\"]", "text=Download"],
         "download_link_contains": [".mp4"],
         "logged_in_markers": ["library", "my creations", "generate"],
@@ -207,6 +215,10 @@ DRIVERS = {
         "prompt_selectors": ["textarea", "textarea[placeholder*=\"prompt\" i]",
                             "div[contenteditable=\"true\"]", "div[role=\"textbox\"]",
                             "input[placeholder*=\"prompt\" i]"],
+        # The prompt box is not on the kling.ai homepage (a marketing page);
+        # it lives in the creation studio. Enter it via the Video Generation
+        # link, best-effort (if we are already in the studio, nothing matches).
+        "enter_selectors": ["a[href=\"/app?designerRouteName=video\"]"],
         "model_steps": [],            # Omni Reference is the default entry; nothing to select
         "generate_selectors": ["button:has-text(\"Generate\")", "text=Generate"],
         "done_markers": ["video[src]", "a[href$=\".mp4\"]", "text=Download"],
@@ -892,6 +904,16 @@ def run_site(key, ctx):
                     detail = reason
                 browser.screenshot("login-wall")
                 return finish("not-set-up", detail)
+            # Dismiss a promo modal that covers the page (best effort: if
+            # no modal is showing, nothing matches and we carry on).
+            if driver.get("dismiss_selectors"):
+                browser.click(driver["dismiss_selectors"])
+            # Enter the creation studio when the prompt box is not on the
+            # landing page (best effort: if we are already there, nothing
+            # matches; after a click, wait for the studio page to load).
+            if driver.get("enter_selectors"):
+                if browser.click(driver["enter_selectors"]):
+                    browser.wait(3)
             if not _pick_model(ctx, browser, driver):
                 browser.screenshot("no-model")
                 return finish("no-go", "the free model could not be selected "
