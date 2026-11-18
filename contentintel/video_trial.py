@@ -1003,6 +1003,173 @@ def run_site(key, ctx):
         return finish("no-go", str(exc))
 
 
+def _probe(browser, selectors):
+    """{selector: found} for each selector, judged on its own via
+    browser.exists — so the build is fixed from the real page, not a guess."""
+    return {sel: browser.exists([sel]) for sel in selectors}
+
+
+def recon_site(key, ctx):
+    """Visit one site and capture what its creation page actually shows — no
+    generation is attempted, nothing is typed, nothing is saved to Drive or a
+    sheet. Returns a recon report dict. Never raises for a site that fails
+    its recon — a failed recon is a report, the same way a failed trial is a
+    verdict."""
+    driver = DRIVERS[key]
+    started = time.time()
+    log = ctx.log
+
+    def finish(state, reason, **extra):
+        report = {"site": key, "label": driver["label"], "model": driver["model"],
+                  "state": state, "reason": reason,
+                  "human_score": log.mean_human_score(key),
+                  "seconds": round(time.time() - started, 1)}
+        report.update(extra)
+        return report
+
+    # The stub: no browser is opened and no cookie is read for Luma. Its
+    # trial-credit amount is unknown until Harish signs in and reports it.
+    if driver.get("stub"):
+        log.record(key, "stub", started, time.time(),
+                   error="needs sign-in check: no free plan stated, trial-credit amount only visible after sign-in")
+        return finish("skipped", "needs sign-in check: sign in by hand and report the trial-credit amount first")
+
+    # Peak hours (Google Flow): non-subscribers are blocked from video
+    # generation in these UTC hours. Skip with a plain reason instead of
+    # burning a generation on the block.
+    peak = driver.get("peak_hours_utc")
+    if peak is not None and ctx.now().hour in peak:
+        log.record(key, "peak-hours", started, time.time(),
+                   error="peak hours for non-subscribers (~2-5 PM UTC)")
+        return finish("skipped", "peak hours for non-subscribers (~2-5 PM UTC); run outside that window")
+
+    # Cookies first: a missing or unreadable secret is "not set up", never a
+    # browser that opens and fails.
+    state, line = check_cookies(key, ctx.env)
+    if state != "ok":
+        log.record(key, "cookies", started, time.time(), error=line)
+        return finish("not-set-up", line)
+    cookies_text = (ctx.env.get(driver["cookies_secret"]) or "").strip()
+
+    try:
+        with ctx.browser_factory(ctx, key, cookies_text) as browser:
+            opened_at = time.time()
+            browser.open(driver["app_url"])
+            _record(ctx, key, "open-app", opened_at, browser)
+            found = challenge_or_warning(browser, driver)
+            if found is not None:
+                kind, reason = found
+                browser.screenshot("recon-challenge-or-warning")
+                return finish("blocked", reason)
+            login, reason = logged_in_state(browser, driver)
+            if login != "in":
+                if login == "wall":
+                    detail = "cookies missing or expired — capture a new session by hand"
+                else:
+                    detail = reason
+                browser.screenshot("recon-login-wall")
+                return finish("not-set-up", detail, login=login)
+            # Dismiss a promo modal that covers the page (best effort) and
+            # enter the creation studio, the same way the trial does — the
+            # recon must reach the page the trial would type into.
+            if driver.get("dismiss_selectors"):
+                browser.click(driver["dismiss_selectors"])
+            if driver.get("enter_url"):
+                browser.open(driver["enter_url"])
+            if driver.get("enter_selectors"):
+                browser.click(driver["enter_selectors"])
+            # Capture the creation page as it actually is, then probe every
+            # selector the driver would use — so the build is fixed from the
+            # real page, not from a guess.
+            browser.screenshot("recon")
+            _record(ctx, key, "recon", opened_at, browser)
+            try:
+                visible = (browser.text(["body"]) or "").strip()
+            except Exception:
+                visible = ""
+            pages_opened = [driver["app_url"]]
+            if driver.get("enter_url"):
+                pages_opened.append(driver["enter_url"])
+            return finish("ok", "creation page captured; selectors probed",
+                          login=login, pages_opened=pages_opened,
+                          credits_exhausted=credits_exhausted(browser, driver),
+                          prompt_selectors=_probe(browser, driver["prompt_selectors"]),
+                          generate_selectors=_probe(browser, driver["generate_selectors"]),
+                          dismiss_selectors=_probe(browser, driver.get("dismiss_selectors", [])),
+                          model_steps=[_probe(browser, step) for step in driver["model_steps"]],
+                          done_markers=_probe(browser, driver["done_markers"]),
+                          visible_text=visible[:2000])
+    except browser_mod.LoginWall as exc:
+        return finish("not-set-up", f"the site shows its login page ({_short(exc)}); "
+                      "cookies missing or expired — capture a new session by hand")
+    except browser_mod.AccountWarning as exc:
+        return finish("blocked", f"{_short(exc)}; the account rests")
+    except browser_mod.Challenge as exc:
+        return finish("blocked", f"{_short(exc)}; a person must clear it")
+    except browser_mod.BrowserError as exc:
+        return finish("no-go", _short(exc))
+    except TrialError as exc:
+        return finish("no-go", str(exc))
+
+
+def recon_line(entry):
+    """One line of the recon report, for the run summary."""
+    return f"{entry['site']}: {entry['state'].upper()} — {entry['reason']}"
+
+
+def run_recon(keys, settings, env, out_dir, brand=None, recon_path=None,
+              browser_factory=None, now=None, dry_run=False):
+    """Visit each site and capture its creation page. Returns (reports,
+    exit_code). Exit 0 when every site got a report. A recon never generates
+    anything and never saves to Drive or a sheet — it only captures and
+    probes, so the drivers can be built from the real pages."""
+    if brand is None:
+        raise TrialError("no brand was given; the recon must know which brand it is for "
+                         "before it captures anything")
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    log = TrialLog()
+    budget = ClipBudget()
+    ctx = TrialContext(settings, env, out_dir, "", log, budget,
+                       browser_factory=browser_factory, now=now,
+                       brand=brand, data_dir="data", sheets_config="sheets.yaml")
+    reports = []
+    if dry_run:
+        print("generation recon: dry run — the plan only, no browser is opened")
+        print(f"  brand: {brand.slug} ({brand.name})")
+        for key in keys:
+            for line in plan_lines(key):
+                print(line)
+            state, line = check_cookies(key, env)
+            print(f"  cookies ({DRIVERS[key]['cookies_secret']}): {line}")
+            reports.append({"site": key, "label": DRIVERS[key]["label"],
+                            "model": DRIVERS[key]["model"], "state": "skipped",
+                            "reason": "dry run — no browser opened",
+                            "human_score": None, "seconds": 0.0})
+    else:
+        for key in keys:
+            entry = recon_site(key, ctx)
+            reports.append(entry)
+            print(recon_line(entry))
+    log_path = str(out_dir / "trial-log.jsonl")
+    log.write_jsonl(log_path)
+    mean = log.mean_human_score()
+    if mean is not None and any(e["dwell_seconds"] > 0 for e in log.entries):
+        print(f"generation recon: mean human score {mean} over {len(log.entries)} logged action(s)")
+    result = {"run_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+              "brand": brand.slug, "mode": "recon", "reports": reports}
+    target = Path(recon_path) if recon_path else out_dir / "recon.json"
+    try:
+        if target.parent != Path("."):
+            target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(json.dumps(result, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+    except OSError as exc:
+        print(f"generation recon: could not write the report to {target} ({exc})")
+        return reports, 1
+    print(f"generation recon: report written to {target}")
+    return reports, 0
+
+
 # ---------------------------------------------------------------------------
 # The run: plan (dry run) or trial
 # ---------------------------------------------------------------------------
@@ -1101,6 +1268,12 @@ def main(argv=None):
                         help="the prompt for the one clip (default: a brand-neutral scene)")
     parser.add_argument("--dry-run", action="store_true",
                         help="print the plan and the cookie checks only; never open a browser")
+    parser.add_argument("--recon", action="store_true",
+                        help="visit each site and capture its creation page (screenshot + HTML + a probe of "
+                             "every selector the driver would use); never generate anything, never save to "
+                             "Drive or a sheet — the captures are the board the drivers are built from")
+    parser.add_argument("--recon-out", default=None,
+                        help="where to write recon.json (default: <out>/recon.json)")
     parser.add_argument("--out", default="debug/video-trial",
                         help="where the clips, the trial log and the verdicts go")
     parser.add_argument("--verdicts", default=None,
@@ -1112,7 +1285,7 @@ def main(argv=None):
     parser.add_argument("--poll-seconds", type=int, default=DEFAULT_POLL_SECONDS,
                         help="how often to check whether the clip is finished")
     args = parser.parse_args(argv)
-    if not args.prompt.strip():
+    if not args.recon and not args.prompt.strip():
         print("video-trial: the prompt is empty; give one with --prompt")
         return 1
     if args.max_wait_seconds is not None and args.max_wait_seconds < 1:
@@ -1132,6 +1305,10 @@ def main(argv=None):
         print(f"video-trial: {exc}")
         return 1
     keys = list(ALL_KEYS) if args.site == "all" else [args.site]
+    if args.recon:
+        _, code = run_recon(keys, settings, os.environ, args.out,
+                            brand=brand, recon_path=args.recon_out, dry_run=args.dry_run)
+        return code
     _, code = run_trial(keys, args.prompt, settings, os.environ, args.out,
                         brand=brand, verdicts_path=args.verdicts, dry_run=args.dry_run,
                         max_wait_seconds=args.max_wait_seconds,
