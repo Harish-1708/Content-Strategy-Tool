@@ -620,7 +620,7 @@
      },
      "general_json": {
       "cost_usd": 0.0,
-      "requests": 1,
+      "requests": 3,
       "tokens": 0
      },
      "story_extract_json": {
@@ -635,9 +635,9 @@
      }
     },
     "cost_usd": 0.0,
-    "failures": 9,
+    "failures": 11,
     "latency_ms": 0,
-    "requests": 9,
+    "requests": 11,
     "tokens_in": 0,
     "tokens_out": 0
    },
@@ -685,7 +685,7 @@
      },
      "general_json": {
       "cost_usd": 0.0,
-      "requests": 2,
+      "requests": 3,
       "tokens": 0
      },
      "story_extract_json": {
@@ -700,9 +700,9 @@
      }
     },
     "cost_usd": 0.0,
-    "failures": 21,
+    "failures": 22,
     "latency_ms": 174533,
-    "requests": 26,
+    "requests": 27,
     "tokens_in": 1551,
     "tokens_out": 766
    },
@@ -720,8 +720,8 @@
      },
      "general_json": {
       "cost_usd": 0.0,
-      "requests": 6,
-      "tokens": 11584
+      "requests": 13,
+      "tokens": 30529
      },
      "story_extract_json": {
       "cost_usd": 0.0,
@@ -735,11 +735,11 @@
      }
     },
     "cost_usd": 0.0,
-    "failures": 2,
-    "latency_ms": 27938,
-    "requests": 22,
-    "tokens_in": 9736,
-    "tokens_out": 13664
+    "failures": 5,
+    "latency_ms": 44889,
+    "requests": 29,
+    "tokens_in": 19285,
+    "tokens_out": 23060
    },
    "kilo": {
     "by_lane": {
@@ -785,8 +785,8 @@
      },
      "general_json": {
       "cost_usd": 0.0,
-      "requests": 2,
-      "tokens": 5710
+      "requests": 3,
+      "tokens": 7874
      },
      "story_extract_json": {
       "cost_usd": 0.0,
@@ -801,10 +801,10 @@
     },
     "cost_usd": 0.0,
     "failures": 2,
-    "latency_ms": 150374,
-    "requests": 10,
-    "tokens_in": 7094,
-    "tokens_out": 1249
+    "latency_ms": 211745,
+    "requests": 11,
+    "tokens_in": 8983,
+    "tokens_out": 1524
    },
    "openrouter": {
     "by_lane": {
@@ -880,7 +880,7 @@
      },
      "general_json": {
       "cost_usd": 0.0,
-      "requests": 1,
+      "requests": 3,
       "tokens": 0
      },
      "story_extract_json": {
@@ -895,9 +895,9 @@
      }
     },
     "cost_usd": 0.0,
-    "failures": 18,
+    "failures": 20,
     "latency_ms": 227106,
-    "requests": 25,
+    "requests": 27,
     "tokens_in": 1827,
     "tokens_out": 4516
    }

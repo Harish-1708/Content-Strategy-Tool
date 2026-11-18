@@ -1,4 +1,18 @@
 {
+ "instagram": {
+  "fingerprint_preset": null,
+  "locale": "en-US",
+  "os": "macos",
+  "profile_dir": ".stealth-profiles/instagram",
+  "proxy_secret": "STEALTH_PROXY_INSTAGRAM",
+  "site": "instagram",
+  "timezone_id": "America/New_York",
+  "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+  "viewport": [
+   1366,
+   768
+  ]
+ },
  "meta_ads": {
   "fingerprint_preset": null,
   "locale": "en-US",

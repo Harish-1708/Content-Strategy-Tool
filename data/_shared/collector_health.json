@@ -376,7 +376,7 @@
   },
   "ai:cloudflare|gateway": {
    "acceptance": null,
-   "consecutive_failures": 1,
+   "consecutive_failures": 3,
    "consecutive_successes": 0,
    "history": [
     {
@@ -476,18 +476,32 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-18T16:48:05Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-18T16:50:42Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-18T14:15:30Z",
+    "at": "2026-11-18T16:50:42Z",
     "code": "RATE_LIMITED",
-    "message": "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast key1: daily_quota_exhausted. Last error: Cloudflare API error 429: AiError: AiError: you have used up your daily free allocation of 10,000 neurons, please upgrade t"
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
    },
    "last_success": "2026-11-15T09:37:31Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:cloudflare",
-   "state": "healthy"
+   "state": "degraded"
   },
   "ai:cohere|gateway": {
    "acceptance": null,
@@ -819,7 +833,7 @@
   },
   "ai:google|gateway": {
    "acceptance": null,
-   "consecutive_failures": 2,
+   "consecutive_failures": 3,
    "consecutive_successes": 0,
    "history": [
     {
@@ -912,23 +926,30 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-18T16:48:09Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-18T14:15:51Z",
-    "code": "RATE_LIMITED",
-    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~69s."
+    "at": "2026-11-18T16:48:09Z",
+    "code": "UPSTREAM_BROKEN",
+    "message": "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: google/gemini-3.5-flash key1: upstream_error. Last error: Google API error 503: This model is currently "
    },
    "last_success": "2026-11-15T09:37:31Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:google",
-   "state": "healthy"
+   "state": "degraded"
   },
   "ai:groq|gateway": {
    "acceptance": null,
-   "consecutive_failures": 1,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 2,
    "history": [
     {
      "at": "2026-11-10T08:54:44Z",
@@ -1181,16 +1202,82 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-18T16:47:57Z",
+     "code": "",
+     "items": 1,
+     "ms": 8011,
+     "ok": true
+    },
+    {
+     "at": "2026-11-18T16:48:05Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-18T16:48:05Z",
+     "code": "",
+     "items": 1,
+     "ms": 2934,
+     "ok": true
+    },
+    {
+     "at": "2026-11-18T16:48:09Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-18T16:50:35Z",
+     "code": "",
+     "items": 1,
+     "ms": 3546,
+     "ok": true
+    },
+    {
+     "at": "2026-11-18T16:50:42Z",
+     "code": "",
+     "items": 1,
+     "ms": 2460,
+     "ok": true
     }
    ],
    "last_error": {
-    "at": "2026-11-18T14:15:34Z",
+    "at": "2026-11-18T16:48:09Z",
     "code": "RATE_LIMITED",
-    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~86s."
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~87s."
    },
-   "last_success": "2026-11-18T14:15:30Z",
+   "last_success": "2026-11-18T16:50:42Z",
    "pause": null,
    "route": "gateway",
+   "source": "ai:groq",
+   "state": "healthy"
+  },
+  "ai:groq|model:openai/gpt-oss-120b": {
+   "acceptance": null,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-18T16:50:42Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-18T16:50:42Z",
+    "code": "RATE_LIMITED",
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~7h."
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "model:openai/gpt-oss-120b",
    "source": "ai:groq",
    "state": "healthy"
   },
@@ -1331,7 +1418,7 @@
   "ai:nvidia|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 2,
+   "consecutive_successes": 3,
    "history": [
     {
      "at": "2026-11-14T05:00:40Z",
@@ -1458,6 +1545,13 @@
      "items": 1,
      "ms": 17809,
      "ok": true
+    },
+    {
+     "at": "2026-11-18T16:48:09Z",
+     "code": "",
+     "items": 1,
+     "ms": 61371,
+     "ok": true
     }
    ],
    "last_error": {
@@ -1465,7 +1559,7 @@
     "code": "TIMEOUT",
     "message": "the gateway could not be reached: timed out"
    },
-   "last_success": "2026-11-18T14:15:51Z",
+   "last_success": "2026-11-18T16:48:09Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:nvidia",
@@ -1969,7 +2063,7 @@
   },
   "ai:zhipu|gateway": {
    "acceptance": null,
-   "consecutive_failures": 1,
+   "consecutive_failures": 3,
    "consecutive_successes": 0,
    "history": [
     {
@@ -2062,10 +2156,24 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-18T16:48:05Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-18T16:50:42Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-18T14:15:30Z",
+    "at": "2026-11-18T16:50:42Z",
     "code": "RATE_LIMITED",
     "message": "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: 该模型当前访问量过大，请您稍后再试"
    },
@@ -2073,7 +2181,7 @@
    "pause": null,
    "route": "gateway",
    "source": "ai:zhipu",
-   "state": "healthy"
+   "state": "degraded"
   },
   "claude|api": {
    "acceptance": {
@@ -4480,8 +4588,8 @@
     "run": "480a348f",
     "version": "3a4b3bc047b8"
    },
-   "consecutive_failures": 0,
-   "consecutive_successes": 6,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -4636,12 +4744,19 @@
      "items": 12,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-18T16:44:12Z",
+     "code": "NEED_LOGIN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-14T09:05:03Z",
-    "code": "PLATFORM_BLOCKED",
-    "message": "instagram: instagram showed an account warning (the page address contains /accounts/suspended). The tool stopped using the account straight away. Open the account by hand and follow what the warning says"
+    "at": "2026-11-18T16:44:12Z",
+    "code": "NEED_LOGIN",
+    "message": "instagram: not logged in. The cookies in INSTAGRAM_COOKIES may have expired; export fresh ones from the dummy account. Cookie facts (no values shown): 11 cookies loaded (.instagram.com x11)."
    },
    "last_success": "2026-11-15T03:55:07Z",
    "pause": null,
@@ -5970,7 +6085,7 @@
     "version": "3a4b3bc047b8"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 1,
+   "consecutive_successes": 2,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -6146,6 +6261,13 @@
      "items": 30,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-18T16:44:12Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": {
@@ -6153,7 +6275,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "the page opened but no ads or posts could be read (a screenshot was saved; run Recon to see what the site sends)"
    },
-   "last_success": "2026-11-16T19:10:25Z",
+   "last_success": "2026-11-18T16:44:12Z",
    "pause": null,
    "route": "browser",
    "source": "tiktok",
