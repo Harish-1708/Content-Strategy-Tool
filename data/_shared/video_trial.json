@@ -2,16 +2,16 @@
  "brand": "duderobe",
  "dry_run": false,
  "prompt": "A red bicycle leaning against a wooden fence in a sunny garden, gentle breeze, steady camera",
- "run_at": "2026-11-18T14:56:30.410040Z",
+ "run_at": "2026-11-18T14:59:41.208973Z",
  "verdicts": [
   {
    "clip": null,
-   "human_score": 45,
-   "model": "V6",
-   "reason": "the prompt box could not be found; the selectors are first guesses \u2014 correct them from the debug capture",
-   "seconds": 41.0,
-   "site": "pixverse",
-   "verdict": "no-go"
+   "human_score": 43,
+   "model": "Seedance 2.0",
+   "reason": "the site asked for a check (captcha); a person must clear it",
+   "seconds": 36.0,
+   "site": "dreamina",
+   "verdict": "blocked"
   }
  ]
 }
