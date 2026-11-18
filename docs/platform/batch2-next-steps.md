@@ -13,8 +13,11 @@ Stage 1 (the external skills connection and the two registries) and Stage 2 (the
 7. **Stage 11, RustXNG, last.**
 
 ## Batch 3 (after Batch 2), each behind a go/no-go gate
-Concat headless export (1080x1920, under 5 minutes, no GUI or GPU, 2 of 3 runs), TimesFM (beats a naive baseline on at least 60 percent of held-out series, under 10 minutes of CPU per brand), MoneyPrinterTurbo drafts only with publishing off, the ArcReel billing ledger (reconciles within 5 percent), OpenMontage's scored routing, and OmniRoute as a primary pool member with FreeLLMAPI (already built here; the retest decides the order).
+Concat headless export (1080x1920, under 5 minutes, no GUI or GPU, 2 of 3 runs), TimesFM (beats a naive baseline on at least 60 percent of held-out series, under 10 minutes of CPU per brand), MoneyPrinterTurbo drafts only with publishing off, the ArcReel billing ledger (reconciles within 5 percent), OpenMontage's scored routing, and OmniRoute as a primary pool member with FreeLLMAPI (already built here; the retest decides the order), ArcReel (billing ledger pattern) and OpenMontage (scored routing), both still in Batch 3. agent-browser belongs to Stage 10, not Batch 3.
 
 ## Two suggestions that cut across all stages
 - Every new stage that calls a model gets its own job lane and probe in the pool retest in the same change; a test already fails if a job has no lane.
-- Run the live proof of each finished stage on one brand before building the next, so a problem shows up one stage at a time instead of all at the end.
+- Stages 3 to 11 come in ONE single update (the owner's decision, 2026-11-18). Their live proof happens in the test round after that package lands, one brand first, not between stages. Each stage still gets its own job lane and retest probe in the same change.
+
+
+Order question (2026-11-18): the order 3, 4, 7, 5, 6 with 8, 9 with 10, 11 stands as a recommendation; the owner has not ruled on it, so it is built in that order unless he says otherwise.
