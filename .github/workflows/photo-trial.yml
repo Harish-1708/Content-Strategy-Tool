@@ -1,0 +1,105 @@
+name: Photo trial
+
+# One photo per run, go/no-go, from Pollinations image generation (free, no
+# key, no signup) — a plain GET to image.pollinations.ai (contentintel/photo_trial.py).
+# Output is a draft only — personal-use, publishing OFF. One photo per run,
+# hard cap, structural: the run makes exactly one generation. A photo that
+# fails its trial is a verdict in the report (NO-GO), not a failed run: the
+# run only goes red when the trial itself broke. A photo that is made goes
+# ONLY to the brand the run is for (the `brand` input, required): to Shared
+# Drive 'Idea Bank Automation' / Generated Content / Photo / <Brand name>,
+# and one row is added to that brand's own Catalogue sheet, tab "Photos",
+# with the Drive link. Nothing is ever saved to another brand's folder or sheet.
+
+on:
+  workflow_dispatch:
+    inputs:
+      brand:
+        description: "The brand this trial is for — the photo goes ONLY to that brand's Drive folder and sheet, never another brand's"
+        type: choice
+        options: [swoveralls, duderobe, defi_snacks]
+        required: true
+      prompt:
+        description: "The prompt for the one photo (brand-neutral by default, so the trial tests the mechanism, not a brand)"
+        default: "A red bicycle leaning against a wooden fence in a sunny garden"
+        required: false
+      model:
+        description: "The Pollinations image model"
+        type: choice
+        options: [flux, turbo]
+        default: flux
+      dry_run:
+        description: "Print the plan only; never make an image"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: photo-trial
+  cancel-in-progress: false
+
+jobs:
+  photo-trial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install the tool
+        shell: bash
+        run: |
+          python -m venv "$RUNNER_TEMP/photo-env"
+          "$RUNNER_TEMP/photo-env/bin/pip" install -q -r requirements.txt
+
+      - name: Photo trial
+        id: run
+        continue-on-error: true
+        shell: bash
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          IDEA_BANK_FOLDER_ID: ${{ secrets.IDEA_BANK_FOLDER_ID }}
+          SHEET_FOLDER_ID: ${{ secrets.SHEET_FOLDER_ID }}
+        run: |
+          set +e
+          args=(--brand "${{ inputs.brand }}" --prompt "${{ inputs.prompt }}" --model "${{ inputs.model }}" --out debug/photo-trial --verdicts data/_shared/photo_trial.json)
+          if ${{ inputs.dry_run }}; then args+=(--dry-run); fi
+          { echo "### Photo trial"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          "$RUNNER_TEMP/photo-env/bin/python" -m contentintel.photo_trial "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: "Save the verdicts (never a secret value)"
+        shell: bash
+        run: |
+          git config user.name "photo-trial"
+          git config user.email "photo-trial@users.noreply.github.com"
+          if [ -f data/_shared/photo_trial.json ]; then git add -f data/_shared/photo_trial.json; else echo "data/_shared/photo_trial.json does not exist yet: nothing to save for it."; fi
+          if git diff --cached --quiet; then
+            echo "No changes to save."
+          else
+            git commit -m "Photo trial $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase
+            git push
+          fi
+
+      - name: Upload the photo (draft only — personal-use)
+        uses: actions/upload-artifact@v4
+        with:
+          name: photo-trial-photo
+          path: debug/photo-trial
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Show the run as red when the trial itself broke
+        if: steps.run.outcome == 'failure'
+        run: exit 1
