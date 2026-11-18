@@ -88,7 +88,7 @@ jobs:
             echo "No changes to save."
           else
             git commit -m "Photo trial $(date -u +%Y-%m-%dT%H:%MZ)"
-            git pull --rebase
+            git pull --rebase --autostash
             git push
           fi
 
