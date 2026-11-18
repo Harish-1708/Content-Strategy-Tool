@@ -1,17 +1,17 @@
 {
- "brand": "swoveralls",
+ "brand": "defi_snacks",
  "dry_run": false,
  "model": "flux",
  "prompt": "A red bicycle leaning against a wooden fence in a sunny garden, gentle breeze, steady camera",
- "run_at": "2026-11-18T17:05:43.665836Z",
+ "run_at": "2026-11-18T17:08:24.058605Z",
  "source": "pollinations",
  "verdicts": [
   {
-   "drive_link": "https://drive.google.com/file/d/1raEKSFBECFHLE3gdoMfv9_i6r4-DRoqd/view",
+   "drive_link": "https://drive.google.com/file/d/1r5ZVURejHB4g1zE0K7nkynj3sw9_93es/view",
    "model": "flux",
-   "photo": "2026-11-18_swoveralls_pollinations_a-red-bicycle-leaning-against-a-wooden.jpg",
+   "photo": "2026-11-18_defi_snacks_pollinations_a-red-bicycle-leaning-against-a-wooden.jpg",
    "reason": "one flux photo made and downloaded",
-   "seconds": 6.1,
+   "seconds": 0.7,
    "source": "pollinations",
    "verdict": "go"
   }
