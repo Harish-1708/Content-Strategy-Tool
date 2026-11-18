@@ -16,6 +16,11 @@ account exists, no clip is ever generated):
   downloaded, NOT SET UP at a login wall, BLOCKED on a challenge, NO-GO when
   the generation never finishes, SKIPPED for the Luma stub and for Google
   Flow in peak hours, and a dry run that never opens a browser;
+- the recon: a site's creation page is captured (screenshot + HTML) and every
+  selector the driver would use is probed on its own — nothing is typed,
+  nothing is generated, nothing is saved — and the report is written to
+  recon.json; the Luma stub, a missing cookie, a login wall and a challenge
+  are all reported, never a failure;
 - the brand save: a made clip goes only to the brand the run is for, under
   the name YYYY-MM-DD_<brand>_<site>_<model>_<prompt-slug>.mp4, into that
   brand's Drive folder and that brand's sheet tab, and a failed save never
@@ -577,3 +582,110 @@ def test_a_real_save_without_the_service_account_key_fails_plainly(tmp_path):
     (tmp_path / rel).write_bytes(b"FAKECLIPBYTES")
     with pytest.raises(VT.TrialError, match="GOOGLE_SERVICE_ACCOUNT_JSON is not set"):
         saver.save("pixverse", "V6", "puppy in park", rel, tmp_path, "2026-11-18")
+
+
+# --- the recon (capture the page, probe the selectors, generate nothing) ----------------------------------
+
+def _recon_browser(key, present=None, page_html=None):
+    """A fake browser on the site's app page, logged in, with the given
+    selectors present on the page. `present` defaults to every selector the
+    driver would use (prompt + generate + done), so the probe finds them all."""
+    driver = VT.DRIVERS[key]
+    if present is None:
+        present = (set(driver["prompt_selectors"]) | set(driver["generate_selectors"])
+                   | set(driver["done_markers"]))
+    pages = {driver["app_url"]: {"present": set(present)}}
+    browser = FakeBrowser(pages, clickable=set(driver["generate_selectors"]),
+                          typeable=set(driver["prompt_selectors"]),
+                          present_always=set(present))
+    browser.page_html = page_html or ("<html><body>welcome, " + driver["logged_in_markers"][0] +
+                                      ", generate a video, my creations</body></html>")
+    return browser
+
+
+def test_recon_captures_the_creation_page_and_probes_every_selector(tmp_path):
+    env = {"PIXVERSE_COOKIES": COOKIE_JSON}
+    # Only the first prompt selector, the first generate selector and the
+    # done marker are present — the probe must report each one on its own.
+    present = {VT.DRIVERS["pixverse"]["prompt_selectors"][0],
+               VT.DRIVERS["pixverse"]["generate_selectors"][0],
+               VT.DRIVERS["pixverse"]["done_markers"][0]}
+    browser = _recon_browser("pixverse", present=present)
+    ctx = _ctx(tmp_path, env=env, factory=_fake_factory(browser))
+    report = VT.recon_site("pixverse", ctx)
+    assert report["state"] == "ok"
+    assert report["reason"] == "creation page captured; selectors probed"
+    assert report["login"] == "in"
+    assert report["credits_exhausted"] is False
+    assert report["prompt_selectors"][VT.DRIVERS["pixverse"]["prompt_selectors"][0]] is True
+    assert report["prompt_selectors"][VT.DRIVERS["pixverse"]["prompt_selectors"][1]] is False
+    assert report["generate_selectors"][VT.DRIVERS["pixverse"]["generate_selectors"][0]] is True
+    assert report["done_markers"][VT.DRIVERS["pixverse"]["done_markers"][0]] is True
+    assert "recon" in browser.shots          # the capture was taken
+    assert browser.typed == []               # nothing was ever typed
+    assert browser.clicks == [] or all(c in VT.DRIVERS["pixverse"]["dismiss_selectors"]
+                                       for c in browser.clicks)
+
+
+def test_recon_on_the_luma_stub_is_skipped_and_opens_nothing(tmp_path):
+    env = {"LUMA_COOKIES": COOKIE_JSON}
+    factory = _fake_factory(_recon_browser("pixverse"))
+    ctx = _ctx(tmp_path, env=env, factory=factory)
+    report = VT.recon_site("luma", ctx)
+    assert report["state"] == "skipped"
+    assert "needs sign-in check" in report["reason"]
+    assert factory.calls["n"] == 0
+
+
+def test_recon_with_missing_cookies_is_not_set_up(tmp_path):
+    factory = _fake_factory(_recon_browser("pixverse"))
+    ctx = _ctx(tmp_path, env={}, factory=factory)
+    report = VT.recon_site("pixverse", ctx)
+    assert report["state"] == "not-set-up"
+    assert factory.calls["n"] == 0
+
+
+def test_recon_at_a_login_wall_is_not_set_up(tmp_path):
+    env = {"PIXVERSE_COOKIES": COOKIE_JSON}
+    browser = _recon_browser("pixverse", page_html="<html><body>log in to continue</body></html>")
+    ctx = _ctx(tmp_path, env=env, factory=_fake_factory(browser))
+    report = VT.recon_site("pixverse", ctx)
+    assert report["state"] == "not-set-up"
+    assert report["login"] == "wall"
+    assert "recon-login-wall" in browser.shots
+
+
+def test_recon_blocked_on_a_challenge(tmp_path):
+    env = {"DREAMINA_COOKIES": COOKIE_JSON}
+    browser = _recon_browser("dreamina", page_html="<html><body>please complete the captcha</body></html>")
+    ctx = _ctx(tmp_path, env=env, factory=_fake_factory(browser))
+    report = VT.recon_site("dreamina", ctx)
+    assert report["state"] == "blocked"
+    assert "captcha" in report["reason"]
+
+
+def test_run_recon_writes_recon_json(tmp_path):
+    env = {"PIXVERSE_COOKIES": COOKIE_JSON, "KLING_COOKIES": COOKIE_JSON}
+    factory = _fake_factory(_recon_browser("pixverse"))
+    reports, code = VT.run_recon(["pixverse", "luma"], SETTINGS, env, tmp_path,
+                                 brand=_brand(), browser_factory=factory)
+    assert code == 0
+    assert [r["site"] for r in reports] == ["pixverse", "luma"]
+    assert reports[0]["state"] == "ok"
+    assert reports[1]["state"] == "skipped"
+    saved = json.loads((tmp_path / "recon.json").read_text(encoding="utf-8"))
+    assert saved["mode"] == "recon"
+    assert saved["brand"] == "duderobe"
+    assert [r["site"] for r in saved["reports"]] == ["pixverse", "luma"]
+
+
+def test_recon_dry_run_opens_nothing_and_reports_skipped(tmp_path, capsys):
+    factory = _fake_factory(_recon_browser("pixverse"))
+    reports, code = VT.run_recon(["pixverse", "luma"], SETTINGS, {}, tmp_path,
+                                 brand=_brand(), browser_factory=factory, dry_run=True)
+    assert code == 0
+    assert [r["state"] for r in reports] == ["skipped", "skipped"]
+    assert factory.calls["n"] == 0
+    out = capsys.readouterr().out
+    assert "dry run" in out
+    assert "PIXVERSE_COOKIES" in out
