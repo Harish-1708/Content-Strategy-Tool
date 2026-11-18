@@ -1,17 +1,17 @@
 {
- "brand": "duderobe",
+ "brand": "swoveralls",
  "dry_run": false,
  "model": "flux",
- "prompt": "A red bicycle leaning against a wooden fence in a sunny garden",
- "run_at": "2026-11-18T15:48:07.774146Z",
+ "prompt": "A red bicycle leaning against a wooden fence in a sunny garden, gentle breeze, steady camera",
+ "run_at": "2026-11-18T17:05:43.665836Z",
  "source": "pollinations",
  "verdicts": [
   {
-   "drive_link": "https://drive.google.com/file/d/12leqVDY3YExW1WsyCpnn4gOYzQf2rIx1/view",
+   "drive_link": "https://drive.google.com/file/d/1raEKSFBECFHLE3gdoMfv9_i6r4-DRoqd/view",
    "model": "flux",
-   "photo": "2026-11-18_duderobe_pollinations_a-red-bicycle-leaning-against-a-wooden.jpg",
+   "photo": "2026-11-18_swoveralls_pollinations_a-red-bicycle-leaning-against-a-wooden.jpg",
    "reason": "one flux photo made and downloaded",
-   "seconds": 5.8,
+   "seconds": 6.1,
    "source": "pollinations",
    "verdict": "go"
   }
