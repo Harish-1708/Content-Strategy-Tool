@@ -34,9 +34,9 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15347013517423,Comfyalls - Something 90s,53756008366191,2XL / Jammers,Size=2XL; Color=Jammers,SWCOMFY-ZOF-2XL,159.00,,true
 15347013517423,Comfyalls - Something 90s,53756008398959,3XL / Jammers,Size=3XL; Color=Jammers,SWCOMFY-ZOF-3XL,159.00,,true
 15347013517423,Comfyalls - Something 90s,53756008431727,4XL / Jammers,Size=4XL; Color=Jammers,SWCOMFY-ZOF-4XL,159.00,,true
-15347005489263,Corduroy Swoveralls - Bordeaux,53755991392367,S / Bordeaux,Size=S; Color=Bordeaux,SWPANTSCORD-781-S,129.00,,true
+15347005489263,Corduroy Swoveralls - Bordeaux,53755991392367,S / Bordeaux,Size=S; Color=Bordeaux,SWPANTSCORD-781-S,129.00,,false
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991425135,M / Bordeaux,Size=M; Color=Bordeaux,SWPANTSCORD-781-M,129.00,,true
-15347005489263,Corduroy Swoveralls - Bordeaux,53755991457903,L / Bordeaux,Size=L; Color=Bordeaux,SWPANTSCORD-781-L,129.00,,true
+15347005489263,Corduroy Swoveralls - Bordeaux,53755991457903,L / Bordeaux,Size=L; Color=Bordeaux,SWPANTSCORD-781-L,129.00,,false
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991490671,XL / Bordeaux,Size=XL; Color=Bordeaux,SWPANTSCORD-781-XL,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991523439,2XL / Bordeaux,Size=2XL; Color=Bordeaux,SWPANTSCORD-781-2XL,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991556207,3XL / Bordeaux,Size=3XL; Color=Bordeaux,SWPANTSCORD-781-3XL,129.00,,true
@@ -59,8 +59,8 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15347005915247,Grid Fleece Swoveralls - Moss,53755992572015,M / Moss,Size=M; Color=Moss,SWPANTSGRID-042-M,129.00,,true
 15347005915247,Grid Fleece Swoveralls - Moss,53755992604783,L / Moss,Size=L; Color=Moss,SWPANTSGRID-042-L,129.00,,true
 15347005915247,Grid Fleece Swoveralls - Moss,53755992637551,XL / Moss,Size=XL; Color=Moss,SWPANTSGRID-042-XL,129.00,,true
-15347005915247,Grid Fleece Swoveralls - Moss,53755992670319,2XL / Moss,Size=2XL; Color=Moss,SWPANTSGRID-042-2XL,129.00,,true
-15347005915247,Grid Fleece Swoveralls - Moss,53755992703087,3XL / Moss,Size=3XL; Color=Moss,SWPANTSGRID-042-3XL,129.00,,true
+15347005915247,Grid Fleece Swoveralls - Moss,53755992670319,2XL / Moss,Size=2XL; Color=Moss,SWPANTSGRID-042-2XL,129.00,,false
+15347005915247,Grid Fleece Swoveralls - Moss,53755992703087,3XL / Moss,Size=3XL; Color=Moss,SWPANTSGRID-042-3XL,129.00,,false
 15347005915247,Grid Fleece Swoveralls - Moss,53755992735855,4XL / Moss,Size=4XL; Color=Moss,SWPANTSGRID-042-4XL,129.00,,true
 15114943692911,Kids Swoveralls - Forest Green,53311689949295,4/5Y / Forest Green,Size=4/5Y; Color=Forest Green,SWKIDS-002-4,49.00,,true
 15114943692911,Kids Swoveralls - Forest Green,53311689982063,6/7Y / Forest Green,Size=6/7Y; Color=Forest Green,SWKIDS-002-6,49.00,,true
@@ -197,7 +197,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15345957273711,Swoveralls - Buffalo Plaid,53753142050927,2XL / Buffalo Plaid,Size=2XL; Color=Buffalo Plaid,SWPANTS-Z05-2XL,120.00,,false
 15345957273711,Swoveralls - Buffalo Plaid,53753142083695,3XL / Buffalo Plaid,Size=3XL; Color=Buffalo Plaid,SWPANTS-Z05-3XL,120.00,,false
 15345957273711,Swoveralls - Buffalo Plaid,53753142116463,4XL / Buffalo Plaid,Size=4XL; Color=Buffalo Plaid,SWPANTS-Z05-4XL,120.00,,false
-15023021490287,Swoveralls - Campfire Rust,53165462716527,S / Campfire,Size=S; Color=Campfire,SWPANTS-199-S,120.00,,true
+15023021490287,Swoveralls - Campfire Rust,53165462716527,S / Campfire,Size=S; Color=Campfire,SWPANTS-199-S,120.00,,false
 15023021490287,Swoveralls - Campfire Rust,53165462749295,M / Campfire,Size=M; Color=Campfire,SWPANTS-199-M,120.00,,true
 15023021490287,Swoveralls - Campfire Rust,53165462782063,L / Campfire,Size=L; Color=Campfire,SWPANTS-199-L,120.00,,true
 15023021490287,Swoveralls - Campfire Rust,53165462814831,XL / Campfire,Size=XL; Color=Campfire,SWPANTS-199-XL,120.00,,true
@@ -253,7 +253,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15346055970927,Swoveralls - Duck Camo,53753418809455,3XL / Duck Camo,Size=3XL; Color=Duck Camo,SWPANTS-341-3XL,120.00,,true
 15346055970927,Swoveralls - Duck Camo,53753418842223,4XL / Duck Camo,Size=4XL; Color=Duck Camo,SWPANTS-341-4XL,120.00,,true
 1509945606244,Swoveralls - Forest Green,32104704213103,XXS / Forest Green,Size=XXS; Color=Forest Green,20-XXS-FGRN,99.00,,true
-1509945606244,Swoveralls - Forest Green,30250931847279,XS / Forest Green,Size=XS; Color=Forest Green,20-XS-FGRN,99.00,,true
+1509945606244,Swoveralls - Forest Green,30250931847279,XS / Forest Green,Size=XS; Color=Forest Green,20-XS-FGRN,99.00,,false
 1509945606244,Swoveralls - Forest Green,30250930733167,S / Forest Green,Size=S; Color=Forest Green,20-S-FGRN,99.00,,true
 1509945606244,Swoveralls - Forest Green,14333268263012,M / Forest Green,Size=M; Color=Forest Green,20-MED-FGRN,99.00,,true
 1509945606244,Swoveralls - Forest Green,14333268328548,L / Forest Green,Size=L; Color=Forest Green,20-LRG-FGRN,99.00,,true
