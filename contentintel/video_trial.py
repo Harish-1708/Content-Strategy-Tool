@@ -31,13 +31,28 @@ to correct them, and the run says plainly what it could not find. Facts the
 research could only get from a third-party guide are marked "reported" and
 must be confirmed in the logged-in session.
 
-Run it: ``python -m contentintel.video_trial --site all --dry-run`` first
+Run it: ``python -m contentintel.video_trial --site all --dry-run --brand duderobe`` first
 (plan only, no browser), then without --dry-run for the real trial. One clip
 per site, hard cap, enforced in code (ClipBudget).
+
+Where a made clip goes: ONLY to the brand the run is for. The clip is saved
+to that brand's own Drive folder (Shared Drive 'Idea Bank Automation' /
+<Brand name> / Video Trials) under the name
+``YYYY-MM-DD_<brand>_<site>_<model>_<prompt-slug>.mp4``, and one row is
+appended to that brand's own Catalogue sheet, tab "Video Trials", with the
+Drive link. A clip for DudeRobe never lands in Swoveralls' or Defi Snacks'
+folder or sheet. The save reuses the tool's own Drive and Sheets code
+(contentintel/drive.py, contentintel/sheets.py, contentintel/brands.py) by
+import — it never copies them and never hard-codes a folder or sheet id. A
+trial that makes no clip records nothing in Drive or in the Sheet; its
+verdict is already in video_trial.json. A save that fails never loses the
+verdict: the trial result stands, the exact error is printed and recorded,
+and the run still exits 0.
 """
 import argparse
 import json
 import os
+import re
 import sys
 import time
 from datetime import datetime, timezone
@@ -45,9 +60,12 @@ from pathlib import Path
 
 import yaml
 
+from . import brands as brands_mod
 from . import browser as browser_mod
+from . import drive as drive_mod
 from . import human as human_mod
 from . import stealth as stealth_mod
+from .store import Store
 
 # One clip per site per run. Not a default to tune: the trial is one clip, and
 # a second generation from the same account in the same run is the shape of
@@ -395,7 +413,219 @@ def verdict_line(entry):
     line = f"video-trial: {entry['site']}: {state} — {entry['reason']}"
     if entry.get("clip"):
         line += f" (clip: {entry['clip']})"
+    if entry.get("drive_link"):
+        line += f" (saved: {entry['drive_link']})"
+    if entry.get("save_error"):
+        line += f" (Drive save failed: {entry['save_error']})"
     return line
+
+
+# ---------------------------------------------------------------------------
+# The per-brand save: a made clip goes ONLY to the brand the run is for.
+# ---------------------------------------------------------------------------
+
+VIDEO_TRIALS_FOLDER = "Video Trials"
+VIDEO_TRIALS_TAB = "Video Trials"
+VIDEO_TRIALS_HEADERS = ["Date", "Brand", "Site", "Model", "Prompt", "Verdict",
+                        "Clip", "Credits used", "Notes"]
+VIDEO_MIME = "video/mp4"
+
+
+def _slugify(text, limit=40):
+    """A filename piece: lower case, runs of anything but letters and digits
+    become one hyphen, no leading or trailing hyphen, never empty. A long
+    piece is cut at a hyphen, never in the middle of a word."""
+    slug = re.sub(r"[^a-z0-9]+", "-", str(text or "").lower()).strip("-")
+    if len(slug) > limit:
+        cut = slug[:limit]
+        if "-" in cut:
+            cut = cut[:cut.rfind("-")]
+        slug = cut.rstrip("-")
+    return slug or "clip"
+
+
+def clip_filename(date_str, brand_slug, site, model, prompt):
+    """YYYY-MM-DD_<brand>_<site>_<model>_<prompt-slug>.mp4 — the brand is in
+    the name, so a clip can never be mistaken for another brand's."""
+    return (f"{date_str}_{brand_slug}_{_slugify(site, limit=30)}_"
+            f"{_slugify(model, limit=30)}_{_slugify(prompt)}.mp4")
+
+
+def resolve_brand(slug, brands_dir="brands"):
+    """The brand profile for a slug, or a TrialError that says plainly what
+    is wrong. The slug must be one of the tool's own brand keys."""
+    try:
+        return brands_mod.load_brand(slug, brands_dir)
+    except (brands_mod.BrandError, OSError) as exc:
+        known = brands_mod.list_brand_slugs(brands_dir)
+        raise TrialError(f"unknown brand {slug!r}"
+                         + (f" (known brands: {', '.join(known)})" if known else "")
+                         + f": {exc}") from exc
+
+
+def save_plan_lines(brand, key, prompt, run_date):
+    """The dry-run plan for where one site's clip would go. No API call is
+    made: the Drive path is folder names, and the sheet is named from the
+    tool's own mapping. The Luma stub makes no clip, so nothing is saved."""
+    driver = DRIVERS[key]
+    if driver.get("stub"):
+        return ["    save: none — the Luma stub makes no clip, so nothing is saved"]
+    filename = clip_filename(run_date, brand.slug, key, driver["model"], prompt)
+    return [
+        f"    save: Drive: {brand.name} / Video Trials / {filename} (under the IDEA_BANK_FOLDER_ID root)",
+        f"    save: Sheet: the {brand.slug} Catalogue sheet (sheets.yaml), tab \"Video Trials\" — one row per saved clip",
+    ]
+
+
+class BrandSaver:
+    """Saves one trial clip to the brand's own Drive folder and records it in
+    the brand's own sheet. The Drive folder and the sheet are found through
+    the tool's own mapping (the brand's name for the folder, sheets.yaml for
+    the sheet) — never a hard-coded id. `drive_client` / `sheets_client` /
+    `store` are injected by tests; on a real run they are built from the
+    run's secrets. save() raises TrialError with a plain reason when the
+    Drive part fails; when only the Sheet row fails it returns the Drive
+    link together with the reason, so the clip is never lost silently."""
+
+    def __init__(self, brand, env, data_dir="data", sheets_config="sheets.yaml",
+                 brands_dir="brands", drive_client=None, sheets_client=None, store=None):
+        self.brand = brand
+        self.env = env
+        self.data_dir = data_dir
+        self.sheets_config = sheets_config
+        self.brands_dir = brands_dir
+        self._drive = drive_client
+        self._sheets = sheets_client
+        self._sheets_email = "test@example.invalid"
+        self._store = store
+
+    def save(self, site, model, prompt, clip_rel_path, out_dir, run_date):
+        """(drive_link, sheet_error): the Drive link when the clip reached
+        the brand's folder (None when it did not), and the plain reason the
+        Sheet row was not written (None when it was)."""
+        clip_path = Path(out_dir) / clip_rel_path
+        try:
+            data = clip_path.read_bytes()
+        except OSError as exc:
+            raise TrialError(f"the downloaded clip {clip_rel_path} could not be read ({exc})") from exc
+        filename = clip_filename(run_date, self.brand.slug, site, model, prompt)
+        link = self._save_to_drive(filename, data)
+        try:
+            self._record_in_sheet(site, model, prompt, run_date, link)
+        except TrialError as exc:
+            return link, str(exc)
+        return link, None
+
+    # ---- Drive -----------------------------------------------------------------
+
+    def _drive_client(self):
+        if self._drive is not None:
+            return self._drive
+        key = (self.env.get("GOOGLE_SERVICE_ACCOUNT_JSON") or "").strip()
+        if not key:
+            raise TrialError("GOOGLE_SERVICE_ACCOUNT_JSON is not set, so the clip cannot be saved to Drive; "
+                             "add the service-account key as a secret")
+        try:
+            root = drive_mod.parse_folder_id(self.env.get("IDEA_BANK_FOLDER_ID", ""))
+        except drive_mod.DriveError as exc:
+            raise TrialError(str(exc)) from exc
+        if not root:
+            raise TrialError("IDEA_BANK_FOLDER_ID is not set, so the brand's Drive folder cannot be found; "
+                             "add the Idea Bank folder id as a secret")
+        try:
+            session, email = drive_mod.connect(key)
+        except drive_mod.DriveError as exc:
+            raise TrialError(str(exc)) from exc
+        self._drive = drive_mod.DriveClient(session, root, email)
+        return self._drive
+
+    def _save_to_drive(self, filename, data):
+        """The clip in the brand's folder, under Video Trials. A file with the
+        same name (the same trial run twice) is trashed first, so one name
+        never holds two clips; the trash is best-effort. The bytes are
+        verified after the upload, the way ideabank._upload_verified does it."""
+        try:
+            client = self._drive_client()
+            brand_folder_id = client.brand_folder(self.brand.name)
+            trials_id = client.ensure_folder(brand_folder_id, VIDEO_TRIALS_FOLDER)
+            existing = client.list_files(trials_id)
+            if filename in existing:
+                try:
+                    client.trash(existing[filename])
+                except drive_mod.DriveError:
+                    pass
+            file_id = client.upload(trials_id, filename, data, VIDEO_MIME)
+            try:
+                client.verify(file_id, data)
+            except drive_mod.DriveMismatch as exc:
+                raise TrialError(f"Drive holds a different file from the one sent ({exc})") from exc
+            return drive_mod.file_url(file_id)
+        except drive_mod.DriveError as exc:
+            raise TrialError(str(exc)) from exc
+
+    # ---- Sheet -----------------------------------------------------------------
+
+    def _sheets_client(self):
+        if self._sheets is not None:
+            return self._sheets, self._sheets_email
+        from . import sheets as sheets_mod
+        key = (self.env.get("GOOGLE_SERVICE_ACCOUNT_JSON") or "").strip()
+        if not key:
+            raise TrialError("GOOGLE_SERVICE_ACCOUNT_JSON is not set, so the Sheet row cannot be written; "
+                             "add the service-account key as a secret")
+        try:
+            client, email = sheets_mod.connect(key)
+        except sheets_mod.SheetsError as exc:
+            raise TrialError(str(exc)) from exc
+        return client, email
+
+    def _record_in_sheet(self, site, model, prompt, run_date, link):
+        """One row in the brand's own sheet, tab "Video Trials". The tab is
+        created with its header when it is missing; a tab whose header was
+        changed by hand is left alone and the save fails plainly, so a row is
+        never written under the wrong columns."""
+        from . import sheets as sheets_mod
+        from gspread.exceptions import GSpreadException
+        from gspread.utils import ValueInputOption
+        try:
+            client, email = self._sheets_client()
+            known = set(brands_mod.list_brand_slugs(self.brands_dir)) or {self.brand.slug}
+            config = sheets_mod.load_sheet_config(self.sheets_config, known)
+            store = self._store or Store(self.data_dir)
+            report = sheets_mod.SheetReport(brand=self.brand.slug)
+            folder_id = sheets_mod.parse_folder_id(self.env.get("SHEET_FOLDER_ID", ""))
+            sp = sheets_mod.resolve_spreadsheet(client, self.brand, store, config, [],
+                                               report, False, email, folder_id=folder_id)
+            ws = None
+            for candidate in sp.worksheets():
+                if candidate.title == VIDEO_TRIALS_TAB:
+                    ws = candidate
+                    break
+            if ws is None:
+                ws = sp.add_worksheet(title=VIDEO_TRIALS_TAB, rows=1000, cols=30)
+                self._write_header(ws)
+            else:
+                values = ws.get_all_values()
+                if not values:
+                    self._write_header(ws)
+                else:
+                    header = [str(h) for h in values[0]]
+                    while header and header[-1] == "":
+                        header.pop()
+                    if header != VIDEO_TRIALS_HEADERS:
+                        raise TrialError(
+                            f"the {VIDEO_TRIALS_TAB!r} tab in the {self.brand.slug} sheet has a different header "
+                            f"({', '.join(header) or 'blank'}); fix the header by hand or delete the tab and run again")
+            row = [run_date, self.brand.slug, site, model, prompt, "go", link, "", ""]
+            ws.append_rows([row], value_input_option=ValueInputOption.raw, table_range="A1")
+        except (sheets_mod.SheetsError, GSpreadException) as exc:
+            raise TrialError(str(exc)) from exc
+
+    @staticmethod
+    def _write_header(ws):
+        ws.update(values=[list(VIDEO_TRIALS_HEADERS)], range_name="A1")
+        ws.freeze(rows=1)
+        ws.format("1:1", {"textFormat": {"bold": True}})
 
 
 # ---------------------------------------------------------------------------
@@ -487,7 +717,9 @@ class TrialContext:
 
     def __init__(self, settings, env, out_dir, prompt, log, budget,
                  browser_factory=None, now=None,
-                 max_wait_seconds=None, poll_seconds=DEFAULT_POLL_SECONDS):
+                 max_wait_seconds=None, poll_seconds=DEFAULT_POLL_SECONDS,
+                 brand=None, saver=None, run_date=None,
+                 data_dir="data", sheets_config="sheets.yaml"):
         self.settings = settings
         self.env = env
         self.out_dir = Path(out_dir)
@@ -498,6 +730,37 @@ class TrialContext:
         self.now = now or (lambda: datetime.now(timezone.utc))
         self.max_wait_seconds = max_wait_seconds
         self.poll_seconds = poll_seconds
+        if brand is None:
+            raise TrialError("no brand was given; the trial must know which brand it is for "
+                             "before it generates anything (--brand swoveralls, duderobe or defi_snacks)")
+        self.brand = brand
+        self.saver = saver
+        self.run_date = run_date or self.now().strftime("%Y-%m-%d")
+        self.data_dir = data_dir
+        self.sheets_config = sheets_config
+
+    def save_clip(self, site, clip_rel_path):
+        """Save the downloaded clip to the brand's Drive folder and record it
+        in the brand's sheet. Returns (link, error): the Drive link (None when
+        the clip did not reach Drive) and the plain reason the save failed
+        (None when it worked). A failed save never loses the verdict — the
+        trial result stands and the error is printed and recorded."""
+        saver = self.saver
+        if saver is None:
+            saver = BrandSaver(self.brand, self.env, data_dir=self.data_dir,
+                               sheets_config=self.sheets_config)
+            self.saver = saver
+        try:
+            link, sheet_error = saver.save(site, DRIVERS[site]["model"], self.prompt,
+                                           clip_rel_path, self.out_dir, self.run_date)
+        except TrialError as exc:
+            print(f"video-trial: {site}: Drive save failed — {exc} (the clip stays in the run's files)")
+            return None, str(exc)
+        if sheet_error:
+            print(f"video-trial: {site}: clip saved to Drive ({link}) but the Sheet row was not written — {sheet_error}")
+        else:
+            print(f"video-trial: {site}: saved to the brand's Drive — {link}")
+        return link, sheet_error
 
 
 def real_browser_factory(ctx, key, cookies_text):
@@ -561,7 +824,8 @@ def _download_clip(ctx, browser, driver, site):
         if status < 400 and body:
             site_dir = ctx.out_dir / site
             site_dir.mkdir(parents=True, exist_ok=True)
-            path = site_dir / "clip.mp4"
+            path = site_dir / clip_filename(ctx.run_date, ctx.brand.slug, site,
+                                            driver["model"], ctx.prompt)
             path.write_bytes(body)
             return str(path.relative_to(ctx.out_dir))
     return None
@@ -655,7 +919,13 @@ def run_site(key, ctx):
             if clip is None:
                 browser.screenshot("no-download")
                 return finish("no-go", "generation finished but no clip could be downloaded")
-            return finish("go", f"one {driver['model']} clip made and downloaded", clip=clip)
+            link, save_error = ctx.save_clip(key, clip)
+            entry = finish("go", f"one {driver['model']} clip made and downloaded", clip=clip)
+            if link:
+                entry["drive_link"] = link
+            if save_error:
+                entry["save_error"] = save_error
+            return entry
     except browser_mod.LoginWall as exc:
         return finish("not-set-up", f"the site shows its login page ({_short(exc)}); "
                       "cookies missing or expired — capture a new session by hand")
@@ -691,14 +961,20 @@ def plan_lines(key):
     return lines
 
 
-def run_trial(keys, prompt, settings, env, out_dir, verdicts_path=None,
-              dry_run=False, browser_factory=None,
-              now=None, max_wait_seconds=None, poll_seconds=DEFAULT_POLL_SECONDS):
+def run_trial(keys, prompt, settings, env, out_dir, brand=None, verdicts_path=None,
+              dry_run=False, browser_factory=None, saver=None,
+              now=None, max_wait_seconds=None, poll_seconds=DEFAULT_POLL_SECONDS,
+              data_dir="data", sheets_config="sheets.yaml"):
     """Run the trial for the given sites. Returns (verdicts, exit_code).
     Exit 0 when every site got a verdict — a no-go is a successful trial
     finding, not a run failure. Exit 1 only when the run itself broke (the
     verdicts could not be written). A missing cookies secret is "not-set-up",
-    never a failure, the way the sessions workflow treats it."""
+    never a failure, the way the sessions workflow treats it. `brand` is the
+    resolved brand the run is for; without it the run refuses to start, so a
+    clip can never be made for no brand at all."""
+    if brand is None:
+        raise TrialError("no brand was given; the trial must know which brand it is for "
+                         "before it generates anything")
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     log = TrialLog()
@@ -706,12 +982,16 @@ def run_trial(keys, prompt, settings, env, out_dir, verdicts_path=None,
     ctx = TrialContext(settings, env, out_dir, prompt, log, budget,
                        browser_factory=browser_factory,
                        now=now, max_wait_seconds=max_wait_seconds,
-                       poll_seconds=poll_seconds)
+                       poll_seconds=poll_seconds, brand=brand, saver=saver,
+                       data_dir=data_dir, sheets_config=sheets_config)
     verdicts = []
     if dry_run:
         print("video-trial: dry run — the plan only, no browser is opened")
+        print(f"  brand: {brand.slug} ({brand.name}) — clips go only to this brand's Drive folder and sheet")
         for key in keys:
             for line in plan_lines(key):
+                print(line)
+            for line in save_plan_lines(brand, key, prompt, ctx.run_date):
                 print(line)
             state, line = check_cookies(key, env)
             print(f"  cookies ({DRIVERS[key]['cookies_secret']}): {line}")
@@ -729,7 +1009,7 @@ def run_trial(keys, prompt, settings, env, out_dir, verdicts_path=None,
     if mean is not None and any(e["dwell_seconds"] > 0 for e in log.entries):
         print(f"video-trial: mean human score {mean} over {len(log.entries)} logged action(s)")
     result = {"run_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-              "prompt": prompt, "dry_run": dry_run,
+              "prompt": prompt, "brand": brand.slug, "dry_run": dry_run,
               "verdicts": verdicts}
     target = Path(verdicts_path) if verdicts_path else out_dir / "video_trial.json"
     try:
@@ -750,6 +1030,11 @@ def main(argv=None):
                     "cookie-session method. Drafts only, publishing OFF, free tiers only.")
     parser.add_argument("--site", choices=["all"] + list(ALL_KEYS), default="all",
                         help="one site, or all of them (each is judged on its own either way)")
+    parser.add_argument("--brand", required=True,
+                        help="the brand this trial is for (swoveralls, duderobe or defi_snacks); "
+                             "the clip goes ONLY to that brand's Drive folder and sheet")
+    parser.add_argument("--brands-dir", default="brands",
+                        help="the folder holding the brand profiles (default: brands)")
     parser.add_argument("--prompt", default=DEFAULT_PROMPT,
                         help="the prompt for the one clip (default: a brand-neutral scene)")
     parser.add_argument("--dry-run", action="store_true",
@@ -775,13 +1060,18 @@ def main(argv=None):
         print("video-trial: --poll-seconds must be at least 1")
         return 1
     try:
+        brand = resolve_brand(args.brand, args.brands_dir)
+    except TrialError as exc:
+        print(f"video-trial: {exc}")
+        return 1
+    try:
         settings = load_trial_settings(args.browser_config)
     except TrialError as exc:
         print(f"video-trial: {exc}")
         return 1
     keys = list(ALL_KEYS) if args.site == "all" else [args.site]
     _, code = run_trial(keys, args.prompt, settings, os.environ, args.out,
-                        verdicts_path=args.verdicts, dry_run=args.dry_run,
+                        brand=brand, verdicts_path=args.verdicts, dry_run=args.dry_run,
                         max_wait_seconds=args.max_wait_seconds,
                         poll_seconds=args.poll_seconds)
     return code
