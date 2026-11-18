@@ -893,11 +893,13 @@ def run_site(key, ctx):
                 browser.screenshot("login-wall")
                 return finish("not-set-up", detail)
             if not _pick_model(ctx, browser, driver):
+                browser.screenshot("no-model")
                 return finish("no-go", "the free model could not be selected "
                               f"({', '.join(driver.get('models', [driver['model']]))}); "
                               "the page may have changed — the selectors are first guesses")
             typed_at = time.time()
             if not browser.type_text(driver["prompt_selectors"], ctx.prompt):
+                browser.screenshot("no-prompt-box")
                 return finish("no-go", "the prompt box could not be found; "
                               "the selectors are first guesses — correct them from the debug capture")
             _record(ctx, key, "type-prompt", typed_at, browser)
@@ -906,6 +908,7 @@ def run_site(key, ctx):
             ctx.budget.record(key)
             gen_at = time.time()
             if not browser.click(driver["generate_selectors"]):
+                browser.screenshot("no-generate-button")
                 return finish("no-go", "the Generate button could not be found; "
                               "the selectors are first guesses — correct them from the debug capture")
             _record(ctx, key, "generate", gen_at, browser)
