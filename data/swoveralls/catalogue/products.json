@@ -10961,7 +10961,7 @@
      "title": "2XL / Nightshade Plum"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53160030175343,
      "options": [
@@ -12698,7 +12698,7 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
-   "in_stock": true,
+   "in_stock": false,
    "ingredients": "",
    "materials": "cotton 65%; polyester 31%; spandex 4%",
    "missing_expected": [
@@ -12857,7 +12857,7 @@
      "title": "2XL / Color Riot"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 52831692619887,
      "options": [
