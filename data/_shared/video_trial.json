@@ -2,15 +2,15 @@
  "brand": "duderobe",
  "dry_run": false,
  "prompt": "A red bicycle leaning against a wooden fence in a sunny garden, gentle breeze, steady camera",
- "run_at": "2026-11-18T15:17:43.788034Z",
+ "run_at": "2026-11-18T15:28:48.709660Z",
  "verdicts": [
   {
    "clip": null,
-   "human_score": 41,
-   "model": "Kling 4.0",
-   "reason": "the prompt box could not be found; the selectors are first guesses \u2014 correct them from the debug capture",
-   "seconds": 32.0,
-   "site": "kling",
+   "human_score": 39,
+   "model": "V6",
+   "reason": "generation finished but no clip could be downloaded",
+   "seconds": 39.4,
+   "site": "pixverse",
    "verdict": "no-go"
   }
  ]
