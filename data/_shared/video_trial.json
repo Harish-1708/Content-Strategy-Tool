@@ -1,53 +1,17 @@
 {
  "brand": "duderobe",
- "dry_run": true,
+ "dry_run": false,
  "prompt": "A red bicycle leaning against a wooden fence in a sunny garden, gentle breeze, steady camera",
- "run_at": "2026-11-18T06:23:24.317198Z",
+ "run_at": "2026-11-18T14:56:30.410040Z",
  "verdicts": [
   {
    "clip": null,
-   "human_score": null,
+   "human_score": 45,
    "model": "V6",
-   "reason": "dry run \u2014 no browser opened",
-   "seconds": 0.0,
+   "reason": "the prompt box could not be found; the selectors are first guesses \u2014 correct them from the debug capture",
+   "seconds": 41.0,
    "site": "pixverse",
-   "verdict": "skipped"
-  },
-  {
-   "clip": null,
-   "human_score": null,
-   "model": "Veo 3.1 Lite",
-   "reason": "dry run \u2014 no browser opened",
-   "seconds": 0.0,
-   "site": "google_flow",
-   "verdict": "skipped"
-  },
-  {
-   "clip": null,
-   "human_score": null,
-   "model": "Seedance 2.0",
-   "reason": "dry run \u2014 no browser opened",
-   "seconds": 0.0,
-   "site": "dreamina",
-   "verdict": "skipped"
-  },
-  {
-   "clip": null,
-   "human_score": null,
-   "model": "Kling 4.0",
-   "reason": "dry run \u2014 no browser opened",
-   "seconds": 0.0,
-   "site": "kling",
-   "verdict": "skipped"
-  },
-  {
-   "clip": null,
-   "human_score": null,
-   "model": "Ray3.2",
-   "reason": "dry run \u2014 no browser opened",
-   "seconds": 0.0,
-   "site": "luma",
-   "verdict": "skipped"
+   "verdict": "no-go"
   }
  ]
 }
