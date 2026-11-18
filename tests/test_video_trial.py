@@ -175,7 +175,8 @@ def test_a_second_run_for_the_same_site_is_a_no_go_not_a_second_clip(tmp_path):
     second = VT.run_site("pixverse", ctx)
     assert second["verdict"] == "no-go"
     assert "clip budget is spent" in second["reason"]
-    assert browser.clicks.count("button:has-text(\"Generate\")") == 1
+    # The generate button is the "Create" button on PixVerse's real page.
+    assert browser.clicks.count("button:has-text(\"Create\")") == 1
 
 
 # --- settings and cookies ------------------------------------------------------------------------------
