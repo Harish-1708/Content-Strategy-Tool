@@ -125,7 +125,7 @@ DRIVERS = {
         "model_steps": [],            # V6 is the app default; nothing to select
         "generate_selectors": ["button:has-text(\"Create\")", "button:has-text(\"Generate\")",
                                "text=Generate"],
-        "done_markers": ["video[src]", "a[href$=\".mp4\"]", "text=Download"],
+        "done_markers": ["video[src]", "a[href$=\".mp4\"]"],
         "download_link_contains": [".mp4"],
         "logged_in_markers": ["library", "my creations", "generate"],
         "login_wall_markers": ["log in", "sign in", "create an account"],
@@ -154,7 +154,7 @@ DRIVERS = {
             ["text=Veo 3.1 Lite", "button:has-text(\"Lite\")"],
         ],
         "generate_selectors": ["button:has-text(\"Generate\")", "text=Generate"],
-        "done_markers": ["video[src]", "a[href$=\".mp4\"]", "text=Download"],
+        "done_markers": ["video[src]", "a[href$=\".mp4\"]"],
         "download_link_contains": [".mp4"],
         "logged_in_markers": ["new project", "my projects", "create"],
         "login_wall_markers": ["sign in", "create your google account"],
@@ -190,7 +190,7 @@ DRIVERS = {
             ["text=Seedance 2.0", "button:has-text(\"Seedance 2.0\")"],
         ],
         "generate_selectors": ["button:has-text(\"Generate\")", "text=Generate"],
-        "done_markers": ["video[src]", "a[href$=\".mp4\"]", "text=Download"],
+        "done_markers": ["video[src]", "a[href$=\".mp4\"]"],
         "download_link_contains": [".mp4"],
         "logged_in_markers": ["video", "my creations", "generate"],
         "login_wall_markers": ["log in", "sign in"],
@@ -216,12 +216,13 @@ DRIVERS = {
                             "div[contenteditable=\"true\"]", "div[role=\"textbox\"]",
                             "input[placeholder*=\"prompt\" i]"],
         # The prompt box is not on the kling.ai homepage (a marketing page);
-        # it lives in the creation studio. Enter it via the Video Generation
-        # link, best-effort (if we are already in the studio, nothing matches).
-        "enter_selectors": ["a[href=\"/app?designerRouteName=video\"]"],
+        # it lives in the creation studio. Go there directly: the Video
+        # Generation link opens a NEW tab (target=_blank), so clicking it
+        # leaves this tab on the homepage and the prompt box is never found.
+        "enter_url": "https://kling.ai/app?designerRouteName=video",
         "model_steps": [],            # Omni Reference is the default entry; nothing to select
         "generate_selectors": ["button:has-text(\"Generate\")", "text=Generate"],
-        "done_markers": ["video[src]", "a[href$=\".mp4\"]", "text=Download"],
+        "done_markers": ["video[src]", "a[href$=\".mp4\"]"],
         "download_link_contains": [".mp4"],
         "logged_in_markers": ["create", "my works", "credits"],
         "login_wall_markers": ["log in", "sign in", "sign up"],
@@ -815,7 +816,12 @@ def _pick_model(ctx, browser, driver):
 
 def _wait_for_done(ctx, browser, driver, site):
     """Poll for a finished clip. Returns ("done", "") or ("timeout", reason).
-    A challenge or a warning found while waiting stops the poll at once."""
+    A challenge or a warning found while waiting stops the poll at once.
+    NOTE: "text=Download" is NOT a done marker — it matches persistent UI
+    (a "Download App" link in the header), so the trial concluded "done"
+    seconds after pressing Generate, before any video existed, and then
+    found no clip to download. Only a real video element or an .mp4 link
+    proves a clip finished."""
     limit = driver["max_wait_seconds"] if ctx.max_wait_seconds is None else ctx.max_wait_seconds
     waited = 0.0
     while waited < limit:
@@ -909,11 +915,10 @@ def run_site(key, ctx):
             if driver.get("dismiss_selectors"):
                 browser.click(driver["dismiss_selectors"])
             # Enter the creation studio when the prompt box is not on the
-            # landing page (best effort: if we are already there, nothing
-            # matches; after a click, wait for the studio page to load).
-            if driver.get("enter_selectors"):
-                if browser.click(driver["enter_selectors"]):
-                    browser.wait(3)
+            # landing page: navigate there directly, in this tab (a link
+            # click can open a new tab and leave this one behind).
+            if driver.get("enter_url"):
+                browser.open(driver["enter_url"])
             if not _pick_model(ctx, browser, driver):
                 browser.screenshot("no-model")
                 return finish("no-go", "the free model could not be selected "
