@@ -222,7 +222,10 @@ def test_happy_path_makes_one_clip_downloads_and_saves_it_for_the_brand(tmp_path
     assert len(saver.calls) == 1
     assert saver.calls[0]["site"] == "kling" and saver.calls[0]["model"] == "Kling 4.0"
     assert saver.calls[0]["run_date"] == "2026-11-18"
-    assert browser.opened == ["https://kling.ai"]
+    # The homepage first, then straight into the creation studio (the
+    # prompt box is not on the homepage).
+    assert browser.opened == ["https://kling.ai",
+                              "https://kling.ai/app?designerRouteName=video"]
     assert browser.typed == ["a test prompt"]
 
 
