@@ -1,4 +1,4 @@
-"""Deliberate-bug checks for Update 70 (Batch 2, stages 1 and 2, the review fixes, the free-pool routing, OmniRoute, the pool retest, the connection test and the sheet fixes). Same format as run_observatory_sabotage.MUTATIONS."""
+"""Deliberate-bug checks for Update 70 (Batch 2, stages 1 and 2, the review fixes, the free-pool routing, OmniRoute, the pool retest, the connection test, the sheet fixes, the save step and the keyless providers). Same format as run_observatory_sabotage.MUTATIONS."""
 U70 = [
     ('u70-sk-pin', 'contentintel/skills.py', '        if commit != cfg["repo"]["pinned_commit"]:', '        if False:', 'a checkout at another commit is trusted'),
     ('u70-sk-count', 'contentintel/skills.py', '    if expected and len(found) != expected:', '    if False:', 'a missing skill goes unnoticed'),
@@ -209,4 +209,18 @@ U70 = [
     ('u70-cn-wf-live', '.github/workflows/provider-test.yml', 'ai connect --live 2>&1', 'ai connect 2>&1', 'the provider test runs as a scripted stand-in'),
     ('u70-cn-rank-live', '.github/workflows/pool-retest.yml', 'args=(--live --jobs', 'args=(--jobs', 'the pool retest runs as a scripted stand-in'),
     ('u70-cn-map', 'ai_providers.yaml', '    omniroute:\n      provider: sambanova\n', '    omniroute:\n      provider: sambanvoa\n', 'a provider is mapped to an OmniRoute id that does not exist'),
+    ('u70-ky-header', 'contentintel/ai/clients.py', '        if self.token:                                                      # a keyless provider', '        if True:                                                      # a keyless provider', 'a keyless provider is sent an empty bearer token'),
+    ('u70-ky-live', 'contentintel/ai/commands.py', '            if token or p.direct.get("keyless"):', '            if token:', 'a keyless provider is reported as missing a credential and never built'),
+    ('u70-ky-kind', 'contentintel/ai/commands.py', '                if p.direct.get("kind") == "horde":', '                if False:', 'AI Horde is called as if it were an OpenAI-style endpoint'),
+    ('u70-ky-token', 'contentintel/ai/commands.py', '"" if p.direct.get("keyless") else token', 'token', 'a keyless provider is sent a key if one is lying in the environment'),
+    ('u70-hd-key', 'contentintel/ai/clients.py', '{"apikey": self.ANON_KEY,', '{"apikey": "x",', 'AI Horde is asked with the wrong anonymous key'),
+    ('u70-hd-poll', 'contentintel/ai/clients.py', '            self.sleep(self.POLL_SECONDS)', '            pass', 'AI Horde is polled without waiting'),
+    ('u70-hd-cancel', 'contentintel/ai/clients.py', '                    self.http("DELETE", f"{self.base_url}/generate/text/status/{job}", headers=self._horde_headers(), body=None, timeout=15)', '                    pass', 'a job that never finished is left queued'),
+    ('u70-hd-faulted', 'contentintel/ai/clients.py', '            if answer.get("faulted"):', '            if False:', 'a faulted AI Horde job is waited for'),
+    ('u70-hd-notext', 'contentintel/ai/clients.py', '                if not out.strip():', '                if False:', 'an empty AI Horde answer is accepted'),
+    ('u70-hd-models', 'contentintel/ai/clients.py', 'body["models"] = [model.split("/", 1)[1] if model.startswith("aihorde/") else model]', 'body["models"] = [model]', 'a named model is asked for with its prefix'),
+    ('u70-rg-kind', 'contentintel/ai/registry.py', '            if direct.get("kind", "openai") not in ("openai", "horde") or not isinstance(direct.get("keyless", False), bool):', '            if False:', 'an unknown client kind or a non-boolean keyless flag is accepted'),
+    ('u70-rg-endpoint', 'contentintel/ai/registry.py', '"https://aihorde.net/api/v2")\nTERMS_STATUS', '"https://aihorde.net/api/v2", "https://evil.example/v1")\nTERMS_STATUS', 'a prompt can be sent to an address typed into a file'),
+    ('u70-sv-autostash', '.github/workflows/skills.yml', 'git pull --rebase --autostash', 'git pull --rebase', 'a tracked file the run changed stops the save again'),
+    ('u70-sv-status', '.github/workflows/skills.yml', '            git status --porcelain | head -40', '            true', 'the file that blocks the pull is not printed'),
 ]
