@@ -109,9 +109,11 @@ def _fake_factory(browser):
 def _logged_in_browser(key, done=True, clip=True):
     """A fake browser on the site's app page, logged in, with a Generate
     button and a prompt box. `done` puts the finished-clip marker on the
-    page; `clip` makes the download link fetch a clip."""
+    page; `clip` makes the download link fetch a clip. The finished-clip
+    marker is the downloadable .mp4 link itself (a bare video element is
+    NOT a done signal — a showcase video matches it on the real pages)."""
     driver = VT.DRIVERS[key]
-    present = {"video[src]"} if done else set()
+    present = {"a[href$=\".mp4\"]"} if done else set()
     pages = {driver["app_url"]: {"present": present,
                                  "links": [{"href": "https://cdn.example/clip.mp4", "text": "Download"}] if clip else []}}
     clickable = set(driver["generate_selectors"])
