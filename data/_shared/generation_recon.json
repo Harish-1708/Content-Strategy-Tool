@@ -1,0 +1,103 @@
+{
+ "brand": "duderobe",
+ "mode": "recon",
+ "reports": [
+  {
+   "credits_exhausted": false,
+   "dismiss_selectors": {
+    "div[data-open][role=\"dialog\"] button.absolute.right-6.top-6": false
+   },
+   "done_markers": {
+    "a[href$=\".mp4\"]": false
+   },
+   "generate_selectors": {
+    "button:has-text(\"Create\")": true,
+    "button:has-text(\"Generate\")": false,
+    "text=Generate": false
+   },
+   "human_score": 50,
+   "label": "PixVerse",
+   "login": "in",
+   "model": "V6",
+   "model_steps": [],
+   "pages_opened": [
+    "https://app.pixverse.ai"
+   ],
+   "prompt_selectors": {
+    "div[contenteditable=\"true\"]": false,
+    "div[role=\"textbox\"]": false,
+    "input[placeholder*=\"prompt\" i]": false,
+    "textarea": true,
+    "textarea[placeholder*=\"Describe\" i]": true,
+    "textarea[placeholder*=\"prompt\" i]": false
+   },
+   "reason": "creation page captured; selectors probed",
+   "seconds": 49.7,
+   "site": "pixverse",
+   "state": "ok",
+   "visible_text": "Home\nCreation\nAgent\nCLI & Plugin\nCanvas\nMini-Apps\nMusic Video\nFree\nSubscription\nAPI Platform\nGrowth Studio\nPixVerse World\nPixVerse Game\n\ud83d\udcb0\nBecome an Affiliate\nLearn More\nTerms\n\u00a9 PixVerse 2026\nDownload App\nEarn Credits\nSubscribe\nPersonal\n10\nBasic\nPixVerse Video Generator\n\ud83d\udda4 Black Friday, Big Savings! Get up to 59% off annual plans + bonus credits & model perks. Grab your deal and hit render \ud83d\udc49\n12d\n:\n15\n:\n09\n:\n02\n\ud83d\udda4 Black Friday, Big Savings! Get up to 59% off annual plans + bonus credits & model perks. Grab your deal and hit render \ud83d\udc49\n12d\n:\n15\n:\n09\n:\n02\nVideo\nVideo\nShorts\nShorts\nTemplate\nTemplate\nChallenge\nChallenge\nAll\nAll\nGamer Life\nGamer Life\nAd Magic\nAd Magic\nCinematic Narrative\nCinematic Narrative\nStylistic Art\nStylistic Art\nViral Case\nViral Case\nAnimal Theatre\nAnimal Theatre\nEffects Rendering\nEffects Rendering\nAvatar\nAvatar\nEducation & Learning\nEducation & Learning\nAnime & Playverse\nAnime & Playverse\nEmotional Close-up\nEmotional Close-up\nMusic\nMusic\nOur best deal of the year: up to 59% off.\nGrab it before the boss finds out.\nRecreate Viral Templates in One Click\nExplore trending content and turn it into your own videos\nCreate Faster with Fewer Credits\nNearly twice the speed with 36% fewer credits than Seedance 2.5\nExplore MiniMax H3 Image\nUp to 4K with 50% OFF\nSeedream 5.5 Is Here!\n40% off for everyone for 1 month!\nTurn Your Life Into a Game\nCreate a game-inspired video and join the showcase!\nPreview in 480p Then Finish in 4K\nUse Draft Mode to test for less then finish in higher resolution\nBuild Dynamic 3D Scenes with the PixVerse Plugin\nNow fully powered for your best ideas\nStep into worlds you can shape.\nYour imagination, brought to life.\nTo Create is to Play\nPlay & make games on our world model.\nOfficial\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nBaseball Chaos\nThat's it! Your turn to shine\nVideo\nVideo\nImage\nImage\nAudio\nAudio\nImage & Text\nImage & Text\nRefere"
+  },
+  {
+   "human_score": 0,
+   "label": "Google Flow",
+   "model": "Veo 3.1 Lite",
+   "reason": "peak hours for non-subscribers (~2-5 PM UTC); run outside that window",
+   "seconds": 0.0,
+   "site": "google_flow",
+   "state": "skipped"
+  },
+  {
+   "human_score": 47,
+   "label": "Dreamina",
+   "model": "Seedance 2.0",
+   "reason": "the site asked for a check (captcha); a person must clear it",
+   "seconds": 36.3,
+   "site": "dreamina",
+   "state": "blocked"
+  },
+  {
+   "credits_exhausted": false,
+   "dismiss_selectors": {},
+   "done_markers": {
+    "a[href$=\".mp4\"]": false
+   },
+   "generate_selectors": {
+    "button:has-text(\"Generate\")": true,
+    "text=Generate": true
+   },
+   "human_score": 44,
+   "label": "Kling",
+   "login": "in",
+   "model": "Kling 4.0",
+   "model_steps": [],
+   "pages_opened": [
+    "https://kling.ai",
+    "https://kling.ai/app?designerRouteName=video"
+   ],
+   "prompt_selectors": {
+    ".omni-prompt-editor div[contenteditable=\"true\"]": true,
+    "div.tiptap.ProseMirror": true,
+    "div[contenteditable=\"true\"]": true,
+    "div[role=\"textbox\"]": true,
+    "input[placeholder*=\"prompt\" i]": false,
+    "textarea": false,
+    "textarea[placeholder*=\"prompt\" i]": false
+   },
+   "reason": "creation page captured; selectors probed",
+   "seconds": 45.1,
+   "site": "kling",
+   "state": "ok",
+   "visible_text": "Create Videos, Images and More in One Workspace\n\u3010Black Friday Sale\u3011Lowest Prices of the Year! Up to 50% off! Subscriber-only Auto Recharge: up to 20% bonus Credits!\n14\nDays\n15\nHrs\n07\nMins\n42\nSecs\nShop Now\nHome\nGenerate\nCanvas\nAssets\n66\nFirst frame\nLast frame\n\n\nDescribe the scene, or upload up to 10 keyframes. Use to quickly reference assets. Content will be generated by AI.Billing Rules\nVideo Generation\nKling 4.0\nKeyframes\n720p \u00b7 5s \u00b7 16:9 \u00b7 1\nGenerate\nSkills\nAll\nAds\nFilm\nDesign\nGeneral\nVideo Generation\nPro Visuals, Great Stories\nImage Generation\nRealistic. Crystal-Clear\nAI Portraits\nArtistic Portraits, Many Styles\nCharacter Design\nQuickly create diverse characters\nMotion Control\nPrecise Action & Pose\nAvatar\nRealistic Talking Avatar\nCreative Effects\nViral Effects in One Tap\nVideo to Audio\nGenerate Sounds from Video\nImage Enhancing\nRestore HD Details\nLip Sync\nPrecise Audio-Driven Lip Sync\nRestyle\nTransform Visual Styles\nView Control\nFreely set camera angles\nSmart Lighting\nSmartly recreate texture, lighting, and atmosphere\nProduct Detail Page\nEnhanced visuals with multi-layer editing\nWeb Design\nHigh-quality prototypes with multi-layer editing\nRecommended\nFollows\nEvents\nPlugin\nPublish\nKLING AI\n679\noLJPOTRg\n208\nlIUcFTCO\n61\nzZSgVUHh\n30\nCXNVGwhV\n181\njHoapqag\n2\nCreators\n513\nRZJbwKoj\n245\nLMNbAdCZ\n859\nepZDRixX\n108\nTOoijscB\n182\nfulley\n2\nBatuhan\n161\nwQlbDAma\n167\nOPGFVNgE\n161\nCaCnvoUc\n691\noFRoeRPb\n1\naYLYfmMj\n13\nImUazNrL\n61\nGoogoolittle.family\n921\nbOEAGdKG\n123\nDW\n1.1k\nNcvLiOWX\n0\nvWaNTzYG\n385\ntuqjIRHK\n145\nLupita\n45\nsouvenir\n7\nvMSMeqIY\n420\nLOVA\n554\nOrxebyug\n157\nMqltrTyp\n9\nVmUZuYEy\n384\nAgHWDOKk\n4\nfjSUdADf\n24\nUkZYWYIm\n492\ncDbvjyhL\n56\nAekouWyD\n33\nKayetan\n203\nBHokpLdM\n21\niTLgHcdN\n272\nJUHALEE\n442\ngQSFHcWX\n152\nFyVyQawX\n106\nGD Tony Kim\n682\ngXRQVbfY\n1.3k\nFDwwojSW\n73\nMARIN\n253\nPrestige\n766\nNopenoper\n9\nptSMvylI\n818\nKxectVia\n3\nSelangorOzzy\n1\nNguyenToanThang\n599\nFREEZE\n374\nXlxmEFSC\n45\nKBFCfCVs\n24\nisomatovx\n347\nFDdfEsCB\n29\nQzrZAlcG\n233\nVodIoZZp\n167\nXODOJCZk\n197\niVjLlLpK\n2k\nM.G\n596\nJomo Man\n560"
+  },
+  {
+   "human_score": 0,
+   "label": "Luma Dream Machine",
+   "model": "Ray3.2",
+   "reason": "needs sign-in check: sign in by hand and report the trial-credit amount first",
+   "seconds": 0.0,
+   "site": "luma",
+   "state": "skipped"
+  }
+ ],
+ "run_at": "2026-11-18T16:52:20.167254Z"
+}
