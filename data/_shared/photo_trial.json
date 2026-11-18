@@ -1,0 +1,17 @@
+{
+ "brand": "duderobe",
+ "dry_run": false,
+ "model": "flux",
+ "prompt": "A red bicycle leaning against a wooden fence in a sunny garden",
+ "run_at": "2026-11-18T15:05:27.489938Z",
+ "source": "pollinations",
+ "verdicts": [
+  {
+   "model": "flux",
+   "reason": "Pollinations answered HTTP 503 for the image (Service Unavailable)",
+   "seconds": 4.7,
+   "source": "pollinations",
+   "verdict": "no-go"
+  }
+ ]
+}
