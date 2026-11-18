@@ -112,7 +112,9 @@ DRIVERS = {
             "duration 1-15s (default 5s); 2 concurrent generations",
             "generations land in the Library; download from there",
         ],
-        "prompt_selectors": ["textarea", "textarea[placeholder*=\"prompt\" i]"],
+        "prompt_selectors": ["textarea", "textarea[placeholder*=\"prompt\" i]",
+                            "div[contenteditable=\"true\"]", "div[role=\"textbox\"]",
+                            "input[placeholder*=\"prompt\" i]"],
         "model_steps": [],            # V6 is the app default; nothing to select
         "generate_selectors": ["button:has-text(\"Generate\")", "text=Generate"],
         "done_markers": ["video[src]", "a[href$=\".mp4\"]", "text=Download"],
@@ -202,7 +204,9 @@ DRIVERS = {
             "cost is shown on the Generate button; credits are deducted at once, refunded on failure",
             "1 video per generation on Basic (reported)",
         ],
-        "prompt_selectors": ["textarea", "textarea[placeholder*=\"prompt\" i]"],
+        "prompt_selectors": ["textarea", "textarea[placeholder*=\"prompt\" i]",
+                            "div[contenteditable=\"true\"]", "div[role=\"textbox\"]",
+                            "input[placeholder*=\"prompt\" i]"],
         "model_steps": [],            # Omni Reference is the default entry; nothing to select
         "generate_selectors": ["button:has-text(\"Generate\")", "text=Generate"],
         "done_markers": ["video[src]", "a[href$=\".mp4\"]", "text=Download"],
