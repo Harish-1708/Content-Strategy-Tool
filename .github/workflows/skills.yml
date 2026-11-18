@@ -148,6 +148,8 @@ jobs:
             echo "No data changes to save."
           else
             git commit -m "Skills and registries $(date -u +%Y-%m-%dT%H:%MZ)"
-            git pull --rebase
+            echo "--- files this run left changed but did not save (set aside for the pull, then put back):"
+            git status --porcelain | head -40
+            git pull --rebase --autostash          # a tracked file the run changed (a usage or health file) must not stop the pull
             git push
           fi
