@@ -3,15 +3,17 @@
  "dry_run": false,
  "model": "flux",
  "prompt": "A red bicycle leaning against a wooden fence in a sunny garden",
- "run_at": "2026-11-18T15:05:27.489938Z",
+ "run_at": "2026-11-18T15:48:07.774146Z",
  "source": "pollinations",
  "verdicts": [
   {
+   "drive_link": "https://drive.google.com/file/d/12leqVDY3YExW1WsyCpnn4gOYzQf2rIx1/view",
    "model": "flux",
-   "reason": "Pollinations answered HTTP 503 for the image (Service Unavailable)",
-   "seconds": 4.7,
+   "photo": "2026-11-18_duderobe_pollinations_a-red-bicycle-leaning-against-a-wooden.jpg",
+   "reason": "one flux photo made and downloaded",
+   "seconds": 5.8,
    "source": "pollinations",
-   "verdict": "no-go"
+   "verdict": "go"
   }
  ]
 }
