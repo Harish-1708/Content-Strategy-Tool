@@ -125,7 +125,7 @@ DRIVERS = {
         "model_steps": [],            # V6 is the app default; nothing to select
         "generate_selectors": ["button:has-text(\"Create\")", "button:has-text(\"Generate\")",
                                "text=Generate"],
-        "done_markers": ["video[src]", "a[href$=\".mp4\"]"],
+        "done_markers": ["a[href$=\".mp4\"]"],
         "download_link_contains": [".mp4"],
         "logged_in_markers": ["library", "my creations", "generate"],
         "login_wall_markers": ["log in", "sign in", "create an account"],
@@ -154,7 +154,7 @@ DRIVERS = {
             ["text=Veo 3.1 Lite", "button:has-text(\"Lite\")"],
         ],
         "generate_selectors": ["button:has-text(\"Generate\")", "text=Generate"],
-        "done_markers": ["video[src]", "a[href$=\".mp4\"]"],
+        "done_markers": ["a[href$=\".mp4\"]"],
         "download_link_contains": [".mp4"],
         "logged_in_markers": ["new project", "my projects", "create"],
         "login_wall_markers": ["sign in", "create your google account"],
@@ -190,7 +190,7 @@ DRIVERS = {
             ["text=Seedance 2.0", "button:has-text(\"Seedance 2.0\")"],
         ],
         "generate_selectors": ["button:has-text(\"Generate\")", "text=Generate"],
-        "done_markers": ["video[src]", "a[href$=\".mp4\"]"],
+        "done_markers": ["a[href$=\".mp4\"]"],
         "download_link_contains": [".mp4"],
         "logged_in_markers": ["video", "my creations", "generate"],
         "login_wall_markers": ["log in", "sign in"],
@@ -212,7 +212,15 @@ DRIVERS = {
             "cost is shown on the Generate button; credits are deducted at once, refunded on failure",
             "1 video per generation on Basic (reported)",
         ],
-        "prompt_selectors": ["textarea", "textarea[placeholder*=\"prompt\" i]",
+        # The prompt box is a TipTap/ProseMirror editor, not a textarea:
+        # <div contenteditable="true" role="textbox" class="tiptap
+        # ProseMirror"> inside .omni-prompt-editor, with an
+        # .editor-placeholder overlay ("Describe the scene, or upload up to
+        # 10 keyframes"). Lead with the precise ProseMirror selector — the
+        # generic contenteditable match failed on the live studio page.
+        "prompt_selectors": ["div.tiptap.ProseMirror",
+                            ".omni-prompt-editor div[contenteditable=\"true\"]",
+                            "textarea", "textarea[placeholder*=\"prompt\" i]",
                             "div[contenteditable=\"true\"]", "div[role=\"textbox\"]",
                             "input[placeholder*=\"prompt\" i]"],
         # The prompt box is not on the kling.ai homepage (a marketing page);
@@ -222,7 +230,7 @@ DRIVERS = {
         "enter_url": "https://kling.ai/app?designerRouteName=video",
         "model_steps": [],            # Omni Reference is the default entry; nothing to select
         "generate_selectors": ["button:has-text(\"Generate\")", "text=Generate"],
-        "done_markers": ["video[src]", "a[href$=\".mp4\"]"],
+        "done_markers": ["a[href$=\".mp4\"]"],
         "download_link_contains": [".mp4"],
         "logged_in_markers": ["create", "my works", "credits"],
         "login_wall_markers": ["log in", "sign in", "sign up"],
@@ -821,7 +829,11 @@ def _wait_for_done(ctx, browser, driver, site):
     (a "Download App" link in the header), so the trial concluded "done"
     seconds after pressing Generate, before any video existed, and then
     found no clip to download. Only a real video element or an .mp4 link
-    proves a clip finished."""
+    proves a clip finished. NOTE 2: "video[src]" is NOT a done marker
+    either — PixVerse's creation page always carries a showcase video
+    (media.pixverse.ai/asset/media/En-720-Pix.mp4), so the trial concluded
+    "done" the moment it polled and then found no downloadable clip. Only
+    a downloadable .mp4 link proves a clip finished AND can be downloaded."""
     limit = driver["max_wait_seconds"] if ctx.max_wait_seconds is None else ctx.max_wait_seconds
     waited = 0.0
     while waited < limit:
