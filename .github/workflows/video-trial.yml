@@ -6,8 +6,8 @@ name: Video trial
 # per site per run, hard cap, enforced in code; output is a draft only — watermarked, personal-use, publishing OFF.
 # A site that fails its trial is a verdict in the report (NO-GO, BLOCKED, NOT SET UP), not a failed run: the run only
 # goes red when the trial itself broke. Luma is a stub until Harish signs in by hand and reports the trial-credit amount.
-# A clip that is made goes ONLY to the brand the run is for (the `brand` input, required): to that brand's own Drive
-# folder, Shared Drive 'Idea Bank Automation' / <Brand name> / Video Trials, and one row is added to that brand's own
+# A clip that is made goes ONLY to the brand the run is for (the `brand` input, required): to Shared Drive
+# 'Idea Bank Automation' / Generated Content / VIDEO / <Brand name>, and one row is added to that brand's own
 # Catalogue sheet, tab "Video Trials", with the Drive link. Nothing is ever saved to another brand's folder or sheet.
 
 on:
