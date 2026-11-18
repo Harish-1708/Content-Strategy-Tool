@@ -1,7 +1,7 @@
 {
  "lifetime": {
   "agent_reach_youtube": 14,
-  "apify_items": 127,
+  "apify_items": 285,
   "claude_calls": 10,
   "collected_items": 2723,
   "deep_research_tasks": 1,
@@ -10,7 +10,7 @@
   "serpapi": 24,
   "serper_dev": 96,
   "tavily": 24,
-  "voice_apify_items": 82
+  "voice_apify_items": 240
  },
  "months": {
   "2026-10": {
@@ -23,7 +23,7 @@
   },
   "2026-11": {
    "agent_reach_youtube": 14,
-   "apify_items": 127,
+   "apify_items": 285,
    "claude_calls": 3,
    "collected_items": 1983,
    "exa": 14,
@@ -31,7 +31,7 @@
    "serpapi": 18,
    "serper_dev": 57,
    "tavily": 18,
-   "voice_apify_items": 82
+   "voice_apify_items": 240
   }
  }
 }

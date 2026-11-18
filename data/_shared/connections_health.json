@@ -220,11 +220,16 @@
     "at": "2026-11-18T14:05:51Z",
     "ms": 0,
     "ok": true
+   },
+   {
+    "at": "2026-11-18T14:29:20Z",
+    "ms": 0,
+    "ok": true
    }
   ],
   "builtin_used": 0,
   "last_error": null,
-  "last_success": "2026-11-18T14:05:51Z",
+  "last_success": "2026-11-18T14:29:20Z",
   "v": 2
  },
  "last30days": {
@@ -313,6 +318,41 @@
     "at": "2026-11-16T05:32:10Z",
     "ms": 6908,
     "ok": true
+   },
+   {
+    "at": "2026-11-18T14:29:53Z",
+    "ms": 0,
+    "ok": true
+   },
+   {
+    "at": "2026-11-18T14:29:55Z",
+    "ms": 7195,
+    "ok": true
+   },
+   {
+    "at": "2026-11-18T14:29:55Z",
+    "ms": 6603,
+    "ok": true
+   },
+   {
+    "at": "2026-11-18T14:29:55Z",
+    "ms": 7398,
+    "ok": true
+   },
+   {
+    "at": "2026-11-18T14:29:55Z",
+    "ms": 17996,
+    "ok": true
+   },
+   {
+    "at": "2026-11-18T14:29:55Z",
+    "ms": 7505,
+    "ok": true
+   },
+   {
+    "at": "2026-11-18T14:29:55Z",
+    "ms": 7089,
+    "ok": true
    }
   ],
   "builtin_used": 5,
@@ -321,7 +361,7 @@
    "code": "UPSTREAM_BROKEN",
    "message": "last30days stopped (2): /opt/hostedtoolcache/Python/3.12.16/x64/bin/python: can't open file '/home/runner/work/Content-Strategy-Tool/Content-Strategy-Tool/external/last30days/external/last30days/skills/last30days/scripts/last30days.py': [Errno 2] No such file or directory\n"
   },
-  "last_success": "2026-11-16T05:32:10Z",
+  "last_success": "2026-11-18T14:29:55Z",
   "v": 2
  },
  "scrapling": {
