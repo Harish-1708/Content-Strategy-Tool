@@ -1,0 +1,168 @@
+name: Generation
+
+# One workflow for ALL generation — image + video — on dummy accounts.
+# mode=recon: visit each planned video site and capture its creation page
+#   (screenshot + HTML + a probe of every selector the driver would use).
+#   No generation is attempted, nothing is typed, nothing is saved to Drive
+#   or a sheet. The captures are the board the drivers are built from, so a
+#   fix comes from the real page, not a guess. Pollinations is an API, not a
+#   page — its recon is the live photo trial, already GO.
+# mode=image: one Pollinations photo per run (free, no key, no signup).
+#   Image is tested FIRST, before video — it is the proven path.
+# mode=video: one clip per site (the video trial).
+# DUMMY accounts only, never a main account. Cookies are captured by hand in
+# an ordinary browser and pasted into the GitHub secrets named below; nothing
+# here logs in, creates an account, solves a challenge or spends money. One
+# generation per site per run, hard cap, enforced in code; output is a draft
+# only — watermarked, personal-use, publishing OFF. A site that fails is a
+# verdict in the report (NO-GO, BLOCKED, NOT SET UP), not a failed run: the
+# run only goes red when the trial itself broke. Luma is a stub until Harish
+# signs in by hand and reports the trial-credit amount. A generation that is
+# made goes ONLY to the brand the run is for (the `brand` input, required):
+# to Shared Drive 'Idea Bank Automation' / Generated Content / VIDEO or
+# Photo / <Brand name>, and one row is added to that brand's own Catalogue
+# sheet, with the Drive link. Nothing is ever saved to another brand's
+# folder or sheet.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "recon (capture each site's page), image (one Pollinations photo), or video (one clip per site)"
+        type: choice
+        options: [recon, image, video]
+        default: recon
+      site:
+        description: "One site, or all of them (pollinations is the image site; the rest are video)"
+        type: choice
+        options: [all, pixverse, google_flow, dreamina, kling, luma, pollinations]
+        default: all
+      brand:
+        description: "The brand this generation is for — it goes ONLY to that brand's Drive folder and sheet, never another brand's"
+        type: choice
+        options: [swoveralls, duderobe, defi_snacks]
+        required: true
+      prompt:
+        description: "The prompt for the one generation (brand-neutral by default, so the run tests the mechanism, not a brand)"
+        default: "A red bicycle leaning against a wooden fence in a sunny garden, gentle breeze, steady camera"
+        required: false
+      model:
+        description: "The Pollinations image model (image mode only)"
+        type: choice
+        options: [flux, turbo]
+        default: flux
+      dry_run:
+        description: "Print the plan and the cookie checks only; never open a browser or generate anything"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: generation
+  cancel-in-progress: false
+
+jobs:
+  generation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-browser.txt
+
+      - name: Install the tool
+        shell: bash
+        run: |
+          python -m venv "$RUNNER_TEMP/gen-env"
+          "$RUNNER_TEMP/gen-env/bin/pip" install -q -r requirements.txt
+
+      - name: Install the browser environment
+        if: ${{ inputs.mode != 'image' }}
+        shell: bash
+        run: |
+          "$RUNNER_TEMP/gen-env/bin/pip" install -q -r requirements-browser.txt
+          "$RUNNER_TEMP/gen-env/bin/python" -m patchright install --with-deps chromium
+
+      - name: Generation
+        id: run
+        continue-on-error: true
+        shell: bash
+        env:
+          PIXVERSE_COOKIES: ${{ secrets.PIXVERSE_COOKIES }}
+          GOOGLE_FLOW_COOKIES: ${{ secrets.GOOGLE_FLOW_COOKIES }}
+          DREAMINA_COOKIES: ${{ secrets.DREAMINA_COOKIES }}
+          KLING_COOKIES: ${{ secrets.KLING_COOKIES }}
+          LUMA_COOKIES: ${{ secrets.LUMA_COOKIES }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          IDEA_BANK_FOLDER_ID: ${{ secrets.IDEA_BANK_FOLDER_ID }}
+          SHEET_FOLDER_ID: ${{ secrets.SHEET_FOLDER_ID }}
+        run: |
+          set +e
+          { echo "### Generation (${{ inputs.mode }})"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ inputs.mode }}" = "recon" ]; then
+            if [ "${{ inputs.site }}" = "pollinations" ]; then
+              echo "Pollinations is an image API, not a page — there is nothing to capture. Its recon is the live photo trial, already GO."
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            args=(--recon --site "${{ inputs.site }}" --brand "${{ inputs.brand }}" --out debug/generation --recon-out data/_shared/generation_recon.json)
+            if ${{ inputs.dry_run }}; then args+=(--dry-run); fi
+            "$RUNNER_TEMP/gen-env/bin/python" -m contentintel.video_trial "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+            code=${PIPESTATUS[0]}
+          elif [ "${{ inputs.mode }}" = "image" ]; then
+            args=(--brand "${{ inputs.brand }}" --prompt "${{ inputs.prompt }}" --model "${{ inputs.model }}" --out debug/generation --verdicts data/_shared/photo_trial.json)
+            if ${{ inputs.dry_run }}; then args+=(--dry-run); fi
+            "$RUNNER_TEMP/gen-env/bin/python" -m contentintel.photo_trial "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+            code=${PIPESTATUS[0]}
+          else
+            if [ "${{ inputs.site }}" = "pollinations" ]; then
+              echo "pollinations is an image site, not a video site — run mode=image for it."
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              exit 1
+            fi
+            args=(--site "${{ inputs.site }}" --brand "${{ inputs.brand }}" --prompt "${{ inputs.prompt }}" --out debug/generation --verdicts data/_shared/video_trial.json)
+            if ${{ inputs.dry_run }}; then args+=(--dry-run); fi
+            "$RUNNER_TEMP/gen-env/bin/python" -m contentintel.video_trial "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+            code=${PIPESTATUS[0]}
+          fi
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: "Save the report and the trial log (never a secret value: the log holds secret names and counts only)"
+        shell: bash
+        run: |
+          git config user.name "generation"
+          git config user.email "generation@users.noreply.github.com"
+          cp debug/generation/trial-log.jsonl data/_shared/generation_log.jsonl 2>/dev/null || echo "no trial log yet (nothing was recorded): nothing to save for it."
+          for f in data/_shared/generation_recon.json data/_shared/generation_log.jsonl data/_shared/video_trial.json data/_shared/photo_trial.json; do
+            if [ -f "$f" ]; then git add -f "$f"; else echo "$f does not exist yet: nothing to save for it."; fi
+          done
+          if git diff --cached --quiet; then
+            echo "No changes to save."
+          else
+            git commit -m "Generation ${{ inputs.mode }} $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase --autostash
+            git push
+          fi
+
+      - name: Upload the generation files (drafts only — watermarked, personal-use)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generation-files
+          path: debug/generation
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Show the run as red when the generation itself broke
+        if: steps.run.outcome == 'failure'
+        run: exit 1
