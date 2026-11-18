@@ -403,18 +403,22 @@ def test_duderobe_clip_lands_only_in_duderobes_folder_and_sheet(tmp_path):
     link, sheet_error = saver.save("pixverse", "V6", "puppy in park", rel, tmp_path, "2026-11-18")
     assert sheet_error is None
     assert link.startswith("https://drive.google.com/file/d/") and link.endswith("/view")
-    # Drive: one file, in Idea Bank / DudeRobe / Video Trials, with the right name and bytes
-    brand_id = drive_client.find_folder(DRIVE_ROOT, "DudeRobe")
+    # Drive: one file, in Idea Bank / Generated Content / VIDEO / DudeRobe, with the right name and bytes
+    assert drive_client.find_folder(DRIVE_ROOT, "DudeRobe") is None  # no brand folder at the root any more
+    generated_id = drive_client.find_folder(DRIVE_ROOT, "Generated Content")
+    assert generated_id is not None
+    assert drive_client.find_folder(generated_id, "Photo") is None  # the video save never creates the Photo side
+    video_id = drive_client.find_folder(generated_id, "VIDEO")
+    assert video_id is not None
+    brand_id = drive_client.find_folder(video_id, "DudeRobe")
     assert brand_id is not None
-    assert drive_client.find_folder(DRIVE_ROOT, "duderobe") is None
-    trials_id = drive_client.find_folder(brand_id, "Video Trials")
-    assert trials_id is not None
-    files = drive_client.list_files(trials_id)
+    assert drive_client.find_folder(video_id, "duderobe") is None
+    files = drive_client.list_files(brand_id)
     assert list(files) == ["2026-11-18_duderobe_pixverse_v6_puppy-in-park.mp4"]
     assert drive_client.download(files["2026-11-18_duderobe_pixverse_v6_puppy-in-park.mp4"]) == b"FAKECLIPBYTES"
     # the other brands' folders were never created
-    assert drive_client.find_folder(DRIVE_ROOT, "Swoveralls") is None
-    assert drive_client.find_folder(DRIVE_ROOT, "Defi Snacks") is None
+    assert drive_client.find_folder(video_id, "Swoveralls") is None
+    assert drive_client.find_folder(video_id, "Defi Snacks") is None
     # Sheet: the duderobe sheet has the tab with the header and one row; the other sheets have no such tab
     ws = sheets_client.spreadsheets["sheet-duderobe"].worksheet("Video Trials")
     header, rows = read_sheet(ws)
@@ -438,9 +442,10 @@ def test_a_second_save_with_the_same_name_replaces_the_first_clip(tmp_path):
     second_link, second_error = saver.save("pixverse", "V6", "puppy in park", rel, tmp_path, "2026-11-18")
     assert second_error is None
     assert second_link != first_link
-    brand_id = drive_client.find_folder(DRIVE_ROOT, "DudeRobe")
-    trials_id = drive_client.find_folder(brand_id, "Video Trials")
-    files = drive_client.list_files(trials_id)
+    generated_id = drive_client.find_folder(DRIVE_ROOT, "Generated Content")
+    video_id = drive_client.find_folder(generated_id, "VIDEO")
+    brand_id = drive_client.find_folder(video_id, "DudeRobe")
+    files = drive_client.list_files(brand_id)
     assert list(files) == ["2026-11-18_duderobe_pixverse_v6_puppy-in-park.mp4"]
     assert drive_client.download(files["2026-11-18_duderobe_pixverse_v6_puppy-in-park.mp4"]) == b"SECONDCLIP"
     ws = sheets_client.spreadsheets["sheet-duderobe"].worksheet("Video Trials")
@@ -470,9 +475,10 @@ def test_a_clip_in_drive_with_no_sheet_mapping_keeps_its_link(tmp_path):
     link, sheet_error = saver.save("kling", "Kling 4.0", "a test prompt", rel, tmp_path, "2026-11-18")
     assert link is not None and link.startswith("https://drive.google.com/file/d/")
     assert sheet_error is not None and "No spreadsheet is set up" in sheet_error
-    brand_id = drive_client.find_folder(DRIVE_ROOT, "DudeRobe")
-    trials_id = drive_client.find_folder(brand_id, "Video Trials")
-    assert list(drive_client.list_files(trials_id)) == ["2026-11-18_duderobe_kling_kling-4-0_a-test-prompt.mp4"]
+    generated_id = drive_client.find_folder(DRIVE_ROOT, "Generated Content")
+    video_id = drive_client.find_folder(generated_id, "VIDEO")
+    brand_id = drive_client.find_folder(video_id, "DudeRobe")
+    assert list(drive_client.list_files(brand_id)) == ["2026-11-18_duderobe_kling_kling-4-0_a-test-prompt.mp4"]
 
 
 def test_a_failed_save_keeps_the_verdict_and_exits_zero(tmp_path):
@@ -506,7 +512,7 @@ def test_dry_run_shows_the_save_plan_and_touches_nothing(tmp_path, capsys):
     assert [v["verdict"] for v in verdicts] == ["skipped", "skipped"]
     out = capsys.readouterr().out
     assert "brand: duderobe (DudeRobe)" in out
-    assert "DudeRobe / Video Trials / 2026-11-18_duderobe_pixverse_v6_a-test-prompt.mp4" in out
+    assert "Generated Content / VIDEO / DudeRobe / 2026-11-18_duderobe_pixverse_v6_a-test-prompt.mp4" in out
     assert 'tab "Video Trials"' in out
     assert "save: none" in out        # the Luma stub
 
