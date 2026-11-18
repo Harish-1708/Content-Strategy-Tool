@@ -1,3 +1,1 @@
-{"action": "open-app", "content_chars": 593515, "dwell_seconds": 31.6, "ended_at": 1795015726.4335103, "human_score": 46, "mouse_moves": 9, "pauses": 2, "scroll_events": 0, "site": "pixverse", "started_at": 1795015694.837906}
-{"action": "type-prompt", "content_chars": 591696, "dwell_seconds": 0.3, "ended_at": 1795015726.9916637, "human_score": 35, "mouse_moves": 9, "pauses": 2, "scroll_events": 0, "site": "pixverse", "started_at": 1795015726.6920857}
-{"action": "generate", "content_chars": 595965, "dwell_seconds": 0.25, "ended_at": 1795015727.2386153, "human_score": 35, "mouse_moves": 9, "pauses": 2, "scroll_events": 0, "site": "pixverse", "started_at": 1795015726.991692}
+{"action": "open-app", "content_chars": 907272, "dwell_seconds": 31.28, "ended_at": 1795016071.7655554, "human_score": 45, "mouse_moves": 8, "pauses": 2, "scroll_events": 0, "site": "kling", "started_at": 1795016040.4887638}
