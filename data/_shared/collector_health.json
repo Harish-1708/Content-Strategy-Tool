@@ -376,8 +376,8 @@
   },
   "ai:cloudflare|gateway": {
    "acceptance": null,
-   "consecutive_failures": 0,
-   "consecutive_successes": 7,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
    "history": [
     {
      "at": "2026-11-10T09:20:48Z",
@@ -469,12 +469,19 @@
      "items": 1,
      "ms": 321,
      "ok": true
+    },
+    {
+     "at": "2026-11-18T14:15:30Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-11T11:11:57Z",
-    "code": "UPSTREAM_BROKEN",
-    "message": "unusable answer: the answer is not valid JSON"
+    "at": "2026-11-18T14:15:30Z",
+    "code": "RATE_LIMITED",
+    "message": "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast key1: daily_quota_exhausted. Last error: Cloudflare API error 429: AiError: AiError: you have used up your daily free allocation of 10,000 neurons, please upgrade t"
    },
    "last_success": "2026-11-15T09:37:31Z",
    "pause": null,
@@ -812,8 +819,8 @@
   },
   "ai:google|gateway": {
    "acceptance": null,
-   "consecutive_failures": 0,
-   "consecutive_successes": 5,
+   "consecutive_failures": 2,
+   "consecutive_successes": 0,
    "history": [
     {
      "at": "2026-11-10T09:17:16Z",
@@ -891,12 +898,26 @@
      "items": 1,
      "ms": 1383,
      "ok": true
+    },
+    {
+     "at": "2026-11-18T14:15:34Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-18T14:15:51Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-14T05:00:40Z",
-    "code": "UPSTREAM_BROKEN",
-    "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: google/gemini-2.5-flash-lite key1: model_not_found. Last error: Google API error 404: This model models"
+    "at": "2026-11-18T14:15:51Z",
+    "code": "RATE_LIMITED",
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~69s."
    },
    "last_success": "2026-11-15T09:37:31Z",
    "pause": null,
@@ -906,8 +927,8 @@
   },
   "ai:groq|gateway": {
    "acceptance": null,
-   "consecutive_failures": 0,
-   "consecutive_successes": 10,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
    "history": [
     {
      "at": "2026-11-10T08:54:44Z",
@@ -1118,14 +1139,56 @@
      "items": 1,
      "ms": 260,
      "ok": true
+    },
+    {
+     "at": "2026-11-18T14:07:52Z",
+     "code": "",
+     "items": 1,
+     "ms": 521,
+     "ok": true
+    },
+    {
+     "at": "2026-11-18T14:15:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 4090,
+     "ok": true
+    },
+    {
+     "at": "2026-11-18T14:15:18Z",
+     "code": "",
+     "items": 1,
+     "ms": 4457,
+     "ok": true
+    },
+    {
+     "at": "2026-11-18T14:15:30Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-18T14:15:30Z",
+     "code": "",
+     "items": 1,
+     "ms": 3794,
+     "ok": true
+    },
+    {
+     "at": "2026-11-18T14:15:34Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-11T11:11:57Z",
+    "at": "2026-11-18T14:15:34Z",
     "code": "RATE_LIMITED",
-    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset."
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~86s."
    },
-   "last_success": "2026-11-15T09:37:31Z",
+   "last_success": "2026-11-18T14:15:30Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:groq",
@@ -1267,8 +1330,8 @@
   },
   "ai:nvidia|gateway": {
    "acceptance": null,
-   "consecutive_failures": 2,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 2,
    "history": [
     {
      "at": "2026-11-14T05:00:40Z",
@@ -1381,6 +1444,20 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-18T14:15:34Z",
+     "code": "",
+     "items": 1,
+     "ms": 12146,
+     "ok": true
+    },
+    {
+     "at": "2026-11-18T14:15:51Z",
+     "code": "",
+     "items": 1,
+     "ms": 17809,
+     "ok": true
     }
    ],
    "last_error": {
@@ -1388,11 +1465,11 @@
     "code": "TIMEOUT",
     "message": "the gateway could not be reached: timed out"
    },
-   "last_success": "2026-11-14T06:32:38Z",
+   "last_success": "2026-11-18T14:15:51Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:nvidia",
-   "state": "degraded"
+   "state": "healthy"
   },
   "ai:ollama|gateway": {
    "acceptance": null,
@@ -1892,8 +1969,8 @@
   },
   "ai:zhipu|gateway": {
    "acceptance": null,
-   "consecutive_failures": 0,
-   "consecutive_successes": 5,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
    "history": [
     {
      "at": "2026-11-14T05:00:40Z",
@@ -1978,10 +2055,17 @@
      "items": 1,
      "ms": 2126,
      "ok": true
+    },
+    {
+     "at": "2026-11-18T14:15:30Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-14T08:39:07Z",
+    "at": "2026-11-18T14:15:30Z",
     "code": "RATE_LIMITED",
     "message": "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: 该模型当前访问量过大，请您稍后再试"
    },

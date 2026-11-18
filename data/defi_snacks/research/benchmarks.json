@@ -219,45 +219,22 @@
   "rxbar": {
    "candidates": [
     {
-     "ads": 1,
-     "likes": 18687,
-     "name": "Stars + Honey",
-     "page_id": "104932575863053"
-    },
-    {
-     "ads": 1,
-     "likes": 853,
-     "name": "Walmart Neighborhood Market Crestview",
-     "page_id": "1050541388153396"
-    },
-    {
-     "ads": 4,
-     "likes": 202,
-     "name": "Bitsmith Agency, LLC",
-     "page_id": "163041559185764"
-    },
-    {
-     "ads": 2,
-     "likes": 201,
-     "name": "VendSpace, Inc",
-     "page_id": "836895269503129"
-    },
-    {
-     "ads": 2,
+     "ads": 0,
      "likes": 0,
-     "name": "Spatial Commercial",
-     "page_id": "1171282436074569"
+     "name": "RXBAR (@RXBAR) - Photos",
+     "page_id": "",
+     "url": "https://www.facebook.com/RXBAR"
     }
    ],
-   "checked_at": "2026-10-28T14:29:45Z",
+   "checked_at": "2026-11-18T14:07:43Z",
    "kind": "benchmark",
    "name": "RXBAR",
-   "page_id": "",
+   "page_id": "100064790050100",
    "page_likes": 0,
-   "page_name": "",
-   "reason": "other advertisers turned up, but none has a name like this one",
-   "source": "auto",
-   "status": "unresolved"
+   "page_name": "RXBAR (@RXBAR) - Photos",
+   "reason": "found with Serper and confirmed as the main official page by the AI reviewer: The page is the brand's primary global Facebook page without any regional qualifier. (https://www.facebook.com/RXBAR)",
+   "source": "serper_review",
+   "status": "resolved"
   }
  },
  "version": 1
