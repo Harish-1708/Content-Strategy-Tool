@@ -221,21 +221,12 @@ lanes:
 pool:
   - {provider: groq, model: openai/gpt-oss-120b}
   - {provider: groq, model: openai/gpt-oss-20b}
-  - {provider: mistral, model: mistral-large-latest}
-  - {provider: mistral, model: mistral-small-latest}
   - {provider: openrouter, model: openrouter/free}
   - {provider: openrouter, model: qwen/qwen3-coder:free}
   - {provider: openrouter, model: z-ai/glm-4.5-air:free}
   - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
   - {provider: google, model: gemini-3.5-flash}
   - {provider: nvidia, model: google/gemma-4-31b-it}
-  - {provider: ollama, model: gpt-oss:120b}
-  - {provider: ollama, model: glm-4.7}
-  - {provider: ollama, model: devstral-2:123b}
-  - {provider: ollama, model: qwen3-coder-next}
-  - {provider: ollama, model: qwen3-coder:480b}
-  - {provider: ollama, model: gpt-oss:20b}
-  - {provider: ollama, model: gemma4:31b}
   - {provider: cohere, model: command-a-reasoning-08-2025}
   - {provider: cohere, model: command-a-03-2025}
   - {provider: cohere, model: command-r-plus-08-2024}
@@ -252,23 +243,21 @@ pool:
   - {provider: openrouter, model: google/gemma-4-26b-a4b-it:free}
   - {provider: openrouter, model: google/gemma-4-31b-it:free}
   # OmniRoute's providers (2026-11-17): each is used only when the owner has given it a key; without one it is skipped with a printed note
-  - {provider: sambanova, model: "sambanova/gpt-oss-120b"}
-  - {provider: sambanova, model: "sambanova/Meta-Llama-3.3-70B-Instruct"}
-  - {provider: sambanova, model: "sambanova/DeepSeek-V3.2"}
-  - {provider: nara, model: "nara/mistral-large"}
-  - {provider: nara, model: "nara/qwen3.8-27b"}
-  - {provider: nara, model: "nara/mistral-medium-3-5"}
-  - {provider: nara, model: "nara/minimax-m3-free"}
   - {provider: xkiro, model: "xkiro/minimax/minimax-m3:free"}
   - {provider: xkiro, model: "xkiro/mistralai/mistral-large-2512"}
   - {provider: xkiro, model: "xkiro/deepseek/deepseek-v3.2"}
   - {provider: xkiro, model: "xkiro/qwen/qwen3.6-plus:free"}
-  - {provider: llm7, model: "llm7/gpt-4o-mini-2024-07-18"}
-  - {provider: llm7, model: "llm7/deepseek-r1-0528"}
   - {provider: pollinations, model: "pollinations/openai-fast"}
   - {provider: pollinations, model: "pollinations/mistral"}
-  - {provider: airforce, model: "api-airforce/qwen/qwen3-32b"}
-  - {provider: airforce, model: "api-airforce/moonshot/kimi-k2.6"}
-  - {provider: bluesminds, model: "bluesminds/gpt-4.1-mini"}
-  - {provider: bluesminds, model: "bluesminds/deepseek-chat"}
   - {provider: bazaarlink, model: "bazaarlink/auto:free"}
+  - {provider: llm7, model: "llm7/DeepSeek-V4-Flash-0731"}
+  - {provider: llm7, model: "llm7/glm-5.3-flash"}
+  - {provider: llm7, model: "llm7/gpt-oss:20b"}
+  - {provider: airforce, model: "api-airforce/gpt-oss-20b"}
+  - {provider: bluesminds, model: "bluesminds/z-ai/glm4.7"}
+  - {provider: bluesminds, model: "bluesminds/moonshotai/kimi-k2.6"}
+  - {provider: bluesminds, model: "bluesminds/qwen/qwen3-next-80b-a3b-instruct"}
+  # keyless (probed live 2026-11-18): no secret is sent; OVH answers like any OpenAI-style endpoint, AI Horde is asynchronous
+  - {provider: ovh, model: Mistral-Small-3.2-24B-Instruct-2506}
+  - {provider: ovh, model: gpt-oss-20b}
+  - {provider: aihorde, model: aihorde/any}

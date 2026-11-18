@@ -261,6 +261,16 @@ names marked set or not set, so you can see what the run can see (the values are
 | `REDDIT_CLIENT_SECRET` | the secret of that Reddit app | optional, with the id | the same page |
 | `JINA_API_KEY` | raises Jina Reader's free limit from 20 to 500 requests a minute | optional | jina.ai > API key (the reader works without one) |
 
+**Video trials** (used by the Video trial workflow; all optional — without a site's cookies that site reports NOT SET UP and nothing opens)
+
+| Secret | What it is for | Needed? | What to paste |
+|---|---|---|---|
+| `PIXVERSE_COOKIES` | PixVerse, logged in as the dummy account | for the PixVerse trial | the dummy account's cookies, exported as a JSON list |
+| `GOOGLE_FLOW_COOKIES` | Google Flow, logged in as the dummy Google account | for the Google Flow trial | the dummy account's cookies, exported as a JSON list |
+| `DREAMINA_COOKIES` | Dreamina, logged in as the dummy account | for the Dreamina trial | the dummy account's cookies, exported as a JSON list |
+| `KLING_COOKIES` | Kling, logged in as the dummy account | for the Kling trial | the dummy account's cookies, exported as a JSON list |
+| `LUMA_COOKIES` | Luma, logged in as the dummy account | for the Luma trial (the trial-credit amount is only visible after sign-in) | the dummy account's cookies, exported as a JSON list |
+
 **Needs no secret:** Meta Ad Library (public pages), the catalogue sync (public store data), and
 `GITHUB_TOKEN` (GitHub provides it automatically).
 

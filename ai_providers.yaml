@@ -1,5 +1,5 @@
-# AI providers: every platform in the pinned FreeLLMAPI v0.16.17 (84 ids), GitHub Models (called directly), and Claude: 86 in all.
-# Switched on at present: airforce, bazaarlink, bluesminds, cloudflare, cohere, google, groq, kilo, llm7, mistral, nara, nvidia, ollama, openrouter, pollinations, sambanova, xkiro, zhipu and claude. A test keeps this line equal to the enabled flags below. GitHub Models is retired (see its retired: record): kept, never enabled or called.
+# AI providers: every platform in the pinned FreeLLMAPI v0.16.17 (84 ids), GitHub Models (called directly), and Claude, plus OVH and AI Horde called directly (they carry their own platform entries too): 87 in all.
+# Switched on at present: aihorde, airforce, bazaarlink, bluesminds, cloudflare, cohere, google, groq, kilo, llm7, nvidia, openrouter, ovh, pollinations, xkiro, zhipu and claude. A test keeps this line equal to the enabled flags below. GitHub Models is retired (see its retired: record): kept, never enabled or called.
 #
 # NOTHING is on unless it says enabled: true. A provider carries the terms found when it was checked (terms.status says
 # how well: verified = the provider's own page; verified_secondary = quoted by other sites; upstream_documented = the gateway
@@ -883,7 +883,7 @@ providers:
       note: 'switched off 2026-11-14: the live check of that day got HTTP 410: end of life on 2026-07-02. Add it back only after a live check answers'
   mistral:
     label: Mistral
-    enabled: true
+    enabled: false
     experimental: false
     ceiling: public
     approved_classes:
@@ -951,9 +951,11 @@ providers:
       - text
       - tools
       note: present in the gateway baseline; not approved
+    # switched OFF 2026-11-18, record kept: key creation is blocked behind upgrade or payment validation (owner decision 2026-11-18)
+
   sambanova:
     label: "SambaNova"
-    enabled: true
+    enabled: false
     experimental: false
     ceiling: public
     approved_classes:
@@ -962,7 +964,7 @@ providers:
     owner_override:
       ceiling: internal
       approved_by: Harish
-      date: '2026-11-03'
+      date: '2026-11-14'
       reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
@@ -995,6 +997,7 @@ providers:
       capabilities:
       - text
       note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as sambanova/DeepSeek-V3.2"
+    # switched OFF 2026-11-18, record kept: free tier retired upstream: a live call returned 402, a payment method is required (provider test 2026-11-18)
 
   openrouter:
     label: OpenRouter
@@ -1483,7 +1486,7 @@ providers:
       note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
   ollama:
     label: Ollama Cloud
-    enabled: true
+    enabled: false
     experimental: false
     ceiling: public
     approved_classes:
@@ -1573,6 +1576,8 @@ providers:
       - text
       - tools
       note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
+    # switched OFF 2026-11-18, record kept: Ollama Cloud free credits ended 2026-11-09: a live call returned 402, out of credits
+
   kilo:
     label: Kilo Gateway
     enabled: true
@@ -1641,7 +1646,7 @@ providers:
     owner_override:
       ceiling: internal
       approved_by: Harish
-      date: '2026-11-03'
+      date: '2026-11-14'
       reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
@@ -1680,7 +1685,7 @@ providers:
     owner_override:
       ceiling: internal
       approved_by: Harish
-      date: '2026-11-03'
+      date: '2026-11-14'
       reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
@@ -1697,16 +1702,21 @@ providers:
     limits:
       tokens_per_day: 100000
     models:
-    - id: "llm7/gpt-4o-mini-2024-07-18"
+    - id: "llm7/DeepSeek-V4-Flash-0731"
       approved: true
       capabilities:
       - text
-      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as llm7/gpt-4o-mini-2024-07-18"
-    - id: "llm7/deepseek-r1-0528"
+      note: "free model per the provider own catalogue or model page (provider test follow-up 2026-11-18); routed through OmniRoute as llm7/DeepSeek-V4-Flash-0731"
+    - id: "llm7/glm-5.3-flash"
       approved: true
       capabilities:
       - text
-      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as llm7/deepseek-r1-0528"
+      note: "free model per the provider own catalogue or model page (provider test follow-up 2026-11-18); routed through OmniRoute as llm7/glm-5.3-flash"
+    - id: "llm7/gpt-oss:20b"
+      approved: true
+      capabilities:
+      - text
+      note: "free model per the provider own catalogue or model page (provider test follow-up 2026-11-18); routed through OmniRoute as llm7/gpt-oss:20b"
 
   huggingface:
     label: Hugging Face Router
@@ -1792,17 +1802,41 @@ providers:
       note: present in the gateway baseline; not approved
   ovh:
     label: OVHcloud AI Endpoints
-    enabled: false
-    experimental: true
+    enabled: true
+    experimental: true          # as in the original record: community and anonymous capacity
     ceiling: public
-    approved_classes: []
-    credentials:
-      env: []
-    gateway_platform: ovh
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-14'
+      reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
+    direct:
+      base_url: https://oai.endpoints.kepler.ai.cloud.ovh.net/v1
+      keyless: true
     terms:
       status: upstream_documented
-      date: '2026-11-03'
-      note: anonymous tier about 2 requests/minute per IP per model (observed stricter); the authenticated tier needs a Public Cloud project with a payment method
+      date: '2026-11-18'
+      trains_on_data: 'not verified'
+      retention: 'not verified'
+      business_use: "anonymous free tier, 2 requests a minute per IP per model (probed live 2026-11-18 by the developer: Mistral-Small-3.2-24B-Instruct-2506 answered in 13.6 s). NO key is sent: a key would bill pay-as-you-go. Prefer a non-reasoning instruct model."
+      note: 'from the developer live probe and OmniRoute catalogue; the provider own terms page was not read'
+    limits:
+      requests_per_minute: 2
+    models:
+    - id: Mistral-Small-3.2-24B-Instruct-2506
+      approved: true
+      capabilities:
+      - text
+      note: answered live without a key on 2026-11-18
+    - id: gpt-oss-20b
+      approved: true
+      capabilities:
+      - text
+      note: listed free by the OmniRoute catalogue (keyless); not yet proven live by name
+
   agnes:
     label: Agnes AI
     enabled: false
@@ -1872,7 +1906,7 @@ providers:
     owner_override:
       ceiling: internal
       approved_by: Harish
-      date: '2026-11-03'
+      date: '2026-11-14'
       reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
@@ -1895,6 +1929,7 @@ providers:
       capabilities:
       - text
       note: "listed free by the OmniRoute catalogue (2026-11-17); routed through OmniRoute as bazaarlink/auto:free"
+    # ZDR (zero data retention) keys stay OFF: they work with only 9 models and the free model is probably not one of them; this tool sends no confidential client information, so nothing sensitive needs it.
 
   ainative:
     label: AINative Studio
@@ -1954,7 +1989,7 @@ providers:
       note: declared by the upstream project only; not checked against the provider
   nara:
     label: "NaraRouter"
-    enabled: true
+    enabled: false
     experimental: false
     ceiling: public
     approved_classes:
@@ -1963,7 +1998,7 @@ providers:
     owner_override:
       ceiling: internal
       approved_by: Harish
-      date: '2026-11-03'
+      date: '2026-11-14'
       reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
@@ -2001,6 +2036,7 @@ providers:
       capabilities:
       - text
       note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as nara/minimax-m3-free"
+    # switched OFF 2026-11-18, record kept: the gateway rejected its key; free access needs a Telegram link and channel join or a $1 top-up, not done
 
   sealion:
     label: SEA-LION (AI Singapore)
@@ -2055,7 +2091,7 @@ providers:
     owner_override:
       ceiling: internal
       approved_by: Harish
-      date: '2026-11-03'
+      date: '2026-11-14'
       reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
@@ -2164,18 +2200,38 @@ providers:
       date: '2026-11-03'
       note: declared by the upstream project only; not checked against the provider
   aihorde:
-    label: AI Horde
-    enabled: false
-    experimental: true
+    label: AI Horde (anonymous)
+    enabled: true
+    experimental: true          # as in the original record: community and anonymous capacity
     ceiling: public
-    approved_classes: []
-    credentials:
-      env: []
-    gateway_platform: aihorde
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-14'
+      reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
+    direct:
+      base_url: https://aihorde.net/api/v2
+      keyless: true
+      kind: horde
     terms:
       status: upstream_documented
-      date: '2026-11-03'
-      note: community volunteer workers behind a queue; anonymous sentinel key; text is processed by unknown third parties
+      date: '2026-11-18'
+      trains_on_data: 'not verified; AGPL-3.0 software run by volunteers: workers can technically see prompts'
+      retention: 'not verified'
+      business_use: "community capacity, anonymous key 0000000000 = lowest queue priority; asynchronous (submit then poll). Probed live 2026-11-18 by the developer: a job answered with koboldcpp/Rocinante-X-12B-v1, 41 eligible workers."
+      note: 'from the developer live probe and OmniRoute catalogue; the provider own terms page was not read'
+    limits:
+      requests_per_minute: 10
+    models:
+    - id: aihorde/any
+      approved: true
+      capabilities:
+      - text
+      note: any available worker answers (the public network chooses the model); the pace is volunteer-dependent
+
   custom:
     label: Custom (OpenAI-compatible)
     enabled: false
@@ -2259,7 +2315,7 @@ providers:
     owner_override:
       ceiling: internal
       approved_by: Harish
-      date: '2026-11-03'
+      date: '2026-11-14'
       reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
@@ -2277,16 +2333,11 @@ providers:
       requests_per_minute: 1
       requests_per_day: 1000
     models:
-    - id: "api-airforce/qwen/qwen3-32b"
+    - id: "api-airforce/gpt-oss-20b"
       approved: true
       capabilities:
       - text
-      note: "listed free by the OmniRoute catalogue (2026-11-17); routed through OmniRoute as api-airforce/qwen/qwen3-32b"
-    - id: "api-airforce/moonshot/kimi-k2.6"
-      approved: true
-      capabilities:
-      - text
-      note: "listed free by the OmniRoute catalogue (2026-11-17); routed through OmniRoute as api-airforce/moonshot/kimi-k2.6"
+      note: "free model per the provider own catalogue or model page (provider test follow-up 2026-11-18); routed through OmniRoute as api-airforce/gpt-oss-20b"
 
   bluesminds:
     label: "BluesMinds"
@@ -2299,7 +2350,7 @@ providers:
     owner_override:
       ceiling: internal
       approved_by: Harish
-      date: '2026-11-03'
+      date: '2026-11-14'
       reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
@@ -2317,14 +2368,19 @@ providers:
       requests_per_minute: 20
       requests_per_day: 300
     models:
-    - id: "bluesminds/gpt-4.1-mini"
+    - id: "bluesminds/z-ai/glm4.7"
       approved: true
       capabilities:
       - text
-      note: "listed free by the OmniRoute catalogue (2026-11-17); routed through OmniRoute as bluesminds/gpt-4.1-mini"
-    - id: "bluesminds/deepseek-chat"
+      note: "free model per the provider own catalogue or model page (provider test follow-up 2026-11-18); routed through OmniRoute as bluesminds/z-ai/glm4.7"
+    - id: "bluesminds/moonshotai/kimi-k2.6"
       approved: true
       capabilities:
       - text
-      note: "listed free by the OmniRoute catalogue (2026-11-17); routed through OmniRoute as bluesminds/deepseek-chat"
+      note: "free model per the provider own catalogue or model page (provider test follow-up 2026-11-18); routed through OmniRoute as bluesminds/moonshotai/kimi-k2.6"
+    - id: "bluesminds/qwen/qwen3-next-80b-a3b-instruct"
+      approved: true
+      capabilities:
+      - text
+      note: "free model per the provider own catalogue or model page (provider test follow-up 2026-11-18); routed through OmniRoute as bluesminds/qwen/qwen3-next-80b-a3b-instruct"
 
