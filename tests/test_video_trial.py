@@ -119,6 +119,7 @@ def _logged_in_browser(key, done=True, clip=True):
     clickable = set(driver["generate_selectors"])
     for step in driver["model_steps"]:
         clickable.add(step[0])
+    clickable.update(driver.get("enter_selectors", []))
     browser = FakeBrowser(pages, clickable=clickable,
                           typeable=set(driver["prompt_selectors"]),
                           present_always=present)
@@ -251,6 +252,28 @@ def test_challenge_is_blocked_and_the_account_is_left_alone(tmp_path):
     assert entry["verdict"] == "blocked"
     assert "challenge" in entry["reason"] or "check" in entry["reason"]
     assert "Generate" not in " ".join(browser.clicks)
+
+
+def test_google_flow_opens_a_new_project_before_the_model_pick(tmp_path):
+    env = {"GOOGLE_FLOW_COOKIES": COOKIE_JSON}
+    browser = _logged_in_browser("google_flow")
+    off_peak = lambda: datetime(2026, 11, 17, 10, 0, tzinfo=timezone.utc)
+    ctx = _ctx(tmp_path, env=env, factory=_fake_factory(browser), now=off_peak)
+    entry = VT.run_site("google_flow", ctx)
+    assert entry["verdict"] == "go"
+    # The prompt box lives inside a project, not on the projects list.
+    assert "button:has-text(\"New project\")" in browser.clicks
+
+
+def test_credits_exhausted_stops_the_wait_at_once(tmp_path):
+    env = {"GOOGLE_FLOW_COOKIES": COOKIE_JSON}
+    browser = _logged_in_browser("google_flow", done=False)
+    browser.page_html = ("<html><body>welcome, new project, generate a video — "
+                         "not enough credits to generate</body></html>")
+    ctx = _ctx(tmp_path, env=env, factory=_fake_factory(browser), max_wait_seconds=600)
+    entry = VT.run_site("google_flow", ctx)
+    assert entry["verdict"] == "no-go"
+    assert "free credits are exhausted" in entry["reason"]
 
 
 def test_generation_that_never_finishes_is_a_no_go(tmp_path):
