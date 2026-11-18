@@ -54,8 +54,8 @@ video:
 # against one outside page; the provider test (Actions > Provider test) is where live confirmation happens.
 second_pass:
   wired_through_omniroute:        # on in ai_providers.yaml; each needs its key (a GitHub secret) before it can be tried
-    - {id: airforce, omniroute_id: api-airforce, limit: "1 request a minute, 1,000 a day (outside directory page confirms; reviewers report downtime)", models: ["qwen/qwen3-32b", "moonshot/kimi-k2.6"], secret: API_AIRFORCE_API_KEY, note: "its ~24M tokens a month is OmniRoute's estimate, not a provider figure; it also serves Claude models free, which this tool does not route to"}
-    - {id: bluesminds, omniroute_id: bluesminds, limit: "20 requests a minute, 300 a day (research report; OmniRoute flags its terms as ambiguous)", models: ["gpt-4.1-mini", "deepseek-chat"], secret: BLUESMINDS_API_KEY}
+    - {id: airforce, omniroute_id: api-airforce, limit: "1 request a minute, 1,000 a day (outside directory page confirms; reviewers report downtime)", models: ["gpt-oss-20b"], secret: API_AIRFORCE_API_KEY, note: "its ~24M tokens a month is OmniRoute's estimate, not a provider figure; it also serves Claude models free, which this tool does not route to"}
+    - {id: bluesminds, omniroute_id: bluesminds, limit: "20 requests a minute, 300 a day (research report; OmniRoute flags its terms as ambiguous)", models: ["z-ai/glm4.7", "moonshotai/kimi-k2.6", "qwen/qwen3-next-80b-a3b-instruct"], secret: BLUESMINDS_API_KEY}
     - {id: bazaarlink, omniroute_id: bazaarlink, limit: "10 requests a minute, 60 weighted units a day (not ~150)", models: ["auto:free"], secret: BAZAARLINK_API_KEY, note: "its terms ban reselling or sharing keys; the catalogue lists one model id for the free tier (auto:free), the report names 4: the test shows which answer"}
   confirmed_free_not_wired_yet:
     - {id: ovhcloud, why: "keyless (anonymous, 2 requests a minute per IP per model): the tool's OmniRoute start needs a credential today; keyless handling must be proven live first", catalogue: "present (5 models)"}
@@ -73,3 +73,20 @@ second_pass:
   never_wire_via_a_proxy: [nlpcloud]
   corrections_to_the_first_report: ["HuggingChat is dead (free credit removed 2026-10-07)", "Nous Portal's $0.10 is now $0", "Doubao's 2M a day is unsupported", "Tencent Lite is closed to new customers", "BazaarLink is 60 weighted units a day, not ~150", "api-airforce's ~24M a month is OmniRoute's estimate"]
   cautions: ["BazaarLink's terms ban reselling or sharing keys", "AI Horde is AGPL-3.0", "Baidu and SenseNova need Chinese phone or real-name verification"]
+
+# ---- the provider test of 2026-11-18 (Run #1: 11 of 86 providers connected, 6 failed, 69 not tried) and what was done about it ----------------------------------------------------------------------
+provider_test_2026_11_18:
+  switched_off_records_kept:
+    sambanova: "402: the free tier is retired, a payment method is required (settles the old conflict: the repo's old note was right)"
+    ollama: "402: Ollama Cloud free credits ended 2026-11-09"
+    nara: "the gateway rejected its key; free access needs a Telegram link and channel join or a $1 top-up, not done"
+    mistral: "key creation is blocked behind upgrade or payment validation"
+  remapped_to_models_the_provider_serves_free:
+    llm7: "DeepSeek-V4-Flash-0731, glm-5.3-flash, gpt-oss:20b (tier turbo in api.llm7.io/v1/models; the old two are gone; thin: 100K tokens a day shared)"
+    api-airforce: "gpt-oss-20b only (verified free on its own model page; the old two are paid, hence the 402; GLM-4.7-flash is paid there)"
+    bluesminds: "z-ai/glm4.7, moonshotai/kimi-k2.6, qwen/qwen3-next-80b-a3b-instruct (candidates from a third-party listing only: BluesMinds publishes no free list; the next provider test is the check)"
+  follow_ups_left_alone: ["xKiro minimax-m3:free is retired per the test (use minimax/m3): the replacement may not be free", "the trend_opportunity lane still leads with mistral-large-latest, a route the router skips because mistral is off"]
+  keyless_probed_live_2026_11_18:
+    ovh: "PROVEN: POST https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions with no auth answered (Mistral-Small-3.2-24B-Instruct-2506, 13.6 s); send NO key (a key would bill); 2 requests a minute per IP per model"
+    aihorde: "PROVEN: POST https://aihorde.net/api/v2/generate/text/async with apikey 0000000000; async submit then poll; anonymous is lowest queue priority; volunteer workers can technically see prompts"
+    uncloseai: "CLOSED: both endpoints answer 401, key registration is closed: do not wire until it reopens"
