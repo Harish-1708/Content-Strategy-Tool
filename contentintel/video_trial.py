@@ -36,8 +36,8 @@ Run it: ``python -m contentintel.video_trial --site all --dry-run --brand dudero
 per site, hard cap, enforced in code (ClipBudget).
 
 Where a made clip goes: ONLY to the brand the run is for. The clip is saved
-to that brand's own Drive folder (Shared Drive 'Idea Bank Automation' /
-<Brand name> / Video Trials) under the name
+to Shared Drive 'Idea Bank Automation' / Generated Content / VIDEO /
+<Brand name> under the name
 ``YYYY-MM-DD_<brand>_<site>_<model>_<prompt-slug>.mp4``, and one row is
 appended to that brand's own Catalogue sheet, tab "Video Trials", with the
 Drive link. A clip for DudeRobe never lands in Swoveralls' or Defi Snacks'
@@ -424,7 +424,8 @@ def verdict_line(entry):
 # The per-brand save: a made clip goes ONLY to the brand the run is for.
 # ---------------------------------------------------------------------------
 
-VIDEO_TRIALS_FOLDER = "Video Trials"
+GENERATED_FOLDER = "Generated Content"
+VIDEO_FOLDER = "VIDEO"
 VIDEO_TRIALS_TAB = "Video Trials"
 VIDEO_TRIALS_HEADERS = ["Date", "Brand", "Site", "Model", "Prompt", "Verdict",
                         "Clip", "Credits used", "Notes"]
@@ -472,7 +473,7 @@ def save_plan_lines(brand, key, prompt, run_date):
         return ["    save: none — the Luma stub makes no clip, so nothing is saved"]
     filename = clip_filename(run_date, brand.slug, key, driver["model"], prompt)
     return [
-        f"    save: Drive: {brand.name} / Video Trials / {filename} (under the IDEA_BANK_FOLDER_ID root)",
+        f"    save: Drive: Generated Content / VIDEO / {brand.name} / {filename} (under the IDEA_BANK_FOLDER_ID root)",
         f"    save: Sheet: the {brand.slug} Catalogue sheet (sheets.yaml), tab \"Video Trials\" — one row per saved clip",
     ]
 
@@ -540,21 +541,22 @@ class BrandSaver:
         return self._drive
 
     def _save_to_drive(self, filename, data):
-        """The clip in the brand's folder, under Video Trials. A file with the
-        same name (the same trial run twice) is trashed first, so one name
+        """The clip in Generated Content / VIDEO / <Brand name>. A file with
+        the same name (the same trial run twice) is trashed first, so one name
         never holds two clips; the trash is best-effort. The bytes are
         verified after the upload, the way ideabank._upload_verified does it."""
         try:
             client = self._drive_client()
-            brand_folder_id = client.brand_folder(self.brand.name)
-            trials_id = client.ensure_folder(brand_folder_id, VIDEO_TRIALS_FOLDER)
-            existing = client.list_files(trials_id)
+            generated_id = client.ensure_folder(client.root_id, GENERATED_FOLDER)
+            media_id = client.ensure_folder(generated_id, VIDEO_FOLDER)
+            brand_id = client.ensure_folder(media_id, self.brand.name)
+            existing = client.list_files(brand_id)
             if filename in existing:
                 try:
                     client.trash(existing[filename])
                 except drive_mod.DriveError:
                     pass
-            file_id = client.upload(trials_id, filename, data, VIDEO_MIME)
+            file_id = client.upload(brand_id, filename, data, VIDEO_MIME)
             try:
                 client.verify(file_id, data)
             except drive_mod.DriveMismatch as exc:
