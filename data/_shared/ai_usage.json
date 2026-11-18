@@ -574,6 +574,308 @@
     "tokens_in": 37,
     "tokens_out": 320
    }
+  },
+  "2026-11-18": {
+   "aihorde": {
+    "by_lane": {
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 1187
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 576
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 1192
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 1581
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 5,
+    "latency_ms": 84962,
+    "requests": 8,
+    "tokens_in": 1743,
+    "tokens_out": 2793
+   },
+   "cloudflare": {
+    "by_lane": {
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 8,
+    "latency_ms": 0,
+    "requests": 8,
+    "tokens_in": 0,
+    "tokens_out": 0
+   },
+   "cohere": {
+    "by_lane": {
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 2604
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 3038
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 3695
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 1524
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 11,
+    "latency_ms": 89045,
+    "requests": 32,
+    "tokens_in": 5679,
+    "tokens_out": 5182
+   },
+   "google": {
+    "by_lane": {
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 1028
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 1289
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 0
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 0
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 19,
+    "latency_ms": 174533,
+    "requests": 24,
+    "tokens_in": 1551,
+    "tokens_out": 766
+   },
+   "groq": {
+    "by_lane": {
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 2990
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 3034
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 3105
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 2687
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 15076,
+    "requests": 16,
+    "tokens_in": 5132,
+    "tokens_out": 6684
+   },
+   "kilo": {
+    "by_lane": {
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 3471
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 4474
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 3804
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 5190
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 1,
+    "latency_ms": 225622,
+    "requests": 16,
+    "tokens_in": 4226,
+    "tokens_out": 12713
+   },
+   "nvidia": {
+    "by_lane": {
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 978
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 907
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 390
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 358
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 2,
+    "latency_ms": 120419,
+    "requests": 8,
+    "tokens_in": 1857,
+    "tokens_out": 776
+   },
+   "openrouter": {
+    "by_lane": {
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 0
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 14,
+      "tokens": 0
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 14,
+      "tokens": 0
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 14,
+      "tokens": 0
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 50,
+    "latency_ms": 0,
+    "requests": 50,
+    "tokens_in": 0,
+    "tokens_out": 0
+   },
+   "ovh": {
+    "by_lane": {
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 2420
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 2317
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 2961
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 2176
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 214801,
+    "requests": 16,
+    "tokens_in": 4686,
+    "tokens_out": 5188
+   },
+   "zhipu": {
+    "by_lane": {
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 3296
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 0
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 1392
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 1655
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 17,
+    "latency_ms": 227106,
+    "requests": 24,
+    "tokens_in": 1827,
+    "tokens_out": 4516
+   }
   }
  }
 }
