@@ -6,6 +6,9 @@ name: Video trial
 # per site per run, hard cap, enforced in code; output is a draft only — watermarked, personal-use, publishing OFF.
 # A site that fails its trial is a verdict in the report (NO-GO, BLOCKED, NOT SET UP), not a failed run: the run only
 # goes red when the trial itself broke. Luma is a stub until Harish signs in by hand and reports the trial-credit amount.
+# A clip that is made goes ONLY to the brand the run is for (the `brand` input, required): to that brand's own Drive
+# folder, Shared Drive 'Idea Bank Automation' / <Brand name> / Video Trials, and one row is added to that brand's own
+# Catalogue sheet, tab "Video Trials", with the Drive link. Nothing is ever saved to another brand's folder or sheet.
 
 on:
   workflow_dispatch:
@@ -15,6 +18,11 @@ on:
         type: choice
         options: [all, pixverse, google_flow, dreamina, kling, luma]
         default: all
+      brand:
+        description: "The brand this trial is for — the clip goes ONLY to that brand's Drive folder and sheet, never another brand's"
+        type: choice
+        options: [swoveralls, duderobe, defi_snacks]
+        required: true
       prompt:
         description: "The prompt for the one clip (brand-neutral by default, so the trial tests the mechanism, not a brand)"
         default: "A red bicycle leaning against a wooden fence in a sunny garden, gentle breeze, steady camera"
@@ -64,9 +72,12 @@ jobs:
           DREAMINA_COOKIES: ${{ secrets.DREAMINA_COOKIES }}
           KLING_COOKIES: ${{ secrets.KLING_COOKIES }}
           LUMA_COOKIES: ${{ secrets.LUMA_COOKIES }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          IDEA_BANK_FOLDER_ID: ${{ secrets.IDEA_BANK_FOLDER_ID }}
+          SHEET_FOLDER_ID: ${{ secrets.SHEET_FOLDER_ID }}
         run: |
           set +e
-          args=(--site "${{ inputs.site }}" --prompt "${{ inputs.prompt }}" --out debug/video-trial --verdicts data/_shared/video_trial.json)
+          args=(--site "${{ inputs.site }}" --brand "${{ inputs.brand }}" --prompt "${{ inputs.prompt }}" --out debug/video-trial --verdicts data/_shared/video_trial.json)
           if ${{ inputs.dry_run }}; then args+=(--dry-run); fi
           { echo "### Video trial"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           "$RUNNER_TEMP/video-env/bin/python" -m contentintel.video_trial "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
