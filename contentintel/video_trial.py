@@ -106,9 +106,9 @@ DRIVERS = {
         "app_url": "https://app.pixverse.ai",
         "cookies_secret": "PIXVERSE_COOKIES",
         "free": {"credits": "60 initial + 30 daily, renew 00:00 UTC, expire same day",
-                 "resolution": "540p cap", "watermarked": True, "commercial": False},
+                 "resolution": "720p (live page default; research said 540p cap)", "watermarked": True, "commercial": False},
         "flow_notes": [
-            "prompt box is the main entry; defaults V6, 540p, 16:9, 5s",
+            "prompt box is the main entry; defaults V6, 720p, 16:9, 5s (live page; research said 540p)",
             "duration 1-15s (default 5s); 2 concurrent generations",
             "generations land in the Library; download from there",
         ],
@@ -149,6 +149,10 @@ DRIVERS = {
             "Veo 3.1 Fast/Quality retire 2026-12-05; Lite survives",
         ],
         "prompt_selectors": ["textarea", "div[contenteditable=\"true\"]", "div[role=\"textbox\"]"],
+        # A new project must be opened first: the prompt box lives inside a
+        # project, not on the projects list. (Research — Google's own help
+        # page; never seen live. Google Flow is held for the next message.)
+        "enter_selectors": ["button:has-text(\"New project\")", "text=New project"],
         "model_steps": [
             ["button:has-text(\"Veo\")", "text=Veo 3.1"],
             ["text=Veo 3.1 Lite", "button:has-text(\"Lite\")"],
@@ -840,6 +844,11 @@ def _wait_for_done(ctx, browser, driver, site):
         found = challenge_or_warning(browser, driver)
         if found is not None:
             return found[0], found[1]
+        # Stop at once when the site says the free credits are gone, instead
+        # of waiting the whole ten minutes for a generation that will never
+        # start. run_site's timeout branch reports the credits reason.
+        if credits_exhausted(browser, driver):
+            return "timeout", "the free credits are exhausted"
         if browser.exists(driver["done_markers"]):
             return "done", ""
         browser.wait(ctx.poll_seconds)
@@ -931,6 +940,11 @@ def run_site(key, ctx):
             # click can open a new tab and leave this one behind).
             if driver.get("enter_url"):
                 browser.open(driver["enter_url"])
+            # Enter the workspace when the prompt box sits behind a button
+            # (best effort: if we are already in a project, nothing matches
+            # and we carry on).
+            if driver.get("enter_selectors"):
+                browser.click(driver["enter_selectors"])
             if not _pick_model(ctx, browser, driver):
                 browser.screenshot("no-model")
                 return finish("no-go", "the free model could not be selected "
