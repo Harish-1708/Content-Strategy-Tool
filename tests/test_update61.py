@@ -231,4 +231,4 @@ def test_the_ai_check_asks_every_route_with_the_ignore_rests_request(monkeypatch
     capsys.readouterr()
     assert code == 0 and len(seen) >= 29 and all(flag is True for _, _, flag in seen)                                  # every route of the check, every provider
     assert {("kilo", "kilo-auto/free"), ("kilo", "nvidia/nemotron-3.5-super-vl:free")} <= {(p, m) for p, m, _ in seen}
-    assert len({m for p, m, _ in seen if p == "ollama"}) == 7                                                        # all seven Ollama models are on the list to try
+    assert len({m for p, m, _ in seen if p == "cohere"}) == 4 and not [1 for p, _m, _ in seen if p == "ollama"]       # all four Cohere models are on the list to try; Ollama was switched off on 2026-11-18, so it is not tried

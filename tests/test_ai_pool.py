@@ -29,13 +29,13 @@ def keys(routes):
 
 def test_the_shipped_pool_holds_every_approved_model_of_every_enabled_free_provider_once_and_nothing_else():
     approved = [(p.id, m.id) for p in REG.providers.values() if p.enabled and p.id != "claude" for m in p.models if m.approved]
-    assert sorted(keys(POOL)) == sorted(approved) and len(set(keys(POOL))) == len(POOL) == 52
+    assert sorted(keys(POOL)) == sorted(approved) and len(set(keys(POOL))) == len(POOL) == 40
     assert not [r for r in POOL if r["provider"] == "claude"]                                               # Claude leads or falls back: it is never part of the free pool
     per = {}
     for r in POOL:
         per[r["provider"]] = per.get(r["provider"], 0) + 1
-    assert per == {"groq": 2, "mistral": 2, "openrouter": 7, "cloudflare": 1, "google": 3, "nvidia": 1, "ollama": 7, "cohere": 4, "zhipu": 3, "kilo": 2, "sambanova": 3, "nara": 4, "xkiro": 4, "llm7": 2, "pollinations": 2, "airforce": 2, "bluesminds": 2, "bazaarlink": 1}      # the five OmniRoute providers of 2026-11-17 come after; the models the live check of 2026-11-14 proved gone are out; Kilo has its three candidates
-    assert [r["provider"] for r in POOL][:10] == ["groq", "groq", "mistral", "mistral", "openrouter", "openrouter", "openrouter", "cloudflare", "google", "nvidia"]      # the proven providers first
+    assert per == {"groq": 2, "openrouter": 7, "cloudflare": 1, "google": 3, "nvidia": 1, "cohere": 4, "zhipu": 3, "kilo": 2, "xkiro": 4, "llm7": 3, "pollinations": 2, "airforce": 1, "bluesminds": 3, "bazaarlink": 1, "ovh": 2, "aihorde": 1}      # the five OmniRoute providers of 2026-11-17 come after; the models the live check of 2026-11-14 proved gone are out; Kilo has its three candidates
+    assert [r["provider"] for r in POOL][:10] == ["groq", "groq", "openrouter", "openrouter", "openrouter", "cloudflare", "google", "nvidia", "cohere", "cohere"]      # the proven providers first
     assert ("kilo", "kilo-auto/free") in keys(POOL) and ("kilo", "nvidia/nemotron-3-super-120b-a12b:free") not in keys(POOL) and ("zhipu", "glm-4.6v-flash") in keys(POOL) and ("nvidia", "google/gemma-4-31b-it") in keys(POOL) and ("nvidia", "meta/llama-4-maverick-17b-128e-instruct") not in keys(POOL)
 
 
@@ -51,7 +51,7 @@ def test_a_lane_has_its_own_preferred_routes_first_then_the_pool_without_repeats
     router = RT.Router(reg, LANE_MAP, U.UsageLedger("/nonexistent/u.json"), HealthLedger({}, sources_registry(tmp_path)), {}, RV.ReviewQueue("/nonexistent/r.json"), pool=POOL)
     routes = router._routes(LANE_MAP["trend_opportunity"])
     own = keys(LANE_MAP["trend_opportunity"].chain)
-    assert keys(routes)[:len(own)] == own and len(set(keys(routes))) == len(routes) == len(POOL) + 1                # the lane's own routes are in the pool too: each appears once
+    assert keys(routes)[:len(own)] == own and len(set(keys(routes))) == len(routes) == len(POOL) + 1 + len([k for k in own if k not in set(keys(POOL))])                # the lane's own routes are in the pool too: each appears once
     assert keys(routes)[-1][0] == "claude" and routes[0]["provider"] == "mistral" and routes[1]["model"] == "command-a-reasoning-08-2025"      # Claude is the fallback, last
     assert [r["provider"] for r in router._routes(LANE_MAP["strategic_reasoning"])] == ["claude"]                  # a Claude lane never draws on the pool
     only_claude_leads = router._routes(LANE_MAP["validation_qa"])
@@ -155,11 +155,11 @@ def run_cli(tmp_path, monkeypatch, capsys, action, *extra):
 def test_a_mock_check_tries_every_pool_model_and_reports_each_provider_on_its_own(tmp_path, monkeypatch, capsys):
     code, out = run_cli(tmp_path, monkeypatch, capsys, "check")
     assert code == 0
-    for provider, model in (("kilo", "kilo-auto/free"), ("zhipu", "glm-4.6v-flash"), ("nvidia", "google/gemma-4-31b-it"), ("ollama", "gemma4:31b"),
+    for provider, model in (("kilo", "kilo-auto/free"), ("zhipu", "glm-4.6v-flash"), ("nvidia", "google/gemma-4-31b-it"),
                             ("cohere", "command-r-08-2024"), ("groq", "openai/gpt-oss-20b"), ("google", "gemini-3.5-flash")):
         assert f"MOCK  ok        {provider}/{model}" in out, (provider, model)
     block = out[out.index("Provider status"):]
-    for provider in ("kilo", "nvidia", "ollama", "cohere", "zhipu", "groq", "mistral", "openrouter", "cloudflare", "google", "claude"):
+    for provider in ("kilo", "nvidia", "cohere", "zhipu", "groq", "openrouter", "cloudflare", "google", "claude"):
         assert any(ln.split()[:2] == ["MOCK", provider] for ln in block.splitlines()), provider                  # one line per provider, each its own result
     assert "0 application problem(s)" in out and "NOTE: a mock pass is not proof that any live provider works" in out
 

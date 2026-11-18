@@ -444,9 +444,9 @@ def test_the_cli_module_does_not_import_the_ai_package_at_start_up():
 
 def test_the_shipped_providers_command_shows_the_rolled_out_providers_with_their_recorded_decision(ai):
     code, out = ai("providers", providers=ROOT / "ai_providers.yaml")
-    assert code == 0 and "87 providers in the registry, 19 enabled, 1 retired (kept as a record, never called)" in out
+    assert code == 0 and "87 providers in the registry, 17 enabled, 1 retired (kept as a record, never called)" in out
     assert "RETIRED" in next(l for l in out.splitlines() if l.strip().startswith("github "))
-    for pid in ("cloudflare", "google", "groq", "mistral", "openrouter"):
+    for pid in ("cloudflare", "google", "groq", "openrouter"):
         line = next(l for l in out.splitlines() if l.strip().startswith(pid + " "))
         assert "ON" in line and "internal*" in line and "public,internal" in line, line         # * = raised by a recorded owner decision
     assert "restricted" in next(l for l in out.splitlines() if l.strip().startswith("claude "))
@@ -525,8 +525,8 @@ def test_each_provider_gets_exactly_one_clear_status_and_only_a_real_answer_is_l
     assert label == "MOCK" and "scripted stand-in" in detail and "not proof the provider works" in detail                  # a mock answer is never LIVE
     label, detail = _status("google", {"google": {"ok": 0, "failed": ["UPSTREAM_BROKEN"], "skipped": []}})
     assert label == "FAILED" and "UPSTREAM_BROKEN" in detail and "enabled and was tried" in detail
-    assert _status("mistral", {"mistral": {"ok": 0, "failed": [], "skipped": ["no credentials or client available on this machine"]}}) == ("SKIPPED", "no credentials or client available on this machine")
-    assert _status("mistral", {}) == ("SKIPPED", "nothing was tried")
+    assert _status("nvidia", {"nvidia": {"ok": 0, "failed": [], "skipped": ["no credentials or client available on this machine"]}}) == ("SKIPPED", "no credentials or client available on this machine")
+    assert _status("nvidia", {}) == ("SKIPPED", "nothing was tried")
     assert _status("groq", {"groq": one}, only={"cloudflare"}) == ("SKIPPED", "not in this run (only=cloudflare)")
     assert _status("openrouter", {"openrouter": one}, switched_off={"openrouter"}) == ("DISABLED", "switched off by the owner")
     assert _status("cerebras", {}) == ("DISABLED", "switched off by the owner")                                           # enabled: false in the file
@@ -548,9 +548,9 @@ def test_the_status_block_lists_every_provider_in_use_the_owners_switched_off_on
     lines = [ln.strip() for ln in block.splitlines()]
     assert lines[0].startswith("Provider status (a green run does not mean a provider is live")
     order = [ln.split()[0] for ln in lines[1:-1]]
-    assert order == ["LIVE", "LIVE", "FAILED"] + ["SKIPPED"] * 15 + ["DISABLED", "RETIRED"]                          # live first, retired last
-    assert [ln.split()[1] for ln in lines[1:-1]] == ["groq", "openrouter", "google", "airforce", "bazaarlink", "bluesminds", "claude", "cohere", "kilo", "llm7", "mistral", "nara", "nvidia", "ollama", "pollinations", "sambanova", "xkiro", "zhipu", "cloudflare", "github"]
-    assert lines[-1] == "2 LIVE, 1 FAILED, 15 SKIPPED, 1 DISABLED, 1 RETIRED"
+    assert order == ["LIVE", "LIVE", "FAILED"] + ["SKIPPED"] * 13 + ["DISABLED", "RETIRED"]                          # live first, retired last
+    assert [ln.split()[1] for ln in lines[1:-1]] == ["groq", "openrouter", "google", "aihorde", "airforce", "bazaarlink", "bluesminds", "claude", "cohere", "kilo", "llm7", "nvidia", "ovh", "pollinations", "xkiro", "zhipu", "cloudflare", "github"]
+    assert lines[-1] == "2 LIVE, 1 FAILED, 13 SKIPPED, 1 DISABLED, 1 RETIRED"
     assert "RETIRED" in next(ln for ln in lines if ln.endswith("never called") and ln.split()[1] == "github")
     mock = CM.provider_status_block(reg, {"groq": {"ok": 1, "failed": [], "skipped": []}}, "mock", set(), [])
-    assert not [ln for ln in mock.splitlines() if ln.strip().startswith("LIVE ")] and mock.splitlines()[-1].strip() == "0 LIVE, 1 MOCK, 0 FAILED, 18 SKIPPED, 1 RETIRED"
+    assert not [ln for ln in mock.splitlines() if ln.strip().startswith("LIVE ")] and mock.splitlines()[-1].strip() == "0 LIVE, 1 MOCK, 0 FAILED, 16 SKIPPED, 1 RETIRED"

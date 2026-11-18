@@ -31,7 +31,7 @@ def test_with_every_key_the_approved_models_of_every_gateway_provider_are_meant_
     per = {}
     for platform, _ in want:
         per[platform] = per.get(platform, 0) + 1
-    assert len(want) == 25 and per == {"groq": 2, "mistral": 2, "cloudflare": 1, "google": 3, "nvidia": 1, "ollama": 7, "cohere": 4, "zhipu": 3, "kilo": 2}
+    assert len(want) == 16 and per == {"groq": 2, "cloudflare": 1, "google": 3, "nvidia": 1, "cohere": 4, "zhipu": 3, "kilo": 2}          # mistral, ollama, sambanova and nara were switched off on 2026-11-18
     assert not any(p in ("claude", "openrouter") for p, _ in want)                                              # Claude has its own client; OpenRouter is called directly
     assert SM.expected_enabled(SHIPPED, {"NVIDIA_API_KEY": "k"}) == KILO3 | {p for p in want if p[0] == "nvidia"}      # a key switches on only its own provider's approved models
     assert SM.expected_enabled(SHIPPED, {"NVIDIA_API_KEY": "  "}) == KILO3                                       # an empty key is no key

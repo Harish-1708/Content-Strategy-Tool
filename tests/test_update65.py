@@ -276,7 +276,7 @@ def test_lanes_default_to_text_validate_what_they_need_and_the_shipped_lanes_and
     shipped = L.load_lanes("ai_lanes.yaml", reg)
     assert all(lane.needs == ("text",) for lane in shipped.values())
     pool = L.load_pool("ai_lanes.yaml", reg)
-    assert len(pool) == 52 and all("text" in (reg.providers[r["provider"]].model(r["model"]).capabilities or ("text",)) for r in pool)          # every pool model can do a text job: nothing was shrunk
+    assert len(pool) == 40 and all("text" in (reg.providers[r["provider"]].model(r["model"]).capabilities or ("text",)) for r in pool)          # every pool model can do a text job: nothing was shrunk
     bad = tmp_path / "lanes.yaml"
     bad.write_text(yaml.safe_dump(edited(LANES, lambda d: d["lanes"]["pub"].update(needs=["telepathy"]))), encoding="utf-8")
     with pytest.raises(L.LaneError, match="needs must be a list of text, vision, tools"):

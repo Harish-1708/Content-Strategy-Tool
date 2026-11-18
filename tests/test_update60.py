@@ -56,7 +56,7 @@ def test_every_model_the_live_check_proved_gone_is_switched_off_with_the_reason_
 def test_the_providers_other_models_are_untouched_by_that_cleanup():
     assert [m.id for m in REG.provider("nvidia").models if m.approved] == ["google/gemma-4-31b-it"]
     assert sorted(m.id for m in REG.provider("ollama").models if m.approved) == sorted(["gpt-oss:120b", "glm-4.7", "devstral-2:123b", "qwen3-coder-next", "qwen3-coder:480b", "gpt-oss:20b", "gemma4:31b"])
-    assert sorted(m.id for m in REG.provider("google").models if m.approved) == ["gemini-3.5-flash", "gemma-4-26b-a4b-it", "gemma-4-31b-it"] and len(POOL) == 52
+    assert sorted(m.id for m in REG.provider("google").models if m.approved) == ["gemini-3.5-flash", "gemma-4-26b-a4b-it", "gemma-4-31b-it"] and len(POOL) == 40
     assert REG.provider("zhipu").model("glm-4.7-flash").approved is True                                       # one 429 (a passing limit), not a broken model
 
 

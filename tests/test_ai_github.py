@@ -55,7 +55,7 @@ def test_github_models_is_kept_as_a_retired_record_that_cannot_be_used():
     assert p.override["approved_by"] == "Harish" and [m.id for m in p.models if m.approved] == ["openai/gpt-4.1-mini", "meta/Llama-3.3-70B-Instruct"]      # the history is kept as it was
     ok, why = reg.eligibility("github", "public", model="openai/gpt-4.1-mini")
     assert not ok and why == "RETIRED: GitHub Models was withdrawn by its provider on 2026-07-30; it is never called"
-    assert sorted(pid for pid, x in reg.providers.items() if x.enabled) == ["airforce", "bazaarlink", "bluesminds", "claude", "cloudflare", "cohere", "google", "groq", "kilo", "llm7", "mistral", "nara", "nvidia", "ollama", "openrouter", "pollinations", "sambanova", "xkiro", "zhipu"]
+    assert sorted(pid for pid, x in reg.providers.items() if x.enabled) == ["aihorde", "airforce", "bazaarlink", "bluesminds", "claude", "cloudflare", "cohere", "google", "groq", "kilo", "llm7", "nvidia", "openrouter", "ovh", "pollinations", "xkiro", "zhipu"]
     assert [pid for pid, x in reg.providers.items() if x.retired] == ["github"]
 
 
@@ -218,7 +218,7 @@ def test_the_providers_command_lists_the_retired_provider_as_retired_and_counts_
     out = capsys.readouterr().out
     line = next(ln for ln in out.splitlines() if ln.strip().startswith("github "))
     assert "RETIRED" in line and "ON" not in line.split()
-    assert "19 enabled, 1 retired (kept as a record, never called)" in out
+    assert "17 enabled, 1 retired (kept as a record, never called)" in out
 
 
 def test_cerebras_was_checked_found_to_need_a_card_and_stays_off():
@@ -299,6 +299,8 @@ def test_a_live_run_makes_each_providers_model_its_own_group_and_a_gateway_that_
     monkeypatch.setattr(CM.gw, "Sidecar", FakeSidecar)
     FakeSidecar.made.clear()
     notes = []
+    import dataclasses
+    reg.providers["mistral"] = dataclasses.replace(reg.providers["mistral"], enabled=True)          # mistral is switched off in the shipped file now: this test is about a key left out on purpose, so it is switched on here
     clients, side = CM.live_clients(reg, _gateway_env(tmp_path), str(tmp_path / "gw"), str(tmp_path / "work"), notes)
     assert any(n.startswith("SKIPPED: mistral: no credential") for n in notes) and not any(n.startswith("APPLICATION: mistral") for n in notes)        # no key on purpose: a skip, never a problem
     assert not [n for n in notes if "own group" in n]                                    # nothing to report when it worked (the Claude-key note is a different matter)

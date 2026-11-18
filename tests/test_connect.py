@@ -96,12 +96,14 @@ def test_the_provider_test_workflow_never_receives_the_claude_key_and_runs_the_c
     assert wanted <= set(job["env"]) | {"ANTHROPIC_API_KEY"} and "ANTHROPIC_API_KEY" not in job["env"]         # every provider's key reaches the test
 
 
-def test_the_five_omniroute_providers_are_mapped_with_the_providers_own_ids_recorded_terms_and_prefixed_models_and_siliconflow_is_not():
+def test_the_eight_omniroute_providers_are_mapped_with_the_providers_own_ids_recorded_terms_and_prefixed_models_and_siliconflow_is_not():
     reg = R.load_registry("ai_providers.yaml")
     lanes = L.load_lanes("ai_lanes.yaml", reg)
     pool = L.load_pool("ai_lanes.yaml", reg)
     assert lanes
-    for pid, omni_id in OMNI.items():
+    for pid in ("sambanova", "nara"):                                                                        # mapped, recorded and switched OFF on 2026-11-18 (402 and a rejected key)
+        assert reg.providers[pid].omniroute == {"provider": OMNI[pid]} and reg.providers[pid].enabled is False
+    for pid, omni_id in {k: v for k, v in OMNI.items() if k not in ("sambanova", "nara")}.items():
         p = reg.providers[pid]
         approved = [m.id for m in p.models if m.approved]
         assert p.omniroute == {"provider": omni_id} and p.enabled and p.terms["status"] == "upstream_documented" and p.terms["date"] == "2026-11-17" and "not verified" in p.terms["trains_on_data"]

@@ -168,7 +168,7 @@ def test_missing_lanes_file_is_refused(tmp_path):
 
 # ---- the shipped files -----------------------------------------------------------------------------------------------------------
 
-ROLLED_OUT = ["airforce", "bazaarlink", "bluesminds", "cloudflare", "cohere", "google", "groq", "kilo", "llm7", "mistral", "nara", "nvidia", "ollama", "openrouter", "pollinations", "sambanova", "xkiro", "zhipu"]        # the providers the owner has approved (Update 57 added cohere, kilo, nvidia, ollama and zhipu)
+ROLLED_OUT = ["aihorde", "airforce", "bazaarlink", "bluesminds", "cloudflare", "cohere", "google", "groq", "kilo", "llm7", "nvidia", "openrouter", "ovh", "pollinations", "xkiro", "zhipu"]        # the providers the owner has approved (Update 57 added cohere, kilo, nvidia, ollama and zhipu)
 
 
 def test_the_shipped_registry_enables_only_checked_providers_and_claude():
@@ -178,6 +178,8 @@ def test_the_shipped_registry_enables_only_checked_providers_and_claude():
     for p in reg.providers.values():
         if p.retired:
             assert p.id == "github" and not p.enabled and not p.direct and not p.credential_env, p.id                 # the record keeps its history (approved classes, owner decision); nothing is switched on
+        elif p.id in ("mistral", "ollama", "sambanova", "nara"):          # switched off on 2026-11-18, records kept with their approved classes and decisions
+            assert not p.enabled, p.id
         elif p.id not in ROLLED_OUT + ["claude"]:
             assert not p.enabled and p.approved_classes == () and p.effective_ceiling == "public" and not p.override and not p.paid, p.id
         if p.enabled:
@@ -227,7 +229,7 @@ def test_every_platform_in_the_pinned_gateway_is_in_the_registry_and_nowhere_els
     reg = R.load_registry(SHIPPED_P)
     ids = {p["id"] for p in INVENTORY["platforms"]}
     through_gateway = {pid for pid, p in reg.providers.items() if not p.direct and not p.retired and not (p.omniroute and pid not in ids)}          # a provider only OmniRoute carries (BluesMinds) is not a platform of the pinned gateway
-    assert len(ids) == 84 and through_gateway == (ids - {"openrouter"}) | {"claude"} and {pid for pid, p in reg.providers.items() if p.direct} == {"openrouter"}      # OpenRouter is called directly (GitHub Models, retired, has no endpoint)
+    assert len(ids) == 84 and through_gateway == (ids - {"openrouter", "ovh", "aihorde"}) | {"claude"} and {pid for pid, p in reg.providers.items() if p.direct} == {"openrouter", "ovh", "aihorde"}      # OpenRouter, OVH and AI Horde are called directly (GitHub Models, retired, has no endpoint)
     for pid in ids:
         assert reg.provider(pid).gateway_platform == pid
 
@@ -345,7 +347,7 @@ def test_kilo_is_enabled_like_the_others_with_internal_open_one_model_in_the_poo
 
 def test_nvidia_ollama_cohere_and_zhipu_carry_the_personal_use_decision_dated_with_the_commercial_use_question_answered():
     reg = R.load_registry(SHIPPED_P)
-    for pid in ("nvidia", "ollama", "cohere", "zhipu"):
+    for pid in ("nvidia", "cohere", "zhipu"):          # ollama was switched off on 2026-11-18 (its free credits ended)
         p = reg.provider(pid)
         assert p.enabled and p.terms["status"] == "owner_decision" and p.terms["date"] == "2026-11-14", pid
         assert p.terms["business_use"].startswith("Commercial use allowed?"), pid                              # the question is asked and answered in every record

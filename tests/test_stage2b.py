@@ -733,8 +733,15 @@ def test_the_save_step_commits_only_the_registry_files_and_the_catalogue_and_pus
     (clone / "data" / "_shared" / "skills_catalogue.json").write_text("{}", encoding="utf-8")
     (clone / "data" / "swoveralls" / "other.json").write_text("{}", encoding="utf-8")                       # not a file this tool writes
     (clone / "stray.txt").write_text("x", encoding="utf-8")
+    (clone / "data" / "_shared" / "ai_usage.json").write_text("{}", encoding="utf-8")                          # a TRACKED file the run changes and the step does not save: this stopped the pull in run #19
+    git(clone, "add", "-f", "data/_shared/ai_usage.json")
+    git(clone, "commit", "-q", "-m", "usage")
+    git(clone, "push", "-q", "origin", "HEAD:main")
+    (clone / "data" / "_shared" / "ai_usage.json").write_text('{"changed": true}', encoding="utf-8")
     saved = subprocess.run(["bash", "-e", "-c", script], cwd=clone, capture_output=True, text=True, env=env)
     assert saved.returncode == 0, (saved.stdout, saved.stderr)
+    assert "files this run left changed but did not save" in saved.stdout and " M data/_shared/ai_usage.json" in saved.stdout          # the file that blocked the pull is now printed
+    assert (clone / "data" / "_shared" / "ai_usage.json").read_text(encoding="utf-8") == '{"changed": true}'          # and it is put back, not lost
     changed = git(bare, "show", "--stat", "--format=%s", "main").splitlines()
     assert changed[0].startswith("Skills and registries ") and any("registry/events.ndjson" in l for l in changed) and any("skills_catalogue.json" in l for l in changed)
     assert not any("other.json" in l or "stray.txt" in l for l in changed)                                    # only what this tool writes was committed and pushed

@@ -55,12 +55,12 @@ def test_there_is_an_internal_data_switch_for_every_provider_and_each_defaults_o
     settings = OC.load_settings("missing.yaml")
     assert sorted(OC.GATEWAY_PROVIDERS) == sorted(p for p, x in yaml.safe_load((ROOT / "ai_providers.yaml").read_text(encoding="utf-8"))["providers"].items() if x.get("enabled") and p != "claude")
     channels = settings["services"]["ai_internal_data"]["channels"]
-    assert channels == {p: True for p in OC.GATEWAY_PROVIDERS} and len(channels) == 18
+    assert channels == {p: True for p in OC.GATEWAY_PROVIDERS} and len(channels) == 16
     for p in OC.GATEWAY_PROVIDERS:
         defn = SV.BY_KEY[f"services.ai_internal_data.channels.{p}"]
         assert defn["default"] is True and SV.current(settings, defn["key"]) is True and "Internal data may be sent" in defn["text"] and "Public data only" in defn["text"], p
         assert SV.BY_KEY[f"services.ai_gateway.channels.{p}"]["default"] is True                                     # and the provider's own switch, the five new ones included, defaults on
-    for p in ("nvidia", "ollama", "cohere", "zhipu", "kilo"):
+    for p in ("nvidia", "cohere", "zhipu", "kilo"):
         assert settings["services"]["ai_gateway"]["channels"][p] is True and settings["services"]["ai_internal_data"]["channels"][p] is True
     assert settings["services"]["ai_internal_data"]["use_for"] == {}                                                # no purpose switches: one switch per provider
 
@@ -69,31 +69,31 @@ def test_the_internal_data_switch_can_be_turned_off_from_the_controls_file_and_c
     path = tmp_path / "observatory.yaml"
     path.write_text(yaml.safe_dump({"services": {"ai_internal_data": {"channels": {"zhipu": False}}}}), encoding="utf-8")
     s = OC.load_settings(str(path))["services"]["ai_internal_data"]["channels"]
-    assert s["zhipu"] is False and s["nvidia"] is True and sum(1 for v in s.values() if v) == 17
+    assert s["zhipu"] is False and s["nvidia"] is True and sum(1 for v in s.values() if v) == 15
 
 
 # ---- the wiring of the four new keys ------------------------------------------------------------------------------------------------
 
 def test_every_enabled_providers_key_reaches_the_runner_in_every_workflow_that_uses_the_gateway_and_is_a_known_secret():
     wanted = sorted({n for p in SHIPPED.providers.values() if p.enabled and p.id != "claude" for n in p.credential_env})
-    assert wanted == ["API_AIRFORCE_API_KEY", "BAZAARLINK_API_KEY", "BLUESMINDS_API_KEY", "CLOUDFLARE_ACCOUNT_ID", "CLOUDFLARE_API_TOKEN", "COHERE_API_KEY", "GEMINI_API_KEY", "GROQ_API_KEY", "LLM7_API_KEY", "MISTRAL_API_KEY", "NARA_API_KEY", "NVIDIA_API_KEY", "OLLAMA_API_KEY", "OPENROUTER_API_KEY", "POLLINATIONS_API_KEY", "SAMBANOVA_API_KEY", "XKIRO_API_KEY", "ZHIPU_API_KEY"]
+    assert wanted == ["API_AIRFORCE_API_KEY", "BAZAARLINK_API_KEY", "BLUESMINDS_API_KEY", "CLOUDFLARE_ACCOUNT_ID", "CLOUDFLARE_API_TOKEN", "COHERE_API_KEY", "GEMINI_API_KEY", "GROQ_API_KEY", "LLM7_API_KEY", "NVIDIA_API_KEY", "OPENROUTER_API_KEY", "POLLINATIONS_API_KEY", "XKIRO_API_KEY", "ZHIPU_API_KEY"]
     gateway = (ROOT / ".github/workflows/ai-gateway.yml").read_text(encoding="utf-8")
     observatory = (ROOT / ".github/workflows/observatory.yml").read_text(encoding="utf-8")
     for name in wanted:
         line = f"{name}: ${{{{ secrets.{name} }}}}"
-        if name in ("LLM7_API_KEY", "NARA_API_KEY", "POLLINATIONS_API_KEY", "SAMBANOVA_API_KEY", "XKIRO_API_KEY", "API_AIRFORCE_API_KEY", "BLUESMINDS_API_KEY", "BAZAARLINK_API_KEY"):          # the OmniRoute providers' keys reach the job through its env (the pool step reads it)
+        if name in ("LLM7_API_KEY", "POLLINATIONS_API_KEY", "XKIRO_API_KEY", "API_AIRFORCE_API_KEY", "BLUESMINDS_API_KEY", "BAZAARLINK_API_KEY"):          # the OmniRoute providers' keys reach the job through its env (the pool step reads it)
             assert gateway.count(line) >= 1 and observatory.count(line) >= 1, name
             continue
         assert gateway.count(line) in (3, 4) and observatory.count(line) == 2, name                                    # ai-gateway.yml: the live job's env (the free-pool step reads it), the live check and the evaluation (and, for the keys with a model-list address, the catalog step); observatory.yml: its job env and its step
     secrets = next(g for g in re.findall(r'"secrets": \(([^)]*)\)', (ROOT / "contentintel/connections.py").read_text(encoding="utf-8")) if "FREEAPI_ENCRYPTION_KEY" in g)
-    for name in ("NVIDIA_API_KEY", "ZHIPU_API_KEY", "OLLAMA_API_KEY", "COHERE_API_KEY"):
+    for name in ("NVIDIA_API_KEY", "ZHIPU_API_KEY", "COHERE_API_KEY"):
         assert f'"{name}"' in secrets, name
 
 
 def test_the_setup_instructions_and_the_pool_guide_exist_and_say_what_the_owner_needs():
     setup = (ROOT / "docs/ai/setup-instructions.md").read_text(encoding="utf-8")
     assert "Commercial use allowed?" in setup and "Does it train on prompts?" in setup and setup.index("Does it train on prompts?") < setup.index("Commercial use allowed?") < setup.index("Is a card asked for?")
-    for name in ("NVIDIA_API_KEY", "ZHIPU_API_KEY", "OLLAMA_API_KEY", "COHERE_API_KEY"):
+    for name in ("NVIDIA_API_KEY", "ZHIPU_API_KEY", "COHERE_API_KEY"):
         assert f"`{name}`" in setup, name
     guide = (ROOT / "docs/ai/shared-pool-and-pacing.md").read_text(encoding="utf-8")
     for phrase in ("shared pool", "Retry-After", "requests_per_minute", "concurrency", "internal: false", "services.ai_internal_data", "8,000", "halves", "dashboard"):
@@ -105,6 +105,6 @@ def test_each_internal_data_switch_can_be_turned_off_and_back_on_from_the_contro
     key = f"services.ai_internal_data.channels.{provider}"
     SV.save_overrides(str(tmp_path), {key: False}, "owner", "2026-11-14T10:00:00Z", "off")
     off = SV.load_settings("observatory.yaml", str(tmp_path))["services"]["ai_internal_data"]["channels"]
-    assert off[provider] is False and sum(1 for v in off.values() if v) == 17
+    assert off[provider] is False and sum(1 for v in off.values() if v) == 15
     SV.save_overrides(str(tmp_path), {key: True}, "owner", "2026-11-14T10:01:00Z", "on")
     assert all(SV.load_settings("observatory.yaml", str(tmp_path))["services"]["ai_internal_data"]["channels"].values())
