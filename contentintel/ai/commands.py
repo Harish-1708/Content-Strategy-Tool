@@ -105,9 +105,12 @@ def live_clients(registry, environ, gateway_dir, workdir, notes):
     for p in registry.providers.values():                    # providers called straight from here (GitHub Models), with the credential from the environment
         if p.enabled and p.direct:
             token = next((environ[n].strip() for n in p.credential_env if environ.get(n, "").strip()), "")
-            if token:
-                klass = cl.OpenRouterClient if str(p.direct["base_url"]).startswith("https://openrouter.ai") else cl.DirectClient
-                clients[p.id] = klass(p.direct["base_url"], token)
+            if token or p.direct.get("keyless"):                                    # a keyless provider (OVH's free tier, AI Horde's anonymous key) needs no secret: none is sent
+                if p.direct.get("kind") == "horde":
+                    clients[p.id] = cl.HordeClient(p.direct["base_url"])
+                else:
+                    klass = cl.OpenRouterClient if str(p.direct["base_url"]).startswith("https://openrouter.ai") else cl.DirectClient
+                    clients[p.id] = klass(p.direct["base_url"], "" if p.direct.get("keyless") else token)
             else:
                 notes.append("SKIPPED: " + p.id + ": no credential in the environment (" + ", ".join(p.credential_env) + "), so it is not tried; add the secret or switch the provider off to remove this line")
     if "ANTHROPIC_API_KEY" in environ and environ["ANTHROPIC_API_KEY"].strip() and registry.providers["claude"].enabled:
@@ -221,7 +224,7 @@ def run_ai(args, store, health, now):
         return 0
     if action == "plan":
         dcl = args.data_class
-        clients = {pid: None for pid, p in registry.providers.items() if p.credential_env and (any if p.direct else all)(os.environ.get(n, "").strip() for n in p.credential_env)}      # a direct provider may list alternative names: the first one that is set is used
+        clients = {pid: None for pid, p in registry.providers.items() if (p.direct.get("keyless") or p.credential_env) and (p.direct.get("keyless") or (any if p.direct else all)(os.environ.get(n, "").strip() for n in p.credential_env))}      # a direct provider may list alternative names: the first one that is set is used
         _, lanes2, usage, review, router = build_stack(args, store, health, mode="live", clients=clients)
         print(f"Plan for {dcl} data (no call is made). A route is used only if every check passes:")
         for name in lanes:

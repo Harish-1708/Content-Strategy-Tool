@@ -127,7 +127,10 @@ class DirectClient:
         return str(url).startswith("https://") and urlsplit(str(url)).netloc.lower() == urlsplit(self.base_url).netloc.lower()
 
     def _headers(self):
-        return {"Authorization": "Bearer " + self.token, "Content-Type": "application/json", "Accept": "application/json", "User-Agent": USER_AGENT}
+        h = {"Content-Type": "application/json", "Accept": "application/json", "User-Agent": USER_AGENT}
+        if self.token:                                                      # a keyless provider (OVH's free tier) is sent NO Authorization header: a key there would bill
+            h["Authorization"] = "Bearer " + self.token
+        return h
 
     def _body(self, route, messages, max_tokens):
         return {"model": route["model"], "messages": messages, "max_tokens": max_tokens, "temperature": 0}
@@ -173,6 +176,61 @@ class DirectClient:
         usage = answer.get("usage") or {}
         return Completion(text=choice or "", tokens_in=int(usage.get("prompt_tokens", 0)), tokens_out=int(usage.get("completion_tokens", 0)), latency_ms=ms,
                           model=str(answer.get("model") or route["model"]))
+
+
+class HordeClient(DirectClient):
+    """AI Horde (https://aihorde.net), a community-run network of volunteer workers. Anonymous use: the public key 0000000000, the lowest queue priority. It is asynchronous: the prompt is submitted, then polled until a
+    worker has answered. Volunteer workers can technically see prompts, so only the data classes the owner approved for it are ever sent. A job that has not finished within the timeout is cancelled and reported, never left queued."""
+    ANON_KEY = "0000000000"
+    POLL_SECONDS = 3
+
+    def __init__(self, base_url, token="", http=None, clock=time.monotonic, sleep=time.sleep):
+        super().__init__(base_url, "", http=http, clock=clock)
+        self.sleep = sleep
+
+    def _horde_headers(self):
+        return {"apikey": self.ANON_KEY, "Client-Agent": "contentintel:1:owner", "Content-Type": "application/json", "Accept": "application/json", "User-Agent": USER_AGENT}
+
+    def complete(self, route, system, prompt, max_tokens, timeout=90, expect_platform=None, lane=None):
+        text = (system + "\n\n" if system else "") + prompt
+        body = {"prompt": text, "params": {"max_length": max(16, min(int(max_tokens), 512)), "max_context_length": 2048, "temperature": 0.2}}
+        model = str(route.get("model") or "")
+        if model and not model.endswith("/any"):                           # `aihorde/any` lets any worker answer; a named model is asked for by name
+            body["models"] = [model.split("/", 1)[1] if model.startswith("aihorde/") else model]
+        t0 = self.clock()
+        try:
+            status, answer, _reply = self.http("POST", self.base_url + "/generate/text/async", headers=self._horde_headers(), body=body, timeout=30)
+        except Exception as exc:                                           # noqa: BLE001
+            raise Failure(contract.classify_exception(exc)["code"], f"AI Horde could not be reached: {exc}") from None
+        if status in (401, 403):
+            raise Failure(contract.NEED_SETUP, "AI Horde rejected the anonymous key")
+        if status == 429:
+            raise Failure(contract.RATE_LIMITED, "AI Horde's anonymous limit was reached")
+        if status not in (200, 202) or not isinstance(answer, dict) or not answer.get("id"):
+            raise Failure(contract.UPSTREAM_BROKEN, f"AI Horde did not accept the job (HTTP {status}): {str(answer)[:160]}")
+        job = str(answer["id"])
+        while True:
+            if self.clock() - t0 > timeout:
+                try:
+                    self.http("DELETE", f"{self.base_url}/generate/text/status/{job}", headers=self._horde_headers(), body=None, timeout=15)
+                except Exception:                                          # noqa: BLE001 - cancelling is best effort
+                    pass
+                raise Failure(contract.TIMEOUT if hasattr(contract, "TIMEOUT") else contract.UPSTREAM_BROKEN, f"AI Horde had no worker answer within {timeout} seconds (the job was cancelled)")
+            try:
+                status, answer, _reply = self.http("GET", f"{self.base_url}/generate/text/status/{job}", headers=self._horde_headers(), body=None, timeout=30)
+            except Exception as exc:                                       # noqa: BLE001
+                raise Failure(contract.classify_exception(exc)["code"], f"AI Horde could not be polled: {exc}") from None
+            if status != 200 or not isinstance(answer, dict):
+                raise Failure(contract.UPSTREAM_BROKEN, f"AI Horde's status answer was HTTP {status}")
+            if answer.get("faulted"):
+                raise Failure(contract.UPSTREAM_BROKEN, "AI Horde reported the job faulted")
+            if answer.get("done"):
+                gens = answer.get("generations") or []
+                out = str((gens[0] or {}).get("text") or "") if gens else ""
+                if not out.strip():
+                    raise Failure(contract.UPSTREAM_BROKEN, "AI Horde finished the job with no text")
+                return Completion(text=out, tokens_in=_estimate(text), tokens_out=_estimate(out), latency_ms=int((self.clock() - t0) * 1000), model=str((gens[0] or {}).get("model") or model), estimated=True)
+            self.sleep(self.POLL_SECONDS)
 
 
 class OpenRouterClient(DirectClient):
