@@ -283,7 +283,7 @@
     "unconfirmed_streak": 0
   },
   "tiktok": {
-    "checked_at": "2026-11-19T08:55:20Z",
+    "checked_at": "2026-11-19T09:34:34Z",
     "days_left": 173,
     "evidence": {
       "body_ids": [
@@ -376,7 +376,7 @@
         "uid_tt_ss"
       ],
       "fetched_with": "browser",
-      "html_chars": 470043,
+      "html_chars": 470226,
       "html_truncated": false,
       "landed": "https://www.tiktok.com/",
       "logged_in_found": [],
@@ -403,9 +403,9 @@
     "expires_on": "2027-05-11",
     "proved_on": "2026-11-14T02:59:12Z",
     "proved_via": "browser",
-    "reason": "the page gave no sign of being logged in or logged out (it may be an error or a half-drawn page), so it is not counted as a refusal and the proof is kept; it is looked at again on the next check, and after 3 such checks in a row it is treated as refused (this is check 1)",
+    "reason": "the page gave no sign of being logged in or logged out (it may be an error or a half-drawn page), so it is not counted as a refusal and the proof is kept; it is looked at again on the next check, and after 3 such checks in a row it is treated as refused (this is check 2)",
     "state": "UNCONFIRMED",
-    "unconfirmed_streak": 1
+    "unconfirmed_streak": 2
   },
   "x": {
     "checked_at": "2026-11-19T08:55:20Z",
