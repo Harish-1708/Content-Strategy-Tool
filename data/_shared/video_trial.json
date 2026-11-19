@@ -2,14 +2,14 @@
  "brand": "duderobe",
  "dry_run": false,
  "prompt": "A red bicycle leaning against a wooden fence in a sunny garden, gentle breeze, steady camera",
- "run_at": "2026-11-19T06:12:43.425169Z",
+ "run_at": "2026-11-19T06:31:22.863370Z",
  "verdicts": [
   {
    "clip": null,
-   "human_score": 36,
+   "human_score": 32,
    "model": "Image 4.0",
    "reason": "generation did not finish within 10 minutes",
-   "seconds": 670.5,
+   "seconds": 667.4,
    "site": "kling-image",
    "verdict": "no-go"
   }
