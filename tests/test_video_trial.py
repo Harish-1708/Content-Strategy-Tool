@@ -425,6 +425,53 @@ def test_image_trial_dismisses_a_modal_that_opens_when_the_studio_loads(tmp_path
     assert browser.typed == ["a test prompt"]
 
 
+class _ChangingStateFake(FakeBrowser):
+    """The page's visible text changes while waiting: 'analyzing' first,
+    then plain — the Generation #8 timeline, where the only evidence was
+    the timeout capture."""
+
+    def wait(self, seconds):
+        super().wait(seconds)
+        if len(self.waits) == 1:
+            self.spec["text"] = "welcome, assets 66, generate an image"
+
+
+def _waiting_image_browser():
+    """A Kling image studio where the generation never finishes: no download
+    link ever appears, so the wait runs to its limit."""
+    driver = VT.DRIVERS["kling-image"]
+    page = {"present": set(), "links": [],
+            "text": "welcome, assets 66, analyzing prompt..., generate an image"}
+    pages = {driver["app_url"]: page}
+    clickable = set(driver["generate_selectors"]) | set(driver["dismiss_selectors"])
+    browser = _ChangingStateFake(pages, clickable=clickable,
+                                 typeable=set(driver["prompt_selectors"]),
+                                 present_always=set())
+    browser.page_html = ("<html><body>welcome, create, generate an image, my works, credits</body></html>")
+    return browser
+
+
+def test_image_trial_logs_the_wait_state_when_it_changes(tmp_path):
+    # Generation #8 (2026-11-19): the wait timed out with no task and no
+    # charge, and the timeout capture alone could not show whether the
+    # generation ever started. The trial logs the page state while waiting,
+    # one line per change, so the next timeout carries its timeline.
+    env = {"KLING_COOKIES": COOKIE_JSON}
+    browser = _waiting_image_browser()
+    saver = RecordingSaver()
+    ctx = _ctx(tmp_path, env=env, factory=_fake_factory(browser), saver=saver,
+               max_wait_seconds=0.05)
+    entry = VT.run_site("kling-image", ctx)
+    assert entry["verdict"] == "no-go"
+    assert "did not finish within" in entry["reason"]
+    states = (tmp_path / "kling-image" / "wait-states.jsonl").read_text().strip().split("\n")
+    assert len(states) == 2
+    first, second = [json.loads(line) for line in states]
+    assert first["state"] == "balance=66 analyzing"
+    assert second["state"] == "balance=66"
+    assert first["waited_seconds"] < second["waited_seconds"]
+
+
 def test_trial_keys_all_is_the_video_studios_only_and_an_image_studio_is_named(tmp_path):
     assert VT.trial_keys("all") == list(VT.VIDEO_KEYS)
     assert VT.trial_keys("kling") == ["kling"]
