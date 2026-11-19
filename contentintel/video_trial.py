@@ -1240,6 +1240,13 @@ def run_site(key, ctx):
                 return finish("no-go", "the Generate button could not be found; "
                               "the selectors are first guesses — correct them from the debug capture")
             _record(ctx, key, "generate", gen_at, browser)
+            # Capture the page right after Generate: Generation #7's wait
+            # timed out with no task, no charge and no error anywhere — the
+            # generation never started, and the timeout capture alone cannot
+            # tell whether the click failed to submit or the site failed the
+            # task at once. This capture shows the button's immediate state
+            # (loading? idle?) and any task card or error toast.
+            browser.screenshot("after-generate")
             done, reason = _wait_for_done(ctx, browser, driver, key)
             if done == "challenge":
                 browser.screenshot("challenge-or-warning")
