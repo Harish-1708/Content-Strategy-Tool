@@ -1,12 +1,14 @@
 name: Generation
 
 # One workflow for ALL generation — image + video — on dummy accounts.
-# mode=recon: visit each planned video site and capture its creation page
+# mode=recon: visit each planned site and capture its creation page
 #   (screenshot + HTML + a probe of every selector the driver would use).
 #   No generation is attempted, nothing is typed, nothing is saved to Drive
 #   or a sheet. The captures are the board the drivers are built from, so a
 #   fix comes from the real page, not a guess. Pollinations is an API, not a
-#   page — its recon is the live photo trial, already GO.
+#   page — its recon is the live photo trial, already GO. The three image
+#   studios (dreamina-image, kling-image, gemini-image) are captured the
+#   same way; no image trial exists for them yet.
 # mode=image: one Pollinations photo per run (free, no key, no signup).
 #   Image is tested FIRST, before video — it is the proven path.
 # mode=video: one clip per site (the video trial).
@@ -33,9 +35,9 @@ on:
         options: [recon, image, video]
         default: recon
       site:
-        description: "One site, or all of them (pollinations is the image site; the rest are video)"
+        description: "One site, or all of them (pollinations is the no-key image API; dreamina-image, kling-image and gemini-image are the logged-in image studios, recon only; the rest are video)"
         type: choice
-        options: [all, pixverse, google_flow, dreamina, kling, luma, pollinations]
+        options: [all, pixverse, google_flow, dreamina, kling, luma, pollinations, dreamina-image, kling-image, gemini-image]
         default: all
       brand:
         description: "The brand this generation is for — it goes ONLY to that brand's Drive folder and sheet, never another brand's"
@@ -102,6 +104,7 @@ jobs:
           DREAMINA_COOKIES: ${{ secrets.DREAMINA_COOKIES }}
           KLING_COOKIES: ${{ secrets.KLING_COOKIES }}
           LUMA_COOKIES: ${{ secrets.LUMA_COOKIES }}
+          GEMINI_COOKIES: ${{ secrets.GEMINI_COOKIES }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           IDEA_BANK_FOLDER_ID: ${{ secrets.IDEA_BANK_FOLDER_ID }}
           SHEET_FOLDER_ID: ${{ secrets.SHEET_FOLDER_ID }}
@@ -126,6 +129,11 @@ jobs:
           else
             if [ "${{ inputs.site }}" = "pollinations" ]; then
               echo "pollinations is an image site, not a video site — run mode=image for it."
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              exit 1
+            fi
+            if [ "${{ inputs.site }}" = "dreamina-image" ] || [ "${{ inputs.site }}" = "kling-image" ] || [ "${{ inputs.site }}" = "gemini-image" ]; then
+              echo "${{ inputs.site }} is an image studio, not a video site — run mode=recon to capture it."
               echo '```' >> "$GITHUB_STEP_SUMMARY"
               exit 1
             fi
