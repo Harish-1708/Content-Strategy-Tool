@@ -100,6 +100,29 @@ class TrialError(Exception):
     verdict, not this."""
 
 
+# Challenge phrases: what a real challenge actually SHOWS on the page.
+# The bare word "captcha" must never be a marker: Generation #4 (2026-11-19)
+# proved it false-positives twice — Dreamina loads a captcha SDK on every
+# page (the word sits in a script address, captcha.js), and Google Flow's
+# logged-out page carries the reCAPTCHA disclaimer in its footer. Both were
+# misreported as "blocked (captcha)" when the real state was a login wall.
+# challenge_or_warning therefore matches these phrases against the page's
+# VISIBLE text only, never its raw HTML.
+CHALLENGE_MARKERS = [
+    "complete the captcha",
+    "i'm not a robot",
+    "verify you're human",
+    "verify you are human",
+    "slide to verify",
+    "complete the verification",
+    "verify to continue",
+    "confirm it's you",
+    "verify it's you",
+    "unusual activity",
+    "suspicious activity",
+]
+
+
 # ---------------------------------------------------------------------------
 # The drivers: one entry per site. "reported" facts come from a third-party
 # guide, not the vendor's own page, and are confirmed only in the logged-in
@@ -137,7 +160,7 @@ DRIVERS = {
         "download_link_contains": [".mp4"],
         "logged_in_markers": ["library", "my creations", "generate"],
         "login_wall_markers": ["log in", "sign in", "create an account"],
-        "challenge_markers": ["captcha", "verify to continue", "confirm it's you"],
+        "challenge_markers": CHALLENGE_MARKERS,
         "warning_markers": ["account has been suspended", "temporarily locked", "automated behavior"],
         "credits_markers": ["not enough credits", "insufficient credits", "out of credits"],
         "max_wait_seconds": 600,
@@ -169,9 +192,13 @@ DRIVERS = {
         "generate_selectors": ["button:has-text(\"Generate\")", "text=Generate"],
         "done_markers": ["a[href$=\".mp4\"]"],
         "download_link_contains": [".mp4"],
-        "logged_in_markers": ["new project", "my projects", "create"],
+        # "create" is NOT a marker: the logged-out marketing page's main
+        # button is "Create with Google Flow", so "create" calls a logged-out
+        # page logged in (Generation #4). "new project" / "my projects" only
+        # appear in the logged-in studio.
+        "logged_in_markers": ["new project", "my projects"],
         "login_wall_markers": ["sign in", "create your google account"],
-        "challenge_markers": ["unusual activity", "captcha", "verify it's you"],
+        "challenge_markers": CHALLENGE_MARKERS,
         "warning_markers": ["account has been suspended", "temporarily locked", "automated behavior"],
         "credits_markers": ["not enough credits", "out of credits", "credit limit"],
         "max_wait_seconds": 600,
@@ -208,7 +235,7 @@ DRIVERS = {
         "download_link_contains": [".mp4"],
         "logged_in_markers": ["video", "my creations", "generate"],
         "login_wall_markers": ["log in", "sign in"],
-        "challenge_markers": ["captcha", "verify to continue", "confirm it's you"],
+        "challenge_markers": CHALLENGE_MARKERS,
         "warning_markers": ["account has been suspended", "temporarily locked", "automated behavior"],
         "credits_markers": ["not enough credits", "insufficient credits", "out of credits"],
         "max_wait_seconds": 600,
@@ -249,7 +276,7 @@ DRIVERS = {
         "download_link_contains": [".mp4"],
         "logged_in_markers": ["create", "my works", "credits"],
         "login_wall_markers": ["log in", "sign in", "sign up"],
-        "challenge_markers": ["captcha", "verify to continue", "confirm it's you"],
+        "challenge_markers": CHALLENGE_MARKERS,
         "warning_markers": ["account has been suspended", "temporarily locked", "automated behavior"],
         "credits_markers": ["not enough credits", "insufficient credits", "out of credits"],
         "max_wait_seconds": 600,
@@ -278,7 +305,7 @@ DRIVERS = {
         "download_link_contains": [".mp4"],
         "logged_in_markers": [],
         "login_wall_markers": ["log in", "sign in"],
-        "challenge_markers": ["captcha", "verify to continue"],
+        "challenge_markers": CHALLENGE_MARKERS,
         "warning_markers": ["account has been suspended", "temporarily locked", "automated behavior"],
         "credits_markers": ["not enough credits", "insufficient credits"],
         "max_wait_seconds": 600,
@@ -309,16 +336,16 @@ DRIVERS = {
             "4 preview variations, then Download",
             "captcha was observed on the video trials and the video recon — expect it here too",
         ],
-        "prompt_selectors": ["textarea", "textarea[placeholder*=\\\"prompt\\\" i]",
-                            "div[contenteditable=\\\"true\\\"]", "div[role=\\\"textbox\\\"]",
-                            "input[placeholder*=\\\"prompt\\\" i]"],
+        "prompt_selectors": ["textarea", "textarea[placeholder*=\"prompt\" i]",
+                            "div[contenteditable=\"true\"]", "div[role=\"textbox\"]",
+                            "input[placeholder*=\"prompt\" i]"],
         "model_steps": [],
-        "generate_selectors": ["button:has-text(\\\"Generate\\\")", "text=Generate"],
-        "done_markers": ["a[href$=\\\".jpg\\\"]", "a[href$=\\\".png\\\"]"],
+        "generate_selectors": ["button:has-text(\"Generate\")", "text=Generate"],
+        "done_markers": ["a[href$=\".jpg\"]", "a[href$=\".png\"]"],
         "download_link_contains": [".jpg", ".png"],
         "logged_in_markers": ["ai image", "generate", "my creations"],
         "login_wall_markers": ["log in", "sign in"],
-        "challenge_markers": ["captcha", "verify to continue", "confirm it's you"],
+        "challenge_markers": CHALLENGE_MARKERS,
         "warning_markers": ["account has been suspended", "temporarily locked", "automated behavior"],
         "credits_markers": ["not enough credits", "insufficient credits", "out of credits"],
         "max_wait_seconds": 600,
@@ -342,20 +369,35 @@ DRIVERS = {
             "review the results, then download",
         ],
         # The video studio's prompt box is a TipTap/ProseMirror editor; the
-        # image studio's is unconfirmed — lead with ProseMirror, then the
-        # generics, and let the recon probe report the real element.
+        # image studio's is the same — Generation #4 (2026-11-19) captured
+        # div.tiptap.ProseMirror on the real image page, with placeholder
+        # "Describe the scene, or upload 1–10 reference images...".
         "prompt_selectors": ["div.tiptap.ProseMirror",
-                            ".omni-prompt-editor div[contenteditable=\\\"true\\\"]",
-                            "textarea", "textarea[placeholder*=\\\"prompt\\\" i]",
-                            "div[contenteditable=\\\"true\\\"]", "div[role=\\\"textbox\\\"]",
-                            "input[placeholder*=\\\"prompt\\\" i]"],
+                            ".omni-prompt-editor div[contenteditable=\"true\"]",
+                            "textarea", "textarea[placeholder*=\"prompt\" i]",
+                            "div[contenteditable=\"true\"]", "div[role=\"textbox\"]",
+                            "input[placeholder*=\"prompt\" i]"],
         "model_steps": [],
-        "generate_selectors": ["button:has-text(\\\"Generate\\\")", "text=Generate"],
-        "done_markers": ["a[href$=\\\".jpg\\\"]", "a[href$=\\\".png\\\"]"],
+        # The Generate button is a real <button class="generic-button
+        # critical big button-pay ..."> (Generation #4 capture) — lead with
+        # that class. Plain text=Generate is NOT used: it matches the
+        # sidebar "Generate" nav link first and would navigate away.
+        # The button stays disabled until a prompt is typed
+        # (submit-disabled-reason="Please enter content").
+        "generate_selectors": ["button.generic-button.button-pay",
+                               "button:has-text(\"Generate\")"],
+        # A "Kling Image 4.0" promo modal (el-dialog kling-dialog-omni)
+        # covers the editor on first open, plus a small promo bubble by the
+        # sidebar — close both best-effort before typing, the way PixVerse's
+        # modal is dismissed. The modal's headline is an image, so its
+        # close control is the .close div inside the dialog.
+        "dismiss_selectors": [".kling-dialog-omni .close",
+                              "[data-testid=\"nav-image-40-bubble-close\"]"],
+        "done_markers": ["a[href$=\".jpg\"]", "a[href$=\".png\"]"],
         "download_link_contains": [".jpg", ".png"],
         "logged_in_markers": ["create", "my works", "credits"],
         "login_wall_markers": ["log in", "sign in", "sign up"],
-        "challenge_markers": ["captcha", "verify to continue", "confirm it's you"],
+        "challenge_markers": CHALLENGE_MARKERS,
         "warning_markers": ["account has been suspended", "temporarily locked", "automated behavior"],
         "credits_markers": ["not enough credits", "insufficient credits", "out of credits"],
         "max_wait_seconds": 600,
@@ -378,15 +420,15 @@ DRIVERS = {
             "free output is SynthID-watermarked (invisible), no visible logo",
             "GEMINI_COOKIES are expired (2026-11-16) — the recon will report the login wall until they are refreshed",
         ],
-        "prompt_selectors": ["div[contenteditable=\\\"true\\\"]", "div[role=\\\"textbox\\\"]",
-                            "textarea", "input[placeholder*=\\\"Ask Gemini\\\" i]"],
+        "prompt_selectors": ["div[contenteditable=\"true\"]", "div[role=\"textbox\"]",
+                            "textarea", "input[placeholder*=\"Ask Gemini\" i]"],
         "model_steps": [],
-        "generate_selectors": ["button[aria-label*=\\\"Send\\\" i]", "button:has-text(\\\"Send\\\")"],
-        "done_markers": ["a[href$=\\\".jpg\\\"]", "a[href$=\\\".png\\\"]"],
+        "generate_selectors": ["button[aria-label*=\"Send\" i]", "button:has-text(\"Send\")"],
+        "done_markers": ["a[href$=\".jpg\"]", "a[href$=\".png\"]"],
         "download_link_contains": [".jpg", ".png"],
         "logged_in_markers": ["ask gemini", "gemini"],
         "login_wall_markers": ["sign in", "create your google account"],
-        "challenge_markers": ["unusual activity", "captcha", "verify it's you"],
+        "challenge_markers": CHALLENGE_MARKERS,
         "warning_markers": ["account has been suspended", "temporarily locked", "automated behavior"],
         "credits_markers": ["not enough credits", "insufficient credits", "out of credits"],
         "max_wait_seconds": 600,
@@ -825,17 +867,33 @@ def logged_in_state(browser, driver):
     return "unknown", "no sign of being logged in was found on the page"
 
 
+def _visible_text(browser):
+    """The page's visible text, lower-cased — never its raw HTML. A
+    challenge is something the page SHOWS; the word "captcha" in a script
+    address or a stylesheet is not a challenge, and neither is the
+    reCAPTCHA disclaimer in a page footer. No fallback to HTML: when the
+    page shows no text, there is no visible challenge to report."""
+    try:
+        return (browser.text(["body"]) or "").lower()
+    except Exception:
+        return ""
+
+
 def challenge_or_warning(browser, driver):
     """("challenge", reason) or ("warning", reason) when the page shows one,
     else None. A challenge or a warning stops the site's trial at once — using
-    the account again straight away is what turns a warning into a ban."""
-    html = _page_html(browser)
-    page = _page_text(browser)
+    the account again straight away is what turns a warning into a ban.
+    Only the page's VISIBLE text counts (see _visible_text): Generation #4
+    (2026-11-19) misreported Google Flow and Dreamina as "blocked (captcha)"
+    because the old check also read the raw HTML, where "captcha" sits in
+    Dreamina's captcha.js script address and in Flow's reCAPTCHA footer
+    disclaimer. Both pages showed no challenge widget at all."""
+    page = _visible_text(browser)
     for marker in driver["challenge_markers"]:
-        if marker.lower() in html or marker.lower() in page:
+        if marker.lower() in page:
             return "challenge", f"the site asked for a check ({marker}); a person must clear it"
     for marker in driver["warning_markers"]:
-        if marker.lower() in html or marker.lower() in page:
+        if marker.lower() in page:
             return "warning", f"the site warned the account ({marker}); the account rests"
     return None
 
