@@ -1,4 +1,18 @@
 {
+ "gemini": {
+  "fingerprint_preset": null,
+  "locale": "en-US",
+  "os": "windows",
+  "profile_dir": ".stealth-profiles/gemini",
+  "proxy_secret": "STEALTH_PROXY_GEMINI",
+  "site": "gemini",
+  "timezone_id": "America/New_York",
+  "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+  "viewport": [
+   1920,
+   1080
+  ]
+ },
  "instagram": {
   "fingerprint_preset": null,
   "locale": "en-US",

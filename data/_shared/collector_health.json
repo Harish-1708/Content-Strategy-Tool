@@ -2,16 +2,16 @@
  "routes": {
   "agent_reach_research|github": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
     "items": 2,
     "passed": true,
     "route_hash": "ff22832fd286",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 5,
+   "consecutive_successes": 6,
    "history": [
     {
      "at": "2026-11-10T09:28:50Z",
@@ -89,6 +89,13 @@
      "items": 2,
      "ms": 470,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 2,
+     "ms": 533,
+     "ok": true
     }
    ],
    "last_error": {
@@ -96,7 +103,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "the GitHub search through Agent-Reach returned nothing"
    },
-   "last_success": "2026-11-12T15:19:20Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "github",
    "source": "agent_reach_research",
@@ -104,16 +111,16 @@
   },
   "agent_reach_research|web": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
     "items": 1,
     "passed": true,
     "route_hash": "5536ca826d4b",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 5,
+   "consecutive_successes": 6,
    "history": [
     {
      "at": "2026-11-10T09:28:50Z",
@@ -149,10 +156,17 @@
      "items": 1,
      "ms": 45,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 1,
+     "ms": 92,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-12T15:19:20Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "web",
    "source": "agent_reach_research",
@@ -160,16 +174,16 @@
   },
   "agent_reach_research|youtube": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
     "items": 2,
     "passed": true,
     "route_hash": "36e19a705283",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 13,
+   "consecutive_successes": 14,
    "history": [
     {
      "at": "2026-11-10T07:30:10Z",
@@ -261,10 +275,17 @@
      "items": 2,
      "ms": 1423,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 2,
+     "ms": 1201,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-12T15:19:20Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "youtube",
    "source": "agent_reach_research",
@@ -2185,16 +2206,16 @@
   },
   "claude|api": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
     "items": 1,
     "passed": true,
     "route_hash": "b44667ef1e3b",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 9,
+   "consecutive_successes": 10,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -2258,10 +2279,17 @@
      "items": 1,
      "ms": 970,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 1,
+     "ms": 1022,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-12T15:19:20Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "api",
    "source": "claude",
@@ -2269,16 +2297,16 @@
   },
   "competitor_pages|feed": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
-    "items": 2,
+    "items": 4,
     "passed": true,
     "route_hash": "68389e2ec994",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
-   "consecutive_failures": 1,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 1,
    "history": [
     {
      "at": "2026-11-10T08:40:20Z",
@@ -3007,6 +3035,13 @@
      "items": 0,
      "ms": 5563,
      "ok": null
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 4,
+     "ms": 27393,
+     "ok": true
     }
    ],
    "last_error": {
@@ -3014,7 +3049,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "https://theoodie.com/blogs/news.atom is a feed with no items"
    },
-   "last_success": "2026-11-16T13:15:07Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "feed",
    "source": "competitor_pages",
@@ -3022,16 +3057,16 @@
   },
   "competitor_pages|reader": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
     "items": 1,
     "passed": true,
     "route_hash": "fe9963ca8115",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 18,
+   "consecutive_successes": 19,
    "history": [
     {
      "at": "2026-11-10T08:40:20Z",
@@ -3158,10 +3193,17 @@
      "items": 1,
      "ms": 13222,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 1,
+     "ms": 11968,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-12T15:19:20Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "reader",
    "source": "competitor_pages",
@@ -3466,16 +3508,16 @@
   },
   "competitor_pages|static_fetch": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
     "items": 1,
     "passed": true,
     "route_hash": "6296f0307457",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 40,
+   "consecutive_successes": 41,
    "history": [
     {
      "at": "2026-11-10T08:40:20Z",
@@ -3756,10 +3798,17 @@
      "items": 1,
      "ms": 8651,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 1,
+     "ms": 5399,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-16T13:15:07Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "static_fetch",
    "source": "competitor_pages",
@@ -3767,16 +3816,16 @@
   },
   "competitor_stores|public_json": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
     "items": 7,
     "passed": true,
     "route_hash": "5ce2837fdc77",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 42,
+   "consecutive_successes": 43,
    "history": [
     {
      "at": "2026-11-10T08:40:20Z",
@@ -4071,10 +4120,17 @@
      "items": 1,
      "ms": 360386,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 7,
+     "ms": 21110,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-16T13:15:07Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "public_json",
    "source": "competitor_stores",
@@ -4082,16 +4138,16 @@
   },
   "competitor_stores|sitemap": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
     "items": 1,
     "passed": true,
     "route_hash": "39f3e6285060",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 41,
+   "consecutive_successes": 42,
    "history": [
     {
      "at": "2026-11-10T08:40:20Z",
@@ -4379,10 +4435,17 @@
      "items": 1,
      "ms": 91918,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 1,
+     "ms": 15830,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-16T13:15:07Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "sitemap",
    "source": "competitor_stores",
@@ -4390,15 +4453,15 @@
   },
   "deep_research|browser": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "NEED_LOGIN",
     "items": 0,
     "passed": false,
-    "route_hash": "d1811431fafc",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "route_hash": "129aa3c1b49d",
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
-   "consecutive_failures": 2,
+   "consecutive_failures": 3,
    "consecutive_successes": 0,
    "history": [
     {
@@ -4470,31 +4533,38 @@
      "items": 0,
      "ms": 11149,
      "ok": false
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "NEED_LOGIN",
+     "items": 0,
+     "ms": 13688,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "NEED_LOGIN",
-    "message": "gemini: not logged in (Gemini shows its Sign in button, so the cookies were not accepted); export fresh cookies into GEMINI_COOKIES. Cookie facts (no values shown): 25 cookies loaded (.google.com x19, .gemini.google.com x5, gemini.google.com x1); 2 already expired."
+    "message": "gemini: not logged in (Gemini shows its Sign in button, so the cookies were not accepted); export fresh cookies into GEMINI_COOKIES. Cookie facts (no values shown): 25 cookies loaded (.google.com x19, .gemini.google.com x5, gemini.google.com x1); 3 already expired."
    },
    "last_success": "2026-11-11T04:02:54Z",
    "pause": null,
    "route": "browser",
    "source": "deep_research",
-   "state": "healthy"
+   "state": "degraded"
   },
   "instagram|apify": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
-    "code": "NEED_SETUP",
-    "items": 0,
-    "passed": false,
+    "at": "2026-11-19T15:48:06Z",
+    "code": "",
+    "items": 3,
+    "passed": true,
     "route_hash": "a351da3e38b4",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
-   "consecutive_failures": 1,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 1,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -4565,6 +4635,13 @@
      "items": 0,
      "ms": 73,
      "ok": false
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 3,
+     "ms": 20900,
+     "ok": true
     }
    ],
    "last_error": {
@@ -4572,7 +4649,7 @@
     "code": "NEED_SETUP",
     "message": "Apify rejected the API key (HTTP 401)"
    },
-   "last_success": "2026-11-11T10:37:46Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "apify",
    "source": "instagram",
@@ -4580,15 +4657,15 @@
   },
   "instagram|browser": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
-    "code": "",
-    "items": 3,
-    "passed": true,
-    "route_hash": "ced8174ce69c",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "at": "2026-11-19T15:48:06Z",
+    "code": "NEED_LOGIN",
+    "items": 0,
+    "passed": false,
+    "route_hash": "c494c0e10511",
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
-   "consecutive_failures": 1,
+   "consecutive_failures": 2,
    "consecutive_successes": 0,
    "history": [
     {
@@ -4751,10 +4828,17 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "NEED_LOGIN",
+     "items": 0,
+     "ms": 61317,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-18T16:44:12Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "NEED_LOGIN",
     "message": "instagram: not logged in. The cookies in INSTAGRAM_COOKIES may have expired; export fresh ones from the dummy account. Cookie facts (no values shown): 11 cookies loaded (.instagram.com x11)."
    },
@@ -4766,16 +4850,16 @@
   },
   "meta_ads|apify": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
-    "code": "NEED_SETUP",
-    "items": 0,
-    "passed": false,
+    "at": "2026-11-19T15:48:06Z",
+    "code": "",
+    "items": 3,
+    "passed": true,
     "route_hash": "dd95d9a5a05e",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
-   "consecutive_failures": 1,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 1,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -4839,6 +4923,13 @@
      "items": 0,
      "ms": 64,
      "ok": false
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 3,
+     "ms": 30502,
+     "ok": true
     }
    ],
    "last_error": {
@@ -4846,7 +4937,7 @@
     "code": "NEED_SETUP",
     "message": "Apify rejected the API key (HTTP 401)"
    },
-   "last_success": "2026-11-11T10:37:46Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "apify",
    "source": "meta_ads",
@@ -4854,16 +4945,16 @@
   },
   "meta_ads|browser": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
     "items": 3,
     "passed": true,
-    "route_hash": "c689f4b7d3ac",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "route_hash": "f7196d3cbec6",
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 52,
+   "consecutive_successes": 53,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -5228,10 +5319,17 @@
      "items": 30,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 3,
+     "ms": 17567,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-16T19:10:25Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "browser",
    "source": "meta_ads",
@@ -5239,16 +5337,16 @@
   },
   "shopify_catalogue|public_json": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
     "items": 7,
     "passed": true,
     "route_hash": "eab194e8386b",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 117,
+   "consecutive_successes": 118,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -6068,10 +6166,17 @@
      "items": 72,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 7,
+     "ms": 294,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-19T07:32:26Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "public_json",
    "source": "shopify_catalogue",
@@ -6079,16 +6184,16 @@
   },
   "tiktok|apify": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
-    "code": "NEED_SETUP",
-    "items": 0,
-    "passed": false,
+    "at": "2026-11-19T15:48:06Z",
+    "code": "",
+    "items": 3,
+    "passed": true,
     "route_hash": "193a208cfd17",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
-   "consecutive_failures": 1,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 1,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -6103,6 +6208,13 @@
      "items": 0,
      "ms": 89,
      "ok": false
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 3,
+     "ms": 11228,
+     "ok": true
     }
    ],
    "last_error": {
@@ -6110,7 +6222,7 @@
     "code": "NEED_SETUP",
     "message": "Apify rejected the API key (HTTP 401)"
    },
-   "last_success": "",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "apify",
    "source": "tiktok",
@@ -6118,16 +6230,16 @@
   },
   "tiktok|browser": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
     "items": 3,
     "passed": true,
-    "route_hash": "2df7590dc4f6",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "route_hash": "0a2f417e2c19",
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 2,
+   "consecutive_successes": 3,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -6310,6 +6422,13 @@
      "items": 30,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 3,
+     "ms": 56423,
+     "ok": true
     }
    ],
    "last_error": {
@@ -6317,7 +6436,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "the page opened but no ads or posts could be read (a screenshot was saved; run Recon to see what the site sends)"
    },
-   "last_success": "2026-11-18T16:44:12Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "browser",
    "source": "tiktok",
@@ -6937,16 +7056,16 @@
   },
   "web_search|agent_reach_youtube": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
     "items": 3,
     "passed": true,
     "route_hash": "1f0d94a2e072",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 14,
+   "consecutive_successes": 16,
    "history": [
     {
      "at": "2026-11-10T07:30:10Z",
@@ -7045,10 +7164,24 @@
      "items": 3,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 3,
+     "ms": 2501,
+     "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 3,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-12T15:19:20Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "agent_reach_youtube",
    "source": "web_search",
@@ -7056,16 +7189,16 @@
   },
   "web_search|exa": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
     "items": 3,
     "passed": true,
     "route_hash": "87f0d0d6e3b8",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 14,
+   "consecutive_successes": 16,
    "history": [
     {
      "at": "2026-11-10T07:30:10Z",
@@ -7164,10 +7297,24 @@
      "items": 3,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 3,
+     "ms": 5013,
+     "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 3,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-12T15:19:20Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "exa",
    "source": "web_search",
@@ -7175,16 +7322,16 @@
   },
   "web_search|exa_mcp": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
-    "items": 2,
+    "items": 3,
     "passed": true,
     "route_hash": "1751d5fc0e8b",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 16,
+   "consecutive_successes": 18,
    "history": [
     {
      "at": "2026-11-05T14:46:30Z",
@@ -7297,10 +7444,24 @@
      "items": 2,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 3,
+     "ms": 758,
+     "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 3,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-12T15:19:20Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "exa_mcp",
    "source": "web_search",
@@ -7308,16 +7469,16 @@
   },
   "web_search|serpapi": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
     "items": 10,
     "passed": true,
     "route_hash": "a96d9854bcaf",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 18,
+   "consecutive_successes": 20,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -7444,10 +7605,24 @@
      "items": 10,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 7,
+     "ms": 3692,
+     "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 10,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-12T15:19:20Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "serpapi",
    "source": "web_search",
@@ -7455,16 +7630,16 @@
   },
   "web_search|serper_dev": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
     "items": 10,
     "passed": true,
     "route_hash": "0b3b9639bac5",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 48,
+   "consecutive_successes": 50,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -7801,10 +7976,24 @@
      "items": 10,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 3,
+     "ms": 1737,
+     "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 10,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-12T15:19:20Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "serper_dev",
    "source": "web_search",
@@ -7812,16 +8001,16 @@
   },
   "web_search|tavily": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
-    "items": 1,
+    "items": 3,
     "passed": true,
     "route_hash": "620cdae9419e",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 18,
+   "consecutive_successes": 20,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -7948,10 +8137,24 @@
      "items": 1,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 3,
+     "ms": 4496,
+     "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 3,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-12T15:19:20Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "tavily",
    "source": "web_search",
@@ -7959,16 +8162,16 @@
   },
   "youtube_public|data_api": {
    "acceptance": {
-    "at": "2026-11-12T15:19:20Z",
+    "at": "2026-11-19T15:48:06Z",
     "code": "",
     "items": 1,
     "passed": true,
     "route_hash": "fb56758a33f6",
-    "run": "480a348f",
-    "version": "3a4b3bc047b8"
+    "run": "8ac4ef5c",
+    "version": "5403989fdf1c"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 9,
+   "consecutive_successes": 10,
    "history": [
     {
      "at": "2026-11-03T09:11:44Z",
@@ -8032,10 +8235,17 @@
      "items": 1,
      "ms": 123,
      "ok": true
+    },
+    {
+     "at": "2026-11-19T15:48:06Z",
+     "code": "",
+     "items": 1,
+     "ms": 158,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-12T15:19:20Z",
+   "last_success": "2026-11-19T15:48:06Z",
    "pause": null,
    "route": "data_api",
    "source": "youtube_public",

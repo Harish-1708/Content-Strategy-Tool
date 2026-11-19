@@ -1,6 +1,6 @@
 {
   "boss": {
-    "checked_at": "2026-11-19T08:55:20Z",
+    "checked_at": "2026-11-19T15:53:32Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",
@@ -11,12 +11,12 @@
     "unconfirmed_streak": 0
   },
   "facebook": {
-    "checked_at": "2026-11-19T08:55:20Z",
-    "days_left": 358,
+    "checked_at": "2026-11-19T15:53:32Z",
+    "days_left": 357,
     "evidence": {
       "body_ids": [
         "splash-screen",
-        "mount_0_0_AK",
+        "mount_0_0_YV",
         "B:0",
         "B:1",
         "B:2",
@@ -66,7 +66,7 @@
       "login_word_in_address": "",
       "noscript": "",
       "password_field": false,
-      "scripts": 276,
+      "scripts": 419,
       "status": 200,
       "text_chars": 0,
       "title": "Facebook",
@@ -74,15 +74,15 @@
       "worker_error": ""
     },
     "expires_on": "2027-11-12",
-    "proved_on": "2026-11-19T08:55:20Z",
+    "proved_on": "2026-11-19T15:53:32Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
     "unconfirmed_streak": 0
   },
   "instagram": {
-    "checked_at": "2026-11-19T09:27:34Z",
-    "days_left": 358,
+    "checked_at": "2026-11-19T15:53:32Z",
+    "days_left": 357,
     "evidence": {
       "body_ids": [],
       "cookies_back": [],
@@ -132,8 +132,8 @@
     "unconfirmed_streak": 0
   },
   "linkedin": {
-    "checked_at": "2026-11-19T08:55:20Z",
-    "days_left": 358,
+    "checked_at": "2026-11-19T15:53:32Z",
+    "days_left": 357,
     "evidence": {
       "body_ids": [],
       "cookies_back": [],
@@ -196,7 +196,7 @@
     "unconfirmed_streak": 0
   },
   "reddit": {
-    "checked_at": "2026-11-19T08:55:20Z",
+    "checked_at": "2026-11-19T15:53:32Z",
     "days_left": 173,
     "evidence": {
       "body_ids": [
@@ -276,15 +276,15 @@
       "worker_error": ""
     },
     "expires_on": "2027-05-12",
-    "proved_on": "2026-11-19T08:55:20Z",
+    "proved_on": "2026-11-19T15:53:32Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
     "unconfirmed_streak": 0
   },
   "tiktok": {
-    "checked_at": "2026-11-19T09:34:34Z",
-    "days_left": 173,
+    "checked_at": "2026-11-19T15:53:32Z",
+    "days_left": 172,
     "evidence": {
       "body_ids": [
         "tiktok-environment-webapp",
@@ -376,13 +376,14 @@
         "uid_tt_ss"
       ],
       "fetched_with": "browser",
-      "html_chars": 470226,
+      "html_chars": 537085,
       "html_truncated": false,
       "landed": "https://www.tiktok.com/",
-      "logged_in_found": [],
-      "logged_in_missing": [
-        "\"islogin\":true",
+      "logged_in_found": [
         "data-e2e=\"profile-icon\""
+      ],
+      "logged_in_missing": [
+        "\"islogin\":true"
       ],
       "logged_in_text_found": [],
       "logged_in_text_missing": [],
@@ -393,22 +394,22 @@
       "login_word_in_address": "",
       "noscript": "",
       "password_field": false,
-      "scripts": 81,
+      "scripts": 91,
       "status": 200,
-      "text_chars": 70,
+      "text_chars": 386,
       "title": "TikTok - Make Your Day",
       "visible_text_available": true,
       "worker_error": ""
     },
     "expires_on": "2027-05-11",
-    "proved_on": "2026-11-14T02:59:12Z",
+    "proved_on": "2026-11-19T15:53:32Z",
     "proved_via": "browser",
-    "reason": "the page gave no sign of being logged in or logged out (it may be an error or a half-drawn page), so it is not counted as a refusal and the proof is kept; it is looked at again on the next check, and after 3 such checks in a row it is treated as refused (this is check 2)",
-    "state": "UNCONFIRMED",
-    "unconfirmed_streak": 2
+    "reason": "the platform's own page showed a logged-in state",
+    "state": "ACCEPTED",
+    "unconfirmed_streak": 0
   },
   "x": {
-    "checked_at": "2026-11-19T08:55:20Z",
+    "checked_at": "2026-11-19T15:53:32Z",
     "days_left": 357,
     "evidence": {
       "body_ids": [
@@ -478,7 +479,7 @@
     "unconfirmed_streak": 0
   },
   "xiaohongshu": {
-    "checked_at": "2026-11-19T08:55:20Z",
+    "checked_at": "2026-11-19T15:53:32Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",

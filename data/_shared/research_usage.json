@@ -1,15 +1,15 @@
 {
  "lifetime": {
-  "agent_reach_youtube": 14,
-  "apify_items": 285,
+  "agent_reach_youtube": 16,
+  "apify_items": 294,
   "claude_calls": 10,
-  "collected_items": 2753,
+  "collected_items": 2759,
   "deep_research_tasks": 1,
-  "exa": 14,
-  "exa_mcp": 16,
-  "serpapi": 24,
-  "serper_dev": 96,
-  "tavily": 24,
+  "exa": 16,
+  "exa_mcp": 18,
+  "serpapi": 26,
+  "serper_dev": 98,
+  "tavily": 26,
   "voice_apify_items": 240
  },
  "months": {
@@ -22,15 +22,15 @@
    "tavily": 6
   },
   "2026-11": {
-   "agent_reach_youtube": 14,
-   "apify_items": 285,
+   "agent_reach_youtube": 16,
+   "apify_items": 294,
    "claude_calls": 3,
-   "collected_items": 2013,
-   "exa": 14,
-   "exa_mcp": 16,
-   "serpapi": 18,
-   "serper_dev": 57,
-   "tavily": 18,
+   "collected_items": 2019,
+   "exa": 16,
+   "exa_mcp": 18,
+   "serpapi": 20,
+   "serper_dev": 59,
+   "tavily": 20,
    "voice_apify_items": 240
   }
  }
