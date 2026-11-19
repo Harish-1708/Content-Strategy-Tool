@@ -1,0 +1,19 @@
+{
+ "note": "PROPOSALS only: nothing here is canon, posted or sent",
+ "runs": [
+  {
+   "at": "2026-11-19T07:53:15Z",
+   "proposals": {
+    "idea_candidates": {
+     "at": "2026-11-19T07:53:15Z",
+     "gate": "OK",
+     "note": "gate: OK; needs input: competitor ads and posts; the brand has no collected yet",
+     "skill": "influencer/target/competitor-tracker",
+     "text": "I cannot complete the task as there is no competitor material provided. I need the collected ads and posts from competitors to generate idea candidates for Swoveralls."
+    }
+   }
+  }
+ ],
+ "stage": "competitor_ideas",
+ "title": "Stage 4: competitor-to-ideas"
+}
