@@ -8,9 +8,14 @@ name: Generation
 #   fix comes from the real page, not a guess. Pollinations is an API, not a
 #   page — its recon is the live photo trial, already GO. The three image
 #   studios (dreamina-image, kling-image, gemini-image) are captured the
-#   same way; no image trial exists for them yet.
-# mode=image: one Pollinations photo per run (free, no key, no signup).
-#   Image is tested FIRST, before video — it is the proven path.
+#   same way.
+# mode=image: one photo per run. site=pollinations (or all) is the no-key
+#   Pollinations photo; site=dreamina-image, kling-image or gemini-image is
+#   one image from that logged-in studio, through the same trial that drives
+#   the video sites (video_trial.py), saved to Generated Content / Photo /
+#   <Brand name> and one row in the brand's Catalogue sheet, tab "Photos".
+#   The studios are trialled one at a time. Image is tested FIRST, before
+#   video — it is the proven path.
 # mode=video: one clip per site (the video trial).
 # DUMMY accounts only, never a main account. Cookies are captured by hand in
 # an ordinary browser and pasted into the GitHub secrets named below; nothing
@@ -30,12 +35,12 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "recon (capture each site's page), image (one Pollinations photo), or video (one clip per site)"
+        description: "recon (capture each site's page), image (one photo: Pollinations, or one logged-in image studio), or video (one clip per site)"
         type: choice
         options: [recon, image, video]
         default: recon
       site:
-        description: "One site, or all of them (pollinations is the no-key image API; dreamina-image, kling-image and gemini-image are the logged-in image studios, recon only; the rest are video)"
+        description: "One site, or all of them (pollinations is the no-key image API; dreamina-image, kling-image and gemini-image are the logged-in image studios — recon or image mode; the rest are video)"
         type: choice
         options: [all, pixverse, google_flow, dreamina, kling, luma, pollinations, dreamina-image, kling-image, gemini-image]
         default: all
@@ -88,7 +93,7 @@ jobs:
           "$RUNNER_TEMP/gen-env/bin/pip" install -q -r requirements.txt
 
       - name: Install the browser environment
-        if: ${{ inputs.mode != 'image' }}
+        if: ${{ !(inputs.mode == 'image' && (inputs.site == 'pollinations' || inputs.site == 'all')) }}
         shell: bash
         run: |
           "$RUNNER_TEMP/gen-env/bin/pip" install -q -r requirements-browser.txt
@@ -122,10 +127,21 @@ jobs:
             "$RUNNER_TEMP/gen-env/bin/python" -m contentintel.video_trial "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
             code=${PIPESTATUS[0]}
           elif [ "${{ inputs.mode }}" = "image" ]; then
-            args=(--brand "${{ inputs.brand }}" --prompt "${{ inputs.prompt }}" --model "${{ inputs.model }}" --out debug/generation --verdicts data/_shared/photo_trial.json)
-            if ${{ inputs.dry_run }}; then args+=(--dry-run); fi
-            "$RUNNER_TEMP/gen-env/bin/python" -m contentintel.photo_trial "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
-            code=${PIPESTATUS[0]}
+            if [ "${{ inputs.site }}" = "dreamina-image" ] || [ "${{ inputs.site }}" = "kling-image" ] || [ "${{ inputs.site }}" = "gemini-image" ]; then
+              args=(--site "${{ inputs.site }}" --brand "${{ inputs.brand }}" --prompt "${{ inputs.prompt }}" --out debug/generation --verdicts data/_shared/video_trial.json)
+              if ${{ inputs.dry_run }}; then args+=(--dry-run); fi
+              "$RUNNER_TEMP/gen-env/bin/python" -m contentintel.video_trial "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+              code=${PIPESTATUS[0]}
+            elif [ "${{ inputs.site }}" = "pixverse" ] || [ "${{ inputs.site }}" = "google_flow" ] || [ "${{ inputs.site }}" = "dreamina" ] || [ "${{ inputs.site }}" = "kling" ] || [ "${{ inputs.site }}" = "luma" ]; then
+              echo "${{ inputs.site }} is a video site, not an image site — run mode=video for it."
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              exit 1
+            else
+              args=(--brand "${{ inputs.brand }}" --prompt "${{ inputs.prompt }}" --model "${{ inputs.model }}" --out debug/generation --verdicts data/_shared/photo_trial.json)
+              if ${{ inputs.dry_run }}; then args+=(--dry-run); fi
+              "$RUNNER_TEMP/gen-env/bin/python" -m contentintel.photo_trial "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+              code=${PIPESTATUS[0]}
+            fi
           else
             if [ "${{ inputs.site }}" = "pollinations" ]; then
               echo "pollinations is an image site, not a video site — run mode=image for it."
@@ -133,7 +149,7 @@ jobs:
               exit 1
             fi
             if [ "${{ inputs.site }}" = "dreamina-image" ] || [ "${{ inputs.site }}" = "kling-image" ] || [ "${{ inputs.site }}" = "gemini-image" ]; then
-              echo "${{ inputs.site }} is an image studio, not a video site — run mode=recon to capture it."
+              echo "${{ inputs.site }} is an image studio, not a video site — run mode=image for it."
               echo '```' >> "$GITHUB_STEP_SUMMARY"
               exit 1
             fi
