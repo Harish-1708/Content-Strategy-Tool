@@ -385,6 +385,10 @@ def test_image_trial_happy_path_makes_one_image_downloads_and_saves_it_for_the_b
     assert ".kling-dialog-omni .close" in browser.clicks
     assert browser.typed == ["a test prompt"]
     assert f"(image: {IMAGE_KLING})" in VT.verdict_line(entry)
+    # The trial captures the page right after Generate (Generation #7: the
+    # wait timed out with no task and no charge, and only an immediate
+    # capture can show whether the click submitted or the site failed it).
+    assert "after-generate" in browser.shots
 
 
 def test_image_trial_rejects_a_download_that_is_not_an_image(tmp_path):
