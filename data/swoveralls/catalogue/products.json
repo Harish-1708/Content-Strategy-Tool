@@ -1361,7 +1361,7 @@
    "variant_count": 7,
    "variants": [
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53755991392367,
      "options": [
@@ -1397,7 +1397,7 @@
      "title": "M / Bordeaux"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53755991457903,
      "options": [
@@ -2153,7 +2153,7 @@
      "title": "XL / Moss"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53755992670319,
      "options": [
@@ -2171,7 +2171,7 @@
      "title": "2XL / Moss"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53755992703087,
      "options": [
@@ -8783,7 +8783,7 @@
      "title": "XXS / Forest Green"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 30250931847279,
      "options": [
