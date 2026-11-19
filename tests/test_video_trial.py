@@ -113,16 +113,22 @@ def _fake_factory(browser):
     return factory
 
 
-def _logged_in_browser(key, done=True, clip=True):
+def _logged_in_browser(key, done=True, clip=True, page_text=None):
     """A fake browser on the site's app page, logged in, with a Generate
     button and a prompt box. `done` puts the finished-clip marker on the
     page; `clip` makes the download link fetch a clip. The finished-clip
     marker is the downloadable .mp4 link itself (a bare video element is
-    NOT a done signal — a showcase video matches it on the real pages)."""
+    NOT a done signal — a showcase video matches it on the real pages).
+    `page_text` sets the page's VISIBLE text, separately from page_html —
+    the challenge check reads visible text only, so a test that models a
+    page whose code mentions "captcha" must set its visible text apart."""
     driver = VT.DRIVERS[key]
     present = {"a[href$=\".mp4\"]"} if done else set()
-    pages = {driver["app_url"]: {"present": present,
-                                 "links": [{"href": "https://cdn.example/clip.mp4", "text": "Download"}] if clip else []}}
+    page = {"present": present,
+            "links": [{"href": "https://cdn.example/clip.mp4", "text": "Download"}] if clip else []}
+    if page_text is not None:
+        page["text"] = page_text
+    pages = {driver["app_url"]: page}
     clickable = set(driver["generate_selectors"])
     for step in driver["model_steps"]:
         clickable.add(step[0])
@@ -256,7 +262,8 @@ def test_login_wall_is_not_set_up_and_nothing_is_generated(tmp_path):
 
 def test_challenge_is_blocked_and_the_account_is_left_alone(tmp_path):
     env = {"DREAMINA_COOKIES": COOKIE_JSON}
-    browser = _logged_in_browser("dreamina")
+    browser = _logged_in_browser("dreamina",
+                                 page_text="please complete the captcha to continue")
     browser.page_html = "<html><body>please complete the captcha to continue</body></html>"
     ctx = _ctx(tmp_path, env=env, factory=_fake_factory(browser))
     entry = VT.run_site("dreamina", ctx)
@@ -592,15 +599,19 @@ def test_a_real_save_without_the_service_account_key_fails_plainly(tmp_path):
 
 # --- the recon (capture the page, probe the selectors, generate nothing) ----------------------------------
 
-def _recon_browser(key, present=None, page_html=None):
+def _recon_browser(key, present=None, page_html=None, page_text=None):
     """A fake browser on the site's app page, logged in, with the given
     selectors present on the page. `present` defaults to every selector the
-    driver would use (prompt + generate + done), so the probe finds them all."""
+    driver would use (prompt + generate + done), so the probe finds them all.
+    `page_text` sets the page's VISIBLE text, separately from page_html."""
     driver = VT.DRIVERS[key]
     if present is None:
         present = (set(driver["prompt_selectors"]) | set(driver["generate_selectors"])
                    | set(driver["done_markers"]))
-    pages = {driver["app_url"]: {"present": set(present)}}
+    page = {"present": set(present)}
+    if page_text is not None:
+        page["text"] = page_text
+    pages = {driver["app_url"]: page}
     browser = FakeBrowser(pages, clickable=set(driver["generate_selectors"]),
                           typeable=set(driver["prompt_selectors"]),
                           present_always=set(present))
@@ -663,11 +674,80 @@ def test_recon_at_a_login_wall_is_not_set_up(tmp_path):
 
 def test_recon_blocked_on_a_challenge(tmp_path):
     env = {"DREAMINA_COOKIES": COOKIE_JSON}
-    browser = _recon_browser("dreamina", page_html="<html><body>please complete the captcha</body></html>")
+    browser = _recon_browser("dreamina", page_html="<html><body>please complete the captcha</body></html>",
+                             page_text="please complete the captcha")
     ctx = _ctx(tmp_path, env=env, factory=_fake_factory(browser))
     report = VT.recon_site("dreamina", ctx)
     assert report["state"] == "blocked"
     assert "captcha" in report["reason"]
+
+
+def test_captcha_word_in_page_code_only_is_not_a_challenge():
+    # Generation #4 (2026-11-19): Dreamina loads a captcha SDK on every
+    # page, so the word "captcha" sits in a script address — that is not a
+    # challenge, and the recon must not call it one.
+    driver = VT.DRIVERS["dreamina"]
+    browser = _recon_browser(
+        "dreamina",
+        page_html="<html><head><script src=\"https://sf16-web-login-neutral.capcutstatic.com/obj/capcut-web-login-static/bric-captcha-capcut/core-captcha/capcut-row/2.35.11/1.0.0.27/captcha.js\"></script></head><body>welcome, dreamina, seedream 5.5, newly launched, my creations</body></html>",
+        page_text="welcome, dreamina, seedream 5.5, newly launched, my creations",
+    )
+    browser.open(driver["app_url"])
+    assert VT.challenge_or_warning(browser, driver) is None
+
+
+def test_recaptcha_disclaimer_is_not_a_challenge_and_the_flow_recon_reports_not_set_up(tmp_path):
+    # Generation #4 (2026-11-19): Google Flow's logged-out page carries the
+    # reCAPTCHA disclaimer ("This site is protected by reCAPTCHA") in its
+    # footer — that is not a challenge. The page is a login wall, so the
+    # recon reports not-set-up, never blocked.
+    env = {"GOOGLE_FLOW_COOKIES": COOKIE_JSON}
+    browser = _recon_browser(
+        "google_flow",
+        page_html="<html><body>Google Flow — Your AI creative studio built with Google's advanced generative models. Create with Google Flow. This site is protected by reCAPTCHA.</body></html>",
+        page_text="google flow, your ai creative studio built with google's advanced generative models, create with google flow, this site is protected by recaptcha",
+    )
+    ctx = _ctx(tmp_path, env=env, factory=_fake_factory(browser))
+    report = VT.recon_site("google_flow", ctx)
+    assert report["state"] == "not-set-up"
+    assert "captcha" not in report["reason"]
+    assert "recon-login-wall" in browser.shots
+
+
+def test_visible_robot_check_and_slider_are_challenges():
+    # The phrases a real challenge actually shows on the page.
+    driver = VT.DRIVERS["dreamina"]
+    for text in ("please confirm — i'm not a robot",
+                 "slide to verify you are human"):
+        browser = _recon_browser("dreamina", page_text=text)
+        browser.open(driver["app_url"])
+        found = VT.challenge_or_warning(browser, driver)
+        assert found is not None and found[0] == "challenge"
+
+
+def test_kling_image_generate_button_is_the_button_not_the_sidebar_link():
+    # Generation #4: the image studio's Generate control is a real <button
+    # class="generic-button ... button-pay">. Plain text=Generate matches
+    # the sidebar "Generate" nav link first and would navigate away, so it
+    # is not a generate selector here.
+    driver = VT.DRIVERS["kling-image"]
+    assert driver["generate_selectors"] == ["button.generic-button.button-pay",
+                                            "button:has-text(\"Generate\")"]
+    assert "text=Generate" not in driver["generate_selectors"]
+    assert driver["dismiss_selectors"] == [".kling-dialog-omni .close",
+                                           "[data-testid=\"nav-image-40-bubble-close\"]"]
+
+
+def test_kling_image_recon_dismisses_the_image_40_promo_modal(tmp_path):
+    # Generation #4: a "Kling Image 4.0" promo modal covers the image
+    # studio's editor on first open; the recon must close it before probing.
+    env = {"KLING_COOKIES": COOKIE_JSON}
+    browser = _recon_browser("kling-image")
+    browser.clickable.update(VT.DRIVERS["kling-image"]["dismiss_selectors"])
+    ctx = _ctx(tmp_path, env=env, factory=_fake_factory(browser))
+    report = VT.recon_site("kling-image", ctx)
+    assert report["state"] == "ok"
+    assert ".kling-dialog-omni .close" in browser.clicks
 
 
 def test_run_recon_writes_recon_json(tmp_path):
