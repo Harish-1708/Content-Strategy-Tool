@@ -1079,6 +1079,28 @@ def _pick_model(ctx, browser, driver):
     return False
 
 
+def _wait_state(browser):
+    """One short line describing the page while a generation is waited on:
+    the credit balance, any task stage wording (analyzing / generating /
+    queued / failed / error), and any progress percentage. Generation #8
+    timed out with no task and no charge, and the timeout capture alone
+    cannot show whether the generation ever started, stalled, or failed
+    mid-way — the state log is the timeline. Only the parts that change are
+    interesting, so keep it to one short line."""
+    text = _visible_text(browser)
+    parts = []
+    balance = re.search(r"assets\s+(\d+)", text)
+    if balance:
+        parts.append("balance=" + balance.group(1))
+    for word in ("analyzing", "generating", "queued", "failed", "error"):
+        if word in text:
+            parts.append(word)
+    progress = re.findall(r"(\d+)\s*%", text)
+    if progress:
+        parts.append("progress=" + ",".join(sorted(set(progress), key=int)[:3]) + "%")
+    return " ".join(parts) if parts else "(no state)"
+
+
 def _wait_for_done(ctx, browser, driver, site):
     """Poll for a finished generation. Returns ("done", "") or ("timeout", reason).
     A challenge or a warning found while waiting stops the poll at once.
@@ -1096,6 +1118,8 @@ def _wait_for_done(ctx, browser, driver, site):
     finished AND can be downloaded."""
     limit = driver["max_wait_seconds"] if ctx.max_wait_seconds is None else ctx.max_wait_seconds
     waited = 0.0
+    last_state = None
+    states_path = None
     while waited < limit:
         found = challenge_or_warning(browser, driver)
         if found is not None:
@@ -1107,6 +1131,19 @@ def _wait_for_done(ctx, browser, driver, site):
             return "timeout", "the free credits are exhausted"
         if browser.exists(driver["done_markers"]):
             return "done", ""
+        # Record how the page looks while waiting, only when it changes.
+        # The state log (wait-states.jsonl in the site's output folder, in
+        # the artifact) is the timeline of the wait.
+        state = _wait_state(browser)
+        if state != last_state:
+            last_state = state
+            if states_path is None:
+                site_dir = ctx.out_dir / site
+                site_dir.mkdir(parents=True, exist_ok=True)
+                states_path = site_dir / "wait-states.jsonl"
+            with open(states_path, "a", encoding="utf-8") as handle:
+                handle.write(json.dumps({"waited_seconds": round(waited, 2),
+                                         "state": state}) + "\n")
         browser.wait(ctx.poll_seconds)
         waited += ctx.poll_seconds
     return "timeout", f"generation did not finish within {int(limit // 60)} minutes"
