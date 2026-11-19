@@ -10,7 +10,7 @@ import statistics
 from pathlib import Path
 
 PASS_AT = 0.8                                                                    # a probe run passes at this score or better
-JOBS = ("foundation_json", "story_extract_json", "story_review_json", "conflict_check_json")
+JOBS = ("foundation_json", "story_extract_json", "story_review_json", "conflict_check_json", "claim_verify_json", "brief_json", "competitor_ideas_json", "creator_chain_json", "listen_learn_json", "voice_creative_json", "seo_lens_json")
 RANKINGS_FILE = "ai_rankings.json"                                               # under data/_shared
 
 PAGE = ("Probe Brand makes soft overalls for adults. The company was founded in 2017 in a small studio in Portland. Its overalls are cut from heavy organic cotton and sold directly online. "
@@ -76,7 +76,27 @@ def probes():
     pairs = "\n".join(f"PAIR {i}:\n  A (already in the ledger): {a}\n  B (new): {b}" for i, (a, b, _l) in enumerate(PAIRS))
     foundation_user = ("TASK: write the 'positioning' section for the brand below.\n\n=== BRAND FACTS ===\nBrand name: Probe Brand. Soft overalls for adults, cut from organic cotton, sold online, founded in 2017 in Portland.\n\n"
                        "=== CLAIMS LEDGER ===\nDO NOT STATE (the ledger blocks or disputes these):\n- Won a national design award (blocked)\n- Featured in a national magazine (blocked)\n\nMAY STATE (verified by the owner):\n- (none yet)")
-    return {"story_extract_json": [(SR.EXTRACT_SYSTEM, f"Brand: Probe Brand\nPage address: https://probe.example/about\nPage text:\n{PAGE}", _extract_score)],
+    from .. import stages as ST
+    from .. import verify_claims as VC
+    from .. import brief as BF
+    page = "Probe Brand won the 2026 Probe Innovation Award, the awarding body announced on 3 March 2026. The brand also makes overalls."
+    verify_user = f"Brand: Probe Brand\nClaim: Probe Brand won the 2026 Probe Innovation Award.\n\nPAGE TEXT:\n{page}"
+
+    def verify_score(out):
+        ok = isinstance(out, dict) and out.get("verdict") == "supports" and out.get("about_brand") is True and "2026 Probe Innovation Award" in str(out.get("quote", ""))
+        return 1.0 if ok else (0.4 if isinstance(out, dict) and out.get("verdict") in ("supports", "contradicts", "silent") else 0.0)
+
+    def query_score(out):
+        qs = out.get("queries") if isinstance(out, dict) else None
+        return 1.0 if isinstance(qs, list) and 1 <= len(qs) <= 3 and all(isinstance(q, str) and "http" not in q.lower() and q.strip() for q in qs) else 0.0
+
+    def brief_score(out):
+        concepts = out.get("concepts") if isinstance(out, dict) else None
+        return round(0.5 * bool(isinstance(out, dict) and str(out.get("title", "")).strip()) + 0.5 * bool(isinstance(concepts, list) and concepts), 3)
+    extra = {"claim_verify_json": [(VC.QUERY_SYSTEM, "Brand: Probe Brand\nClaim: Probe Brand won the 2026 Probe Innovation Award.", query_score), (VC.CHECK_SYSTEM, verify_user, verify_score)],
+             "brief_json": [(BF.BRIEF_SYSTEM, "Ask: a short video for Probe Brand's organic cotton overalls.\nFacts you may state: Probe Brand overalls are cut from organic cotton and sold online.\nWrite 1 concept.", brief_score)]}
+    extra.update(ST.probes())
+    return {**extra, "story_extract_json": [(SR.EXTRACT_SYSTEM, f"Brand: Probe Brand\nPage address: https://probe.example/about\nPage text:\n{PAGE}", _extract_score)],
             "story_review_json": [(SR.REVIEW_SYSTEM, f"Brand: Probe Brand\nSource: https://probe.example/about\n{items}", _review_score)],
             "conflict_check_json": [(SR.RELATION_SYSTEM, f"Brand: Probe Brand\n{pairs}", _conflict_score)],
             "foundation_json": [(FD.SYSTEM, foundation_user, _foundation_score)]}

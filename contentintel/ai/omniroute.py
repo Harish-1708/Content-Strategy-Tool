@@ -7,6 +7,7 @@ repository or printed, and its data folder is scratch space that is thrown away 
 """
 import json
 import os
+import re
 import secrets
 import subprocess
 import time
@@ -17,6 +18,7 @@ from pathlib import Path
 
 from . import clients as cl
 
+LOGIN_ATTEMPTS, LOGIN_WAIT = 4, 2                                                    # a refused login is asked again this many times, this many seconds apart
 PINNED_VERSION = "3.8.53"                                                            # the version the live proof was made on (2026-11-17); the workflow installs exactly this one
 
 
@@ -44,13 +46,36 @@ class OmniRouteSidecar:
         if launcher is None:
             raise OmniRouteError(f"OmniRoute is not installed at {self.dir} (the workflow runs `npm install omniroute@{PINNED_VERSION}` there)")
         self.base_url, self.log_path = f"http://127.0.0.1:{port}", Path(log_path)
+        self._launch = (port, data_dir, log_path)
         Path(data_dir).mkdir(parents=True, exist_ok=True)
         self.log_path.parent.mkdir(parents=True, exist_ok=True)
-        env = {k: v for k, v in os.environ.items() if k in ("PATH", "HOME", "TMPDIR", "LANG", "NODE_OPTIONS")}
-        env.update({"DATA_DIR": str(data_dir), "PORT": str(port), "INITIAL_PASSWORD": self.password, "JWT_SECRET": secrets.token_hex(24), "API_KEY_SECRET": secrets.token_hex(24),
+        home, cwd = Path(data_dir).parent / (Path(data_dir).name + "-home"), Path(data_dir).parent / (Path(data_dir).name + "-cwd")
+        home.mkdir(parents=True, exist_ok=True)
+        cwd.mkdir(parents=True, exist_ok=True)                                         # its own home and working folder: nothing a cached install or an earlier run left behind can reach this start
+        env = {k: v for k, v in os.environ.items() if k in ("PATH", "TMPDIR", "LANG", "NODE_OPTIONS")}
+        env.update({"HOME": str(home), "XDG_CONFIG_HOME": str(home / ".config"), "XDG_DATA_HOME": str(home / ".local" / "share"), "DATA_DIR": str(data_dir), "PORT": str(port), "INITIAL_PASSWORD": self.password, "JWT_SECRET": secrets.token_hex(24), "API_KEY_SECRET": secrets.token_hex(24),
                     "STORAGE_ENCRYPTION_KEY": secrets.token_hex(16), "OMNIROUTE_HEADLESS": "1", "NEXT_TELEMETRY_DISABLED": "1"})
-        self.proc = self.popen(["node", str(launcher), "serve", "--no-open", "--headless"], env=env, stdout=open(self.log_path, "w"), stderr=subprocess.STDOUT)
+        self.proc = self.popen(["node", str(launcher), "serve", "--no-open", "--headless"], env=env, cwd=str(cwd), stdout=open(self.log_path, "w"), stderr=subprocess.STDOUT)
         return self
+
+    def log_tail(self, lines=12):
+        """The last lines of OmniRoute's own log, with this run's password and any key-looking text removed: what a refused login needs to be diagnosed from the run's output alone."""
+        try:
+            text = Path(self.log_path).read_text(encoding="utf-8", errors="replace")
+        except (OSError, TypeError):
+            return ""
+        text = text.replace(self.password, "[hidden]")
+        text = re.sub(r"(?i)(password|secret|token|key)[=: ]+\S{4,}", r"\1=[hidden]", text)
+        return " | ".join(ln.strip() for ln in text.strip().splitlines()[-lines:] if ln.strip())[:900]
+
+    def restart_fresh(self):
+        """Stop this OmniRoute and start it again with a NEW password and brand-new data, home and working folders (a refused login can be a start that found old state): returns self, ready."""
+        port, data_dir, log_path = self._launch
+        self.stop()
+        self.password = secrets.token_urlsafe(24)
+        self._attempt = getattr(self, "_attempt", 0) + 1
+        self._opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(CookieJar()))
+        return self.start(port, Path(str(data_dir) + f"-retry{self._attempt}"), log_path).wait_ready()
 
     def _request(self, method, path, body=None, headers=None, timeout=20):
         data = json.dumps(body).encode("utf-8") if body is not None else None
@@ -81,9 +106,16 @@ class OmniRouteSidecar:
 
     def bootstrap(self, key_name="contentintel"):
         """Log in with this run's password and create the one client key the tool uses. Returns the key."""
-        status, body = self._request("POST", "/api/auth/login", {"password": self.password})
+        status, body = 0, {}
+        for attempt in range(1, LOGIN_ATTEMPTS + 1):                                 # the server may answer its health check a moment before its first password is stored: ask again
+            status, body = self._request("POST", "/api/auth/login", {"password": self.password})
+            if status == 200 and body.get("success"):
+                break
+            if attempt < LOGIN_ATTEMPTS:
+                self.sleep(LOGIN_WAIT)
         if status != 200 or not body.get("success"):
-            raise OmniRouteError(f"OmniRoute refused the login it was started with (HTTP {status})")
+            said = str(body.get("error") or body.get("message") or body.get("_text") or "")[:160].replace(self.password, "[hidden]")
+            raise OmniRouteError(f"OmniRoute refused the login it was started with (HTTP {status}, {LOGIN_ATTEMPTS} attempts" + (f"; it said: {said}" if said else "") + ")")
         status, body = self._request("POST", "/api/keys", {"name": key_name})
         if status not in (200, 201) or not body.get("key"):
             raise OmniRouteError(f"OmniRoute did not create a client key (HTTP {status})")

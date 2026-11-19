@@ -170,10 +170,18 @@ def _start_omniroute(registry, environ, clients, workdir, notes):
     try:
         side.start(gw.free_port(), Path(workdir) / "omniroute-data", Path(workdir) / "omniroute.log")
         side.wait_ready()
-        key = side.bootstrap()
+        try:
+            key = side.bootstrap()
+        except om.OmniRouteError as exc:
+            if "refused the login" not in str(exc):
+                raise
+            notes.append("NOTE: " + str(exc)[:240] + "; starting OmniRoute again with a new password and new folders")
+            side.restart_fresh()
+            key = side.bootstrap()
         client = om.OmniRouteClient(side.base_url, key)
     except om.OmniRouteError as exc:
-        notes.append("APPLICATION: OmniRoute could not be started: " + str(exc)[:300])
+        tail = getattr(side, "log_tail", lambda: "")()
+        notes.append("APPLICATION: OmniRoute could not be started: " + str(exc)[:300] + ((" | its log: " + tail) if tail else ""))
         side.stop()
         return None
     for p in ready:                                                                      # one provider OmniRoute does not accept never takes the others down with it
