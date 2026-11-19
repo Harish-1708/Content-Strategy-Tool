@@ -397,7 +397,7 @@ def run_trial(prompt, brand, env, out_dir, verdicts_path=None,
         print("photo-trial: dry run — the plan only, no image is made")
         print(f"  brand: {brand.slug} ({brand.name}) — photos go only to this brand's Drive folder and sheet")
         print(f"  {SOURCE} ({model}, {width}x{height}):")
-        print("    free: no key, no signup; no watermark when nologo is set; non-commercial")
+        print("    free: no key, no signup; watermarked (nologo does NOT remove the watermark — proven live 2026-11-19: the nologo test image still shows \"pollinations.ai\"); non-commercial")
         print("    - one GET to image.pollinations.ai, the image bytes back")
         for line in save_plan_lines(brand, prompt, run_date):
             print(line)
