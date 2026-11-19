@@ -97,7 +97,7 @@ def _claims_unmatched(used, reg, story_text):
     return out
 
 
-def run_chain(reg, cfg, root, claude, *, brand_text, story_text, now, only=None, redo=False, max_steps=None, max_calls=None, read=SK.read_skill, verify_connection=True, retry_wait=2.0):
+def run_chain(reg, cfg, root, claude, *, brand_text, story_text, now, only=None, redo=False, max_steps=None, max_calls=None, read=SK.read_skill, verify_connection=True, retry_wait=2.0, verifier=None):
     """Run the chain (or only the named steps). Returns [{section, skill, result, detail}]: result is proposed, skipped, refused (the lock, the connection, no client, no material), needs_input, rejected or failed.
     max_steps caps the STEPS and max_calls the model CALLS (a step may need two: a correction after the gate, or a second try after a failure; each counts)."""
     names = [s for s, _p in CHAIN]
@@ -151,6 +151,10 @@ def run_chain(reg, cfg, root, claude, *, brand_text, story_text, now, only=None,
             cut_text = len(text) > MAX_TEXT
             text = text[:MAX_TEXT]
             gate = reg.gate(text)
+            if gate["verdict"] == "BLOCKED" and verifier is not None:                          # before correcting or rejecting: the claims that block it may be checkable from public sources, by the pool model
+                ids = sorted({f["claim"] for f in gate["findings"] if f["result"] == "BLOCKED" and f.get("claim")})
+                if ids and verifier(ids):
+                    gate = reg.gate(text)
             if gate["verdict"] == "BLOCKED" and attempt == 1:
                 feedback = "\n".join(f"- \"{f['sentence'][:140]}\": {f['why']}" for f in gate["findings"] if f["result"] == "BLOCKED")
                 continue

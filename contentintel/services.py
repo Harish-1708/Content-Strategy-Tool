@@ -636,7 +636,8 @@ def ai_stack(store, ledger, environ, *, providers_config="ai_providers.yaml", la
 
 
 # The jobs that have a ranked lane of their own (ai_lanes.yaml): each is ranked from what works live for that exact job; a new feature that uses AI adds its job here AND its lane there.
-JOB_LANES = {"foundation": "foundation_json", "story_extract": "story_extract_json", "story_review": "story_review_json", "conflict_check": "conflict_check_json"}
+JOB_LANES = {"foundation": "foundation_json", "story_extract": "story_extract_json", "story_review": "story_review_json", "conflict_check": "conflict_check_json", "claim_verify": "claim_verify_json", "brief": "brief_json", "competitor_ideas": "competitor_ideas_json", "creator_chain": "creator_chain_json", "listen_learn": "listen_learn_json",
+             "voice_creative": "voice_creative_json", "seo_lens": "seo_lens_json"}
 
 
 class GatewayUnavailable(Exception):

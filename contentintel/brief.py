@@ -414,6 +414,39 @@ def _assets_of(store, brand):
     return list((data or {}).get("assets") or [])
 
 
+def canon_layer(store, slug):
+    """Stage 3: a brief is written ONLY from approved canon and read against the claims ledger. Returns (registry or None, prompt block, notes). A brand with no canon and no claims yet has nothing to read
+    against: the brief goes ahead with a note. A brand whose canon has proposals but none approved is refused with the fix: the owner approves the foundation first."""
+    from . import canon as canon_mod
+    reg = canon_mod.Registry(store.data_dir, slug)
+    state = reg.state()
+    if not state["canon"] and not state["claims"]:
+        return None, "", ["no narrative canon and no claims ledger exist for this brand yet: the brief was NOT read against approved canon"]
+    approved = [e for e in state["canon"].values() if e["status"] == "approved"]
+    if state["canon"] and not approved:
+        raise BriefError("this brand's narrative canon has proposals but none is approved: approve the foundation sections in the Canon tab (Decision = approve), run the sheet update, then this again")
+    claims = list(state["claims"].values())
+    stop = [f"- {c['text'][:160]} ({c['status']})" for c in claims if c["status"] in ("blocked", "conflicted")]
+    ok = [f"- {c['text'][:160]}" for c in claims if c["status"] == "verified"]
+    block = ("APPROVED CANON (the brand's narrative, approved by the owner; stay inside it):\n" + "\n\n".join(f"[{e['section']}] {e['text'][:1500]}" for e in approved)[:6000]
+             + "\n\nDO NOT STATE (the claims ledger blocks or disputes these):\n" + ("\n".join(stop) or "- (none)") + "\n\nMAY STATE AS FACT (verified):\n" + ("\n".join(ok) or "- (none yet)")) if approved or claims else ""
+    return reg, block, []
+
+
+def gate_violations(brief, reg):
+    """The claims gate over every text of the brief: a BLOCKED sentence is an error (the brief needs review), a checkable statement nothing verifies is a warning. Returns [{where, rule, severity, message}]."""
+    fields = [(f, brief.get(f, "")) for f in ("title", "objective", "audience", "key_message", "tone", "notes_for_creators")]
+    for n, concept in enumerate(brief.get("concepts", []), start=1):
+        fields += [(f"concept {n} ({concept.get('name', '')}) {f}", concept.get(f, "")) for f in ("name", "hook", "script", "visual_direction", "cta")]
+    found = []
+    for where, text in fields:
+        if not str(text or "").strip():
+            continue
+        for f in reg.gate(str(text))["findings"]:
+            found.append({"where": where, "rule": "claims-gate", "severity": "error" if f["result"] == "BLOCKED" else "warning", "message": f"{f['result']}: \"{f['sentence'][:120]}\": {f['why']}"})
+    return found
+
+
 def make_brief(brand, store, *, brief_name, ask, ruleset, decisions, claude_for, settings, budget, now, drive=None,
                include_maybe=False, request_id=""):
     """Write, check and save one brief from the approved items. Returns the saved record. Raises BriefError with the fix if it cannot."""
@@ -430,8 +463,9 @@ def make_brief(brand, store, *, brief_name, ask, ruleset, decisions, claude_for,
     products = product_table(store, brand.slug, ruleset)
     if not products:
         raise BriefError("no product in the catalogue is allowed by this brief's rules")
+    canon_reg, canon_block, canon_notes = canon_layer(store, brand.slug)
     candidates, notes, calls = [], [], 0
-    extras = extras_text(store, brand, items, motion=_motion_for(ask, items), assets=_assets_of(store, brand))
+    extras = extras_text(store, brand, items, motion=_motion_for(ask, items), assets=_assets_of(store, brand)) + (("\n\n" + canon_block) if canon_block else "")
     for model in settings.brief_models:
         try:
             brief, violations, model_notes, used = write_brief(claude_for(model), brand, ask, items, products, ruleset, settings, budget, extras)
@@ -445,7 +479,9 @@ def make_brief(brand, store, *, brief_name, ask, ruleset, decisions, claude_for,
     best, judged = pick_best(candidates, claude_for(settings.brief_models[0]) if len(candidates) > 1 else None, budget,
                              set(settings.brief_models))
     won = candidates[best]
-    notes += won["notes"] + judged
+    if canon_reg is not None:
+        won["violations"] = list(won["violations"]) + gate_violations(won["brief"], canon_reg)                 # every claim in the brief goes through the gate
+    notes = list(canon_notes) + notes + won["notes"] + judged                                           # the canon note is part of a brief that was written, never of the reason none was
     shown = [i for i in items if i["id"] in {r for c in won["brief"]["concepts"] for r in c["references"]}]
     images, picture_notes = saved_pictures(shown, drive, settings.brief_images_per_item)
     notes += picture_notes

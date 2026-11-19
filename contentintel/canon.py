@@ -17,6 +17,7 @@ CANON_STATUSES = ("proposed", "approved", "rejected", "superseded")
 CLAIM_STATUSES = ("verified", "unverified", "blocked", "conflicted")
 CATEGORIES = ("award", "press", "ranking", "health", "figure", "customer", "origin", "other")
 OWNER, TOOL = "owner", "tool"
+MEDIA = ("page", "press", "social post", "interview", "podcast", "video", "newsletter", "community post", "other")      # what a source was published as: recorded for the owner, never a reason to count it or not
 
 # What makes a sentence sensitive: it says something a reader would take as a fact about the brand that can be checked.
 SENSITIVE = {
@@ -241,6 +242,32 @@ class Registry:
                     self.rejected.append(f"event {e.get('n')}: a verification by someone other than the owner was ignored")
                     continue
                 claims[e["id"]].update(status=e["status"], decided_at=e["at"], source=e.get("source") or claims[e["id"]]["source"], reason=e.get("reason") or claims[e["id"]]["reason"])
+                if e.get("actor") == OWNER:
+                    claims[e["id"]]["owner_decided"] = True                                   # the owner's word is final: evidence never overrides it
+            elif kind == "claim_evidence" and e.get("id") in claims:
+                claim = claims[e["id"]]
+                supports = [s for s in (e.get("supports") or []) if isinstance(s, dict) and len(str(s.get("quote", ""))) >= 25 and s.get("domain")]
+                contradicts = [c for c in (e.get("contradicts") or []) if isinstance(c, dict) and len(str(c.get("quote", ""))) >= 25 and c.get("domain")]
+                outcome = e.get("outcome") or ("verified" if e.get("verified") else "")
+                claim["evidence"] = {"supports": supports, "contradicts": contradicts, "checked_at": e["at"], "outcome": outcome}
+                supports = [s for s in supports if s.get("close") is True]                         # a source counts when it is CLOSE to the fact (judged by the reviewer, whatever the medium)
+                domains = {s["domain"] for s in supports}
+                claim["evidence"]["supports"] = supports
+                if claim.get("owner_decided"):
+                    pass                                                                          # the owner's word is final: evidence is kept, the status is never moved
+                elif outcome == "verified" and not contradicts and supports:
+                    # defence in depth: the fold itself re-checks the rule (one source close to the fact, in ANY medium, with an exact quotation, and nothing contradicting), so an event written any other way cannot verify a claim
+                    best = supports[0]
+                    single = len(domains) == 1
+                    risky = [s for s in supports if s.get("risk") == "high"]
+                    claim.update(status="verified", verified_by="evidence", single_source=single, decided_at=e["at"], source=best.get("url", claim["source"]),
+                                 reason=(f"VERIFIED FROM ONE SOURCE (spot-check it): {best.get('medium', 'other')} at {best['domain']}" + ("; the source may have a reason to exaggerate this claim" if risky else "")
+                                         if single else f"verified from {len(domains)} independent sources by the research check: " + ", ".join(sorted(domains))[:200]
+                                         + ("; one source may have a reason to exaggerate this claim" if risky else "")))
+                elif outcome == "conflicted" and contradicts:
+                    claim.update(status="conflicted", decided_at=e["at"], reason=f"sources disagree: {len(supports)} support it and {len(contradicts)} contradict it (" + ", ".join(sorted({c['domain'] for c in contradicts}))[:160] + "): the owner decides")
+                elif outcome == "unverified" and claim["status"] == "blocked" and not contradicts:
+                    claim.update(status="unverified", reason="checked from public sources: none that is reliable was found, nothing contradicts it: left unverified for the owner to decide")
         return {"canon": canon, "claims": claims, "foundation": foundation}
 
     # ---- the canon ------------------------------------------------------------------------------------------
@@ -290,6 +317,20 @@ class Registry:
         if status == "verified" and actor != OWNER:
             raise CanonError("only the owner marks a claim verified")
         return self.append("claim_status", actor, at, id=cid, status=status, source=source, reason=reason)
+
+    def record_evidence(self, cid, supports, contradicts, outcome, at):
+        """What a public-source check found for a claim: pages that support it (each with its exact quotation and the kind of source) and pages that contradict it. `outcome`:
+        verified     ONE source close to the fact, in any medium (a page, a post, an interview, a podcast, a newsletter...), with an exact quotation and nothing contradicting it; with only one source the claim
+                     is marked single-source so the owner can spot-check it;
+        conflicted   sources contradict each other, or one directly contradicts the claim: it is blocked and the owner decides;
+        unverified   no source close to the fact was found and nothing contradicts it: a claim that was blocked is left UNVERIFIED for the owner to decide.
+        The ledger re-checks every rule when it reads the event, and the owner's own decision is never moved. True and False are accepted for verified and unverified."""
+        if cid not in self.state()["claims"]:
+            raise CanonError(f"{cid} is not in the ledger")
+        outcome = {True: "verified", False: "unverified"}.get(outcome, outcome)
+        if outcome not in ("verified", "conflicted", "unverified"):
+            raise CanonError("an evidence outcome is verified, conflicted or unverified")
+        return self.append("claim_evidence", TOOL, at, id=cid, supports=list(supports)[:6], contradicts=list(contradicts)[:6], outcome=outcome)
 
     def add_conflict(self, text, category, source, reason, against, at):
         """New research disagrees with one or more claims already in the ledger (`against`: an id or a list of ids): the NEW version is added as conflicted and linked to EACH of them. The old claims are never

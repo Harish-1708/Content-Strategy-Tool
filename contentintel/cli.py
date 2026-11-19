@@ -15,6 +15,7 @@ from . import autoseeds as autoseeds_mod
 from . import browser as browser_mod
 from . import apify as apify_mod
 from . import batch2_cli as batch2_mod
+from . import stage_cli as stage_mod
 from .claude_client import Claude
 from .contract import Failure, classify_message
 from . import contract as contract_mod
@@ -189,6 +190,7 @@ def build_parser():
 
     tools_mod.add_parsers(sub, _common)
     batch2_mod.add_parsers(sub, _common)
+    stage_mod.add_parsers(sub, _common)
 
     p = sub.add_parser("health", help="show how each source and route is doing, and which ones have earned trust")
     _common(p)
@@ -333,6 +335,11 @@ def _hub_settings(args):
         return services.load_settings(None, getattr(args, "data_dir", "data"))
     except Exception:                                   # noqa: BLE001
         return None
+
+
+def _job_client(client, job):
+    """The routed client asking the lane that is ranked for ONE job (the brief); any other client is returned as it is."""
+    return client.for_job(job) if callable(getattr(client, "for_job", None)) else client
 
 
 def _routed(claude, purpose, args, store):
@@ -646,7 +653,7 @@ def _brief(args, store):
             print(f"Pictures will not be placed in the brief and the file will not be saved in Drive: the {missing} secret is not set.")
         record = brief_mod.make_brief(
             brand, store, brief_name=args.brief, ask=args.ask, ruleset=ruleset, decisions=decisions,
-            claude_for=lambda model: _routed(_claude(csettings, model), "brief", args, store), settings=settings,
+            claude_for=lambda model: _job_client(_routed(_claude(csettings, model), "brief", args, store), "brief"), settings=settings,
             budget=ib_mod.ClaudeBudget(store, now, settings.claude_monthly_calls), now=now, drive=drive,
             include_maybe=args.include_maybe, request_id=args.request.strip())
     except (brief_mod.BriefError, drive_mod.DriveError, sheets_mod.SheetsError) as exc:
@@ -1203,6 +1210,8 @@ def _registry_clients(args, store):
     except Exception:                                                                  # noqa: BLE001 - no search settings: no search
         serper = None
     search = (lambda query: [{"url": r.url, "title": r.title} for r in serper.search(query, num=10)]) if serper is not None else None
+    from . import search_fallback as SF
+    search = SF.with_fallback(search, SF.configured())                                  # RUSTXNG_URL (the owner's own metasearch host) answers when Serper cannot; unset, nothing changes
     getter = _get()
 
     def get(url):
@@ -1295,6 +1304,8 @@ def main(argv=None):
             return tools_mod.run_analyze(args)
         if args.cmd == "skills":
             return batch2_mod.run_skills(args, store, sync_mod.utc_now())
+        if args.cmd == "stage":
+            return stage_mod.run_stage(args, store, sync_mod.utc_now())
         if args.cmd == "canon":
             return batch2_mod.run_canon(args, store, sync_mod.utc_now(), clients=lambda: _registry_clients(args, store))
         if args.cmd == "analytics":

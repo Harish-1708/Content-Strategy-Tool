@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 from . import canon as CANON
+from . import verify_claims as CANON_VERIFY
 from . import skills as SK
 from .brands import list_brand_slugs
 
@@ -19,7 +20,7 @@ def add_parsers(sub, common):
     p = sub.add_parser("canon", help="the narrative canon and the offer-claims ledger: seed, status, gate, export, history")
     common(p)
     p.add_argument("--brand", default="all")
-    p.add_argument("--action", choices=["seed", "status", "gate", "export", "history", "refresh", "foundation", "reclassify-conflicts"], default="status")
+    p.add_argument("--action", choices=["seed", "status", "gate", "export", "history", "refresh", "foundation", "reclassify-conflicts", "verify-claims", "stage"], default="status")
     p.add_argument("--text", default="", help="gate: the text to check against the claims ledger")
     p.add_argument("--steps", default="", help="foundation: only these sections, comma-separated (positioning, audience_beliefs, category_narrative, strategic_narrative, message_house, message_system, language, story_bank, proof_points)")
     p.add_argument("--redo", action="store_true", help="foundation: propose a new version of a section that already has a proposal or approved text")
@@ -27,6 +28,8 @@ def add_parsers(sub, common):
     p.add_argument("--max-queries", type=int, default=12, help="refresh: searches per brand")
     p.add_argument("--max-pages", type=int, default=12, help="refresh: pages read per brand")
     p.add_argument("--max-new", type=int, default=20, help="refresh: new entries added per brand in one refresh (the pages after that are left for the next refresh and spend no AI calls)")
+    p.add_argument("--stage", default="", help="stage: which stage to run (competitor_ideas, creator_chain, listen_learn, voice_creative, seo_lens)")
+    p.add_argument("--max-claims", type=int, default=0, help="verify-claims: check at most this many claims in one run (default 6)")
     p.add_argument("--max-calls", type=int, default=0, help="at most this many model calls in one run (a retry counts; one batch of up to 20 pairs is one call). 0 = no limit for foundation and reclassify-conflicts, 48 for refresh")
     p.add_argument("--skills-config", default=SK.CONFIG_FILE, help="foundation: the skills policy file")
     p.add_argument("--skills-dir", default="", help="foundation: the checkout of the skills repository")
@@ -91,6 +94,47 @@ def run_skills(args, store, now, *, environ=None, runner=None):
         target.write_text(json.dumps({"at": now, "commit": result["commit"], "ok": result["ok"], "rows": rows}, indent=1, ensure_ascii=False), encoding="utf-8")
         print(f"skills: catalogue written to {target} (each skill's hash: git keeps its history)")
     return 0 if result["ok"] else 1
+
+
+def _claim_verifier(reg, slug, args, claude, search, get, now, announce=False):
+    """(verifier, report): verifier(ids) checks those claims from public sources with the pool model (the tool finds the sources itself: Serper search and a page fetch) and returns the ids that became verified.
+    None when this run has no AI client, no search or no page fetch (the foundation then works as before; verify-claims says what is missing)."""
+    report = {"calls": 0, "errors": 0, "notes": [], "verified": [], "checked": 0, "outcomes": {}}
+    lacking = [label for label, piece in (("AI client", claude), ("Serper search (SERPER_API_KEY)", search), ("page fetch", get)) if piece is None]
+    if lacking:
+        if announce:
+            print(f"canon: {slug}: checking claims needs the AI client, Serper search and a page fetch; this run has no {' and no '.join(lacking)}, so nothing was checked")
+        return None, report
+    from . import brands as BR
+    try:
+        name = getattr(BR.load_brand(slug, args.brands_dir), "name", slug) or slug
+    except Exception:                                                                  # noqa: BLE001 - a brand file problem must not stop the check
+        name = slug
+    tried = set()
+    budget = (args.max_calls or 0) or 30
+
+    def verifier(ids):
+        new = [i for i in ids if i not in tried]
+        report["checked"] += len(new)
+        done = CANON_VERIFY.verify_ids(reg, name, ids, search=search, get=get, claude=claude, now=now, max_calls=budget, report=report, tried=tried)
+        verified_now = [i for i in done if report["outcomes"].get(i) == "verified"]
+        report["verified"].extend(verified_now)
+        report.setdefault("single", []).extend(i for i in verified_now if reg.state()["claims"][i].get("single_source"))
+        return done
+    return verifier, report
+
+
+def _outcome_tail(vreport):
+    """What else the check found: claims left unverified for the owner (no source close to the fact), claims blocked because sources contradict."""
+    outcomes = list(vreport.get("outcomes", {}).values())
+    parts = []
+    if vreport.get("single"):
+        parts.append(f"{len(vreport['single'])} VERIFIED FROM ONE SOURCE, flagged for you to spot-check (the Claims tab Reason column says so): " + ", ".join(vreport["single"][:8]))
+    if outcomes.count("unverified"):
+        parts.append(f"{outcomes.count('unverified')} with no source close to the fact left UNVERIFIED for you to decide (a blocked one is no longer blocked)")
+    if outcomes.count("conflicted"):
+        parts.append(f"{outcomes.count('conflicted')} blocked because sources contradict")
+    return ("; " + "; ".join(parts)) if parts else ""
 
 
 def route_report(slug, claude, label):
@@ -172,20 +216,85 @@ def run_canon(args, store, now, *, clients=None):
                     print(f"canon: PROBLEM: {problem}")
                 print("canon: the foundation chain does not run: the skills connection cannot be trusted")
                 return 1
-            claude = clients()[0] if clients else None
+            claude, search, get = clients() if clients else (None, None, None)
             brand_text, story_text = FD.brand_material(args.brands_dir, slug)
             only = {s.strip() for s in args.steps.split(",") if s.strip()} or None
+            verifier, vreport = _claim_verifier(reg, slug, args, claude, search, get, now)
             rep = FD.run_chain(reg, cfg, trusted_root, claude, brand_text=brand_text, story_text=story_text, now=now, only=only, redo=args.redo, max_steps=args.max_steps or None,
-                               max_calls=args.max_calls or None, verify_connection=False)               # the connection was verified above
+                               max_calls=args.max_calls or None, verify_connection=False, verifier=verifier)               # the connection was verified above
             for line in FD.report_lines(slug, rep):
                 print(line)
             proposed = sum(1 for r in rep if r["result"] == "proposed")
             print(f"canon: {slug}: foundation: {proposed} section(s) PROPOSED for your decision in the Canon tab; nothing is canonical until you approve it")
             route_report(slug, claude, "foundation")
+            if vreport["checked"]:
+                print(f"canon: {slug}: claims checked from public sources by the pool model: {len(vreport['verified'])} of {vreport['checked']} became VERIFIED (one source close to the fact in any medium, exact quotation, nothing contradicting), "
+                      f"{vreport['calls']} AI call(s)" + ("; verified: " + ", ".join(vreport["verified"]) if vreport["verified"] else "") + _outcome_tail(vreport))
+            rejected = [r for r in rep if r["result"] == "rejected"]
+            if rejected:
+                print(f"canon: {slug}: {len(rejected)} section(s) REJECTED by the gate and recorded ({', '.join(r['section'] for r in rejected)}): the run continues and does not fail for it. "
+                      "To unblock: run Skills > verify-claims, or decide the claims in the Claims tab, then run the section again.")
             if any("is not a section of the chain" in r["detail"] for r in rep):
                 worst = max(worst, 2)
-            elif any(r["result"] in ("failed", "rejected", "refused") and "limit" not in r["detail"] for r in rep if r["result"] != "refused" or "NEEDS_INPUT" not in r["detail"]):
+            else:
+                broke = [r for r in rep if r["result"] in ("failed", "refused") and "limit" not in r["detail"] and (r["result"] != "refused" or "NEEDS_INPUT" not in r["detail"])]
+                if broke and not proposed and not rejected:                  # nothing worked and nothing was merely blocked: the run itself broke (no AI client, a lock, the model down): that fails
+                    worst = max(worst, 1)
+                elif broke:
+                    print(f"canon: {slug}: note: {len(broke)} section(s) could not be run ({'; '.join(r['section'] + ': ' + r['detail'][:80] for r in broke[:3])}); the others were saved")
+        elif args.action == "stage":
+            from . import foundation as FD
+            from . import stages as ST
+            if args.stage not in ST.STAGES:
+                print(f"canon: stage needs --stage, one of: {', '.join(ST.STAGES)}")
+                return 2
+            try:
+                cfg = SK.load_config(args.skills_config)
+            except SK.SkillsError as exc:
+                print(f"canon: {exc}")
+                return 1
+            trusted_root = Path(args.skills_dir) if args.skills_dir else SK.checkout_dir(cfg)
+            trusted = SK.verify(cfg, trusted_root)
+            if not trusted["ok"]:
+                for problem in trusted["problems"]:
+                    print(f"canon: PROBLEM: {problem}")
+                print("canon: the stage does not run: the skills connection cannot be trusted")
+                return 1
+            claude, search, get = clients() if clients else (None, None, None)
+            brand_text, story_text = FD.brand_material(args.brands_dir, slug)
+            verifier, vreport = _claim_verifier(reg, slug, args, claude, search, get, now)
+            try:
+                from . import brands as BR
+                name = getattr(BR.load_brand(slug, args.brands_dir), "name", slug) or slug
+            except Exception:                                                              # noqa: BLE001
+                name = slug
+            rep = ST.run_stage(args.stage, reg, cfg, trusted_root, claude, slug=slug, name=name, brand_text=brand_text, story_text=story_text, store=store, now=now,
+                               max_calls=args.max_calls or None, verifier=verifier, verify_connection=False)
+            for line in ST.report_lines(slug, args.stage, rep):
+                print(line)
+            proposed = sum(1 for r in rep if r["result"] == "proposed")
+            rejected = [r for r in rep if r["result"] == "rejected"]
+            print(f"canon: {slug}: {ST.STAGES[args.stage]['title']}: {proposed} section(s) PROPOSED (saved under data/{slug}/extras and catalogue; nothing is canon, posted or sent)"
+                  + (f"; {len(rejected)} REJECTED by the gate and recorded: the run does not fail for it (run verify-claims, or decide the claims in the Claims tab)" if rejected else ""))
+            if vreport["checked"]:
+                print(f"canon: {slug}: claims checked from public sources by the pool model: {len(vreport['verified'])} of {vreport['checked']} became VERIFIED")
+            route_report(slug, claude, args.stage)
+            broke = [r for r in rep if r["result"] in ("failed", "refused") and (r["result"] != "refused" or "NEEDS_INPUT" not in r["detail"])]
+            if broke and not proposed and not rejected:
                 worst = max(worst, 1)
+        elif args.action == "verify-claims":
+            claude, search, get = clients() if clients else (None, None, None)
+            verifier, vreport = _claim_verifier(reg, slug, args, claude, search, get, now, announce=True)
+            if verifier is None:
+                worst = max(worst, 1)
+                continue
+            ids = CANON_VERIFY.targets(reg, args.max_claims or 6)
+            done = verifier(ids)
+            for note in vreport["notes"][:12]:
+                print(f"canon:   note: {note}")
+            print(f"canon: {slug}: {len(ids)} claim(s) checked from public sources by the pool model: {len(vreport['verified'])} became VERIFIED (one source close to the fact in any medium, exact quotation, nothing contradicting)"
+                  f"{_outcome_tail(vreport)}; {vreport['calls']} AI call(s). The owner can still change any status in the Claims tab.")
+            route_report(slug, claude, "claim verification")
         elif args.action == "reclassify-conflicts":
             from . import story_refresh as SR
             claude = clients()[0] if clients else None
@@ -261,4 +370,4 @@ def run_canon(args, store, now, *, clients=None):
                   + (f"; WARNING: {len(reg.chain_problems)} line(s) of the log do not follow the line before them (edited, shortened or reordered): {reg.chain_problems[0]}" if reg.chain_problems else "")
                   + (f"; {len(reg.rejected)} event(s) ignored because they break the rules" if reg.rejected else "")
                   + (f"; foundation: {state['foundation'].get('foundation_needs_input', 0)} step(s) waiting for input, {state['foundation'].get('foundation_rejected', 0)} refused by the gate" if state.get("foundation") else ""))
-    return worst if args.action in ("gate", "seed", "history", "refresh", "foundation", "reclassify-conflicts") else 0
+    return worst if args.action in ("gate", "seed", "history", "refresh", "foundation", "reclassify-conflicts", "verify-claims", "stage") else 0

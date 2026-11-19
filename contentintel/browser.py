@@ -515,13 +515,29 @@ class PlaywrightBrowser:
                 continue
         return False
 
+    @staticmethod
+    def _focus_box(box):
+        """Put the cursor in a text box even when something drawn over it (a placeholder overlay, as on Kling's prompt editor) takes the pointer click: click it as a person would; if the click is blocked, give
+        it focus directly; if that is not possible either, click it with the hit-target check off. The first that works is used; only when all three fail does the next selector get its turn."""
+        try:
+            box.click(timeout=3000)
+            return
+        except Exception:                                                              # noqa: BLE001 - blocked by an overlay: the next way
+            pass
+        try:
+            box.focus(timeout=3000)
+            return
+        except Exception:                                                              # noqa: BLE001
+            pass
+        box.click(force=True, timeout=3000)
+
     def type_text(self, selectors, text, submit=False):
         for sel in selectors:
             try:
                 loc = self.page.locator(sel)
                 if loc.count() > 0:
                     box = loc.first
-                    box.click(timeout=8000)
+                    self._focus_box(box)
                     # A logged-in session types one keystroke at a time, with
                     # the occasional typo that is noticed and corrected; long
                     # text is pasted, the way a person pastes a long prompt.
