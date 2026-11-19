@@ -1198,8 +1198,8 @@ def run_site(key, ctx):
                     detail = reason
                 browser.screenshot("login-wall")
                 return finish("not-set-up", detail)
-            # Dismiss a promo modal that covers the page (best effort: if
-            # no modal is showing, nothing matches and we carry on).
+            # Dismiss a promo modal that covers the landing page (best effort:
+            # if no modal is showing, nothing matches and we carry on).
             if driver.get("dismiss_selectors"):
                 browser.click(driver["dismiss_selectors"])
             # Enter the creation studio when the prompt box is not on the
@@ -1212,6 +1212,14 @@ def run_site(key, ctx):
             # and we carry on).
             if driver.get("enter_selectors"):
                 browser.click(driver["enter_selectors"])
+            # Dismiss again AFTER entering the studio: a promo can open when
+            # the studio loads, after the first dismiss. Generation #6
+            # (2026-11-19) failed exactly this way — the "Kling Image 4.0"
+            # modal was open on the studio page, over the editor, and every
+            # prompt selector failed to click through it, even though the
+            # editor was on the page. Best effort either way.
+            if driver.get("dismiss_selectors"):
+                browser.click(driver["dismiss_selectors"])
             if not _pick_model(ctx, browser, driver):
                 browser.screenshot("no-model")
                 return finish("no-go", "the free model could not be selected "
