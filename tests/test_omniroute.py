@@ -260,3 +260,114 @@ def test_omniroute_is_installed_at_one_exact_pinned_version_by_the_shared_action
     text = Path(".github/actions/ai-pool/action.yml").read_text(encoding="utf-8")
     assert re.fullmatch(r"\d+\.\d+\.\d+", om.PINNED_VERSION) and 'npm install "omniroute@${version}"' in text and "PINNED_VERSION" in text          # an exact version, read from the code: never `latest`, never a range
     assert "omniroute-${{ runner.os }}-${{ hashFiles('contentintel/ai/omniroute.py') }}" in text                                          # the cache is keyed on the pin: changing it reinstalls
+
+
+# ---- the 401 that recurred in three GitHub runs: the login is asked again, the start is repeated on fresh folders, and the log is shown ---------------------------------------------------------------------
+def _sidecar(tmp_path, requests, popen=None):
+    sleeps = []
+    popens = []
+
+    def fake_popen(cmd, **kw):
+        popens.append((cmd, kw))
+        return type("P", (), {"poll": lambda self: None, "terminate": lambda self: None, "wait": lambda self, timeout=None: 0, "kill": lambda self: None, "returncode": 0})()
+    side = om.OmniRouteSidecar(str(tmp_path / "src"), popen=popen or fake_popen, sleep=sleeps.append)
+    seen = []
+
+    def fake_request(method, path, body=None, headers=None, timeout=20):
+        seen.append((method, path, body))
+        return requests.pop(0)
+    side._request = fake_request
+    return side, sleeps, popens, seen
+
+
+def test_a_refused_login_is_asked_again_and_the_third_answer_is_taken(tmp_path):
+    side, sleeps, _p, seen = _sidecar(tmp_path, [(401, {"error": "no"}), (401, {"error": "no"}), (200, {"success": True}), (201, {"key": "sk-omni-1"})])
+    assert side.bootstrap() == "sk-omni-1" and sleeps == [om.LOGIN_WAIT, om.LOGIN_WAIT] and [s[1] for s in seen] == ["/api/auth/login"] * 3 + ["/api/keys"]
+
+
+def test_a_login_that_stays_refused_says_what_omniroute_said_how_often_it_was_tried_and_never_the_password(tmp_path):
+    side, sleeps, _p, _s = _sidecar(tmp_path, [(401, {"error": f"bad password {'x' * 4}"})] * om.LOGIN_ATTEMPTS)
+    side.password = "PW-SECRET-123"
+    with pytest.raises(om.OmniRouteError) as err:
+        side.bootstrap()
+    text = str(err.value)
+    assert f"HTTP 401, {om.LOGIN_ATTEMPTS} attempts" in text and "bad password" in text and "PW-SECRET-123" not in text and len(sleeps) == om.LOGIN_ATTEMPTS - 1
+
+
+def test_the_start_gets_its_own_home_and_working_folder_and_a_restart_gets_a_new_password_and_new_folders(tmp_path):
+    side, _sl, popens, _seen = _sidecar(tmp_path, [(200, {"status": "ok"})] * 3)
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "node_modules" / "omniroute" / "bin").mkdir(parents=True)
+    (tmp_path / "src" / "node_modules" / "omniroute" / "bin" / "omniroute.mjs").write_text("", encoding="utf-8")
+    side.start(20123, tmp_path / "w" / "omniroute-data", tmp_path / "w" / "omniroute.log")
+    first = popens[0][1]
+    assert first["cwd"] == str(tmp_path / "w" / "omniroute-data-cwd") and first["env"]["HOME"] == str(tmp_path / "w" / "omniroute-data-home") and first["env"]["DATA_DIR"] == str(tmp_path / "w" / "omniroute-data")
+    assert Path(first["cwd"]).is_dir() and Path(first["env"]["HOME"]).is_dir()
+    old_password = side.password
+    side.restart_fresh()
+    second = popens[1][1]
+    assert side.password != old_password and second["env"]["INITIAL_PASSWORD"] == side.password and second["env"]["DATA_DIR"].endswith("omniroute-data-retry1") and second["env"]["DATA_DIR"] != first["env"]["DATA_DIR"]
+
+
+def test_the_log_tail_hides_the_password_and_key_looking_text(tmp_path):
+    side, _s, _p, _q = _sidecar(tmp_path, [])
+    side.password = "PW-SECRET-123"
+    side.log_path = tmp_path / "o.log"
+    side.log_path.write_text("starting\nlogin attempt password=PW-SECRET-123 failed\nthe value PW-SECRET-123 was refused by the form\napiKey: abcdef123456 rejected\nready on 20123\n", encoding="utf-8")
+    tail = side.log_tail()
+    assert "PW-SECRET-123" not in tail and "abcdef123456" not in tail and "starting" in tail and "ready on 20123" in tail
+
+
+def test_a_refused_login_makes_the_tool_start_omniroute_again_once_and_a_second_refusal_prints_the_log(tmp_path, monkeypatch):
+    from contentintel.ai import commands as aic
+    made = []
+
+    class Side:
+        def __init__(self, d):
+            made.append(self)
+            self.base_url, self.restarts, self.logins = "http://127.0.0.1:20999", 0, 0
+
+        def start(self, *a):
+            return self
+
+        def wait_ready(self):
+            return self
+
+        def bootstrap(self):
+            self.logins += 1
+            if self.logins <= made_refusals[0]:
+                raise om.OmniRouteError("OmniRoute refused the login it was started with (HTTP 401, 4 attempts)")
+            return "sk"
+
+        def restart_fresh(self):
+            self.restarts += 1
+            return self
+
+        def add_provider(self, *a):
+            return None
+
+        def log_tail(self):
+            return "boot ok | login failed"
+
+        def stop(self):
+            pass
+    monkeypatch.setattr(om, "OmniRouteSidecar", Side)
+    monkeypatch.setattr(om, "entry_point", lambda d: Path(d, "x"))
+    registry = type("R", (), {"providers": {"a": type("P", (), {"id": "a", "enabled": True, "omniroute": {"provider": "a"}, "credential_env": ("A_KEY",)})()}})()
+    made_refusals = [1]
+    clients, notes = {}, []
+    assert isinstance(aic._start_omniroute(registry, {"A_KEY": "1", "CONTENTINTEL_OMNIROUTE_DIR": "/o"}, clients, tmp_path, notes), Side) and made[0].restarts == 1 and set(clients) == {"a"}
+    assert any(n.startswith("NOTE: OmniRoute refused the login") and "again with a new password" in n for n in notes)
+    made_refusals[0] = 5
+    clients2, notes2 = {}, []
+    assert aic._start_omniroute(registry, {"A_KEY": "1", "CONTENTINTEL_OMNIROUTE_DIR": "/o"}, clients2, tmp_path, notes2) is None
+    assert any("could not be started" in n and "its log: boot ok | login failed" in n for n in notes2) and clients2 == {}
+
+
+def test_the_action_clears_any_database_a_cached_install_carries():
+    import yaml as _y
+    steps = _y.safe_load(Path(".github/actions/ai-pool/action.yml").read_text(encoding="utf-8"))["runs"]["steps"]
+    clear = next(s for s in steps if "Clear any state" in s.get("name", ""))
+    assert "cache-hit == 'true'" in clear["if"] and "storage.sqlite" in clear["run"] and "omniroute-src/data" in clear["run"]
+    names = [s.get("name", "") for s in steps]
+    assert names.index(clear["name"]) > names.index("Restore OmniRoute") and clear.get("continue-on-error") is True

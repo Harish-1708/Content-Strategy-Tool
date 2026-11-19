@@ -602,3 +602,51 @@ def test_the_evidence_for_the_concepts_is_sent_to_the_model_when_there_is_some_a
     sent = rich.json_calls[0][1]
     assert "Evidence for the concepts (not facts about our products)" in sent and "What audiences are saying right now" in sent and "410 engagement" in sent
     assert sent.index("Facts you may state") < sent.index("Evidence for the concepts")                  # the evidence is kept apart from, and after, the facts the brief may state
+
+
+# ---- stage 3: a brief is written only from approved canon and every claim in it goes through the gate ---------------------------------------------------------------------------------------------------
+def _ledger(store):
+    from pathlib import Path
+    from contentintel import canon as C
+    reg = C.Registry(store.data_dir, "swoveralls")
+    C.apply_seed(reg, C.load_seed(Path("brands/swoveralls/claims_seed.yaml")), NOW)
+    return reg
+
+
+def test_a_brand_with_no_canon_and_no_claims_gets_its_brief_with_a_note_that_it_was_not_read_against_approved_canon(store, swov, ruleset, usable):
+    record = make(store, swov, ruleset, {"claude-sonnet-5-5": claude_with(good_brief())})
+    assert record["status"] == "ready" and any(n.startswith("no narrative canon and no claims ledger exist for this brand yet: the brief was NOT read against approved canon") for n in record["notes"])
+    assert not any(v["rule"] == "claims-gate" for v in record["violations"])
+
+
+def test_a_brand_whose_canon_has_proposals_but_none_approved_is_refused_with_the_fix(store, swov, ruleset, usable):
+    reg = _ledger(store)
+    reg.propose_canon("positioning", "Swoveralls makes soft overalls for grown-ups.", "launch/research/positioning-mapper", "a" * 64, NOW)
+    with pytest.raises(BR.BriefError, match="canon has proposals but none is approved: approve the foundation sections in the Canon tab"):
+        make(store, swov, ruleset, {"claude-sonnet-5-5": claude_with(good_brief())})
+
+
+def test_the_approved_canon_and_the_do_not_state_list_reach_the_prompt_and_the_brief_is_read_against_the_ledger(store, swov, ruleset, usable):
+    from contentintel import canon as C
+    reg = _ledger(store)
+    reg.propose_canon("positioning", "Swoveralls makes soft overalls for grown-ups who want comfort.", "launch/research/positioning-mapper", "a" * 64, NOW)
+    reg.decide_canon(next(iter(reg.state()["canon"])), "approved", C.OWNER, NOW)
+    claude = claude_with(good_brief())
+    record = make(store, swov, ruleset, {"claude-sonnet-5-5": claude})
+    prompt = claude.json_calls[0][1]
+    assert "APPROVED CANON" in prompt and "[positioning] Swoveralls makes soft overalls for grown-ups who want comfort." in prompt and "DO NOT STATE (the claims ledger blocks or disputes these)" in prompt and "- Awards (blocked)" in prompt
+    assert not any(n.startswith("no narrative canon") for n in record["notes"])
+
+
+def test_a_blocked_claim_in_the_brief_makes_it_need_review_and_a_checkable_statement_nothing_verifies_is_a_warning(store, swov, ruleset, usable):
+    from contentintel import canon as C
+    reg = _ledger(store)
+    reg.propose_canon("positioning", "Swoveralls makes soft overalls for grown-ups.", "launch/research/positioning-mapper", "a" * 64, NOW)
+    reg.decide_canon(next(iter(reg.state()["canon"])), "approved", C.OWNER, NOW)
+    bad = good_brief(concepts=[concept(script="Swoveralls won several awards for its design. Show the zip, then the pockets.")])
+    record = make(store, swov, ruleset, {"claude-sonnet-5-5": claude_with(bad)})
+    gate = [v for v in record["violations"] if v["rule"] == "claims-gate"]
+    assert record["status"] == "needs review" and any(v["severity"] == "error" and v["message"].startswith("BLOCKED:") and "script" in v["where"] for v in gate)
+    viol = BR.gate_violations({"title": "T", "concepts": [{"name": "n", "hook": "Clinically proven to be comfy.", "script": "", "visual_direction": "", "cta": ""}]}, reg)
+    assert viol and all(v["severity"] == "warning" and v["message"].startswith("NEEDS_REVIEW:") for v in viol)
+    assert BR.gate_violations({"title": "Soft overalls", "concepts": []}, reg) == []

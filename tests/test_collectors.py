@@ -1059,3 +1059,23 @@ def test_a_collect_run_looks_for_the_page_and_files_it_and_a_dry_run_does_not(tm
     assert any("swoveralls: Chobani: resolved - found with Serper" in n for n in result.notes)
 
 
+
+
+def test_a_google_login_failure_switches_gemini_off_for_the_next_brand_which_is_told_why(tmp_path, store, swov, dude, cfg, settings):
+    gem = GeminiFake(site(cfg, "gemini"), logged_in=False)
+    result = collect(store, tmp_path, [swov, dude], DEEP, world(cfg, gem=gem), cfg, settings, sources=("deep_research",))
+    assert len(gem.opened) == 1 and "GEMINI_COOKIES" in result.brands["swoveralls"][0].detail and "GEMINI_COOKIES" in result.brands["duderobe"][0].detail
+    assert result.problems_for == ["gemini"]                                                                         # named once, not once per brand
+
+
+def test_a_google_login_failure_during_deep_research_is_recorded_in_the_health_ledger(tmp_path, store, swov, cfg, settings):
+    import json as _json
+    from contentintel import health as H
+    from stage1_helpers import registry as health_registry
+    led = H.HealthLedger({}, health_registry(tmp_path))
+    write_research(tmp_path, swov, {"track_own_brand": False, **DEEP})
+    gem = GeminiFake(site(cfg, "gemini"), logged_in=False)
+    C.run_collect([swov], store, browser_factory=world(cfg, gem=gem), creds=CREDS, settings=settings, browser_cfg=cfg, ledger_cls=R.Ledger, sources=["deep_research"], now=NOW, run_id="r1",
+                  root=str(tmp_path / "brands"), health=led)
+    recorded = {k: e for k, e in led.state["routes"].items() if k.startswith("deep_research|")}
+    assert recorded and any("NEED_LOGIN" in _json.dumps(e) for e in recorded.values())                              # the failed login is on the ledger, so the route is rested and shown as failing

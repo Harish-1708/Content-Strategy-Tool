@@ -5,6 +5,7 @@ The phrases and addresses that count as a warning are in browser.yaml; the page 
 wording but has NOT been checked against a real warning: that is said in the README and in browser.yaml.
 """
 import shutil
+from pathlib import Path
 from dataclasses import replace
 
 import pytest
@@ -523,3 +524,19 @@ def test_the_workflow_offers_ignore_cooldown_and_passes_it_on():
     assert box["type"] == "boolean" and box["default"] is False and "dealt with the warning" in box["description"]
     step = next(s for s in wf["jobs"]["collect"]["steps"] if "IGNORE_COOLDOWN" in (s.get("env") or {}))
     assert step["env"]["IGNORE_COOLDOWN"] == "${{ inputs.ignore_cooldown }}" and '--ignore-cooldown' in step["run"]
+
+
+def test_cli_a_collect_run_hands_the_health_ledger_and_the_registry_to_the_collector_and_saves_what_it_learned(cli_env, monkeypatch):
+    from contentintel import cli as cli_mod
+    state, run, tmp_path = cli_env
+    seen = {}
+    original = cli_mod.collectors_mod.run_collect
+
+    def spy(*args, **kwargs):
+        seen.update(kwargs)
+        return original(*args, **kwargs)
+    monkeypatch.setattr(cli_mod.collectors_mod, "run_collect", spy)
+    sources_yaml = str(Path(__file__).resolve().parent.parent / "sources.yaml")
+    assert run("--all", "--sources", "meta_ads", "--sources-config", sources_yaml) == 0
+    assert seen["health"] is not None and seen["registry"] is not None          # without them nothing is recorded and saved batches carry no provenance
+    assert (tmp_path / "data" / "_shared" / "collector_health.json").is_file()

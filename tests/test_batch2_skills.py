@@ -239,7 +239,7 @@ def test_the_commands_say_it_plainly_and_fail_when_the_connection_cannot_be_trus
 def test_the_workflow_checks_out_the_pinned_commit_and_fails_a_verify_that_fails():
     wf = yaml.safe_load(Path(".github/workflows/skills.yml").read_text(encoding="utf-8"))
     inputs = wf[True]["workflow_dispatch"]["inputs"]
-    assert inputs["action"]["options"] == ["status", "verify", "update-report", "catalogue", "seed-claims", "claims-status", "gate", "refresh-story-bank", "foundation", "reclassify-conflicts"]
+    assert inputs["action"]["options"] == ["status", "verify", "update-report", "catalogue", "seed-claims", "claims-status", "gate", "refresh-story-bank", "foundation", "reclassify-conflicts", "verify-claims", "stage"]
     steps = wf["jobs"]["skills"]["steps"]
     text = Path(".github/workflows/skills.yml").read_text(encoding="utf-8")
     assert "git clone --quiet --filter=blob:none --no-checkout" in text and 'git -C "$path" checkout --quiet "$sha"' in text and "set -o pipefail" in text

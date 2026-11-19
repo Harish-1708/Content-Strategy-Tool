@@ -312,3 +312,53 @@ def test_cli_all_blocked_exits_one(cli_env, capsys):
     state["factory"].browsers["instagram"] = challenged(cfg, "instagram")
     assert run("--brand", "swoveralls", "--sources", "tiktok,instagram") == 1
     assert "FAILED: every source was stopped" in capsys.readouterr().out
+
+
+# ---- Kling's prompt editor: a placeholder overlay takes the pointer click (video trial run #15) ------------------------------------------------------------------------------------------------------------
+class _Loc:
+    def __init__(self, click_ok=True, focus_ok=True, force_ok=True, present=True):
+        self.click_ok, self.focus_ok, self.force_ok, self.present, self.calls, self.filled = click_ok, focus_ok, force_ok, present, [], None
+        self.first = self
+
+    def count(self):
+        return 1 if self.present else 0
+
+    def click(self, timeout=0, force=False):
+        self.calls.append(("force-click" if force else "click", timeout))
+        if not (self.force_ok if force else self.click_ok):
+            raise TimeoutError("an element intercepts pointer events")
+
+    def focus(self, timeout=0):
+        self.calls.append(("focus", timeout))
+        if not self.focus_ok:
+            raise TimeoutError("not focusable")
+
+    def fill(self, text):
+        self.filled = text
+
+    def press(self, key):
+        self.calls.append(("press", key))
+
+
+def _typing_browser(locs):
+    br = object.__new__(B.PlaywrightBrowser)
+    br.human = None
+    br.page = types.SimpleNamespace(locator=lambda sel: locs[sel])
+    return br
+
+
+def test_a_prompt_box_under_an_overlay_is_still_typed_into_by_focusing_it():
+    box = _Loc(click_ok=False, focus_ok=True)
+    assert _typing_browser({"div.tiptap.ProseMirror": box}).type_text(["div.tiptap.ProseMirror"], "a red bicycle") is True
+    assert [c[0] for c in box.calls] == ["click", "focus"] and box.filled == "a red bicycle"                    # the blocked click does not stop it, and nothing is forced when focus works
+
+
+def test_a_box_that_can_neither_be_clicked_nor_focused_is_clicked_with_the_hit_check_off_and_a_box_that_cannot_be_reached_at_all_moves_to_the_next_selector():
+    forced = _Loc(click_ok=False, focus_ok=False, force_ok=True)
+    assert _typing_browser({"a": forced}).type_text(["a"], "x") is True and [c[0] for c in forced.calls] == ["click", "focus", "force-click"] and forced.filled == "x"
+    dead, good = _Loc(click_ok=False, focus_ok=False, force_ok=False), _Loc()
+    assert _typing_browser({"dead": dead, "good": good}).type_text(["dead", "good"], "y") is True and dead.filled is None and good.filled == "y"
+    assert _typing_browser({"dead": _Loc(click_ok=False, focus_ok=False, force_ok=False)}).type_text(["dead"], "z") is False
+    plain = _Loc()
+    _typing_browser({"p": plain}).type_text(["p"], "ok", submit=True)
+    assert [c[0] for c in plain.calls] == ["click", "press"] and plain.calls[0][1] == 3000                      # an ordinary box is clicked as before, only without the 8 second wait on a blocked one

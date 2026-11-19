@@ -625,14 +625,16 @@ def test_every_job_has_a_ranked_lane_of_its_own_whose_chain_names_only_approved_
     from contentintel import services as SV
     from contentintel.ai import lanes as L, registry as R
     lanes = L.load_lanes("ai_lanes.yaml", R.load_registry("ai_providers.yaml"))                             # the loader refuses a route to a model nobody approved
-    assert set(SV.JOB_LANES) == {"foundation", "story_extract", "story_review", "conflict_check"}
+    assert set(SV.JOB_LANES) == {"foundation", "story_extract", "story_review", "conflict_check", "claim_verify", "brief", "competitor_ideas", "creator_chain", "listen_learn", "voice_creative", "seo_lens"}
     for job, lane in SV.JOB_LANES.items():
         assert lane in lanes and len(lanes[lane].chain) >= 3 and len({(r["provider"], r["model"]) for r in lanes[lane].chain}) == len(lanes[lane].chain), job          # ranked backups, no repeats
         assert "RANKING NOT YET MEASURED" in lanes[lane].description, lane                                   # honest: the order is seeded, not measured, until the pool retest
     import re
     used = set()
-    for path in ("contentintel/story_refresh.py", "contentintel/foundation.py"):
+    for path in ("contentintel/story_refresh.py", "contentintel/foundation.py", "contentintel/verify_claims.py"):
         used |= set(re.findall(r'for_job\(\w+, "(\w+)"\)', Path(path).read_text(encoding="utf-8")))
+    from contentintel import stages as ST
+    used |= {s["job"] for s in ST.STAGES.values()} | {"brief"}                                           # the stages name their job in their own table; the brief is routed in cli.py
     assert used == set(SV.JOB_LANES)                                                                       # every job the code asks for has a lane, and no lane is unused
 
 

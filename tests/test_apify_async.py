@@ -385,3 +385,17 @@ def test_routing_tiktok_collect_through_apify_is_a_mode_flip_in_research_yaml(tm
     assert statuses(result) == [("tiktok", "ran")]
     assert {r["via"] for r in store.read_collected("swoveralls")} == {"apify"} and used(store) == {"apify_items": 1}
     assert C.load_collector_settings("does-not-exist.yaml").apify_mode == "off"          # the repo default stays off until Harish flips it
+
+
+@pytest.mark.parametrize("status", [202, 204])
+def test_only_200_and_201_count_as_a_started_run_so_a_202_or_204_is_never_taken_as_one(status):
+    calls = []
+
+    def http(method, url, *, params=None, json_body=None, headers=None, timeout=30):
+        calls.append(url)
+        return status, {"data": {"id": "run-x", "status": "RUNNING", "defaultDatasetId": "ds-x"}}, {}
+
+    apify = Apify("tok", http=http, sleep=lambda s: None)
+    with pytest.raises(P.ProviderError):
+        apify.run(ACTOR, {}, max_items=20, max_cost_usd=0.5)
+    assert len(calls) == 1                                                                                          # and nothing is started a second time

@@ -156,3 +156,18 @@ def _reset_guards():
     guards.configure(None)
     yield
     guards.configure(None)
+
+
+@pytest.fixture(autouse=True)
+def no_real_provider_calls(monkeypatch):
+    """The free providers that need no key (OVH, AI Horde) are ready on any machine with a network, so on a hosted runner a test that goes through the routed client would reach a REAL provider and get a real
+    answer instead of its scripted one. No test reaches a provider on the internet: only this machine's own address (the local gateway and OmniRoute tests start real local servers) is allowed through."""
+    from urllib.parse import urlsplit
+    from contentintel.ai import clients as ai_clients
+    real = ai_clients.default_http
+
+    def guarded(method, url, *, headers, body, timeout):
+        if urlsplit(str(url)).hostname not in ("127.0.0.1", "localhost", "::1"):
+            raise ConnectionError("no real provider calls in tests: " + str(urlsplit(str(url)).hostname))
+        return real(method, url, headers=headers, body=body, timeout=timeout)
+    monkeypatch.setattr(ai_clients, "default_http", guarded)

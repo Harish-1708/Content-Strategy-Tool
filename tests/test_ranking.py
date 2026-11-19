@@ -15,14 +15,21 @@ PERFECT = {"story_extract_json": {"facts": [{"fact": "Probe Brand was founded in
                                            {"fact": "Probe Brand uses organic cotton.", "quote": "Its overalls are cut from heavy organic cotton and sold directly online.", "category": "product"}]},
            "story_review_json": {"verdicts": [{"i": 0, "supported": True, "about_brand": True}, {"i": 1, "supported": True, "about_brand": True}, {"i": 2, "supported": False, "about_brand": True}]},
            "conflict_check_json": {"relations": [{"i": i, "relation": lab} for i, (_a, _b, lab) in enumerate(RK.PAIRS)]},
-           "foundation_json": {"text": "Probe Brand makes soft overalls for adults. " * 12, "needs_input": ["named competitors"], "claims_used": []}}
+           "foundation_json": {"text": "Probe Brand makes soft overalls for adults. " * 12, "needs_input": ["named competitors"], "claims_used": []},
+           "claim_verify_json": [{"queries": ["Probe Brand 2026 Probe Innovation Award"]}, {"verdict": "supports", "quote": "Probe Brand won the 2026 Probe Innovation Award, the awarding body announced on 3 March 2026.", "about_brand": True}],
+           "brief_json": {"title": "Organic overalls", "concepts": [{"name": "Soft"}]}}
+for _lane in ("competitor_ideas_json", "creator_chain_json", "listen_learn_json", "voice_creative_json", "seo_lens_json"):
+    PERFECT[_lane] = {"text": "Probe Brand makes soft overalls for adults and the audience likes the deep pockets. " * 4, "needs_input": ["named competitors"], "claims_used": []}
 
 
 def test_each_probe_scores_a_perfect_answer_one_and_a_wrong_or_invented_answer_low():
     suite = RK.probes()
     assert set(suite) == set(RK.JOBS)
-    for job, ((system, user, fn),) in suite.items():
-        assert fn(PERFECT[job]) == 1.0 and fn({}) == 0.0 and fn(None) == 0.0 and fn("junk") == 0.0, job
+    for job, job_probes in suite.items():
+        perfect = PERFECT[job] if isinstance(PERFECT[job], list) else [PERFECT[job]]
+        assert len(perfect) == len(job_probes), job
+        for (system, user, fn), good in zip(job_probes, perfect):
+            assert fn(good) == 1.0 and fn({}) == 0.0 and fn(None) == 0.0 and fn("junk") == 0.0, job
     extract = suite["story_extract_json"][0][2]
     invented = {"facts": [{"fact": "Probe Brand won an award.", "quote": "Probe Brand won a national design award in 2020 for its overalls.", "category": "award"}]}
     assert extract(invented) == 0.0                                                                           # a quotation that is not in the page is worth nothing
@@ -165,7 +172,7 @@ def test_the_pool_retest_workflow_is_manual_commits_only_its_own_files_and_sets_
     assert env["FREEAPI_ENCRYPTION_KEY"] and env["SAMBANOVA_API_KEY"] and env["ANTHROPIC_API_KEY"]
 
 
-NO_MODEL_JOBS = {("catalogue-admin", "admin"): "edits the catalogue only", ("sessions", "sessions"): "logs a session in, no model", ("sheets", "sheets"): "writes the sheet, no model",
+NO_MODEL_JOBS = {("catalogue-admin", "admin"): "edits the catalogue only", ("stage-tools", "stage"): "transcription (Groq Whisper, Faster-Whisper) and the public-page bake-off call no language model", ("sessions", "sessions"): "logs a session in, no model", ("sheets", "sheets"): "writes the sheet, no model",
                  ("sync", "sync"): "reads the store, no model", ("ai-gateway", "mock"): "a scripted stand-in: no network, no providers", ("agent-reach-cloudrun", "cloudrun"): "deploys a service",
                  ("tests", "test"): "runs the tests", ("tests", "sabotage-updated"): "runs the tests", ("tests", "sabotage-full-observatory"): "runs the tests", ("tests", "sabotage-full-main"): "runs the tests"}
 
@@ -173,7 +180,7 @@ NO_MODEL_JOBS = {("catalogue-admin", "admin"): "edits the catalogue only", ("ses
 def test_every_workflow_job_that_runs_the_tool_sets_up_the_free_pool_and_so_will_every_future_one():
     """The rule (owner's, 2026-11-17): every workflow that uses AI uses FreeLLMAPI and OmniRoute. A job that runs `python -m contentintel` must have the shared pool step and the provider secrets, unless it is
     on the short list of jobs that never call a model (each with its reason). A NEW workflow fails this test until it has the step or is added to the list with a reason."""
-    assert len(yaml.safe_load(Path(".github/actions/ai-pool/action.yml").read_text(encoding="utf-8"))["runs"]["steps"]) == 5
+    assert len(yaml.safe_load(Path(".github/actions/ai-pool/action.yml").read_text(encoding="utf-8"))["runs"]["steps"]) == 6
     seen_pool, skipped = [], []
     for path in sorted(Path(".github/workflows").glob("*.yml")):
         wf = yaml.safe_load(path.read_text(encoding="utf-8"))
