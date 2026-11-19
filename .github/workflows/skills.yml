@@ -21,7 +21,7 @@ on:
       action:
         description: "What to run"
         type: choice
-        options: [status, verify, update-report, catalogue, seed-claims, claims-status, gate, refresh-story-bank, foundation, reclassify-conflicts]
+        options: [status, verify, update-report, catalogue, seed-claims, claims-status, gate, refresh-story-bank, foundation, reclassify-conflicts, verify-claims, stage]
         default: status
       brand:
         description: "Brand folder name (for example swoveralls) or all"
@@ -39,6 +39,15 @@ on:
         description: "foundation: at most this many steps in one run (the next run continues)"
         required: false
         default: "3"
+      stage:
+        description: "stage: which stage to run (competitor_ideas, creator_chain, listen_learn, voice_creative, seo_lens)"
+        type: choice
+        options: [competitor_ideas, creator_chain, listen_learn, voice_creative, seo_lens]
+        default: competitor_ideas
+      max_claims:
+        description: "verify-claims: check at most this many claims in one run"
+        required: false
+        default: "6"
       max_calls:
         description: "foundation and reclassify-conflicts: at most this many model calls in one run (a retry or a correction counts; 0 = no limit)"
         required: false
@@ -89,12 +98,12 @@ jobs:
       - run: pip install -r requirements.txt
 
       - name: Set up the free provider pool
-        if: inputs.action == 'refresh-story-bank' || inputs.action == 'foundation' || inputs.action == 'reclassify-conflicts' || github.event_name == 'schedule'
+        if: inputs.action == 'refresh-story-bank' || inputs.action == 'foundation' || inputs.action == 'reclassify-conflicts' || inputs.action == 'verify-claims' || inputs.action == 'stage' || github.event_name == 'schedule'
         uses: ./.github/actions/ai-pool
 
 
       - name: Check out the skills repository at the pinned commit
-        if: inputs.action == 'status' || inputs.action == 'verify' || inputs.action == 'update-report' || inputs.action == 'catalogue' || inputs.action == 'foundation'
+        if: inputs.action == 'status' || inputs.action == 'verify' || inputs.action == 'update-report' || inputs.action == 'catalogue' || inputs.action == 'foundation' || inputs.action == 'stage'
         shell: bash
         run: |
           url=$(python -c "import yaml; print(yaml.safe_load(open('external_skills.yaml'))['repo']['url'])")
@@ -118,6 +127,8 @@ jobs:
           STEPS: ${{ inputs.steps }}
           MAX_STEPS: ${{ inputs.max_steps || '3' }}
           MAX_CALLS: ${{ inputs.max_calls || '6' }}
+          STAGE: ${{ inputs.stage }}
+          MAX_CLAIMS: ${{ inputs.max_claims || '6' }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
         run: |
@@ -132,10 +143,12 @@ jobs:
             refresh-story-bank) python -m contentintel canon --action refresh "${brand_args[@]}" ;;
             foundation) python -m contentintel canon --action foundation --steps "$STEPS" --max-steps "$MAX_STEPS" --max-calls "$MAX_CALLS" "${brand_args[@]}" ;;
             reclassify-conflicts) python -m contentintel canon --action reclassify-conflicts --max-calls "$MAX_CALLS" "${brand_args[@]}" ;;
+            verify-claims) python -m contentintel canon --action verify-claims --max-claims "$MAX_CLAIMS" --max-calls "$MAX_CALLS" "${brand_args[@]}" ;;
+            stage) python -m contentintel canon --action stage --stage "$STAGE" --max-calls "$MAX_CALLS" "${brand_args[@]}" ;;
           esac
 
       - name: Save the data
-        if: always() && (inputs.action == 'catalogue' || inputs.action == 'seed-claims' || inputs.action == 'foundation' || inputs.action == 'refresh-story-bank' || inputs.action == 'reclassify-conflicts' || github.event_name == 'schedule')
+        if: always() && (inputs.action == 'catalogue' || inputs.action == 'seed-claims' || inputs.action == 'foundation' || inputs.action == 'refresh-story-bank' || inputs.action == 'reclassify-conflicts' || inputs.action == 'verify-claims' || inputs.action == 'stage' || github.event_name == 'schedule')
         shell: bash
         run: |
           git config user.name "skills"
@@ -144,6 +157,7 @@ jobs:
           for d in data/*/registry; do
             if [ -d "$d" ]; then git add -f "$d"; fi
           done
+          git add -f data/*/extras/stage_*.json data/*/catalogue/stage_*.md 2>/dev/null || true          # the proposals of stages 4, 6, 7, 8 and 9
           if git diff --cached --quiet; then
             echo "No data changes to save."
           else

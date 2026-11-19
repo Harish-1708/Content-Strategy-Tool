@@ -1,0 +1,91 @@
+name: Stage tools
+
+# Stage 5 (transcription and its probe) and stage 10 (the browser bake-off). No model is called here: transcription uses Groq's hosted Whisper (GROQ_API_KEY) with Faster-Whisper on the runner as the backup,
+# and the bake-off reads PUBLIC pages only (no login, no stealth, no puzzle solving). Run it from Actions > Stage tools > Run workflow.
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "What to run"
+        type: choice
+        options: [probe-transcribe, transcribe, bakeoff]
+        default: probe-transcribe
+      brand:
+        description: "transcribe: the brand folder name"
+        required: false
+        default: ""
+      url:
+        description: "transcribe: a public https address of an audio or video file (read once, up to 24 MB)"
+        required: false
+        default: ""
+      source:
+        description: "transcribe: where the audio came from (kept with the transcript)"
+        required: false
+        default: ""
+      language:
+        description: "transcribe: the spoken language code (empty = detect)"
+        required: false
+        default: ""
+      bakeoff_urls:
+        description: "bakeoff: public addresses, comma-separated (empty = the list in bakeoff.yaml)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalogue-data
+  cancel-in-progress: false
+
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: pip install -r requirements.txt
+
+      - name: Install the local transcription backup (Faster-Whisper)
+        if: inputs.action != 'bakeoff'
+        continue-on-error: true
+        run: pip install faster-whisper
+
+      - name: Run it
+        env:
+          ACTION: ${{ inputs.action }}
+          BRAND: ${{ inputs.brand }}
+          URL: ${{ inputs.url }}
+          SOURCE: ${{ inputs.source }}
+          LANGUAGE: ${{ inputs.language }}
+          BAKEOFF_URLS: ${{ inputs.bakeoff_urls }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          set -o pipefail
+          case "$ACTION" in
+            probe-transcribe) python -m contentintel stage --action probe-transcribe ;;
+            transcribe) python -m contentintel stage --action transcribe --brand "$BRAND" --url "$URL" --source "$SOURCE" --language "$LANGUAGE" ;;
+            bakeoff) python -m contentintel stage --action bakeoff --bakeoff-urls "$BAKEOFF_URLS" ;;
+          esac
+
+      - name: Save the data
+        if: always() && (inputs.action == 'probe-transcribe' || inputs.action == 'transcribe')
+        run: |
+          git config user.name "stage-tools"
+          git config user.email "stage-tools@users.noreply.github.com"
+          git add -f data/_shared/transcribe_rankings.json data/*/extras/transcripts.json data/*/catalogue/transcripts.md 2>/dev/null || true          # only the files this tool writes
+          if git diff --cached --quiet; then
+            echo "No data changes to save."
+          else
+            git commit -m "Stage tools $(date -u +%Y-%m-%dT%H:%MZ)"
+            echo "--- files this run left changed but did not save (set aside for the pull, then put back):"
+            git status --porcelain | head -40
+            git pull --rebase --autostash
+            git push
+          fi
