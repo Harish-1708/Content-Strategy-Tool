@@ -1,0 +1,26 @@
+{
+ "note": "PROPOSALS only: nothing here is canon, posted or sent",
+ "runs": [
+  {
+   "at": "2026-11-19T10:01:48Z",
+   "proposals": {
+    "content_gaps": {
+     "at": "2026-11-19T10:01:48Z",
+     "gate": "NEEDS_REVIEW",
+     "note": "gate: NEEDS_REVIEW: 1 checkable statement(s) nothing verifies; needs input: Competitor domains for coverage comparison; Site URL and content inventory for gap analysis; Business goals and audience details; the brand has no collected yet",
+     "skill": "seo-geo/survey/content-gap-analysis",
+     "text": "Content the audience asks for or competitors cover that the brand does not:\n\n1. **Robes for women** — The Sherobe is listed as 'for women' in the manual facts, but no product page or marketing material was found. Competitors like Swoveralls and PajamaGram have explicit women's lines.\n2. **Plus-size or tall options** — No size range beyond standard S–XXL was found in the material. Competitors like Plush Necessities offer extended sizing.\n3. **Sustainable or organic materials** — No sustainability claims or certifications were found. Competitors like Parachute Home emphasize organic cotton and ethical production.\n4. **Matching family sets** — The brand has a kids robe but no explicit family matching sets. Competitors like Hanna Andersson and PajamaGram offer family matching.\n5. **Luxury positioning** — The brand's average price is $128, but no luxury framing or premium materials (e.g., silk, cashmere) were found. Competitors like Frette and Loro Piana own this space.\n6. **Subscription or auto-replenishment** — No subscription model was found. Competitors like Basic Outfitters offer subscription robes.\n7. **Personalization options** — Personalization is excluded from the catalogue, but competitors like Mark and Graham offer monogramming.\n8. **Wellness or self-care framing** — The brand mentions 'wellness' as an audience tag but does not develop this theme. Competitors like Parachute Home tie robes to self-care rituals."
+    },
+    "keyword_research": {
+     "at": "2026-11-19T10:01:48Z",
+     "gate": "OK",
+     "note": "gate: OK; needs input: Search volume data (none provided in the material); the brand has no collected yet",
+     "skill": "seo-geo/survey/keyword-research",
+     "text": "## Keyword Themes for DudeRobe\n\n**1. Hoodie-Robe Hybrid**\n- Keywords: hoodie robe, towel hoodie, sweatshirt robe, absorbent loungewear\n- Reason: The product's core innovation is combining a hoodie's style with a towel's functionality. This theme targets men who prefer hoodies but need absorbency.\n\n**2. Gift for Non-Robe Guys**\n- Keywords: gift for him, not a robe guy, convert him, robe for men who hate robes\n- Reason: A major customer segment is women buying for men who say they don't wear robes. This theme addresses the gift-giver's risk and the recipient's identity.\n\n**3. Practical Robe Features**\n- Keywords: attached belt robe, cuffed sleeves, deep pockets, never lost belt\n- Reason: The product stresses practical details that solve common robe annoyances. This theme targets buyers who value ease and functionality.\n\n**4. Sports Fan Loungewear**\n- Keywords: UFC robe, NBA robe, licensed sports robe, fan loungewear\n- Reason: Licensed editions are a significant part of the catalogue. This theme targets sports fans who want team-affiliated comfort wear.\n\n**5. Absorbent Yet Stylish**\n- Keywords: stylish bathrobe, absorbent and cool, men's lounge style, modern robe\n- Reason: The brand positions itself against 'boring' unisex robes. This theme targets buyers who want both drying power and a contemporary look."
+    }
+   }
+  }
+ ],
+ "stage": "seo_lens",
+ "title": "Stage 9: SEO lens"
+}

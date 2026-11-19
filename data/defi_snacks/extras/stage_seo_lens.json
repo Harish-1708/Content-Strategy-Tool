@@ -1,0 +1,26 @@
+{
+ "note": "PROPOSALS only: nothing here is canon, posted or sent",
+ "runs": [
+  {
+   "at": "2026-11-19T10:01:48Z",
+   "proposals": {
+    "content_gaps": {
+     "at": "2026-11-19T10:01:48Z",
+     "gate": "NEEDS_REVIEW",
+     "note": "gate: NEEDS_REVIEW: 2 checkable statement(s) nothing verifies; needs input: Competitor domains for direct content gap analysis; Access to the brand's content inventory for a complete audit; Confirmation of the brand's target audience and business goals; the brand has no collected yet",
+     "skill": "seo-geo/survey/content-gap-analysis",
+     "text": "The brand's audience and competitors do not appear to cover the following, based on the material provided:\n\n- **Buckwheat as a flower seed**: The founder's emphasis on buckwheat being a naturally gluten-free flower seed, not a grain or wheat, is a unique angle not covered by competitors or requested by the audience. [claims_used: 'Why buckwheat (founder quote, press release)']\n\n- **Ukrainian heritage**: The founder's Ukrainian background and the cultural significance of buckwheat in Ukraine is a story element not leveraged by competitors. [claims_used: 'How the product was built']\n\n- **CrossFit and gym sampling**: The brand's early success through sampling in CrossFit gyms and fitness communities is a strategy not widely discussed by competitors. [claims_used: 'The origin story (brand's own account, About page)']\n\n- **Portion control**: Customer reviews highlight that two pieces are enough to feel satisfied, a benefit not emphasized by competitors. [claims_used: 'Themes across real customer voices (summarised from the above, not invented)']\n\n- **Melting in transit**: While a complaint, the issue of melting and clusters sticking together during shipping is a problem area competitors do not address publicly. [claims_used: 'TikTok Shop — DEFI Dark Chocolate Crispy Superfood Bite (4.4 rating, 246 sold, 88% positive feedback, 4 reviews)']"
+    },
+    "keyword_research": {
+     "at": "2026-11-19T10:01:48Z",
+     "gate": "NEEDS_REVIEW",
+     "note": "gate: NEEDS_REVIEW: 4 checkable statement(s) nothing verifies; the brand has no collected yet",
+     "skill": "seo-geo/survey/keyword-research",
+     "text": "## Keyword Themes for DEFI Snacks\n\nBased on the brand's material, here are proposed keyword themes for DEFI Snacks, along with the reasoning for each:\n\n1. **High-Protein Chocolate Snacks**\n   - **Reason:** DEFI Snacks are positioned as high-protein treats that use real chocolate, appealing to fitness enthusiasts and health-conscious consumers.\n\n2. **Sprouted Buckwheat Snacks**\n   - **Reason:** Sprouted buckwheat is a unique ingredient central to DEFI Snacks, offering nutritional benefits like fiber, protein, and vitamins.\n\n3. **Guilt-Free Indulgence**\n   - **Reason:** The brand emphasizes indulgence without guilt, combining real chocolate with nutritious ingredients for a satisfying treat.\n\n4. **Pre/Post-Workout Snacks**\n   - **Reason:** Customer reviews and brand messaging highlight DEFI Snacks as ideal for pre/post-workout energy and recovery.\n\n5. **Female-Led Snack Brands**\n   - **Reason:** DEFI Snacks is a female-founded brand with a mission to support women-owned businesses, resonating with socially responsible consumers.\n\n6. **Superfood Chocolate Bites**\n   - **Reason:** The brand combines superfood ingredients like sprouted buckwheat with real chocolate, creating a nutrient-dense snack.\n\n7. **Portion-Controlled Snacks**\n   - **Reason:** Customer feedback highlights that just two pieces of DEFI Snacks are enough to feel satisfied, emphasizing portion control.\n\n8. **Sustained Energy Snacks**\n   - **Reason:** The protein blend (whey and casein) provides both fast and slow energy, positioning DEFI Snacks as a fuel source for active lifestyles.\n\n9. **Gluten-Free Chocolate Snacks**\n   - **Reason:** Sprouted buckwheat is naturally gluten-free, making DEFI Snacks suitable for gluten-sensitive consumers.\n\n10. **Mission-Driven Snack Brands**\n    - **Reason:** DEFI Snacks donates 1% of sales to women-owned businesses, aligning with consumers who value purpose-driven brands."
+    }
+   }
+  }
+ ],
+ "stage": "seo_lens",
+ "title": "Stage 9: SEO lens"
+}
