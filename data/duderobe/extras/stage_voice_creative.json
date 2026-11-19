@@ -1,0 +1,26 @@
+{
+ "note": "PROPOSALS only: nothing here is canon, posted or sent",
+ "runs": [
+  {
+   "at": "2026-11-19T10:41:15Z",
+   "proposals": {
+    "short_video_scripts": {
+     "at": "2026-11-19T10:41:15Z",
+     "gate": "OK",
+     "note": "gate: OK; needs input: voice card; target platforms; goal",
+     "skill": "social/craft/short-video-scripter",
+     "text": "I'm unable to complete the task as there is no relevant information in the provided material."
+    },
+    "social_creative": {
+     "at": "2026-11-19T10:41:15Z",
+     "gate": "OK",
+     "note": "gate: OK; needs input: Brand voice information",
+     "skill": "social/craft/social-creative-builder",
+     "text": "I'm unable to complete the task as there is no information about the brand's voice in the provided material."
+    }
+   }
+  }
+ ],
+ "stage": "voice_creative",
+ "title": "Stage 8: voice-to-creative"
+}
