@@ -22,10 +22,14 @@ account exists, no clip is ever generated):
   nothing is generated, nothing is saved — and the report is written to
   recon.json; the Luma stub, a missing cookie, a login wall and a challenge
   are all reported, never a failure; the three image studios are captured the
-  same way, and a video trial refuses an image studio plainly;
+  same way, and an image studio is trialled by naming it, the same way as a
+  video site, saving to Photo / the Photos tab;
 - the brand save: a made clip goes only to the brand the run is for, under
   the name YYYY-MM-DD_<brand>_<site>_<model>_<prompt-slug>.mp4, into that
-  brand's Drive folder and that brand's sheet tab, and a failed save never
+  brand's Drive folder and that brand's sheet tab, and a made image goes
+  only to the brand the run is for, under
+  YYYY-MM-DD_<brand>_<site>_<model>_<prompt-slug>.jpg|png, into that
+  brand's Photo folder and the Photos tab — and a failed save never
   loses the verdict — the trial result stands, the exact error is recorded,
   and the run still exits 0.
 """
@@ -81,10 +85,10 @@ class RecordingSaver:
         self.fail = None
         self.sheet_error = None
 
-    def save(self, site, model, prompt, clip_rel_path, out_dir, run_date):
+    def save(self, site, model, prompt, clip_rel_path, out_dir, run_date, media="video"):
         self.calls.append({"site": site, "model": model, "prompt": prompt,
                            "clip": clip_rel_path, "out_dir": str(out_dir),
-                           "run_date": run_date})
+                           "run_date": run_date, "media": media})
         if self.fail:
             raise VT.TrialError(self.fail)
         return self.link, self.sheet_error
@@ -142,6 +146,34 @@ def _logged_in_browser(key, done=True, clip=True, page_text=None):
     return browser
 
 
+def _logged_in_image_browser(key, done=True, image=True, bad_bytes=False):
+    """A fake browser on an image studio's page, logged in, with a Generate
+    button and a prompt box. `done` puts the finished-image marker on the
+    page; `image` makes the download link fetch an image. The finished-image
+    marker is the downloadable .jpg link itself (a bare <img> is NOT a done
+    signal — a showcase picture matches it on the real pages). `bad_bytes`
+    makes the download return HTML instead of an image, the way an error
+    page or a login redirect would."""
+    driver = VT.DRIVERS[key]
+    present = {"a[href$=\".jpg\"]"} if done else set()
+    page = {"present": present,
+            "links": [{"href": "https://cdn.example/image.jpg", "text": "Download"}] if image else []}
+    pages = {driver["app_url"]: page}
+    clickable = set(driver["generate_selectors"])
+    for step in driver["model_steps"]:
+        clickable.add(step[0])
+    clickable.update(driver.get("enter_selectors", []))
+    clickable.update(driver.get("dismiss_selectors", []))
+    browser = FakeBrowser(pages, clickable=clickable,
+                          typeable=set(driver["prompt_selectors"]),
+                          present_always=present)
+    browser.page_html = ("<html><body>welcome, " + driver["logged_in_markers"][0] +
+                         ", generate an image, my works, credits</body></html>")
+    body = b"<html>not an image</html>" if bad_bytes else b"\xff\xd8\xffFAKEIMAGEBYTES"
+    browser.fetch_map = {"https://cdn.example/image.jpg": (200, body)}
+    return browser
+
+
 # --- the registry --------------------------------------------------------------------------------------
 
 def test_registry_covers_the_long_term_sites_plus_the_luma_stub():
@@ -183,6 +215,28 @@ def test_clip_budget_refuses_a_second_clip_for_the_same_site():
     with pytest.raises(VT.TrialError, match="clip budget is spent"):
         budget.record("pixverse")
     assert budget.allow("kling") is True      # another site is unaffected
+
+
+def test_clip_budget_names_the_unit_it_refused():
+    budget = VT.ClipBudget()
+    budget.record("kling-image", unit="image")
+    with pytest.raises(VT.TrialError, match="1 image per site per run"):
+        budget.record("kling-image", unit="image")
+    budget = VT.ClipBudget()
+    budget.record("pixverse")
+    with pytest.raises(VT.TrialError, match="1 clip per site per run"):
+        budget.record("pixverse")
+
+
+def test_image_filename_and_detect_image():
+    assert VT.image_filename("2026-11-18", "duderobe", "kling-image", "Image 4.0",
+                             "puppy in park", "jpg") == "2026-11-18_duderobe_kling-image_image-4-0_puppy-in-park.jpg"
+    assert VT.image_filename("2026-11-18", "duderobe", "kling-image", "Image 4.0",
+                             "puppy in park", "png") == "2026-11-18_duderobe_kling-image_image-4-0_puppy-in-park.png"
+    assert VT.detect_image(b"\xff\xd8\xffFAKE") == ("jpg", "image/jpeg")
+    assert VT.detect_image(b"\x89PNG\r\n\x1a\nFAKE") == ("png", "image/png")
+    assert VT.detect_image(b"<html>not an image</html>") is None
+    assert VT.detect_image(b"") is None
 
 
 def test_a_second_run_for_the_same_site_is_a_no_go_not_a_second_clip(tmp_path):
@@ -247,6 +301,52 @@ def test_happy_path_makes_one_clip_downloads_and_saves_it_for_the_brand(tmp_path
     assert browser.opened == ["https://kling.ai",
                               "https://kling.ai/app?designerRouteName=video"]
     assert browser.typed == ["a test prompt"]
+
+
+IMAGE_KLING = "kling-image/2026-11-18_duderobe_kling-image_image-4-0_a-test-prompt.jpg"
+
+
+def test_image_trial_happy_path_makes_one_image_downloads_and_saves_it_for_the_brand(tmp_path):
+    env = {"KLING_COOKIES": COOKIE_JSON}
+    browser = _logged_in_image_browser("kling-image")
+    saver = RecordingSaver()
+    ctx = _ctx(tmp_path, env=env, factory=_fake_factory(browser), saver=saver)
+    entry = VT.run_site("kling-image", ctx)
+    assert entry["verdict"] == "go"
+    assert entry["clip"] == IMAGE_KLING
+    assert (tmp_path / IMAGE_KLING).read_bytes() == b"\xff\xd8\xffFAKEIMAGEBYTES"
+    assert entry["drive_link"] == saver.link
+    assert "save_error" not in entry
+    assert len(saver.calls) == 1
+    assert saver.calls[0]["site"] == "kling-image" and saver.calls[0]["model"] == "Image 4.0"
+    assert saver.calls[0]["media"] == "image"
+    assert saver.calls[0]["run_date"] == "2026-11-18"
+    # The homepage first, then straight into the image studio (the prompt
+    # box is not on the homepage); the promo modal is dismissed before typing.
+    assert browser.opened == ["https://kling.ai",
+                              "https://kling.ai/app?designerRouteName=omni-image&kolorsVersion=4.0"]
+    assert ".kling-dialog-omni .close" in browser.clicks
+    assert browser.typed == ["a test prompt"]
+    assert f"(image: {IMAGE_KLING})" in VT.verdict_line(entry)
+
+
+def test_image_trial_rejects_a_download_that_is_not_an_image(tmp_path):
+    env = {"KLING_COOKIES": COOKIE_JSON}
+    browser = _logged_in_image_browser("kling-image", bad_bytes=True)
+    saver = RecordingSaver()
+    ctx = _ctx(tmp_path, env=env, factory=_fake_factory(browser), saver=saver)
+    entry = VT.run_site("kling-image", ctx)
+    assert entry["verdict"] == "no-go"
+    assert "no image could be downloaded" in entry["reason"]
+    assert saver.calls == []
+    assert not (tmp_path / IMAGE_KLING).exists()
+
+
+def test_trial_keys_all_is_the_video_studios_only_and_an_image_studio_is_named(tmp_path):
+    assert VT.trial_keys("all") == list(VT.VIDEO_KEYS)
+    assert VT.trial_keys("kling") == ["kling"]
+    assert VT.trial_keys("kling-image") == ["kling-image"]
+    assert VT.trial_keys("dreamina-image") == ["dreamina-image"]
 
 
 def test_login_wall_is_not_set_up_and_nothing_is_generated(tmp_path):
@@ -476,6 +576,48 @@ def test_duderobe_clip_lands_only_in_duderobes_folder_and_sheet(tmp_path):
                        "Credits used": "", "Notes": ""}
     for sid in ("sheet-swoveralls", "sheet-defi-snacks"):
         assert "Video Trials" not in [w.title for w in sheets_client.spreadsheets[sid].worksheets()]
+
+
+def test_duderobe_image_lands_only_in_duderobes_photo_folder_and_sheet(tmp_path):
+    saver, drive_client, sheets_client = _real_saver(tmp_path, sheet_ids=SHEET_IDS)
+    rel = "kling-image/2026-11-18_duderobe_kling-image_image-4-0_puppy-in-park.jpg"
+    (tmp_path / "kling-image").mkdir()
+    (tmp_path / rel).write_bytes(b"\xff\xd8\xffFAKEIMAGEBYTES")
+    link, sheet_error = saver.save("kling-image", "Image 4.0", "puppy in park", rel, tmp_path,
+                                   "2026-11-18", media="image")
+    assert sheet_error is None
+    assert link.startswith("https://drive.google.com/file/d/") and link.endswith("/view")
+    # Drive: one file, in Idea Bank / Generated Content / Photo / DudeRobe, with the right name and bytes
+    generated_id = drive_client.find_folder(DRIVE_ROOT, "Generated Content")
+    assert generated_id is not None
+    assert drive_client.find_folder(generated_id, "VIDEO") is None  # the image save never creates the VIDEO side
+    photo_id = drive_client.find_folder(generated_id, "Photo")
+    assert photo_id is not None
+    brand_id = drive_client.find_folder(photo_id, "DudeRobe")
+    assert brand_id is not None
+    files = drive_client.list_files(brand_id)
+    assert list(files) == ["2026-11-18_duderobe_kling-image_image-4-0_puppy-in-park.jpg"]
+    assert drive_client.download(files["2026-11-18_duderobe_kling-image_image-4-0_puppy-in-park.jpg"]) == b"\xff\xd8\xffFAKEIMAGEBYTES"
+    # Sheet: the duderobe sheet has the Photos tab with its header and one row; the other sheets have no such tab
+    ws = sheets_client.spreadsheets["sheet-duderobe"].worksheet("Photos")
+    header, rows = read_sheet(ws)
+    assert header == VT.PHOTOS_HEADERS
+    assert len(rows) == 1
+    assert rows[0] == {"Date": "2026-11-18", "Brand": "duderobe", "Source": "kling-image", "Model": "Image 4.0",
+                       "Prompt": "puppy in park", "Verdict": "go", "Photo": link,
+                       "Credits used": "", "Notes": ""}
+    for sid in ("sheet-swoveralls", "sheet-defi-snacks"):
+        assert "Photos" not in [w.title for w in sheets_client.spreadsheets[sid].worksheets()]
+
+
+def test_an_image_save_refuses_bytes_that_are_not_an_image(tmp_path):
+    saver, _, _ = _real_saver(tmp_path, sheet_ids=SHEET_IDS)
+    rel = "kling-image/2026-11-18_duderobe_kling-image_image-4-0_puppy-in-park.jpg"
+    (tmp_path / "kling-image").mkdir()
+    (tmp_path / rel).write_bytes(b"<html>not an image</html>")
+    with pytest.raises(VT.TrialError, match="is not a JPEG or a PNG"):
+        saver.save("kling-image", "Image 4.0", "puppy in park", rel, tmp_path,
+                   "2026-11-18", media="image")
 
 
 def test_a_second_save_with_the_same_name_replaces_the_first_clip(tmp_path):
@@ -817,7 +959,10 @@ def test_image_recon_gemini_with_missing_cookies_is_not_set_up(tmp_path):
     assert factory.calls["n"] == 0
 
 
-def test_video_trial_refuses_an_image_studio(tmp_path, capsys):
-    code = VT.main(["--site", "dreamina-image", "--brand", "duderobe", "--out", "out"])
-    assert code == 1
-    assert "image studio, not a video site" in capsys.readouterr().out
+def test_an_image_studio_is_trialled_by_naming_it_not_refused(tmp_path, capsys):
+    code = VT.main(["--site", "kling-image", "--brand", "duderobe", "--out", "out", "--dry-run"])
+    assert code == 0
+    out = capsys.readouterr().out
+    assert "Generated Content / Photo / DudeRobe /" in out
+    assert "kling-image_image-4-0_a-red-bicycle-leaning-against-a-wooden.jpg" in out
+    assert 'tab "Photos"' in out
