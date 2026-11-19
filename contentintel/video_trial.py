@@ -35,6 +35,13 @@ Run it: ``python -m contentintel.video_trial --site all --dry-run --brand dudero
 (plan only, no browser), then without --dry-run for the real trial. One clip
 per site, hard cap, enforced in code (ClipBudget).
 
+Image studios: the same logged-in accounts also do images, so the recon
+covers three image studios too — Dreamina image, Kling image and Gemini
+image (``--recon --site dreamina-image`` and so on). They capture only;
+no image trial exists yet. A video trial (``--site all`` without
+``--recon``) runs the video studios only and refuses an image studio
+plainly. Pollinations stays the no-key image route (photo_trial.py).
+
 Where a made clip goes: ONLY to the brand the run is for. The clip is saved
 to Shared Drive 'Idea Bank Automation' / Generated Content / VIDEO /
 <Brand name> under the name
@@ -102,6 +109,7 @@ class TrialError(Exception):
 DRIVERS = {
     "pixverse": {
         "label": "PixVerse",
+        "kind": "video",
         "model": "V6",
         "app_url": "https://app.pixverse.ai",
         "cookies_secret": "PIXVERSE_COOKIES",
@@ -136,6 +144,7 @@ DRIVERS = {
     },
     "google_flow": {
         "label": "Google Flow",
+        "kind": "video",
         "model": "Veo 3.1 Lite",
         "app_url": "https://flow.google.com",
         "cookies_secret": "GOOGLE_FLOW_COOKIES",
@@ -173,6 +182,7 @@ DRIVERS = {
     },
     "dreamina": {
         "label": "Dreamina",
+        "kind": "video",
         "model": "Seedance 2.0",
         "models": ["Seedance 2.0", "Seedance Mini"],
         # Seedance 2.5 costs 37 credits/sec at 720p: a 5s clip is 185 credits,
@@ -205,6 +215,7 @@ DRIVERS = {
     },
     "kling": {
         "label": "Kling",
+        "kind": "video",
         "model": "Kling 4.0",
         "app_url": "https://kling.ai",
         "cookies_secret": "KLING_COOKIES",
@@ -252,6 +263,7 @@ DRIVERS = {
         # The runner fails this site with "needs sign-in check" and never
         # opens a browser or reads a cookie for it.
         "label": "Luma Dream Machine",
+        "kind": "video",
         "model": "Ray3.2",
         "stub": True,
         "app_url": "https://app.lumalabs.ai",
@@ -271,10 +283,120 @@ DRIVERS = {
         "credits_markers": ["not enough credits", "insufficient credits"],
         "max_wait_seconds": 600,
     },
+    # --- image studios on the same logged-in accounts (recon only for now) ---
+    # Pollinations is the only no-key image route, and its free tier caps at
+    # 768px with a visible watermark — so the logged-in sites are tried for
+    # images too. Research:
+    # hidden_files/image-sites-research-2026-11-19.md (each vendor's own
+    # pages, 2026-11-19). Selectors are FIRST GUESSES; the recon probe
+    # reports the real page, the way the video recon did. No image trial
+    # exists yet — these drivers capture only.
+    "dreamina-image": {
+        "label": "Dreamina image",
+        "kind": "image",
+        "model": "Seedream 5.0 Lite",
+        # The image studio is its own page, not the video tab:
+        # /ai-tool/home?type=image ("AI Image" in the nav). Free accounts
+        # get Seedream 5.0 Lite; whether free credits reach 5.0 Pro is
+        # unclear — Dreamina's own pages disagree.
+        "app_url": "https://dreamina.capcut.com/ai-tool/home?type=image",
+        "cookies_secret": "DREAMINA_COOKIES",
+        "free": {"credits": "reported 120/day (US), one 2K Lite image = 6 credits, ~20/day",
+                 "resolution": "2K (Creative Upscale to 2K/4K/8K)", "watermarked": True, "commercial": False},
+        "flow_notes": [
+            "image studio at /ai-tool/home?type=image; login required to generate",
+            "one 2K Seedream 5.0 Lite image = 6 credits; free exports are watermarked",
+            "4 preview variations, then Download",
+            "captcha was observed on the video trials and the video recon — expect it here too",
+        ],
+        "prompt_selectors": ["textarea", "textarea[placeholder*=\\\"prompt\\\" i]",
+                            "div[contenteditable=\\\"true\\\"]", "div[role=\\\"textbox\\\"]",
+                            "input[placeholder*=\\\"prompt\\\" i]"],
+        "model_steps": [],
+        "generate_selectors": ["button:has-text(\\\"Generate\\\")", "text=Generate"],
+        "done_markers": ["a[href$=\\\".jpg\\\"]", "a[href$=\\\".png\\\"]"],
+        "download_link_contains": [".jpg", ".png"],
+        "logged_in_markers": ["ai image", "generate", "my creations"],
+        "login_wall_markers": ["log in", "sign in"],
+        "challenge_markers": ["captcha", "verify to continue", "confirm it's you"],
+        "warning_markers": ["account has been suspended", "temporarily locked", "automated behavior"],
+        "credits_markers": ["not enough credits", "insufficient credits", "out of credits"],
+        "max_wait_seconds": 600,
+    },
+    "kling-image": {
+        "label": "Kling image",
+        "kind": "image",
+        "model": "Image 4.0",
+        # The image studio is the sibling of the video studio:
+        # designerRouteName=omni-image (video is designerRouteName=video).
+        # The kolorsVersion parameter tracks the model version and may
+        # change; the stable part is designerRouteName=omni-image.
+        "app_url": "https://kling.ai",
+        "enter_url": "https://kling.ai/app?designerRouteName=omni-image&kolorsVersion=4.0",
+        "cookies_secret": "KLING_COOKIES",
+        "free": {"credits": "disputed: 66/day widely quoted, but Kling's own policy suggests no daily grant, only promotional credits",
+                 "resolution": "2K/4K/8K (720p + logo reported for free video; image cap not separately stated)", "watermarked": True, "commercial": False},
+        "flow_notes": [
+            "image studio at designerRouteName=omni-image; up to 10 reference images",
+            "Image 4.0 is current; the blog guide covers IMAGE 3.0",
+            "review the results, then download",
+        ],
+        # The video studio's prompt box is a TipTap/ProseMirror editor; the
+        # image studio's is unconfirmed — lead with ProseMirror, then the
+        # generics, and let the recon probe report the real element.
+        "prompt_selectors": ["div.tiptap.ProseMirror",
+                            ".omni-prompt-editor div[contenteditable=\\\"true\\\"]",
+                            "textarea", "textarea[placeholder*=\\\"prompt\\\" i]",
+                            "div[contenteditable=\\\"true\\\"]", "div[role=\\\"textbox\\\"]",
+                            "input[placeholder*=\\\"prompt\\\" i]"],
+        "model_steps": [],
+        "generate_selectors": ["button:has-text(\\\"Generate\\\")", "text=Generate"],
+        "done_markers": ["a[href$=\\\".jpg\\\"]", "a[href$=\\\".png\\\"]"],
+        "download_link_contains": [".jpg", ".png"],
+        "logged_in_markers": ["create", "my works", "credits"],
+        "login_wall_markers": ["log in", "sign in", "sign up"],
+        "challenge_markers": ["captcha", "verify to continue", "confirm it's you"],
+        "warning_markers": ["account has been suspended", "temporarily locked", "automated behavior"],
+        "credits_markers": ["not enough credits", "insufficient credits", "out of credits"],
+        "max_wait_seconds": 600,
+    },
+    "gemini-image": {
+        "label": "Gemini image",
+        "kind": "image",
+        "model": "Nano Banana 2",
+        # No separate image page: generation happens in the same chat box
+        # at gemini.google.com ("Ask Gemini" bar). Type "Create an image
+        # of…" and the image arrives as a card in the chat, with a Download
+        # icon top-right. Free accounts default to Nano Banana 2 / 2 Lite.
+        "app_url": "https://gemini.google.com",
+        "cookies_secret": "GEMINI_COOKIES",
+        "free": {"credits": "no published daily count (last published: up to 20/day, May 2026); limits refresh every 5h to a weekly cap",
+                 "resolution": "~1K", "watermarked": True, "commercial": False},
+        "flow_notes": [
+            "no separate image page — type the request in the Ask Gemini bar",
+            "image arrives as a card in the chat; Download icon top-right",
+            "free output is SynthID-watermarked (invisible), no visible logo",
+            "GEMINI_COOKIES are expired (2026-11-16) — the recon will report the login wall until they are refreshed",
+        ],
+        "prompt_selectors": ["div[contenteditable=\\\"true\\\"]", "div[role=\\\"textbox\\\"]",
+                            "textarea", "input[placeholder*=\\\"Ask Gemini\\\" i]"],
+        "model_steps": [],
+        "generate_selectors": ["button[aria-label*=\\\"Send\\\" i]", "button:has-text(\\\"Send\\\")"],
+        "done_markers": ["a[href$=\\\".jpg\\\"]", "a[href$=\\\".png\\\"]"],
+        "download_link_contains": [".jpg", ".png"],
+        "logged_in_markers": ["ask gemini", "gemini"],
+        "login_wall_markers": ["sign in", "create your google account"],
+        "challenge_markers": ["unusual activity", "captcha", "verify it's you"],
+        "warning_markers": ["account has been suspended", "temporarily locked", "automated behavior"],
+        "credits_markers": ["not enough credits", "insufficient credits", "out of credits"],
+        "max_wait_seconds": 600,
+    },
 }
 
 SITE_KEYS = tuple(k for k in DRIVERS if not DRIVERS[k].get("stub"))
 ALL_KEYS = tuple(DRIVERS)
+VIDEO_KEYS = tuple(k for k in DRIVERS if DRIVERS[k].get("kind") == "video")
+IMAGE_KEYS = tuple(k for k in DRIVERS if DRIVERS[k].get("kind") == "image")
 
 
 # ---------------------------------------------------------------------------
@@ -1304,11 +1426,22 @@ def main(argv=None):
     except TrialError as exc:
         print(f"video-trial: {exc}")
         return 1
-    keys = list(ALL_KEYS) if args.site == "all" else [args.site]
     if args.recon:
+        # Recon captures any site — video studios and image studios alike.
+        keys = list(ALL_KEYS) if args.site == "all" else [args.site]
         _, code = run_recon(keys, settings, os.environ, args.out,
                             brand=brand, recon_path=args.recon_out, dry_run=args.dry_run)
         return code
+    # A video trial runs the video studios only. An image studio is refused
+    # plainly — run mode=recon to capture it, or mode=image for Pollinations.
+    if args.site == "all":
+        keys = list(VIDEO_KEYS)
+    elif args.site in VIDEO_KEYS:
+        keys = [args.site]
+    else:
+        print(f"video-trial: {args.site} is an image studio, not a video site — "
+              "run mode=recon to capture it, or mode=image for Pollinations")
+        return 1
     _, code = run_trial(keys, args.prompt, settings, os.environ, args.out,
                         brand=brand, verdicts_path=args.verdicts, dry_run=args.dry_run,
                         max_wait_seconds=args.max_wait_seconds,
