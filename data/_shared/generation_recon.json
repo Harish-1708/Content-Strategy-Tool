@@ -15,7 +15,7 @@
     "button:has-text(\"Generate\")": false,
     "text=Generate": false
    },
-   "human_score": 50,
+   "human_score": 39,
    "label": "PixVerse",
    "login": "in",
    "model": "V6",
@@ -32,26 +32,26 @@
     "textarea[placeholder*=\"prompt\" i]": false
    },
    "reason": "creation page captured; selectors probed",
-   "seconds": 49.7,
+   "seconds": 34.3,
    "site": "pixverse",
    "state": "ok",
-   "visible_text": "Home\nCreation\nAgent\nCLI & Plugin\nCanvas\nMini-Apps\nMusic Video\nFree\nSubscription\nAPI Platform\nGrowth Studio\nPixVerse World\nPixVerse Game\n\ud83d\udcb0\nBecome an Affiliate\nLearn More\nTerms\n\u00a9 PixVerse 2026\nDownload App\nEarn Credits\nSubscribe\nPersonal\n10\nBasic\nPixVerse Video Generator\n\ud83d\udda4 Black Friday, Big Savings! Get up to 59% off annual plans + bonus credits & model perks. Grab your deal and hit render \ud83d\udc49\n12d\n:\n15\n:\n09\n:\n02\n\ud83d\udda4 Black Friday, Big Savings! Get up to 59% off annual plans + bonus credits & model perks. Grab your deal and hit render \ud83d\udc49\n12d\n:\n15\n:\n09\n:\n02\nVideo\nVideo\nShorts\nShorts\nTemplate\nTemplate\nChallenge\nChallenge\nAll\nAll\nGamer Life\nGamer Life\nAd Magic\nAd Magic\nCinematic Narrative\nCinematic Narrative\nStylistic Art\nStylistic Art\nViral Case\nViral Case\nAnimal Theatre\nAnimal Theatre\nEffects Rendering\nEffects Rendering\nAvatar\nAvatar\nEducation & Learning\nEducation & Learning\nAnime & Playverse\nAnime & Playverse\nEmotional Close-up\nEmotional Close-up\nMusic\nMusic\nOur best deal of the year: up to 59% off.\nGrab it before the boss finds out.\nRecreate Viral Templates in One Click\nExplore trending content and turn it into your own videos\nCreate Faster with Fewer Credits\nNearly twice the speed with 36% fewer credits than Seedance 2.5\nExplore MiniMax H3 Image\nUp to 4K with 50% OFF\nSeedream 5.5 Is Here!\n40% off for everyone for 1 month!\nTurn Your Life Into a Game\nCreate a game-inspired video and join the showcase!\nPreview in 480p Then Finish in 4K\nUse Draft Mode to test for less then finish in higher resolution\nBuild Dynamic 3D Scenes with the PixVerse Plugin\nNow fully powered for your best ideas\nStep into worlds you can shape.\nYour imagination, brought to life.\nTo Create is to Play\nPlay & make games on our world model.\nOfficial\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nBaseball Chaos\nThat's it! Your turn to shine\nVideo\nVideo\nImage\nImage\nAudio\nAudio\nImage & Text\nImage & Text\nRefere"
+   "visible_text": "Home\nCreation\nAgent\nCLI & Plugin\nCanvas\nMini-Apps\nMusic Video\nFree\nSubscription\nAPI Platform\nGrowth Studio\nPixVerse World\nPixVerse Game\n\ud83d\udcb0\nBecome an Affiliate\nLearn More\nTerms\n\u00a9 PixVerse 2026\nDownload App\nEarn Credits\nSubscribe\nPersonal\n40\nBasic\n30\nRefresh Daily\nHere Are Your Daily Free Credits\nEarn More\nPixVerse Video Generator\n\ud83d\udda4 Black Friday, Big Savings! Get up to 59% off annual plans + bonus credits & model perks. Grab your deal and hit render \ud83d\udc49\n12d\n:\n02\n:\n34\n:\n33\n\ud83d\udda4 Black Friday, Big Savings! Get up to 59% off annual plans + bonus credits & model perks. Grab your deal and hit render \ud83d\udc49\n12d\n:\n02\n:\n34\n:\n33\nVideo\nVideo\nShorts\nShorts\nTemplate\nTemplate\nChallenge\nChallenge\nAll\nAll\nGamer Life\nGamer Life\nAd Magic\nAd Magic\nCinematic Narrative\nCinematic Narrative\nStylistic Art\nStylistic Art\nViral Case\nViral Case\nAnimal Theatre\nAnimal Theatre\nEffects Rendering\nEffects Rendering\nAvatar\nAvatar\nEducation & Learning\nEducation & Learning\nAnime & Playverse\nAnime & Playverse\nEmotional Close-up\nEmotional Close-up\nMusic\nMusic\nOur best deal of the year: up to 59% off.\nGrab it before the boss finds out.\nRecreate Viral Templates in One Click\nExplore trending content and turn it into your own videos\nCreate Faster with Fewer Credits\nNearly twice the speed with 36% fewer credits than Seedance 2.5\nExplore MiniMax H3 Image\nUp to 4K with 50% OFF\nSeedream 5.5 Is Here!\n40% off for everyone for 1 month!\nTurn Your Life Into a Game\nCreate a game-inspired video and join the showcase!\nPreview in 480p Then Finish in 4K\nUse Draft Mode to test for less then finish in higher resolution\nBuild Dynamic 3D Scenes with the PixVerse Plugin\nNow fully powered for your best ideas\nStep into worlds you can shape.\nYour imagination, brought to life.\nTo Create is to Play\nPlay & make games on our world model.\nOfficial\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nReference\nBaseball Chaos\nReference\nReference\nReference\nReferenc"
   },
   {
-   "human_score": 0,
+   "human_score": 43,
    "label": "Google Flow",
    "model": "Veo 3.1 Lite",
-   "reason": "peak hours for non-subscribers (~2-5 PM UTC); run outside that window",
-   "seconds": 0.0,
+   "reason": "the site asked for a check (captcha); a person must clear it",
+   "seconds": 35.3,
    "site": "google_flow",
-   "state": "skipped"
+   "state": "blocked"
   },
   {
-   "human_score": 47,
+   "human_score": 41,
    "label": "Dreamina",
    "model": "Seedance 2.0",
    "reason": "the site asked for a check (captcha); a person must clear it",
-   "seconds": 36.3,
+   "seconds": 39.8,
    "site": "dreamina",
    "state": "blocked"
   },
@@ -65,7 +65,7 @@
     "button:has-text(\"Generate\")": true,
     "text=Generate": true
    },
-   "human_score": 44,
+   "human_score": 46,
    "label": "Kling",
    "login": "in",
    "model": "Kling 4.0",
@@ -84,10 +84,10 @@
     "textarea[placeholder*=\"prompt\" i]": false
    },
    "reason": "creation page captured; selectors probed",
-   "seconds": 45.1,
+   "seconds": 50.7,
    "site": "kling",
    "state": "ok",
-   "visible_text": "Create Videos, Images and More in One Workspace\n\u3010Black Friday Sale\u3011Lowest Prices of the Year! Up to 50% off! Subscriber-only Auto Recharge: up to 20% bonus Credits!\n14\nDays\n15\nHrs\n07\nMins\n42\nSecs\nShop Now\nHome\nGenerate\nCanvas\nAssets\n66\nFirst frame\nLast frame\n\n\nDescribe the scene, or upload up to 10 keyframes. Use to quickly reference assets. Content will be generated by AI.Billing Rules\nVideo Generation\nKling 4.0\nKeyframes\n720p \u00b7 5s \u00b7 16:9 \u00b7 1\nGenerate\nSkills\nAll\nAds\nFilm\nDesign\nGeneral\nVideo Generation\nPro Visuals, Great Stories\nImage Generation\nRealistic. Crystal-Clear\nAI Portraits\nArtistic Portraits, Many Styles\nCharacter Design\nQuickly create diverse characters\nMotion Control\nPrecise Action & Pose\nAvatar\nRealistic Talking Avatar\nCreative Effects\nViral Effects in One Tap\nVideo to Audio\nGenerate Sounds from Video\nImage Enhancing\nRestore HD Details\nLip Sync\nPrecise Audio-Driven Lip Sync\nRestyle\nTransform Visual Styles\nView Control\nFreely set camera angles\nSmart Lighting\nSmartly recreate texture, lighting, and atmosphere\nProduct Detail Page\nEnhanced visuals with multi-layer editing\nWeb Design\nHigh-quality prototypes with multi-layer editing\nRecommended\nFollows\nEvents\nPlugin\nPublish\nKLING AI\n679\noLJPOTRg\n208\nlIUcFTCO\n61\nzZSgVUHh\n30\nCXNVGwhV\n181\njHoapqag\n2\nCreators\n513\nRZJbwKoj\n245\nLMNbAdCZ\n859\nepZDRixX\n108\nTOoijscB\n182\nfulley\n2\nBatuhan\n161\nwQlbDAma\n167\nOPGFVNgE\n161\nCaCnvoUc\n691\noFRoeRPb\n1\naYLYfmMj\n13\nImUazNrL\n61\nGoogoolittle.family\n921\nbOEAGdKG\n123\nDW\n1.1k\nNcvLiOWX\n0\nvWaNTzYG\n385\ntuqjIRHK\n145\nLupita\n45\nsouvenir\n7\nvMSMeqIY\n420\nLOVA\n554\nOrxebyug\n157\nMqltrTyp\n9\nVmUZuYEy\n384\nAgHWDOKk\n4\nfjSUdADf\n24\nUkZYWYIm\n492\ncDbvjyhL\n56\nAekouWyD\n33\nKayetan\n203\nBHokpLdM\n21\niTLgHcdN\n272\nJUHALEE\n442\ngQSFHcWX\n152\nFyVyQawX\n106\nGD Tony Kim\n682\ngXRQVbfY\n1.3k\nFDwwojSW\n73\nMARIN\n253\nPrestige\n766\nNopenoper\n9\nptSMvylI\n818\nKxectVia\n3\nSelangorOzzy\n1\nNguyenToanThang\n599\nFREEZE\n374\nXlxmEFSC\n45\nKBFCfCVs\n24\nisomatovx\n347\nFDdfEsCB\n29\nQzrZAlcG\n233\nVodIoZZp\n167\nXODOJCZk\n197\niVjLlLpK\n2k\nM.G\n596\nJomo Man\n560"
+   "visible_text": "Create Videos, Images and More in One Workspace\n\u3010Black Friday Sale\u3011Lowest Prices of the Year! Up to 50% off! Subscriber-only Auto Recharge: up to 20% bonus Credits!\n\u3010Black Friday Sale\u3011Lowest Prices of the Year! Up to 50% off! Subscriber-only Auto Recharge: up to 20% bonus Credits!\n14\nDays\n02\nHrs\n32\nMins\n28\nSecs\nShop Now\nHome\nGenerate\nCanvas\nAssets\n66\nFirst frame\nLast frame\n\n\nDescribe the scene, or upload up to 10 keyframes. Use to quickly reference assets. Content will be generated by AI.Billing Rules\nVideo Generation\nKling 4.0\nKeyframes\n720p \u00b7 5s \u00b7 16:9 \u00b7 1\nGenerate\nSkills\nAll\nAds\nFilm\nDesign\nGeneral\nVideo Generation\nPro Visuals, Great Stories\nImage Generation\nRealistic. Crystal-Clear\nAI Portraits\nArtistic Portraits, Many Styles\nCharacter Design\nQuickly create diverse characters\nMotion Control\nPrecise Action & Pose\nAvatar\nRealistic Talking Avatar\nCreative Effects\nViral Effects in One Tap\nVideo to Audio\nGenerate Sounds from Video\nImage Enhancing\nRestore HD Details\nLip Sync\nPrecise Audio-Driven Lip Sync\nRestyle\nTransform Visual Styles\nView Control\nFreely set camera angles\nSmart Lighting\nSmartly recreate texture, lighting, and atmosphere\nProduct Detail Page\nEnhanced visuals with multi-layer editing\nWeb Design\nHigh-quality prototypes with multi-layer editing\nRecommended\nFollows\nEvents\nPlugin\nPublish\nKLING AI\n992\nFREEZE\n380\nXmnKhJUo\n1\nihoRRXhb\n6\nCreators\n528\nmEMArgMj\n113\nOrxebyug\n170\nvMSMeqIY\n431\nKayetan\n232\nLupita\n45\nENXOfqFS\n7\ngadna singer\n1\nS10\n59\nJUHALEE\n482\nFtvlqnBP\n10\nHvDGFINb\n1\nBNOupKOS\n71\nJomo Man\n566\niVjLlLpK\n2.1k\ndnvqKial\n5\nBatuhan\n173\nblzReEft\n124\nsouvenir\n7\nSamirkashi\n550\ngoran\n292\nahuHrAMf\n314\nPHraOgfP\n60\nPrestige\n2.6k\naBPQlcuZ\n347\nOnky Zonky\n71\nHJxxBSIE\n11\nDW\n1.1k\ngXRQVbfY\n1.3k\nGD Tony Kim\n686\niTLgHcdN\n304\nTiny Worlds\n288\nNguyenToanThang\n619\nplatypusobsessed\n4\nisomatovx\n362\nyossef art\n1k\nsOvUoUCx\n11\npXcZzphO\n0\nChERCGFY\n13\nTBOskekP\n48\neglJbEgx\n6\nmaTWsRUu\n2\nbyblikzz\n15\nQueen\n498\nKBFCfCVs\n27\nlIUcFTCO\n80\nFyVyQawX\n140\nYSKiiLKc\n1k\nfeqynHAL\n178\nUnified Understand"
   },
   {
    "human_score": 0,
@@ -97,7 +97,61 @@
    "seconds": 0.0,
    "site": "luma",
    "state": "skipped"
+  },
+  {
+   "human_score": 47,
+   "label": "Dreamina image",
+   "model": "Seedream 5.0 Lite",
+   "reason": "the site asked for a check (captcha); a person must clear it",
+   "seconds": 37.6,
+   "site": "dreamina-image",
+   "state": "blocked"
+  },
+  {
+   "credits_exhausted": false,
+   "dismiss_selectors": {},
+   "done_markers": {
+    "a[href$=\\\".jpg\\\"]": false,
+    "a[href$=\\\".png\\\"]": false
+   },
+   "generate_selectors": {
+    "button:has-text(\\\"Generate\\\")": false,
+    "text=Generate": true
+   },
+   "human_score": 47,
+   "label": "Kling image",
+   "login": "in",
+   "model": "Image 4.0",
+   "model_steps": [],
+   "pages_opened": [
+    "https://kling.ai",
+    "https://kling.ai/app?designerRouteName=omni-image&kolorsVersion=4.0"
+   ],
+   "prompt_selectors": {
+    ".omni-prompt-editor div[contenteditable=\\\"true\\\"]": false,
+    "div.tiptap.ProseMirror": true,
+    "div[contenteditable=\\\"true\\\"]": false,
+    "div[role=\\\"textbox\\\"]": false,
+    "input[placeholder*=\\\"prompt\\\" i]": false,
+    "textarea": false,
+    "textarea[placeholder*=\\\"prompt\\\" i]": false
+   },
+   "reason": "creation page captured; selectors probed",
+   "seconds": 56.7,
+   "site": "kling-image",
+   "state": "ok",
+   "visible_text": "Create Videos, Images and More in One Workspace\n\u3010Black Friday Sale\u3011Lowest Prices of the Year! Up to 50% off! Subscriber-only Auto Recharge: up to 20% bonus Credits!\n14\nDays\n02\nHrs\n30\nMins\n54\nSecs\nShop Now\nHome\nGenerate\nCanvas\nAssets\n66\n\n\nDescribe the scene, or upload 1\u201310 reference images to edit, blend, or stylize. Content will be generated by AI.\nImage Generation\nKling Image O1\n2K \u00b7 3:4 \u00b7 4\nGenerate\nSkills\nAll\nAds\nFilm\nDesign\nGeneral\nVideo Generation\nPro Visuals, Great Stories\nImage Generation\nRealistic. Crystal-Clear\nAI Portraits\nArtistic Portraits, Many Styles\nCharacter Design\nQuickly create diverse characters\nMotion Control\nPrecise Action & Pose\nAvatar\nRealistic Talking Avatar\nCreative Effects\nViral Effects in One Tap\nVideo to Audio\nGenerate Sounds from Video\nImage Enhancing\nRestore HD Details\nLip Sync\nPrecise Audio-Driven Lip Sync\nRestyle\nTransform Visual Styles\nView Control\nFreely set camera angles\nSmart Lighting\nSmartly recreate texture, lighting, and atmosphere\nProduct Detail Page\nEnhanced visuals with multi-layer editing\nWeb Design\nHigh-quality prototypes with multi-layer editing\nRecommended\nFollows\nEvents\nPlugin\nPublish\nKLING AI\n993\nVodIoZZp\n183\nlVKdlxPa\n2\nZTVEKBgk\n40\nFARIDA\n1\nNesutoru\n91\nkEciErqg\n4\nDeafTattooGuy\n760\nPrestige\n768\nSnEfIkTw\n3\ncpCBPGit\n15\nhgVKzAVg\n25\nOHdctPPQ\n3\nNopenoper\n9\nBeeg Mari\n4\nABU\n189\nAMVcEWqA\n116\nYkjkdFqu\n0\nBatuhan\n160\nTOoijscB\n188\nQzrZAlcG\n244\nNuri Cahya\n557\nLMNbAdCZ\n940\nBFJSvIpY\n11\nDAEArJoi\n1\nisma\n445\nFDwwojSW\n83\nsouvenir\n4\nmdeJBqZa\n22\nUkZYWYIm\n501\nCaCnvoUc\n699\nhvkZwZPA\n1.2k\nepZDRixX\n113\nTPxpjSVq\n0\nZHimZxBa\n228\nrdfdRPve\n12\nWwyfdDTU\n475\nqYWYGiKt\n897\nfDirMuPM\n93\nLOVA\n565\ncqBRkyOd\n294\ncDbvjyhL\n75\nSheru_bhai_tadpan\n127\nEjuKveIk\n446\nOUfppyIz\n49\nfjSUdADf\n26\nKLING JARVIS 2025\n83\nQMSVJetg\n458\nLaney\n248\nCXNVGwhV\n207\ngQSFHcWX\n156\nijteolfg\n6\nzUXQEhzy\n248\n\u2663\ufe0fIron Archive\u2660\ufe0f\n173\nAndras Roland P.\n77\nValis\n1.1k\nIeIUHKaH\n1.5k\nMalcolm Smith\n109\nqNGDtnyM\n56\npksNgJyg\n119\nGoogoolittle.family\n933\nshushan_edits\n11\nAgAtdqvb\n66\nDCHvXokk\n1\naiar.tmotion\n1.4k"
+  },
+  {
+   "human_score": 39,
+   "label": "Gemini image",
+   "login": "wall",
+   "model": "Nano Banana 2",
+   "reason": "cookies missing or expired \u2014 capture a new session by hand",
+   "seconds": 27.1,
+   "site": "gemini-image",
+   "state": "not-set-up"
   }
  ],
- "run_at": "2026-11-18T16:52:20.167254Z"
+ "run_at": "2026-11-19T05:29:36.110191Z"
 }
