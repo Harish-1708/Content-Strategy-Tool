@@ -1,0 +1,26 @@
+{
+ "note": "PROPOSALS only: nothing here is canon, posted or sent",
+ "runs": [
+  {
+   "at": "2026-11-19T10:21:14Z",
+   "proposals": {
+    "creator_brief": {
+     "at": "2026-11-19T10:21:14Z",
+     "gate": "OK",
+     "note": "gate: OK; needs input: Campaign or product details; Platform specifications; Content type requirements; the brand has no collected yet",
+     "skill": "influencer/target/brief-generator",
+     "text": "We couldn't generate a brief for this brand because the material does not contain the necessary information. Please provide the missing information listed below, and we will be happy to assist you further."
+    },
+    "creator_shortlist": {
+     "at": "2026-11-19T10:21:14Z",
+     "gate": "OK",
+     "note": "gate: OK; needs input: List of creators or accounts from the brand's material; the brand has no collected yet",
+     "skill": "protocol/creator-registry",
+     "text": "I'm unable to complete the task as there are no creators or accounts mentioned in the provided material."
+    }
+   }
+  }
+ ],
+ "stage": "creator_chain",
+ "title": "Stage 6: creator chain"
+}

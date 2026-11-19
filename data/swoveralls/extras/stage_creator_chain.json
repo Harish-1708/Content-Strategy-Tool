@@ -1,0 +1,26 @@
+{
+ "note": "PROPOSALS only: nothing here is canon, posted or sent",
+ "runs": [
+  {
+   "at": "2026-11-19T10:21:14Z",
+   "proposals": {
+    "creator_brief": {
+     "at": "2026-11-19T10:21:14Z",
+     "gate": "NEEDS_REVIEW",
+     "note": "gate: NEEDS_REVIEW: 1 checkable statement(s) nothing verifies; needs input: Specific deliverables (quantity and platform); Campaign timeline/deadlines; Compensation terms; the brand has no collected yet",
+     "skill": "influencer/target/brief-generator",
+     "text": "## Creator Brief: Swoveralls\n\n**Campaign Overview**\nPromote Swoveralls by highlighting the unique hybrid of sweatpants comfort and overall functionality. The goal is to show how these garments \"Free the Waistband\" and fit into a variety of daily activities.\n\n**What to Show & Say**\n*   **Visuals:** Show the product in action—lounging at home, running errands, or doing chores. Highlight the specific functional details: the six pockets (specifically the hidden zip pocket in the bib), the adjustable straps with metal buckles, and the jogger cuffs.\n*   **Key Messaging:**\n    *   **The Hybrid Concept:** Describe the product as a combination of sweatpants and overalls.\n    *   **Comfort & Quality:** Mention that they are made in Los Angeles using GOTS-certified organic cotton.\n    *   **The Feeling:** Focus on the \"extreme comfort\" and the mission to create the world's comfiest apparel.\n    *   **Versatility:** Position them as a comfortable alternative to heavier denim or canvas workwear.\n\n**DO NOT STATE**\n*   Do not mention the Fatherly or Business Insider articles as the first press mentions.\n*   Do not state specific first-year sales figures (due to conflicting data).\n*   Do not state the specific price of the initial sample used by the founder.\n*   Do not state specific Kickstarter/Indiegogo total funding amounts.\n\n**Deliverables**\n*   [Insert Quantity/Platform, e.g., 1x TikTok Video / 1x IG Reel]\n*   Content must demonstrate the \"Free the Waistband\" philosophy through movement and comfort.\n\n**Success Criteria**\nResults will be judged based on:\n1.  **Feature Accuracy:** Clear visual demonstration of the pockets and adjustable straps.\n2.  **Brand Alignment:** Use of the \"Free the Waistband\" concept and emphasis on sustainable, LA-made organic cotton.\n3.  **Authenticity:** Natural integration of the product into a \"comfy\" lifestyle (e.g., lounging or leisure activities)."
+    },
+    "creator_shortlist": {
+     "at": "2026-11-19T10:21:14Z",
+     "gate": "NEEDS_REVIEW",
+     "note": "gate: NEEDS_REVIEW: 2 checkable statement(s) nothing verifies; the brand has no collected yet",
+     "skill": "protocol/creator-registry",
+     "text": "Based on the provided material, here is a shortlist of creators worth approaching for Swoveralls, along with the reasons for each selection:\n\n1. **Elizabeth Brown**\n   - **Reason:** Elizabeth is the winner of Swoveralls' 2025 Customer Design Contest, designing the Otter print (Otter Romp). She has a strong connection with the brand and has been featured in the brand's Comfy Interviews. Her design skills and engagement with the brand make her a valuable creator to approach.\n\n2. **Lance Carmichael**\n   - **Reason:** Lance is a United States Air Force veteran, powerlifter, and student who has been featured as Swoveralls' Customer of the Month. He has shared his positive experiences with Swoveralls, making him a credible and influential creator to collaborate with.\n\n3. **Kyle Bergman**\n   - **Reason:** As the founder and Chief Swoverall Officer of Swoveralls, Kyle Bergman is a key figure in the brand. His background in fashion, entrepreneurship, and lacrosse, along with his media presence, makes him a valuable creator to approach for brand-related content.\n\n4. **Margle Media**\n   - **Reason:** Margle Media collaborated with Swoveralls to create a viral Facebook video that garnered 9M+ views. Their ability to create engaging content that resonates with a wide audience makes them a strong candidate for future collaborations.\n\n5. **Yo Gabba Gabba!**\n   - **Reason:** Swoveralls has a licensing agreement with Yo Gabba Gabba! to introduce themed apparel. This collaboration has been promoted on Yo Gabba Gabba!'s official store and social media, indicating a strong partnership and potential for further content creation.\n\nThese creators have demonstrated a strong connection with Swoveralls and have the potential to create engaging content that aligns with the brand's values and mission."
+    }
+   }
+  }
+ ],
+ "stage": "creator_chain",
+ "title": "Stage 6: creator chain"
+}
