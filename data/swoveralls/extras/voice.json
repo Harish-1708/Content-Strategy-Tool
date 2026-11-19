@@ -329,6 +329,101 @@
   {
    "cluster": "",
    "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 2669.33
+   },
+   "entity": "",
+   "first_seen": "2026-11-19T09:53:15Z",
+   "last_seen": "2026-11-19T09:53:15Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Jensen Huang resigns",
+   "topic": "",
+   "url": "",
+   "weight": 2669
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 2083.14
+   },
+   "entity": "",
+   "first_seen": "2026-11-19T09:53:15Z",
+   "last_seen": "2026-11-19T09:53:15Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Unauthenticated remote code execution in Nginx",
+   "topic": "",
+   "url": "",
+   "weight": 2083
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 2016.0
+   },
+   "entity": "",
+   "first_seen": "2026-11-19T09:53:15Z",
+   "last_seen": "2026-11-19T09:53:15Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Carnegie Mellon YouTube",
+   "topic": "",
+   "url": "",
+   "weight": 2016
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 1987.76
+   },
+   "entity": "",
+   "first_seen": "2026-11-19T09:53:15Z",
+   "last_seen": "2026-11-19T09:53:15Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "SpaceX Starship Flight 15",
+   "topic": "",
+   "url": "",
+   "weight": 1987
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 1898.33
+   },
+   "entity": "",
+   "first_seen": "2026-11-19T09:53:15Z",
+   "last_seen": "2026-11-19T09:53:15Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "GPT‑6.2 Astra and Sol",
+   "topic": "",
+   "url": "",
+   "weight": 1898
+  },
+  {
+   "cluster": "",
+   "engagement": {
     "comments": 19,
     "likes": 140,
     "shares": 1,
@@ -365,6 +460,63 @@
    "weight": 1799
   },
   {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 1679.22
+   },
+   "entity": "",
+   "first_seen": "2026-11-19T09:53:15Z",
+   "last_seen": "2026-11-19T09:53:15Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Evidence Shows School Phone Bans",
+   "topic": "",
+   "url": "",
+   "weight": 1679
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 1665.69
+   },
+   "entity": "",
+   "first_seen": "2026-11-19T09:53:15Z",
+   "last_seen": "2026-11-19T09:53:15Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "FAA 4.5 hours",
+   "topic": "",
+   "url": "",
+   "weight": 1665
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 1574.02
+   },
+   "entity": "",
+   "first_seen": "2026-11-19T09:53:15Z",
+   "last_seen": "2026-11-19T09:53:15Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Gemini 4 Neon",
+   "topic": "",
+   "url": "",
+   "weight": 1574
+  },
+  {
    "cluster": "new gymshark leggings!! so comfy",
    "engagement": {
     "num_comments": 71,
@@ -381,6 +533,44 @@
    "topic": "Swoveralls",
    "url": "https://www.reddit.com/r/Gym_Fits/comments/1x8dunb/new_gymshark_leggings_so_comfy/",
    "weight": 1573
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 1309.44
+   },
+   "entity": "",
+   "first_seen": "2026-11-19T09:53:15Z",
+   "last_seen": "2026-11-19T09:53:15Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "AI-generated Open Source",
+   "topic": "",
+   "url": "",
+   "weight": 1309
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 1292.98
+   },
+   "entity": "",
+   "first_seen": "2026-11-19T09:53:15Z",
+   "last_seen": "2026-11-19T09:53:15Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Java4Shell RCE OpenJDK Base64",
+   "topic": "",
+   "url": "",
+   "weight": 1292
   },
   {
    "cluster": "Megan Thee Stallion in a new Q&A for GymShark!",
@@ -3787,5 +3977,5 @@
   "Made my own Pilates pants using organic cotton fabric 🤍🧵 let me know if I should make a PDF pattern #sewingpattern #sewi",
   "ai-job-search-dev/ai-job-search (72K stars) - 55 open issues"
  ],
- "updated": "2026-11-18T14:29:55Z"
+ "updated": "2026-11-19T09:53:15Z"
 }
