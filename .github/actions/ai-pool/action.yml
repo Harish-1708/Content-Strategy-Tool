@@ -41,6 +41,15 @@ runs:
         path: omniroute-src
         key: omniroute-${{ runner.os }}-${{ hashFiles('contentintel/ai/omniroute.py') }}
 
+    - name: Clear any state an earlier run left in the cached OmniRoute
+      if: steps.omniroute-cache.outputs.cache-hit == 'true'
+      continue-on-error: true
+      shell: bash
+      run: |
+        # OmniRoute keeps its database (with its password) in a data folder; a cached install must never carry one from a previous run into this one
+        find omniroute-src \( -name 'storage.sqlite*' -o -name 'cli-token-salt.json' \) -not -path '*/node_modules/*/node_modules/*' -print -delete 2>/dev/null || true
+        rm -rf omniroute-src/data omniroute-src/.omniroute "$HOME/.omniroute" 2>/dev/null || true
+
     - name: Install the pinned OmniRoute
       if: steps.omniroute-cache.outputs.cache-hit != 'true'
       continue-on-error: true
