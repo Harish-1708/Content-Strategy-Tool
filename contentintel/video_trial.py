@@ -35,12 +35,13 @@ Run it: ``python -m contentintel.video_trial --site all --dry-run --brand dudero
 (plan only, no browser), then without --dry-run for the real trial. One clip
 per site, hard cap, enforced in code (ClipBudget).
 
-Image studios: the same logged-in accounts also do images, so the recon
-covers three image studios too — Dreamina image, Kling image and Gemini
-image (``--recon --site dreamina-image`` and so on). They capture only;
-no image trial exists yet. A video trial (``--site all`` without
-``--recon``) runs the video studios only and refuses an image studio
-plainly. Pollinations stays the no-key image route (photo_trial.py).
+Image studios: the same logged-in accounts also do images, and the same
+trial drives them — one image per site, saved to Generated Content /
+Photo / <Brand name> and one row in that brand's Catalogue sheet, tab
+"Photos" (the same tab Pollinations writes). A trial with ``--site all``
+runs the video studios only; an image studio is trialled by naming it
+(``--site kling-image``). Pollinations stays the no-key image route
+(photo_trial.py).
 
 Where a made clip goes: ONLY to the brand the run is for. The clip is saved
 to Shared Drive 'Idea Bank Automation' / Generated Content / VIDEO /
@@ -571,11 +572,13 @@ class ClipBudget:
     def allow(self, site):
         return self.spent.get(site, 0) < self.limit
 
-    def record(self, site):
+    def record(self, site, unit="clip"):
         """Spend one generation for a site. Raises TrialError when the site's
-        cap is already spent — call this BEFORE pressing Generate."""
+        cap is already spent — call this BEFORE pressing Generate. `unit` is
+        "clip" for a video site and "image" for an image studio, so the
+        refusal names what it refused."""
         if not self.allow(site):
-            raise TrialError(f"{site}: the clip budget is spent ({self.limit} clip per site per run); "
+            raise TrialError(f"{site}: the clip budget is spent ({self.limit} {unit} per site per run); "
                              "a second generation is refused")
         self.spent[site] = self.spent.get(site, 0) + 1
 
@@ -588,11 +591,14 @@ VERDICTS = ("go", "no-go", "blocked", "skipped", "not-set-up")
 
 
 def verdict(site, state, reason, clip=None, human_score=None, seconds=0.0):
-    """One site's trial result. "go" means one clip was made and downloaded;
+    """One site's trial result. "go" means one generation was made and
+    downloaded (a clip for a video site, an image for an image studio);
     "no-go" means the trial ran and the site failed it; "blocked" means a
     challenge or an account warning stopped it; "skipped" means it was not
     attempted (dry run, peak hours, stub); "not-set-up" means no usable
-    cookies. A no-go is a successful trial finding, not a run failure."""
+    cookies. A no-go is a successful trial finding, not a run failure. The
+    "clip" field holds the saved file's path either way — the verdict file
+    (video_trial.json) covers both kinds of trial."""
     if state not in VERDICTS:
         raise TrialError(f"unknown verdict {state!r}")
     return {"site": site, "model": DRIVERS[site]["model"], "verdict": state,
@@ -601,11 +607,14 @@ def verdict(site, state, reason, clip=None, human_score=None, seconds=0.0):
 
 
 def verdict_line(entry):
-    """One plain line for the run log, the way the tool's other runs print."""
+    """One plain line for the run log, the way the tool's other runs print.
+    The saved file is a "clip" for a video site and an "image" for an image
+    studio."""
     state = entry["verdict"].upper()
+    made = "image" if DRIVERS[entry["site"]].get("kind") == "image" else "clip"
     line = f"video-trial: {entry['site']}: {state} — {entry['reason']}"
     if entry.get("clip"):
-        line += f" (clip: {entry['clip']})"
+        line += f" ({made}: {entry['clip']})"
     if entry.get("drive_link"):
         line += f" (saved: {entry['drive_link']})"
     if entry.get("save_error"):
@@ -623,6 +632,17 @@ VIDEO_TRIALS_TAB = "Video Trials"
 VIDEO_TRIALS_HEADERS = ["Date", "Brand", "Site", "Model", "Prompt", "Verdict",
                         "Clip", "Credits used", "Notes"]
 VIDEO_MIME = "video/mp4"
+
+# The image side: a made image goes to Generated Content / Photo /
+# <Brand name>, and one row is added to the brand's Catalogue sheet, tab
+# "Photos" — the same tab Pollinations writes, with the same header. The
+# header MUST match photo_trial.PHOTOS_HEADERS exactly: the tab already
+# exists with that header, and the save refuses to write under a different
+# one.
+PHOTO_FOLDER = "Photo"
+PHOTOS_TAB = "Photos"
+PHOTOS_HEADERS = ["Date", "Brand", "Source", "Model", "Prompt", "Verdict",
+                  "Photo", "Credits used", "Notes"]
 
 
 def _slugify(text, limit=40):
@@ -645,6 +665,30 @@ def clip_filename(date_str, brand_slug, site, model, prompt):
             f"{_slugify(model, limit=30)}_{_slugify(prompt)}.mp4")
 
 
+def image_filename(date_str, brand_slug, site, model, prompt, ext):
+    """YYYY-MM-DD_<brand>_<site>_<model>_<prompt-slug>.<ext> — the same
+    shape as a clip name, with the image's own extension (jpg or png, by
+    what the site actually returned). The brand is in the name, so an image
+    can never be mistaken for another brand's."""
+    return (f"{date_str}_{brand_slug}_{_slugify(site, limit=30)}_"
+            f"{_slugify(model, limit=30)}_{_slugify(prompt)}.{ext}")
+
+
+def detect_image(data):
+    """("jpg", "image/jpeg") or ("png", "image/png") from the first bytes,
+    else None. Mirrors photo_trial.detect_image — the two must agree, since
+    both write the Photos tab. Anything that is not a JPEG or a PNG is never
+    a saved image: an error page must never land in a brand's Drive folder
+    as a photo."""
+    if not data:
+        return None
+    if data[:3] == b"\xff\xd8\xff":
+        return "jpg", "image/jpeg"
+    if data[:8] == b"\x89PNG\r\n\x1a\n":
+        return "png", "image/png"
+    return None
+
+
 def resolve_brand(slug, brands_dir="brands"):
     """The brand profile for a slug, or a TrialError that says plainly what
     is wrong. The slug must be one of the tool's own brand keys."""
@@ -658,12 +702,20 @@ def resolve_brand(slug, brands_dir="brands"):
 
 
 def save_plan_lines(brand, key, prompt, run_date):
-    """The dry-run plan for where one site's clip would go. No API call is
+    """The dry-run plan for where one site's generation would go. No API call is
     made: the Drive path is folder names, and the sheet is named from the
     tool's own mapping. The Luma stub makes no clip, so nothing is saved."""
     driver = DRIVERS[key]
     if driver.get("stub"):
         return ["    save: none — the Luma stub makes no clip, so nothing is saved"]
+    if driver.get("kind") == "image":
+        # The extension is known only when the image comes back (JPEG or
+        # PNG, by its bytes); the plan names the .jpg form.
+        filename = image_filename(run_date, brand.slug, key, driver["model"], prompt, "jpg")
+        return [
+            f"    save: Drive: Generated Content / Photo / {brand.name} / {filename} (under the IDEA_BANK_FOLDER_ID root; .png when the site returns a PNG)",
+            f"    save: Sheet: the {brand.slug} Catalogue sheet (sheets.yaml), tab \"Photos\" — one row per saved image",
+        ]
     filename = clip_filename(run_date, brand.slug, key, driver["model"], prompt)
     return [
         f"    save: Drive: Generated Content / VIDEO / {brand.name} / {filename} (under the IDEA_BANK_FOLDER_ID root)",
@@ -693,19 +745,30 @@ class BrandSaver:
         self._sheets_email = "test@example.invalid"
         self._store = store
 
-    def save(self, site, model, prompt, clip_rel_path, out_dir, run_date):
-        """(drive_link, sheet_error): the Drive link when the clip reached
+    def save(self, site, model, prompt, clip_rel_path, out_dir, run_date, media="video"):
+        """(drive_link, sheet_error): the Drive link when the generation reached
         the brand's folder (None when it did not), and the plain reason the
-        Sheet row was not written (None when it was)."""
+        Sheet row was not written (None when it was). `media` is "video" for
+        a clip (Generated Content / VIDEO, "Video Trials" tab) or "image" for
+        a picture (Generated Content / Photo, "Photos" tab). An image that is
+        not a JPEG or a PNG is refused here, never saved."""
         clip_path = Path(out_dir) / clip_rel_path
         try:
             data = clip_path.read_bytes()
         except OSError as exc:
-            raise TrialError(f"the downloaded clip {clip_rel_path} could not be read ({exc})") from exc
-        filename = clip_filename(run_date, self.brand.slug, site, model, prompt)
-        link = self._save_to_drive(filename, data)
+            raise TrialError(f"the downloaded {media} {clip_rel_path} could not be read ({exc})") from exc
+        if media == "image":
+            found = detect_image(data)
+            if found is None:
+                raise TrialError(f"the made image {clip_rel_path} is not a JPEG or a PNG")
+            ext, mime = found
+            filename = image_filename(run_date, self.brand.slug, site, model, prompt, ext)
+        else:
+            mime = VIDEO_MIME
+            filename = clip_filename(run_date, self.brand.slug, site, model, prompt)
+        link = self._save_to_drive(filename, data, mime, media)
         try:
-            self._record_in_sheet(site, model, prompt, run_date, link)
+            self._record_in_sheet(site, model, prompt, run_date, link, media)
         except TrialError as exc:
             return link, str(exc)
         return link, None
@@ -733,15 +796,17 @@ class BrandSaver:
         self._drive = drive_mod.DriveClient(session, root, email)
         return self._drive
 
-    def _save_to_drive(self, filename, data):
-        """The clip in Generated Content / VIDEO / <Brand name>. A file with
-        the same name (the same trial run twice) is trashed first, so one name
-        never holds two clips; the trash is best-effort. The bytes are
-        verified after the upload, the way ideabank._upload_verified does it."""
+    def _save_to_drive(self, filename, data, mime, media):
+        """The generation in Generated Content / VIDEO or Photo / <Brand name>.
+        A file with the same name (the same trial run twice) is trashed first,
+        so one name never holds two generations; the trash is best-effort. The
+        bytes are verified after the upload, the way ideabank._upload_verified
+        does it."""
+        folder = VIDEO_FOLDER if media == "video" else PHOTO_FOLDER
         try:
             client = self._drive_client()
             generated_id = client.ensure_folder(client.root_id, GENERATED_FOLDER)
-            media_id = client.ensure_folder(generated_id, VIDEO_FOLDER)
+            media_id = client.ensure_folder(generated_id, folder)
             brand_id = client.ensure_folder(media_id, self.brand.name)
             existing = client.list_files(brand_id)
             if filename in existing:
@@ -749,7 +814,7 @@ class BrandSaver:
                     client.trash(existing[filename])
                 except drive_mod.DriveError:
                     pass
-            file_id = client.upload(brand_id, filename, data, VIDEO_MIME)
+            file_id = client.upload(brand_id, filename, data, mime)
             try:
                 client.verify(file_id, data)
             except drive_mod.DriveMismatch as exc:
@@ -774,14 +839,18 @@ class BrandSaver:
             raise TrialError(str(exc)) from exc
         return client, email
 
-    def _record_in_sheet(self, site, model, prompt, run_date, link):
-        """One row in the brand's own sheet, tab "Video Trials". The tab is
-        created with its header when it is missing; a tab whose header was
-        changed by hand is left alone and the save fails plainly, so a row is
-        never written under the wrong columns."""
+    def _record_in_sheet(self, site, model, prompt, run_date, link, media):
+        """One row in the brand's own sheet, tab "Video Trials" for a clip or
+        "Photos" for an image. The tab is created with its header when it is
+        missing; a tab whose header was changed by hand is left alone and the
+        save fails plainly, so a row is never written under the wrong columns.
+        The row shape is the same for both tabs: the site sits in the Source
+        column for an image, the Site column for a clip."""
         from . import sheets as sheets_mod
         from gspread.exceptions import GSpreadException
         from gspread.utils import ValueInputOption
+        tab = VIDEO_TRIALS_TAB if media == "video" else PHOTOS_TAB
+        headers = VIDEO_TRIALS_HEADERS if media == "video" else PHOTOS_HEADERS
         try:
             client, email = self._sheets_client()
             known = set(brands_mod.list_brand_slugs(self.brands_dir)) or {self.brand.slug}
@@ -793,23 +862,23 @@ class BrandSaver:
                                                report, False, email, folder_id=folder_id)
             ws = None
             for candidate in sp.worksheets():
-                if candidate.title == VIDEO_TRIALS_TAB:
+                if candidate.title == tab:
                     ws = candidate
                     break
             if ws is None:
-                ws = sp.add_worksheet(title=VIDEO_TRIALS_TAB, rows=1000, cols=30)
-                self._write_header(ws)
+                ws = sp.add_worksheet(title=tab, rows=1000, cols=30)
+                self._write_header(ws, media)
             else:
                 values = ws.get_all_values()
                 if not values:
-                    self._write_header(ws)
+                    self._write_header(ws, media)
                 else:
                     header = [str(h) for h in values[0]]
                     while header and header[-1] == "":
                         header.pop()
-                    if header != VIDEO_TRIALS_HEADERS:
+                    if header != headers:
                         raise TrialError(
-                            f"the {VIDEO_TRIALS_TAB!r} tab in the {self.brand.slug} sheet has a different header "
+                            f"the {tab!r} tab in the {self.brand.slug} sheet has a different header "
                             f"({', '.join(header) or 'blank'}); fix the header by hand or delete the tab and run again")
             row = [run_date, self.brand.slug, site, model, prompt, "go", link, "", ""]
             ws.append_rows([row], value_input_option=ValueInputOption.raw, table_range="A1")
@@ -817,8 +886,9 @@ class BrandSaver:
             raise TrialError(str(exc)) from exc
 
     @staticmethod
-    def _write_header(ws):
-        ws.update(values=[list(VIDEO_TRIALS_HEADERS)], range_name="A1")
+    def _write_header(ws, media):
+        headers = VIDEO_TRIALS_HEADERS if media == "video" else PHOTOS_HEADERS
+        ws.update(values=[list(headers)], range_name="A1")
         ws.freeze(rows=1)
         ws.format("1:1", {"textFormat": {"bold": True}})
 
@@ -951,11 +1021,13 @@ class TrialContext:
         self.sheets_config = sheets_config
 
     def save_clip(self, site, clip_rel_path):
-        """Save the downloaded clip to the brand's Drive folder and record it
+        """Save the downloaded generation to the brand's Drive folder and record it
         in the brand's sheet. Returns (link, error): the Drive link (None when
-        the clip did not reach Drive) and the plain reason the save failed
+        the generation did not reach Drive) and the plain reason the save failed
         (None when it worked). A failed save never loses the verdict — the
-        trial result stands and the error is printed and recorded."""
+        trial result stands and the error is printed and recorded. The media
+        follows the site's kind: a clip goes to VIDEO / "Video Trials", an
+        image to Photo / "Photos"."""
         saver = self.saver
         if saver is None:
             saver = BrandSaver(self.brand, self.env, data_dir=self.data_dir,
@@ -963,12 +1035,13 @@ class TrialContext:
             self.saver = saver
         try:
             link, sheet_error = saver.save(site, DRIVERS[site]["model"], self.prompt,
-                                           clip_rel_path, self.out_dir, self.run_date)
+                                           clip_rel_path, self.out_dir, self.run_date,
+                                           media=DRIVERS[site]["kind"])
         except TrialError as exc:
-            print(f"video-trial: {site}: Drive save failed — {exc} (the clip stays in the run's files)")
+            print(f"video-trial: {site}: Drive save failed — {exc} (the generation stays in the run's files)")
             return None, str(exc)
         if sheet_error:
-            print(f"video-trial: {site}: clip saved to Drive ({link}) but the Sheet row was not written — {sheet_error}")
+            print(f"video-trial: {site}: generation saved to Drive ({link}) but the Sheet row was not written — {sheet_error}")
         else:
             print(f"video-trial: {site}: saved to the brand's Drive — {link}")
         return link, sheet_error
@@ -1007,7 +1080,7 @@ def _pick_model(ctx, browser, driver):
 
 
 def _wait_for_done(ctx, browser, driver, site):
-    """Poll for a finished clip. Returns ("done", "") or ("timeout", reason).
+    """Poll for a finished generation. Returns ("done", "") or ("timeout", reason).
     A challenge or a warning found while waiting stops the poll at once.
     NOTE: "text=Download" is NOT a done marker — it matches persistent UI
     (a "Download App" link in the header), so the trial concluded "done"
@@ -1017,7 +1090,10 @@ def _wait_for_done(ctx, browser, driver, site):
     either — PixVerse's creation page always carries a showcase video
     (media.pixverse.ai/asset/media/En-720-Pix.mp4), so the trial concluded
     "done" the moment it polled and then found no downloadable clip. Only
-    a downloadable .mp4 link proves a clip finished AND can be downloaded."""
+    a downloadable .mp4 link proves a clip finished AND can be downloaded.
+    The same holds for an image: a showcase picture on the page is not a
+    done signal — only a downloadable .jpg/.png link proves an image
+    finished AND can be downloaded."""
     limit = driver["max_wait_seconds"] if ctx.max_wait_seconds is None else ctx.max_wait_seconds
     waited = 0.0
     while waited < limit:
@@ -1037,22 +1113,33 @@ def _wait_for_done(ctx, browser, driver, site):
 
 
 def _download_clip(ctx, browser, driver, site):
-    """Download the finished clip with the session's own cookies. Returns the
-    saved path (relative to the run directory) or None when no clip could be
-    found or fetched."""
+    """Download the finished generation with the session's own cookies.
+    Returns the saved path (relative to the run directory) or None when no
+    generation could be found or fetched. For an image studio the bytes must
+    be a JPEG or a PNG — anything else (an error page, a login redirect) is
+    skipped, never saved."""
     links = browser.links(driver["download_link_contains"])
     for link in links:
         url = link.get("href", "")
         if not url.startswith("https://"):
             continue
         status, body = browser.fetch_bytes(url, driver["app_url"], MAX_CLIP_BYTES)
-        if status < 400 and body:
-            site_dir = ctx.out_dir / site
-            site_dir.mkdir(parents=True, exist_ok=True)
+        if status >= 400 or not body:
+            continue
+        site_dir = ctx.out_dir / site
+        site_dir.mkdir(parents=True, exist_ok=True)
+        if driver.get("kind") == "image":
+            found = detect_image(body)
+            if found is None:
+                continue
+            ext, _mime = found
+            path = site_dir / image_filename(ctx.run_date, ctx.brand.slug, site,
+                                             driver["model"], ctx.prompt, ext)
+        else:
             path = site_dir / clip_filename(ctx.run_date, ctx.brand.slug, site,
                                             driver["model"], ctx.prompt)
-            path.write_bytes(body)
-            return str(path.relative_to(ctx.out_dir))
+        path.write_bytes(body)
+        return str(path.relative_to(ctx.out_dir))
     return None
 
 
@@ -1137,8 +1224,8 @@ def run_site(key, ctx):
                               "the selectors are first guesses — correct them from the debug capture")
             _record(ctx, key, "type-prompt", typed_at, browser)
             # The budget is spent BEFORE Generate is pressed, so a retry or
-            # a bug can never make a second clip.
-            ctx.budget.record(key)
+            # a bug can never make a second generation.
+            ctx.budget.record(key, unit="image" if driver.get("kind") == "image" else "clip")
             gen_at = time.time()
             if not browser.click(driver["generate_selectors"]):
                 browser.screenshot("no-generate-button")
@@ -1160,9 +1247,11 @@ def run_site(key, ctx):
             clip = _download_clip(ctx, browser, driver, key)
             if clip is None:
                 browser.screenshot("no-download")
-                return finish("no-go", "generation finished but no clip could be downloaded")
+                made = "image" if driver.get("kind") == "image" else "clip"
+                return finish("no-go", f"generation finished but no {made} could be downloaded")
             link, save_error = ctx.save_clip(key, clip)
-            entry = finish("go", f"one {driver['model']} clip made and downloaded", clip=clip)
+            made = "image" if driver.get("kind") == "image" else "clip"
+            entry = finish("go", f"one {driver['model']} {made} made and downloaded", clip=clip)
             if link:
                 entry["drive_link"] = link
             if save_error:
@@ -1380,7 +1469,7 @@ def run_trial(keys, prompt, settings, env, out_dir, brand=None, verdicts_path=No
     verdicts could not be written). A missing cookies secret is "not-set-up",
     never a failure, the way the sessions workflow treats it. `brand` is the
     resolved brand the run is for; without it the run refuses to start, so a
-    clip can never be made for no brand at all."""
+    generation can never be made for no brand at all."""
     if brand is None:
         raise TrialError("no brand was given; the trial must know which brand it is for "
                          "before it generates anything")
@@ -1396,7 +1485,7 @@ def run_trial(keys, prompt, settings, env, out_dir, brand=None, verdicts_path=No
     verdicts = []
     if dry_run:
         print("video-trial: dry run — the plan only, no browser is opened")
-        print(f"  brand: {brand.slug} ({brand.name}) — clips go only to this brand's Drive folder and sheet")
+        print(f"  brand: {brand.slug} ({brand.name}) — generations go only to this brand's Drive folder and sheet")
         for key in keys:
             for line in plan_lines(key):
                 print(line)
@@ -1432,20 +1521,31 @@ def run_trial(keys, prompt, settings, env, out_dir, brand=None, verdicts_path=No
     return verdicts, 0
 
 
+def trial_keys(site):
+    """The sites a trial runs for one --site value. "all" is the video
+    studios only; a named site is itself, video or image — an image studio
+    is trialled by naming it, one at a time."""
+    if site == "all":
+        return list(VIDEO_KEYS)
+    return [site]
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(
         prog="python -m contentintel.video_trial",
-        description="One clip per site, go/no-go each, on dummy accounts through the existing "
-                    "cookie-session method. Drafts only, publishing OFF, free tiers only.")
+        description="One generation per site, go/no-go each, on dummy accounts through the existing "
+                    "cookie-session method. Video studios make clips, image studios make images. "
+                    "Drafts only, publishing OFF, free tiers only.")
     parser.add_argument("--site", choices=["all"] + list(ALL_KEYS), default="all",
-                        help="one site, or all of them (each is judged on its own either way)")
+                        help="one site, or all of them (each is judged on its own either way); "
+                             "\"all\" is the video studios only — name an image studio to trial it")
     parser.add_argument("--brand", required=True,
                         help="the brand this trial is for (swoveralls, duderobe or defi_snacks); "
-                             "the clip goes ONLY to that brand's Drive folder and sheet")
+                             "the generation goes ONLY to that brand's Drive folder and sheet")
     parser.add_argument("--brands-dir", default="brands",
                         help="the folder holding the brand profiles (default: brands)")
     parser.add_argument("--prompt", default=DEFAULT_PROMPT,
-                        help="the prompt for the one clip (default: a brand-neutral scene)")
+                        help="the prompt for the one generation (default: a brand-neutral scene)")
     parser.add_argument("--dry-run", action="store_true",
                         help="print the plan and the cookie checks only; never open a browser")
     parser.add_argument("--recon", action="store_true",
@@ -1461,7 +1561,7 @@ def main(argv=None):
     parser.add_argument("--browser-config", default="browser.yaml",
                         help="the browser.yaml that holds the pacing, human and stealth blocks")
     parser.add_argument("--max-wait-seconds", type=int, default=None,
-                        help="how long to poll for a finished clip (default: each driver's own limit)")
+                        help="how long to poll for a finished generation (default: each driver's own limit)")
     parser.add_argument("--poll-seconds", type=int, default=DEFAULT_POLL_SECONDS,
                         help="how often to check whether the clip is finished")
     args = parser.parse_args(argv)
@@ -1490,16 +1590,10 @@ def main(argv=None):
         _, code = run_recon(keys, settings, os.environ, args.out,
                             brand=brand, recon_path=args.recon_out, dry_run=args.dry_run)
         return code
-    # A video trial runs the video studios only. An image studio is refused
-    # plainly — run mode=recon to capture it, or mode=image for Pollinations.
-    if args.site == "all":
-        keys = list(VIDEO_KEYS)
-    elif args.site in VIDEO_KEYS:
-        keys = [args.site]
-    else:
-        print(f"video-trial: {args.site} is an image studio, not a video site — "
-              "run mode=recon to capture it, or mode=image for Pollinations")
-        return 1
+    # A trial runs any site: a video studio makes a clip, an image studio
+    # makes an image. --site all is the video studios only; an image studio
+    # is trialled by naming it.
+    keys = trial_keys(args.site)
     _, code = run_trial(keys, args.prompt, settings, os.environ, args.out,
                         brand=brand, verdicts_path=args.verdicts, dry_run=args.dry_run,
                         max_wait_seconds=args.max_wait_seconds,
