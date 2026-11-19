@@ -1,0 +1,22 @@
+# The browser bake-off (stage 10): engines read the SAME public pages and are compared against the current one. Public pages only; no login, no stealth, no puzzle solving.
+# A command prints the page's HTML to stdout; {url} is replaced. Leave `command` empty and the engine is reported as NOT RUN (never faked).
+# The urls are PUBLIC pages the owner chooses (the brands' own sites and public competitor pages): none is built into the code.
+runs: 3
+urls: []
+engines:
+  current:
+    label: The engine the collectors use today (a plain public read)
+    command: "curl -sL --max-time 30 -A Mozilla/5.0 {url}"
+    timeout: 60
+  lightpanda:
+    label: Lightpanda (headless browser for machines, AGPL-3.0)
+    command: ""            # once installed on the runner, for example: lightpanda fetch --dump {url}   (check its own README for the exact flags)
+    timeout: 60
+  obscura:
+    label: Obscura (headless browser)
+    command: ""            # fill in once installed; the bake-off reports NOT RUN until a command is set
+    timeout: 60
+  agent_browser:
+    label: agent-browser, public pages only (its logged-in sessions trial is separate and comes later, under the session caps)
+    command: ""            # fill in once installed
+    timeout: 90
