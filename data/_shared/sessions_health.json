@@ -1,6 +1,6 @@
 {
   "boss": {
-    "checked_at": "2026-11-14T02:59:12Z",
+    "checked_at": "2026-11-19T08:55:20Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",
@@ -11,12 +11,12 @@
     "unconfirmed_streak": 0
   },
   "facebook": {
-    "checked_at": "2026-11-14T02:59:12Z",
-    "days_left": 363,
+    "checked_at": "2026-11-19T08:55:20Z",
+    "days_left": 358,
     "evidence": {
       "body_ids": [
         "splash-screen",
-        "mount_0_0_3x",
+        "mount_0_0_AK",
         "B:0",
         "B:1",
         "B:2",
@@ -66,7 +66,7 @@
       "login_word_in_address": "",
       "noscript": "",
       "password_field": false,
-      "scripts": 365,
+      "scripts": 276,
       "status": 200,
       "text_chars": 0,
       "title": "Facebook",
@@ -74,36 +74,18 @@
       "worker_error": ""
     },
     "expires_on": "2027-11-12",
-    "proved_on": "2026-11-14T02:59:12Z",
+    "proved_on": "2026-11-19T08:55:20Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
     "unconfirmed_streak": 0
   },
   "instagram": {
-    "checked_at": "2026-11-14T02:59:12Z",
-    "days_left": 363,
+    "checked_at": "2026-11-19T08:55:20Z",
+    "days_left": 358,
     "evidence": {
-      "body_ids": [
-        "splash-screen",
-        "B:0",
-        "S:0",
-        "ssr-finished-successfully",
-        "has-finished-comet-page"
-      ],
-      "cookies_back": [
-        "csrftoken",
-        "datr",
-        "dpr",
-        "ds_user_id",
-        "ig_did",
-        "mid",
-        "ps_l",
-        "ps_n",
-        "rur",
-        "sessionid",
-        "wd"
-      ],
+      "body_ids": [],
+      "cookies_back": [],
       "cookies_sent": [
         "csrftoken",
         "datr",
@@ -118,16 +100,15 @@
         "wd"
       ],
       "fetched_with": "browser",
-      "html_chars": 862056,
+      "html_chars": 0,
       "html_truncated": false,
-      "landed": "https://www.instagram.com/",
-      "logged_in_found": [
-        "direct/inbox"
-      ],
+      "landed": "",
+      "logged_in_found": [],
       "logged_in_missing": [
         "\"viewerid\"",
         "\"is_logged_in\":true",
-        "/accounts/activity"
+        "/accounts/activity",
+        "direct/inbox"
       ],
       "logged_in_text_found": [],
       "logged_in_text_missing": [],
@@ -136,23 +117,23 @@
       "login_word_in_address": "",
       "noscript": "",
       "password_field": false,
-      "scripts": 125,
-      "status": 200,
+      "scripts": 0,
+      "status": 0,
       "text_chars": 0,
-      "title": "Instagram",
+      "title": "",
       "visible_text_available": false,
-      "worker_error": ""
+      "worker_error": "UPSTREAM_BROKEN: Error: Page.goto: net::ERR_TOO_MANY_REDIRECTS at https://www.instagram.com/"
     },
     "expires_on": "2027-11-12",
     "proved_on": "2026-11-14T02:59:12Z",
     "proved_via": "browser",
-    "reason": "the platform's own page showed a logged-in state",
-    "state": "ACCEPTED",
+    "reason": "the Scrapling worker could not read the page cleanly (a network error stopped the page from loading (UPSTREAM_BROKEN: Error: Page.goto: net::ERR_TOO_MANY_REDIRECTS at https://www.instagram.com/)), so nothing was judged; this is not the platform's answer",
+    "state": "CANNOT CHECK",
     "unconfirmed_streak": 0
   },
   "linkedin": {
-    "checked_at": "2026-11-14T02:59:12Z",
-    "days_left": 363,
+    "checked_at": "2026-11-19T08:55:20Z",
+    "days_left": 358,
     "evidence": {
       "body_ids": [],
       "cookies_back": [],
@@ -215,8 +196,8 @@
     "unconfirmed_streak": 0
   },
   "reddit": {
-    "checked_at": "2026-11-14T02:59:12Z",
-    "days_left": 179,
+    "checked_at": "2026-11-19T08:55:20Z",
+    "days_left": 173,
     "evidence": {
       "body_ids": [
         "shreddit-skip-link",
@@ -267,7 +248,7 @@
         "token_v2"
       ],
       "fetched_with": "browser",
-      "html_chars": 426212,
+      "html_chars": 428169,
       "html_truncated": false,
       "landed": "https://www.reddit.com/settings/",
       "logged_in_found": [
@@ -287,7 +268,7 @@
       "login_word_in_address": "",
       "noscript": "",
       "password_field": false,
-      "scripts": 32,
+      "scripts": 31,
       "status": 200,
       "text_chars": 446,
       "title": "Reddit - The heart of the internet",
@@ -295,15 +276,15 @@
       "worker_error": ""
     },
     "expires_on": "2027-05-12",
-    "proved_on": "2026-11-14T02:59:12Z",
+    "proved_on": "2026-11-19T08:55:20Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
     "unconfirmed_streak": 0
   },
   "tiktok": {
-    "checked_at": "2026-11-14T02:59:12Z",
-    "days_left": 178,
+    "checked_at": "2026-11-19T08:55:20Z",
+    "days_left": 173,
     "evidence": {
       "body_ids": [
         "tiktok-environment-webapp",
@@ -395,14 +376,13 @@
         "uid_tt_ss"
       ],
       "fetched_with": "browser",
-      "html_chars": 534919,
+      "html_chars": 470043,
       "html_truncated": false,
       "landed": "https://www.tiktok.com/",
-      "logged_in_found": [
-        "data-e2e=\"profile-icon\""
-      ],
+      "logged_in_found": [],
       "logged_in_missing": [
-        "\"islogin\":true"
+        "\"islogin\":true",
+        "data-e2e=\"profile-icon\""
       ],
       "logged_in_text_found": [],
       "logged_in_text_missing": [],
@@ -415,7 +395,7 @@
       "password_field": false,
       "scripts": 81,
       "status": 200,
-      "text_chars": 386,
+      "text_chars": 70,
       "title": "TikTok - Make Your Day",
       "visible_text_available": true,
       "worker_error": ""
@@ -423,13 +403,13 @@
     "expires_on": "2027-05-11",
     "proved_on": "2026-11-14T02:59:12Z",
     "proved_via": "browser",
-    "reason": "the platform's own page showed a logged-in state",
-    "state": "ACCEPTED",
-    "unconfirmed_streak": 0
+    "reason": "the page gave no sign of being logged in or logged out (it may be an error or a half-drawn page), so it is not counted as a refusal and the proof is kept; it is looked at again on the next check, and after 3 such checks in a row it is treated as refused (this is check 1)",
+    "state": "UNCONFIRMED",
+    "unconfirmed_streak": 1
   },
   "x": {
-    "checked_at": "2026-11-14T02:59:12Z",
-    "days_left": 363,
+    "checked_at": "2026-11-19T08:55:20Z",
+    "days_left": 357,
     "evidence": {
       "body_ids": [
         "challenge-error-text"
@@ -462,7 +442,7 @@
         "twid"
       ],
       "fetched_with": "browser",
-      "html_chars": 47021,
+      "html_chars": 46978,
       "html_truncated": false,
       "landed": "https://x.com/home",
       "logged_in_found": [],
@@ -498,7 +478,7 @@
     "unconfirmed_streak": 0
   },
   "xiaohongshu": {
-    "checked_at": "2026-11-14T02:59:12Z",
+    "checked_at": "2026-11-19T08:55:20Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",
