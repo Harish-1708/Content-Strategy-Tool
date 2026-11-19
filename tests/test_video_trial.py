@@ -174,6 +174,63 @@ def _logged_in_image_browser(key, done=True, image=True, bad_bytes=False):
     return browser
 
 
+class _ModalAfterEnterFake(FakeBrowser):
+    """A fake Kling image studio where the promo modal only appears once the
+    studio loads (after enter_url) — the Generation #6 failure: the trial
+    dismissed on the homepage, the modal opened on the studio page, and the
+    editor sat under it, so every prompt selector failed to click through.
+    While the modal is open, typing fails; clicking a dismiss selector closes
+    it. `events` records opens and successful clicks in order, so the test
+    can prove the dismiss happened after the studio loaded."""
+
+    def __init__(self, pages, clickable, typeable, present_always):
+        super().__init__(pages, clickable=clickable, typeable=typeable,
+                         present_always=present_always)
+        self.modal_open = False
+        self.events = []
+
+    def open(self, url):
+        super().open(url)
+        self.events.append(("open", url))
+        if "omni-image" in url:
+            self.modal_open = True
+            self.clickable = self.clickable | set(VT.DRIVERS["kling-image"]["dismiss_selectors"])
+
+    def click(self, selectors):
+        ok = super().click(selectors)
+        if ok:
+            clicked = self.clicks[-1]
+            self.events.append(("click", clicked))
+            if clicked in VT.DRIVERS["kling-image"]["dismiss_selectors"]:
+                self.modal_open = False
+        return ok
+
+    def type_text(self, selectors, text, submit=False):
+        if self.modal_open:
+            return False
+        return super().type_text(selectors, text, submit=submit)
+
+
+def _modal_after_enter_browser():
+    """The Generation #6 page: logged in, the finished-image marker on the
+    page, the download link fetching a JPEG — but the promo modal opens only
+    when the studio loads, so a dismiss that runs only on the homepage
+    leaves the editor covered."""
+    driver = VT.DRIVERS["kling-image"]
+    present = {"a[href$=\".jpg\"]"}
+    page = {"present": present,
+            "links": [{"href": "https://cdn.example/image.jpg", "text": "Download"}]}
+    pages = {driver["app_url"]: page}
+    # The dismiss selectors are NOT clickable yet — the modal is not on the homepage.
+    clickable = set(driver["generate_selectors"])
+    browser = _ModalAfterEnterFake(pages, clickable=clickable,
+                                   typeable=set(driver["prompt_selectors"]),
+                                   present_always=present)
+    browser.page_html = ("<html><body>welcome, create, generate an image, my works, credits</body></html>")
+    browser.fetch_map = {"https://cdn.example/image.jpg": (200, b"\xff\xd8\xffFAKEIMAGEBYTES")}
+    return browser
+
+
 # --- the registry --------------------------------------------------------------------------------------
 
 def test_registry_covers_the_long_term_sites_plus_the_luma_stub():
@@ -340,6 +397,28 @@ def test_image_trial_rejects_a_download_that_is_not_an_image(tmp_path):
     assert "no image could be downloaded" in entry["reason"]
     assert saver.calls == []
     assert not (tmp_path / IMAGE_KLING).exists()
+
+
+def test_image_trial_dismisses_a_modal_that_opens_when_the_studio_loads(tmp_path):
+    # Generation #6 (2026-11-19): the trial dismissed on the homepage, the
+    # "Kling Image 4.0" modal opened on the studio page, and the editor sat
+    # under it — every prompt selector failed to click through, even though
+    # the editor was on the page. The trial must dismiss again after entering
+    # the studio.
+    env = {"KLING_COOKIES": COOKIE_JSON}
+    browser = _modal_after_enter_browser()
+    saver = RecordingSaver()
+    ctx = _ctx(tmp_path, env=env, factory=_fake_factory(browser), saver=saver)
+    entry = VT.run_site("kling-image", ctx)
+    assert entry["verdict"] == "go"
+    assert entry["clip"] == IMAGE_KLING
+    # The dismiss happened after the studio loaded, not on the homepage.
+    opened = [e for e in browser.events if e[0] == "open"]
+    dismissed = [e for e in browser.events if e[0] == "click"
+                 and e[1] in VT.DRIVERS["kling-image"]["dismiss_selectors"]]
+    assert len(dismissed) == 1
+    assert browser.events.index(opened[1]) < browser.events.index(dismissed[0])
+    assert browser.typed == ["a test prompt"]
 
 
 def test_trial_keys_all_is_the_video_studios_only_and_an_image_studio_is_named(tmp_path):
