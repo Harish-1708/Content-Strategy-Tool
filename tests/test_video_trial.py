@@ -2,8 +2,9 @@
 
 What these tests prove, with fakes (no browser is ever started here, no
 account exists, no clip is ever generated):
-- the driver registry covers exactly the four long-term free sites plus the
-  Luma stub, each with its model, cookies secret, app address and free limits,
+- the driver registry covers exactly the video sites (four long-term free
+  sites plus the Luma stub) and the three image studios (Dreamina, Kling,
+  Gemini), each with its model, cookies secret, app address and free limits,
   and Dreamina never tries Seedance 2.5 (free credits cannot buy one);
 - the hard cap holds: one clip per site per run, a second generation is
   refused before the button is pressed;
@@ -20,7 +21,8 @@ account exists, no clip is ever generated):
   selector the driver would use is probed on its own — nothing is typed,
   nothing is generated, nothing is saved — and the report is written to
   recon.json; the Luma stub, a missing cookie, a login wall and a challenge
-  are all reported, never a failure;
+  are all reported, never a failure; the three image studios are captured the
+  same way, and a video trial refuses an image studio plainly;
 - the brand save: a made clip goes only to the brand the run is for, under
   the name YYYY-MM-DD_<brand>_<site>_<model>_<prompt-slug>.mp4, into that
   brand's Drive folder and that brand's sheet tab, and a failed save never
@@ -137,8 +139,12 @@ def _logged_in_browser(key, done=True, clip=True):
 # --- the registry --------------------------------------------------------------------------------------
 
 def test_registry_covers_the_long_term_sites_plus_the_luma_stub():
-    assert set(VT.DRIVERS) == {"pixverse", "google_flow", "dreamina", "kling", "luma"}
-    assert VT.SITE_KEYS == ("pixverse", "google_flow", "dreamina", "kling")
+    assert set(VT.DRIVERS) == {"pixverse", "google_flow", "dreamina", "kling", "luma",
+                               "dreamina-image", "kling-image", "gemini-image"}
+    assert VT.SITE_KEYS == ("pixverse", "google_flow", "dreamina", "kling",
+                            "dreamina-image", "kling-image", "gemini-image")
+    assert VT.VIDEO_KEYS == ("pixverse", "google_flow", "dreamina", "kling", "luma")
+    assert VT.IMAGE_KEYS == ("dreamina-image", "kling-image", "gemini-image")
     for key, driver in VT.DRIVERS.items():
         assert driver["app_url"].startswith("https://")
         assert driver["cookies_secret"].endswith("_COOKIES")
@@ -689,3 +695,49 @@ def test_recon_dry_run_opens_nothing_and_reports_skipped(tmp_path, capsys):
     out = capsys.readouterr().out
     assert "dry run" in out
     assert "PIXVERSE_COOKIES" in out
+
+
+# --- the image studios (recon only: capture the page, generate nothing) ----
+
+def test_image_recon_captures_the_image_studio_and_probes_its_selectors(tmp_path):
+    env = {"DREAMINA_COOKIES": COOKIE_JSON}
+    present = {VT.DRIVERS["dreamina-image"]["prompt_selectors"][0],
+               VT.DRIVERS["dreamina-image"]["generate_selectors"][0],
+               VT.DRIVERS["dreamina-image"]["done_markers"][0]}
+    browser = _recon_browser("dreamina-image", present=present)
+    ctx = _ctx(tmp_path, env=env, factory=_fake_factory(browser))
+    report = VT.recon_site("dreamina-image", ctx)
+    assert report["state"] == "ok"
+    assert report["reason"] == "creation page captured; selectors probed"
+    assert report["login"] == "in"
+    assert report["pages_opened"] == [VT.DRIVERS["dreamina-image"]["app_url"]]
+    assert report["prompt_selectors"][VT.DRIVERS["dreamina-image"]["prompt_selectors"][0]] is True
+    assert report["generate_selectors"][VT.DRIVERS["dreamina-image"]["generate_selectors"][0]] is True
+    assert report["done_markers"][VT.DRIVERS["dreamina-image"]["done_markers"][0]] is True
+    assert "recon" in browser.shots
+    assert browser.typed == []
+
+
+def test_image_recon_kling_image_enters_the_omni_image_studio(tmp_path):
+    env = {"KLING_COOKIES": COOKIE_JSON}
+    browser = _recon_browser("kling-image")
+    ctx = _ctx(tmp_path, env=env, factory=_fake_factory(browser))
+    report = VT.recon_site("kling-image", ctx)
+    assert report["state"] == "ok"
+    assert VT.DRIVERS["kling-image"]["enter_url"] in report["pages_opened"]
+    assert VT.DRIVERS["kling-image"]["enter_url"] in browser.opened
+    assert report["prompt_selectors"][VT.DRIVERS["kling-image"]["prompt_selectors"][0]] is True
+
+
+def test_image_recon_gemini_with_missing_cookies_is_not_set_up(tmp_path):
+    factory = _fake_factory(_recon_browser("gemini-image"))
+    ctx = _ctx(tmp_path, env={}, factory=factory)
+    report = VT.recon_site("gemini-image", ctx)
+    assert report["state"] == "not-set-up"
+    assert factory.calls["n"] == 0
+
+
+def test_video_trial_refuses_an_image_studio(tmp_path, capsys):
+    code = VT.main(["--site", "dreamina-image", "--brand", "duderobe", "--out", "out"])
+    assert code == 1
+    assert "image studio, not a video site" in capsys.readouterr().out
