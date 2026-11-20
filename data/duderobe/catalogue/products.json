@@ -1556,7 +1556,7 @@
      "title": "Desert Camo / L-XL"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 50310722715934,
      "options": [
@@ -1674,7 +1674,7 @@
      "title": "Navy / Youth (5-9 Year Old)"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 47532988760350,
      "options": [
@@ -2761,7 +2761,7 @@
    "variant_count": 8,
    "variants": [
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 50216131821854,
      "options": [
@@ -3232,7 +3232,7 @@
    "variant_count": 16,
    "variants": [
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 47315787940126,
      "options": [
@@ -3856,22 +3856,22 @@
    "image_count": 19,
    "images": [
     "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-black-sweatpants-comfortable-sweatpants-with-pockets-activewear-dudepants.png?v=1773382408",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/back-view-3-navy-pants-2400.png?v=1795123093",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-sweatpants-navy-blue-comfortable-lounge-pants.png?v=1773394373",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/luxury-mens-bathrobe-shorts-bundle-detail-closeup-duderobe-blue.png?v=1773392843",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/dudepants-mens-sweatpants-black-comfortable-sweatpants-absorbent-towel-lining-pockets.jpg?v=1773382407",
-    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-black-sweatpants-back-view-comfortable-activewear-with-pockets.png?v=1773382408",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-sweatpants-comfortable-black-sweatpants-with-pockets-absorbent-towel-lining-dudepants.jpg?v=1773382408",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-comfortable-sweatpants-with-pockets-grey-activewear-dude-pants.png?v=1773382407",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/back-view-1-heather-grey-pants-2400.png?v=1795123092",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-grey-sweatpants-comfortable-lounge-pants-for-men.png?v=1773394373",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-bathrobe-and-shorts-bundle-grey-elastic-waistband-closeup.png?v=1773392843",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-comfortable-sweatpants-with-pockets-grey-active-lifestyle-relaxed-fit.jpg?v=1773382408",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/men_s_light_gray_sweatpants_cuff_detail_comfortable_with_pockets_activewear.jpg?v=1773382407",
-    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-comfortable-sweatpants-with-pockets-gray-back-view-activewear.png?v=1773382407",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/dudepants-black-men-sweatpants-comfortable-with-pockets-absorbent-towel-lining-activewear.png?v=1773382407",
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/back-view-2-black-pants-2400.png?v=1795123092",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-black-sweatpants-comfortable-lounge-pants-modern-design.png?v=1773394373",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-shorts-bundle-black-elastic-waistband-detail.png?v=1773392843",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-black-sweatpants-comfortable-activewear-with-pockets-absorbent-towel-lining.jpg?v=1773382407",
-    "https://cdn.shopify.com/s/files/1/2696/9530/files/mens-black-sweatpants-back-view-comfortable-activewear-with-pockets-absorbent-towel-lining.png?v=1773382407",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/dudepants-mens-sweatpants-black-comfortable-sweatpants-with-pockets-absorbent-towel-lining.jpg?v=1773382407",
     "https://cdn.shopify.com/s/files/1/2696/9530/files/duderobe-mens-pants-size-guide-hooded-bathrobe-sweatpants-combo.png?v=1773394373"
    ],

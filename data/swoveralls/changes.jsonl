@@ -180,3 +180,5 @@
 {"at": "2026-11-19T07:32:26Z", "details": {"product": null, "variants_restocked": ["L / Bordeaux", "S / Bordeaux"], "variants_sold_out": []}, "handle": "corduroy-swoveralls-bordeaux", "product_id": "15347005489263", "title": "Corduroy Swoveralls - Bordeaux", "type": "availability"}
 {"at": "2026-11-19T07:32:26Z", "details": {"product": null, "variants_restocked": ["2XL / Moss", "3XL / Moss"], "variants_sold_out": []}, "handle": "grid-fleece-swoveralls-moss", "product_id": "15347005915247", "title": "Grid Fleece Swoveralls - Moss", "type": "availability"}
 {"at": "2026-11-19T07:32:26Z", "details": {"product": null, "variants_restocked": ["XS / Forest Green"], "variants_sold_out": []}, "handle": "swoveralls-forest-green", "product_id": "1509945606244", "title": "Swoveralls - Forest Green", "type": "availability"}
+{"at": "2026-11-20T07:14:35Z", "details": {}, "handle": "swoveralls-dino-print", "product_id": "15607977312367", "title": "Swoveralls - Dino Navy", "type": "new"}
+{"at": "2026-11-20T07:14:35Z", "details": {}, "handle": "swoveralls-dino-print", "product_id": "7215056781423", "title": "Swoveralls - Dino Navy - Coming Soon!", "type": "suspected_removed"}

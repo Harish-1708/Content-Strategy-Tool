@@ -7927,16 +7927,16 @@
    "handle": "swoveralls-dino-print",
    "image_count": 8,
    "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g6.jpg?v=1793794204",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dinosaur_Print_Extension_1.jpg?v=1780595595",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dinosaur_Fabric_Close-Up.png?v=1780595595",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dinosaur_Bib_Panel.jpg?v=1780595601",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Remove_Button_Design.jpg?v=1780595601",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dino_Print_Close-up.png?v=1780595595",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g6_a63f42a6-2b52-43b3-b1e1-e3c1e09987a0.jpg?v=1795136304",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dinosaur_Print_Extension_1_81b4a1cf-a515-400e-9613-f7a0bb5e761c.jpg?v=1795136305",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dinosaur_Fabric_Close-Up.jpg?v=1795136304",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dinosaur_Bib_Panel_d668df34-4a4e-4b79-a471-3ae9cbfe0968.jpg?v=1795136304",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Remove_Button_Design_babdb99a-ed97-46b2-8369-d514ccf2939d.jpg?v=1795136304",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dino_Print_Close-up.jpg?v=1795136305",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.jpg?v=1795136305",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart_23fe38e7-8a54-4438-98bb-a76117c9b161.png?v=1795136304"
    ],
-   "in_stock": false,
+   "in_stock": true,
    "ingredients": "",
    "materials": "cotton 65%; polyester 31%; spandex 4%",
    "missing_expected": [],
@@ -7945,15 +7945,14 @@
    "pocket_claims": "6",
    "price_max": 120.0,
    "price_min": 120.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g6.jpg?v=1793794204",
-   "product_id": "7215056781423",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g6_a63f42a6-2b52-43b3-b1e1-e3c1e09987a0.jpg?v=1795136304",
+   "product_id": "15607977312367",
    "readiness": "ready",
-   "status": "coming_soon",
+   "status": "active",
    "tags": [
     "Active",
     "ag-le-prints",
     "All",
-    "badge_Coming Soon",
     "color-family:BLUE",
     "full price",
     "igg26_fashion_forward",
@@ -7963,32 +7962,14 @@
     "swatch_group_swoveralls",
     "swoveralls"
    ],
-   "title": "Swoveralls - Dino Navy - Coming Soon!",
+   "title": "Swoveralls - Dino Navy",
    "url": "https://swoveralls.com/products/swoveralls-dino-print",
-   "variant_count": 9,
+   "variant_count": 8,
    "variants": [
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
-     "id": 41347936387183,
-     "options": [
-      {
-       "name": "Size",
-       "value": "XXS"
-      },
-      {
-       "name": "Color",
-       "value": "Dino Navy"
-      }
-     ],
-     "price": 120.0,
-     "sku": "1038-XXS-DINO",
-     "title": "XXS / Dino Navy"
-    },
-    {
-     "available": false,
-     "compare_at_price": null,
-     "id": 41347936419951,
+     "id": 67789194395759,
      "options": [
       {
        "name": "Size",
@@ -8000,13 +7981,13 @@
       }
      ],
      "price": 120.0,
-     "sku": "1038-XS-DINO",
+     "sku": "SWPANTS2-DIN-XS",
      "title": "XS / Dino Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
-     "id": 41347936452719,
+     "id": 67789194428527,
      "options": [
       {
        "name": "Size",
@@ -8018,13 +7999,13 @@
       }
      ],
      "price": 120.0,
-     "sku": "1038-S-DINO",
+     "sku": "SWPANTS2-DIN-S",
      "title": "S / Dino Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
-     "id": 41347936485487,
+     "id": 67789194461295,
      "options": [
       {
        "name": "Size",
@@ -8036,13 +8017,13 @@
       }
      ],
      "price": 120.0,
-     "sku": "1038-M-DINO",
+     "sku": "SWPANTS2-DIN-M",
      "title": "M / Dino Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
-     "id": 41347936518255,
+     "id": 67789194494063,
      "options": [
       {
        "name": "Size",
@@ -8054,13 +8035,13 @@
       }
      ],
      "price": 120.0,
-     "sku": "1038-L-DINO",
+     "sku": "SWPANTS2-DIN-L",
      "title": "L / Dino Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
-     "id": 41347936551023,
+     "id": 67789194526831,
      "options": [
       {
        "name": "Size",
@@ -8072,13 +8053,13 @@
       }
      ],
      "price": 120.0,
-     "sku": "1038-XL-DINO",
+     "sku": "SWPANTS2-DIN-XL",
      "title": "XL / Dino Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
-     "id": 41347936583791,
+     "id": 67789194559599,
      "options": [
       {
        "name": "Size",
@@ -8090,13 +8071,13 @@
       }
      ],
      "price": 120.0,
-     "sku": "1038-2XL-DINO",
+     "sku": "SWPANTS2-DIN-2XL",
      "title": "2XL / Dino Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
-     "id": 41347936616559,
+     "id": 67789194592367,
      "options": [
       {
        "name": "Size",
@@ -8108,13 +8089,13 @@
       }
      ],
      "price": 120.0,
-     "sku": "1038-3XL-DINO",
+     "sku": "SWPANTS2-DIN-3XL",
      "title": "3XL / Dino Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
-     "id": 41349780373615,
+     "id": 67789194625135,
      "options": [
       {
        "name": "Size",
@@ -8126,7 +8107,7 @@
       }
      ],
      "price": 120.0,
-     "sku": "1038-4XL-DINO",
+     "sku": "SWPANTS2-DIN-4XL",
      "title": "4XL / Dino Navy"
     }
    ]

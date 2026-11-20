@@ -586,6 +586,12 @@
   "suspected_since": "2026-10-31T21:34:04Z",
   "title": "Corduroy Swoveralls - Forest Green (Rust Spots, Final Sale)"
  },
+ "15607977312367": {
+  "first_seen": "2026-11-20T07:14:35Z",
+  "handle": "swoveralls-dino-print",
+  "presence": "present",
+  "title": "Swoveralls - Dino Navy"
+ },
  "3223478698084": {
   "first_seen": "2026-10-19T17:07:09Z",
   "handle": "swoveralls-midnight-black",
@@ -649,7 +655,316 @@
  "7215056781423": {
   "first_seen": "2026-10-19T17:07:09Z",
   "handle": "swoveralls-dino-print",
-  "presence": "present",
+  "last_record": {
+   "audience_hints": [],
+   "availability": {
+    "41347936387183": false,
+    "41347936419951": false,
+    "41347936452719": false,
+    "41347936485487": false,
+    "41347936518255": false,
+    "41347936551023": false,
+    "41347936583791": false,
+    "41347936616559": false,
+    "41349780373615": false
+   },
+   "body_text": "Limited Edition Dino Print in Navy Meet the comfiest overalls on earth. Swoveralls combine sweatpants and overalls into one ridiculously comfy masterpiece. Made from butter-soft fabric with the perfect amount of stretch, they feature six pockets (including a hidden zip one), jogger cuffs that stay put, and a no-waistband design for all-day freedom. Great for concerts, dog walks, naps, travel, and everything in between. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 65% cotton, 31% recycled polyester, 4% spandex",
+   "brand": "swoveralls",
+   "category": "core",
+   "content_hash": "7259de294ecbae1858fceb295939af272707230efe03248ef25342a72f8d9817",
+   "created_at": "2024-01-15T11:02:58-05:00",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 637
+     }
+    },
+    "features": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Super soft fabric blend",
+      "Inside-bib, secret front pocket with zipper closure",
+      "Deep front bib and side pockets",
+      "Jogger Pant Cuff",
+      "Adjustable Straps",
+      "Zipper fly",
+      "Unisex Sizing",
+      "65% cotton, 31% recycled polyester, 4% spandex"
+     ]
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 8
+     }
+    },
+    "materials": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "consistent": true,
+      "items": [
+       {
+        "label": "cotton",
+        "material": "cotton",
+        "percent": 65
+       },
+       {
+        "label": "recycled polyester",
+        "material": "polyester",
+        "percent": 31
+       },
+       {
+        "label": "spandex",
+        "material": "spandex",
+        "percent": 4
+       }
+      ],
+      "total": 100
+     }
+    },
+    "pocket_claims": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      {
+       "count": 6,
+       "phrase": "six pockets"
+      }
+     ]
+    }
+   },
+   "family": "Swoveralls",
+   "flags": [
+    "limited_edition"
+   ],
+   "handle": "swoveralls-dino-print",
+   "images": [
+    {
+     "height": 2304,
+     "id": 45152909394031,
+     "key": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g6.jpg",
+     "position": 1,
+     "src": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g6.jpg?v=1793794204",
+     "variant_ids": [],
+     "width": 1728
+    },
+    {
+     "height": 2400,
+     "id": 42589668114543,
+     "key": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dinosaur_Print_Extension_1.jpg",
+     "position": 2,
+     "src": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dinosaur_Print_Extension_1.jpg?v=1780595595",
+     "variant_ids": [],
+     "width": 1792
+    },
+    {
+     "height": 1200,
+     "id": 42589668409455,
+     "key": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dinosaur_Fabric_Close-Up.png",
+     "position": 3,
+     "src": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dinosaur_Fabric_Close-Up.png?v=1780595595",
+     "variant_ids": [],
+     "width": 896
+    },
+    {
+     "height": 1200,
+     "id": 42589670244463,
+     "key": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dinosaur_Bib_Panel.jpg",
+     "position": 4,
+     "src": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dinosaur_Bib_Panel.jpg?v=1780595601",
+     "variant_ids": [],
+     "width": 896
+    },
+    {
+     "height": 1200,
+     "id": 42589670309999,
+     "key": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Remove_Button_Design.jpg",
+     "position": 5,
+     "src": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Remove_Button_Design.jpg?v=1780595601",
+     "variant_ids": [],
+     "width": 896
+    },
+    {
+     "height": 1200,
+     "id": 42589668278383,
+     "key": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dino_Print_Close-up.png",
+     "position": 6,
+     "src": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Dino_Print_Close-up.png?v=1780595595",
+     "variant_ids": [],
+     "width": 896
+    },
+    {
+     "height": 1000,
+     "id": 38216144846959,
+     "key": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png",
+     "position": 7,
+     "src": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them.png?v=1778533306",
+     "variant_ids": [],
+     "width": 800
+    },
+    {
+     "height": 1000,
+     "id": 38216144879727,
+     "key": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png",
+     "position": 8,
+     "src": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325",
+     "variant_ids": [],
+     "width": 800
+    }
+   ],
+   "in_stock": false,
+   "option_names": [
+    "Size",
+    "Color"
+   ],
+   "product_id": "7215056781423",
+   "product_type": "Swoveralls",
+   "published_at": "2026-03-19T18:01:13-04:00",
+   "readiness": {
+    "missing_expected": [],
+    "missing_required": [],
+    "state": "ready"
+   },
+   "status": "coming_soon",
+   "tags": [
+    "Active",
+    "ag-le-prints",
+    "All",
+    "badge_Coming Soon",
+    "color-family:BLUE",
+    "full price",
+    "igg26_fashion_forward",
+    "InventoryCheck",
+    "LimitedSW",
+    "Shop",
+    "swatch_group_swoveralls",
+    "swoveralls"
+   ],
+   "title": "Swoveralls - Dino Navy - Coming Soon!",
+   "updated_at": "2026-11-19T02:32:26-05:00",
+   "url": "https://swoveralls.com/products/swoveralls-dino-print",
+   "variants": [
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 41347936387183,
+     "options": {
+      "Color": "Dino Navy",
+      "Size": "XXS"
+     },
+     "price": 120.0,
+     "sku": "1038-XXS-DINO",
+     "title": "XXS / Dino Navy"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 41347936419951,
+     "options": {
+      "Color": "Dino Navy",
+      "Size": "XS"
+     },
+     "price": 120.0,
+     "sku": "1038-XS-DINO",
+     "title": "XS / Dino Navy"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 41347936452719,
+     "options": {
+      "Color": "Dino Navy",
+      "Size": "S"
+     },
+     "price": 120.0,
+     "sku": "1038-S-DINO",
+     "title": "S / Dino Navy"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 41347936485487,
+     "options": {
+      "Color": "Dino Navy",
+      "Size": "M"
+     },
+     "price": 120.0,
+     "sku": "1038-M-DINO",
+     "title": "M / Dino Navy"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 41347936518255,
+     "options": {
+      "Color": "Dino Navy",
+      "Size": "L"
+     },
+     "price": 120.0,
+     "sku": "1038-L-DINO",
+     "title": "L / Dino Navy"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 41347936551023,
+     "options": {
+      "Color": "Dino Navy",
+      "Size": "XL"
+     },
+     "price": 120.0,
+     "sku": "1038-XL-DINO",
+     "title": "XL / Dino Navy"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 41347936583791,
+     "options": {
+      "Color": "Dino Navy",
+      "Size": "2XL"
+     },
+     "price": 120.0,
+     "sku": "1038-2XL-DINO",
+     "title": "2XL / Dino Navy"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 41347936616559,
+     "options": {
+      "Color": "Dino Navy",
+      "Size": "3XL"
+     },
+     "price": 120.0,
+     "sku": "1038-3XL-DINO",
+     "title": "3XL / Dino Navy"
+    },
+    {
+     "available": false,
+     "compare_at_price": null,
+     "id": 41349780373615,
+     "options": {
+      "Color": "Dino Navy",
+      "Size": "4XL"
+     },
+     "price": 120.0,
+     "sku": "1038-4XL-DINO",
+     "title": "4XL / Dino Navy"
+    }
+   ],
+   "vendor": "Swoveralls"
+  },
+  "presence": "suspected_removed",
+  "suspected_since": "2026-11-20T07:14:35Z",
   "title": "Swoveralls - Dino Navy - Coming Soon!"
  },
  "7934710153327": {
