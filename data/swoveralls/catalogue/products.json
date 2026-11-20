@@ -1,6 +1,6 @@
 {
  "brand": "swoveralls",
- "count": 72,
+ "count": 73,
  "products": [
   {
    "allergens": "",
@@ -7851,7 +7851,7 @@
    "audience_hints": [],
    "audience_stated": "",
    "category": "core",
-   "description": "Limited Edition Dino Print in Navy Meet the comfiest overalls on earth. Swoveralls combine sweatpants and overalls into one ridiculously comfy masterpiece. Made from butter-soft fabric with the perfect amount of stretch, they feature six pockets (including a hidden zip one), jogger cuffs that stay put, and a no-waistband design for all-day freedom. Great for concerts, dog walks, naps, travel, and everything in between. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 65% cotton, 31% recycled polyester, 4% spandex",
+   "description": "Limited Edition Dino Print in Forest Green Meet the comfiest overalls on earth. Swoveralls combine sweatpants and overalls into one ridiculously comfy masterpiece. Made from butter-soft fabric with the perfect amount of stretch, they feature six pockets (including a hidden zip one), jogger cuffs that stay put, and a no-waistband design for all-day freedom. Great for concerts, dog walks, naps, travel, and everything in between. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 95% organic cotton, 5% spandex",
    "excluded": false,
    "excluded_reason": null,
    "fact_conflicts": [],
@@ -7860,7 +7860,7 @@
      "source": "catalogue_description",
      "status": "stated",
      "value": {
-      "chars": 637
+      "chars": 629
      }
     },
     "features": {
@@ -7874,7 +7874,7 @@
       "Adjustable Straps",
       "Zipper fly",
       "Unisex Sizing",
-      "65% cotton, 31% recycled polyester, 4% spandex"
+      "95% organic cotton, 5% spandex"
      ]
     },
     "images": {
@@ -7891,19 +7891,14 @@
       "consistent": true,
       "items": [
        {
-        "label": "cotton",
+        "label": "organic cotton",
         "material": "cotton",
-        "percent": 65
-       },
-       {
-        "label": "recycled polyester",
-        "material": "polyester",
-        "percent": 31
+        "percent": 95
        },
        {
         "label": "spandex",
         "material": "spandex",
-        "percent": 4
+        "percent": 5
        }
       ],
       "total": 100
@@ -7922,7 +7917,272 @@
    },
    "family": "Swoveralls",
    "flags": [
-    "limited_edition"
+    "limited_edition",
+    "new"
+   ],
+   "handle": "swoveralls-dino-forest-green",
+   "image_count": 8,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/v4-01_on-model-man_1d4c7ff2-96a4-4bb7-8519-6e08403afc51.jpg?v=1795173097",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/v4-02_flat-lay_4d2f6eb3-6016-4322-b9e5-9c35f33923f0.jpg?v=1795173097",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/v4-03_fabric-closeup_17d86025-8ee9-4c4f-97d3-0c4abfc5ec63.jpg?v=1795173097",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/v4-06_legs-and-cuffs-flat_2a03bc54-c9ee-4581-9d5f-053f525288bb.jpg?v=1795173097",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/v4-07_on-model-woman_986295d0-ba47-4e87-af54-4a7abe771871.jpg?v=1795173097",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/v4-08_on-model-legs_f3fb1af2-1916-46e5-84d6-499c5af04d01.jpg?v=1795173097",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Comparison_Chart_Us_vs_them_68f80fd8-6b4e-4b89-b5cb-073d0f8a11d2.jpg?v=1795173097",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart_78670e3b-8709-46ac-af02-6a0ff74e83c0.png?v=1795173097"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "cotton 95%; spandex 5%",
+   "missing_expected": [],
+   "missing_required": [],
+   "on_sale": false,
+   "pocket_claims": "6",
+   "price_max": 120.0,
+   "price_min": 120.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/v4-01_on-model-man_1d4c7ff2-96a4-4bb7-8519-6e08403afc51.jpg?v=1795173097",
+   "product_id": "15607981703279",
+   "readiness": "ready",
+   "status": "active",
+   "tags": [
+    "Active",
+    "ag-le-prints",
+    "All",
+    "badge_NEW",
+    "color-family:GREEN",
+    "full price",
+    "igg26_fashion_forward",
+    "InventoryCheck",
+    "LimitedSW",
+    "New",
+    "Shop",
+    "swatch_group_swoveralls",
+    "swoveralls"
+   ],
+   "title": "Swoveralls - Dino Forest Green",
+   "url": "https://swoveralls.com/products/swoveralls-dino-forest-green",
+   "variant_count": 8,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 67789203636335,
+     "options": [
+      {
+       "name": "Size",
+       "value": "XS"
+      },
+      {
+       "name": "Color",
+       "value": "Dino Forest Green"
+      }
+     ],
+     "price": 120.0,
+     "sku": "SWPANTS2-GNJ-XS",
+     "title": "XS / Dino Forest Green"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 67789203669103,
+     "options": [
+      {
+       "name": "Size",
+       "value": "S"
+      },
+      {
+       "name": "Color",
+       "value": "Dino Forest Green"
+      }
+     ],
+     "price": 120.0,
+     "sku": "SWPANTS2-GNJ-S",
+     "title": "S / Dino Forest Green"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 67789203701871,
+     "options": [
+      {
+       "name": "Size",
+       "value": "M"
+      },
+      {
+       "name": "Color",
+       "value": "Dino Forest Green"
+      }
+     ],
+     "price": 120.0,
+     "sku": "SWPANTS2-GNJ-M",
+     "title": "M / Dino Forest Green"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 67789203734639,
+     "options": [
+      {
+       "name": "Size",
+       "value": "L"
+      },
+      {
+       "name": "Color",
+       "value": "Dino Forest Green"
+      }
+     ],
+     "price": 120.0,
+     "sku": "SWPANTS2-GNJ-L",
+     "title": "L / Dino Forest Green"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 67789203767407,
+     "options": [
+      {
+       "name": "Size",
+       "value": "XL"
+      },
+      {
+       "name": "Color",
+       "value": "Dino Forest Green"
+      }
+     ],
+     "price": 120.0,
+     "sku": "SWPANTS2-GNJ-XL",
+     "title": "XL / Dino Forest Green"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 67789203800175,
+     "options": [
+      {
+       "name": "Size",
+       "value": "2XL"
+      },
+      {
+       "name": "Color",
+       "value": "Dino Forest Green"
+      }
+     ],
+     "price": 120.0,
+     "sku": "SWPANTS2-GNJ-2XL",
+     "title": "2XL / Dino Forest Green"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 67789203832943,
+     "options": [
+      {
+       "name": "Size",
+       "value": "3XL"
+      },
+      {
+       "name": "Color",
+       "value": "Dino Forest Green"
+      }
+     ],
+     "price": 120.0,
+     "sku": "SWPANTS2-GNJ-3XL",
+     "title": "3XL / Dino Forest Green"
+    },
+    {
+     "available": true,
+     "compare_at_price": null,
+     "id": 67789203865711,
+     "options": [
+      {
+       "name": "Size",
+       "value": "4XL"
+      },
+      {
+       "name": "Color",
+       "value": "Dino Forest Green"
+      }
+     ],
+     "price": 120.0,
+     "sku": "SWPANTS2-GNJ-4XL",
+     "title": "4XL / Dino Forest Green"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "core",
+   "description": "Limited Edition Dino Print in Navy Meet the comfiest overalls on earth. Swoveralls combine sweatpants and overalls into one ridiculously comfy masterpiece. Made from butter-soft fabric with the perfect amount of stretch, they feature six pockets (including a hidden zip one), jogger cuffs that stay put, and a no-waistband design for all-day freedom. Great for concerts, dog walks, naps, travel, and everything in between. Super soft fabric blend Inside-bib, secret front pocket with zipper closure Deep front bib and side pockets Jogger Pant Cuff Adjustable Straps Zipper fly Unisex Sizing 95% organic cotton, 5% spandex",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "description": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "chars": 621
+     }
+    },
+    "features": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      "Super soft fabric blend",
+      "Inside-bib, secret front pocket with zipper closure",
+      "Deep front bib and side pockets",
+      "Jogger Pant Cuff",
+      "Adjustable Straps",
+      "Zipper fly",
+      "Unisex Sizing",
+      "95% organic cotton, 5% spandex"
+     ]
+    },
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 8
+     }
+    },
+    "materials": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": {
+      "consistent": true,
+      "items": [
+       {
+        "label": "organic cotton",
+        "material": "cotton",
+        "percent": 95
+       },
+       {
+        "label": "spandex",
+        "material": "spandex",
+        "percent": 5
+       }
+      ],
+      "total": 100
+     }
+    },
+    "pocket_claims": {
+     "source": "catalogue_description",
+     "status": "stated",
+     "value": [
+      {
+       "count": 6,
+       "phrase": "six pockets"
+      }
+     ]
+    }
+   },
+   "family": "Swoveralls",
+   "flags": [
+    "limited_edition",
+    "new"
    ],
    "handle": "swoveralls-dino-print",
    "image_count": 8,
@@ -7938,7 +8198,7 @@
    ],
    "in_stock": true,
    "ingredients": "",
-   "materials": "cotton 65%; polyester 31%; spandex 4%",
+   "materials": "cotton 95%; spandex 5%",
    "missing_expected": [],
    "missing_required": [],
    "on_sale": false,
@@ -7953,11 +8213,13 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_NEW",
     "color-family:BLUE",
     "full price",
     "igg26_fashion_forward",
     "InventoryCheck",
     "LimitedSW",
+    "New",
     "Shop",
     "swatch_group_swoveralls",
     "swoveralls"
@@ -11651,7 +11913,7 @@
      "title": "L / Jammers"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753433129071,
      "options": [
