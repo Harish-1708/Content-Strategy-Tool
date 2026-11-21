@@ -11132,7 +11132,7 @@
      "title": "S / Nightshade Plum"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53160030044271,
      "options": [
@@ -11186,7 +11186,7 @@
      "title": "XL / Nightshade Plum"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53160030142575,
      "options": [
