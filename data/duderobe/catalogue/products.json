@@ -1556,7 +1556,7 @@
      "title": "Desert Camo / L-XL"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 50310722715934,
      "options": [
@@ -1852,7 +1852,9 @@
     }
    },
    "family": "Personalization",
-   "flags": [],
+   "flags": [
+    "on_sale"
+   ],
    "handle": "duderobe-personalization",
    "image_count": 0,
    "images": [],
@@ -1865,10 +1867,10 @@
     "features"
    ],
    "missing_required": [],
-   "on_sale": false,
+   "on_sale": true,
    "pocket_claims": "",
-   "price_max": 9.0,
-   "price_min": 9.0,
+   "price_max": 0.0,
+   "price_min": 0.0,
    "primary_image": "",
    "product_id": "15945149186334",
    "readiness": "excluded",
@@ -1883,7 +1885,7 @@
    "variants": [
     {
      "available": true,
-     "compare_at_price": 0.0,
+     "compare_at_price": 9.0,
      "id": 60146552209694,
      "options": [
       {
@@ -1891,7 +1893,7 @@
        "value": "Default Title"
       }
      ],
-     "price": 9.0,
+     "price": 0.0,
      "sku": null,
      "title": "Default Title"
     }

@@ -52,7 +52,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 9916033073438,IndoorCamo™ Limited Edition DudeRobe,50310763610398,Desert Camo / XS,Color=Desert Camo; Size=XS,ROBE1-CAO-XS,134.00,,true
 9916033073438,IndoorCamo™ Limited Edition DudeRobe,50310722683166,Desert Camo / S-M,Color=Desert Camo; Size=S-M,ROBE1-341-S/M,134.00,,true
 9916033073438,IndoorCamo™ Limited Edition DudeRobe,50310722650398,Desert Camo / L-XL,Color=Desert Camo; Size=L-XL,ROBE1-341-L/XL,134.00,,true
-9916033073438,IndoorCamo™ Limited Edition DudeRobe,50310722715934,Desert Camo / 2XL-3XL,Color=Desert Camo; Size=2XL-3XL,ROBE1-341-2XL/3XL,134.00,,true
+9916033073438,IndoorCamo™ Limited Edition DudeRobe,50310722715934,Desert Camo / 2XL-3XL,Color=Desert Camo; Size=2XL-3XL,ROBE1-341-2XL/3XL,134.00,,false
 8927175672094,Kids DudeRobe,47471190147358,Navy / Youth (5-9 Year Old),Color=Navy; Size=Youth (5-9 Year Old),ROBEYOUTH-NAVY-OS,68.00,,true
 8927175672094,Kids DudeRobe,47532988760350,Navy / XS (10-15 Year Old),Color=Navy; Size=XS (10-15 Year Old),ROBE1-NAVY-XS,68.00,,false
 8927175672094,Kids DudeRobe,47471189983518,Grey / Youth (5-9 Year Old),Color=Grey; Size=Youth (5-9 Year Old),ROBEYOUTH-GRAY-OS,68.00,,true
@@ -60,7 +60,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 8927175672094,Kids DudeRobe,47471190311198,Black / Youth (5-9 Year Old),Color=Black; Size=Youth (5-9 Year Old),ROBEYOUTH-BLACK-OS,68.00,,true
 8927175672094,Kids DudeRobe,47532988793118,Black / XS (10-15 Year Old),Color=Black; Size=XS (10-15 Year Old),ROBE1-BLACK-XS,68.00,,true
 10109410443550,Mom & LittleDude,51861463105822,Default Title,Title=Default Title,,175.00,196.00,true
-15945149186334,Personalization,60146552209694,Default Title,Title=Default Title,,9.00,0.00,true
+15945149186334,Personalization,60146552209694,Default Title,Title=Default Title,,0.00,9.00,true
 9747382927646,Reversible DudeHoodie,49738913382686,Navy / S,Color=Navy; Size=S,F25HOODIE-NAVY-S,98.00,,true
 9747382927646,Reversible DudeHoodie,49738913415454,Navy / M,Color=Navy; Size=M,F25HOODIE-NAVY-M,98.00,,true
 9747382927646,Reversible DudeHoodie,49738913448222,Navy / L,Color=Navy; Size=L,F25HOODIE-NAVY-L,98.00,,true

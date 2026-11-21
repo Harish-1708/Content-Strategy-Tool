@@ -8541,7 +8541,7 @@
      "title": "S / Dog Days Navy"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 43949671546991,
      "options": [
@@ -9614,7 +9614,7 @@
      "title": "L / GooBle Search"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": 120.0,
      "id": 53311680970863,
      "options": [
