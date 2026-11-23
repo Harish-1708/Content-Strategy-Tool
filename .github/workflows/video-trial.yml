@@ -104,7 +104,7 @@ jobs:
 
       - name: Upload the clips (drafts only — watermarked, personal-use)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: video-trial-clips
           path: debug/video-trial
