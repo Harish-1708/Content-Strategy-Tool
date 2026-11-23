@@ -1852,9 +1852,7 @@
     }
    },
    "family": "Personalization",
-   "flags": [
-    "on_sale"
-   ],
+   "flags": [],
    "handle": "duderobe-personalization",
    "image_count": 0,
    "images": [],
@@ -1867,10 +1865,10 @@
     "features"
    ],
    "missing_required": [],
-   "on_sale": true,
+   "on_sale": false,
    "pocket_claims": "",
-   "price_max": 0.0,
-   "price_min": 0.0,
+   "price_max": 9.0,
+   "price_min": 9.0,
    "primary_image": "",
    "product_id": "15945149186334",
    "readiness": "excluded",
@@ -1885,7 +1883,7 @@
    "variants": [
     {
      "available": true,
-     "compare_at_price": 9.0,
+     "compare_at_price": null,
      "id": 60146552209694,
      "options": [
       {
@@ -1893,7 +1891,7 @@
        "value": "Default Title"
       }
      ],
-     "price": 0.0,
+     "price": 9.0,
      "sku": null,
      "title": "Default Title"
     }
