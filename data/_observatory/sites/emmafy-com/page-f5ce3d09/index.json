@@ -17,6 +17,15 @@
    "count": 50,
    "file": "20261114T022541Z.json.gz",
    "hash": "ba41e1ebf1d74ab1ea8a"
+  },
+  {
+   "bytes": 2743,
+   "captured_at": "2026-11-23T15:32:51Z",
+   "complete": true,
+   "confirmed_at": "2026-11-23T15:32:51Z",
+   "count": 50,
+   "file": "20261123T153251Z.json.gz",
+   "hash": "0b9c6d9dbf385a2ef8b2"
   }
  ],
  "version": 1

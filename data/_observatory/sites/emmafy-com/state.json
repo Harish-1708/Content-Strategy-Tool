@@ -1,8 +1,18 @@
 {
  "catalogue": {
-  "missing": {},
+  "missing": {
+   "10332532736086": {
+    "count": 1,
+    "first_missing_at": "2026-11-23T15:32:51Z",
+    "handle": "shelly-the-clear-hard-shell-cases",
+    "id": 10332532736086,
+    "price": 39.97,
+    "title": "Shelly \u2013 The Clear Hard Shell Cases",
+    "url": "https://emmafy.com/products/shelly-the-clear-hard-shell-cases"
+   }
+  },
   "removed": {},
-  "updated_at": "2026-11-16T13:15:07Z"
+  "updated_at": "2026-11-23T15:32:51Z"
  },
  "shopify": {
   "checked_at": "2026-11-13T19:13:45Z",

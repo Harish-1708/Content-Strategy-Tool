@@ -1,33 +1,6 @@
 {
  "entries": [
   {
-   "bytes": 14066,
-   "captured_at": "2026-11-13T19:13:45Z",
-   "complete": true,
-   "confirmed_at": "2026-11-13T19:13:45Z",
-   "count": 18,
-   "file": "20261113T191345Z.json.gz",
-   "hash": "ee5e3253e8866d887c25"
-  },
-  {
-   "bytes": 14078,
-   "captured_at": "2026-11-14T02:25:41Z",
-   "complete": true,
-   "confirmed_at": "2026-11-14T02:25:41Z",
-   "count": 18,
-   "file": "20261114T022541Z.json.gz",
-   "hash": "59f44368fb1aaa20e2b6"
-  },
-  {
-   "bytes": 14099,
-   "captured_at": "2026-11-14T06:36:22Z",
-   "complete": true,
-   "confirmed_at": "2026-11-14T06:36:22Z",
-   "count": 18,
-   "file": "20261114T063622Z.json.gz",
-   "hash": "4a345015582f8e32f5ac"
-  },
-  {
    "bytes": 14111,
    "captured_at": "2026-11-14T08:45:13Z",
    "complete": true,
@@ -53,6 +26,15 @@
    "count": 18,
    "file": "20261116T131507Z.json.gz",
    "hash": "8f542b25c73971e34945"
+  },
+  {
+   "bytes": 14326,
+   "captured_at": "2026-11-23T15:32:51Z",
+   "complete": true,
+   "confirmed_at": "2026-11-23T15:32:51Z",
+   "count": 18,
+   "file": "20261123T153251Z.json.gz",
+   "hash": "ff929b8d638e98e83c1e"
   }
  ],
  "version": 1
