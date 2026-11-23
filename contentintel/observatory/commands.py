@@ -49,7 +49,7 @@ def add_arguments(p):
     p.add_argument("--json", action="store_true")
     p.add_argument("--dry-run", action="store_true", help="monitor: show what would be read and make no request")
     p.add_argument("--decision", default="", choices=("", "monitor", "stop", "reset"), help="decide: monitor or stop a discovered competitor, or reset it to the rubric")
-    p.add_argument("--what", default="youtube", choices=("youtube", "outliers", "search", "stats", "read", "trending", "collect", "compare", "check", "run", "list", "approve", "reject", "show", "set", "reset", "subtitle", "deepread", "channelpages", "crawl", "feeds", "health", "install", "profile", "posts", "tweets", "thread", "jobs", "subreddit"),
+    p.add_argument("--what", default="youtube", choices=("youtube", "outliers", "search", "stats", "read", "trending", "collect", "compare", "check", "password-backup", "run", "list", "approve", "reject", "show", "set", "reset", "subtitle", "deepread", "channelpages", "crawl", "feeds", "health", "install", "profile", "posts", "tweets", "thread", "jobs", "subreddit"),
                    help="corpus: youtube, outliers, trending, search, stats or read; instagram: collect, compare or check")
     p.add_argument("--source", default="", help="corpus search: only these sources (youtube_public, meta_ads, instagram, competitor_pages, web_search...), comma-separated")
     p.add_argument("--since", default="", help="corpus search: only items captured on or after this date (YYYY-MM-DD)")
@@ -780,7 +780,7 @@ def _sessions(args, settings, now):
     from .. import contract as K
     from .. import session_live as SL
     from .. import sessions as S
-    what = args.what if args.what in ("check", "read", "compare") else "status"                                  # list (or nothing): what is stored, no request made
+    what = args.what if args.what in ("check", "read", "compare", "password-backup") else "status"                                  # list (or nothing): what is stored, no request made
     if args.key and args.key not in S.PLATFORMS:
         print(f"Error: no platform called {args.key!r}; the platforms are {', '.join(S.PLATFORMS)}")
         return 1
@@ -788,6 +788,19 @@ def _sessions(args, settings, now):
     contact = (os.environ.get("OBSERVATORY_CONTACT") or settings["politeness"]["contact"]).strip()
     python = os.environ.get("SCRAPLING_PYTHON", "")
     ledger = SL.SessionLedger()
+    if what == "password-backup":
+        if len(platforms) != 1:
+            print("Error: password-backup needs one platform (--key), for example: sessions --what password-backup --key instagram")
+            return 1
+        from .. import session_password as SP
+        platform = platforms[0]
+        creds = {"username": os.environ.get(f"{platform.upper()}_USERNAME", ""), "password": os.environ.get(f"{platform.upper()}_PASSWORD", "")}
+        attempts = SP.AttemptLedger(Path(args.data_dir) / "_shared" / "session_password.json")
+        result = SP.attempt(platform, ledger.data.get(platform), creds, attempts, now, login_fn=SP.real_login(), prove_fn=SP.real_prove(settings, contact, python, ledger, now, dict(os.environ)))
+        ledger.save() if hasattr(ledger, "save") else None
+        print(f"sessions: {platform}: password backup {result['status'].upper()}: {result['detail']}" + (f" (the cookie session now reads {result['state']})" if result["state"] else ""))
+        print("sessions: the cookie session stays first; a fresh login lives only in this run. Export fresh cookies into the platform's secret to keep the cookie session alive.")
+        return 0 if result["status"] in ("skipped", "proved") else 1
     if what == "compare":
         if len(platforms) != 1 or not args.url:
             print("Error: compare needs one platform (--key) and the address (--url), for example: sessions --what compare --key tiktok --url https://www.tiktok.com/@<account>")
@@ -818,7 +831,12 @@ def _sessions(args, settings, now):
         try:
             if not contact:
                 raise K.Failure(K.NEED_SETUP, "no contact address: set the OBSERVATORY_CONTACT secret")
-            result = SL.read_page(platforms[0], args.url, settings, contact, python, now=now, ledger=ledger, log=print)
+            from .. import research as research_mod
+            from ..store import Store
+            usage_store = Store(args.data_dir)
+            usage_ledger = research_mod.Ledger(usage_store.load_usage(), now[:7])
+            result = SL.read_page(platforms[0], args.url, settings, contact, python, now=now, ledger=ledger, log=print, usage=usage_ledger)
+            usage_store.save_usage(usage_ledger.usage)                                     # what the Apify step spent is counted
         except K.Failure as exc:
             print(f"Error: {exc}")
             return 1
