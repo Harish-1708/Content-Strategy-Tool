@@ -2072,7 +2072,7 @@ MUTATIONS = [
      'the idea is not passed on'),
     ('u20-wf-req-changes', '.github/workflows/request.yml', 'if [ -n "$CHANGES" ]; then args+=(--changes "$CHANGES"); fi', 'true',
      'the changes box does nothing'),
-    ('u20-wf-req-browser', '.github/workflows/request.yml', "        if: inputs.action == 'run'\n        uses: actions/cache@v4", "        if: inputs.action == 'plan'\n        uses: actions/cache@v4",
+    ('u20-wf-req-browser', '.github/workflows/request.yml', "        if: inputs.action == 'run'\n        uses: actions/cache@v5", "        if: inputs.action == 'plan'\n        uses: actions/cache@v5",
      'the browser is cached for plans, not runs'),
     ('u20-wf-req-docs', '.github/workflows/request.yml', "        id: docs\n        if: inputs.action == 'run'", "        id: docs\n        if: inputs.action == 'plan'",
      'reports are archived after a plan, not a run'),
