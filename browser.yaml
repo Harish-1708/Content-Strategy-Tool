@@ -76,8 +76,10 @@ sites:
     secrets: {cookies: INSTAGRAM_COOKIES, username: INSTAGRAM_USERNAME, password: INSTAGRAM_PASSWORD}
     home: https://www.instagram.com/
     password_fallback: when_cookies_fail
-    settle_seconds: 10            # Instagram draws its grid slowly: wait this long after opening a page (the general default is 3)
-    scroll_pause_seconds: 6       # and this long after each scroll, so more posts have loaded before the next read (Careful Mode's pacing, below, overrides it)
+    settle_seconds: 20            # Instagram draws its grid slowly: wait this long after opening a page (the general default is 3; it was 10, and Acceptance #15 read the grid half drawn)
+    scroll_pause_seconds: 10      # and this long after each scroll (it was 6), so more posts have loaded before the next read (Careful Mode's pacing, below, overrides it)
+    # After the fixed waits above, also wait for the grid itself: until every image on the page has loaded and the loading spinner is gone (twice in a row), up to max_seconds, before anything is read.
+    settle_images: {images_any: ['main img', 'article img'], spinner_any: ['[role="progressbar"]', 'svg[aria-label="Loading..."]', 'svg[aria-label="Loading"]', '[aria-busy="true"]'], max_seconds: 45, poll_seconds: 3, stable_polls: 2}
     hashtag_url: https://www.instagram.com/explore/tags/{tag}/
     # Warm-up (see contentintel/warmup.py): one public profile page and one public post page, visited before any
     # listing read, so the session arrives with its cookies refreshed by real page loads. Instagram has no WAF
@@ -106,7 +108,7 @@ sites:
     warning_url_any: ['/accounts/suspended', '/accounts/disabled', '/challenge/']
     # CAREFUL MODE for this account is ON by default since Update 68 (the owner's decision after Meta's automation warning): slower, smaller, spread over several
     # runs. To switch it off, put a # in front of the lines below.
-    pacing: {min_delay_seconds: 20, max_delay_seconds: 60, scroll_pause_seconds: 8}   # a long pause before each page and each scroll
+    pacing: {min_delay_seconds: 20, max_delay_seconds: 60, scroll_pause_seconds: 12}   # a long pause before each page and each scroll (the scroll pause was 8)
     max_scrolls_per_page: 3          # scroll a little, not to the bottom
     max_pages_per_run: 2             # hashtag pages opened in one run; the next run carries on from where this one stopped
     max_pages_per_day: 4             # and never more than this many in a day, however often it is run
@@ -189,12 +191,17 @@ sites:
     # (found when a signed-out page was reported as logged in).
     signed_out_any: ['a[href*="accounts.google.com/ServiceLogin"]', 'a[aria-label="Sign in"]']
     prompt_box: ['rich-textarea div[contenteditable="true"]', 'div.ql-editor[contenteditable="true"]', 'div[role="textbox"]', 'textarea']
+    # TWO LAYOUTS, tried in this order: (1) "Deep research" as a DIRECT item of the open menu (the run's debug files of Acceptance #15 show this, with no "More tools"): click it and stop; (2) otherwise "More tools",
+    # then "Deep research" inside its submenu (the owner's screenshot of 2026-11-23). Only a live Acceptance proves which one a given account sees.
+    deep_research_direct: ['[role="menuitem"]:has-text("Deep research")', '[role="menuitemcheckbox"]:has-text("Deep research")', 'button.mat-mdc-menu-item:has-text("Deep research")', '.mat-mdc-menu-item:has-text("Deep research")', 'li:has-text("Deep research")']
     deep_research_clicks:       # buttons to press, in order, to switch the chat to Deep Research
       # Gemini's menu, read from the real page and a screenshot on 2026-10-21: the + at the left of the prompt box
       # (its label is "Upload & tools"), then "More tools", then "Deep research".
       - ['button[aria-label="Upload & tools"]', 'button[aria-label*="Upload"][aria-haspopup="menu"]', 'button[aria-label*="tools" i]']
-      - ['[role="menuitem"]:has-text("More tools")', 'button:has-text("More tools")', 'text=More tools']
-      - ['[role="menuitem"]:has-text("Deep research")', 'button:has-text("Deep research")', 'text=Deep research']
+      # Live layout seen on 2026-11-23: that button opens a menu (Upload files, Add from Drive, More uploads, Create image, Create video, More tools); "More tools" opens a SECOND menu (Create music, Canvas, Deep Research,
+      # Guided Learning, Personal Intelligence Labs), Deep Research third. Step 2 failed on the first selector set, so every kind of menu item is tried, and the code hovers the item when a click finds nothing.
+      - ['[role="menuitem"]:has-text("More tools")', '[role="menuitemcheckbox"]:has-text("More tools")', '[role="menuitemradio"]:has-text("More tools")', 'button.mat-mdc-menu-item:has-text("More tools")', '.mat-mdc-menu-item:has-text("More tools")', '[aria-haspopup="menu"]:has-text("More tools")', 'button:has-text("More tools")', 'div[role="button"]:has-text("More tools")', 'li:has-text("More tools")', 'text=/More tools/i']
+      - ['[role="menuitem"]:has-text("Deep research")', '[role="menuitemcheckbox"]:has-text("Deep research")', 'button.mat-mdc-menu-item:has-text("Deep research")', '.mat-mdc-menu-item:has-text("Deep research")', 'button:has-text("Deep research")', 'li:has-text("Deep research")', 'text=/Deep research/i']
     # Shown once Deep Research is switched on: the prompt box then asks "What do you want to research?".
     # If none of these is seen the run carries on and says so (it never stops a good run over this).
     deep_research_active_any: ['[data-placeholder*="research" i]', 'text=What do you want to research?']

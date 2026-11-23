@@ -1,5 +1,5 @@
 # AI providers: every platform in the pinned FreeLLMAPI v0.16.17 (84 ids), GitHub Models (called directly), and Claude, plus OVH and AI Horde called directly (they carry their own platform entries too): 87 in all.
-# Switched on at present: aihorde, airforce, bazaarlink, bluesminds, cloudflare, cohere, google, groq, kilo, llm7, nvidia, openrouter, ovh, pollinations, xkiro, zhipu and claude. A test keeps this line equal to the enabled flags below. GitHub Models is retired (see its retired: record): kept, never enabled or called.
+# Switched on at present: aihorde, anyapi, bazaarlink, cloudflare, cohere, google, groq, kilo, llm7, navy, nvidia, openrouter, ovh, pollinations, requesty, xkiro, zhipu and claude. A test keeps this line equal to the enabled flags below. GitHub Models is retired (see its retired: record): kept, never enabled or called.
 #
 # NOTHING is on unless it says enabled: true. A provider carries the terms found when it was checked (terms.status says
 # how well: verified = the provider's own page; verified_secondary = quoted by other sites; upstream_documented = the gateway
@@ -750,18 +750,70 @@ providers:
       note: declared by the upstream project only; not checked against the provider
   anyapi:
     label: AnyAPI
-    enabled: false
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-14'
+      reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
       - ANYAPI_API_KEY
     gateway_platform: anyapi
+    direct:
+      base_url: https://api.anyapi.ai/v1
     terms:
-      status: unverified
-      date: '2026-11-03'
-      note: declared by the upstream project only; not checked against the provider
+      status: upstream_documented
+      date: '2026-11-19'
+      trains_on_data: 'not verified'
+      retention: 'not verified'
+      business_use: "free plan, no card: 100,000 tokens a day and 100 requests a minute on free and basic models (planner check 2026-11-19). The GPT-5, Claude and Gemini models on its docs page are PAID and are not wired: only the :free ids are."
+      note: 'recorded from the planner check, not from the provider own terms page'
+    limits:
+      tokens_per_day: 100000
+      requests_per_minute: 20          # shared by all seven free models: one job cannot use the day for the others (the router's per-job share)
+    models:
+    - id: "qwen/qwen3.8-27b:free"
+      approved: true
+      capabilities:
+      - text
+      note: "free (:free id) per the planner check of 2026-11-19, verified free November 2026; general text"
+    - id: "inclusionai/ling-3.0-flash-fin:free"
+      approved: true
+      capabilities:
+      - text
+      note: "free (:free id) per the planner check of 2026-11-19, verified free November 2026; general text"
+    - id: "inclusionai/ling-3.0-flash-sante:free"
+      approved: true
+      capabilities:
+      - text
+      note: "free (:free id) per the planner check of 2026-11-19, verified free November 2026; general text"
+    - id: "dots-studio/dots-3-note-preview:free"
+      approved: true
+      capabilities:
+      - text
+      note: "free (:free id) per the planner check of 2026-11-19, verified free November 2026; general text"
+    - id: "google/gemma-4-26b-a4b-it:free"
+      approved: true
+      capabilities:
+      - text
+      note: "free (:free id) per the planner check of 2026-11-19, verified free November 2026; general text"
+    - id: "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"
+      approved: true
+      capabilities:
+      - text
+      note: "free (:free id) per the planner check of 2026-11-19, verified free November 2026; reasoning model, 128K context: placed on the reasoning-heavy jobs"
+    - id: "nvidia/nemotron-3.5-lightning:free"
+      approved: true
+      capabilities:
+      - text
+      note: "free (:free id) per the planner check of 2026-11-19, verified free November 2026; 262K context: placed on the long-context jobs"
+
   radeon:
     label: AMD Radeon Cloud TokenFactory
     enabled: false
@@ -794,7 +846,7 @@ providers:
       trains_on_data: 'not confirmed: sources disagree (one reading of NVIDIA''s trial terms allows logging prompts and outputs for product improvement, another says data is not used for training); the terms read at signup settle it'
       retention: not stated
       business_use: 'Commercial use allowed? Not applicable and not claimed: this tool is the owner''s personal project (not a product, not sold, not offered as a service, no production deployment). NVIDIA''s free API is for prototyping, development and research; production use needs an NVIDIA AI Enterprise licence; NVIDIA may end the free service at any time.'
-      note: 'Owner decision 2026-11-14: enabled for personal prototyping and development use. No card is asked for at signup (a web check on 2026-11-13); if one is, the owner stops. The free limit is the provider''s own and is paced, never exceeded: sources say about 30 to 40 requests a minute and that it varies by model and load, so the figure below is a setting, started conservatively, and the account dashboard at build.nvidia.com is the source of truth.'
+      note: 'UPDATED 2026-11-23 (planner check): 40 requests a minute per account, no card; NO daily figure is hard-coded: a 10,000 a day number appears in the NVIDIA page data and some trackers, but the NVIDIA own help publishes no daily cap and says the account dashboard is the source of truth, so check the dashboard (a developer account and phone verification are needed; some countries are excluded); the old 1,000 credits a month is gone. The free endpoints are a PROTOTYPE tier and NVIDIA logs what is sent: no confidential data goes through it. NVIDIA DeepSeek-R1 was delisted from NIM in September 2026; the free reasoning there now is DeepSeek V4 Flash, Nemotron and Qwen. Owner decision 2026-11-14: enabled for personal prototyping and development use. No card is asked for at signup (a web check on 2026-11-13); if one is, the owner stops. The free limit is the provider''s own and is paced, never exceeded: sources say about 30 to 40 requests a minute and that it varies by model and load, so the figure below is a setting, started conservatively, and the account dashboard at build.nvidia.com is the source of truth.'
     owner_override:
       ceiling: internal
       approved_by: Harish
@@ -802,7 +854,7 @@ providers:
       reason: 'Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent. Recorded for this provider on 2026-11-14 together with the personal-use decision.'
     # NVIDIA's free limit is not a fixed figure (sources say 30 to 40 a minute, varying by model and load). This is a SETTING: change it to what the account dashboard shows.
     limits:
-      requests_per_minute: 30
+      requests_per_minute: 40
     models:
     - id: meta/llama-3.1-70b-instruct
       approved: false
@@ -1577,6 +1629,7 @@ providers:
       - tools
       note: 'approved into the shared pool 2026-11-14 (owner decision: personal use); which models the free tier really serves is shown by the live check'
     # switched OFF 2026-11-18, record kept: Ollama Cloud free credits ended 2026-11-09: a live call returned 402, out of credits
+    # 2026-11-19: Ollama Cloud DOES have a free plan (no card; 1 cloud model at a time; per Ollama's Nov 2026 pricing post: a small monthly usage for a set of starter models, then pay as you go; earlier pages said session limits that reset every 5 hours). The limits are unpublished and have changed more than once. A live call of the 2026-11-19 provider test got 402 out of credits, so it stays OFF: too thin to rely on. Re-test with the provider test; wire only the free starter models if they answer. Local Ollama models are free but need a machine of your own: not usable from GitHub Actions. deepseek-r1:cloud is listed free but its limits are unpublished.
 
   kilo:
     label: Kilo Gateway
@@ -1703,7 +1756,7 @@ providers:
       tokens_per_day: 100000
     models:
     - id: "llm7/DeepSeek-V4-Flash-0731"
-      approved: true
+      approved: false
       capabilities:
       - text
       note: "free model per the provider own catalogue or model page (provider test follow-up 2026-11-18); routed through OmniRoute as llm7/DeepSeek-V4-Flash-0731"
@@ -1751,6 +1804,8 @@ providers:
       - text
       - tools
       note: present in the gateway baseline; not approved
+    # 2026-11-19 (confirmed from Hugging Face's own docs): NO FREE TIER. Free accounts get no monthly Inference Providers credits since 2026-10-07; free users must buy credits (a card is required) or pay PRO at 9 dollars a month (includes 2 dollars). CARD REQUIRED / NO FREE TIER: never wired as a free provider.
+
   opencode:
     label: OpenCode Zen
     enabled: false
@@ -1960,33 +2015,83 @@ providers:
       date: '2026-11-03'
       note: declared by the upstream project only; not checked against the provider
   requesty:
-    label: Requesty
-    enabled: false
+    label: "Requesty"
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-14'
+      reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
       - REQUESTY_API_KEY
-    gateway_platform: requesty
+    omniroute:
+      provider: requesty
     terms:
-      status: unverified
-      date: '2026-11-03'
-      note: declared by the upstream project only; not checked against the provider
+      status: upstream_documented
+      date: '2026-11-19'
+      trains_on_data: 'not verified'
+      retention: 'not verified'
+      business_use: "free plan: 200 requests a day on free models, no trial expiry, no card (planner check 2026-11-19)"
+      note: 'no card needed (re-checked 2026-11-19); recorded from the OmniRoute catalogue and the planner check, not from the provider own terms page'
+    limits:
+      requests_per_day: 200
+    models:
+    - id: "requesty/openai/gpt-oss-120b"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by the OmniRoute catalogue (2026-11-19); routed through OmniRoute as requesty/openai/gpt-oss-120b"
+    - id: "requesty/mistral/leanstral-1-5"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by the OmniRoute catalogue (2026-11-19); routed through OmniRoute as requesty/mistral/leanstral-1-5"
+    - id: "requesty/nvidia/nemotron-3-nano-30b-a3b"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by the OmniRoute catalogue (2026-11-19); routed through OmniRoute as requesty/nvidia/nemotron-3-nano-30b-a3b"
+
   navy:
-    label: NavyAI
-    enabled: false
+    label: "NavyAI"
+    enabled: true
     experimental: false
     ceiling: public
-    approved_classes: []
+    approved_classes:
+    - public
+    - internal
+    owner_override:
+      ceiling: internal
+      approved_by: Harish
+      date: '2026-11-14'
+      reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     credentials:
       env:
       - NAVY_API_KEY
-    gateway_platform: navy
+    omniroute:
+      provider: navy
     terms:
-      status: unverified
-      date: '2026-11-03'
-      note: declared by the upstream project only; not checked against the provider
+      status: upstream_documented
+      date: '2026-11-19'
+      trains_on_data: 'not verified'
+      retention: 'not verified'
+      business_use: "free tier: 150,000 tokens a day, no card (planner check 2026-11-19)"
+      note: 'no card needed (re-checked 2026-11-19); recorded from the OmniRoute catalogue and the planner check, not from the provider own terms page'
+    limits:
+      tokens_per_day: 150000
+    models:
+    - id: "navy/shared-pool"
+      approved: true
+      capabilities:
+      - text
+      note: "listed free by the OmniRoute catalogue (2026-11-19); routed through OmniRoute as navy/shared-pool"
+
   nara:
     label: "NaraRouter"
     enabled: false
@@ -2109,7 +2214,7 @@ providers:
       tokens_per_day: 5000000
     models:
     - id: "xkiro/minimax/minimax-m3:free"
-      approved: true
+      approved: false
       capabilities:
       - text
       note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as xkiro/minimax/minimax-m3:free"
@@ -2128,6 +2233,7 @@ providers:
       capabilities:
       - text
       note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as xkiro/qwen/qwen3.6-plus:free"
+    # 2026-11-19: minimax-m3:free returned 404 'retired and no longer free'; its replacement minimax/minimax-m3 is NOT wired: nothing here shows it is free (provider test must show it first)
 
   modelscope:
     label: ModelScope (Alibaba)
@@ -2306,7 +2412,7 @@ providers:
       note: 'not approved: $10/$50 per million tokens'
   airforce:
     label: "Api.Airforce"
-    enabled: true
+    enabled: false
     experimental: false
     ceiling: public
     approved_classes:
@@ -2338,10 +2444,11 @@ providers:
       capabilities:
       - text
       note: "free model per the provider own catalogue or model page (provider test follow-up 2026-11-18); routed through OmniRoute as api-airforce/gpt-oss-20b"
+    # switched OFF 2026-11-19, record kept: 402: it now requires an active subscription or a positive Pay-as-you-Go balance (provider test #4, 2026-11-19)
 
   bluesminds:
     label: "BluesMinds"
-    enabled: true
+    enabled: false
     experimental: false
     ceiling: public
     approved_classes:
@@ -2383,4 +2490,5 @@ providers:
       capabilities:
       - text
       note: "free model per the provider own catalogue or model page (provider test follow-up 2026-11-18); routed through OmniRoute as bluesminds/qwen/qwen3-next-80b-a3b-instruct"
+    # switched OFF 2026-11-19, record kept: 503: no available channel for z-ai/glm4.7 (provider test #4, 2026-11-19)
 

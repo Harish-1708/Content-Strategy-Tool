@@ -1,0 +1,11 @@
+# MoneyPrinterTurbo (draft videos from briefs). OFF until the owner says a host is ready: it needs a RUNNING instance (planned host: Cloud Run, see docs/platform/mpt-cloud-run.md), because it is a web application,
+# not a one-shot command. When the host is ready set enabled: true and the MPT_URL secret to its https address. PUBLISHING IS OFF AND HAS NO SWITCH: the tool never posts a draft anywhere.
+enabled: false
+# stock footage: auto = Pexels when a Pexels key exists, otherwise Pixabay (Pexels paused new key issuance, checked 2026-11-23). Both are free, no card; the keys go into MoneyPrinterTurbo's own config on the host.
+stock_source: auto
+aspect: "9:16"
+voice: "en-US-JennyNeural-Female"
+clip_seconds: 4
+max_hooks: 3
+timeout_seconds: 900
+poll_seconds: 10

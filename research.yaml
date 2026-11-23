@@ -65,7 +65,7 @@ collectors:
   # The Collect workflow's "backend" box can also switch it on for one run. Needs the APIFY_TOKEN secret.
   apify:
     mode: off
-    monthly_items: 300
+    monthly_items: 1200           # Collect's share of the 20 dollar Apify month: 6.00 dollars at 0.005 an item (contentintel/apify_budget.py)
     items_per_run: 30
     max_cost_per_run_usd: 1.0     # a hard dollar ceiling Apify enforces for a single run
     check_max_cost_usd: 0.5       # the same ceiling for the Check / Acceptance test runs only. Some actors refuse a ceiling below their own minimum

@@ -1,0 +1,13 @@
+# Concat (jub0t/concat, AGPL-3.0): a free video editor with a native Rust engine and a scripting interface (JSON-RPC, gRPC, MCP and a CLI). It is headless-driven, so it is tried on GitHub Actions FIRST
+# (Actions > Concat gate). The gate (set by the owner): a 1080x1920 render of a small test edit, under 300 seconds, with audio, in 2 of 3 runs, with no GUI and no GPU (software rendering on the runner).
+# `render_command` is what renders: {inputs} is replaced by the test clips, {output} by the file. It is EMPTY until the first run has printed Concat's own help (the discover step of the workflow), because
+# the exact command-line could not be verified from where this tool was built: the first run shows it, then the command is filled in from that output. Nothing is guessed.
+release_repo: jub0t/concat
+asset_pattern: "*amd64.deb"
+discover_commands:
+  - "concat --version"
+  - "concat --help"
+  - "concat render --help"
+  - "concat export --help"
+render_command: ""
+gate: {width: 1080, height: 1920, max_seconds: 300, runs: 3, passes_needed: 2, has_audio: true}

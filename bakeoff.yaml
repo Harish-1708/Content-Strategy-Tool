@@ -10,13 +10,13 @@ engines:
     timeout: 60
   lightpanda:
     label: Lightpanda (headless browser for machines, AGPL-3.0)
-    command: ""            # once installed on the runner, for example: lightpanda fetch --dump {url}   (check its own README for the exact flags)
+    command: "lightpanda fetch --dump html --log-level warn {url}"      # installed by the workflow from the project's nightly release (README: `./lightpanda fetch --dump html <url>`); telemetry is switched off in the workflow
     timeout: 60
   obscura:
     label: Obscura (headless browser)
-    command: ""            # fill in once installed; the bake-off reports NOT RUN until a command is set
+    command: "obscura fetch {url} --dump html"      # installed by the workflow from the project's latest release (README: `obscura fetch <url> --dump html`); the stealth feature is NOT used: public pages only, no stealth
     timeout: 60
   agent_browser:
     label: agent-browser, public pages only (its logged-in sessions trial is separate and comes later, under the session caps)
-    command: ""            # fill in once installed
+    command: "sh -c 'agent-browser open {url} >/dev/null && agent-browser get html html'"      # README: `agent-browser open <url>` then `agent-browser get html <selector>`; installed by the workflow (npm install -g agent-browser; agent-browser install --with-deps)
     timeout: 90
