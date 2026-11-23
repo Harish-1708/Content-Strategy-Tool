@@ -8,7 +8,7 @@
   "exa": 18,
   "exa_mcp": 20,
   "serpapi": 28,
-  "serper_dev": 100,
+  "serper_dev": 109,
   "tavily": 28,
   "voice_apify_items": 240
  },
@@ -29,7 +29,7 @@
    "exa": 18,
    "exa_mcp": 20,
    "serpapi": 22,
-   "serper_dev": 61,
+   "serper_dev": 70,
    "tavily": 22,
    "voice_apify_items": 240
   }

@@ -8269,7 +8269,7 @@
     "version": "cc21d4f02e75"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 1,
+   "consecutive_successes": 10,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -8634,6 +8634,69 @@
      "items": 10,
      "ms": 0,
      "ok": true
+    },
+    {
+     "at": "2026-11-23T19:14:20Z",
+     "code": "",
+     "items": 10,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-23T19:14:20Z",
+     "code": "",
+     "items": 9,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-23T19:14:20Z",
+     "code": "",
+     "items": 9,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-23T19:14:20Z",
+     "code": "",
+     "items": 9,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-23T19:14:20Z",
+     "code": "",
+     "items": 9,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-23T19:14:20Z",
+     "code": "",
+     "items": 10,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-23T19:14:20Z",
+     "code": "",
+     "items": 9,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-23T19:14:20Z",
+     "code": "",
+     "items": 9,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-23T19:14:20Z",
+     "code": "",
+     "items": 9,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": {
@@ -8641,7 +8704,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "answered, but nothing usable came back"
    },
-   "last_success": "2026-11-23T11:41:30Z",
+   "last_success": "2026-11-23T19:14:20Z",
    "pause": null,
    "route": "serper_dev",
    "source": "web_search",
