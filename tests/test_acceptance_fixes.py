@@ -517,7 +517,7 @@ def test_a_real_instagram_read_uses_those_waits(cfg):
     ig = site(cfg, "instagram")
     b = FakeBrowser({"https://www.instagram.com/explore/tags/": {"json": []}}, present_always={ig["logged_in_any"][0]})
     C.run_browser_task(b, C.Task("instagram", "t", {"hashtags": ["a"]}, "k", 1), 50, ig, cfg, CREDS["instagram"])
-    assert 10 in b.waits and b.scrolls == cfg["limits"]["max_scrolls_per_page"] and set(b.pauses) == {6}
+    assert 20 in b.waits and b.scrolls == cfg["limits"]["max_scrolls_per_page"] and set(b.pauses) == {10}                          # Update 73: 20 s after opening, 10 s after each scroll (Acceptance #15 read the grid half drawn)
 
 
 def test_the_check_lets_the_page_draw_before_it_takes_its_picture(cfg, store, settings):
@@ -529,14 +529,14 @@ def test_the_check_lets_the_page_draw_before_it_takes_its_picture(cfg, store, se
     [row] = C.check_collectors(f, CREDS, settings, cfg, store, R.Ledger, NOW, ["instagram"], apify=None, claude=None, backend="browser")
     waits = [e for e in events if e[0] == "wait"]
     assert row["ok"] and events[-1] == ("shot", "check-instagram")
-    assert waits[-2:] == [("wait", 10), ("wait", 10)]            # the wait after opening the page, then the check's own wait before the picture
+    assert waits[-2:] == [("wait", 20), ("wait", 20)]            # the wait after opening the page, then the check's own wait before the picture
 
 
 def test_instagrams_scroll_wait_is_its_own_setting_so_careful_mode_can_still_take_the_pacing_block(cfg):
     cfg = plain_cfg(cfg)                                                                         # careful mode is ON in the shipped file since Update 68: this test is about the plain setting
     ig = site(cfg, "instagram")
-    assert "pacing" not in ig and ig["scroll_pause_seconds"] == 6              # `pacing` stays free for Careful Mode, which writes it
-    assert B.site_pacing(cfg, "instagram")["scroll_pause_seconds"] == 6
+    assert "pacing" not in ig and ig["scroll_pause_seconds"] == 10             # `pacing` stays free for Careful Mode, which writes it
+    assert B.site_pacing(cfg, "instagram")["scroll_pause_seconds"] == 10
     careful = {**cfg, "sites": {**cfg["sites"], "instagram": {**ig, "pacing": {"min_delay_seconds": 20, "max_delay_seconds": 60, "scroll_pause_seconds": 8}}}}
     assert B.site_pacing(careful, "instagram") == {"min_delay_seconds": 20, "max_delay_seconds": 60, "scroll_pause_seconds": 8}      # Careful Mode wins
     assert B.site_pacing({**cfg, "sites": {**cfg["sites"], "instagram": {k: v for k, v in ig.items() if k != "scroll_pause_seconds"}}}, "instagram")["scroll_pause_seconds"] == 3

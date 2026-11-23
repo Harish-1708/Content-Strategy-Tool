@@ -758,7 +758,7 @@ def test_the_report_lists_each_task_and_the_month_so_far(tmp_path, store, swov, 
     result = collect(store, tmp_path, [swov], FULL, world(cfg), cfg, settings)
     text = C.format_collect_report(result, settings, R.Ledger(store.load_usage(), "2026-10"))
     assert "=== swoveralls ===" in text and "meta_ads      ran       2 advertiser pages/keywords -> 2 items" in text
-    assert "items 6 (no monthly cap), Apify items 0/300, Deep Research tasks 0/2, Claude calls 0/60" in text
+    assert "items 6 (no monthly cap), Apify items 0/1200, Deep Research tasks 0/2, Claude calls 0/60" in text
     empty = collect(store, tmp_path / "e", [swov], {}, world(cfg), cfg, settings)
     assert "nothing to collect" in C.format_collect_report(empty, settings)
 
@@ -1003,9 +1003,9 @@ def test_the_check_is_not_refused_for_a_used_up_month_when_there_is_no_limit(sto
 def test_the_report_says_there_is_no_monthly_cap_or_shows_the_cap(tmp_path, store, swov, cfg, settings):
     free = collect(store, tmp_path, [swov], ONE_AD_SEARCH, world(cfg, meta=many("meta", 5)), cfg, replace(settings, monthly_items=0), sources=("meta_ads",))
     text = C.format_collect_report(free, replace(settings, monthly_items=0), R.Ledger(store.load_usage(), "2026-10"))
-    assert "items 5 (no monthly cap), Apify items 0/300" in text
+    assert "items 5 (no monthly cap), Apify items 0/1200" in text
     capped = C.format_collect_report(free, replace(settings, monthly_items=50), R.Ledger(store.load_usage(), "2026-10"))
-    assert "items 5/50, Apify items 0/300" in capped and "no monthly cap" not in capped
+    assert "items 5/50, Apify items 0/1200" in capped and "no monthly cap" not in capped
 
 
 def test_the_report_says_how_many_collected_items_are_new_to_the_collected_tab_and_how_many_were_already_there(tmp_path, store, swov, cfg, settings):
@@ -1079,3 +1079,217 @@ def test_a_google_login_failure_during_deep_research_is_recorded_in_the_health_l
                   root=str(tmp_path / "brands"), health=led)
     recorded = {k: e for k, e in led.state["routes"].items() if k.startswith("deep_research|")}
     assert recorded and any("NEED_LOGIN" in _json.dumps(e) for e in recorded.values())                              # the failed login is on the ledger, so the route is rested and shown as failing
+
+
+class MenuBrowser:
+    """A Gemini-like menu: the tools button opens menu one; 'More tools' only opens its submenu when the pointer HOVERS it (a click finds nothing); Deep Research is in the submenu."""
+    def __init__(self, hover_needed=True, more_tools_present=True):
+        self.open_menu, self.submenu, self.hover_needed, self.present, self.log, self.shots = False, False, hover_needed, more_tools_present, [], []
+
+    def click(self, selectors):
+        text = " ".join(selectors)
+        self.log.append(("click", selectors[0]))
+        if "Upload & tools" in text:
+            self.open_menu = True
+            return True
+        if "More tools" in text:
+            return self.open_menu and self.present and not self.hover_needed and not setattr(self, "submenu", True)
+        if "Deep research" in text:
+            return self.submenu
+        return False
+
+    def hover(self, selectors):
+        self.log.append(("hover", selectors[0]))
+        if "More tools" in " ".join(selectors) and self.open_menu and self.present:
+            self.submenu = True
+            return True
+        return False
+
+    def wait(self, seconds):
+        pass
+
+    def screenshot(self, name):
+        self.shots.append(name)
+
+    def exists(self, selectors):
+        return True
+
+
+def test_deep_research_opens_the_more_tools_submenu_by_hover_when_a_click_finds_nothing_and_still_names_the_failing_step():
+    cfg = B.load_browser_settings("browser.yaml")["sites"]["gemini"]
+    page = MenuBrowser(hover_needed=True)
+    assert C.switch_to_deep_research(page, cfg) == "" and ("hover", cfg["deep_research_clicks"][1][0]) in page.log and page.submenu            # the submenu opened by hover, then Deep Research was clicked
+    plain = MenuBrowser(hover_needed=False)
+    assert C.switch_to_deep_research(plain, cfg) == "" and not [e for e in plain.log if e[0] == "hover"]                                      # an ordinary click is used first
+    missing = MenuBrowser(more_tools_present=False)
+    with pytest.raises(B.BrowserError, match=r"step 2\)"):
+        C.switch_to_deep_research(missing, cfg)
+    assert missing.shots == ["gemini-no-deep-research-button"]
+    steps = cfg["deep_research_clicks"]
+    assert len(steps) == 3 and any("menuitemcheckbox" in s for s in steps[1]) and any(".mat-mdc-menu-item" in s for s in steps[1]) and "text=/More tools/i" in steps[1] and "text=/Deep research/i" in steps[2]
+
+
+def test_a_menu_item_that_a_normal_click_cannot_press_is_pressed_with_force_and_then_with_the_pages_own_click_event():
+    class Loc:
+        def __init__(self, fails):
+            self.fails, self.first, self.calls = fails, self, []
+
+        def count(self):
+            return 1
+
+        def click(self, timeout=0, force=False):
+            self.calls.append(("click", force))
+            if len([c for c in self.calls if c[0] == "click"]) <= self.fails:
+                raise RuntimeError("blocked")
+
+        def dispatch_event(self, name):
+            self.calls.append(("dispatch", name))
+
+        def hover(self, timeout=0):
+            self.calls.append(("hover", timeout))
+
+    class Page:
+        def __init__(self, loc):
+            self.loc = loc
+
+        def locator(self, sel):
+            return self.loc
+    for fails, expected in ((0, [("click", False)]), (1, [("click", False), ("click", True)]), (2, [("click", False), ("click", True), ("dispatch", "click")])):
+        loc = Loc(fails)
+        br = B.PlaywrightBrowser.__new__(B.PlaywrightBrowser)
+        br.page = Page(loc)
+        assert br.click(["x"]) is True and loc.calls == expected
+    loc = Loc(0)
+    br = B.PlaywrightBrowser.__new__(B.PlaywrightBrowser)
+    br.page = Page(loc)
+    assert br.hover(["x"]) is True and loc.calls == [("hover", 5000)]
+
+
+class DirectMenuBrowser:
+    """The other Gemini layout: 'Deep research' is a DIRECT item of the open menu and there is no 'More tools' at all."""
+    def __init__(self, direct_present=True):
+        self.open_menu, self.on, self.log, self.present = False, False, [], direct_present
+
+    def click(self, selectors):
+        text = " ".join(selectors)
+        self.log.append(selectors[0])
+        if "Upload & tools" in text:
+            self.open_menu = True
+            return True
+        if "Deep research" in text and self.open_menu and self.present:
+            self.on = True
+            return True
+        return False
+
+    def exists(self, selectors):
+        if any("Deep research" in s and "has-text" in s for s in selectors):
+            return self.open_menu and self.present and not self.on
+        return self.on                                                                           # the 'switched on' confirmation
+
+    def wait(self, seconds):
+        pass
+
+    def screenshot(self, name):
+        pass
+
+
+def test_deep_research_is_clicked_directly_when_it_is_in_the_open_menu_and_through_more_tools_when_it_is_not():
+    cfg = B.load_browser_settings("browser.yaml")["sites"]["gemini"]
+    assert cfg["deep_research_direct"] and all("Deep research" in s for s in cfg["deep_research_direct"])
+    page = DirectMenuBrowser()
+    assert C.switch_to_deep_research(page, cfg) == "" and page.on and not any("More tools" in s for s in page.log)                          # layout 1: no More tools click at all
+    both = MenuBrowser(hover_needed=True)
+    assert C.switch_to_deep_research(both, cfg) == "" and both.submenu and any("More tools" in s for _a, s in both.log)                     # layout 2: More tools, then Deep research in the submenu
+    absent = DirectMenuBrowser(direct_present=False)
+    with pytest.raises(B.BrowserError, match=r"step 2\)"):
+        C.switch_to_deep_research(absent, cfg)                                                                                           # neither layout: the failing step is named
+    assert "deep_research_direct" not in "".join(cfg["deep_research_clicks"][0])
+
+
+class GridBrowser:
+    """A page whose images draw a few at a time, with a spinner that goes away only at the end."""
+    def __init__(self, script):
+        self.script, self.waits, self.polls = list(script), [], 0
+
+    def images_state(self, spinner_selectors=(), image_selectors=()):
+        self.polls += 1
+        return self.script.pop(0) if len(self.script) > 1 else self.script[0]
+
+    def wait(self, seconds):
+        self.waits.append(seconds)
+
+
+def test_the_instagram_grid_is_waited_for_until_every_image_is_drawn_and_the_spinner_is_gone_and_a_stuck_grid_is_named():
+    cfg = B.load_browser_settings("browser.yaml")["sites"]["instagram"]
+    s = cfg["settle_images"]
+    assert cfg["settle_seconds"] == 20 and cfg["scroll_pause_seconds"] == 10 and cfg["pacing"]["scroll_pause_seconds"] == 12 and s["max_seconds"] == 45 and s["spinner_any"] and s["images_any"]        # longer fixed waits, and the grid wait
+    drawing = [{"loaded": 17, "total": 34, "spinner": True}, {"loaded": 25, "total": 34, "spinner": True}, {"loaded": 34, "total": 34, "spinner": True}, {"loaded": 34, "total": 34, "spinner": False}, {"loaded": 34, "total": 34, "spinner": False}]
+    page = GridBrowser(drawing)
+    assert C.settle_images(page, cfg) == "" and page.polls == 4 and len(page.waits) == 3 and set(page.waits) == {3}                       # kept waiting while half the tiles were blank and the spinner turned; settled only when steady
+    stuck = GridBrowser([{"loaded": 17, "total": 34, "spinner": True}])
+    note = C.settle_images(stuck, cfg)
+    assert note == "the grid was still filling in after 45 s (17 of 34 images drawn, spinner still showing)" and sum(stuck.waits) == 45        # it stops at max_seconds and says how far it got
+    assert C.settle_images(object(), cfg) == "" and C.settle_images(GridBrowser([{}]), {"settle_seconds": 3}) == ""                       # a browser or site without the setting is not waited for
+    empty = GridBrowser([{"loaded": 0, "total": 0, "spinner": False}])
+    assert C.settle_images(empty, {"settle_images": {"max_seconds": 6, "poll_seconds": 3}}).startswith("the grid was still filling in after 6 s")      # an empty page is not a settled page
+
+
+def test_gather_reads_only_after_the_grid_settles_and_the_settle_setting_is_validated(tmp_path):
+    order = []
+
+    class Page(GridBrowser):
+        def json_responses(self):
+            order.append("read")
+            return []
+
+        def embedded_json(self):
+            return []
+
+        def links(self, contains):
+            return []
+
+        def scroll(self, times, pause):
+            order.append("scroll")
+    page = Page([{"loaded": 2, "total": 4, "spinner": True}, {"loaded": 4, "total": 4, "spinner": False}])
+    orig = page.images_state
+
+    def traced(*a, **k):
+        order.append("poll")
+        return orig(*a, **k)
+    page.images_state = traced
+    C._gather(page, "instagram", {"settle_images": {"max_seconds": 30, "poll_seconds": 1}}, 1, 1, 5)
+    assert order.index("poll") < order.index("read") and order.count("scroll") == 1 and order.count("poll") >= 4                         # settled before the first read and again after the scroll
+    base = B.load_browser_settings("browser.yaml")
+    import copy
+    import yaml
+    for bad in ({"max_seconds": 5}, {"max_seconds": 5, "poll_seconds": 1, "mystery": 1}, {"max_seconds": 0, "poll_seconds": 1}, "nope"):
+        broken = copy.deepcopy(yaml.safe_load(Path("browser.yaml").read_text(encoding="utf-8")))
+        broken["sites"]["instagram"]["settle_images"] = bad
+        (tmp_path / "b.yaml").write_text(yaml.safe_dump(broken), encoding="utf-8")
+        with pytest.raises(B.BrowserError):
+            B.load_browser_settings(str(tmp_path / "b.yaml"))
+    assert base["sites"]["instagram"]["settle_images"]["stable_polls"] == 2
+
+
+def test_the_browser_reports_how_far_the_grid_has_drawn():
+    class Page:
+        def __init__(self, counts, spinner):
+            self.counts, self.spinner = counts, spinner
+
+        def evaluate(self, script, sels):
+            if self.counts is None:
+                raise RuntimeError("page closed")
+            return self.counts
+
+        def locator(self, sel):
+            class L:
+                def count(inner):
+                    return 1 if self.spinner else 0
+            return L()
+    br = B.PlaywrightBrowser.__new__(B.PlaywrightBrowser)
+    br.page = Page([34, 17], True)
+    assert br.images_state(['[role="progressbar"]']) == {"loaded": 17, "total": 34, "spinner": True}
+    br.page = Page([34, 34], False)
+    assert br.images_state(['[role="progressbar"]'])["spinner"] is False and br.images_state()["spinner"] is False
+    br.page = Page(None, False)
+    assert br.images_state() == {"loaded": 0, "total": 0, "spinner": False}

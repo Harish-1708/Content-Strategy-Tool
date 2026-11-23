@@ -161,7 +161,7 @@ def test_each_scraper_is_asked_in_its_own_terms():
 # --- the settings -------------------------------------------------------------------------------------------------------------
 
 def test_apify_is_off_by_default_and_the_defaults_are_modest(settings):
-    assert settings.apify_mode == "off" and (settings.apify_monthly_items, settings.apify_items_per_run, settings.apify_max_cost_per_run_usd) == (300, 30, 1.0)
+    assert settings.apify_mode == "off" and (settings.apify_monthly_items, settings.apify_items_per_run, settings.apify_max_cost_per_run_usd) == (1200, 30, 1.0)
     assert settings.actors == C.DEFAULT_APIFY_ACTORS
     assert (settings.claude_model, settings.claude_monthly_calls, settings.claude_max_rounds, settings.claude_max_tokens, settings.claude_prepare_prompt) == (
         "claude-sonnet-5-5", 60, 3, 700, True)
@@ -445,7 +445,7 @@ def test_a_full_command_line_run_can_go_through_apify(cli2, capsys, tmp_path):
     assert go("--brand", "swoveralls", "--backend", "apify", "--sources", "tiktok,instagram") == 0
     out = capsys.readouterr().out
     assert out.count("1 items via Apify") == 2 and state["factory"].opened == [] and "KEYMARK" not in out
-    assert "Apify items 2/300" in out
+    assert "Apify items 2/1200" in out
     assert {json.loads(l)["via"] for l in (tmp_path / "data" / "swoveralls" / "research" / "collected.jsonl").read_text().splitlines()} == {"apify"}
 
 

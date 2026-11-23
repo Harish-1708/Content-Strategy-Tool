@@ -97,7 +97,7 @@ def test_the_report_is_plain_truncated_and_never_contains_a_key():
     assert text.startswith("Provider model lists (READ-ONLY: nothing is changed")
     assert "nvidia      20 listed" in text and "(+12 more)" in text and "add-model call can add one" in text and "probably withdrawn" in text and "candidates" in text
     assert "kilo        1 listed" in text and "google      NOT READ: the list answered HTTP 404" in text and "cohere      NOT READ: no key in this run (COHERE_API_KEY)" in text
-    assert "SECRET-9" not in text and "SECRET-8" not in text and "2 of 17 provider list(s) read" in text
+    assert "SECRET-9" not in text and "SECRET-8" not in text and "2 of 18 provider list(s) read" in text
 
 
 def test_nothing_is_ever_written_by_the_catalog(tmp_path, monkeypatch):

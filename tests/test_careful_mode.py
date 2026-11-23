@@ -85,7 +85,7 @@ def test_an_ordinary_caption_never_matches_a_warning_phrase(cfg, caption):
 
 def test_instagram_ships_in_careful_mode_and_the_other_sites_are_untouched(cfg):
     ig = site(cfg, "instagram")
-    assert ig["pacing"] == {"min_delay_seconds": 20, "max_delay_seconds": 60, "scroll_pause_seconds": 8}
+    assert ig["pacing"] == {"min_delay_seconds": 20, "max_delay_seconds": 60, "scroll_pause_seconds": 12}
     assert (ig["max_scrolls_per_page"], ig["max_pages_per_run"], ig["max_pages_per_day"]) == (3, 2, 4)
     for name in ("meta_ads", "gemini"):
         assert not {"pacing", "max_scrolls_per_page", "max_pages_per_run", "max_pages_per_day"} & set(site(cfg, name)), name
@@ -93,7 +93,7 @@ def test_instagram_ships_in_careful_mode_and_the_other_sites_are_untouched(cfg):
 
 
 def test_a_site_uses_its_own_pauses_over_the_general_ones_and_the_general_ones_otherwise(cfg):
-    assert B.site_pacing(cfg, "instagram") == {"min_delay_seconds": 20, "max_delay_seconds": 60, "scroll_pause_seconds": 8}
+    assert B.site_pacing(cfg, "instagram") == {"min_delay_seconds": 20, "max_delay_seconds": 60, "scroll_pause_seconds": 12}
     assert B.site_pacing(cfg, "tiktok") == cfg["pacing"] == {"min_delay_seconds": 3, "max_delay_seconds": 8, "scroll_pause_seconds": 3}
 
 
@@ -194,7 +194,7 @@ def test_with_no_budget_every_page_is_opened_as_before(cfg):
 def test_the_sites_own_scroll_limit_and_pause_are_what_the_browser_is_told(cfg):
     b = FakeBrowser({"https://www.instagram.com/explore/tags/": {"json": [ig_json("x", 1)]}}, present_always={site(cfg, "instagram")["logged_in_any"][0]})
     run_task(cfg, b, ig_task("a"), n=50)
-    assert b.scrolls == 3 and set(b.pauses) == {8}
+    assert b.scrolls == 3 and set(b.pauses) == {12}
     tt = site(cfg, "tiktok")
     t = FakeBrowser({"https://www.tiktok.com/tag/": {"json": []}}, present_always={tt["logged_in_any"][0]})
     C.run_browser_task(t, C.Task("tiktok", "t", {"hashtags": ["a"]}, "k"), 50, {**tt, "settle_seconds": 0}, cfg, CREDS["tiktok"])

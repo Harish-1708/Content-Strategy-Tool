@@ -29,12 +29,12 @@ def keys(routes):
 
 def test_the_shipped_pool_holds_every_approved_model_of_every_enabled_free_provider_once_and_nothing_else():
     approved = [(p.id, m.id) for p in REG.providers.values() if p.enabled and p.id != "claude" for m in p.models if m.approved]
-    assert sorted(keys(POOL)) == sorted(approved) and len(set(keys(POOL))) == len(POOL) == 40
+    assert sorted(keys(POOL)) == sorted(approved) and len(set(keys(POOL))) == len(POOL) == 45
     assert not [r for r in POOL if r["provider"] == "claude"]                                               # Claude leads or falls back: it is never part of the free pool
     per = {}
     for r in POOL:
         per[r["provider"]] = per.get(r["provider"], 0) + 1
-    assert per == {"groq": 2, "openrouter": 7, "cloudflare": 1, "google": 3, "nvidia": 1, "cohere": 4, "zhipu": 3, "kilo": 2, "xkiro": 4, "llm7": 3, "pollinations": 2, "airforce": 1, "bluesminds": 3, "bazaarlink": 1, "ovh": 2, "aihorde": 1}      # the five OmniRoute providers of 2026-11-17 come after; the models the live check of 2026-11-14 proved gone are out; Kilo has its three candidates
+    assert per == {"groq": 2, "openrouter": 7, "cloudflare": 1, "google": 3, "nvidia": 1, "cohere": 4, "zhipu": 3, "kilo": 2, "xkiro": 3, "llm7": 2, "pollinations": 2, "bazaarlink": 1, "ovh": 2, "aihorde": 1, "requesty": 3, "navy": 1, "anyapi": 7}      # the five OmniRoute providers of 2026-11-17 come after; the models the live check of 2026-11-14 proved gone are out; Kilo has its three candidates
     assert [r["provider"] for r in POOL][:10] == ["groq", "groq", "openrouter", "openrouter", "openrouter", "cloudflare", "google", "nvidia", "cohere", "cohere"]      # the proven providers first
     assert ("kilo", "kilo-auto/free") in keys(POOL) and ("kilo", "nvidia/nemotron-3-super-120b-a12b:free") not in keys(POOL) and ("zhipu", "glm-4.6v-flash") in keys(POOL) and ("nvidia", "google/gemma-4-31b-it") in keys(POOL) and ("nvidia", "meta/llama-4-maverick-17b-128e-instruct") not in keys(POOL)
 
@@ -43,7 +43,7 @@ def test_every_lane_draws_on_the_pool_except_the_three_that_stay_with_claude():
     assert {n for n, lane in LANE_MAP.items() if not lane.use_pool} == CLAUDE_LANES
     for name in CLAUDE_LANES:
         assert [c["provider"] for c in LANE_MAP[name].chain] == ["claude"] and LANE_MAP[name].claude_leads
-    assert len([n for n, lane in LANE_MAP.items() if lane.use_pool]) == 20
+    assert len([n for n, lane in LANE_MAP.items() if lane.use_pool]) == 21
 
 
 def test_a_lane_has_its_own_preferred_routes_first_then_the_pool_without_repeats_then_claude(tmp_path):
@@ -116,7 +116,7 @@ def test_the_pool_loader_refuses_what_would_make_the_pool_unsafe_or_confusing(tm
 
 def test_the_lane_caps_are_raised_so_the_stronger_models_can_be_used_fully():
     caps = {n: lane.max_tokens for n, lane in LANE_MAP.items()}
-    assert caps == {name: 8000 for name in LANE_MAP} and len(caps) == 23                                              # every lane, none left lower: quality comes first
+    assert caps == {name: 8000 for name in LANE_MAP} and len(caps) == 24                                              # every lane, none left lower: quality comes first
     was = {"research_extraction": 1500, "competitor_intelligence": 1500, "audience_voice": 1500, "formula_analysis": 800, "trend_opportunity": 2000, "strategic_reasoning": 2500,
            "content_ideation": 1800, "brief_generation": 3000, "production_support": 1500, "validation_qa": 1200, "general_text": 2000, "general_json": 2500, "foundation_json": 2500, "story_extract_json": 2500, "story_review_json": 2500, "conflict_check_json": 2500}
     assert all(caps[n] >= 2 * was.get(n, 4000) for n in caps) and min(caps.values()) == 8000          # the lanes added since (the claim check, the brief, the five stages) start at 8000

@@ -168,7 +168,7 @@ def test_missing_lanes_file_is_refused(tmp_path):
 
 # ---- the shipped files -----------------------------------------------------------------------------------------------------------
 
-ROLLED_OUT = ["aihorde", "airforce", "bazaarlink", "bluesminds", "cloudflare", "cohere", "google", "groq", "kilo", "llm7", "nvidia", "openrouter", "ovh", "pollinations", "xkiro", "zhipu"]        # the providers the owner has approved (Update 57 added cohere, kilo, nvidia, ollama and zhipu)
+ROLLED_OUT = ["aihorde", "anyapi", "bazaarlink", "cloudflare", "cohere", "google", "groq", "kilo", "llm7", "navy", "nvidia", "openrouter", "ovh", "pollinations", "requesty", "xkiro", "zhipu"]        # the providers the owner has approved (Update 57 added cohere, kilo, nvidia, ollama and zhipu)
 
 
 def test_the_shipped_registry_enables_only_checked_providers_and_claude():
@@ -178,7 +178,7 @@ def test_the_shipped_registry_enables_only_checked_providers_and_claude():
     for p in reg.providers.values():
         if p.retired:
             assert p.id == "github" and not p.enabled and not p.direct and not p.credential_env, p.id                 # the record keeps its history (approved classes, owner decision); nothing is switched on
-        elif p.id in ("mistral", "ollama", "sambanova", "nara"):          # switched off on 2026-11-18, records kept with their approved classes and decisions
+        elif p.id in ("mistral", "ollama", "sambanova", "nara", "airforce", "bluesminds"):          # switched off on 2026-11-18 and 2026-11-19, records kept with their approved classes and decisions
             assert not p.enabled, p.id
         elif p.id not in ROLLED_OUT + ["claude"]:
             assert not p.enabled and p.approved_classes == () and p.effective_ceiling == "public" and not p.override and not p.paid, p.id
@@ -229,7 +229,7 @@ def test_every_platform_in_the_pinned_gateway_is_in_the_registry_and_nowhere_els
     reg = R.load_registry(SHIPPED_P)
     ids = {p["id"] for p in INVENTORY["platforms"]}
     through_gateway = {pid for pid, p in reg.providers.items() if not p.direct and not p.retired and not (p.omniroute and pid not in ids)}          # a provider only OmniRoute carries (BluesMinds) is not a platform of the pinned gateway
-    assert len(ids) == 84 and through_gateway == (ids - {"openrouter", "ovh", "aihorde"}) | {"claude"} and {pid for pid, p in reg.providers.items() if p.direct} == {"openrouter", "ovh", "aihorde"}      # OpenRouter, OVH and AI Horde are called directly (GitHub Models, retired, has no endpoint)
+    assert len(ids) == 84 and through_gateway == (ids - {"openrouter", "ovh", "aihorde", "anyapi"}) | {"claude"} and {pid for pid, p in reg.providers.items() if p.direct} == {"openrouter", "ovh", "aihorde", "anyapi"}      # OpenRouter, OVH and AI Horde are called directly (GitHub Models, retired, has no endpoint)
     for pid in ids:
         assert reg.provider(pid).gateway_platform == pid
 
@@ -254,7 +254,7 @@ def test_the_shipped_lanes_load_against_the_allowlist_and_cover_the_ten_kinds_of
     got = L.load_lanes(SHIPPED_L, reg)
     assert list(got) == ["research_extraction", "competitor_intelligence", "audience_voice", "formula_analysis", "trend_opportunity", "strategic_reasoning",
                          "content_ideation", "brief_generation", "production_support", "validation_qa", "general_text", "general_json", "foundation_json", "story_extract_json", "story_review_json", "conflict_check_json",
-                         "claim_verify_json", "brief_json", "competitor_ideas_json", "creator_chain_json", "listen_learn_json", "voice_creative_json", "seo_lens_json"]       # the ten kinds of work, the two platform lanes, then one ranked lane per job of the refresh and the foundation chain
+                         "claim_verify_json", "brief_json", "competitor_ideas_json", "creator_chain_json", "listen_learn_json", "voice_creative_json", "seo_lens_json", "storyboard_json"]       # the ten kinds of work, the two platform lanes, then one ranked lane per job of the refresh and the foundation chain
     assert got["general_text"].max_data_class == "internal" and got["general_json"].max_data_class == "internal" and not got["general_text"].claude_fallback and not got["general_json"].claude_fallback
     assert got["general_text"].review == "none" and got["general_json"].review == "none" and all(r["provider"] != "claude" for r in got["general_text"].chain + got["general_json"].chain)
     for lane in got.values():
@@ -332,7 +332,7 @@ def test_no_retired_model_is_approved_and_every_lane_route_uses_an_approved_mode
     used = {(r["provider"], r["model"]) for lane in lanes.values() for r in lane.get("chain", [])}
     assert not RETIRED & used and used <= approved                                          # and no lane routes to a model nobody approved
     assert {("groq", "openai/gpt-oss-120b"), ("groq", "openai/gpt-oss-20b"), ("google", "gemini-3.5-flash"), ("openrouter", "openrouter/free")} <= approved
-    assert [r["model"] for lane in lanes.values() for r in lane.get("chain", []) if r["provider"] == "openrouter"] == ["openrouter/free"] * 7     # OpenRouter free models rotate every few days: the lane asks for the free router and the client picks today's free models
+    assert [r["model"] for lane in lanes.values() for r in lane.get("chain", []) if r["provider"] == "openrouter"] == ["openrouter/free"] * 15     # OpenRouter free models rotate every few days: the lane asks for the free router and the client picks today's free models
 
 
 # ---- Update 57: the five providers added, and what is recorded for each ------------------------------------------------------------------------------
@@ -365,7 +365,7 @@ def test_nvidia_ollama_cohere_and_zhipu_carry_the_personal_use_decision_dated_wi
 
 def test_each_new_providers_limits_are_its_own_stated_ones_and_nothing_of_ours():
     reg = R.load_registry(SHIPPED_P)
-    assert reg.provider("nvidia").limits == {"requests_per_minute": 30}                                      # a SETTING, started conservatively: sources say 30 to 40 and it varies by model and load
+    assert reg.provider("nvidia").limits == {"requests_per_minute": 40}                  # planner check of 2026-11-23: 40 a minute, no card; NO daily figure is hard-coded (NVIDIA publishes none: the dashboard is the source)
     assert reg.provider("ollama").limits == {"concurrency": 1}                                               # one request at a time; no rate figure is published, so none is invented
     assert reg.provider("cohere").limits == {"requests_per_minute": 20, "requests_per_month": 1000}           # the trial key's own stated limits
     assert reg.provider("zhipu").limits == {"requests_per_minute": 60}

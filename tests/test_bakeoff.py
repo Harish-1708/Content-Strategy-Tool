@@ -63,7 +63,7 @@ def test_a_slow_candidate_and_one_that_meets_a_security_check_are_no_go_and_a_mi
 
 def test_the_config_is_validated_and_the_shipped_file_names_the_candidates_but_builds_in_no_address():
     shipped = BO.load_config("bakeoff.yaml")
-    assert shipped["urls"] == [] and {"current", "lightpanda", "obscura", "agent_browser"} <= set(shipped["engines"]) and shipped["engines"]["obscura"]["command"] == ""
+    assert shipped["urls"] == [] and {"current", "lightpanda", "obscura", "agent_browser"} <= set(shipped["engines"]) and shipped["engines"]["obscura"]["command"] == "obscura fetch {url} --dump html" and shipped["engines"]["agent_browser"]["command"] == "sh -c 'agent-browser open {url} >/dev/null && agent-browser get html html'"
     text = Path("bakeoff.yaml").read_text(encoding="utf-8").lower()
     assert "no login" in text and "stealth" in text                                                                    # the rule is written next to the engines
     bad = Path("bad.yaml")
@@ -92,4 +92,4 @@ def test_the_bakeoff_command_needs_public_addresses_from_the_owner_and_prints_th
     runner = Runner({"curl": (PAGE, 0)})
     assert SC.run_stage(args, Store(tmp_path / "data"), "2026-11-18T10:00:00Z", runner=runner) == 0
     out = capsys.readouterr().out
-    assert "Browser bake-off on 2 public address(es)" in out and "current: BASELINE" in out and "lightpanda: NOT RUN" in out
+    assert "Browser bake-off on 2 public address(es)" in out and "current: BASELINE" in out and "agent_browser:" in out and "lightpanda:" in out and "obscura:" in out
