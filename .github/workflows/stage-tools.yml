@@ -41,7 +41,7 @@ concurrency:
 jobs:
   stage:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v6
 
@@ -52,10 +52,58 @@ jobs:
           cache-dependency-path: requirements.txt
       - run: pip install -r requirements.txt
 
+      - name: Install Lightpanda (bake-off engine)
+        if: inputs.action == 'bakeoff'
+        continue-on-error: true
+        run: |
+          mkdir -p "$HOME/bin"
+          curl -fL -o "$HOME/bin/lightpanda" https://github.com/lightpanda-io/browser/releases/download/nightly/lightpanda-x86_64-linux
+          chmod a+x "$HOME/bin/lightpanda"
+          echo "$HOME/bin" >> "$GITHUB_PATH"
+          LIGHTPANDA_DISABLE_TELEMETRY=true "$HOME/bin/lightpanda" version
+
+      - name: Install Obscura (bake-off engine)
+        if: inputs.action == 'bakeoff'
+        continue-on-error: true
+        run: |
+          mkdir -p "$HOME/bin"
+          curl -fL -o /tmp/obscura.tar.gz https://github.com/h4ckf0r0day/obscura/releases/latest/download/obscura-x86_64-linux.tar.gz
+          tar xzf /tmp/obscura.tar.gz -C "$HOME/bin"          # the archive holds obscura and obscura-worker: they stay in one folder
+          echo "$HOME/bin" >> "$GITHUB_PATH"
+          "$HOME/bin/obscura" --help | head -5
+
+      - name: Install agent-browser (bake-off engine, public pages only)
+        if: inputs.action == 'bakeoff'
+        continue-on-error: true
+        run: |
+          npm install -g agent-browser
+          agent-browser install --with-deps
+
+      - name: Cache VibeASR (the CPU build of VibeVoice-ASR and its model)
+        if: inputs.action != 'bakeoff' && vars.VIBEASR_COMMAND == ''
+        uses: actions/cache@v5
+        with:
+          path: ~/VibeASR.cpp
+          key: vibeasr-v1
+
+      - name: Install VibeVoice-ASR (microsoft/VibeASR.cpp, MIT licence, CPU only)
+        if: inputs.action != 'bakeoff' && vars.VIBEASR_COMMAND == ''
+        continue-on-error: true
+        run: |
+          if [ ! -x "$HOME/VibeASR.cpp/build/bin/asr_infer" ]; then
+            git clone --depth 1 --recursive https://github.com/microsoft/VibeASR.cpp.git "$HOME/VibeASR.cpp"
+            cd "$HOME/VibeASR.cpp"
+            cmake -B build -DCMAKE_BUILD_TYPE=Release
+            cmake --build build -j"$(nproc)"
+            pip install huggingface_hub
+            huggingface-cli download microsoft/VibeVoice-ASR-BitNet --local-dir models/vibeasr
+          fi
+          echo "VIBEASR_COMMAND=$HOME/VibeASR.cpp/build/bin/asr_infer --vae-model $HOME/VibeASR.cpp/models/vibeasr/vibeasr-vae-encoder-i8_s.gguf --lm-model $HOME/VibeASR.cpp/models/vibeasr/vibeasr-lm-i2_s-embed-q6_k.gguf --audio {audio} -t 4 --greedy" >> "$GITHUB_ENV"
+
       - name: Install the local transcription backup (Faster-Whisper)
         if: inputs.action != 'bakeoff'
         continue-on-error: true
-        run: pip install faster-whisper
+        run: pip install "faster-whisper==1.1.1" "av==13.1.0"          # a pinned, compatible pair: the unpinned install broke with "unexpected keyword argument metadata_errors"
 
       - name: Run it
         env:
@@ -66,6 +114,10 @@ jobs:
           LANGUAGE: ${{ inputs.language }}
           BAKEOFF_URLS: ${{ inputs.bakeoff_urls }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          VIBEASR_COMMAND: ${{ vars.VIBEASR_COMMAND || env.VIBEASR_COMMAND }}          # the repository variable if set, else the one the install step above made
+          LIGHTPANDA_DISABLE_TELEMETRY: "true"
         run: |
           set -o pipefail
           case "$ACTION" in

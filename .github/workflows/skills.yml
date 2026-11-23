@@ -40,14 +40,14 @@ on:
         required: false
         default: "3"
       stage:
-        description: "stage: which stage to run (competitor_ideas, creator_chain, listen_learn, voice_creative, seo_lens)"
+        description: "stage: which stage to run (competitor_ideas, creator_chain, listen_learn, voice_creative, seo_lens, storyboard)"
         type: choice
-        options: [competitor_ideas, creator_chain, listen_learn, voice_creative, seo_lens]
+        options: [competitor_ideas, creator_chain, listen_learn, voice_creative, storyboard, seo_lens]
         default: competitor_ideas
       max_claims:
-        description: "verify-claims: check at most this many claims in one run"
+        description: "verify-claims: check at most this many claims in one run (0 = every claim that is waiting, up to 60; the call budget is sized to them)"
         required: false
-        default: "6"
+        default: "0"
       max_calls:
         description: "foundation and reclassify-conflicts: at most this many model calls in one run (a retry or a correction counts; 0 = no limit)"
         required: false
@@ -84,6 +84,9 @@ jobs:
       LLM7_API_KEY: ${{ secrets.LLM7_API_KEY }}
       SILICONFLOW_API_KEY: ${{ secrets.SILICONFLOW_API_KEY }}
       POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
+      REQUESTY_API_KEY: ${{ secrets.REQUESTY_API_KEY }}
+      ANYAPI_API_KEY: ${{ secrets.ANYAPI_API_KEY }}
+      NAVY_API_KEY: ${{ secrets.NAVY_API_KEY }}
       API_AIRFORCE_API_KEY: ${{ secrets.API_AIRFORCE_API_KEY }}
       BLUESMINDS_API_KEY: ${{ secrets.BLUESMINDS_API_KEY }}
       BAZAARLINK_API_KEY: ${{ secrets.BAZAARLINK_API_KEY }}
@@ -128,7 +131,7 @@ jobs:
           MAX_STEPS: ${{ inputs.max_steps || '3' }}
           MAX_CALLS: ${{ inputs.max_calls || '6' }}
           STAGE: ${{ inputs.stage }}
-          MAX_CLAIMS: ${{ inputs.max_claims || '6' }}
+          MAX_CLAIMS: ${{ inputs.max_claims || '0' }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
         run: |
@@ -143,7 +146,7 @@ jobs:
             refresh-story-bank) python -m contentintel canon --action refresh "${brand_args[@]}" ;;
             foundation) python -m contentintel canon --action foundation --steps "$STEPS" --max-steps "$MAX_STEPS" --max-calls "$MAX_CALLS" "${brand_args[@]}" ;;
             reclassify-conflicts) python -m contentintel canon --action reclassify-conflicts --max-calls "$MAX_CALLS" "${brand_args[@]}" ;;
-            verify-claims) python -m contentintel canon --action verify-claims --max-claims "$MAX_CLAIMS" --max-calls "$MAX_CALLS" "${brand_args[@]}" ;;
+            verify-claims) python -m contentintel canon --action verify-claims --max-claims "$MAX_CLAIMS" "${brand_args[@]}" ;;
             stage) python -m contentintel canon --action stage --stage "$STAGE" --max-calls "$MAX_CALLS" "${brand_args[@]}" ;;
           esac
 

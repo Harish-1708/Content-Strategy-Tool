@@ -90,6 +90,9 @@ jobs:
       LLM7_API_KEY: ${{ secrets.LLM7_API_KEY }}
       SILICONFLOW_API_KEY: ${{ secrets.SILICONFLOW_API_KEY }}
       POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
+      REQUESTY_API_KEY: ${{ secrets.REQUESTY_API_KEY }}
+      ANYAPI_API_KEY: ${{ secrets.ANYAPI_API_KEY }}
+      NAVY_API_KEY: ${{ secrets.NAVY_API_KEY }}
       API_AIRFORCE_API_KEY: ${{ secrets.API_AIRFORCE_API_KEY }}
       BLUESMINDS_API_KEY: ${{ secrets.BLUESMINDS_API_KEY }}
       BAZAARLINK_API_KEY: ${{ secrets.BAZAARLINK_API_KEY }}
