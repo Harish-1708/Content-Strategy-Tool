@@ -1,0 +1,80 @@
+name: Batch 3 tools
+
+# Forecasting (TimesFM 3.0: forecast, anomalies, momentum, Idea Bank timeliness), the CLIP stock corpus, and the MoneyPrinterTurbo status.
+# MoneyPrinterTurbo itself needs a running host and is OFF (mpt.yaml); only its status is shown here. Nothing here calls a paid service and nothing is published.
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "forecast, stock-index, stock-search or mpt-status"
+        required: true
+        type: choice
+        options: [forecast, stock-index, stock-search, mpt-status]
+      brand:
+        description: "a brand slug, or all"
+        required: false
+        default: "all"
+      query:
+        description: "stock-search: the script line or idea to find a picture for"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalogue-data
+  cancel-in-progress: false
+
+jobs:
+  batch3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: pip install -r requirements.txt
+
+      - name: Install TimesFM (CPU)
+        if: inputs.action == 'forecast'
+        continue-on-error: true
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install "timesfm[torch]"          # TimesFM 3.0 (module timesfm3), weights google/timesfm-3.0-pytorch
+
+      - name: Install the CLIP model (CPU)
+        if: startsWith(inputs.action, 'stock')
+        continue-on-error: true
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install sentence-transformers pillow
+
+      - name: Run it
+        env:
+          ACTION: ${{ inputs.action }}
+          BRAND: ${{ inputs.brand }}
+          QUERY: ${{ inputs.query }}
+        run: |
+          set -o pipefail
+          python -m contentintel batch3 --action "$ACTION" --brand "${BRAND:-all}" --query "$QUERY"
+
+      - name: Save the data
+        if: always() && (inputs.action == 'forecast' || inputs.action == 'stock-index')
+        run: |
+          git config user.name "batch3-tools"
+          git config user.email "batch3-tools@users.noreply.github.com"
+          git add -f data/*/extras/forecasts.json data/*/extras/stock_corpus.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No data changes to save."
+          else
+            git commit -m "Batch 3 tools $(date -u +%Y-%m-%dT%H:%MZ)"
+            echo "--- files this run left changed but did not save (set aside for the pull, then put back):"
+            git status --porcelain | head -40
+            git pull --rebase --autostash
+            git push
+          fi

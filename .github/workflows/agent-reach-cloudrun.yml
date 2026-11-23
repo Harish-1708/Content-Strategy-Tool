@@ -41,7 +41,7 @@ jobs:
     timeout-minutes: 40
     steps:
       - name: Check out
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Check the secrets are set
         shell: bash
