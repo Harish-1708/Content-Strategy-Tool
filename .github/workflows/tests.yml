@@ -63,7 +63,7 @@ jobs:
           "$RUNNER_TEMP/scrapling-env/bin/pip" install -q -r requirements-scrapling.txt
           echo "SCRAPLING_PYTHON=$RUNNER_TEMP/scrapling-env/bin/python" >> "$GITHUB_ENV"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: "22"
 
