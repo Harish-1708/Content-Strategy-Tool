@@ -1588,6 +1588,25 @@
   {
    "cluster": "",
    "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 3759.0
+   },
+   "entity": "",
+   "first_seen": "2026-11-23T15:22:31Z",
+   "last_seen": "2026-11-23T15:22:31Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Levent Alpöge Generalized Riemann Hypothesis",
+   "topic": "",
+   "url": "",
+   "weight": 3759
+  },
+  {
+   "cluster": "",
+   "engagement": {
     "comments": 3,
     "likes": 50,
     "shares": 1,
@@ -1629,11 +1648,49 @@
    "engagement": {
     "corroboration_count": 1,
     "previously_surfaced_count": 0,
+    "velocity_score": 3109.5
+   },
+   "entity": "",
+   "first_seen": "2026-11-23T15:22:31Z",
+   "last_seen": "2026-11-23T15:22:31Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Jensen Huang Reinstated as Nvidia CEO",
+   "topic": "",
+   "url": "",
+   "weight": 3109
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 2745.75
+   },
+   "entity": "",
+   "first_seen": "2026-11-23T15:22:31Z",
+   "last_seen": "2026-11-23T15:22:31Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Hurried Announcement Alessandro Masullo GRH",
+   "topic": "",
+   "url": "",
+   "weight": 2745
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
     "velocity_score": 2669.33
    },
    "entity": "",
    "first_seen": "2026-11-19T09:53:15Z",
-   "last_seen": "2026-11-19T09:53:15Z",
+   "last_seen": "2026-11-23T15:22:31Z",
    "mode": "discover",
    "published": "",
    "source": "hackernews",
@@ -1704,6 +1761,25 @@
   {
    "cluster": "",
    "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 2260.28
+   },
+   "entity": "",
+   "first_seen": "2026-11-23T15:22:31Z",
+   "last_seen": "2026-11-23T15:22:31Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Lean verification of the Riemann Hypothesis",
+   "topic": "",
+   "url": "",
+   "weight": 2260
+  },
+  {
+   "cluster": "",
+   "engagement": {
     "comments": 49,
     "likes": 2227
    },
@@ -1718,6 +1794,25 @@
    "topic": "Defi Snacks",
    "url": "https://www.instagram.com/p/Dfapq8NxOYP/",
    "weight": 2227
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 2190.26
+   },
+   "entity": "",
+   "first_seen": "2026-11-23T15:22:31Z",
+   "last_seen": "2026-11-23T15:22:31Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Toyota Nissan Honda",
+   "topic": "",
+   "url": "",
+   "weight": 2190
   },
   {
    "cluster": "",
@@ -1748,7 +1843,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-19T09:53:15Z",
-   "last_seen": "2026-11-19T09:53:15Z",
+   "last_seen": "2026-11-23T15:22:31Z",
    "mode": "discover",
    "published": "",
    "source": "hackernews",
@@ -1895,6 +1990,25 @@
    "engagement": {
     "corroboration_count": 1,
     "previously_surfaced_count": 0,
+    "velocity_score": 1321.5
+   },
+   "entity": "",
+   "first_seen": "2026-11-23T15:22:31Z",
+   "last_seen": "2026-11-23T15:22:31Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Inkling 2 Mini",
+   "topic": "",
+   "url": "",
+   "weight": 1321
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
     "velocity_score": 1309.44
    },
    "entity": "",
@@ -1946,6 +2060,44 @@
    "topic": "Defi Snacks",
    "url": "https://www.instagram.com/p/DeHuUY6AYJD/",
    "weight": 1277
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 1272.0
+   },
+   "entity": "",
+   "first_seen": "2026-11-23T15:22:31Z",
+   "last_seen": "2026-11-23T15:22:31Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Free alternative TV Internet Archive",
+   "topic": "",
+   "url": "",
+   "weight": 1272
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 1263.0
+   },
+   "entity": "",
+   "first_seen": "2026-11-23T15:22:31Z",
+   "last_seen": "2026-11-23T15:22:31Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Pill",
+   "topic": "",
+   "url": "",
+   "weight": 1263
   },
   {
    "cluster": "",
@@ -3026,5 +3178,5 @@
   "Food ASMR (Part 70) what should I eat next? 😋 #baderalsafar #food #asmr #foodasmr #satisfying #snacks #bussin #challenge",
   "We love a movie night🍿 ig @sj.bleau"
  ],
- "updated": "2026-11-19T09:53:15Z"
+ "updated": "2026-11-23T15:22:31Z"
 }
