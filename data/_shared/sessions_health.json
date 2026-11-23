@@ -1,6 +1,7 @@
 {
   "boss": {
-    "checked_at": "2026-11-19T15:53:32Z",
+    "cannot_check_streak": 0,
+    "checked_at": "2026-11-23T11:50:43Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",
@@ -11,16 +12,17 @@
     "unconfirmed_streak": 0
   },
   "facebook": {
-    "checked_at": "2026-11-19T15:53:32Z",
-    "days_left": 357,
+    "cannot_check_streak": 0,
+    "checked_at": "2026-11-23T11:50:43Z",
+    "days_left": 353,
     "evidence": {
       "body_ids": [
         "splash-screen",
-        "mount_0_0_YV",
         "B:0",
-        "B:1",
-        "B:2",
-        "B:3"
+        "right_rail_container",
+        "u_0_0_nC",
+        "u_0_1_Oj",
+        "u_0_2_5I"
       ],
       "cookies_back": [
         "c_user",
@@ -66,7 +68,7 @@
       "login_word_in_address": "",
       "noscript": "",
       "password_field": false,
-      "scripts": 419,
+      "scripts": 339,
       "status": 200,
       "text_chars": 0,
       "title": "Facebook",
@@ -74,15 +76,16 @@
       "worker_error": ""
     },
     "expires_on": "2027-11-12",
-    "proved_on": "2026-11-19T15:53:32Z",
+    "proved_on": "2026-11-23T11:50:43Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
     "unconfirmed_streak": 0
   },
   "instagram": {
-    "checked_at": "2026-11-19T15:53:32Z",
-    "days_left": 357,
+    "cannot_check_streak": 1,
+    "checked_at": "2026-11-23T11:50:43Z",
+    "days_left": 354,
     "evidence": {
       "body_ids": [],
       "cookies_back": [],
@@ -132,8 +135,9 @@
     "unconfirmed_streak": 0
   },
   "linkedin": {
-    "checked_at": "2026-11-19T15:53:32Z",
-    "days_left": 357,
+    "cannot_check_streak": 0,
+    "checked_at": "2026-11-23T11:50:43Z",
+    "days_left": 353,
     "evidence": {
       "body_ids": [],
       "cookies_back": [],
@@ -196,8 +200,9 @@
     "unconfirmed_streak": 0
   },
   "reddit": {
-    "checked_at": "2026-11-19T15:53:32Z",
-    "days_left": 173,
+    "cannot_check_streak": 0,
+    "checked_at": "2026-11-23T11:50:43Z",
+    "days_left": 169,
     "evidence": {
       "body_ids": [
         "shreddit-skip-link",
@@ -226,7 +231,8 @@
         "reddit_supported_media_codecs",
         "rlas3",
         "session_tracker",
-        "token_v2"
+        "token_v2",
+        "wwrbucket"
       ],
       "cookies_sent": [
         "FPGSID",
@@ -248,7 +254,7 @@
         "token_v2"
       ],
       "fetched_with": "browser",
-      "html_chars": 428169,
+      "html_chars": 427838,
       "html_truncated": false,
       "landed": "https://www.reddit.com/settings/",
       "logged_in_found": [
@@ -268,7 +274,7 @@
       "login_word_in_address": "",
       "noscript": "",
       "password_field": false,
-      "scripts": 31,
+      "scripts": 32,
       "status": 200,
       "text_chars": 446,
       "title": "Reddit - The heart of the internet",
@@ -276,23 +282,24 @@
       "worker_error": ""
     },
     "expires_on": "2027-05-12",
-    "proved_on": "2026-11-19T15:53:32Z",
+    "proved_on": "2026-11-23T11:50:43Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
     "unconfirmed_streak": 0
   },
   "tiktok": {
-    "checked_at": "2026-11-19T15:53:32Z",
-    "days_left": 172,
+    "cannot_check_streak": 0,
+    "checked_at": "2026-11-23T11:50:43Z",
+    "days_left": 169,
     "evidence": {
       "body_ids": [
+        "router-csr-document",
         "tiktok-environment-webapp",
         "script-manager",
         "chunk-manifest",
         "api-domains",
-        "service-region",
-        "slardar-config"
+        "service-region"
       ],
       "cookies_back": [
         "cmpl_token",
@@ -376,14 +383,13 @@
         "uid_tt_ss"
       ],
       "fetched_with": "browser",
-      "html_chars": 537085,
+      "html_chars": 549569,
       "html_truncated": false,
       "landed": "https://www.tiktok.com/",
-      "logged_in_found": [
-        "data-e2e=\"profile-icon\""
-      ],
+      "logged_in_found": [],
       "logged_in_missing": [
-        "\"islogin\":true"
+        "\"islogin\":true",
+        "data-e2e=\"profile-icon\""
       ],
       "logged_in_text_found": [],
       "logged_in_text_missing": [],
@@ -394,9 +400,9 @@
       "login_word_in_address": "",
       "noscript": "",
       "password_field": false,
-      "scripts": 91,
+      "scripts": 82,
       "status": 200,
-      "text_chars": 386,
+      "text_chars": 70,
       "title": "TikTok - Make Your Day",
       "visible_text_available": true,
       "worker_error": ""
@@ -404,13 +410,14 @@
     "expires_on": "2027-05-11",
     "proved_on": "2026-11-19T15:53:32Z",
     "proved_via": "browser",
-    "reason": "the platform's own page showed a logged-in state",
-    "state": "ACCEPTED",
-    "unconfirmed_streak": 0
+    "reason": "the page gave no sign of being logged in or logged out (it may be an error or a half-drawn page), so it is not counted as a refusal and the proof is kept; it is looked at again on the next check, and after 3 such checks in a row it is treated as refused (this is check 1)",
+    "state": "UNCONFIRMED",
+    "unconfirmed_streak": 1
   },
   "x": {
-    "checked_at": "2026-11-19T15:53:32Z",
-    "days_left": 357,
+    "cannot_check_streak": 0,
+    "checked_at": "2026-11-23T11:50:43Z",
+    "days_left": 353,
     "evidence": {
       "body_ids": [
         "challenge-error-text"
@@ -443,7 +450,7 @@
         "twid"
       ],
       "fetched_with": "browser",
-      "html_chars": 46978,
+      "html_chars": 47000,
       "html_truncated": false,
       "landed": "https://x.com/home",
       "logged_in_found": [],
@@ -479,7 +486,8 @@
     "unconfirmed_streak": 0
   },
   "xiaohongshu": {
-    "checked_at": "2026-11-19T15:53:32Z",
+    "cannot_check_streak": 0,
+    "checked_at": "2026-11-23T11:50:43Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",
