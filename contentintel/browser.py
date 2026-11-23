@@ -67,7 +67,7 @@ _TYPES = {
     "deep_research_active_any": "strs", "signed_out_any": "strs", "link_contains": "strs", "prompt_box": "strs", "send": "strs",
     "start_research": "strs", "still_working_any": "strs", "done_any": "strs", "response": "strs",
     "deep_research_clicks": "strs_list", "login_steps": "steps", "wait": "wait", "password_fallback": "fallback",
-    "scroll_pause_seconds": "num",
+    "scroll_pause_seconds": "num", "deep_research_direct": "strs", "settle_images": "settle",
 }
 _REQUIRED = {
     "meta_ads": ["needs_login"],
@@ -117,6 +117,16 @@ def _check_value(kind, value, where):
             raise BrowserError(f"{where} must be some of: {', '.join(sorted(_PACE_KEYS))}")
         for k, v in value.items():
             _num(v, f"{where}.{k}")
+    elif kind == "settle":
+        keys = {"images_any", "spinner_any", "max_seconds", "poll_seconds", "stable_polls"}
+        if not isinstance(value, dict) or set(value) - keys or not {"max_seconds", "poll_seconds"} <= set(value):
+            raise BrowserError(f"{where} must hold max_seconds and poll_seconds, and may hold: images_any, spinner_any, stable_polls")
+        _num(value["max_seconds"], f"{where}.max_seconds", minimum=1)
+        _num(value["poll_seconds"], f"{where}.poll_seconds", minimum=1)
+        _num(value.get("stable_polls", 2), f"{where}.stable_polls", minimum=1)
+        for k in ("images_any", "spinner_any"):
+            if k in value:
+                _strs(value[k], f"{where}.{k}")
     elif kind == "fallback":
         if value not in PASSWORD_FALLBACKS:
             raise BrowserError(f"{where} must be one of: {', '.join(PASSWORD_FALLBACKS)}; got {value!r}")
@@ -509,7 +519,40 @@ class PlaywrightBrowser:
             try:
                 loc = self.page.locator(sel)
                 if loc.count() > 0:
-                    loc.first.click(timeout=8000)
+                    try:
+                        loc.first.click(timeout=8000)
+                        return True
+                    except Exception:                                                  # noqa: BLE001 - something drawn over it, or a menu item that reacts to the pointer: the next ways
+                        pass
+                    try:
+                        loc.first.click(force=True, timeout=3000)                      # the hit-target check off
+                        return True
+                    except Exception:                                                  # noqa: BLE001
+                        pass
+                    loc.first.dispatch_event("click")                                  # the page's own click event, with no pointer at all
+                    return True
+            except Exception:
+                continue
+        return False
+
+    def images_state(self, spinner_selectors=(), image_selectors=("main img", "article img")):
+        """How far the page's grid has drawn: {loaded, total, spinner}. loaded counts images that finished (complete and with a width); spinner is True while any of the loading-spinner selectors is still on the page."""
+        try:
+            counts = self.page.evaluate("""(sels) => { let total = 0, loaded = 0;
+                for (const sel of sels) { for (const img of document.querySelectorAll(sel)) { total += 1; if (img.complete && img.naturalWidth > 0) loaded += 1; } }
+                return [total, loaded]; }""", list(image_selectors))
+            total, loaded = int(counts[0]), int(counts[1])
+        except Exception:                                                              # noqa: BLE001 - a page that cannot be asked says nothing: the settle step then just waits its time out
+            return {"loaded": 0, "total": 0, "spinner": False}
+        return {"loaded": loaded, "total": total, "spinner": self.exists(list(spinner_selectors)) if spinner_selectors else False}
+
+    def hover(self, selectors):
+        """Move the pointer over the first element that matches (a menu item that opens its submenu on hover, as Gemini's More tools does). True when one was found and hovered."""
+        for sel in selectors:
+            try:
+                loc = self.page.locator(sel)
+                if loc.count() > 0:
+                    loc.first.hover(timeout=5000)
                     return True
             except Exception:
                 continue
@@ -594,6 +637,10 @@ class PlaywrightBrowser:
         resp = self.page.context.request.get(url, headers={"Referer": referer, "User-Agent": user_agent}, timeout=90000)
         body = resp.body() if resp.status < 400 else b""
         return resp.status, (body if len(body) <= max_bytes else b"")
+
+    def export_cookies(self):
+        """The cookies of the session as JSON text (used only by the sessions password backup, which keeps them in memory for one proof and never prints or saves them)."""
+        return json.dumps(self.page.context.cookies())
 
     def html(self):
         try:

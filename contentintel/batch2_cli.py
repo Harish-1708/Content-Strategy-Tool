@@ -28,8 +28,9 @@ def add_parsers(sub, common):
     p.add_argument("--max-queries", type=int, default=12, help="refresh: searches per brand")
     p.add_argument("--max-pages", type=int, default=12, help="refresh: pages read per brand")
     p.add_argument("--max-new", type=int, default=20, help="refresh: new entries added per brand in one refresh (the pages after that are left for the next refresh and spend no AI calls)")
-    p.add_argument("--stage", default="", help="stage: which stage to run (competitor_ideas, creator_chain, listen_learn, voice_creative, seo_lens)")
-    p.add_argument("--max-claims", type=int, default=0, help="verify-claims: check at most this many claims in one run (default 6)")
+    p.add_argument("--stage", default="", help="stage: which stage to run (competitor_ideas, creator_chain, listen_learn, voice_creative, seo_lens, storyboard)")
+    p.add_argument("--max-claims", type=int, default=0, help="verify-claims: check at most this many claims in one run (0 = every claim that is waiting, up to 60)")
+    p.add_argument("--verify-calls", type=int, default=0, help="the AI and page-reading calls the claim check may use in one run (0 = sized to the claims waiting: about five a claim)")
     p.add_argument("--max-calls", type=int, default=0, help="at most this many model calls in one run (a retry counts; one batch of up to 20 pairs is one call). 0 = no limit for foundation and reclassify-conflicts, 48 for refresh")
     p.add_argument("--skills-config", default=SK.CONFIG_FILE, help="foundation: the skills policy file")
     p.add_argument("--skills-dir", default="", help="foundation: the checkout of the skills repository")
@@ -111,7 +112,8 @@ def _claim_verifier(reg, slug, args, claude, search, get, now, announce=False):
     except Exception:                                                                  # noqa: BLE001 - a brand file problem must not stop the check
         name = slug
     tried = set()
-    budget = (args.max_calls or 0) or 30
+    waiting = len(CANON_VERIFY.targets(reg, 1000)) if not args.max_claims else args.max_claims
+    budget = args.verify_calls or CANON_VERIFY.auto_budget(waiting)                      # sized to the work waiting, never a fixed small number; the rate-limit-aware routing is what makes a big budget safe
 
     def verifier(ids):
         new = [i for i in ids if i not in tried]
@@ -227,6 +229,8 @@ def run_canon(args, store, now, *, clients=None):
             proposed = sum(1 for r in rep if r["result"] == "proposed")
             print(f"canon: {slug}: foundation: {proposed} section(s) PROPOSED for your decision in the Canon tab; nothing is canonical until you approve it")
             route_report(slug, claude, "foundation")
+            for line in CANON_VERIFY.log_lines(vreport):
+                print(line)
             if vreport["checked"]:
                 print(f"canon: {slug}: claims checked from public sources by the pool model: {len(vreport['verified'])} of {vreport['checked']} became VERIFIED (one source close to the fact in any medium, exact quotation, nothing contradicting), "
                       f"{vreport['calls']} AI call(s)" + ("; verified: " + ", ".join(vreport["verified"]) if vreport["verified"] else "") + _outcome_tail(vreport))
@@ -276,6 +280,8 @@ def run_canon(args, store, now, *, clients=None):
             rejected = [r for r in rep if r["result"] == "rejected"]
             print(f"canon: {slug}: {ST.STAGES[args.stage]['title']}: {proposed} section(s) PROPOSED (saved under data/{slug}/extras and catalogue; nothing is canon, posted or sent)"
                   + (f"; {len(rejected)} REJECTED by the gate and recorded: the run does not fail for it (run verify-claims, or decide the claims in the Claims tab)" if rejected else ""))
+            for line in CANON_VERIFY.log_lines(vreport):
+                print(line)
             if vreport["checked"]:
                 print(f"canon: {slug}: claims checked from public sources by the pool model: {len(vreport['verified'])} of {vreport['checked']} became VERIFIED")
             route_report(slug, claude, args.stage)
@@ -288,8 +294,10 @@ def run_canon(args, store, now, *, clients=None):
             if verifier is None:
                 worst = max(worst, 1)
                 continue
-            ids = CANON_VERIFY.targets(reg, args.max_claims or 6)
+            ids = CANON_VERIFY.targets(reg, args.max_claims or CANON_VERIFY.MAX_PER_RUN)
             done = verifier(ids)
+            for line in CANON_VERIFY.log_lines(vreport):
+                print(line)
             for note in vreport["notes"][:12]:
                 print(f"canon:   note: {note}")
             print(f"canon: {slug}: {len(ids)} claim(s) checked from public sources by the pool model: {len(vreport['verified'])} became VERIFIED (one source close to the fact in any medium, exact quotation, nothing contradicting)"

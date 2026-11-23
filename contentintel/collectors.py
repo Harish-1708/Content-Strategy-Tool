@@ -25,6 +25,7 @@ from urllib.parse import parse_qs, quote, quote_plus, unquote, urlsplit
 import yaml
 
 from . import benchmarks as bench
+from . import apify_budget as AB
 from . import guards
 from . import main_page
 from . import contract
@@ -58,7 +59,7 @@ DEFAULT_APIFY_ACTORS = {"meta_ads": "apify/facebook-ads-scraper", "tiktok": "clo
 DEFAULT_COLLECTORS = {
     "browser": {"monthly_items": 0, "items_per_run": 30, "cache_days": 3},          # 0 = no monthly limit
     "gemini": {"monthly_tasks": 2, "tasks_per_run": 1, "cache_days": 14},
-    "apify": {"mode": "off", "monthly_items": 300, "items_per_run": 30, "max_cost_per_run_usd": 1.0, "check_max_cost_usd": 0.5,
+    "apify": {"mode": "off", "monthly_items": AB.items("collect", AB.WORKING_KEYS), "items_per_run": 30, "max_cost_per_run_usd": 1.0, "check_max_cost_usd": 0.5,
               "actors": DEFAULT_APIFY_ACTORS},
     "claude": {"model": "claude-sonnet-5-5", "monthly_calls": 60, "max_rounds": 3, "max_tokens": 700, "prompt_max_tokens": 2000, "review_rounds": 1,
                "prepare_prompt": True},
@@ -983,11 +984,36 @@ def rate_limited(responses):
     return False
 
 
+def settle_images(browser, site_cfg):
+    """Wait until a slow grid has finished drawing: every image on the page loaded and no loading spinner left, twice in a row (a page whose count is still moving is not settled), or the site's max_seconds. Instagram's
+    grid was read with half its tiles blank and the spinner still turning (Acceptance #15: 34 image addresses in the data, 17 drawn). Returns '' when it settled, else a note saying how far it got. A browser that cannot
+    report its images (and a site with no `settle_images` setting) is not waited for."""
+    cfg = site_cfg.get("settle_images")
+    state = getattr(browser, "images_state", None)
+    if not cfg or not callable(state):
+        return ""
+    waited, steady, last = 0, 0, None
+    while True:
+        now = state(cfg.get("spinner_any", []), cfg.get("images_any", ["main img", "article img"]))
+        key = (now["loaded"], now["total"])
+        steady = steady + 1 if key == last else 0
+        last = key
+        if now["total"] > 0 and now["loaded"] >= now["total"] and not now["spinner"] and steady >= cfg.get("stable_polls", 2) - 1:
+            return ""
+        if waited >= cfg["max_seconds"]:
+            return f"the grid was still filling in after {cfg['max_seconds']} s ({last[0]} of {last[1]} images drawn{', spinner still showing' if now['spinner'] else ''})"
+        browser.wait(cfg["poll_seconds"])
+        waited += cfg["poll_seconds"]
+
+
 def _gather(browser, source, site_cfg, scrolls, pause, max_items):
     """Read a results page, scrolling only while more is needed and the site allows.
     Returns (rows, ids found in the site's data, whether the site rate-limited us)."""
     rows, limited = {}, False
     for round_no in range(scrolls + 1):
+        note = settle_images(browser, site_cfg)                                       # read only after the grid has drawn (or its time is up)
+        if note:
+            print(f"::notice::{note}")
         for row in extract_json_items(source, _page_data(browser)).values():
             _merge(rows, row)
         limited = rate_limited(browser.json_responses())
@@ -1197,8 +1223,20 @@ def switch_to_deep_research(browser, site_cfg):
     """Press the buttons that switch the Gemini chat to Deep Research (the menu next to the prompt box, then
     More tools, then Deep research). Raises BrowserError naming the step that could not be found. Returns a
     note when the page did not confirm the switch (the prompt box should then say what to research), else ''."""
-    for number, selectors in enumerate(site_cfg["deep_research_clicks"], start=1):
-        if not browser.click(selectors):
+    steps = list(site_cfg["deep_research_clicks"])
+    direct = site_cfg.get("deep_research_direct")
+    for number, selectors in enumerate(steps, start=1):
+        if number == 2 and direct and browser.exists(direct):                      # LAYOUT 1: "Deep research" is a direct item of the open menu (no More tools): click it and stop
+            if browser.click(direct):
+                browser.wait(1)
+                break
+        clicked = browser.click(selectors)
+        hover = getattr(browser, "hover", None)
+        if not clicked and callable(hover) and hover(selectors):                       # a submenu item (More tools) that opens on hover rather than on a click: the pointer over it opens it
+            browser.wait(1)
+            browser.click(selectors)
+            clicked = True
+        if not clicked:
             browser.screenshot("gemini-no-deep-research-button")
             raise BrowserError(f"gemini: could not find the button to switch to Deep Research (step {number}); "
                                "the page may have changed, or the account may not have Deep Research. "

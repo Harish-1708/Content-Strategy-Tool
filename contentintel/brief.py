@@ -490,6 +490,10 @@ def make_brief(brand, store, *, brief_name, ask, ruleset, decisions, claude_for,
               "used_items": [i["id"] for i in shown], "violations": won["violations"], "models": [won["model"]]
               + [c["model"] for c in candidates if c is not won], "notes": notes, "drive_link": "", "title": won["brief"]["title"],
               "request_id": request_id, "rules_digest": ruleset.digest}
+    try:
+        store.write_extra(brand.slug, "last_brief", {"id": record["id"], "title": record["title"], "status": record["status"], "created": now, "violations": record["violations"], "brief": won["brief"]})     # the storyboard stage and the draft-video step read the latest brief from here
+    except OSError:
+        pass
     meta = {"id": record["id"], "brief": brief_name, "ask": record["ask"], "created": now}
     docx = build_docx(won["brief"], brand, meta, items, images, won["violations"], ruleset, notes)
     if drive is not None:
