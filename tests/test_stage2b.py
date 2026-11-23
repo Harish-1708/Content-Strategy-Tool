@@ -625,7 +625,7 @@ def test_every_job_has_a_ranked_lane_of_its_own_whose_chain_names_only_approved_
     from contentintel import services as SV
     from contentintel.ai import lanes as L, registry as R
     lanes = L.load_lanes("ai_lanes.yaml", R.load_registry("ai_providers.yaml"))                             # the loader refuses a route to a model nobody approved
-    assert set(SV.JOB_LANES) == {"foundation", "story_extract", "story_review", "conflict_check", "claim_verify", "brief", "competitor_ideas", "creator_chain", "listen_learn", "voice_creative", "seo_lens"}
+    assert set(SV.JOB_LANES) == {"foundation", "story_extract", "story_review", "conflict_check", "claim_verify", "brief", "competitor_ideas", "creator_chain", "listen_learn", "voice_creative", "seo_lens", "storyboard"}
     for job, lane in SV.JOB_LANES.items():
         assert lane in lanes and len(lanes[lane].chain) >= 3 and len({(r["provider"], r["model"]) for r in lanes[lane].chain}) == len(lanes[lane].chain), job          # ranked backups, no repeats
         assert "RANKING NOT YET MEASURED" in lanes[lane].description, lane                                   # honest: the order is seeded, not measured, until the pool retest
@@ -798,7 +798,7 @@ def test_the_second_research_pass_is_recorded_wired_providers_match_the_registry
     from contentintel.ai import registry as R
     reg = R.load_registry("ai_providers.yaml")
     wired = {p["id"]: p for p in data["wired_through_omniroute"]}
-    assert set(wired) == {"airforce", "bluesminds", "bazaarlink"}
+    assert set(wired) == {"bazaarlink", "requesty", "navy"}
     for pid, row in wired.items():
         p = reg.providers[pid]
         assert p.omniroute["provider"] == row["omniroute_id"] and p.enabled and row["secret"] in p.credential_env

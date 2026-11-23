@@ -36,7 +36,7 @@ def test_the_deep_research_path_is_the_menu_the_real_page_has(cfg):
     steps = cfg["sites"]["gemini"]["deep_research_clicks"]
     assert len(steps) == 3
     assert steps[0][0] == 'button[aria-label="Upload & tools"]'
-    assert steps[1][-1] == "text=More tools" and steps[2][-1] == "text=Deep research"
+    assert steps[1][-1] == "text=/More tools/i" and steps[2][-1] == "text=/Deep research/i" and any("More tools" in s for s in steps[1][:3]) and any("Deep research" in s for s in steps[2][:3])
     assert all('"Tools"' not in s for group in steps for s in group)            # the old button that no longer exists
 
 

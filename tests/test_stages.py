@@ -1,6 +1,7 @@
 """Batch 2 stages 4, 6, 7, 8, 9: one engine, proposals only, every section through the claims gate, a lane and a retest probe for each stage."""
 from pathlib import Path
 
+
 import yaml
 
 from contentintel import canon as C
@@ -63,7 +64,7 @@ def run(key, tmp_path, answers, **kw):
     return rep, model, store
 
 
-GOOD = {"text": "Swoveralls could answer the workwear ads with a soft-comfort angle built on the deep pockets people mention. " * 3, "needs_input": ["named competitors"], "claims_used": []}
+GOOD = {"text": "1. Answer the workwear ads with a soft-comfort angle built on the deep pockets people mention.\n2. Show the pockets holding a phone and keys in one shot.\n3. Ask customers how many washes their pair has survived.\n4. Compare the cotton feel after ten washes.", "needs_input": ["named competitors"], "claims_used": []}
 
 
 def test_a_stage_proposes_each_section_through_the_gate_and_saves_only_proposals(tmp_path):
@@ -91,7 +92,7 @@ def test_every_stage_has_its_own_lane_probe_and_job_and_the_probe_asks_that_stag
 
 
 def test_a_section_that_repeats_a_blocked_claim_is_corrected_once_then_rejected_without_failing_the_stage(tmp_path):
-    bad = {"text": "Swoveralls won several awards for its design.", "needs_input": []}
+    bad = {"text": "1. Swoveralls won several awards for its design.\n2. A pocket idea for the soft overalls.\n3. A comfort idea for grown-ups.", "needs_input": []}
     rep, model, store = run("seo_lens", tmp_path, [bad, bad, GOOD])
     results = {r["section"]: r["result"] for r in rep}
     assert results["keyword_research"] == "rejected" and results["content_gaps"] == "proposed" and "YOUR PREVIOUS ANSWER WAS REFUSED" in model.prompts[1]
@@ -101,7 +102,7 @@ def test_a_section_that_repeats_a_blocked_claim_is_corrected_once_then_rejected_
 
 
 def test_the_verifier_is_asked_before_the_correction_and_a_verified_claim_lets_the_section_through(tmp_path):
-    bad = {"text": "Swoveralls won several awards for its design.", "needs_input": []}
+    bad = {"text": "1. Swoveralls won several awards for its design.\n2. A pocket idea for the soft overalls.\n3. A comfort idea for grown-ups.", "needs_input": []}
     reg_holder = {}
     reg = seeded(tmp_path)
 
@@ -151,7 +152,7 @@ def test_the_stage_command_runs_a_stage_through_the_clients_saves_and_exits_zero
     monkeypatch.setattr(SK, "load_config", lambda p: cfg)
     monkeypatch.setattr(SK, "checkout_dir", lambda c, *a, **k: root)
     monkeypatch.setattr(SK, "verify", lambda *a, **k: {"ok": True, "problems": []})
-    bad = {"text": "Swoveralls won several awards for its design.", "needs_input": []}
+    bad = {"text": "1. Swoveralls won several awards for its design.\n2. A pocket idea for the soft overalls.\n3. A comfort idea for grown-ups.", "needs_input": []}
     args = cli.build_parser().parse_args(["canon", "--data-dir", str(tmp_path / "data"), "--brand", "swoveralls", "--skills-config", "x.yaml", "--action", "stage", "--stage", "seo_lens"])
     seeded(tmp_path)
     store = cli.Store(args.data_dir)
@@ -192,3 +193,42 @@ def test_the_collect_workflow_retries_the_ffmpeg_and_the_browser_downloads_three
     browser = text[text.index("pip install -r requirements-browser.txt"):]
     assert browser.lstrip().split("\n")[1].strip() == "for attempt in 1 2 3; do"
     assert "ffmpeg or ffprobe is missing after 3 attempts: failing this run" in text
+
+
+def test_the_collected_reader_unwraps_the_items_inside_each_record_and_reads_their_details(tmp_path):
+    wrapper = {"at": AT, "from_links": 0, "from_site_data": 2, "key": "k", "run": "r1", "seeds": ["a"], "source": "meta_ads", "via": "browser",
+               "items": [{"id": "1", "details": "Soft overalls with deep pockets, shop now", "cta": "Shop now"}, {"id": "2", "details": {"text": "Weekend overalls in navy", "extra": 5}}, {"id": "3", "likes": 4}]}
+    plain = {"platform": "tiktok", "caption": "A plain item with its own caption"}
+    text = ST._items_text([wrapper, plain, "junk", {"items": "not a list"}])
+    assert "[meta_ads] Soft overalls with deep pockets, shop now" in text and "Weekend overalls in navy" in text and "A plain item with its own caption" in text and "likes" not in text
+    assert [w for w, _i in ST.unwrap([wrapper])] == ["meta_ads", "meta_ads", "meta_ads"] and ST._items_text([{"items": [{"id": "x"}]}]) == ""
+    store = Store(tmp_path / "data")
+    store.append_collected("swoveralls", wrapper)
+    assert "Soft overalls with deep pockets" in ST.gather(store, "swoveralls", ("collected",))["collected"]                         # the stage can now see what the collectors found
+
+
+def test_a_stage_with_no_collected_data_reads_the_audience_voice_instead_and_says_so(tmp_path):
+    store = Store(tmp_path / "data")
+    store.write_extra("swoveralls", "voice", {"items": [{"source": "tiktok", "weight": 90, "title": "These overalls changed my wardrobe", "summary": "deep pockets and soft cotton"}]})
+    rep, model, _s = run("competitor_ideas", tmp_path, [GOOD], store=store)
+    assert rep[0]["result"] == "proposed" and "no collected data yet, so the voice data was read instead" in rep[0]["detail"]
+    assert "These overalls changed my wardrobe" in model.prompts[0] and "the brand has no collected yet" not in rep[0]["detail"]
+    empty, _m, _s2 = run("competitor_ideas", tmp_path / "none", [GOOD], store=Store(tmp_path / "none-data"))
+    assert "the brand has no collected yet" in empty[0]["detail"]                                                                       # with no voice either, it still says what is missing
+
+
+def test_a_refusal_or_a_section_with_too_few_items_is_never_proposed_or_saved_or_marked_ok(tmp_path):
+    for n, text in enumerate(("I cannot complete the task as there is no competitor material provided.", "No competitor data is available, so I have nothing to base ideas on.", "1. Only one idea.\n")):
+        rep, _m, store = run("competitor_ideas", tmp_path / str(n), [{"text": text, "needs_input": []}])
+        assert rep[0]["result"] == "needs_input" and "nothing was proposed or saved" in rep[0]["detail"], text
+        assert store.read_extra("swoveralls", "stage_competitor_ideas") is None
+    refusal = ST.empty_problem("idea_candidates", "I cannot complete the task as there is no material.\n1. a\n2. b\n3. c\n4. d")
+    assert refusal.startswith("the model refused or said it had no material") and ST.empty_problem("idea_candidates", "1. a\n2. b\n3. c") == ""            # a refusal is caught even when it lists enough items and ST.empty_problem("creator_brief", "Write it like this.") == ""
+
+
+def test_every_stage_line_names_the_lane_it_went_through(tmp_path):
+    rep, _m, _s = run("competitor_ideas", tmp_path, [GOOD])
+    lines = ST.report_lines("swoveralls", "competitor_ideas", rep)
+    assert lines[0].endswith("[lane competitor_ideas_json]") and "proposed" in lines[0]
+    seo, _m2, _s2 = run("seo_lens", tmp_path / "seo", [GOOD, GOOD])
+    assert any("[lane seo_lens_json]" in line for line in ST.report_lines("swoveralls", "seo_lens", seo)) and not any("numbers" in line and "[lane" in line for line in ST.report_lines("swoveralls", "seo_lens", seo))

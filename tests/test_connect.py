@@ -13,7 +13,7 @@ from contentintel.ai import omniroute as om
 from contentintel.ai import registry as R
 
 AT = "2026-11-17T12:00:00Z"
-OMNI = {"sambanova": "sambanova", "nara": "nara", "xkiro": "xkiro", "llm7": "llm7", "pollinations": "pollinations", "airforce": "api-airforce", "bluesminds": "bluesminds", "bazaarlink": "bazaarlink"}
+OMNI = {"sambanova": "sambanova", "nara": "nara", "xkiro": "xkiro", "llm7": "llm7", "pollinations": "pollinations", "airforce": "api-airforce", "bluesminds": "bluesminds", "bazaarlink": "bazaarlink", "requesty": "requesty", "navy": "navy"}
 
 
 class FakeRouter:
@@ -101,12 +101,12 @@ def test_the_eight_omniroute_providers_are_mapped_with_the_providers_own_ids_rec
     lanes = L.load_lanes("ai_lanes.yaml", reg)
     pool = L.load_pool("ai_lanes.yaml", reg)
     assert lanes
-    for pid in ("sambanova", "nara"):                                                                        # mapped, recorded and switched OFF on 2026-11-18 (402 and a rejected key)
+    for pid in ("sambanova", "nara", "airforce", "bluesminds"):                                              # mapped, recorded and switched OFF (402 and a rejected key on 2026-11-18; airforce 402 and bluesminds 503 on 2026-11-19)
         assert reg.providers[pid].omniroute == {"provider": OMNI[pid]} and reg.providers[pid].enabled is False
-    for pid, omni_id in {k: v for k, v in OMNI.items() if k not in ("sambanova", "nara")}.items():
+    for pid, omni_id in {k: v for k, v in OMNI.items() if k not in ("sambanova", "nara", "airforce", "bluesminds")}.items():
         p = reg.providers[pid]
         approved = [m.id for m in p.models if m.approved]
-        assert p.omniroute == {"provider": omni_id} and p.enabled and p.terms["status"] == "upstream_documented" and p.terms["date"] == "2026-11-17" and "not verified" in p.terms["trains_on_data"]
+        assert p.omniroute == {"provider": omni_id} and p.enabled and p.terms["status"] == "upstream_documented" and p.terms["date"] in ("2026-11-17", "2026-11-19") and "not verified" in p.terms["trains_on_data"]
         assert approved and all(m.startswith(omni_id + "/") for m in approved) and p.credential_env and set(approved) <= {r["model"] for r in pool if r["provider"] == pid}, pid
         assert set(p.approved_classes) == {"public", "internal"} and p.override["approved_by"] == "Harish"                                 # under the owner's standing decision of 2026-11-03
     sf = reg.providers["siliconflow"]

@@ -783,7 +783,7 @@ def test_run_collect_hands_the_second_reader_to_every_meta_page_it_reads(tmp_pat
 
 
 def test_the_assets_command_follows_the_owners_openverse_switch_and_keeps_what_it_finds(tmp_path, capsys, monkeypatch):
-    commons = json.dumps({"query": {"pages": {"1": {"title": "File:A.jpg", "imageinfo": [{"url": "https://c/a.jpg", "descriptionurl": "https://c/p", "extmetadata": {"LicenseShortName": {"value": "CC0"}}}]}}}})
+    commons = json.dumps({"query": {"pages": {"1": {"title": "File:Cotton field.jpg", "imageinfo": [{"url": "https://c/a.jpg", "descriptionurl": "https://c/p", "extmetadata": {"LicenseShortName": {"value": "CC0"}}}]}}}})
     get = Get({"api.openverse": (200, (FIX / "openverse_images_documented_fields.json").read_text()), "commons.wikimedia": (200, commons)})
     args = cli.build_parser().parse_args(["assets", "--query", "cotton", "--brand", "swoveralls", "--data-dir", str(tmp_path)])
     store = Store(tmp_path)

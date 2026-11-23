@@ -348,3 +348,32 @@ def test_a_source_the_reviewer_gave_no_closeness_for_does_not_count_and_a_missin
     run(r, Judge({"Probe Design Award": {"verdict": "supports", "quote": QUOTE_A, "about_brand": True, "close_to_fact": True, "medium": "carrier pigeon"}}), [url], {url: page(QUOTE_A)})
     claim = r.state()["claims"][c]
     assert claim["status"] == "verified" and claim["evidence"]["supports"][0]["risk"] == "high" and claim["evidence"]["supports"][0]["medium"] == "other" and "exaggerate" in claim["reason"]
+
+
+def test_the_verify_claims_log_shows_every_checked_claim_with_its_verdict_queries_and_sources(tmp_path, capsys, trusted):
+    contra = "Swoveralls did not win any award in 2026, the awarding body's list shows."
+    judge = Judge({"Probe Design Award, the awarding": supports(QUOTE_A, True, "high", "social post"), "did not win": {"verdict": "contradicts", "quote": contra, "about_brand": True, "close_to_fact": True, "exaggeration_risk": "low", "medium": "press"}},
+                  queries=["Swoveralls award 2026", "Swoveralls Probe Design Award"])
+    urls = ["https://www.instagram.com/startupcpg/p/abc", "https://news.example.com/b", "https://unread.example.org/c"]
+    pages = {urls[0]: page(QUOTE_A), urls[1]: page(contra)}
+    run_canon(tmp_path, judge, "--action", "verify-claims", "--max-claims", "3", search=lambda q: [{"url": u, "title": ""} for u in urls], get=lambda u: pages.get(u))
+    out = capsys.readouterr().out
+    claim_lines = [line for line in out.splitlines() if line.startswith("canon:   claim ")]
+    assert len(claim_lines) == 3 and all(" -> " in line for line in claim_lines)                                                  # one block per claim checked, not only some
+    assert "searched: Swoveralls award 2026 | Swoveralls Probe Design Award  (3 page(s) came back, 2 read)" in out
+    assert "supports: https://www.instagram.com/startupcpg/p/abc (social post, close to the fact, exaggeration risk high)" in out and "CONTRADICTS: https://news.example.com/b (press)" in out and "-> CONFLICTED" in out
+    quiet = run_canon(tmp_path / "q", Judge(), "--action", "verify-claims", "--max-claims", "1", search=lambda q: [], get=lambda u: None)
+    assert quiet == 0 and "no usable source was found" in capsys.readouterr().out
+
+
+def test_the_call_budget_and_the_claim_count_grow_with_the_work_waiting_so_no_claim_is_left_unchecked_for_a_small_default(tmp_path, capsys, trusted):
+    assert VC.auto_budget(0) == VC.CALL_FLOOR == 10 and VC.auto_budget(6) == 40 and VC.auto_budget(18) == 100 and VC.auto_budget(10_000) == VC.CALL_CEILING
+    reg = seeded(tmp_path)
+    waiting = len(VC.targets(reg, 1000))
+    assert waiting > 6                                                                                                       # more claims wait than the old fixed default of six
+    url = "https://a.example.com/a"
+    code = run_canon(tmp_path, Judge({"Probe Design Award": supports(QUOTE_A)}), "--action", "verify-claims", search=lambda q: [{"url": url, "title": ""}], get=lambda u: page(QUOTE_A))
+    out = capsys.readouterr().out
+    assert VC.MAX_PER_RUN == 60 and waiting > 6 and code == 0 and f"{min(waiting, 60)} claim(s) checked from public sources" in out                   # every waiting claim, not six and "the call limit was reached" not in out
+    capped = run_canon(tmp_path / "small", Judge({"Probe Design Award": supports(QUOTE_A)}), "--action", "verify-claims", "--max-claims", "2", "--verify-calls", "2", search=lambda q: [{"url": url, "title": ""}], get=lambda u: page(QUOTE_A))
+    assert capped == 0 and "the call limit was reached" in capsys.readouterr().out                                           # an explicit small budget is still honoured

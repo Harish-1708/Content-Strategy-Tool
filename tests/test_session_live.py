@@ -250,7 +250,7 @@ WALL = {"ok": False, "status": 200, "url": URL, "final_url": "https://x.com/i/fl
 def test_a_login_wall_sends_the_read_to_the_session_only_after_a_live_check_passed(settings, ledger):
     worker = Worker(page_for(PAGE, WALL))
     unproved = read(settings, ledger, worker)
-    assert unproved.skipped and unproved.route == "" and [t[:2] for t in unproved.trail] == [("primary", K.NEED_LOGIN), ("session", "off"), ("discovery", K.NEED_SETUP)]
+    assert unproved.skipped and unproved.route == "" and [t[:2] for t in unproved.trail] == [("primary", K.NEED_LOGIN), ("session", "off"), ("apify", "off"), ("discovery", K.NEED_SETUP)]
     assert "run the sessions check first" in unproved.reason and len(worker.jobs) == 1                                        # never tried with the session
     check("x", settings, ledger, Worker(lambda item: logged_in_page("x")))
     worker = Worker(page_for(PAGE, WALL))
@@ -294,7 +294,7 @@ def test_a_failing_primary_and_a_failing_session_end_in_an_honest_skip_with_both
     gone = {"ok": False, "status": 404, "url": URL, "error": {"code": "NOT_FOUND", "message": f"{URL} does not exist (404)"}}
     worker = Worker(page_for(WALL, gone))
     got = read(settings, ledger, worker)
-    assert got.skipped and len(worker.jobs) == 2 and [t[1] for t in got.trail] == [K.NOT_FOUND, K.NEED_LOGIN, K.NEED_SETUP]
+    assert got.skipped and len(worker.jobs) == 2 and [t[1] for t in got.trail] == [K.NOT_FOUND, K.NEED_LOGIN, "off", K.NEED_SETUP]
     assert "primary: NOT_FOUND" in got.reason and "session: NEED_LOGIN" in got.reason and "discovery: NEED_SETUP" in got.reason and VALUE not in got.reason
     empty = {"ok": True, "status": 200, "url": URL, "final_url": URL, "title": "", "text": ""}
     got = read(settings, ledger, Worker(page_for(empty, empty)))
@@ -1243,3 +1243,14 @@ def test_a_compare_that_fails_to_load_a_page_names_the_platform_correctly_in_its
     check("linkedin", settings, ledger, Worker(lambda item: logged_in_page("linkedin")))
     li = compare(settings, ledger, Worker(lambda item: refused), platform="linkedin", url="https://www.linkedin.com/company/swoveralls/", env=environ("linkedin"))
     assert all("(LinkedIn does this with status 999)" in e for e in (li["public"]["error"], li["session"]["error"])), li         # and for LinkedIn itself the explanation is given
+
+
+def test_apify_answers_when_the_plain_reader_and_the_session_both_fail_and_is_off_without_a_key(settings, ledger):
+    class Page:
+        def run(self, actor, payload, *, max_items, max_cost_usd, **kw):
+            return [{"caption": "Soft overalls for grown-ups, the account's own words", "url": URL}]
+    worker = Worker(page_for(WALL, WALL))
+    got = read(settings, ledger, worker, apify=Page())
+    assert got.route == "apify" and got.rows[0]["route"] == "apify" and [t[0] for t in got.trail][:3] == ["primary", "session", "apify"] and got.trail[2][1] == "ok"
+    none = read(settings, ledger, Worker(page_for(WALL, WALL)), apify=None, env=environ("x"))
+    assert [t[:2] for t in none.trail if t[0] == "apify"] == [("apify", "off")]

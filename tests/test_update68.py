@@ -191,7 +191,7 @@ def test_an_override_outside_the_lanes_bounds_is_said_and_the_end_line_says_when
     RT.run_voice(_args(tmp_path, "--topic", "sweatpant overalls"), store, "2026-11-15T00:00:00Z", get=Get({"algolia": (200, '{"hits": []}')}), runner=Runner("", 1, "boom"),
                  environ={"APIFY_TOKEN": "t", "CONTENTINTEL_VOICE_APIFY_PER_RUN": "5000", "CONTENTINTEL_VOICE_APIFY_MONTHLY": "0"}, clock=lambda: 1)
     out = capsys.readouterr().out
-    assert "Note: CONTENTINTEL_VOICE_APIFY_PER_RUN=5000 is outside what the lane allows (1 to 300); 300 is used." in out and "Note: CONTENTINTEL_VOICE_APIFY_MONTHLY=0 is outside what the lane allows (1 to 600); 1 is used." in out
+    assert "Note: CONTENTINTEL_VOICE_APIFY_PER_RUN=5000 is outside what the lane allows (1 to 300); 300 is used." in out and "Note: CONTENTINTEL_VOICE_APIFY_MONTHLY=0 is outside what the lane allows (1 to 2000); 1 is used." in out
     assert VOICE.ApifyVoice(FakeApify(), _ledger(), shared_cap=10**9).shared_cap == 10000                      # the Collect cap is clamped too
 
 
