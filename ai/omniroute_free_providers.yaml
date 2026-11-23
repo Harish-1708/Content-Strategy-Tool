@@ -54,9 +54,9 @@ video:
 # against one outside page; the provider test (Actions > Provider test) is where live confirmation happens.
 second_pass:
   wired_through_omniroute:        # on in ai_providers.yaml; each needs its key (a GitHub secret) before it can be tried
-    - {id: airforce, omniroute_id: api-airforce, limit: "1 request a minute, 1,000 a day (outside directory page confirms; reviewers report downtime)", models: ["gpt-oss-20b"], secret: API_AIRFORCE_API_KEY, note: "its ~24M tokens a month is OmniRoute's estimate, not a provider figure; it also serves Claude models free, which this tool does not route to"}
-    - {id: bluesminds, omniroute_id: bluesminds, limit: "20 requests a minute, 300 a day (research report; OmniRoute flags its terms as ambiguous)", models: ["z-ai/glm4.7", "moonshotai/kimi-k2.6", "qwen/qwen3-next-80b-a3b-instruct"], secret: BLUESMINDS_API_KEY}
     - {id: bazaarlink, omniroute_id: bazaarlink, limit: "10 requests a minute, 60 weighted units a day (not ~150)", models: ["auto:free"], secret: BAZAARLINK_API_KEY, note: "its terms ban reselling or sharing keys; the catalogue lists one model id for the free tier (auto:free), the report names 4: the test shows which answer"}
+    - {id: requesty, omniroute_id: requesty, limit: "200 requests a day on free models, no card, no trial expiry (planner check 2026-11-19)", models: ["openai/gpt-oss-120b", "mistral/leanstral-1-5", "nvidia/nemotron-3-nano-30b-a3b"], secret: REQUESTY_API_KEY}
+    - {id: navy, omniroute_id: navy, limit: "150,000 tokens a day on the free tier, no card (planner check 2026-11-19)", models: ["shared-pool"], secret: NAVY_API_KEY}
   confirmed_free_not_wired_yet:
     - {id: ovhcloud, why: "keyless (anonymous, 2 requests a minute per IP per model): the tool's OmniRoute start needs a credential today; keyless handling must be proven live first", catalogue: "present (5 models)"}
     - {id: aihorde, why: "keyless community capacity, AGPL-3.0: queue times vary; keyless handling not proven", catalogue: "present (3 models)"}
