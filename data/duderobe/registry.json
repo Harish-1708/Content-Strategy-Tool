@@ -68,7 +68,85 @@
  "15979805180190": {
   "first_seen": "2026-10-19T17:09:22Z",
   "handle": "the-full-kit-bundle",
-  "presence": "present",
+  "last_record": {
+   "audience_hints": [],
+   "availability": {
+    "60282255802654": true
+   },
+   "body_text": "",
+   "brand": "duderobe",
+   "category": null,
+   "content_hash": "e0519de6083720ead7126759a56bbf86ef3d600c62ebcd4b6a6ad4f22c29b057",
+   "created_at": "2026-10-12T12:06:29-04:00",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 1
+     }
+    }
+   },
+   "family": "The Full Kit",
+   "flags": [
+    "on_sale"
+   ],
+   "handle": "the-full-kit-bundle",
+   "images": [
+    {
+     "height": 2048,
+     "id": 65925269684510,
+     "key": "https://cdn.shopify.com/s/files/1/2696/9530/files/full-kit-bundle.png",
+     "position": 1,
+     "src": "https://cdn.shopify.com/s/files/1/2696/9530/files/full-kit-bundle.png?v=1792387968",
+     "variant_ids": [],
+     "width": 2048
+    }
+   ],
+   "in_stock": true,
+   "option_names": [
+    "Title"
+   ],
+   "product_id": "15979805180190",
+   "product_type": "",
+   "published_at": "2026-10-29T17:32:31-04:00",
+   "readiness": {
+    "missing_expected": [
+     "materials",
+     "features"
+    ],
+    "missing_required": [
+     "description"
+    ],
+    "state": "needs_facts"
+   },
+   "status": "active",
+   "tags": [
+    "kelson-bundle"
+   ],
+   "title": "The Full Kit",
+   "updated_at": "2026-11-23T02:38:01-05:00",
+   "url": "https://duderobe.com/products/the-full-kit-bundle",
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": 261.0,
+     "id": 60282255802654,
+     "options": {
+      "Title": "Default Title"
+     },
+     "price": 229.0,
+     "sku": null,
+     "title": "Default Title"
+    }
+   ],
+   "vendor": "DudeRobe"
+  },
+  "presence": "suspected_removed",
+  "suspected_since": "2026-11-23T23:53:06Z",
   "title": "The Full Kit"
  },
  "15987017416990": {

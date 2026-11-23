@@ -1415,7 +1415,7 @@
      "title": "L / Bordeaux"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53755991490671,
      "options": [
@@ -1916,7 +1916,7 @@
      "title": "XL / Glacier Navy"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53755992277103,
      "options": [
@@ -7544,7 +7544,7 @@
      "title": "3XL / Dancing Skeletons"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753349210223,
      "options": [
@@ -8452,7 +8452,7 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FLORA-Image33-4bc502ab.png?v=1767635833",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FLORA-CasualSwoverallsPose-e484bb52.png?v=1767635833"
    ],
-   "in_stock": true,
+   "in_stock": false,
    "ingredients": "",
    "materials": "cotton 65%; polyester 31%; spandex 4%",
    "missing_expected": [
@@ -8487,7 +8487,7 @@
    "variant_count": 9,
    "variants": [
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 43949671448687,
      "options": [
@@ -13763,7 +13763,7 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Aspect_Ratio_Change-8.png?v=1775221075",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Aspect_Ratio_Change-3.png?v=1775221120"
    ],
-   "in_stock": true,
+   "in_stock": false,
    "ingredients": "",
    "materials": "cotton 65%; polyester 31%; spandex 4%",
    "missing_expected": [
@@ -13798,7 +13798,7 @@
    "variant_count": 9,
    "variants": [
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 52768781500527,
      "options": [

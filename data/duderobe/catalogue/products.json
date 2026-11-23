@@ -1,6 +1,6 @@
 {
  "brand": "duderobe",
- "count": 31,
+ "count": 30,
  "products": [
   {
    "allergens": "",
@@ -3448,7 +3448,7 @@
      "title": "Black / 2XL-3XL"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 59869788635422,
      "options": [
@@ -3584,74 +3584,6 @@
       }
      ],
      "price": 269.0,
-     "sku": null,
-     "title": "Default Title"
-    }
-   ]
-  },
-  {
-   "allergens": "",
-   "audience_hints": [],
-   "audience_stated": "",
-   "category": "",
-   "description": "",
-   "excluded": false,
-   "excluded_reason": null,
-   "fact_conflicts": [],
-   "facts": {
-    "images": {
-     "source": "catalogue_images",
-     "status": "stated",
-     "value": {
-      "count": 1
-     }
-    }
-   },
-   "family": "The Full Kit",
-   "flags": [
-    "on_sale"
-   ],
-   "handle": "the-full-kit-bundle",
-   "image_count": 1,
-   "images": [
-    "https://cdn.shopify.com/s/files/1/2696/9530/files/full-kit-bundle.png?v=1792387968"
-   ],
-   "in_stock": true,
-   "ingredients": "",
-   "materials": "",
-   "missing_expected": [
-    "materials",
-    "features"
-   ],
-   "missing_required": [
-    "description"
-   ],
-   "on_sale": true,
-   "pocket_claims": "",
-   "price_max": 229.0,
-   "price_min": 229.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/full-kit-bundle.png?v=1792387968",
-   "product_id": "15979805180190",
-   "readiness": "needs_facts",
-   "status": "active",
-   "tags": [
-    "kelson-bundle"
-   ],
-   "title": "The Full Kit",
-   "url": "https://duderobe.com/products/the-full-kit-bundle",
-   "variant_count": 1,
-   "variants": [
-    {
-     "available": true,
-     "compare_at_price": 261.0,
-     "id": 60282255802654,
-     "options": [
-      {
-       "name": "Title",
-       "value": "Default Title"
-      }
-     ],
-     "price": 229.0,
      "sku": null,
      "title": "Default Title"
     }
