@@ -10,7 +10,7 @@ import statistics
 from pathlib import Path
 
 PASS_AT = 0.8                                                                    # a probe run passes at this score or better
-JOBS = ("foundation_json", "story_extract_json", "story_review_json", "conflict_check_json", "claim_verify_json", "brief_json", "competitor_ideas_json", "creator_chain_json", "listen_learn_json", "voice_creative_json", "seo_lens_json")
+JOBS = ("foundation_json", "story_extract_json", "story_review_json", "conflict_check_json", "claim_verify_json", "brief_json", "competitor_ideas_json", "creator_chain_json", "listen_learn_json", "voice_creative_json", "seo_lens_json", "storyboard_json")
 RANKINGS_FILE = "ai_rankings.json"                                               # under data/_shared
 
 PAGE = ("Probe Brand makes soft overalls for adults. The company was founded in 2017 in a small studio in Portland. Its overalls are cut from heavy organic cotton and sold directly online. "

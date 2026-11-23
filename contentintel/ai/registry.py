@@ -15,7 +15,7 @@ from . import data_class as dc
 
 DEFAULT_PATH = "ai_providers.yaml"
 # endpoints a provider may be called at directly (everything else goes through the local gateway); a prompt is never sent to an address typed into a file
-DIRECT_ENDPOINTS = ("https://openrouter.ai/api/v1", "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1", "https://aihorde.net/api/v2")
+DIRECT_ENDPOINTS = ("https://openrouter.ai/api/v1", "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1", "https://aihorde.net/api/v2", "https://api.anyapi.ai/v1")
 TERMS_STATUS = ("verified", "verified_secondary", "upstream_documented", "declared_only", "unverified", "owner_decision")
 CLAUDE = "claude"
 DEFAULT_PACING = {"fast_wait_seconds": 2, "max_wait_seconds": 120}                      # how long a call may wait for a free slot at one provider before another is tried first, and before it gives up

@@ -54,6 +54,10 @@ def build_prompt(instructions, context=()):
     return "\n\n".join([instructions.strip(), *blocks, safety.GUARD] if blocks else [instructions.strip()])
 
 
+SPREAD_TIER = 4                    # the first this-many providers of a job's list share its work, so the strong ones all carry real work
+LANE_SHARE = 0.5                   # one job may use at most this share of a provider's daily allowance; the rest is kept for the other jobs that draw on it
+
+
 class Router:
     def __init__(self, registry, lanes, usage, health, clients, review, *, coordinator_client=None, clock=None, pool=(), pacer=None):
         self.registry, self.lanes, self.usage, self.health = registry, lanes, usage, health
@@ -70,7 +74,7 @@ class Router:
         lane = self.lanes[lane_name]
         rows = []
         own = {(r["provider"], r["model"]) for r in lane.chain}
-        for r in self._routes(lane):
+        for r in self._routes(lane, now):
             ok, why = self._eligible(lane, r, data_class, now)
             if ok and r["provider"] in self.registry.providers:
                 wait = self.pacer.wait_for(self.registry.provider(r["provider"]))
@@ -80,11 +84,42 @@ class Router:
             rows.append({"provider": r["provider"], "model": r["model"], "eligible": ok, "reason": why, "source": source})
         return rows
 
-    def _routes(self, lane):
+    def _spread(self, chain, now, lane=None):
+        """Rate-limit-aware spreading: the first SPREAD_TIER providers of the list (the ones measured strong at this job) take turns by how much of their own daily allowance each has used today, least used
+        first, ties kept in the measured order; a provider's own routes keep their order; everything after the tier, and Claude, stay where they are. With no day known the order is the measured one."""
+        if not now:
+            return chain
+        order, tier = [], []
+        for r in chain:                                           # the tier is the first SPREAD_TIER providers that can take work now (a switched-off provider holds no slot)
+            pid = r["provider"]
+            if pid == CLAUDE or pid not in self.registry.providers or not self.registry.provider(pid).enabled:
+                continue
+            if pid not in order:
+                if len(order) == SPREAD_TIER:
+                    break
+                order.append(pid)
+            tier.append(r)
+        if not order:
+            return chain
+        in_tier = {id(r) for r in tier}
+        rest = [r for r in chain if id(r) not in in_tier]
+        from .. import openmontage as OM                           # the scored provider choice: measured quality (the rank) and headroom (what is left of its own day) decide who goes first
+        def terms(provider):
+            status = getattr(provider, "terms", {}).get("status", "unverified")
+            return 1.0 if status in ("verified", "upstream_documented") else 0.8 if status == "owner_decision" else 0.5
+        candidates = [{"name": pid, "quality": 1.0 - 0.08 * i, "headroom": max(0.0, 1.0 - self.usage.load(self.registry.provider(pid), now)), "reliability": self.usage.reliability(pid, now),
+                       "latency_s": self.usage.avg_latency_s(pid, now), "cost_usd": 0.05 if self.registry.provider(pid).paid else 0.0, "capability": 1.0 if lane is None or any(self.capable(lane, r) for r in tier if r["provider"] == pid) else 0.0,
+                       "terms": terms(self.registry.provider(pid))} for i, pid in enumerate(order)]
+        _best, ranking = OM.choose(candidates)
+        ranked = [c["name"] for c in ranking]
+        return [r for pid in ranked for r in tier if r["provider"] == pid] + rest
+
+    def _routes(self, lane, now=None):
         chain = list(lane.chain)
         if lane.use_pool:
             have = {(r["provider"], r["model"]) for r in chain}
             chain += [r for r in self.pool if (r["provider"], r["model"]) not in have]
+        chain = self._spread(chain, now, lane)
         if lane.claude_fallback and not any(r["provider"] == CLAUDE for r in chain):
             chain.append({"provider": CLAUDE, "model": lane.claude_model, "gateway_model": lane.claude_model})
         return chain
@@ -114,6 +149,10 @@ class Router:
         if gone:
             return False, "this model was reported withdrawn by its provider: " + str(gone["message"])[:160]
         ok, why = self.usage.allows(self.registry.provider(pid), self.registry, now, model=route["model"], est_in=est_in, max_out=lane.max_tokens)
+        if not ok:
+            return False, why
+        if pid != CLAUDE and not ignore_rests:
+            ok, why = self.usage.lane_share_ok(self.registry.provider(pid), lane.name, now, LANE_SHARE)
         return (True, "") if ok else (False, why)
 
     # ---- running --------------------------------------------------------------------------------------------------------------------
@@ -126,7 +165,7 @@ class Router:
             return {**base, "status": "refused", "reason": f"the {lane_name} lane may carry {lane.max_data_class} data at most; this is {data_class}"}
         prompt = build_prompt(instructions, context)
         paced = []
-        for route in self._routes(lane):
+        for route in self._routes(lane, now):
             ok, why = self._eligible(lane, route, data_class, now, est_in=max(1, len(prompt) // 3))
             if not ok:
                 base["skipped"].append({"provider": route["provider"], "reason": why})

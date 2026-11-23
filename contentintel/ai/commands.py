@@ -248,6 +248,11 @@ def run_ai(args, store, health, now):
         rows = usage.summary(now)
         print(f"AI usage today (spend today ${usage.spend(now):.4f} of ${registry.daily_usd:.2f}; this month ${usage.spend(now, month=True):.4f} of ${registry.monthly_usd:.2f}):")
         print(_fmt_rows(rows, ("provider", "requests", "failures", "tokens", "cost_usd", "avg_latency_ms")) if rows else "  no calls today")
+        for line in usage_mod.billing_lines(usage.billing(now), registry):
+            print(line)
+        from . import pricing as pricing_mod
+        for line in pricing_mod.lines(registry):
+            print(line)
         return 0
     if action == "review":
         q = review_mod.ReviewQueue(Path(store.data_dir) / "_shared" / "ai_review.json")
