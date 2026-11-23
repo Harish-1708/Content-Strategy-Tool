@@ -27,6 +27,13 @@ CHECK_SYSTEM = ('You check ONE claim about a brand against the text of ONE sourc
                 'supports only if the quoted sentence itself states the claim with the same names, years and numbers (a finalist is not a winner; a different year is not support). '
                 'contradicts only if the quoted sentence states something that cannot be true together with the claim. Otherwise silent. Copy the quotation exactly; never paraphrase it.')
 MAX_QUERIES = 3
+MAX_PER_RUN = 60                                                                          # claims one run takes when no number is given
+CALLS_PER_CLAIM, CALL_FLOOR, CALL_CEILING = 5, 10, 400
+
+
+def auto_budget(waiting):
+    """The calls a run may use, sized to the claims waiting: about five a claim (one for the queries, a few for the pages), never below a floor and never above a ceiling."""
+    return max(CALL_FLOOR, min(CALL_CEILING, int(waiting) * CALLS_PER_CLAIM + CALL_FLOOR))
 PER_QUERY = 6
 
 
@@ -88,7 +95,7 @@ def verify_claim(reg, name, claim, *, search, get, claude, now, report, max_page
             if url and url not in seen and url.startswith("http"):
                 seen.add(url)
                 urls.append(url)
-    supports, contradicts, pages = [], [], 0
+    supports, contradicts, pages, read_urls = [], [], 0, []
     for url in urls:
         if pages >= max_pages or (max_calls and report["calls"] >= max_calls):
             break
@@ -103,6 +110,7 @@ def verify_claim(reg, name, claim, *, search, get, claude, now, report, max_page
         if not html:
             continue
         pages += 1
+        read_urls.append(url)
         text = SR.page_text(html)
         if SR._norm(name) not in SR._norm(text):
             continue                                                                     # the brand is not named on the page: it says nothing about the brand
@@ -121,8 +129,25 @@ def verify_claim(reg, name, claim, *, search, get, claude, now, report, max_page
         if len({s["domain"] for s in supports if s["close"]}) >= 2 and not contradicts:
             break                                                                        # two close sources agree and nothing disagrees: enough
     outcome = decide(supports, contradicts)
+    report.setdefault("log", []).append({"id": cid, "text": claim["text"][:120], "queries": queries, "found": len(urls), "read": read_urls, "outcome": outcome,
+                                         "supports": [(s["url"], s["medium"], "close" if s["close"] else "far", s["risk"]) for s in supports], "contradicts": [(c["url"], c["medium"]) for c in contradicts]})
     reg.record_evidence(cid, supports, contradicts, outcome, now)                       # always recorded, so a claim that was checked is not checked again and the owner can see what was found
     return outcome
+
+
+def log_lines(report, prefix="canon:   "):
+    """One block per claim that was checked, so the run's evidence is in the log itself: the verdict, the search queries, how many pages came back, which were read, and every source with its medium, closeness and risk."""
+    lines = []
+    for e in report.get("log", []):
+        lines.append(f"{prefix}claim {e['id']} -> {e['outcome'].upper()}: {e['text']}")
+        lines.append(f"{prefix}  searched: " + " | ".join(e["queries"]) + f"  ({e['found']} page(s) came back, {len(e['read'])} read)")
+        for url, medium, close, risk in e["supports"]:
+            lines.append(f"{prefix}  supports: {url} ({medium}, {close} to the fact, exaggeration risk {risk})")
+        for url, medium in e["contradicts"]:
+            lines.append(f"{prefix}  CONTRADICTS: {url} ({medium})")
+        if not e["supports"] and not e["contradicts"]:
+            lines.append(f"{prefix}  no usable source was found")
+    return lines
 
 
 def verify_ids(reg, name, ids, *, search, get, claude, now, max_calls=None, max_pages=6, report=None, tried=None):

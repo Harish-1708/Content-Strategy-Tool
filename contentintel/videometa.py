@@ -84,6 +84,26 @@ def normalise(info):
     return {k: v for k, v in out.items() if v not in (None, "", [])}
 
 
+TIKTOK_COMMENTS_ACTOR = "clockworks/tiktok-comments-scraper"
+
+
+def comments_via_apify(url, client, *, limit=20, max_cost_usd=0.5):
+    """The text of a TikTok video's top comments, through an Apify actor (yt-dlp does not read TikTok comments, only counts them). Capped at `limit` comments and `max_cost_usd` dollars for the call, inside the $3 run
+    guardrail. Raises K.Failure when it cannot; returns [{text, likes, author}]."""
+    if "tiktok.com" not in (url or ""):
+        raise K.Failure(K.BAD_INPUT, "the Apify comments route reads TikTok videos only")
+    try:
+        items = client.run(TIKTOK_COMMENTS_ACTOR, {"postURLs": [url], "commentsPerPost": limit, "maxRepliesPerComment": 0}, max_items=limit, max_cost_usd=max_cost_usd)
+    except Exception as exc:                                                                    # noqa: BLE001
+        raise K.Failure(K.UPSTREAM_BROKEN, f"Apify could not read the comments: {type(exc).__name__}: {str(exc)[:140]}") from None
+    out = []
+    for it in sorted((i for i in (items or []) if isinstance(i, dict)), key=lambda i: -(_int(i.get("diggCount") or i.get("likes") or i.get("like_count")) or 0)):
+        text = " ".join(str(it.get("text") or it.get("comment") or "").split())
+        if text:
+            out.append({"text": text[:400], "likes": _int(it.get("diggCount") or it.get("likes") or it.get("like_count")) or 0, "author": str(it.get("uniqueId") or it.get("author") or "")[:60]})
+    return out[:TOP_COMMENTS]
+
+
 def fetch(url, *, run=subprocess.run, python=None, timeout=90, cookies=None, comments=False, environ=None):
     """The facts for one video address. Raises K.Failure (never anything else) when it cannot be read."""
     args = [python or sys.executable, "-m", "yt_dlp", "--no-warnings", "--no-playlist", "--skip-download", "--dump-single-json", "--socket-timeout", "20", "--retries", "1"]

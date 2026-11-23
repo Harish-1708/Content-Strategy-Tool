@@ -18,13 +18,13 @@ SYSTEM = FD.SYSTEM
 
 STAGES = {
     "competitor_ideas": {
-        "title": "Stage 4: competitor-to-ideas", "job": "competitor_ideas", "lane": "competitor_ideas_json", "inputs": ("collected",),
+        "title": "Stage 4: competitor-to-ideas", "job": "competitor_ideas", "lane": "competitor_ideas_json", "inputs": ("collected",), "fallback": {"collected": "voice"},
         "sections": (("idea_candidates", "influencer/target/competitor-tracker",
                       "From what competitors are doing (their collected ads and posts below) write 5 to 8 ORIGINAL idea candidates for THIS brand. For each: a title, the angle, why it should work for this brand's audience, and which "
                       "competitor item it responds to (by its number). Never copy a competitor's wording, claim, offer or price."),),
     },
     "creator_chain": {
-        "title": "Stage 6: creator chain", "job": "creator_chain", "lane": "creator_chain_json", "inputs": ("collected", "voice"),
+        "title": "Stage 6: creator chain", "job": "creator_chain", "lane": "creator_chain_json", "inputs": ("collected", "voice"), "fallback": {"collected": "voice"},
         "sections": (("creator_shortlist", "protocol/creator-registry",
                       "From the creators and accounts that appear in the collected material and the audience voice, write a shortlist of creators worth approaching for THIS brand, with the reason for each taken from the material. "
                       "List only creators that appear in the material; never invent a name or a follower count."),
@@ -46,8 +46,13 @@ STAGES = {
                      ("social_creative", "social/craft/social-creative-builder",
                       "Write five social post concepts for this brand grounded in the audience voice: the line, the visual idea and which voice item it comes from.")),
     },
+    "storyboard": {
+        "title": "Storyboard (from the latest brief)", "job": "storyboard", "lane": "storyboard_json", "inputs": ("brief",),
+        "sections": (("shot_list", "social/craft/short-video-scripter",
+                      "For EACH concept of the brief below write a storyboard: numbered shots, each with the visual, the words (voiceover or text on screen), the duration in seconds and the asset it needs (a clip to film, a picture, a graphic). Use only what the brief and the ledger allow."),),
+    },
     "seo_lens": {
-        "title": "Stage 9: SEO lens", "job": "seo_lens", "lane": "seo_lens_json", "inputs": ("collected",),
+        "title": "Stage 9: SEO lens", "job": "seo_lens", "lane": "seo_lens_json", "inputs": ("collected",), "fallback": {"collected": "voice"},
         "needs_numbers": ("store numbers: Search Console and GA4 are not connected, so no ranking or traffic figure is used",),
         "sections": (("keyword_research", "seo-geo/survey/keyword-research",
                       "From the brand's own material and what the collectors found, propose keyword themes for THIS brand with the reason for each. Give no search-volume number: none is available."),
@@ -56,17 +61,57 @@ STAGES = {
     },
 }
 LANES = tuple(s["lane"] for s in STAGES.values())
+MIN_ITEMS = {"shot_list": 6, "idea_candidates": 3, "creator_shortlist": 2, "short_video_scripts": 2, "social_creative": 3, "keyword_research": 3, "content_gaps": 2}          # a section that lists things must list at least this many
+REFUSAL = re.compile(r"\b(i cannot|i can't|i am unable|i'm unable|unable to (?:complete|provide|produce|proceed)|cannot complete the task|no [\w ,/-]{0,40}(?:material|data|information)[\w ,]{0,20} (?:was |is |has been |were |are )?(?:provided|available))", re.I)
+ITEM_LINE = re.compile(r"^\s*(?:\d+[.)]|[-*\u2022])\s+\S", re.M)
+
+
+def empty_problem(section, text):
+    """Why a section is not a real answer, or '' when it is: a refusal (the model said it could not do it) or fewer items than the section needs. Such a section is never proposed, never saved and never marked OK."""
+    if REFUSAL.search(text[:400]):
+        return "the model refused or said it had no material (" + text[:90].replace(chr(10), " ") + ")"
+    need = MIN_ITEMS.get(section, 0)
+    found = len(ITEM_LINE.findall(text)) + len(re.findall(r"(?im)^\s*(?:title|hook|keyword|gap)\s*:", text))
+    if need and found < need:
+        return f"it lists {found} item(s) and the section needs at least {need}"
+    return ""
+
+
+TEXT_KEYS = ("details", "text", "caption", "title", "description", "body", "comment", "message")
+
+
+def _text_of(value, depth=0):
+    """The readable text of a field that may be a string, a list or a dict of strings (the collectors keep an ad's or post's text under `details`)."""
+    if isinstance(value, str):
+        return value.strip()
+    if depth < 3 and isinstance(value, dict):
+        return " ".join(t for t in (_text_of(value.get(k), depth + 1) for k in TEXT_KEYS) if t).strip()
+    if depth < 3 and isinstance(value, list):
+        return " ".join(t for t in (_text_of(v, depth + 1) for v in value[:5]) if t).strip()
+    return ""
+
+
+def unwrap(rows):
+    """Collected lines are WRAPPER records (at, from_links, from_site_data, items, key, run, seeds, source, via): the real ads and posts are inside their `items`. Yields (who, item) for every item
+    that has readable text, from wrappers and from plain items alike."""
+    for r in rows:
+        if not isinstance(r, dict):
+            continue
+        if isinstance(r.get("items"), list):
+            who = str(r.get("source") or "")[:40]
+            for it in r["items"]:
+                if isinstance(it, dict):
+                    yield (str(it.get("source") or it.get("platform") or it.get("handle") or it.get("author") or who)[:40], it)
+        else:
+            yield (str(r.get("source") or r.get("platform") or r.get("handle") or r.get("author") or "")[:40], r)
 
 
 def _items_text(rows, limit=INPUT_CAP):
     lines, size = [], 0
-    for i, r in enumerate(rows, 1):
-        if not isinstance(r, dict):
-            continue
-        text = " ".join(str(r.get(k, "")) for k in ("text", "caption", "title", "description", "body", "comment", "message") if r.get(k)).strip()
+    for i, (who, r) in enumerate(unwrap(rows), 1):
+        text = " ".join(t for t in (_text_of(r.get(k)) for k in TEXT_KEYS) if t).strip()
         if not text:
             continue
-        who = str(r.get("source") or r.get("platform") or r.get("handle") or r.get("author") or "")[:40]
         line = f"{i}. [{who}] {re.sub(chr(10) + '+', ' ', text)[:300]}"
         if size + len(line) > limit:
             break
@@ -79,7 +124,12 @@ def gather(store, slug, kinds):
     """{kind: text} for the inputs a stage asks for; an empty text means the brand has none yet."""
     out = {}
     if "collected" in kinds:
-        out["collected"] = _items_text(store.read_collected(slug)[-200:] if hasattr(store, "read_collected") else [])
+        out["collected"] = _items_text(store.read_collected(slug)[-200:] if hasattr(store, "read_collected") else [])             # unwrapped: the ads and posts inside each collected record
+    if "brief" in kinds:
+        last = store.read_extra(slug, "last_brief") if hasattr(store, "read_extra") else None
+        brief = (last or {}).get("brief") or {}
+        out["brief"] = "\n".join(f"{n}. {c.get('name', '')}: {c.get('script') or c.get('idea') or ''} | visual: {c.get('visual_direction', '')} | hook: {c.get('hook', '')}"[:600]
+                                  for n, c in enumerate(brief.get("concepts", []), 1))[:INPUT_CAP] if (last or {}).get("status") == "ready" else ""            # only a brief that is READY (no blocked claim, no broken rule) is storyboarded
     if "voice" in kinds:
         from . import voice as VOICE
         voice = store.read_extra(slug, "voice") if hasattr(store, "read_extra") else None
@@ -107,7 +157,14 @@ def run_stage(key, reg, cfg, root, claude, *, slug, name, brand_text, story_text
         if not trusted["ok"]:
             return [{"section": s, "skill": p, "result": "refused", "detail": "the skills connection cannot be trusted: " + "; ".join(trusted["problems"][:2])} for s, p, _t in steps]
     inputs = gather(store, slug, stage["inputs"])
-    missing = [k for k in stage["inputs"] if not inputs.get(k)]
+    replaced = {}
+    for kind, alt in stage.get("fallback", {}).items():                                       # the backup: what the brand's own audience voice says, when nothing was collected
+        if not inputs.get(kind) and alt not in inputs:
+            extra = gather(store, slug, (alt,))
+            if extra.get(alt):
+                inputs[alt] = extra[alt]
+                replaced[kind] = alt
+    missing = [k for k in stage["inputs"] if not inputs.get(k) and k not in replaced]
     if missing and not (brand_text or "").strip():
         return [{"section": s, "skill": p, "result": "needs_input", "detail": f"this brand has no {' and no '.join(missing)} yet and no brand facts: run the collectors or the voice research first"} for s, p, _t in steps]
     budget = [max_calls if max_calls else None]
@@ -135,6 +192,11 @@ def run_stage(key, reg, cfg, root, claude, *, slug, name, brand_text, story_text
                 report.append({"section": section, "skill": path, "result": "needs_input", "detail": "; ".join(needs[:5]) or "the model gave no text and said nothing about what it lacks"})
                 done = True
                 break
+            problem = empty_problem(section, text)
+            if problem:
+                report.append({"section": section, "skill": path, "result": "needs_input", "detail": f"{problem}: nothing was proposed or saved"})
+                done = True
+                break
             gate = reg.gate(text)
             if gate["verdict"] == "BLOCKED" and verifier is not None:
                 ids = sorted({f["claim"] for f in gate["findings"] if f["result"] == "BLOCKED" and f.get("claim")})
@@ -153,6 +215,8 @@ def run_stage(key, reg, cfg, root, claude, *, slug, name, brand_text, story_text
                 note += "; needs input: " + "; ".join(needs[:3])
             if missing:
                 note += "; the brand has no " + " and no ".join(missing) + " yet"
+            for kind, alt in replaced.items():
+                note += f"; no {kind} data yet, so the {alt} data was read instead"
             proposals[section] = {"text": text, "gate": gate["verdict"], "note": note, "skill": path, "at": now}
             report.append({"section": section, "skill": path, "result": "proposed", "detail": note})
             done = True
@@ -163,6 +227,8 @@ def run_stage(key, reg, cfg, root, claude, *, slug, name, brand_text, story_text
         report.append({"section": "numbers", "skill": "", "result": "needs_input", "detail": note})
     if proposals:
         save(store, slug, key, stage, proposals, now)
+    for r in report:
+        r.setdefault("lane", stage["lane"])                                                  # every line says which ranked lane the model call went through
     return report
 
 
@@ -197,7 +263,7 @@ def _ask(claude, job, user, budget, retry_wait=0.0):
 
 
 def report_lines(slug, key, report):
-    return [f"stage: {slug}: {key} {r['section']}: {r['result']}: {r['detail']}" for r in report]
+    return [f"stage: {slug}: {key} {r['section']}: {r['result']}: {r['detail']}" + (f" [lane {r['lane']}]" if r.get("lane") and r["section"] != "numbers" else "") for r in report]
 
 
 def probe_score(out):

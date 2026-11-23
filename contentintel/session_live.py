@@ -77,6 +77,7 @@ class SessionLedger:
         entry = self.data.setdefault(platform, {"state": "", "reason": "", "checked_at": "", "proved_on": ""})
         entry.update(state=state, reason=" ".join(str(reason).split())[:REASON_LIMIT], checked_at=now, expires_on=expires_on or "", days_left=days_left, evidence=compact_evidence(evidence))
         entry["unconfirmed_streak"] = (entry.get("unconfirmed_streak", 0) + 1) if state == UNCONFIRMED else 0
+        entry["cannot_check_streak"] = (entry.get("cannot_check_streak", 0) + 1) if state == CANNOT_CHECK else 0         # the password backup counts both kinds of "no sign"
         if isinstance(twscrape, dict):
             entry["twscrape"] = {"state": str(twscrape.get("state", "")), "detail": " ".join(str(twscrape.get("detail", "")).split())[:600]}
         else:
@@ -644,7 +645,37 @@ def discovery_rows(url, environ, providers=None):
     return kept
 
 
-def read_page(platform, url, settings, contact, python, *, environ=None, runner=subprocess.run, now="", ledger=None, log=None, providers=None):
+APIFY_PAGE_ACTORS = {"instagram": ("apify/instagram-scraper", lambda url, n: {"directUrls": [url], "resultsType": "posts", "resultsLimit": n}),
+                     "tiktok": ("clockworks/tiktok-scraper", lambda url, n: {"postURLs": [url], "resultsPerPage": n}),
+                     "default": ("apify/website-content-crawler", lambda url, n: {"startUrls": [{"url": url}], "maxCrawlPages": 1, "maxCrawlDepth": 0})}
+APIFY_PAGE_CEILING = 0.25                                                                   # dollars one page read may cost, enforced by Apify
+
+
+def apify_rows(platform, url, client, usage=None, now="", keys=4):
+    """The page through Apify's own infrastructure: public content only, no login, no risk to our account (Instagram refuses a GitHub runner's visit, Apify's servers are not refused). It cannot prove the
+    session or read what only a logged-in person sees. One call, at most one item, 25 cents, counted against the sessions-read share of the Apify month (apify_budget)."""
+    from . import apify_budget as AB
+    day = (now or "0000-00-00")[:10]
+    if usage is not None and AB.room("sessions_read", usage, day, keys) < 1:
+        raise K.Failure(K.RATE_LIMITED, "the sessions-read share of this month's Apify money (or today's share of it) is used up")
+    actor, payload = APIFY_PAGE_ACTORS.get(platform, APIFY_PAGE_ACTORS["default"])
+    try:
+        items = client.run(actor, payload(url, 1), max_items=1, max_cost_usd=APIFY_PAGE_CEILING)
+    except Exception as exc:                                                                 # noqa: BLE001
+        raise K.Failure(K.UPSTREAM_BROKEN, f"Apify could not read the page ({actor}): {type(exc).__name__}: {str(exc)[:120]}") from None
+    if usage is not None:
+        AB.charge("sessions_read", usage, day, max(1, len(items or [])))
+    rows = []
+    for it in (items or [])[:1]:
+        if not isinstance(it, dict):
+            continue
+        text = " ".join(str(it.get(k) or "") for k in ("text", "caption", "markdown", "description", "bio", "biography", "fullName", "title") if it.get(k)).strip()
+        if text:
+            rows.append({"url": url, "final_url": str(it.get("url") or it.get("inputUrl") or url), "title": str(it.get("title") or it.get("fullName") or "")[:140], "text": text[:4000], "chars": len(text), "route": "apify", "actor": actor})
+    return rows
+
+
+def read_page(platform, url, settings, contact, python, *, environ=None, runner=subprocess.run, now="", ledger=None, log=None, providers=None, apify=None, usage=None):
     """Read one address of the platform: the plain reader first, then the stored session (only on the platform's own hosts, only while the owner has it on and a live check passed in the last
     PROVED_DAYS), then discovery (the search layer: no login, snippets about the address rather than the page), then an honest skip. One attempt each, no retry loop. Returns the chain's result; its
     rows say which route answered."""
@@ -673,4 +704,12 @@ def read_page(platform, url, settings, contact, python, *, environ=None, runner=
     def discovery():
         return discovery_rows(url, environ, providers)
 
-    return SC.run_chain(f"{platform} page", [SC.Step("primary", primary), SC.Step("session", session, enabled=on and proved, off_reason=off), SC.Step("discovery", discovery)], log=log)
+    from . import apify as apify_mod
+    client = apify if apify is not None else apify_mod.build_apify(environ)
+
+    def apify_step():
+        return apify_rows(platform, url, client, usage, now)
+    steps = [SC.Step("primary", primary), SC.Step("session", session, enabled=on and proved, off_reason=off),
+             SC.Step("apify", apify_step, enabled=client is not None, off_reason="no APIFY_TOKEN is passed to this run: Apify's own servers read the public page when the runner is refused"),
+             SC.Step("discovery", discovery)]                                                # ADDITIONAL: the browser, the session and the search layer are all still there, in their order
+    return SC.run_chain(f"{platform} page", steps, log=log)

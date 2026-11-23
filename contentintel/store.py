@@ -343,6 +343,17 @@ class Store:
     def write_cooldowns(self, data):
         return _atomic_write(self.data_dir / "_shared" / "cooldowns.json", data)
 
+    def read_shared(self, name):
+        """A file that belongs to no brand (data/_shared/<name>.json): the dict in it, or None when there is none or it is damaged. Reading creates nothing."""
+        try:
+            data = _read(self.data_dir / "_shared" / f"{name}.json", None)
+        except ValueError:
+            return None
+        return data if isinstance(data, dict) else None
+
+    def write_shared(self, name, data):
+        return _atomic_write(self.data_dir / "_shared" / f"{name}.json", data)
+
     def read_health(self):
         """The collector health ledger (see health.py). Reading creates nothing; a damaged file reads as empty."""
         try:

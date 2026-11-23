@@ -344,13 +344,14 @@ class ApifyVoice:
     money bought. `apify` is the platform's Apify provider; `ledger` is research.Ledger; `shared_cap` is the monthly items Collect may use. Each source is asked about one
     topic (one search query / one hashtag) per call, never one big call for several. A big ask runs asynchronously inside the Apify client (started, then polled); a run that has
     not finished is never started twice, so the retry below only fires for a run that is over (timed-out), never for one that may still be going."""
-    ACTORS = {"tiktok": "clockworks/tiktok-scraper", "instagram": "apify/instagram-hashtag-scraper"}
-    CEILINGS = {"tiktok": 0.50, "instagram": 0.25}                      # the least each actor accepts per call
+    ACTORS = {"tiktok": "clockworks/tiktok-scraper", "instagram": "apify/instagram-hashtag-scraper", "reddit": "trudax/reddit-scraper-lite"}
+    CEILINGS = {"tiktok": 0.50, "instagram": 0.25, "reddit": 0.25}                      # the least each actor accepts per call
     HARD_CEILING = 1.00                                                   # whatever an override says, a call can never be allowed more than this
 
-    def __init__(self, apify, ledger, *, per_run=40, monthly=60, shared_cap=100, max_cost_usd=None, normalize=None, budget_fn=None, run_usd_cap=3.0):
+    def __init__(self, apify, ledger, *, per_run=40, monthly=60, shared_cap=100, max_cost_usd=None, normalize=None, budget_fn=None, run_usd_cap=3.0, day="", keys=4, daily=None):
         self.apify, self.ledger = apify, ledger
-        self.per_run, self.monthly, self.shared_cap = (max(1, min(300, int(per_run))), max(1, min(600, int(monthly))), max(0, min(10000, int(shared_cap))))          # clamped here too, not only by the caller
+        self.day, self.keys, self.daily = day, keys, daily                                      # with a day, the lane also keeps to its daily share of the month (apify_budget): no feature uses its month in two or three days
+        self.per_run, self.monthly, self.shared_cap = (max(1, min(300, int(per_run))), max(1, min(2000, int(monthly))), max(0, min(10000, int(shared_cap))))          # clamped here too, not only by the caller
         self.budget_fn = budget_fn                                           # () -> dollars Apify says are left across all keys, or None when unknown
         self.max_cost = None if max_cost_usd is None else max(0.0, float(max_cost_usd))
         self.run_usd_cap = max(0.25, min(10.0, float(run_usd_cap)))               # the most one workflow run may COMMIT (the sum of the ceilings of its calls): items are capped, but many small calls would otherwise add up in money
@@ -367,18 +368,28 @@ class ApifyVoice:
             return low
         return min(self.HARD_CEILING, max(low, float(self.max_cost)))
 
-    def room(self):
-        return max(0, min(self.per_run - self.spent_this_run, self.monthly - self.ledger.month_used("voice_apify_items"), self.shared_cap - self.ledger.month_used("apify_items")))
+    def day_room(self):
+        from . import apify_budget as AB
+        cap = self.daily if self.daily is not None else AB.plan(self.keys)["voice"]["per_day"]
+        if not self.day or cap == 0:                                         # no day known, or the owner set the daily share to 0 (= no daily limit)
+            return 10 ** 9
+        return max(0, cap - AB.day_used(self.ledger, "voice_apify_items", self.day))
 
-    def run(self, topic, share=None, entity=""):
+    def room(self):
+        return max(0, min(self.day_room(), self.per_run - self.spent_this_run, self.monthly - self.ledger.month_used("voice_apify_items"), self.shared_cap - self.ledger.month_used("apify_items")))
+
+    def run(self, topic, share=None, entity="", reddit_backup=False):
         """(items, notes). `share` limits the items this one ask may read (competitors mode splits the run's allowance between the competitors; the brand itself is not asked). Raises nothing: a refusal or a missing allowance is a note."""
         items, notes = [], []
         self.asks_made += 1
         tag = re.sub(r"[^a-z0-9]", "", topic.lower())
         budget = self.room() if share is None else min(self.room(), int(share))
         read_here = 0
-        for source in ("tiktok", "instagram"):
+        from . import apify_budget as AB
+        for source in ("tiktok", "instagram") + (("reddit",) if reddit_backup else ()):          # Reddit only as the BACKUP: when the public Reddit search failed in this ask
             n = min(self.room(), budget - read_here)
+            if source == "reddit":
+                n = min(AB.room("reddit_backup", self.ledger, self.day or "0", self.keys), 25, self.per_run - self.spent_this_run)
             if source == "tiktok":
                 n = n // 2 if budget >= 2 else 0
             if n < 1:
@@ -397,6 +408,8 @@ class ApifyVoice:
                 continue
 
             def payload_for(count):
+                if source == "reddit":
+                    return {"searches": [topic], "searchPosts": True, "searchComments": False, "maxItems": count, "sort": "top"}
                 return {"searchQueries": [topic], "resultsPerPage": count} if source == "tiktok" else {"hashtags": [tag], "resultsType": "posts", "resultsLimit": count}
             self.attempted += 1
             self.committed_usd += self.ceiling(source)
@@ -416,11 +429,20 @@ class ApifyVoice:
             except Exception as exc:                                              # noqa: BLE001 - a provider's refusal, quota or outage is reported, never raised
                 notes.append(f"apify {source} for {topic!r}: {exc.__class__.__name__}: {scrub(str(exc), 200)}")
                 continue
-            self.ledger.charge("apify_items", len(raw))
-            self.ledger.charge("voice_apify_items", len(raw))
+            if source == "reddit":
+                AB.charge("reddit_backup", self.ledger, self.day or "0", len(raw))
+            else:
+                self.ledger.charge("apify_items", len(raw))
+                self.ledger.charge("voice_apify_items", len(raw))
+                if self.day:
+                    AB.charge_day(self.ledger, "voice_apify_items", self.day, len(raw))
             self.spent_this_run += len(raw)
             read_here += len(raw)
-            rows, bad = self.normalize(source, raw) if self.normalize else ([], len(raw))
+            if source == "reddit":
+                rows, bad = [{"title": r.get("title") or "", "text": r.get("body") or r.get("text") or "", "url": r.get("url") or r.get("link") or "", "likes": r.get("upVotes") or r.get("score"),
+                              "comments": r.get("numberOfComments") or r.get("numComments"), "posted_at": r.get("createdAt") or ""} for r in raw if isinstance(r, dict)], 0
+            else:
+                rows, bad = self.normalize(source, raw) if self.normalize else ([], len(raw))
             got = [i for i in (_row_item(r, f"apify {source}", topic) for r in rows) if i]
             for it in got:
                 if entity:

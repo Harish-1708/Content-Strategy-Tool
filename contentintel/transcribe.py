@@ -1,5 +1,5 @@
-"""Stage 5: transcription. Groq's hosted Whisper first (free tier, one key), Faster-Whisper as the local backup (free, CPU, on the runner), VibeVoice last and NOT wired (the licence of its published
-weights is still unverified). The order is the job's own ranked list (data/_shared/transcribe_rankings.json, written by `stage --action probe-transcribe` and the pool retest); never random, never first-available.
+"""Stage 5: transcription. Groq's hosted Whisper first (free tier, one key), Cloudflare Workers AI's Whisper second (the same free Cloudflare account the pool already uses), Faster-Whisper as the local backup
+(free, CPU, on the runner, with pinned compatible versions), VibeVoice last and NOT wired (see NOT_WIRED). The order is the job's own ranked list (data/_shared/transcribe_rankings.json, written by `stage --action probe-transcribe` and the pool retest); never random, never first-available.
 Nothing here posts, sends or publishes: a transcript is saved as evidence next to the brand's data and the owner's research reads it."""
 import hashlib
 import json
@@ -15,8 +15,11 @@ from . import contract
 GROQ_URL = "https://api.groq.com/openai/v1/audio/transcriptions"
 GROQ_MODEL = "whisper-large-v3-turbo"
 MAX_BYTES = 24 * 1024 * 1024                                            # Groq's free tier takes files up to 25 MB; a larger one is refused with the reason, never cut
-SEEDED_ORDER = ("groq_whisper", "faster_whisper")
-NOT_WIRED = {"vibevoice": "its published weights carry a licence nobody here has verified, so it is not used"}
+SEEDED_ORDER = ("groq_whisper", "cloudflare_whisper", "faster_whisper", "vibevoice_asr")
+SUPPORTED = (".flac", ".mp3", ".mp4", ".mpeg", ".mpga", ".m4a", ".ogg", ".opus", ".wav", ".webm")             # the file types Groq Whisper accepts; anything else is converted with ffmpeg first
+CF_MODEL = "@cf/openai/whisper-large-v3-turbo"
+CF_MAX_BYTES = 10 * 1024 * 1024
+NOT_WIRED = {}                                                                          # every backend named in this file is wired; VibeVoice runs only once its command is set (see vibevoice_asr)
 RANKINGS_FILE = "transcribe_rankings.json"
 
 
@@ -70,6 +73,70 @@ def _post(url, headers, body, timeout):
             return exc.code, {"error": "not JSON"}
 
 
+def cloudflare_whisper(content, *, account, token, post=None):
+    """One transcript from Cloudflare Workers AI's Whisper (free allowance on the account the pool already uses). The audio goes as base64 in a JSON body."""
+    if not account or not token:
+        raise Failure(contract.NEED_SETUP, "CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN are not both set, so Cloudflare Whisper is not tried")
+    if len(content) > CF_MAX_BYTES:
+        raise Failure(contract.BAD_INPUT, f"the audio is {len(content) // 1048576} MB; Cloudflare Whisper is given up to {CF_MAX_BYTES // 1048576} MB")
+    import base64
+    url = f"https://api.cloudflare.com/client/v4/accounts/{account}/ai/run/{CF_MODEL}"
+    body = json.dumps({"audio": base64.b64encode(content).decode("ascii")}).encode("utf-8")
+    try:
+        status, answer = (post or _post)(url, {"Authorization": "Bearer " + token, "Content-Type": "application/json", "User-Agent": cl.USER_AGENT}, body, 120)
+    except Exception as exc:                                                                # noqa: BLE001
+        raise Failure(contract.classify_exception(exc)["code"], f"Cloudflare Whisper could not be reached: {str(exc).replace(token, '***')[:160]}") from None
+    if status in (401, 403):
+        raise Failure(contract.NEED_SETUP, "Cloudflare rejected the token")
+    if status == 429:
+        raise Failure(contract.RATE_LIMITED, "Cloudflare Whisper's free allowance was reached")
+    result = (answer or {}).get("result") if isinstance(answer, dict) else None
+    if status != 200 or not isinstance(result, dict) or "text" not in result:
+        raise Failure(contract.UPSTREAM_BROKEN, f"Cloudflare Whisper answered HTTP {status}: {str((answer or {}).get('errors', answer))[:160]}")
+    segs = [{"start": s.get("start"), "end": s.get("end"), "text": s.get("text")} for s in (result.get("segments") or []) if isinstance(s, dict)][:400]
+    return {"text": str(result["text"]).strip(), "language": str(((result.get("transcription_info") or {}).get("language")) or ""), "segments": segs}
+
+
+def vibevoice_asr(path, *, command, runner=None):
+    """The last backend: Microsoft's VibeVoice-ASR (MIT licence, settled 2026-11-19: the weights and the CPU-only BitNet variant are published under MIT). It runs as a command on the runner (the CPU build of
+    microsoft/VibeASR.cpp) and prints the transcript on standard output: `{audio}` in the command is replaced by the file. With no command set it says so and the next backend is used."""
+    import subprocess
+    if not command or "{audio}" not in command:
+        raise Failure(contract.NEED_SETUP, "VIBEASR_COMMAND is not set (the command of the CPU build of VibeVoice-ASR, with {audio} for the file), so VibeVoice is not tried")
+    argv = [part.replace("{audio}", str(path)) for part in command.split()]
+    try:
+        done = (runner or subprocess.run)(argv, capture_output=True, text=True, timeout=900)
+    except Exception as exc:                                                                # noqa: BLE001
+        raise Failure(contract.UPSTREAM_BROKEN, f"VibeVoice could not run: {type(exc).__name__}: {str(exc)[:120]}") from None
+    text = (getattr(done, "stdout", "") or "").strip()
+    if getattr(done, "returncode", 1) != 0 or not text:
+        raise Failure(contract.UPSTREAM_BROKEN, f"VibeVoice exited {getattr(done, 'returncode', '?')} with {len(text)} characters: " + (getattr(done, "stderr", "") or "")[:120])
+    return {"text": text, "language": "", "segments": []}
+
+
+def to_supported(path, workdir, *, runner=None, which=None):
+    """A file Groq will accept. A file with a supported extension and a modest size is used as it is; anything else (the unnamed download of a TikTok video, a .bin, a big video) is turned into a small mono MP3 with
+    ffmpeg (a mono WAV if this ffmpeg has no MP3 encoder). Raises Failure with the reason when it cannot."""
+    import shutil
+    import subprocess
+    path = Path(path)
+    if path.suffix.lower() in SUPPORTED and path.stat().st_size <= 8 * 1024 * 1024:
+        return path
+    if not (which or shutil.which)("ffmpeg"):
+        raise Failure(contract.NEED_SETUP, f"{path.name} is not a type Groq accepts and ffmpeg is not installed to convert it")
+    work = Path(workdir)
+    work.mkdir(parents=True, exist_ok=True)
+    run = runner or subprocess.run
+    problems = []
+    for suffix, codec in ((".mp3", ["-c:a", "libmp3lame", "-b:a", "48k"]), (".wav", ["-c:a", "pcm_s16le"])):
+        out = work / (path.stem + "-audio" + suffix)
+        done = run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(path), "-vn", "-ac", "1", "-ar", "16000", *codec, str(out)], capture_output=True, text=True, timeout=300)
+        if getattr(done, "returncode", 1) == 0 and out.is_file() and out.stat().st_size > 0:
+            return out
+        problems.append((getattr(done, "stderr", "") or "")[:120])
+    raise Failure(contract.BAD_INPUT, "ffmpeg could not turn the download into audio: " + " | ".join(problems))
+
+
 def faster_whisper_local(path, *, model_size="small", loader=None, language=None):
     """The local backup: Faster-Whisper on CPU (int8). `loader(model_size)` returns an object with .transcribe(path, ...) (injected in tests). Raises Failure when the library is not installed."""
     if loader is None:
@@ -99,7 +166,7 @@ def order(shared_dir):
         return SEEDED_ORDER
 
 
-def transcribe(path, *, backends, key="", post=None, loader=None, language=None, clock=time.monotonic):
+def transcribe(path, *, backends, key="", post=None, loader=None, language=None, clock=time.monotonic, cloudflare=("", ""), vibevoice="", runner=None):
     """Try the backends in order; the first that answers wins, the rest are the failover. Returns {text, language, segments, backend, seconds, tried: [(backend, why)]} or raises Failure with every reason."""
     content = Path(path).read_bytes()
     tried = []
@@ -108,8 +175,12 @@ def transcribe(path, *, backends, key="", post=None, loader=None, language=None,
         try:
             if backend == "groq_whisper":
                 out = groq_whisper(content, Path(path).name, key=key, post=post, language=language)
+            elif backend == "cloudflare_whisper":
+                out = cloudflare_whisper(content, account=cloudflare[0], token=cloudflare[1], post=post)
             elif backend == "faster_whisper":
                 out = faster_whisper_local(path, loader=loader, language=language)
+            elif backend == "vibevoice_asr":
+                out = vibevoice_asr(path, command=vibevoice, runner=runner)
             else:
                 tried.append((backend, NOT_WIRED.get(backend, "unknown backend")))
                 continue
@@ -128,7 +199,7 @@ def silent_wav(seconds=1, rate=16000):
     return (b"RIFF" + struct.pack("<I", 36 + len(data)) + b"WAVEfmt " + struct.pack("<IHHIIHH", 16, 1, 1, rate, rate * 2, 2, 16) + b"data" + struct.pack("<I", len(data)) + data)
 
 
-def probe(workdir, *, key="", post=None, loader=None, clock=time.monotonic):
+def probe(workdir, *, key="", post=None, loader=None, clock=time.monotonic, cloudflare=("", ""), vibevoice="", runner=None):
     """Ask every backend once with a second of silence: connected or why not, and how long it took. Returns {ranking: [backends that answered, fastest first], rows: [...]}."""
     path = Path(workdir) / "probe.wav"
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -137,7 +208,7 @@ def probe(workdir, *, key="", post=None, loader=None, clock=time.monotonic):
     for backend in SEEDED_ORDER:
         t0 = clock()
         try:
-            transcribe(path, backends=(backend,), key=key, post=post, loader=loader, clock=clock)
+            transcribe(path, backends=(backend,), key=key, post=post, loader=loader, clock=clock, cloudflare=cloudflare, vibevoice=vibevoice, runner=runner)
             rows.append({"backend": backend, "ok": True, "seconds": round(clock() - t0, 2), "why": ""})
         except Failure as exc:
             rows.append({"backend": backend, "ok": False, "seconds": round(clock() - t0, 2), "why": exc.message[:200]})
@@ -155,6 +226,15 @@ def save_transcript(store, slug, record, now):
 
 def sha_of(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def env_cloudflare(environ=None):
+    env = environ if environ is not None else os.environ
+    return env.get("CLOUDFLARE_ACCOUNT_ID", "").strip(), env.get("CLOUDFLARE_API_TOKEN", "").strip()
+
+
+def env_vibevoice(environ=None):
+    return (environ if environ is not None else os.environ).get("VIBEASR_COMMAND", "").strip()
 
 
 def env_key(environ=None):

@@ -21,6 +21,7 @@ from . import contract as K
 from . import motion_prompts as MOTION
 from . import openverse as OPENVERSE
 from . import apify as apify_mod
+from . import apify_budget as apify_budget_mod
 from . import pace as PACE
 from . import providers as providers_mod
 from . import poolcatalog as POOL
@@ -73,10 +74,12 @@ def add_parsers(sub, common):
     p.add_argument("--seed", action="store_true", help="discover mode: also add the discovered topics to the brand's auto seeds as Meta Ad Library keywords (only when auto seeds already exist)")
     p.add_argument("--dry-run", action="store_true", help="say what would be asked; ask nothing")
 
-    p = sub.add_parser("analyze", help="video facts (yt-dlp) for an address and/or the pace of a video file (ffmpeg); prints, saves nothing")
+    p = sub.add_parser("analyze", help="video facts (yt-dlp) for an address, the comments' text, what is said in the video (transcription) and/or the pace of a video file (ffmpeg); prints and saves the analysis")
     common(p)
     p.add_argument("--url", default="")
     p.add_argument("--file", default="")
+    p.add_argument("--brand", default="", help="keep the analysis under this brand (empty: data/_shared/analyses.json)")
+    p.add_argument("--speech", action=argparse.BooleanOptionalAction, default=True, help="ON by default: transcribe what is said in the video (needs the video downloaded)")
     p.add_argument("--comments", action="store_true")
     p.add_argument("--pace", action="store_true", help="with --url: download the video (about 720p at most) and measure how it moves; needs ffmpeg on the machine")
 
@@ -217,7 +220,7 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
                 asks = [(topic, "")] if args.mode == "research" else [(p, p) for p in peers]                # competitors: each competitor, never the brand itself (research mode covers the brand)
                 for idx, (ask, entity) in enumerate(asks):
                     share = None if args.mode == "research" else max(2, apify_lane.room() // (len(asks) - idx))          # what is left is split between the competitors still to ask: nothing is stranded when one reads less
-                    extra, notes = apify_lane.run(ask, share=share, entity=entity)
+                    extra, notes = apify_lane.run(ask, share=share, entity=entity, reddit_backup=status.get("reddit") in VOICE.FAILED)          # Reddit's Apify actor only when the public Reddit search failed
                     store.save_usage(ledger.usage)                                         # saved after every ask: spent is spent, whatever happens next
                     for note in notes:
                         print(f"{slug}: {note}")
@@ -320,12 +323,12 @@ def _apify_lane(args, store, now, environ, slugs=()):
 
     def budget_fn():                                                                                   # re-read before each call (a transient failure at set-up no longer switches the guard off for the run); the best single key, since a call runs on one key
         return apify_mod.best_key_left(client)
-    lane = VOICE.ApifyVoice(client, ledger, per_run=_env_number(environ, "CONTENTINTEL_VOICE_APIFY_PER_RUN", 40 * keys, 1, 300, int), monthly=_env_number(environ, "CONTENTINTEL_VOICE_APIFY_MONTHLY", 60 * keys, 1, 600, int),
-                            shared_cap=shared, max_cost_usd=cost, normalize=COL.normalize_items, budget_fn=budget_fn, run_usd_cap=_env_number(environ, "CONTENTINTEL_VOICE_APIFY_RUN_USD", 3.0, 0.25, 10.0, float))
+    lane = VOICE.ApifyVoice(client, ledger, per_run=_env_number(environ, "CONTENTINTEL_VOICE_APIFY_PER_RUN", 40 * keys, 1, 300, int), monthly=_env_number(environ, "CONTENTINTEL_VOICE_APIFY_MONTHLY", apify_budget_mod.items("voice", keys), 1, 2000, int),
+                            shared_cap=shared, max_cost_usd=cost, normalize=COL.normalize_items, budget_fn=budget_fn, run_usd_cap=_env_number(environ, "CONTENTINTEL_VOICE_APIFY_RUN_USD", 3.0, 0.25, 10.0, float), day=now[:10], keys=keys, daily=_env_number(environ, "CONTENTINTEL_VOICE_APIFY_DAILY", apify_budget_mod.plan(keys)["voice"]["per_day"], 0, 1000, int))
     for env_name, attr in (("CONTENTINTEL_VOICE_APIFY_PER_RUN", "per_run"), ("CONTENTINTEL_VOICE_APIFY_MONTHLY", "monthly")):      # an override outside the lane's bounds is changed: say so
         raw = (environ.get(env_name) or "").strip()
         if raw.isdigit() and int(raw) != getattr(lane, attr):
-            print(f"Note: {env_name}={raw} is outside what the lane allows (1 to {300 if attr == 'per_run' else 600}); {getattr(lane, attr)} is used.")
+            print(f"Note: {env_name}={raw} is outside what the lane allows (1 to {300 if attr == 'per_run' else 2000}); {getattr(lane, attr)} is used.")
     print(f"Apify lane ON for this run (switch off with --no-apify): at most {lane.per_run} items in this whole run, {lane.monthly} a month for voice (used so far this month: {ledger.month_used('voice_apify_items'):g}), "
           f"and never beyond the Collect step's {shared} a month (used: {ledger.month_used('apify_items'):g}); each call has a cost ceiling Apify enforces: {lane.ceiling('tiktok'):g} dollars for TikTok, {lane.ceiling('instagram'):g} for Instagram.")
     return lane, ledger
@@ -442,34 +445,108 @@ def seed_auto_seeds(store, slug, topics, limit=5):
     return ("added to the auto seeds as Meta Ad Library keywords: " + "; ".join(added)) if added else "every discovered topic was already a seed"
 
 
-def run_analyze(args, now="", *, runner=subprocess.run):
+def run_analyze(args, now="", *, runner=subprocess.run, store=None, environ=None, apify=None, post=None, loader=None):
     if not (args.url or args.file):
         print("Error: give --url and/or --file")
         return 1
-    code = 0
+    env = dict(os.environ) if environ is None else environ
+    record = {"url": args.url or args.file, "at": now, "routes": {}}
+    facts = {}
     if args.url:
+        print("Video facts route: yt-dlp (python -m yt_dlp --dump-single-json, nothing is downloaded for the facts)")
         try:
             facts = VMETA.fetch(args.url, run=runner, comments=args.comments)
             print("Video facts: " + json.dumps(facts, ensure_ascii=False, indent=1))
+            record["facts"], record["routes"]["facts"] = facts, "yt-dlp"
         except K.Failure as exc:
             print(f"Video facts: {exc.code}: {exc.message}")
-            code = 0
+            record["routes"]["facts"] = f"yt-dlp failed: {exc.code}"
+    if args.url and getattr(args, "comments", False):
+        comments = list(facts.get("top_comments") or [])
+        if comments:
+            record["routes"]["comments"] = "yt-dlp"
+            print(f"Comments route: yt-dlp ({len(comments)} comment text(s))")
+        else:
+            counted = facts.get("comments")
+            print(f"Comments route: yt-dlp gave {'a count of ' + str(counted) if counted else 'no comments'} but no comment text for this site; trying the Apify comments route")
+            client = apify if apify is not None else apify_mod.build_apify(env)
+            usage = None
+            if client is not None and store is not None:
+                from . import research as research_mod
+                usage = research_mod.Ledger(store.load_usage(), (now or "0000-00-00")[:7])
+                if apify_budget_mod.room("analyze_comments", usage, (now or "0000-00-00")[:10]) < 20:
+                    print("Comments: no comment text captured: this month's (or today's) share of the Apify money for comments is used up")
+                    record["routes"]["comments"] = "none: budget share used"
+                    client = None
+            if client is None:
+                print("Comments: no comment text captured: yt-dlp does not read this site's comment text and no Apify key (APIFY_TOKEN) is set in this run")
+                record["routes"]["comments"] = "none: no Apify key"
+            else:
+                try:
+                    comments = VMETA.comments_via_apify(args.url, client)
+                    if usage is not None:
+                        apify_budget_mod.charge("analyze_comments", usage, (now or "0000-00-00")[:10], max(1, len(comments)))
+                        store.save_usage(usage.usage)
+                    record["routes"]["comments"] = "apify (" + VMETA.TIKTOK_COMMENTS_ACTOR + ", at most 20 comments, call cost ceiling 0.5 dollars)"
+                    print(f"Comments route: Apify {VMETA.TIKTOK_COMMENTS_ACTOR} (at most 20 comments, call cost ceiling 0.5 dollars): {len(comments)} comment text(s)")
+                except K.Failure as exc:
+                    print(f"Comments: no comment text captured: {exc.message}")
+                    record["routes"]["comments"] = f"apify failed: {exc.code}"
+        if comments:
+            record["comments"] = comments
+            for c in comments[:10]:
+                print(f"  - ({c['likes']} likes) {c['text'][:200]}")
     import tempfile
+    code = 0
     with tempfile.TemporaryDirectory(prefix="pace-") as tmp:                         # the downloaded video is deleted when this block ends, whatever happens
         path = args.file
-        if args.url and getattr(args, "pace", False) and not path:
+        want_speech = bool(getattr(args, "speech", True))
+        if args.url and (getattr(args, "pace", False) or want_speech) and not path:
+            print("Download route: yt-dlp (the video, about 720p at most, into a temporary folder that is deleted afterwards)")
             try:
                 path = VMETA.fetch_file(args.url, tmp, run=runner)
+                record["routes"]["download"] = "yt-dlp"
             except K.Failure as exc:
-                print(f"Pace: the video could not be downloaded: {exc.code}: {exc.message}")
-        if path:
+                print(f"Download: the video could not be downloaded by yt-dlp: {exc.code}: {exc.message}")
+                record["routes"]["download"] = f"yt-dlp failed: {exc.code}"
+        if path and getattr(args, "pace", False):
             try:
                 profile = PACE.analyse(path, runner)
                 print("Pace: " + PACE.describe(profile))
                 print(json.dumps({k: v for k, v in profile.items() if k != "cut_times"}, indent=1))
+                record["pace"] = {k: v for k, v in profile.items() if k != "cut_times"}
             except PACE.PaceError as exc:
                 print(f"Pace: not measured: {exc}")
+        if path and want_speech:
+            record["speech"] = _speech(path, tmp, runner, env, post, loader, getattr(args, "data_dir", "data"))
+    if store is not None:
+        _save_analysis(store, getattr(args, "brand", "") or "_shared", record)
     return code
+
+
+def _speech(path, tmp, runner, env, post, loader, data_dir):
+    """What is said in the video: the audio is made sendable with ffmpeg and the transcription backends are tried in their measured order (Groq, Cloudflare, Faster-Whisper, VibeVoice). Printed and returned."""
+    from . import transcribe as TR
+    try:
+        sendable = TR.to_supported(path, tmp, runner=runner, which=(lambda name: name) if runner is not subprocess.run else None)
+        out = TR.transcribe(sendable, backends=TR.order(Path(data_dir) / "_shared"), key=TR.env_key(env), post=post, loader=loader, cloudflare=TR.env_cloudflare(env), vibevoice=TR.env_vibevoice(env), runner=runner)
+    except Exception as exc:                                                                 # noqa: BLE001 - a transcript that cannot be made is reported, never a crash
+        why = getattr(exc, "message", str(exc))
+        print(f"Speech: not captured: {why}")
+        return {"captured": False, "why": why[:400]}
+    print(f"Speech route: {out['backend']} ({out['seconds']} s)" + (f" after: {'; '.join(f'{b}: {w[:60]}' for b, w in out['tried'])}" if out["tried"] else "") + f": {out['text'][:600]}")
+    return {"captured": True, "backend": out["backend"], "language": out["language"], "text": out["text"][:6000], "tried": out["tried"]}
+
+
+def _save_analysis(store, slug, record):
+    """Keep the analysis in the repository (data/<brand or _shared>/extras/analyses.json), newest first, one per address, so it is not lost with the run's log."""
+    shared = slug == "_shared"
+    kept = (store.read_shared("analyses") if shared else store.read_extra(slug, "analyses")) or {}
+    items = [i for i in kept.get("items", []) if i.get("url") != record["url"]]
+    items.insert(0, record)
+    body = {"note": "video analyses: facts, comment text, speech and pace, with the route each came by", "items": items[:100]}
+    (store.write_shared("analyses", body) if shared else store.write_extra(slug, "analyses", body))
+    print("Analysis saved: " + ("data/_shared/analyses.json" if shared else f"data/{slug}/extras/analyses.json") + f" ({len(items)} kept)")
 
 
 def run_pool(args, *, gateway_dir=None):
@@ -496,12 +573,27 @@ def run_assets(args, store, now, *, get=default_get, post=default_post, environ=
     if settings is not None and "openverse" in settings.get("services", {}):          # a settings file that predates the service leaves it on, as every new switch is
         use = SERVICES.allowed(settings, "openverse", "brief")[0]
     bearer = OPENVERSE.token(post, environ.get("OPENVERSE_CLIENT_ID", ""), environ.get("OPENVERSE_CLIENT_SECRET", "")) if use else ""
-    try:
-        found, which = OPENVERSE.find(get, args.query, args.kind, limit=args.limit, bearer=bearer, use_openverse=use, licence_ok_for_ads=not args.any_licence)
-    except K.Failure as exc:
-        print(f"Assets: {exc.code}: {exc.message}")
+    if not args.query.strip():
+        print("Assets: the topic is empty, so nothing was searched (an empty topic used to fetch random pictures and save them)")
+        return 1
+    from . import assets_find as AF
+    brand, research = None, None
+    if args.brand:
+        try:
+            brand = load_brand(args.brand, getattr(args, "brands_dir", "brands"))
+            import yaml
+            rp = Path(getattr(args, "brands_dir", "brands")) / args.brand / "research.yaml"
+            research = yaml.safe_load(rp.read_text(encoding="utf-8")) if rp.is_file() else None
+        except Exception:                                                                    # noqa: BLE001 - a brand that cannot be read only means no derived queries
+            brand = None
+    found, report = AF.find_usable(get, args.query, args.kind, brand=brand, store=store, research=research, limit=args.limit, bearer=bearer, use_openverse=use, licence_ok_for_ads=not args.any_licence)
+    which = next((t_["source"] for t_ in reversed(report["tried"]) if t_["kept"]), "nothing")
+    for line in AF.report_lines(report):
+        print(line)
+    if not found:
+        print(f"Assets: none usable found for {args.query!r} ({len(report['tried'])} search(es) tried); nothing was saved.")
         return 0
-    print(f"Assets: {len(found)} {args.kind} result(s) from {which} for {args.query!r} ({'a token' if bearer else 'anonymous'}):")
+    print(f"Assets: {len(found)} {args.kind} result(s) from {which} for {args.query!r}" + (f" (found through {report['used']!r}, after the query itself gave nothing usable)" if report["used"] != args.query else "") + f" ({'a token' if bearer else 'anonymous'}):")
     for a in found:
         print(f"  - {a['title']} [{a['license'].upper()}] {a['page'] or a['url']} | credit: {OPENVERSE.credit_line(a)[:160]}")
     if args.brand and found:
