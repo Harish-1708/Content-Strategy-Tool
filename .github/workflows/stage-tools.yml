@@ -96,7 +96,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ~/VibeASR.cpp
-          key: vibeasr-v1
+          key: vibeasr-v2
 
       - name: Install VibeVoice-ASR (microsoft/VibeASR.cpp, MIT licence, CPU only)
         if: inputs.action != 'bakeoff' && vars.VIBEASR_COMMAND == ''
@@ -108,13 +108,21 @@ jobs:
           sudo apt-get update -y >/dev/null 2>&1
           sudo apt-get install -y cmake build-essential git >/tmp/apt.log 2>&1 || fail "apt could not install cmake and build-essential: $(tail -n 2 /tmp/apt.log | tr '\n' ' ')"
           cmake --version | head -1
+          # The build and the model are checked SEPARATELY. A cache restored from an earlier failed run holds the built binary and NO model, and the old single `if` skipped the download because the binary was there
+          # (Stage tools #8: asr_infer present, models/vibeasr missing).
           if [ ! -x "$HOME/VibeASR.cpp/build/bin/asr_infer" ]; then
+            rm -rf "$HOME/VibeASR.cpp"
             git clone --depth 1 --recursive https://github.com/microsoft/VibeASR.cpp.git "$HOME/VibeASR.cpp" || fail "git clone of microsoft/VibeASR.cpp failed"
             cd "$HOME/VibeASR.cpp" || fail "the clone is missing"
             cmake -B build -DCMAKE_BUILD_TYPE=Release >/tmp/cmake1.log 2>&1 || fail "cmake configure failed: $(tail -n 3 /tmp/cmake1.log | tr '\n' ' ')"
             cmake --build build -j"$(nproc)" >/tmp/cmake2.log 2>&1 || fail "cmake build failed: $(tail -n 3 /tmp/cmake2.log | tr '\n' ' ')"
+          fi
+          cd "$HOME/VibeASR.cpp" || fail "VibeASR.cpp is missing"
+          if [ ! -f models/vibeasr/vibeasr-vae-encoder-i8_s.gguf ] || [ ! -f models/vibeasr/vibeasr-lm-i2_s-embed-q6_k.gguf ]; then
+            echo "downloading the model (it is missing from this checkout)"
             python -m pip install huggingface_hub >/dev/null 2>&1 || fail "pip could not install huggingface_hub"
             python -c "from huggingface_hub import snapshot_download; snapshot_download('microsoft/VibeVoice-ASR-BitNet', local_dir='models/vibeasr')" || fail "the model download (microsoft/VibeVoice-ASR-BitNet) failed"
+            ls -la models/vibeasr | head -12
           fi
           test -x "$HOME/VibeASR.cpp/build/bin/asr_infer" || fail "asr_infer was not built: $(ls "$HOME/VibeASR.cpp/build/bin" 2>&1 | head -3 | tr '\n' ' ')"
           for f in vibeasr-vae-encoder-i8_s.gguf vibeasr-lm-i2_s-embed-q6_k.gguf; do test -f "$HOME/VibeASR.cpp/models/vibeasr/$f" || fail "the model file $f is not in the download: $(ls "$HOME/VibeASR.cpp/models/vibeasr" 2>&1 | head -6 | tr '\n' ' ')"; done
@@ -149,9 +157,9 @@ jobs:
         run: |
           set -o pipefail
           case "$ACTION" in
-            probe-transcribe) python -m contentintel stage --action probe-transcribe ;;
-            transcribe) python -m contentintel stage --action transcribe --brand "$BRAND" --url "$URL" --source "$SOURCE" --language "$LANGUAGE" ;;
-            bakeoff) python -m contentintel stage --action bakeoff --bakeoff-urls "$BAKEOFF_URLS" ;;
+            probe-transcribe) python -m contentintel stage --action probe-transcribe 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" ;;
+            transcribe) python -m contentintel stage --action transcribe --brand "$BRAND" --url "$URL" --source "$SOURCE" --language "$LANGUAGE" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" ;;
+            bakeoff) python -m contentintel stage --action bakeoff --bakeoff-urls "$BAKEOFF_URLS" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" ;;
           esac
 
       - name: Save the data
@@ -159,7 +167,8 @@ jobs:
         run: |
           git config user.name "stage-tools"
           git config user.email "stage-tools@users.noreply.github.com"
-          git add -f data/_shared/transcribe_rankings.json data/_shared/bakeoff.json data/*/extras/transcripts.json data/*/catalogue/transcripts.md 2>/dev/null || true          # only the files this tool writes
+          add_each() { for f in "$@"; do if [ -e "$f" ]; then git add -f "$f"; else echo "not written by this run (skipped): $f"; fi; done; }          # ONE `git add` of several paths is refused WHOLE when any one is missing, and `2>/dev/null || true` hid it: nothing was ever saved
+          add_each data/_shared/transcribe_rankings.json data/_shared/bakeoff.json data/*/extras/transcripts.json data/*/catalogue/transcripts.md          # only the files this tool writes
           if git diff --cached --quiet; then
             echo "No data changes to save."
           else

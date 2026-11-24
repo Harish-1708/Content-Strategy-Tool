@@ -160,7 +160,7 @@ jobs:
           for d in data/*/registry; do
             if [ -d "$d" ]; then git add -f "$d"; fi
           done
-          git add -f data/*/extras/stage_*.json data/*/catalogue/stage_*.md 2>/dev/null || true          # the proposals of stages 4, 6, 7, 8 and 9
+          for f in data/*/extras/stage_*.json data/*/catalogue/stage_*.md; do if [ -e "$f" ]; then git add -f "$f"; fi; done          # one path at a time: a single add of several is refused whole when one glob matches nothing          # the proposals of stages 4, 6, 7, 8 and 9
           if git diff --cached --quiet; then
             echo "No data changes to save."
           else

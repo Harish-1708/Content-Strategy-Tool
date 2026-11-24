@@ -59,6 +59,8 @@ jobs:
           ACTION: ${{ inputs.action }}
           BRAND: ${{ inputs.brand }}
           QUERY: ${{ inputs.query }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}          # mpt-status reports whether it is configured and makes ONE real test search (name only, never the value)
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
         run: |
           set -o pipefail
           python -m contentintel batch3 --action "$ACTION" --brand "${BRAND:-all}" --query "$QUERY"
@@ -71,7 +73,8 @@ jobs:
           echo "save step: action=${{ inputs.action }}"
           echo "--- files this run wrote (forecasts, stock corpora, stock matches):"
           ls -la data/*/extras/forecasts.json data/*/extras/stock_corpus.json data/*/extras/stock_matches.json 2>&1 | head -20
-          git add -f data/*/extras/forecasts.json data/*/extras/stock_corpus.json data/*/extras/stock_matches.json 2>/dev/null || true
+          add_each() { for f in "$@"; do if [ -e "$f" ]; then git add -f "$f"; else echo "not written by this run (skipped): $f"; fi; done; }          # ONE `git add` of several paths is refused WHOLE when any one is missing, and `2>/dev/null || true` hid it: nothing was ever saved
+          add_each data/*/extras/forecasts.json data/*/extras/stock_corpus.json data/*/extras/stock_matches.json
           echo "--- staged for the commit:"
           git diff --cached --stat | tail -5
           if git diff --cached --quiet; then

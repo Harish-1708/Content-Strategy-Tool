@@ -22,6 +22,10 @@ on:
         description: "For read and compare: the address, on that platform's own site (a session is never sent to another site)"
         required: false
         default: ""
+      auto_backup:
+        description: "After a check: start the Sessions password backup for each platform that has earned it under the 2i rule (three checks in a row unprovable, or rejected or expired, one attempt a week). OFF by default: the password backup is never the default; with it off the run only says which platforms are eligible."
+        type: boolean
+        default: false
       sheets:
         description: "Update the Google Sheets afterwards (the Sessions and Session Reads tabs mirror what was found; the JSON files stay the record)"
         type: boolean
@@ -123,6 +127,25 @@ jobs:
             git pull --rebase
             git push
           fi
+
+      - name: Password backup hand-off (which platforms have earned it; starts it only when auto_backup is on)
+        if: ${{ inputs.what == 'check' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUTO_BACKUP: ${{ inputs.auto_backup }}
+        run: |
+          set +e
+          out="$(python -m contentintel observatory sessions --all --what password-eligible 2>&1)"
+          echo "$out" | tee -a "$GITHUB_STEP_SUMMARY"
+          for p in $(echo "$out" | sed -n 's/^sessions: \([a-z]*\): password backup ELIGIBLE.*/\1/p'); do
+            if [ "$AUTO_BACKUP" = "true" ]; then
+              echo "starting the password backup for $p"
+              gh workflow run sessions-password-backup.yml -f platform="$p" || echo "::warning title=Password backup::could not start it for $p"
+            else
+              echo "::notice title=Password backup eligible::$p is eligible: run Actions > Sessions password backup (platform $p), or set auto_backup"
+            fi
+          done
 
       - name: Update the Google Sheets with what was found (the Google Sheets workflow, which holds the Sheets key; this job never sees it)
         if: ${{ (inputs.what == 'check' || inputs.what == 'read' || inputs.what == 'compare') && inputs.sheets }}

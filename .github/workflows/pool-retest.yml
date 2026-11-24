@@ -86,7 +86,7 @@ jobs:
           if [ -n "$ONLY" ]; then args+=(--only "$ONLY"); fi
           if [ "$APPLY" = "true" ]; then args+=(--apply); fi
           { echo "### Pool retest"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
-          python -m contentintel ai rank "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          python -u -m contentintel ai rank "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           code=${PIPESTATUS[0]}
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           exit "$code"
@@ -97,7 +97,8 @@ jobs:
         run: |
           git config user.name "pool-retest"
           git config user.email "pool-retest@users.noreply.github.com"
-          git add -f data/_shared/ai_rankings.json data/_shared/ai_usage.json 2>/dev/null || true          # only what the retest writes
+          add_each() { for f in "$@"; do if [ -e "$f" ]; then git add -f "$f"; else echo "not written by this run (skipped): $f"; fi; done; }          # ONE `git add` of several paths is refused WHOLE when any one is missing, and `2>/dev/null || true` hid it: nothing was ever saved
+          add_each data/_shared/ai_rankings.json data/_shared/ai_usage.json          # only what the retest writes
           if git diff --cached --quiet; then
             echo "No ranking changes to save."
           else

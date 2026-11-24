@@ -179,6 +179,7 @@ jobs:
           INSTAGRAM_COOKIES: ${{ secrets.INSTAGRAM_COOKIES }}
           TIKTOK_COOKIES: ${{ secrets.TIKTOK_COOKIES }}
           OPENVERSE_CLIENT_ID: ${{ secrets.OPENVERSE_CLIENT_ID }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}          # the fallback picture source when Openverse and Commons return nothing usable
           OPENVERSE_CLIENT_SECRET: ${{ secrets.OPENVERSE_CLIENT_SECRET }}
         run: |
           set +e

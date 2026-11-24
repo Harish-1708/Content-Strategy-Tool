@@ -1,75 +1,19 @@
 name: Concat gate
 
-# Concat (jub0t/concat) is tried on GitHub Actions FIRST: installed here, headless (xvfb, software rendering), and the owner's gate is applied to its render:
-# 1080x1920, under 300 seconds, with audio, in 2 of 3 runs. `discover` prints what the installed Concat says about its own command line (run it first, then fill render_command in concat.yaml from that output);
-# `gate` runs the test. No host is needed to answer the question.
+# CONCAT IS DROPPED (decision of 2026-11-24, recorded in concat.yaml). Concat Gate #2 (run 45328841214) showed that Concat is a desktop GUI editor, not a headless CLI: every help command tried to open a window and none of
+# six guessed render commands produced a video. A host for it would need a desktop session, a display and GUI automation of a program whose scripting interface was never found, and nothing in the plan depends on it.
+# This workflow therefore installs and runs nothing: it only says so. It may be deleted (Actions > Concat gate > delete workflow file).
 on:
   workflow_dispatch:
-    inputs:
-      action:
-        description: "auto (discover, infer the render command from Concat's own help and run the gate, all in this run), discover or gate"
-        required: true
-        type: choice
-        default: auto
-        options: [auto, discover, gate]
 
 permissions:
-  contents: write
-
-concurrency:
-  group: catalogue-data
-  cancel-in-progress: false
+  contents: read
 
 jobs:
-  concat:
+  notice:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v6
-
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-          cache: pip
-          cache-dependency-path: requirements.txt
-      - run: pip install -r requirements.txt
-
-      - name: Install ffmpeg and a software renderer (no GPU on the runner)
+      - name: Concat is dropped
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg xvfb libgl1-mesa-dri mesa-vulkan-drivers libvulkan1
-
-      - name: Install Concat from its latest release (the x86_64 file only)
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          # The release holds BOTH Concat-<version>-linux-x86_64.deb and Concat-<version>-linux-aarch64.deb. The old pattern (*amd64.deb) matched nothing and the fallback took both, which apt refused (exit 100).
-          rm -rf /tmp/concat && mkdir -p /tmp/concat
-          gh release download --repo jub0t/concat --pattern '*linux-x86_64.deb' --dir /tmp/concat
-          ls -la /tmp/concat
-          test "$(ls /tmp/concat/*.deb | wc -l)" -eq 1 || { echo "::error title=Concat install::expected exactly one x86_64 .deb"; exit 1; }
-          sudo apt-get install -y /tmp/concat/*x86_64.deb
-          which concat || dpkg -L concat 2>/dev/null | head -20
-
-      - name: Run it
-        env:
-          ACTION: ${{ inputs.action }}
-        run: |
-          set -o pipefail
-          xvfb-run -a python -m contentintel batch3 --action "concat-$ACTION"
-
-      - name: Save the result
-        if: always() && inputs.action != 'discover'
-        run: |
-          git config user.name "concat-gate"
-          git config user.email "concat-gate@users.noreply.github.com"
-          git add -f data/_shared/concat_gate.json 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "No data changes to save."
-          else
-            git commit -m "Concat gate $(date -u +%Y-%m-%dT%H:%MZ)"
-            echo "--- files this run left changed but did not save (set aside for the pull, then put back):"
-            git status --porcelain | head -40
-            git pull --rebase --autostash
-            git push
-          fi
+          echo "Concat is DROPPED: a desktop GUI editor with no headless render command. Nothing was installed or run. See concat.yaml. Delete this workflow file when you like."
+          { echo "### Concat gate"; echo "Concat is DROPPED (2026-11-24): a desktop GUI editor with no headless render command; no host plan. See concat.yaml."; } >> "$GITHUB_STEP_SUMMARY"
