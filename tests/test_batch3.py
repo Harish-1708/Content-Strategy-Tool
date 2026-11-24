@@ -308,11 +308,11 @@ def test_discover_prints_what_the_installed_concat_says_and_survives_a_missing_b
     cfg = CG.load_config("concat.yaml")
     found = CG.discover(cfg, ff_runner())
     assert found[0] == ("concat --version", 0, ["concat 0.2.7"]) and found[1][1] == 1
-    args = args_for(tmp_path, "--action", "concat-discover")
+    args = args_for(tmp_path, "--action", "concat-discover", "--force-dropped")
     assert B3.run_concat(args, Store(tmp_path / "data"), NOW, runner=ff_runner()) == 0
     out = capsys.readouterr().out
     assert "concat: $ concat --version  (exit 0)" in out and "concat:   concat 0.2.7" in out and "gate NOT RUN" in out
-    assert B3.run_concat(args_for(tmp_path, "--action", "concat-gate"), Store(tmp_path / "data"), NOW, runner=ff_runner()) == 0
+    assert B3.run_concat(args_for(tmp_path, "--action", "concat-gate", "--force-dropped"), Store(tmp_path / "data"), NOW, runner=ff_runner()) == 0
     assert json.loads((tmp_path / "data" / "_shared" / "concat_gate.json").read_text())["verdict"] == "NOT RUN"
     bad = tmp_path / "bad.yaml"
     bad.write_text("gate: {width: 1080, height: 1920, max_seconds: 300, runs: 2, passes_needed: 3}\n")
@@ -370,9 +370,9 @@ def test_the_private_host_gets_the_identity_token_and_the_deploy_workflow_is_off
     assert 'default: "no"' in text
 
 
-def test_the_concat_and_batch3_workflows_install_concat_headless_and_save_only_their_own_files():
+def test_the_concat_workflow_is_a_notice_only_because_concat_is_dropped_and_the_batch3_workflow_saves_only_its_own_files():
     concat = Path(".github/workflows/concat-gate.yml").read_text(encoding="utf-8")
-    assert "xvfb-run -a python -m contentintel batch3" in concat and "gh release download --repo jub0t/concat" in concat and "libgl1-mesa-dri" in concat and "git add -f data/_shared/concat_gate.json" in concat
+    assert "Concat is DROPPED" in concat and "xvfb" not in concat and "gh release download" not in concat and "apt-get" not in concat and "git push" not in concat
     b3 = Path(".github/workflows/batch3-tools.yml").read_text(encoding="utf-8")
     assert 'pip install "timesfm[torch]"' in b3 and "sentence-transformers" in b3 and "data/*/extras/forecasts.json data/*/extras/stock_corpus.json" in b3
     stage = Path(".github/workflows/stage-tools.yml").read_text(encoding="utf-8")
@@ -470,11 +470,11 @@ def test_the_render_command_is_inferred_from_concats_own_help_and_the_gate_runs_
     manual = {**cfg, "render_command": "concat render {inputs} -o {output}"}
     res3, _f3, tried3 = CG.run_auto(manual, tmp_path / "w3", runner=runner, probe=lambda p: good)
     assert res3["verdict"] == "GO" and tried3 == ["concat render {inputs} -o {output}"]                                                  # a manual command is used as it is
-    args = args_for(tmp_path, "--action", "concat-auto")
+    args = args_for(tmp_path, "--action", "concat-auto", "--force-dropped")
     assert B3.run_concat(args, Store(tmp_path / "data"), NOW, runner=runner, probe=lambda p: good) == 0
     out = capsys.readouterr().out
     assert "gate GO" in out and "render command(s) tried" in out and json.loads((tmp_path / "data" / "_shared" / "concat_gate.json").read_text())["verdict"] == "GO"
-    assert 'default: auto' in Path(".github/workflows/concat-gate.yml").read_text(encoding="utf-8")
+    assert "DROPPED" in Path(".github/workflows/concat-gate.yml").read_text(encoding="utf-8")
 
 
 def test_stock_footage_comes_from_pixabay_while_pexels_is_paused_and_from_pexels_when_a_key_exists_and_reaches_every_job():

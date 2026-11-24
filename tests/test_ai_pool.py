@@ -29,12 +29,12 @@ def keys(routes):
 
 def test_the_shipped_pool_holds_every_approved_model_of_every_enabled_free_provider_once_and_nothing_else():
     approved = [(p.id, m.id) for p in REG.providers.values() if p.enabled and p.id != "claude" for m in p.models if m.approved]
-    assert sorted(keys(POOL)) == sorted(approved) and len(set(keys(POOL))) == len(POOL) == 39
+    assert sorted(keys(POOL)) == sorted(approved) and len(set(keys(POOL))) == len(POOL) == 35
     assert not [r for r in POOL if r["provider"] == "claude"]                                               # Claude leads or falls back: it is never part of the free pool
     per = {}
     for r in POOL:
         per[r["provider"]] = per.get(r["provider"], 0) + 1
-    assert per == {"groq": 2, "openrouter": 7, "cloudflare": 1, "google": 3, "nvidia": 1, "cohere": 4, "zhipu": 3, "kilo": 2, "xkiro": 2, "pollinations": 2, "bazaarlink": 1, "ovh": 2, "aihorde": 1, "requesty": 1, "anyapi": 7}      # the five OmniRoute providers of 2026-11-17 come after; the models the live check of 2026-11-14 proved gone are out; Kilo has its three candidates
+    assert per == {"groq": 2, "openrouter": 7, "cloudflare": 1, "google": 3, "nvidia": 1, "cohere": 4, "zhipu": 3, "kilo": 2, "xkiro": 1, "pollinations": 2, "bazaarlink": 1, "ovh": 2, "aihorde": 1, "requesty": 1, "anyapi": 4}      # the five OmniRoute providers of 2026-11-17 come after; the models the live check of 2026-11-14 proved gone are out; Kilo has its three candidates
     assert [r["provider"] for r in POOL][:10] == ["groq", "groq", "openrouter", "openrouter", "openrouter", "cloudflare", "google", "nvidia", "cohere", "cohere"]      # the proven providers first
     assert ("kilo", "kilo-auto/free") in keys(POOL) and ("kilo", "nvidia/nemotron-3-super-120b-a12b:free") not in keys(POOL) and ("zhipu", "glm-4.6v-flash") in keys(POOL) and ("nvidia", "google/gemma-4-31b-it") in keys(POOL) and ("nvidia", "meta/llama-4-maverick-17b-128e-instruct") not in keys(POOL)
 

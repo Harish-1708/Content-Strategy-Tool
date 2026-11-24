@@ -160,8 +160,8 @@ def test_each_scraper_is_asked_in_its_own_terms():
 
 # --- the settings -------------------------------------------------------------------------------------------------------------
 
-def test_apify_is_off_by_default_and_the_defaults_are_modest(settings):
-    assert settings.apify_mode == "off" and (settings.apify_monthly_items, settings.apify_items_per_run, settings.apify_max_cost_per_run_usd) == (1200, 30, 1.0)
+def test_apify_runs_as_a_fallback_by_default_and_the_defaults_are_modest(settings):
+    assert settings.apify_mode == "fallback" and (settings.apify_monthly_items, settings.apify_items_per_run, settings.apify_max_cost_per_run_usd) == (1200, 30, 1.0)
     assert settings.actors == C.DEFAULT_APIFY_ACTORS
     assert (settings.claude_model, settings.claude_monthly_calls, settings.claude_max_rounds, settings.claude_max_tokens, settings.claude_prepare_prompt) == (
         "claude-sonnet-5-5", 60, 3, 700, True)
@@ -474,7 +474,7 @@ def test_auto_follows_research_yaml_and_an_explicit_backend_overrides_it(cli2, c
     go("--brand", "swoveralls", "--dry-run", "--backend", "browser", research=custom)
     assert "Backend for ads and social: browser" in capsys.readouterr().out
     go("--brand", "swoveralls", "--dry-run")
-    assert "Backend for ads and social: browser" in capsys.readouterr().out
+    assert "Backend for ads and social: fallback" in capsys.readouterr().out                 # the shipped research.yaml: Apify takes over when the browser route fails (owner's decision of 2026-11-24)
     with pytest.raises(SystemExit):
         go("--brand", "swoveralls", "--backend", "sometimes")
 

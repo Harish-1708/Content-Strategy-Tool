@@ -199,8 +199,9 @@ def test_one_probe_per_enabled_route_that_has_something_to_check(tmp_path):
     assert not [kk for kk in k if kk[0] == "reddit_public"]                                                  # a planned source has nothing to check yet
     assert {kk[2] for kk in k if kk[0] in ("competitor_stores", "competitor_pages")} == {"catalogue_walk", "read_sitemap", "read_page", "read_feed", "read_via_reader", "read_social_profile"}
     assert not [kk for kk in k if kk[0].startswith("video_")]                                      # video downloads are judged on real items, not a probe
-    assert all(p.skip == "" for p in probes if p.source not in ("competitor_stores", "competitor_pages", "reddit", "agent_reach_research") and not p.route.startswith("agent_reach"))      # only the routes that need a machine you control are skipped
-    assert all("OBSERVATORY_CONTACT" in p.skip for p in probes if p.source in ("competitor_stores", "competitor_pages", "reddit", "agent_reach_research"))     # nothing to check them against in this test
+    assert all(p.skip == "" for p in probes if p.source not in ("competitor_stores", "competitor_pages", "reddit", "agent_reach_research", "x_posts", "linkedin_posts") and not p.route.startswith("agent_reach"))      # only the routes that need a machine you control are skipped
+    assert all("OBSERVATORY_CONTACT" in p.skip for p in probes if p.source in ("competitor_stores", "competitor_pages", "reddit", "agent_reach_research") and p.route != "apify")
+    assert {(p.source, p.skip) for p in probes if p.route == "apify" and p.source in ("reddit", "x_posts", "linkedin_posts")} == {("reddit", "no key: set APIFY_TOKEN"), ("x_posts", "no key: set APIFY_TOKEN"), ("linkedin_posts", "no key: set APIFY_TOKEN")}        # the three new Apify read routes are probes too     # nothing to check them against in this test
 
 
 def test_a_probe_runs_its_own_check_with_the_right_arguments(tmp_path):

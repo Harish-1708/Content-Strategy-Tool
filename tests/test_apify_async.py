@@ -384,7 +384,7 @@ def test_routing_tiktok_collect_through_apify_is_a_mode_flip_in_research_yaml(tm
                          sources=("tiktok",), data={"track_own_brand": False, "social": {"tiktok": {"hashtags": ["a"]}}})
     assert statuses(result) == [("tiktok", "ran")]
     assert {r["via"] for r in store.read_collected("swoveralls")} == {"apify"} and used(store) == {"apify_items": 1}
-    assert C.load_collector_settings("does-not-exist.yaml").apify_mode == "off"          # the repo default stays off until Harish flips it
+    assert C.load_collector_settings("does-not-exist.yaml").apify_mode == "fallback" == C.load_collector_settings("research.yaml").apify_mode          # Harish flipped it on 2026-11-24: Apify takes over when the browser route fails
 
 
 @pytest.mark.parametrize("status", [202, 204])
