@@ -209,7 +209,7 @@ jobs:
           exit "$code"
 
       - name: Save the data
-        if: inputs.tool == 'voice' || inputs.tool == 'assets'
+        if: always() && (inputs.tool == 'voice' || inputs.tool == 'assets' || inputs.tool == 'analyze')          # analyze was left out: its "Analysis saved" line was printed and nothing was committed (Research tools #33)
         shell: bash
         run: |
           git config user.name "research-tools"

@@ -45,7 +45,7 @@ on:
         options: [competitor_ideas, creator_chain, listen_learn, voice_creative, storyboard, seo_lens]
         default: competitor_ideas
       max_claims:
-        description: "verify-claims: check at most this many claims in one run (0 = every claim that is waiting, up to 60; the call budget is sized to them)"
+        description: "verify-claims: check at most this many claims in one run IN TOTAL across all brands (0 = every claim that is waiting, up to 60; the call budget is sized to them)"
         required: false
         default: "0"
       max_calls:
@@ -63,7 +63,7 @@ concurrency:
 jobs:
   skills:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 90          # was 20: a full queue of claims does not fit in 20 minutes (run #41 was cut off after 15 claims); the run itself stops starting new claims at 75 minutes and the next run picks up the rest
     env:
       FREEAPI_ENCRYPTION_KEY: ${{ secrets.FREEAPI_ENCRYPTION_KEY }}
       FREEAPI_ADMIN_PASSWORD: ${{ secrets.FREEAPI_ADMIN_PASSWORD }}
@@ -146,7 +146,7 @@ jobs:
             refresh-story-bank) python -m contentintel canon --action refresh "${brand_args[@]}" ;;
             foundation) python -m contentintel canon --action foundation --steps "$STEPS" --max-steps "$MAX_STEPS" --max-calls "$MAX_CALLS" "${brand_args[@]}" ;;
             reclassify-conflicts) python -m contentintel canon --action reclassify-conflicts --max-calls "$MAX_CALLS" "${brand_args[@]}" ;;
-            verify-claims) python -m contentintel canon --action verify-claims --max-claims "$MAX_CLAIMS" "${brand_args[@]}" ;;
+            verify-claims) python -m contentintel canon --action verify-claims --max-claims "$MAX_CLAIMS" --max-minutes 75 "${brand_args[@]}" ;;
             stage) python -m contentintel canon --action stage --stage "$STAGE" --max-calls "$MAX_CALLS" "${brand_args[@]}" ;;
           esac
 

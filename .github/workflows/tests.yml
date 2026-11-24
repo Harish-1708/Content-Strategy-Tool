@@ -65,7 +65,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: "22"
+          node-version: "24"
 
       - name: Build the pinned gateway (so the two tests that need the real gateway run instead of being skipped)
         run: |

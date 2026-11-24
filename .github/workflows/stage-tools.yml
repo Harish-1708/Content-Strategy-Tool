@@ -52,6 +52,18 @@ jobs:
           cache-dependency-path: requirements.txt
       - run: pip install -r requirements.txt
 
+      - name: Install ffmpeg (turns a download of an unknown type into audio for the hosted transcribers; the run FAILS if it cannot be installed)
+        if: inputs.action != 'bakeoff'
+        shell: bash
+        run: |
+          for attempt in 1 2 3; do
+            sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && break
+            echo "ffmpeg install attempt $attempt failed"
+            sleep 5
+          done
+          command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null || { echo "::error title=ffmpeg::ffmpeg or ffprobe is missing after 3 attempts: failing this run"; exit 1; }
+          ffmpeg -version | head -1
+
       - name: Install Lightpanda (bake-off engine)
         if: inputs.action == 'bakeoff'
         continue-on-error: true
@@ -88,17 +100,33 @@ jobs:
 
       - name: Install VibeVoice-ASR (microsoft/VibeASR.cpp, MIT licence, CPU only)
         if: inputs.action != 'bakeoff' && vars.VIBEASR_COMMAND == ''
-        continue-on-error: true
         run: |
+          # The earlier step was `continue-on-error`, which turned exit 127 (a command not found: the removed `huggingface-cli`) into a green check. A failure now writes an ERROR annotation, a line in the job summary
+          # and VIBEASR_INSTALL_ERROR, which the probe prints on VibeVoice's own line. The run still goes on, because the other three backends do not depend on this.
+          set +e
+          fail() { echo "::error title=VibeVoice install failed::$1"; echo "VIBEASR_INSTALL_ERROR=$1" >> "$GITHUB_ENV"; echo "### VibeVoice install FAILED: $1" >> "$GITHUB_STEP_SUMMARY"; exit 0; }
+          sudo apt-get update -y >/dev/null 2>&1
+          sudo apt-get install -y cmake build-essential git >/tmp/apt.log 2>&1 || fail "apt could not install cmake and build-essential: $(tail -n 2 /tmp/apt.log | tr '\n' ' ')"
+          cmake --version | head -1
           if [ ! -x "$HOME/VibeASR.cpp/build/bin/asr_infer" ]; then
-            git clone --depth 1 --recursive https://github.com/microsoft/VibeASR.cpp.git "$HOME/VibeASR.cpp"
-            cd "$HOME/VibeASR.cpp"
-            cmake -B build -DCMAKE_BUILD_TYPE=Release
-            cmake --build build -j"$(nproc)"
-            pip install huggingface_hub
-            huggingface-cli download microsoft/VibeVoice-ASR-BitNet --local-dir models/vibeasr
+            git clone --depth 1 --recursive https://github.com/microsoft/VibeASR.cpp.git "$HOME/VibeASR.cpp" || fail "git clone of microsoft/VibeASR.cpp failed"
+            cd "$HOME/VibeASR.cpp" || fail "the clone is missing"
+            cmake -B build -DCMAKE_BUILD_TYPE=Release >/tmp/cmake1.log 2>&1 || fail "cmake configure failed: $(tail -n 3 /tmp/cmake1.log | tr '\n' ' ')"
+            cmake --build build -j"$(nproc)" >/tmp/cmake2.log 2>&1 || fail "cmake build failed: $(tail -n 3 /tmp/cmake2.log | tr '\n' ' ')"
+            python -m pip install huggingface_hub >/dev/null 2>&1 || fail "pip could not install huggingface_hub"
+            python -c "from huggingface_hub import snapshot_download; snapshot_download('microsoft/VibeVoice-ASR-BitNet', local_dir='models/vibeasr')" || fail "the model download (microsoft/VibeVoice-ASR-BitNet) failed"
           fi
+          test -x "$HOME/VibeASR.cpp/build/bin/asr_infer" || fail "asr_infer was not built: $(ls "$HOME/VibeASR.cpp/build/bin" 2>&1 | head -3 | tr '\n' ' ')"
+          for f in vibeasr-vae-encoder-i8_s.gguf vibeasr-lm-i2_s-embed-q6_k.gguf; do test -f "$HOME/VibeASR.cpp/models/vibeasr/$f" || fail "the model file $f is not in the download: $(ls "$HOME/VibeASR.cpp/models/vibeasr" 2>&1 | head -6 | tr '\n' ' ')"; done
+          echo "VibeASR installed"
           echo "VIBEASR_COMMAND=$HOME/VibeASR.cpp/build/bin/asr_infer --vae-model $HOME/VibeASR.cpp/models/vibeasr/vibeasr-vae-encoder-i8_s.gguf --lm-model $HOME/VibeASR.cpp/models/vibeasr/vibeasr-lm-i2_s-embed-q6_k.gguf --audio {audio} -t 4 --greedy" >> "$GITHUB_ENV"
+
+      - name: Make a spoken test sentence (the probe then checks that each backend really transcribes it)
+        if: inputs.action == 'probe-transcribe'
+        run: |
+          sudo apt-get install -y espeak-ng >/tmp/espeak.log 2>&1 || echo "::warning title=espeak-ng::could not be installed, the probe falls back to a second of silence"
+          mkdir -p data/_probe
+          espeak-ng -w data/_probe/probe_speech.wav "This is a test of the transcription chain. One, two, three." && ls -la data/_probe/probe_speech.wav
 
       - name: Install the local transcription backup (Faster-Whisper)
         if: inputs.action != 'bakeoff'
@@ -127,11 +155,11 @@ jobs:
           esac
 
       - name: Save the data
-        if: always() && (inputs.action == 'probe-transcribe' || inputs.action == 'transcribe')
+        if: always() && (inputs.action == 'probe-transcribe' || inputs.action == 'transcribe' || inputs.action == 'bakeoff')
         run: |
           git config user.name "stage-tools"
           git config user.email "stage-tools@users.noreply.github.com"
-          git add -f data/_shared/transcribe_rankings.json data/*/extras/transcripts.json data/*/catalogue/transcripts.md 2>/dev/null || true          # only the files this tool writes
+          git add -f data/_shared/transcribe_rankings.json data/_shared/bakeoff.json data/*/extras/transcripts.json data/*/catalogue/transcripts.md 2>/dev/null || true          # only the files this tool writes
           if git diff --cached --quiet; then
             echo "No data changes to save."
           else
