@@ -59,7 +59,7 @@ DEFAULT_APIFY_ACTORS = {"meta_ads": "apify/facebook-ads-scraper", "tiktok": "clo
 DEFAULT_COLLECTORS = {
     "browser": {"monthly_items": 0, "items_per_run": 30, "cache_days": 3},          # 0 = no monthly limit
     "gemini": {"monthly_tasks": 2, "tasks_per_run": 1, "cache_days": 14},
-    "apify": {"mode": "off", "monthly_items": AB.items("collect", AB.WORKING_KEYS), "items_per_run": 30, "max_cost_per_run_usd": 1.0, "check_max_cost_usd": 0.5,
+    "apify": {"mode": "fallback", "monthly_items": AB.items("collect", AB.WORKING_KEYS), "items_per_run": 30, "max_cost_per_run_usd": 1.0, "check_max_cost_usd": 0.5,
               "actors": DEFAULT_APIFY_ACTORS},
     "claude": {"model": "claude-sonnet-5-5", "monthly_calls": 60, "max_rounds": 3, "max_tokens": 700, "prompt_max_tokens": 2000, "review_rounds": 1,
                "prepare_prompt": True},
@@ -1010,7 +1010,10 @@ def settle_images(browser, site_cfg):
             return (f"the grid was still filling in after {cfg['max_seconds']} s ({last[0]} of {last[1]} images drawn"
                     + (f", {blank} blank tile(s)" if blank else "") + (", spinner still showing" if now["spinner"] else "") + ")")
         if blank > 0 and callable(nudge) and polls % 2 == 1:
-            nudge()
+            try:
+                nudge(cfg.get("tiles_any", []))                                       # visit the blank tiles one by one
+            except TypeError:
+                nudge()
         polls += 1
         browser.wait(cfg["poll_seconds"])
         waited += cfg["poll_seconds"]

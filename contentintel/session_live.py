@@ -647,7 +647,18 @@ def discovery_rows(url, environ, providers=None):
 
 APIFY_PAGE_ACTORS = {"instagram": ("apify/instagram-scraper", lambda url, n: {"directUrls": [url], "resultsType": "posts", "resultsLimit": n}),
                      "tiktok": ("clockworks/tiktok-scraper", lambda url, n: {"postURLs": [url], "resultsPerPage": n}),
+                     "reddit": ("trudax/reddit-scraper-lite", lambda url, n: {"startUrls": [{"url": url}], "maxItems": n, "maxPostCount": n, "skipComments": True}),
+                     "x": ("khadinakbar/x-tweet-scraper", lambda url, n: {"handles": [_x_handle(url)], "maxTweetsPerQuery": n}),
+                     "linkedin": ("harvestapi/linkedin-company-posts", lambda url, n: {"targetUrls": [url], "maxPosts": n}),
                      "default": ("apify/website-content-crawler", lambda url, n: {"startUrls": [{"url": url}], "maxCrawlPages": 1, "maxCrawlDepth": 0})}
+APIFY_FEATURE = {"reddit": "reddit_backup", "x": "x_read", "linkedin": "linkedin_read"}              # which share of the 20 dollar month a platform's page reads are counted against (the others: sessions_read)
+
+
+def _x_handle(url):
+    """The account name in an x.com or twitter.com address (a profile or one of its tweets); '' when there is none."""
+    import re
+    m = re.match(r"https?://(?:www\.|mobile\.)?(?:x|twitter)\.com/([A-Za-z0-9_]{1,15})(?:[/?#]|$)", str(url))
+    return m.group(1) if m and m.group(1).lower() not in ("home", "search", "explore", "i", "intent", "share") else ""
 APIFY_PAGE_CEILING = 0.25                                                                   # dollars one page read may cost, enforced by Apify
 
 
@@ -656,20 +667,25 @@ def apify_rows(platform, url, client, usage=None, now="", keys=4):
     session or read what only a logged-in person sees. One call, at most one item, 25 cents, counted against the sessions-read share of the Apify month (apify_budget)."""
     from . import apify_budget as AB
     day = (now or "0000-00-00")[:10]
-    if usage is not None and AB.room("sessions_read", usage, day, keys) < 1:
-        raise K.Failure(K.RATE_LIMITED, "the sessions-read share of this month's Apify money (or today's share of it) is used up")
+    feature = APIFY_FEATURE.get(platform, "sessions_read")
+    if usage is not None and AB.room(feature, usage, day, keys) < 1:
+        raise K.Failure(K.RATE_LIMITED, f"the {feature.replace('_', '-')} share of this month's Apify money (or today's share of it) is used up")
     actor, payload = APIFY_PAGE_ACTORS.get(platform, APIFY_PAGE_ACTORS["default"])
+    if platform == "x" and not _x_handle(url):
+        raise K.Failure(K.BAD_INPUT, f"{url} is not an X profile or tweet address: the X actor reads an account's recent tweets")
+    if platform == "linkedin" and "/company/" not in str(url):
+        raise K.Failure(K.BAD_INPUT, f"{url} is not a LinkedIn company page: the actor reads a company page's public posts (a person's profile needs a login)")
     try:
         items = client.run(actor, payload(url, 1), max_items=1, max_cost_usd=APIFY_PAGE_CEILING)
     except Exception as exc:                                                                 # noqa: BLE001
         raise K.Failure(K.UPSTREAM_BROKEN, f"Apify could not read the page ({actor}): {type(exc).__name__}: {str(exc)[:120]}") from None
     if usage is not None:
-        AB.charge("sessions_read", usage, day, max(1, len(items or [])))
+        AB.charge(feature, usage, day, max(1, len(items or [])))
     rows = []
     for it in (items or [])[:1]:
         if not isinstance(it, dict):
             continue
-        text = " ".join(str(it.get(k) or "") for k in ("text", "caption", "markdown", "description", "bio", "biography", "fullName", "title") if it.get(k)).strip()
+        text = " ".join(str(it.get(k) or "") for k in ("text", "caption", "markdown", "description", "bio", "biography", "fullName", "title", "content", "postContent", "body", "selftext") if it.get(k)).strip()
         if text:
             rows.append({"url": url, "final_url": str(it.get("url") or it.get("inputUrl") or url), "title": str(it.get("title") or it.get("fullName") or "")[:140], "text": text[:4000], "chars": len(text), "route": "apify", "actor": actor})
     return rows

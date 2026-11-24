@@ -1,5 +1,6 @@
 """`stage`: transcription (stage 5), its retest probe, and the browser bake-off (stage 10). The skill stages (4, 6, 7, 8, 9) run under `canon --action stage` because they read the claims ledger."""
 import json
+import re
 from pathlib import Path
 
 from . import bakeoff as BO
@@ -19,24 +20,59 @@ def add_parsers(sub, common):
     p.add_argument("--bakeoff-urls", default="", help="bakeoff: public addresses, comma-separated (overrides the file's list)")
 
 
-def _download(url, dest, limit=24 * 1024 * 1024):
-    import urllib.request
-    if not url.startswith("https://"):
-        return "only https addresses are read"
-    req = urllib.request.Request(url, headers={"User-Agent": "KelsonResearchBot/1.0"})
+MEDIA_SUFFIXES = (".mp3", ".mp4", ".m4a", ".wav", ".ogg", ".opus", ".webm", ".flac", ".mov", ".mpeg", ".mpga")
+
+
+def looks_like_media(path):
+    """False for a file that is a web page (or nothing): too small, or its first bytes are HTML or JSON. A TikTok address fetched with a plain GET is the HTML page, not the video: that was Stage tools #9."""
     try:
-        with urllib.request.urlopen(req, timeout=60) as resp, open(dest, "wb") as fh:           # noqa: S310 - an address the owner typed, https only, size capped
-            size = 0
-            while True:
-                chunk = resp.read(1 << 20)
-                if not chunk:
-                    return ""
-                size += len(chunk)
-                if size > limit:
-                    return f"the file is larger than {limit // 1048576} MB: it was not read"
-                fh.write(chunk)
-    except Exception as exc:                                                                  # noqa: BLE001
-        return f"{type(exc).__name__}: {str(exc)[:120]}"
+        head = Path(path).read_bytes()[:2048]
+    except OSError:
+        return False
+    low = head.lower()
+    return len(head) >= 512 and not (low.lstrip().startswith((b"<", b"{", b"[")) or b"<html" in low or b"<!doctype" in low)
+
+
+def _download(url, dest, runner=None, limit=24 * 1024 * 1024):
+    """Fetch the audio or video of `url` into `dest`. Returns (problem, route): problem '' on success. A direct address of a media FILE is read with a plain https GET and its content type is checked; every other address
+    (a TikTok, Instagram, YouTube, X or Reddit page) goes through yt-dlp, exactly as analyze does. Either way the download must LOOK like media (not a web page) or the run fails and says so; the route is always named."""
+    import urllib.request
+    import subprocess
+    if not url.startswith("https://"):
+        return "only https addresses are read", "none"
+    path_part = url.split("?")[0].lower()
+    if path_part.endswith(MEDIA_SUFFIXES):
+        req = urllib.request.Request(url, headers={"User-Agent": "KelsonResearchBot/1.0"})
+        try:
+            with urllib.request.urlopen(req, timeout=60) as resp, open(dest, "wb") as fh:           # noqa: S310 - an address the owner typed, https only, size capped
+                ctype = (resp.headers.get("Content-Type") or "").lower()
+                if ctype.startswith("text/") or "html" in ctype or "json" in ctype:
+                    return f"the address answered with {ctype or 'a web page'}, not an audio or video file", "plain https GET"
+                size = 0
+                while True:
+                    chunk = resp.read(1 << 20)
+                    if not chunk:
+                        break
+                    size += len(chunk)
+                    if size > limit:
+                        return f"the file is larger than {limit // 1048576} MB: it was not read", "plain https GET"
+                    fh.write(chunk)
+        except Exception as exc:                                                                  # noqa: BLE001
+            return f"{type(exc).__name__}: {str(exc)[:120]}", "plain https GET"
+        route = "plain https GET (a direct media file)"
+    else:
+        from . import videometa as VMETA
+        from . import contract as K
+        try:
+            got = VMETA.fetch_file(url, str(Path(dest).parent), run=runner or subprocess.run)
+        except K.Failure as exc:
+            return f"yt-dlp could not download it: {exc.code}: {exc.message}", "yt-dlp"
+        if Path(got) != Path(dest):
+            Path(dest).write_bytes(Path(got).read_bytes())
+        route = "yt-dlp (the page's video, about 720p at most)"
+    if not looks_like_media(dest):
+        return "the download is not audio or video (it looks like a web page or is empty): nothing was transcribed", route
+    return "", route
 
 
 def run_stage(args, store, now, *, environ=None, post=None, loader=None, runner=None):
@@ -49,6 +85,8 @@ def run_stage(args, store, now, *, environ=None, post=None, loader=None, runner=
         res = TR.probe(Path(args.data_dir) / "_probe", key=TR.env_key(environ), post=post, loader=loader, cloudflare=TR.env_cloudflare(environ), vibevoice=TR.env_vibevoice(environ), runner=runner)
         for r in res["rows"]:
             print(f"stage: transcription {r['backend']}: {'TRANSCRIBED' if r['ok'] and r.get('heard') else 'CONNECTED' if r['ok'] else 'FAILED'} in {r['seconds']} s" + (f" (heard: {r['heard']!r})" if r["ok"] and r.get("heard") else "") + ("" if r["ok"] else f": {r['why']}"))
+        okc, line = TR.selfcheck(Path(args.data_dir) / "_probe")                              # the discard path, proven offline in every probe run
+        print(f"stage: {line}")
         shared.mkdir(parents=True, exist_ok=True)
         (shared / TR.RANKINGS_FILE).write_text(json.dumps({"measured_at": now, "ranking": res["ranking"], "rows": res["rows"]}, indent=1) + "\n", encoding="utf-8")
         print(f"stage: transcription order now: {', '.join(res['ranking']) or 'none answered'} (then the others; VibeVoice runs only when VIBEASR_COMMAND is set)")
@@ -59,7 +97,7 @@ def run_stage(args, store, now, *, environ=None, post=None, loader=None, runner=
         except (OSError, ValueError) as exc:
             print(f"stage: {exc}")
             return 1
-        urls = [u.strip() for u in args.bakeoff_urls.split(",") if u.strip()] or cfg["urls"]
+        urls = [u.strip() for u in re.split(r"[,\s]+", args.bakeoff_urls) if u.strip()] or cfg["urls"]                # commas, spaces or new lines: a list typed one per line works too
         if not urls:
             print("stage: bake-off: no public addresses: give them in bakeoff.yaml (urls) or with --bakeoff-urls; none is built into the tool")
             return 1
@@ -78,7 +116,8 @@ def run_stage(args, store, now, *, environ=None, post=None, loader=None, runner=
     path = Path(args.file) if args.file else Path(args.data_dir) / "_probe" / "download.bin"
     if args.url:
         path.parent.mkdir(parents=True, exist_ok=True)
-        problem = _download(args.url, path)
+        problem, route = _download(args.url, path, runner)
+        print(f"stage: {args.brand}: download route: {route}")
         if problem:
             print(f"stage: {args.brand}: the address was not read: {problem}")
             return 1

@@ -204,6 +204,7 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
             continue
         kept = store.read_extra(slug, "voice") or {}
         total_new = 0
+        trending_lane = list((kept or {}).get("trending", [])) if isinstance(kept, dict) else []          # the small capped lane of trending topics (never audience voice)
         run_entities = {}
         apify_lane, ledger = apify_all if args.mode in ("research", "competitors") and args.apify else (None, None)
         for topic, peers in jobs:
@@ -213,7 +214,17 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
                 worst = max(worst, 0)
                 print(f"{slug}: {args.mode} {topic or 'trending'!r}: {exc.code}: {exc.message}" + (f" (the last30days engine had also failed: {external.last_error})" if external.last_error else ""))
                 items, status, which = [], {}, "none"                                  # the Apify lane still runs below: one reader failing does not silence the other
-            kept, fresh = VOICE.merge(kept, items, now)
+            to_merge = items
+            if args.mode == "discover":                                   # only what is about THIS brand's world is saved as audience voice; the rest feeds a small capped trending lane (topics for the seed suggestions), never the voice
+                from . import assets_find as AF2
+                terms = AF2.terms_from_files(getattr(args, "brands_dir", "brands"), slug, store, include_competitors=True)
+                to_merge, other = _split_discover(items, terms)
+                scored_other = VOICE.merge({"items": []}, other, now)[0].get("items", [])                  # the same weighting and clustering as the voice, so the seed suggestions rank the trending items the way they always did
+                keep_other = [{"title": o.get("title", ""), "url": o.get("url", ""), "source": o.get("source", ""), "weight": o.get("weight", 0), "cluster": o.get("cluster", ""), "at": now} for o in scored_other]
+                seen_t = {(x.get("url") or x.get("title")) for x in keep_other}
+                trending_lane = (keep_other + [x for x in trending_lane if (x.get("url") or x.get("title")) not in seen_t])[:TRENDING_CAP]
+                print(f"{slug}: {len(to_merge)} discovered item(s) are about this brand's world and were saved; {len(other)} are about other things (or have no link) and went to the trending lane only (topics for the seed suggestions, at most {TRENDING_CAP} kept, never audience voice)")
+            kept, fresh = VOICE.merge(kept, to_merge, now)
             total_new += fresh
             for it in items:
                 run_entities[it.get("entity") or ""] = run_entities.get(it.get("entity") or "", 0) + 1
@@ -265,9 +276,11 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
                 total_new += fresh_c
                 print(f"{slug}: {len(comments)} viewer comment(s) from videos already read were added to the voice ({fresh_c} new): the audience's own words, with their likes")
         if jobs or args.mode != "discover":
+            if trending_lane:
+                kept["trending"] = trending_lane                                       # the merges above build a new voice file: the capped trending lane is put back
             store.write_extra(slug, "voice", kept)
             top = VOICE.prompt_lines(kept, 3)
-            kept["seed_topics"] = VOICE.seed_topics(kept)
+            kept["seed_topics"] = VOICE.seed_topics({"items": list(kept.get("items", [])) + list(kept.get("trending", []))})          # the saved voice AND the small trending lane
             store.write_extra(slug, "voice", kept)
             if args.seed and args.mode == "discover":
                 print(f"{slug}: " + seed_auto_seeds(store, slug, kept["seed_topics"]))
@@ -526,6 +539,22 @@ def run_analyze(args, now="", *, runner=subprocess.run, store=None, environ=None
     return code
 
 
+TRENDING_CAP = 12
+
+
+def _split_discover(items, terms):
+    """(on_brand, trending): the discovered items that have a link AND mention the brand's world (at least half the words of one of its terms: the name, the research keywords and topics, the product terms, the competitors) are the
+    audience voice that is SAVED; the rest are about other things (or cannot be opened). The terms come from the brand's own files (assets_find.terms_from_files), never from a list in the code."""
+    from . import assets_find as AF
+    mine, other = [], []
+    for it in items:
+        url = str(it.get("url") or "").strip()
+        text = {"title": f"{it.get('title', '')} {it.get('summary', '')}"}
+        about = any(AF.words(term) and AF.relevance(text, term) >= 0.5 for term in terms)
+        (mine if about and url.startswith("http") else other).append(it)                 # saved only when about the brand AND openable: an item with no link can still suggest a topic, never be voice
+    return mine, other
+
+
 def _speech(path, tmp, runner, env, post, loader, data_dir, language="en"):
     """What is said in the video: the audio is made sendable with ffmpeg and the transcription backends are tried in their measured order (Groq, Cloudflare, Faster-Whisper, VibeVoice). Printed and returned."""
     from . import transcribe as TR
@@ -587,7 +616,7 @@ def run_assets(args, store, now, *, get=default_get, post=default_post, environ=
             research = yaml.safe_load(rp.read_text(encoding="utf-8")) if rp.is_file() else None
         except Exception:                                                                    # noqa: BLE001 - a brand that cannot be read only means no derived queries
             brand = None
-    found, report = AF.find_usable(get, args.query, args.kind, brand=brand, store=store, research=research, limit=args.limit, bearer=bearer, use_openverse=use, licence_ok_for_ads=not args.any_licence)
+    found, report = AF.find_usable(get, args.query, args.kind, brand=brand, store=store, research=research, limit=args.limit, bearer=bearer, use_openverse=use, licence_ok_for_ads=not args.any_licence, pixabay_key=(environ.get("PIXABAY_API_KEY") or "").strip())
     which = next((t_["source"] for t_ in reversed(report["tried"]) if t_["kept"]), "nothing")
     for line in AF.report_lines(report):
         print(line)
@@ -599,8 +628,9 @@ def run_assets(args, store, now, *, get=default_get, post=default_post, environ=
         print(f"  - {a['title']} [{a['license'].upper()}] {a['page'] or a['url']} | credit: {OPENVERSE.credit_line(a)[:160]}")
     if args.brand and found:
         kept = store.read_extra(args.brand, "assets") or {"assets": []}
-        if brand is not None:                                                                      # old junk is taken out whenever the list is written (a parliament, a coat of arms, a competitor's shoes)
-            kept["assets"], removed = AF.clean_saved(kept["assets"], AF.brand_terms(brand, store, research))
+        terms = AF.brand_terms(brand, store, research) if brand is not None else [args.brand.replace("_", " ")]       # old junk is taken out whenever the list is written, even when the brand file cannot be loaded (then by the brand's name)
+        if terms:
+            kept["assets"], removed = AF.clean_saved(kept["assets"], terms)
             if removed:
                 print(f"Cleaned {len(removed)} saved asset(s) that are not this brand's: " + "; ".join(str(a.get("title") or a.get("url"))[:40] for a in removed[:6]))
         known = {a["url"] for a in kept["assets"]}

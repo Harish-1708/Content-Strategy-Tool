@@ -50,6 +50,38 @@ def stock_source(cfg, environ):
     return "pexels" if (environ.get("PEXELS_API_KEY") or "").strip() else "pixabay"
 
 
+def default_get_json(url, timeout=20):
+    import json as _json
+    import urllib.error
+    import urllib.request
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "KelsonResearchBot/1.0"}), timeout=timeout) as r:                  # noqa: S310 - a fixed https address of the stock provider
+            return r.status, _json.loads(r.read().decode("utf-8", "replace") or "{}")
+    except urllib.error.HTTPError as exc:
+        return exc.code, {}
+    except Exception as exc:                                                                                                                            # noqa: BLE001
+        return 0, {"error": type(exc).__name__}
+
+
+def check_stock_keys(environ, getter=default_get_json):
+    """[(provider, state, detail)] for the free stock footage providers, by NAME only (a key's value is never printed): NOT SET, SET and ANSWERED (one real test search: LIVE-PROVEN), or SET but REJECTED / unreachable.
+    The key MoneyPrinterTurbo uses lives in ITS own configuration on the host; this reports the GitHub secret that the deploy hands it."""
+    rows = []
+    key = (environ.get("PIXABAY_API_KEY") or "").strip()
+    if not key:
+        rows.append(("pixabay", "NOT SET", "no PIXABAY_API_KEY in this run's environment: add the secret (pixabay.com/api/docs, free, no card)"))
+    else:
+        status, data = getter(f"https://pixabay.com/api/?key={key}&q=sweatpants&per_page=3&safesearch=true")
+        if status == 200 and isinstance(data, dict) and "totalHits" in data:
+            rows.append(("pixabay", "SET and ANSWERED", f"a test search returned {len(data.get('hits') or [])} result(s) of {data.get('totalHits')}: the key is LIVE-PROVEN"))
+        elif status in (400, 401, 403):
+            rows.append(("pixabay", "SET but REJECTED", f"Pixabay answered {status}: the key was refused"))
+        else:
+            rows.append(("pixabay", "SET but not proven", f"Pixabay answered {status or 'nothing'}: try again"))
+    rows.append(("pexels", "SET" if (environ.get("PEXELS_API_KEY") or "").strip() else "NOT SET", "Pexels has paused new key issuance (checked 2026-11-23): none is needed while Pixabay answers"))
+    return rows
+
+
 def ensure_on(cfg, environ):
     """The base URL of the host, or MptOff with the reason. Both the owner's switch and a host address are needed."""
     if not cfg["enabled"]:

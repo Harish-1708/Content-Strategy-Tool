@@ -266,7 +266,7 @@ class Registry:
                                          + ("; one source may have a reason to exaggerate this claim" if risky else "")))
                 elif outcome == "conflicted" and contradicts:
                     claim.update(status="conflicted", decided_at=e["at"], reason=f"sources disagree: {len(supports)} support it and {len(contradicts)} contradict it (" + ", ".join(sorted({c['domain'] for c in contradicts}))[:160] + "): the owner decides")
-                elif outcome == "unverified" and claim["status"] == "blocked" and not contradicts:
+                elif outcome == "unverified" and not contradicts and (claim["status"] == "blocked" or (e.get("recheck") and claim["status"] == "conflicted" and not claim.get("conflicts_with"))):
                     claim.update(status="unverified", reason="checked from public sources: none that is reliable was found, nothing contradicts it: left unverified for the owner to decide")
         return {"canon": canon, "claims": claims, "foundation": foundation}
 
@@ -318,7 +318,7 @@ class Registry:
             raise CanonError("only the owner marks a claim verified")
         return self.append("claim_status", actor, at, id=cid, status=status, source=source, reason=reason)
 
-    def record_evidence(self, cid, supports, contradicts, outcome, at):
+    def record_evidence(self, cid, supports, contradicts, outcome, at, recheck=False):
         """What a public-source check found for a claim: pages that support it (each with its exact quotation and the kind of source) and pages that contradict it. `outcome`:
         verified     ONE source close to the fact, in any medium (a page, a post, an interview, a podcast, a newsletter...), with an exact quotation and nothing contradicting it; with only one source the claim
                      is marked single-source so the owner can spot-check it;
@@ -330,7 +330,8 @@ class Registry:
         outcome = {True: "verified", False: "unverified"}.get(outcome, outcome)
         if outcome not in ("verified", "conflicted", "unverified"):
             raise CanonError("an evidence outcome is verified, conflicted or unverified")
-        return self.append("claim_evidence", TOOL, at, id=cid, supports=list(supports)[:6], contradicts=list(contradicts)[:6], outcome=outcome)
+        extra = {"recheck": True} if recheck else {}                       # a RE-check of a claim a source had marked conflicted: only then may finding no contradiction lower it to unverified
+        return self.append("claim_evidence", TOOL, at, id=cid, supports=list(supports)[:6], contradicts=list(contradicts)[:6], outcome=outcome, **extra)
 
     def add_conflict(self, text, category, source, reason, against, at):
         """New research disagrees with one or more claims already in the ledger (`against`: an id or a list of ids): the NEW version is added as conflicted and linked to EACH of them. The old claims are never

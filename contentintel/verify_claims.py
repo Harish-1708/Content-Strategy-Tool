@@ -64,7 +64,7 @@ def decide(supports, contradicts):
     return "unverified"
 
 
-def verify_claim(reg, name, claim, *, search, get, claude, now, report, max_pages=6, max_calls=None):
+def verify_claim(reg, name, claim, *, search, get, claude, now, report, max_pages=6, max_calls=None, recheck=False):
     """Check ONE claim (a dict from the ledger). Returns 'verified', 'conflicted', 'unverified' or 'skipped'. `report` is {'calls','errors','notes'} shared across claims."""
     cid = claim["id"]
     if claim.get("owner_decided"):
@@ -131,7 +131,7 @@ def verify_claim(reg, name, claim, *, search, get, claude, now, report, max_page
     outcome = decide(supports, contradicts)
     report.setdefault("log", []).append({"id": cid, "text": claim["text"][:120], "queries": queries, "found": len(urls), "read": read_urls, "outcome": outcome,
                                          "supports": [(s["url"], s["medium"], "close" if s["close"] else "far", s["risk"]) for s in supports], "contradicts": [(c["url"], c["medium"]) for c in contradicts]})
-    reg.record_evidence(cid, supports, contradicts, outcome, now)                       # always recorded, so a claim that was checked is not checked again and the owner can see what was found
+    reg.record_evidence(cid, supports, contradicts, outcome, now, recheck=recheck)                       # always recorded, so a claim that was checked is not checked again and the owner can see what was found
     return outcome
 
 
@@ -150,7 +150,7 @@ def log_lines(report, prefix="canon:   "):
     return lines
 
 
-def verify_ids(reg, name, ids, *, search, get, claude, now, max_calls=None, max_pages=6, report=None, tried=None, progress=None, deadline=None, clock=None):
+def verify_ids(reg, name, ids, *, search, get, claude, now, max_calls=None, max_pages=6, report=None, tried=None, progress=None, deadline=None, clock=None, recheck=False):
     """Check the named claims (once each per `tried` set). Returns the ids whose status the check CHANGED away from blocking (verified, or a blocked claim left unverified), which is what lets a section through;
     `report['outcomes']` holds every claim's outcome. `report` collects calls, errors and notes."""
     report = report if report is not None else {"calls": 0, "errors": 0, "notes": []}
@@ -175,7 +175,7 @@ def verify_ids(reg, name, ids, *, search, get, claude, now, max_calls=None, max_
             report["notes"].append("the call limit was reached: the remaining claim(s) were not checked")
             break
         before = claim["status"]
-        outcome = verify_claim(reg, name, claim, search=search, get=get, claude=claude, now=now, report=report, max_pages=max_pages, max_calls=max_calls)
+        outcome = verify_claim(reg, name, claim, search=search, get=get, claude=claude, now=now, report=report, max_pages=max_pages, max_calls=max_calls, recheck=recheck)
         report["outcomes"][cid] = outcome
         if progress:
             progress("done", cid, outcome, position, total)

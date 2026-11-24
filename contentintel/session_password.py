@@ -5,10 +5,11 @@ proved: the last THREE checks in a row gave no sign either way (UNCONFIRMED, as 
 been ACCEPTED since. Then, and only then, the tool logs in ONCE with the username and password already saved as secrets, captures the fresh cookies, and proves the session with them in the same run.
 
 HARD LIMITS (a login from GitHub's datacenter addresses looks like a takeover, and this account has already been warned once): at most one attempt per platform in 7 days and two in a month; a security check or a code the runner
-cannot answer ends the attempt and rests the backup for 14 days; an account warning rests it for 30 days; nothing is ever tried while an account is resting; it is never the default and never runs on a schedule.
+cannot answer ends the attempt RIGHT THERE (no solving, no second try) and rests the backup for 2 days; an account warning rests it for 30 days; nothing is ever tried while an account is resting; it is never the default and never runs on a schedule.
 
-HOW IT SITS WITH THE STEALTH LAYER'S COOKIE-ONLY RULE: the rule stands unchanged everywhere it applies: Collect, the browser reads and the identities keep `password_fallback: never` and `allow_login: false`; a missing or expired cookie
-there still means "nothing was read". This backup needs ONE narrow exception, for the sessions-PROOF path only: it does not go through the collectors' login routine and it does not touch any identity's setting; it is its own command
+HOW IT SITS WITH THE STEALTH LAYER'S COOKIE-ONLY RULE: the rule stands unchanged everywhere it applies. It does NOT rest on a `password_fallback: never` setting: browser.yaml says `when_cookies_fail` for Instagram and TikTok. It rests on the
+IDENTITY GATE: with the stealth layer on, stealth.py sets the identity's `allow_login` to False and collectors.py refuses a login while it is False, so a missing or expired cookie there still means "nothing was read". If the stealth layer were ever
+turned off, that gate would not apply and the browser.yaml fallback would be live for those two sites: the guarantee is the identity, not a `never` setting. This backup needs ONE narrow exception, for the sessions-PROOF path only: it does not go through the collectors' login routine and it does not touch any identity's setting; it is its own command
 (`sessions --what password-backup --key <platform>`), owner-triggered, and the fresh cookies it captures live only in that run: they are never printed or saved. (To keep the platform's cookie session alive afterwards, export fresh cookies
 into the platform's secret as before: a runner cannot write a secret.) Nothing in this file prints, stores or logs a password or a cookie value."""
 import json
@@ -18,7 +19,7 @@ from pathlib import Path
 PROOF_FAILS = ("UNCONFIRMED", "CANNOT CHECK", "REJECTED", "EXPIRED")
 STREAK_NEEDED = 3
 WEEK_DAYS, MONTH_MAX = 7, 2
-REST_CHALLENGE_DAYS, REST_WARNING_DAYS = 14, 30
+REST_CHALLENGE_DAYS, REST_WARNING_DAYS = 2, 30            # a security check or code: 2 days (was 14); an account warning: 30
 
 
 def _day(now):

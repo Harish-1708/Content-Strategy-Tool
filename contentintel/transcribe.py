@@ -3,6 +3,7 @@
 Nothing here posts, sends or publishes: a transcript is saved as evidence next to the brand's data and the owner's research reads it."""
 import hashlib
 import json
+import re
 import os
 import time
 import uuid
@@ -173,6 +174,18 @@ def order(shared_dir):
 LATIN_LANGUAGES = ("en", "es", "fr", "de", "it", "pt", "nl", "sv", "da", "no", "fi", "pl", "tr", "id")
 
 
+def looping(text):
+    """True when a transcript is a LOOP: a phrase of 2 to 8 words repeated four or more times in a row, or very little variety in a long text (fewer than one word in five is new). Whisper turns music and noise into the same
+    phrase over and over ('a little bit of a drink' x 40, Research tools #35): right language, still a hallucination. Language-independent."""
+    words = re.findall(r"\w+", str(text).lower())
+    if len(words) >= 12:
+        for n in range(2, 9):
+            for i in range(0, len(words) - 4 * n + 1):
+                if words[i:i + n] * 4 == words[i:i + 4 * n]:
+                    return True
+    return len(words) >= 30 and len(set(words)) / len(words) < 0.2
+
+
 def plausible(text, language):
     """False when a transcript is in the wrong SCRIPT for the language expected: more than 30% of its letters are not Latin letters although the language is a Latin-script one (Whisper answered a music-and-noise English
     video with a Japanese sentence: a hallucination, not a transcript). An unknown language or a short text is not judged."""
@@ -217,6 +230,8 @@ def transcribe(path, *, backends, key="", post=None, loader=None, language=None,
             else:
                 tried.append((backend, NOT_WIRED.get(backend, "unknown backend")))
                 continue
+            if looping(out.get("text", "")):
+                raise Failure(contract.UPSTREAM_BROKEN, "the transcript is a repetitive loop (the same phrase over and over): a hallucination on music or noise, not speech; the next backend is tried")
             if not plausible(out.get("text", ""), language):
                 raise Failure(contract.UPSTREAM_BROKEN, f"the transcript is not in the expected language ({language}): most of its letters are not Latin, which is a hallucination on music or noise, not speech; the next backend is tried")
         except Failure as exc:
@@ -225,6 +240,33 @@ def transcribe(path, *, backends, key="", post=None, loader=None, language=None,
         converted = Path(cache["path"]).name if "path" in cache and Path(cache["path"]) != Path(path) else ""
         return {**out, "backend": backend, "seconds": round(clock() - t0, 2), "tried": tried, "converted": converted}
     raise Failure(contract.UPSTREAM_BROKEN, "no backend could transcribe it: " + "; ".join(f"{b}: {w}" for b, w in tried))
+
+
+def selfcheck(workdir):
+    """(ok, line): proves the DISCARD path with no network and no key, in every probe run: a looping transcript and a wrong-script transcript from the first backend are thrown away and the next backend's answer is used, and a good
+    transcript is kept. The stand-ins are scripted: this proves our code, which is what a real transcript can only exercise by luck."""
+    path = Path(workdir) / "selfcheck.wav"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(silent_wav())
+    good = "this is a short and perfectly ordinary english sentence about the product"
+    cases = (("a repetitive loop", "a little bit of a drink " * 30, "en"), ("a wrong-script transcript", "食べ物の絵文字のチャレンジの始まりを食べています", "en"), ("a good transcript", good, "en"))
+    seen = []
+    for label, first, lang in cases:
+        def post(url, headers, body, timeout, _t=first):
+            return 200, {"text": _t, "language": lang, "segments": [], "result": {"text": _t, "segments": []}}
+        class Model:
+            def transcribe(self, p, language=None, vad_filter=True):
+                from types import SimpleNamespace
+                return [SimpleNamespace(start=0.0, end=2.0, text=" " + good + " ")], SimpleNamespace(language="en")
+        try:
+            out = transcribe(path, backends=("groq_whisper", "faster_whisper"), key="selfcheck", post=post, loader=lambda size: Model(), language="en", workdir=workdir, which=lambda n: n, runner=lambda *a, **k: None)
+        except Exception as exc:                                                                   # noqa: BLE001
+            return False, f"discard-path self-check: FAILED on {label}: {exc}"
+        expect = "groq_whisper" if label == "a good transcript" else "faster_whisper"
+        if out["backend"] != expect or (label != "a good transcript" and not out["tried"]):
+            return False, f"discard-path self-check: FAILED on {label}: answered by {out['backend']}, expected {expect}"
+        seen.append(label)
+    return True, "discard-path self-check: PASSED (" + "; ".join(seen[:2]) + " from the first backend were thrown away and the next backend answered; " + seen[2] + " was kept)"
 
 
 def silent_wav(seconds=1, rate=16000):

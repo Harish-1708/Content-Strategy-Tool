@@ -14,6 +14,19 @@ GATE_SHARE = 0.60                 # the model must beat the naive baseline on th
 GATE_SECONDS = 600                # CPU seconds the whole backtest may take
 
 
+def first_forecast(outputs, horizon):
+    """The first series' forecast as a list of floats, from whatever the model call returned: a GENERATOR (it cannot be indexed: MODEL LOAD FAILED: TypeError: 'generator' object is not subscriptable, Batch 3
+    tools #7), a list or tuple of results, a result with a `.forecast`, an array with `.tolist()`, or a nested list of one row."""
+    results = list(outputs)
+    if not results:
+        raise ValueError("the model returned no forecast")
+    first = results[0]
+    values = getattr(first, "forecast", first)
+    values = getattr(values, "tolist", lambda: values)()
+    flat = values[0] if values and isinstance(values[0], (list, tuple)) else values
+    return [float(x) for x in list(flat)[:horizon]]
+
+
 def naive(series, horizon, season=0):
     """The baseline: the last value repeated, or, when a season is given and there is a full season of history, the same position of the last season."""
     if season and len(series) >= season:
@@ -37,8 +50,7 @@ def load_timesfm(horizon_limit=64):
 
     def run(series, horizon):
         outputs = (forecaster.predict_batch if hasattr(forecaster, "predict_batch") else forecaster.predict)([np.asarray(series, dtype=np.float32)], horizon=horizon)
-        first = outputs[0]
-        return [float(x) for x in list(getattr(first, "forecast", first))[:horizon]]
+        return first_forecast(outputs, horizon)
     return run
 
 

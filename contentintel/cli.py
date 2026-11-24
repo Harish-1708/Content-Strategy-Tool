@@ -230,8 +230,10 @@ def build_parser():
 
     p = sub.add_parser("ai", help="the AI layer: plan, providers, usage, review, ask, check, eval, smoke, catalog (mock unless --live; catalog reads each provider's own model list and changes nothing)")
     _common(p)
-    p.add_argument("action", choices=["plan", "providers", "usage", "review", "ask", "check", "eval", "smoke", "catalog", "rank", "connect"])
+    p.add_argument("action", choices=["plan", "providers", "usage", "review", "ask", "check", "eval", "smoke", "catalog", "rank", "connect", "health"])
     p.add_argument("--providers-config", default="ai_providers.yaml")
+    p.add_argument("--health-config", default="ai_health.yaml", help="health: the owner's settings of the daily provider health run")
+    p.add_argument("--message-file", default="", help="health: write a one-line summary here (the workflow uses it as the commit message)")
     p.add_argument("--lanes-config", default="ai_lanes.yaml")
     p.add_argument("--tasks-config", default="ai_eval_tasks.yaml")
     p.add_argument("--browser-config", default="browser.yaml")
@@ -1156,6 +1158,12 @@ def _acceptance_context(args, store, registry, now):
         return len(found.products), f"{slug}: read {len(found.products)} products from the first page of the public feed"
 
     ctx.observatory_checks = _observatory_checks(args, now)
+    from . import session_live as _sl                                           # the three Apify read routes (Reddit, X, LinkedIn): one real read of a public page each, 25 cents at most, proven live like the Collect ones
+    for src, platform, url in (("reddit", "reddit", "https://www.reddit.com/r/overalls/"), ("x_posts", "x", "https://x.com/NASA"), ("linkedin_posts", "linkedin", "https://www.linkedin.com/company/nasa/")):
+        if apify is None:
+            ctx.missing[(src, "apify")] = "no key: set APIFY_TOKEN"
+        else:
+            ctx.observatory_checks[(src, "apify")] = (lambda p=platform, u=url: (lambda rows: (len(rows), f"{p}: Apify read {len(rows)} item(s) of {u} ({rows[0]['actor']})") if rows else (0, "the actor ran but returned nothing"))(_sl.apify_rows(p, u, apify)))
     try:                                                         # why a Reddit route cannot be checked here, in plain words (never a failure)
         from .observatory import acceptance_checks as _oc
         from .observatory import config as _ocfg
