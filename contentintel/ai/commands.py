@@ -79,9 +79,20 @@ def build_stack(args, store, health, *, mode, clients):
     pool = lanes_mod.load_pool(args.lanes_config, registry)                                  # the shared pool: every approved model, available to every lane that draws on it
     lanes = {**lanes, "canary": canary_lane()}
     shared = Path(store.data_dir) / "_shared" if mode == "live" else Path(args.workdir) / "mock-state"     # a mock run never touches the real spending ledger
-    if mode == "live":                                                                      # the measured order of each job's list (the pool retest), where one has been measured
+    if mode == "live":                                                                      # the measured order of each job's list (the pool retest, the daily health run), where one has been measured
         from . import ranking as rk
-        lanes, _ranked = rk.apply_overlay(lanes, Path(store.data_dir) / "_shared" / rk.RANKINGS_FILE)
+        from . import provider_health as ph
+        from datetime import datetime, timezone
+        try:
+            hcfg = ph.load_config(getattr(args, "health_config", ph.CONFIG))
+        except ValueError:
+            hcfg = dict(ph.DEFAULTS)
+        stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        found = ph.read_discovered(Path(store.data_dir) / "_shared" / ph.HEALTH_FILE, stamp, hcfg["stale_days"])           # live free models the last health run found AND probed OK, while it is fresh
+        if found:
+            registry = ph.with_discovered(registry, found)
+            pool = list(pool) + [{"provider": pid, "model": mid, "gateway_model": mid} for pid, ids in found.items() for mid in ids if (pid, mid) not in {(r["provider"], r["model"]) for r in pool}]
+        lanes, _ranked = rk.apply_overlay(lanes, Path(store.data_dir) / "_shared" / rk.RANKINGS_FILE, stamp, hcfg["stale_days"])
     usage, review = usage_mod.UsageLedger(shared / "ai_usage.json"), review_mod.ReviewQueue(shared / "ai_review.json")
     return registry, lanes, usage, review, router_mod.Router(registry, lanes, usage, health, clients, review, pool=pool)
 
@@ -317,6 +328,8 @@ def run_ai(args, store, health, now):
             return _check(args, registry2, lanes2, router, usage, review, health, store, now, mode, notes)
         if action == "rank":
             return _rank(args, lanes2, router, usage, review, health, store, now, mode, notes)
+        if action == "health":
+            return _health(args, lanes2, router, usage, review, health, store, now, mode, clients)
         if action == "connect":
             return _connect(registry2, lanes2, router, usage, review, health, store, now, mode, notes)
     finally:
@@ -361,7 +374,7 @@ def _rank(args, lanes, router, usage, review, health, store, now, mode, notes):
     for n in notes:
         print("  " + n)
     only = {x.strip() for x in args.only.split(",") if x.strip()} or None
-    report = rk.run_ranking(router, lanes, jobs, now=now, runs=args.runs, only_providers=only)
+    report = rk.run_ranking(router, lanes, jobs, now=now, runs=args.runs, only_providers=only, progress=lambda s: print(s, flush=True))
     print(rk.format_report(report))
     save_state(usage, review, health, store, mode)
     measured = sum(job["routes_tried"] for job in report.values())
@@ -374,6 +387,36 @@ def _rank(args, lanes, router, usage, review, health, store, now, mode, notes):
     elif args.apply:
         print("AI rank: nothing could be measured (no provider answered), so no order was written and the seeded orders stay")
     return 0 if measured else 1
+
+
+def _health(args, lanes, router, usage, review, health, store, now, mode, clients):
+    """The daily provider-model health run (see provider_health.py): discover, probe, score, guard, let Claude judge only what the rules cannot decide, and write ONLY data/_shared/provider_health.json and ai_rankings.json."""
+    from . import provider_health as ph
+    if mode != "live":
+        print("AI health needs live mode (do not pass --mock): a scripted stand-in probes nothing")
+        return 2
+    cfg = ph.load_config(args.health_config)
+    discovered = ph.discover(router.registry, clients, cfg)
+    live_lists = ph.list_live_models(router.registry, clients)
+    router.registry = ph.with_discovered(router.registry, discovered)
+    router.pool = list(router.pool) + [{"provider": pid, "model": mid, "gateway_model": mid} for pid, ids in discovered.items() for mid in ids]
+    print(f"AI health, LIVE: {sum(len(v) for v in discovered.values())} live free model(s) discovered at {', '.join(sorted(discovered)) or 'no provider'}; probing every route with one tiny call:")
+    probes = ph.probe_all(router, lanes, cfg, now, progress=lambda s: print(s, flush=True))
+    claude_route = None
+    if "claude" in clients and "foundation_json" in lanes:
+        model = lanes["foundation_json"].claude_model
+        claude_route = {"provider": "claude", "model": model, "gateway_model": model}
+    shared = Path(store.data_dir) / "_shared"
+    result = ph.run_health(router, lanes, router.registry, probes=probes, discovered=discovered, now=now, cfg=cfg, health_path=shared / ph.HEALTH_FILE, rankings_path=shared / "ai_rankings.json",
+                           claude_route=claude_route, live_lists=live_lists)
+    written = ph.write(result, shared / ph.HEALTH_FILE, shared / "ai_rankings.json")
+    for line in result["lines"]:
+        print(line)
+    print("AI health: wrote " + (", ".join(written) if written else "nothing"))
+    if args.message_file:
+        Path(args.message_file).write_text(result["message"] + "\n", encoding="utf-8")
+    save_state(usage, review, health, store, mode)
+    return 0
 
 
 def _check(args, registry, lanes, router, usage, review, health, store, now, mode, notes):

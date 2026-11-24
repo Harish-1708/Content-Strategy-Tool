@@ -217,7 +217,8 @@ class Router:
         try:
             while True:
                 try:
-                    comp = client.complete(route, system, prompt, cap, expect_platform=provider.gateway_platform if pid != CLAUDE else None, lane=lane.name)
+                    extra = {"timeout": max(90, provider.timeout_seconds)} if getattr(provider, "timeout_seconds", 0) else {}
+                    comp = client.complete(route, system, prompt, cap, expect_platform=provider.gateway_platform if pid != CLAUDE else None, lane=lane.name, **extra)
                     break
                 except Exception as exc:       # every failure of every client is classified; none can end the run
                     err = contract.classify_exception(exc)

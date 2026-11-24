@@ -71,7 +71,7 @@ class GatewayClient:
         t0 = self.clock()
         try:
             status, body, headers = self.http("POST", self.base_url + "/v1/chat/completions", headers={"Authorization": "Bearer " + self.api_key, "Content-Type": "application/json"},
-                                              body={"model": route["gateway_model"], "messages": messages, "max_tokens": max_tokens, "temperature": 0}, timeout=timeout)
+                                              body={"model": route.get("gateway_model") or route["model"], "messages": messages, "max_tokens": max_tokens, "temperature": 0}, timeout=timeout)
         except Exception as exc:          # a network error, a timeout, a refused connection: classified, never raised raw
             raise Failure(contract.classify_exception(exc)["code"], f"the gateway could not be reached: {exc}") from None
         ms = int((self.clock() - t0) * 1000)
@@ -322,7 +322,7 @@ class AnthropicClient:
 
     def complete(self, route, system, prompt, max_tokens, timeout=90, expect_platform=None, lane=None):
         t0 = self.clock()
-        body = {"model": route["gateway_model"], "max_tokens": max_tokens, "messages": [{"role": "user", "content": prompt}]}
+        body = {"model": route.get("gateway_model") or route["model"], "max_tokens": max_tokens, "messages": [{"role": "user", "content": prompt}]}
         if system:
             body["system"] = system
         try:

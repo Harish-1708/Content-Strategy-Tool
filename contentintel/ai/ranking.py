@@ -102,7 +102,7 @@ def probes():
             "foundation_json": [(FD.SYSTEM, foundation_user, _foundation_score)]}
 
 
-def run_ranking(router, lanes, jobs, *, now, runs=2, only_providers=None):
+def run_ranking(router, lanes, jobs, *, now, runs=2, only_providers=None, progress=None, min_headroom=0.15):
     """Measure every eligible route of each job. Returns {lane: {"ranking": [...], "excluded": [...], "routes_tried": n}}. Each probe is run `runs` times per route; every call goes through the router's own
     single-route call, so the pacing, the spending ledger and the provider rests apply exactly as they do in a real run."""
     suite, report = probes(), {}
@@ -113,6 +113,12 @@ def run_ranking(router, lanes, jobs, *, now, runs=2, only_providers=None):
             if only_providers and route["provider"] not in only_providers:
                 continue
             scores, latencies, failures, skipped = [], [], [], ""
+            prov = getattr(getattr(router, "registry", None), "providers", {}).get(route["provider"])
+            if prov is not None and route["provider"] != "claude" and 1.0 - router.usage.load(prov, now) < min_headroom:
+                rows.append({"provider": route["provider"], "model": route["model"], "status": "not measured", "why": f"today's free allowance of {route['provider']} is {int(router.usage.load(prov, now) * 100)}% used: not measured, so the retest does not burn what the other jobs need (run it again when the allowance has reset)"})
+                if progress:
+                    progress(f"rank: {name}: {route['provider']}/{route['model']}: not measured: allowance nearly used")
+                continue
             for system, user, score_fn in suite[name]:
                 for _ in range(max(1, runs)):
                     res = router.run_route(name, route, instructions=user, system=system, now=now, ignore_rests=True)
@@ -130,6 +136,8 @@ def run_ranking(router, lanes, jobs, *, now, runs=2, only_providers=None):
             if skipped:
                 rows.append({"provider": route["provider"], "model": route["model"], "status": "not measured", "why": skipped})
             else:
+                if progress:
+                    progress(f"rank: {name}: {route['provider']}/{route['model']}: {sum(s >= PASS_AT for s in scores)}/{len(scores)} passed" + (f" ({failures[0][:90]})" if failures else ""))
                 rows.append({"provider": route["provider"], "model": route["model"], "status": "measured", "runs": len(scores), "passes": sum(s >= PASS_AT for s in scores),
                              "mean_score": round(statistics.mean(scores), 3), "median_ms": int(statistics.median(latencies)) if latencies else 0, "failures": failures[:3]})
         measured = [r for r in rows if r["status"] == "measured"]
@@ -145,7 +153,7 @@ def save(path, report, now):
     return data
 
 
-def apply_overlay(lanes, path):
+def apply_overlay(lanes, path, now=None, stale_days=3):
     """The lanes with each MEASURED job's chain reordered from the retest: the measured routes best first, then the routes that were not measured in their seeded order. A route that failed every probe is dropped
     from that job's chain (it stays available to other jobs and to the shared pool). A job with no measurement is untouched. Returns (lanes, [one line per job that was reordered])."""
     p = Path(path)
@@ -156,11 +164,21 @@ def apply_overlay(lanes, path):
     except ValueError:
         return lanes, [f"{p.name} could not be read: the seeded orders are used"]
     out, notes = dict(lanes), []
+    from datetime import datetime, timezone
+    nowiso = now or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     for name, job in (data.get("jobs") or {}).items():
         lane = lanes.get(name)
         ranked = job.get("ranking") or []
         if lane is None or not ranked:
             continue
+        if job.get("generated_by") == "health":                                    # a list the daily health run wrote is used only while that run is fresh; older, the static lists (and the last retest) stand
+            try:
+                age = (datetime.fromisoformat(nowiso.replace("Z", "+00:00")) - datetime.fromisoformat(str(job.get("generated_at", "")).replace("Z", "+00:00"))).total_seconds() / 86400
+            except (ValueError, TypeError):
+                age = 10 ** 6
+            if age > stale_days:
+                notes.append(f"{name}: the health run's list is {int(min(age, 9999))} day(s) old (more than {stale_days}): the static list is used")
+                continue
         keep = {(r["provider"], r["model"]) for r in ranked}
         dropped = {(r["provider"], r["model"]) for r in job.get("excluded") or []}
         chain = [{"provider": r["provider"], "model": r["model"]} for r in ranked]
