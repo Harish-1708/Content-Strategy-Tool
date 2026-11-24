@@ -16,6 +16,8 @@ GROQ_URL = "https://api.groq.com/openai/v1/audio/transcriptions"
 GROQ_MODEL = "whisper-large-v3-turbo"
 MAX_BYTES = 24 * 1024 * 1024                                            # Groq's free tier takes files up to 25 MB; a larger one is refused with the reason, never cut
 SEEDED_ORDER = ("groq_whisper", "cloudflare_whisper", "faster_whisper", "vibevoice_asr")
+SPEECH_TEXT = "This is a test of the transcription chain. One, two, three."
+SPEECH_WORDS = ("test", "transcription", "chain", "one", "two", "three")
 SUPPORTED = (".flac", ".mp3", ".mp4", ".mpeg", ".mpga", ".m4a", ".ogg", ".opus", ".wav", ".webm")             # the file types Groq Whisper accepts; anything else is converted with ffmpeg first
 CF_MODEL = "@cf/openai/whisper-large-v3-turbo"
 CF_MAX_BYTES = 10 * 1024 * 1024
@@ -102,7 +104,9 @@ def vibevoice_asr(path, *, command, runner=None):
     microsoft/VibeASR.cpp) and prints the transcript on standard output: `{audio}` in the command is replaced by the file. With no command set it says so and the next backend is used."""
     import subprocess
     if not command or "{audio}" not in command:
-        raise Failure(contract.NEED_SETUP, "VIBEASR_COMMAND is not set (the command of the CPU build of VibeVoice-ASR, with {audio} for the file), so VibeVoice is not tried")
+        broke = os.environ.get("VIBEASR_INSTALL_ERROR", "").strip()
+        raise Failure(contract.NEED_SETUP, "VIBEASR_COMMAND is not set (the command of the CPU build of VibeVoice-ASR, with {audio} for the file), so VibeVoice is not tried"
+                      + (f"; the workflow's own install of it FAILED: {broke[:160]}" if broke else ""))
     argv = [part.replace("{audio}", str(path)) for part in command.split()]
     try:
         done = (runner or subprocess.run)(argv, capture_output=True, text=True, timeout=900)
@@ -166,17 +170,46 @@ def order(shared_dir):
         return SEEDED_ORDER
 
 
-def transcribe(path, *, backends, key="", post=None, loader=None, language=None, clock=time.monotonic, cloudflare=("", ""), vibevoice="", runner=None):
+LATIN_LANGUAGES = ("en", "es", "fr", "de", "it", "pt", "nl", "sv", "da", "no", "fi", "pl", "tr", "id")
+
+
+def plausible(text, language):
+    """False when a transcript is in the wrong SCRIPT for the language expected: more than 30% of its letters are not Latin letters although the language is a Latin-script one (Whisper answered a music-and-noise English
+    video with a Japanese sentence: a hallucination, not a transcript). An unknown language or a short text is not judged."""
+    if not language or str(language).lower()[:2] not in LATIN_LANGUAGES:
+        return True
+    letters = [c for c in str(text) if c.isalpha()]
+    if len(letters) < 8:
+        return True
+    latin = sum(1 for c in letters if ord(c) < 0x250 or 0x1E00 <= ord(c) <= 0x1EFF)
+    return latin / len(letters) >= 0.7
+
+
+def transcribe(path, *, backends, key="", post=None, loader=None, language=None, clock=time.monotonic, cloudflare=("", ""), vibevoice="", runner=None, workdir=None, which=None):
     """Try the backends in order; the first that answers wins, the rest are the failover. Returns {text, language, segments, backend, seconds, tried: [(backend, why)]} or raises Failure with every reason."""
-    content = Path(path).read_bytes()
     tried = []
+    cache = {}
+
+    def hosted_file():
+        """The audio the HOSTED backends take (Groq, Cloudflare): the file itself when its type is one they accept, else an ffmpeg conversion, made once and only when a hosted backend is reached. A missing ffmpeg is that
+        backend's failure, never the whole run's: Faster-Whisper reads the original file through its own decoder (the Stage tools #5 run died here before any backend was tried)."""
+        if "path" not in cache and "failure" not in cache:
+            try:
+                import tempfile
+                cache["path"] = to_supported(path, workdir or tempfile.mkdtemp(prefix="tr-"), runner=runner, which=which)
+            except Failure as exc:
+                cache["failure"] = exc
+        if "failure" in cache:
+            raise cache["failure"]
+        return cache["path"]
     for backend in backends:
         t0 = clock()
         try:
             if backend == "groq_whisper":
-                out = groq_whisper(content, Path(path).name, key=key, post=post, language=language)
+                src = hosted_file()
+                out = groq_whisper(Path(src).read_bytes(), Path(src).name, key=key, post=post, language=language)
             elif backend == "cloudflare_whisper":
-                out = cloudflare_whisper(content, account=cloudflare[0], token=cloudflare[1], post=post)
+                out = cloudflare_whisper(Path(hosted_file()).read_bytes(), account=cloudflare[0], token=cloudflare[1], post=post)
             elif backend == "faster_whisper":
                 out = faster_whisper_local(path, loader=loader, language=language)
             elif backend == "vibevoice_asr":
@@ -184,10 +217,13 @@ def transcribe(path, *, backends, key="", post=None, loader=None, language=None,
             else:
                 tried.append((backend, NOT_WIRED.get(backend, "unknown backend")))
                 continue
+            if not plausible(out.get("text", ""), language):
+                raise Failure(contract.UPSTREAM_BROKEN, f"the transcript is not in the expected language ({language}): most of its letters are not Latin, which is a hallucination on music or noise, not speech; the next backend is tried")
         except Failure as exc:
             tried.append((backend, f"{exc.code}: {exc.message}"[:200]))
             continue
-        return {**out, "backend": backend, "seconds": round(clock() - t0, 2), "tried": tried}
+        converted = Path(cache["path"]).name if "path" in cache and Path(cache["path"]) != Path(path) else ""
+        return {**out, "backend": backend, "seconds": round(clock() - t0, 2), "tried": tried, "converted": converted}
     raise Failure(contract.UPSTREAM_BROKEN, "no backend could transcribe it: " + "; ".join(f"{b}: {w}" for b, w in tried))
 
 
@@ -203,15 +239,24 @@ def probe(workdir, *, key="", post=None, loader=None, clock=time.monotonic, clou
     """Ask every backend once with a second of silence: connected or why not, and how long it took. Returns {ranking: [backends that answered, fastest first], rows: [...]}."""
     path = Path(workdir) / "probe.wav"
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(silent_wav())
+    speech = Path(workdir) / "probe_speech.wav"                   # a spoken sentence the workflow makes with espeak-ng: with it the probe checks that each backend really TRANSCRIBES, not only that it answers
+    spoken = speech.is_file() and speech.stat().st_size > 1000
+    if spoken:
+        path = speech
+    else:
+        path.write_bytes(silent_wav())
     rows = []
     for backend in SEEDED_ORDER:
         t0 = clock()
         try:
-            transcribe(path, backends=(backend,), key=key, post=post, loader=loader, clock=clock, cloudflare=cloudflare, vibevoice=vibevoice, runner=runner)
-            rows.append({"backend": backend, "ok": True, "seconds": round(clock() - t0, 2), "why": ""})
+            out = transcribe(path, backends=(backend,), key=key, post=post, loader=loader, clock=clock, cloudflare=cloudflare, vibevoice=vibevoice, runner=runner)
+            heard = " ".join(str(out.get("text", "")).split())[:120]
+            if spoken and not any(w in heard.lower() for w in SPEECH_WORDS):
+                rows.append({"backend": backend, "ok": False, "seconds": round(clock() - t0, 2), "why": f"it answered but did not transcribe the spoken sentence: heard {heard!r}", "heard": heard})
+            else:
+                rows.append({"backend": backend, "ok": True, "seconds": round(clock() - t0, 2), "why": "", "heard": heard if spoken else ""})
         except Failure as exc:
-            rows.append({"backend": backend, "ok": False, "seconds": round(clock() - t0, 2), "why": exc.message[:200]})
+            rows.append({"backend": backend, "ok": False, "seconds": round(clock() - t0, 2), "why": exc.message[:200], "heard": ""})
     return {"ranking": [r["backend"] for r in sorted((r for r in rows if r["ok"]), key=lambda r: r["seconds"])], "rows": rows}
 
 

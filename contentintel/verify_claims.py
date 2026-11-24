@@ -150,24 +150,35 @@ def log_lines(report, prefix="canon:   "):
     return lines
 
 
-def verify_ids(reg, name, ids, *, search, get, claude, now, max_calls=None, max_pages=6, report=None, tried=None):
+def verify_ids(reg, name, ids, *, search, get, claude, now, max_calls=None, max_pages=6, report=None, tried=None, progress=None, deadline=None, clock=None):
     """Check the named claims (once each per `tried` set). Returns the ids whose status the check CHANGED away from blocking (verified, or a blocked claim left unverified), which is what lets a section through;
     `report['outcomes']` holds every claim's outcome. `report` collects calls, errors and notes."""
     report = report if report is not None else {"calls": 0, "errors": 0, "notes": []}
     report.setdefault("outcomes", {})
     tried = tried if tried is not None else set()
     out = []
-    for cid in ids:
+    import time as _time
+    clock = clock or _time.monotonic
+    total = len(ids)
+    for position, cid in enumerate(ids, 1):
         claim = reg.state()["claims"].get(cid)
         if not claim or cid in tried or claim["status"] == "verified":
             continue
+        if deadline is not None and clock() > deadline:
+            left = len([i for i in ids[position - 1:] if i not in tried])
+            report["notes"].append(f"the time budget was reached: {left} claim(s) were not checked in this run; they are picked up by the next run")
+            break
         tried.add(cid)
+        if progress:
+            progress("start", cid, claim, position, total)
         if max_calls and report["calls"] >= max_calls:
             report["notes"].append("the call limit was reached: the remaining claim(s) were not checked")
             break
         before = claim["status"]
         outcome = verify_claim(reg, name, claim, search=search, get=get, claude=claude, now=now, report=report, max_pages=max_pages, max_calls=max_calls)
         report["outcomes"][cid] = outcome
+        if progress:
+            progress("done", cid, outcome, position, total)
         after = reg.state()["claims"][cid]["status"]
         if after != before and after in ("verified", "unverified"):
             out.append(cid)

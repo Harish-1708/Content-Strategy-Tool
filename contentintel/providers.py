@@ -147,12 +147,31 @@ class SerperDev(Provider):
         if recency:
             body["tbs"] = _TBS[recency]
         path = "/news" if kind == "news" else "/search"
-        data = self._call("POST", self.base + path, json_body=body,
-                          headers={"X-API-KEY": self.api_key, "Content-Type": "application/json"})
-        items = data.get("news" if kind == "news" else "organic", []) if isinstance(data, dict) else []
+        headers = {"X-API-KEY": self.api_key, "Content-Type": "application/json"}
+        data = self._call("POST", self.base + path, json_body=body, headers=headers)
+        key = "news" if kind == "news" else "organic"
+        items = [i for i in (data.get(key, []) if isinstance(data, dict) else []) if isinstance(i, dict) and i.get("link")]
+        if not items and kind != "news" and (body.get("gl") or body.get("tbs")):                 # Acceptance #16: the web search answered with nothing usable while the news search with the same key worked: ask again without the region and date filters
+            plain = {"q": query, "num": min(num, 10)}
+            data = self._call("POST", self.base + path, json_body=plain, headers=headers)
+            items = [i for i in (data.get(key, []) if isinstance(data, dict) else []) if isinstance(i, dict) and i.get("link")]
+        if not items and kind != "news" and isinstance(data, dict):                                 # still no organic results: the other blocks of the answer that carry a link
+            extra = []
+            box = data.get("answerBox") if isinstance(data.get("answerBox"), dict) else {}
+            if box.get("link"):
+                extra.append({"title": box.get("title", ""), "link": box["link"], "snippet": box.get("snippet") or box.get("answer", "")})
+            kg = data.get("knowledgeGraph") if isinstance(data.get("knowledgeGraph"), dict) else {}
+            if kg.get("website"):
+                extra.append({"title": kg.get("title", ""), "link": kg["website"], "snippet": kg.get("description", "")})
+            for q in (data.get("peopleAlsoAsk") or [])[:3]:
+                if isinstance(q, dict) and q.get("link"):
+                    extra.append({"title": q.get("title") or q.get("question", ""), "link": q["link"], "snippet": q.get("snippet", "")})
+            items = extra
+            if not items:
+                print(f"serper: the web search answered with no results (the answer held: {', '.join(sorted(data))[:120] or 'nothing'})")
         return [Result(rank=int(i.get("position") or n), title=i.get("title", ""),
                        url=i.get("link", ""), snippet=i.get("snippet", ""), date=i.get("date"))
-                for n, i in enumerate(items, start=1) if i.get("link")]
+                for n, i in enumerate(items, start=1)]
 
 
 class Tavily(Provider):

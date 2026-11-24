@@ -79,6 +79,7 @@ def add_parsers(sub, common):
     p.add_argument("--url", default="")
     p.add_argument("--file", default="")
     p.add_argument("--brand", default="", help="keep the analysis under this brand (empty: data/_shared/analyses.json)")
+    p.add_argument("--speech-language", default="", help="the language the speech is expected in (en, es...); empty: the video's own language, else English")
     p.add_argument("--speech", action=argparse.BooleanOptionalAction, default=True, help="ON by default: transcribe what is said in the video (needs the video downloaded)")
     p.add_argument("--comments", action="store_true")
     p.add_argument("--pace", action="store_true", help="with --url: download the video (about 720p at most) and measure how it moves; needs ffmpeg on the machine")
@@ -518,18 +519,18 @@ def run_analyze(args, now="", *, runner=subprocess.run, store=None, environ=None
             except PACE.PaceError as exc:
                 print(f"Pace: not measured: {exc}")
         if path and want_speech:
-            record["speech"] = _speech(path, tmp, runner, env, post, loader, getattr(args, "data_dir", "data"))
+            lang = (getattr(args, "speech_language", "") or facts.get("language") or "en")           # the language the speech is expected in: the owner's setting, else the video's own, else English (every brand here is English): a transcript in another script is thrown away
+            record["speech"] = _speech(path, tmp, runner, env, post, loader, getattr(args, "data_dir", "data"), lang)
     if store is not None:
         _save_analysis(store, getattr(args, "brand", "") or "_shared", record)
     return code
 
 
-def _speech(path, tmp, runner, env, post, loader, data_dir):
+def _speech(path, tmp, runner, env, post, loader, data_dir, language="en"):
     """What is said in the video: the audio is made sendable with ffmpeg and the transcription backends are tried in their measured order (Groq, Cloudflare, Faster-Whisper, VibeVoice). Printed and returned."""
     from . import transcribe as TR
     try:
-        sendable = TR.to_supported(path, tmp, runner=runner, which=(lambda name: name) if runner is not subprocess.run else None)
-        out = TR.transcribe(sendable, backends=TR.order(Path(data_dir) / "_shared"), key=TR.env_key(env), post=post, loader=loader, cloudflare=TR.env_cloudflare(env), vibevoice=TR.env_vibevoice(env), runner=runner)
+        out = TR.transcribe(path, workdir=tmp, which=(lambda name: name) if runner is not subprocess.run else None, language=language, backends=TR.order(Path(data_dir) / "_shared"), key=TR.env_key(env), post=post, loader=loader, cloudflare=TR.env_cloudflare(env), vibevoice=TR.env_vibevoice(env), runner=runner)
     except Exception as exc:                                                                 # noqa: BLE001 - a transcript that cannot be made is reported, never a crash
         why = getattr(exc, "message", str(exc))
         print(f"Speech: not captured: {why}")
@@ -598,6 +599,10 @@ def run_assets(args, store, now, *, get=default_get, post=default_post, environ=
         print(f"  - {a['title']} [{a['license'].upper()}] {a['page'] or a['url']} | credit: {OPENVERSE.credit_line(a)[:160]}")
     if args.brand and found:
         kept = store.read_extra(args.brand, "assets") or {"assets": []}
+        if brand is not None:                                                                      # old junk is taken out whenever the list is written (a parliament, a coat of arms, a competitor's shoes)
+            kept["assets"], removed = AF.clean_saved(kept["assets"], AF.brand_terms(brand, store, research))
+            if removed:
+                print(f"Cleaned {len(removed)} saved asset(s) that are not this brand's: " + "; ".join(str(a.get("title") or a.get("url"))[:40] for a in removed[:6]))
         known = {a["url"] for a in kept["assets"]}
         kept["assets"] = ([dict(a, query=args.query, found_at=now) for a in found if a["url"] not in known] + kept["assets"])[:60]
         store.write_extra(args.brand, "assets", kept)

@@ -48,7 +48,7 @@ def run_stage(args, store, now, *, environ=None, post=None, loader=None, runner=
     if args.action == "probe-transcribe":
         res = TR.probe(Path(args.data_dir) / "_probe", key=TR.env_key(environ), post=post, loader=loader, cloudflare=TR.env_cloudflare(environ), vibevoice=TR.env_vibevoice(environ), runner=runner)
         for r in res["rows"]:
-            print(f"stage: transcription {r['backend']}: {'CONNECTED' if r['ok'] else 'FAILED'} in {r['seconds']} s" + ("" if r["ok"] else f": {r['why']}"))
+            print(f"stage: transcription {r['backend']}: {'TRANSCRIBED' if r['ok'] and r.get('heard') else 'CONNECTED' if r['ok'] else 'FAILED'} in {r['seconds']} s" + (f" (heard: {r['heard']!r})" if r["ok"] and r.get("heard") else "") + ("" if r["ok"] else f": {r['why']}"))
         shared.mkdir(parents=True, exist_ok=True)
         (shared / TR.RANKINGS_FILE).write_text(json.dumps({"measured_at": now, "ranking": res["ranking"], "rows": res["rows"]}, indent=1) + "\n", encoding="utf-8")
         print(f"stage: transcription order now: {', '.join(res['ranking']) or 'none answered'} (then the others; VibeVoice runs only when VIBEASR_COMMAND is set)")
@@ -65,6 +65,8 @@ def run_stage(args, store, now, *, environ=None, post=None, loader=None, runner=
             return 1
         report = BO.run_bakeoff(cfg, urls=urls, runner=runner or subprocess.run)
         print(BO.format_report(report, urls))
+        store.write_shared("bakeoff", {"at": now, "urls": urls, "report": report})                                  # the comparison is kept in the repository, not only in the run log
+        print("stage: bake-off saved: data/_shared/bakeoff.json")
         return 0
     slugs = list_brand_slugs(args.brands_dir)
     if args.brand not in slugs:
@@ -84,13 +86,12 @@ def run_stage(args, store, now, *, environ=None, post=None, loader=None, runner=
         print(f"stage: {args.brand}: {path} does not exist")
         return 1
     try:
-        sendable = TR.to_supported(path, Path(args.data_dir) / "_probe", runner=runner, which=(lambda name: name) if runner else None)                       # a file type Groq accepts: converted with ffmpeg when it is not
-        if sendable != path:
-            print(f"stage: {args.brand}: the download ({path.name}) was converted to {sendable.name} ({sendable.stat().st_size // 1024} KB) because the first backend only accepts audio and video files of known types")
-        out = TR.transcribe(sendable, backends=TR.order(shared), key=TR.env_key(environ), post=post, loader=loader, language=args.language or None, cloudflare=TR.env_cloudflare(environ), vibevoice=TR.env_vibevoice(environ), runner=runner)
+        out = TR.transcribe(path, workdir=Path(args.data_dir) / "_probe", which=(lambda name: name) if runner else None, backends=TR.order(shared), key=TR.env_key(environ), post=post, loader=loader, language=args.language or None, cloudflare=TR.env_cloudflare(environ), vibevoice=TR.env_vibevoice(environ), runner=runner)
     except Exception as exc:                                                                  # noqa: BLE001
         print(f"stage: {args.brand}: transcription failed: {getattr(exc, 'message', exc)}")
         return 1
+    if out.get("converted"):
+        print(f"stage: {args.brand}: the download ({path.name}) was converted to {out['converted']} because the hosted backend only accepts audio and video files of known types")
     TR.save_transcript(store, args.brand, {"sha": TR.sha_of(path), "source": args.source or args.url or args.file, "backend": out["backend"], "language": out["language"], "text": out["text"], "seconds": out["seconds"]}, now)
     print(f"stage: {args.brand}: transcribed {len(out['text'])} characters with {out['backend']} in {out['seconds']} s" + (f" (after: {'; '.join(f'{b}: {w}' for b, w in out['tried'])})" if out["tried"] else ""))
     return 0
