@@ -1,7 +1,7 @@
 {
   "boss": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-23T11:50:43Z",
+    "checked_at": "2026-11-24T05:43:43Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",
@@ -13,16 +13,16 @@
   },
   "facebook": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-23T11:50:43Z",
+    "checked_at": "2026-11-24T05:43:43Z",
     "days_left": 353,
     "evidence": {
       "body_ids": [
         "splash-screen",
         "B:0",
-        "right_rail_container",
-        "u_0_0_nC",
-        "u_0_1_Oj",
-        "u_0_2_5I"
+        "B:1",
+        "B:2",
+        "B:3",
+        "right_rail_container"
       ],
       "cookies_back": [
         "c_user",
@@ -68,7 +68,7 @@
       "login_word_in_address": "",
       "noscript": "",
       "password_field": false,
-      "scripts": 339,
+      "scripts": 387,
       "status": 200,
       "text_chars": 0,
       "title": "Facebook",
@@ -76,16 +76,16 @@
       "worker_error": ""
     },
     "expires_on": "2027-11-12",
-    "proved_on": "2026-11-23T11:50:43Z",
+    "proved_on": "2026-11-24T05:43:43Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
     "unconfirmed_streak": 0
   },
   "instagram": {
-    "cannot_check_streak": 1,
-    "checked_at": "2026-11-23T11:50:43Z",
-    "days_left": 354,
+    "cannot_check_streak": 2,
+    "checked_at": "2026-11-24T05:43:43Z",
+    "days_left": 353,
     "evidence": {
       "body_ids": [],
       "cookies_back": [],
@@ -136,7 +136,7 @@
   },
   "linkedin": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-23T11:50:43Z",
+    "checked_at": "2026-11-24T05:43:43Z",
     "days_left": 353,
     "evidence": {
       "body_ids": [],
@@ -201,7 +201,7 @@
   },
   "reddit": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-23T11:50:43Z",
+    "checked_at": "2026-11-24T05:43:43Z",
     "days_left": 169,
     "evidence": {
       "body_ids": [
@@ -231,8 +231,7 @@
         "reddit_supported_media_codecs",
         "rlas3",
         "session_tracker",
-        "token_v2",
-        "wwrbucket"
+        "token_v2"
       ],
       "cookies_sent": [
         "FPGSID",
@@ -254,7 +253,7 @@
         "token_v2"
       ],
       "fetched_with": "browser",
-      "html_chars": 427838,
+      "html_chars": 427852,
       "html_truncated": false,
       "landed": "https://www.reddit.com/settings/",
       "logged_in_found": [
@@ -282,7 +281,7 @@
       "worker_error": ""
     },
     "expires_on": "2027-05-12",
-    "proved_on": "2026-11-23T11:50:43Z",
+    "proved_on": "2026-11-24T05:43:43Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
@@ -290,8 +289,8 @@
   },
   "tiktok": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-23T11:50:43Z",
-    "days_left": 169,
+    "checked_at": "2026-11-24T05:43:43Z",
+    "days_left": 168,
     "evidence": {
       "body_ids": [
         "router-csr-document",
@@ -383,7 +382,7 @@
         "uid_tt_ss"
       ],
       "fetched_with": "browser",
-      "html_chars": 549569,
+      "html_chars": 471871,
       "html_truncated": false,
       "landed": "https://www.tiktok.com/",
       "logged_in_found": [],
@@ -400,7 +399,7 @@
       "login_word_in_address": "",
       "noscript": "",
       "password_field": false,
-      "scripts": 82,
+      "scripts": 80,
       "status": 200,
       "text_chars": 70,
       "title": "TikTok - Make Your Day",
@@ -410,13 +409,13 @@
     "expires_on": "2027-05-11",
     "proved_on": "2026-11-19T15:53:32Z",
     "proved_via": "browser",
-    "reason": "the page gave no sign of being logged in or logged out (it may be an error or a half-drawn page), so it is not counted as a refusal and the proof is kept; it is looked at again on the next check, and after 3 such checks in a row it is treated as refused (this is check 1)",
+    "reason": "the page gave no sign of being logged in or logged out (it may be an error or a half-drawn page), so it is not counted as a refusal and the proof is kept; it is looked at again on the next check, and after 3 such checks in a row it is treated as refused (this is check 2)",
     "state": "UNCONFIRMED",
-    "unconfirmed_streak": 1
+    "unconfirmed_streak": 2
   },
   "x": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-23T11:50:43Z",
+    "checked_at": "2026-11-24T05:43:43Z",
     "days_left": 353,
     "evidence": {
       "body_ids": [
@@ -450,7 +449,7 @@
         "twid"
       ],
       "fetched_with": "browser",
-      "html_chars": 47000,
+      "html_chars": 47021,
       "html_truncated": false,
       "landed": "https://x.com/home",
       "logged_in_found": [],
@@ -487,7 +486,7 @@
   },
   "xiaohongshu": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-23T11:50:43Z",
+    "checked_at": "2026-11-24T05:43:43Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",
