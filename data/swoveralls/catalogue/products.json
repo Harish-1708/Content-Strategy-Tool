@@ -1379,7 +1379,7 @@
      "title": "S / Bordeaux"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53755991425135,
      "options": [
@@ -1469,7 +1469,7 @@
      "title": "3XL / Bordeaux"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53755991588975,
      "options": [
@@ -1844,7 +1844,7 @@
    "variant_count": 7,
    "variants": [
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53755992146031,
      "options": [
@@ -1898,7 +1898,7 @@
      "title": "L / Glacier Navy"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53755992244335,
      "options": [
@@ -11150,7 +11150,7 @@
      "title": "M / Nightshade Plum"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53160030077039,
      "options": [

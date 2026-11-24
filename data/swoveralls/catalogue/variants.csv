@@ -35,12 +35,12 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15347013517423,Comfyalls - Something 90s,53756008398959,3XL / Jammers,Size=3XL; Color=Jammers,SWCOMFY-ZOF-3XL,159.00,,true
 15347013517423,Comfyalls - Something 90s,53756008431727,4XL / Jammers,Size=4XL; Color=Jammers,SWCOMFY-ZOF-4XL,159.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991392367,S / Bordeaux,Size=S; Color=Bordeaux,SWPANTSCORD-781-S,129.00,,false
-15347005489263,Corduroy Swoveralls - Bordeaux,53755991425135,M / Bordeaux,Size=M; Color=Bordeaux,SWPANTSCORD-781-M,129.00,,true
+15347005489263,Corduroy Swoveralls - Bordeaux,53755991425135,M / Bordeaux,Size=M; Color=Bordeaux,SWPANTSCORD-781-M,129.00,,false
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991457903,L / Bordeaux,Size=L; Color=Bordeaux,SWPANTSCORD-781-L,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991490671,XL / Bordeaux,Size=XL; Color=Bordeaux,SWPANTSCORD-781-XL,129.00,,false
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991523439,2XL / Bordeaux,Size=2XL; Color=Bordeaux,SWPANTSCORD-781-2XL,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991556207,3XL / Bordeaux,Size=3XL; Color=Bordeaux,SWPANTSCORD-781-3XL,129.00,,true
-15347005489263,Corduroy Swoveralls - Bordeaux,53755991588975,4XL / Bordeaux,Size=4XL; Color=Bordeaux,SWPANTSCORD-781-4XL,129.00,,true
+15347005489263,Corduroy Swoveralls - Bordeaux,53755991588975,4XL / Bordeaux,Size=4XL; Color=Bordeaux,SWPANTSCORD-781-4XL,129.00,,false
 15347005325423,Corduroy Swoveralls - Forest Green,53755990311023,S / Forest Green,Size=S; Color=Forest Green,SWPANTSCORD-002-S,129.00,,true
 15347005325423,Corduroy Swoveralls - Forest Green,53755990343791,M / Forest Green,Size=M; Color=Forest Green,SWPANTSCORD-002-M,129.00,,true
 15347005325423,Corduroy Swoveralls - Forest Green,53755990376559,L / Forest Green,Size=L; Color=Forest Green,SWPANTSCORD-002-L,129.00,,true
@@ -48,10 +48,10 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15347005325423,Corduroy Swoveralls - Forest Green,53755990442095,2XL / Forest Green,Size=2XL; Color=Forest Green,SWPANTSCORD-002-2XL,129.00,,true
 15347005325423,Corduroy Swoveralls - Forest Green,53755990474863,3XL / Forest Green,Size=3XL; Color=Forest Green,SWPANTSCORD-002-3XL,129.00,,true
 15347005325423,Corduroy Swoveralls - Forest Green,53755990507631,4XL / Forest Green,Size=4XL; Color=Forest Green,SWPANTSCORD-002-4XL,129.00,,true
-15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992146031,S / Glacier Navy,Size=S; Color=Glacier Navy,SWPANTSGRID-179-S,129.00,,true
+15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992146031,S / Glacier Navy,Size=S; Color=Glacier Navy,SWPANTSGRID-179-S,129.00,,false
 15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992178799,M / Glacier Navy,Size=M; Color=Glacier Navy,SWPANTSGRID-179-M,129.00,,true
 15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992211567,L / Glacier Navy,Size=L; Color=Glacier Navy,SWPANTSGRID-179-L,129.00,,true
-15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992244335,XL / Glacier Navy,Size=XL; Color=Glacier Navy,SWPANTSGRID-179-XL,129.00,,true
+15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992244335,XL / Glacier Navy,Size=XL; Color=Glacier Navy,SWPANTSGRID-179-XL,129.00,,false
 15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992277103,2XL / Glacier Navy,Size=2XL; Color=Glacier Navy,SWPANTSGRID-179-2XL,129.00,,false
 15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992309871,3XL / Glacier Navy,Size=3XL; Color=Glacier Navy,SWPANTSGRID-179-3XL,129.00,,true
 15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992342639,4XL / Glacier Navy,Size=4XL; Color=Glacier Navy,SWPANTSGRID-179-4XL,129.00,,true
@@ -327,7 +327,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 3223501733988,Swoveralls - Navy,40858868875375,4XL / Navy,Size=4XL; Color=Navy,20-4XL-NVY,99.00,,true
 15022560804975,Swoveralls - Nightshade Plum,53160030011503,S / Nightshade Plum,Size=S; Color=Nightshade Plum,SWPANTS-066-S,120.00,,false
 15022560804975,Swoveralls - Nightshade Plum,53160030044271,M / Nightshade Plum,Size=M; Color=Nightshade Plum,SWPANTS-066-M,120.00,,false
-15022560804975,Swoveralls - Nightshade Plum,53160030077039,L / Nightshade Plum,Size=L; Color=Nightshade Plum,SWPANTS-066-L,120.00,,true
+15022560804975,Swoveralls - Nightshade Plum,53160030077039,L / Nightshade Plum,Size=L; Color=Nightshade Plum,SWPANTS-066-L,120.00,,false
 15022560804975,Swoveralls - Nightshade Plum,53160030109807,XL / Nightshade Plum,Size=XL; Color=Nightshade Plum,SWPANTS-066-XL,120.00,,false
 15022560804975,Swoveralls - Nightshade Plum,53160030142575,2XL / Nightshade Plum,Size=2XL; Color=Nightshade Plum,SWPANTS-066-2XL,120.00,,false
 15022560804975,Swoveralls - Nightshade Plum,53160030175343,3XL / Nightshade Plum,Size=3XL; Color=Nightshade Plum,SWPANTS-066-3XL,120.00,,false

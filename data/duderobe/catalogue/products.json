@@ -1,6 +1,6 @@
 {
  "brand": "duderobe",
- "count": 30,
+ "count": 31,
  "products": [
   {
    "allergens": "",
@@ -4584,6 +4584,74 @@
       }
      ],
      "price": 339.0,
+     "sku": null,
+     "title": "Default Title"
+    }
+   ]
+  },
+  {
+   "allergens": "",
+   "audience_hints": [],
+   "audience_stated": "",
+   "category": "",
+   "description": "",
+   "excluded": false,
+   "excluded_reason": null,
+   "fact_conflicts": [],
+   "facts": {
+    "images": {
+     "source": "catalogue_images",
+     "status": "stated",
+     "value": {
+      "count": 1
+     }
+    }
+   },
+   "family": "The Whole Outfit",
+   "flags": [
+    "on_sale"
+   ],
+   "handle": "the-whole-outfit",
+   "image_count": 1,
+   "images": [
+    "https://cdn.shopify.com/s/files/1/2696/9530/files/the-whole-outfit-bundle.png?v=1795542153"
+   ],
+   "in_stock": true,
+   "ingredients": "",
+   "materials": "",
+   "missing_expected": [
+    "materials",
+    "features"
+   ],
+   "missing_required": [
+    "description"
+   ],
+   "on_sale": true,
+   "pocket_claims": "",
+   "price_max": 189.0,
+   "price_min": 189.0,
+   "primary_image": "https://cdn.shopify.com/s/files/1/2696/9530/files/the-whole-outfit-bundle.png?v=1795542153",
+   "product_id": "16084160708894",
+   "readiness": "needs_facts",
+   "status": "active",
+   "tags": [
+    "kelson-bundle"
+   ],
+   "title": "The Whole Outfit",
+   "url": "https://duderobe.com/products/the-whole-outfit",
+   "variant_count": 1,
+   "variants": [
+    {
+     "available": true,
+     "compare_at_price": 214.0,
+     "id": 61038001750302,
+     "options": [
+      {
+       "name": "Title",
+       "value": "Default Title"
+      }
+     ],
+     "price": 189.0,
      "sku": null,
      "title": "Default Title"
     }
