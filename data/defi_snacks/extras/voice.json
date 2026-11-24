@@ -1508,6 +1508,25 @@
   {
    "cluster": "",
    "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 7857.37
+   },
+   "entity": "",
+   "first_seen": "2026-11-24T05:36:06Z",
+   "last_seen": "2026-11-24T05:36:06Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Nvidia Reinstates Jensen Huang as CEO",
+   "topic": "",
+   "url": "",
+   "weight": 7857
+  },
+  {
+   "cluster": "",
+   "engagement": {
     "comments": 14,
     "likes": 283,
     "shares": 35,
@@ -1594,7 +1613,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-23T15:22:31Z",
-   "last_seen": "2026-11-23T15:22:31Z",
+   "last_seen": "2026-11-24T05:36:06Z",
    "mode": "discover",
    "published": "",
    "source": "hackernews",
@@ -1671,7 +1690,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-23T15:22:31Z",
-   "last_seen": "2026-11-23T15:22:31Z",
+   "last_seen": "2026-11-24T05:36:06Z",
    "mode": "discover",
    "published": "",
    "source": "hackernews",
@@ -1690,7 +1709,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-19T09:53:15Z",
-   "last_seen": "2026-11-23T15:22:31Z",
+   "last_seen": "2026-11-24T05:36:06Z",
    "mode": "discover",
    "published": "",
    "source": "hackernews",
@@ -1717,6 +1736,25 @@
    "topic": "Defi Snacks",
    "url": "https://www.instagram.com/p/Defivt4x6av/",
    "weight": 2513
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 2355.73
+   },
+   "entity": "",
+   "first_seen": "2026-11-24T05:36:06Z",
+   "last_seen": "2026-11-24T05:36:06Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Dario OSS models",
+   "topic": "",
+   "url": "",
+   "weight": 2355
   },
   {
    "cluster": "",
@@ -1767,7 +1805,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-23T15:22:31Z",
-   "last_seen": "2026-11-23T15:22:31Z",
+   "last_seen": "2026-11-24T05:36:06Z",
    "mode": "discover",
    "published": "",
    "source": "hackernews",
@@ -1804,7 +1842,7 @@
    },
    "entity": "",
    "first_seen": "2026-11-23T15:22:31Z",
-   "last_seen": "2026-11-23T15:22:31Z",
+   "last_seen": "2026-11-24T05:36:06Z",
    "mode": "discover",
    "published": "",
    "source": "hackernews",
@@ -1833,6 +1871,25 @@
    "topic": "Defi Snacks",
    "url": "https://www.tiktok.com/@a4436269/video/7703911424967396628",
    "weight": 2146
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 2130.87
+   },
+   "entity": "",
+   "first_seen": "2026-11-24T05:36:06Z",
+   "last_seen": "2026-11-24T05:36:06Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Ladybird is now in alpha",
+   "topic": "",
+   "url": "",
+   "weight": 2130
   },
   {
    "cluster": "",
@@ -1990,6 +2047,25 @@
    "engagement": {
     "corroboration_count": 1,
     "previously_surfaced_count": 0,
+    "velocity_score": 1530.53
+   },
+   "entity": "",
+   "first_seen": "2026-11-24T05:36:06Z",
+   "last_seen": "2026-11-24T05:36:06Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "GLM-5.4 Toward",
+   "topic": "",
+   "url": "",
+   "weight": 1530
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
     "velocity_score": 1321.5
    },
    "entity": "",
@@ -2098,6 +2174,25 @@
    "topic": "",
    "url": "",
    "weight": 1263
+  },
+  {
+   "cluster": "",
+   "engagement": {
+    "corroboration_count": 1,
+    "previously_surfaced_count": 0,
+    "velocity_score": 1242.03
+   },
+   "entity": "",
+   "first_seen": "2026-11-24T05:36:06Z",
+   "last_seen": "2026-11-24T05:36:06Z",
+   "mode": "discover",
+   "published": "",
+   "source": "hackernews",
+   "summary": "",
+   "title": "Per Arm 4 December 2026",
+   "topic": "",
+   "url": "",
+   "weight": 1242
   },
   {
    "cluster": "",
@@ -3178,5 +3273,5 @@
   "Food ASMR (Part 70) what should I eat next? 😋 #baderalsafar #food #asmr #foodasmr #satisfying #snacks #bussin #challenge",
   "We love a movie night🍿 ig @sj.bleau"
  ],
- "updated": "2026-11-23T15:22:31Z"
+ "updated": "2026-11-24T05:36:06Z"
 }
