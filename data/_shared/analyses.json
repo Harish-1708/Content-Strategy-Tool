@@ -1,0 +1,109 @@
+{
+ "items": [
+  {
+   "at": "2026-11-24T04:15:18Z",
+   "comments": [
+    {
+     "author": "overheadcam2",
+     "likes": 3700,
+     "text": "Am I gay Yes -like No"
+    },
+    {
+     "author": "star_brother11",
+     "likes": 1556,
+     "text": "So not halal mode 😡"
+    },
+    {
+     "author": "vibew.leo",
+     "likes": 594,
+     "text": "se mastica con la boca cerrada"
+    },
+    {
+     "author": "ma11.40",
+     "likes": 349,
+     "text": "شكلي انا منتظار شوف اخر وحده🌚🌚🌚🌚🤡"
+    },
+    {
+     "author": "duduxhxtshdkknonnrzwaea",
+     "likes": 295,
+     "text": "Don’t chew like that 0 so not halal mode"
+    },
+    {
+     "author": "d.an.iel_t",
+     "likes": 226,
+     "text": "WaStE oF sHoEs ZeRo So NoT HaLaL MoDe 😡"
+    },
+    {
+     "author": "abicamello7",
+     "likes": 192,
+     "text": "la kk era falsa o era de verdad? 😰💔"
+    },
+    {
+     "author": "rachid_ghezzal1",
+     "likes": 153,
+     "text": "ümidi video yu izlerken: Lağğn ayakabıdamı pastaymışş"
+    }
+   ],
+   "facts": {
+    "comments": 5091,
+    "duration_s": 27,
+    "hashtags": [
+     "baderalsafar",
+     "food",
+     "foodemoji",
+     "challenge",
+     "satisfying",
+     "snacks",
+     "foryou",
+     "fyp",
+     "foryoupage"
+    ],
+    "likes": 284800,
+    "music": "Bader Al Safar - original sound",
+    "posted": "2021-12-26",
+    "reposts": 1343,
+    "site": "TikTok",
+    "title": "Food Emoji Challenge (Part 13) What should I eat next? 😅 #baderalsafa...",
+    "uploader": "baderalsafar",
+    "uploader_id": "6752632772340335621",
+    "url": "https://www.tiktok.com/@baderalsafar/video/7045970270649306415",
+    "views": 9200000
+   },
+   "pace": {
+    "avg_shot_s": 13.54,
+    "cuts": 1,
+    "cuts_first_10s": 1,
+    "cuts_first_3s": 0,
+    "cuts_per_10s": 0.4,
+    "duration_s": 27.07,
+    "first_cut_s": 7.33,
+    "first_sound_s": 4.3,
+    "fps": 30.0,
+    "has_audio": true,
+    "height": 1280,
+    "longest_shot_s": 19.74,
+    "loudness_lufs": -36.9,
+    "loudness_range": 11.1,
+    "median_shot_s": 19.74,
+    "pace": "slow",
+    "shots": 2,
+    "vertical": true,
+    "width": 720
+   },
+   "routes": {
+    "comments": "apify (clockworks/tiktok-comments-scraper, at most 20 comments, call cost ceiling 0.5 dollars)",
+    "download": "yt-dlp",
+    "facts": "yt-dlp"
+   },
+   "speech": {
+    "backend": "groq_whisper",
+    "captured": true,
+    "language": "English",
+    "text": "I'm so excited to be able to get a little bit of a little bit of a drink. And I want to make sure that I have a little bit of a drink. I feel so much better. I hope you have a little bit of a drink. But I will try and enjoy it. And if you like this, I will try to get a little bit of a drink. I will try and enjoy it. I will try to enjoy it. I will try to enjoy it.",
+    "tried": []
+   },
+   "url": "https://www.tiktok.com/@baderalsafar/video/7045970270649306415"
+  }
+ ],
+ "note": "video analyses: facts, comment text, speech and pace, with the route each came by"
+}

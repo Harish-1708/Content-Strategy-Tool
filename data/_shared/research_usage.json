@@ -1,7 +1,13 @@
 {
+ "days": {
+  "2026-11-24": {
+   "apify_analyze_comments_items": 8
+  }
+ },
  "lifetime": {
   "agent_reach_youtube": 18,
-  "apify_items": 303,
+  "apify_analyze_comments_items": 8,
+  "apify_items": 311,
   "claude_calls": 10,
   "collected_items": 2768,
   "deep_research_tasks": 1,
@@ -23,7 +29,8 @@
   },
   "2026-11": {
    "agent_reach_youtube": 18,
-   "apify_items": 303,
+   "apify_analyze_comments_items": 8,
+   "apify_items": 311,
    "claude_calls": 3,
    "collected_items": 2028,
    "exa": 18,
