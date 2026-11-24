@@ -131,7 +131,7 @@ def _claim_verifier(reg, slug, args, claude, search, get, now, announce=False):
         new = [i for i in ids if i not in tried]
         report["checked"] += len(new)
         done = CANON_VERIFY.verify_ids(reg, name, ids, search=search, get=get, claude=claude, now=now, max_calls=budget, report=report, tried=tried,
-                                       progress=progress if announce else None, deadline=getattr(args, "_deadline", None))
+                                       progress=progress if announce else None, deadline=getattr(args, "_deadline", None), recheck=bool(getattr(args, "action", "") == "reclassify-conflicts"))
         verified_now = [i for i in done if report["outcomes"].get(i) == "verified"]
         report["verified"].extend(verified_now)
         report.setdefault("single", []).extend(i for i in verified_now if reg.state()["claims"][i].get("single_source"))
@@ -360,7 +360,9 @@ def run_canon(args, store, now, *, clients=None):
                 else:
                     verifier(by_evidence)
                     after = [reg.state()["claims"][c]["status"] for c in by_evidence]
-                    print(f"canon: {slug}: {len(by_evidence)} claim(s) conflicted by a source were re-checked from public sources: {after.count('verified')} now VERIFIED, {after.count('unverified')} UNVERIFIED, {after.count('conflicted')} still CONFLICTED; {vrep['calls']} AI call(s).")
+                    outcomes = [vrep["outcomes"].get(c, "not checked") for c in by_evidence]
+                    print(f"canon: {slug}: {len(by_evidence)} claim(s) conflicted by a source were re-checked from public sources: {after.count('verified')} now VERIFIED, {after.count('unverified')} now UNVERIFIED, {after.count('conflicted')} still CONFLICTED; "
+                          f"what the new check found: {outcomes.count('verified')} verified, {outcomes.count('unverified')} no source and no contradiction, {outcomes.count('conflicted')} contradicted again; {vrep['calls']} AI call(s).")
                     route_report(slug, claude, "evidence-conflict re-check")
         elif args.action == "history":
             import os

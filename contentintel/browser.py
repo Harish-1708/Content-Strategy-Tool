@@ -551,15 +551,27 @@ class PlaywrightBrowser:
             return {"loaded": 0, "total": 0, "tiles": 0, "blank": 0, "spinner": False}
         return {"loaded": loaded, "total": total, "tiles": tiles, "blank": blank, "spinner": self.exists(list(spinner_selectors)) if spinner_selectors else False}
 
-    def nudge(self):
-        """A small scroll down and back up, so tiles that draw only when they come into view are brought into view (a lazy grid never draws what has not been seen)."""
+    def nudge(self, tile_selectors=()):
+        """Bring the BLANK tiles into view, one at a time: each tile that holds no finished picture is scrolled to the middle of the screen and given a moment, because a lazy grid (Instagram's) draws a tile only while it is on
+        screen and drops it again when it leaves. Acceptance #17: 10 images drawn, 14 blank tiles, after a small scroll down and up that never reached them. Then the page goes back to the top. Without tile selectors it
+        falls back to the small scroll. Returns how many tiles were visited."""
+        visited = 0
         try:
-            self.page.mouse.wheel(0, 500)
-            self.page.wait_for_timeout(700)
-            self.page.mouse.wheel(0, -500)
-            self.page.wait_for_timeout(500)
+            if tile_selectors:
+                visited = int(self.page.evaluate("""async (sels) => { let n = 0; const seen = new Set();
+                    for (const sel of sels) { for (const a of document.querySelectorAll(sel)) { if (seen.has(a)) continue; seen.add(a);
+                        const im = a.querySelector('img'); if (im && im.complete && im.naturalWidth > 0) continue;
+                        a.scrollIntoView({block: 'center'}); n += 1; await new Promise(r => setTimeout(r, 450)); if (n >= 24) return n; } }
+                    return n; }""", list(tile_selectors)) or 0)
+                self.page.evaluate("window.scrollTo(0, 0)")
+            else:
+                self.page.mouse.wheel(0, 500)
+                self.page.wait_for_timeout(700)
+                self.page.mouse.wheel(0, -500)
+                self.page.wait_for_timeout(500)
         except Exception:                                                              # noqa: BLE001
             pass
+        return visited
 
     def hover(self, selectors):
         """Move the pointer over the first element that matches (a menu item that opens its submenu on hover, as Gemini's More tools does). True when one was found and hovered."""

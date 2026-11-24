@@ -25,6 +25,7 @@ def add_parsers(sub, common):
     p.add_argument("--backtest", action=argparse_bool(), default=True, help="forecast: run the backtest gate before trusting the model (ON by default)")
     p.add_argument("--mpt-config", default=MPT.CONFIG)
     p.add_argument("--concat-config", default="concat.yaml")
+    p.add_argument("--force-dropped", action="store_true", help="concat-*: run the Concat gate although Concat is DROPPED (concat.yaml): for a person who wants to look at it once more")
 
 
 def argparse_bool():
@@ -88,17 +89,9 @@ def _fetch(url):
 
 
 def _brand_terms(args, store, slug):
-    """The words that make a picture relevant to a brand, derived from the brand itself: its name, the keywords and topics in its research file, its catalogue's product terms and its competitors' names."""
+    """The words that make a picture relevant to a brand, read from the brand's own files at run time: its name, the keywords and topics in its research file and its catalogue's product terms. NEVER its competitors' names (Allbirds shoes are not Swoveralls pictures)."""
     from . import assets_find as AF
-    from .brands import load_brand
-    try:
-        brand = load_brand(slug, args.brands_dir)
-        import yaml
-        rp = Path(args.brands_dir) / slug / "research.yaml"
-        research = yaml.safe_load(rp.read_text(encoding="utf-8")) if rp.is_file() else None
-        return AF.brand_terms(brand, store, research)                                    # the brand's name and its OWN terms: never a competitor's name (Allbirds shoes are not Swoveralls pictures)
-    except Exception:                                                                                           # noqa: BLE001 - a brand that cannot be read: its own name only
-        return [slug]
+    return AF.terms_from_files(args.brands_dir, slug, store)
 
 
 def run_stock(args, store, now, *, embedders=OM.clip_embedders, fetch=_fetch):
@@ -136,12 +129,14 @@ def run_stock(args, store, now, *, embedders=OM.clip_embedders, fetch=_fetch):
     return code
 
 
-def run_mpt(args, store, now, *, environ=None, http=MPT.default_http, fetch=None, probe=OM.probe_video, sleep=None):
+def run_mpt(args, store, now, *, environ=None, http=MPT.default_http, fetch=None, probe=OM.probe_video, sleep=None, getter=None):
     environ = environ if environ is not None else os.environ
     cfg = MPT.load_config(args.mpt_config)
     if args.action == "mpt-status":
         on = "ON" if cfg["enabled"] else "OFF"
         print(f"mpt: MoneyPrinterTurbo is {on}; host {'set' if (environ.get('MPT_URL') or '').startswith('https://') else 'NOT set'}; stock footage from {MPT.stock_source(cfg, environ)} (Pexels has paused new keys; Pixabay is the default until one can be made); publishing is off and has no switch (there is no publish function in this tool)")
+        for provider, state, detail in MPT.check_stock_keys(environ, getter or MPT.default_get_json):
+            print(f"mpt: {provider} key: {state}: {detail}")
         return 0
     try:
         base = MPT.ensure_on(cfg, environ)
@@ -187,6 +182,9 @@ def run_mpt(args, store, now, *, environ=None, http=MPT.default_http, fetch=None
 
 def run_concat(args, store, now, *, runner=subprocess.run, probe=OM.probe_video):
     cfg = CG.load_config(args.concat_config)
+    if cfg.get("dropped") and not getattr(args, "force_dropped", False):
+        print(f"concat: Concat is DROPPED (decided {cfg.get('dropped_on', '')}): it is a desktop GUI editor with no headless render command (Concat gate #2: every help command opened a window, none of six guessed render commands made a video), and a host for it would need a desktop session and GUI automation. Nothing is run. Video drafts come from MoneyPrinterTurbo. Pass --force-dropped to look at it once more.")
+        return 0
     work = Path(args.data_dir) / "_probe" / "concat"
     if args.action == "concat-discover":
         for line in CG.format_report({"verdict": "NOT RUN", "runs": [], "reason": "discovery only: this step prints what the installed Concat says about its command line"}, CG.discover(cfg, runner)):
@@ -212,5 +210,5 @@ def run_batch3(args, store, now, **kw):
     if args.action in ("stock-index", "stock-search"):
         return run_stock(args, store, now, **{k: v for k, v in kw.items() if k in ("embedders", "fetch")})
     if args.action in ("mpt-drafts", "mpt-hooks", "mpt-status"):
-        return run_mpt(args, store, now, **{k: v for k, v in kw.items() if k in ("environ", "http", "fetch", "probe", "sleep")})
+        return run_mpt(args, store, now, **{k: v for k, v in kw.items() if k in ("environ", "http", "fetch", "probe", "sleep", "getter")})
     return run_concat(args, store, now, **{k: v for k, v in kw.items() if k in ("runner", "probe")})

@@ -52,7 +52,7 @@ class Context:
     missing: dict = field(default_factory=dict)     # (source, route) -> reason
 
 
-_OBSERVATORY_ACTIONS = {("competitor_stores", "public_json"): "catalogue_walk", ("competitor_stores", "sitemap"): "read_sitemap", ("competitor_pages", "static_fetch"): "read_page",
+_OBSERVATORY_ACTIONS = {("reddit", "apify"): "read_apify", ("x_posts", "apify"): "read_apify", ("linkedin_posts", "apify"): "read_apify", ("competitor_stores", "public_json"): "catalogue_walk", ("competitor_stores", "sitemap"): "read_sitemap", ("competitor_pages", "static_fetch"): "read_page",
                         ("competitor_pages", "feed"): "read_feed", ("competitor_pages", "reader"): "read_via_reader", ("competitor_pages", "social_profile"): "read_social_profile", ("reddit", "api"): "read_subreddit", ("reddit", "agent_reach"): "read_subreddit", ("agent_reach_research", "youtube"): "search_youtube"}
 
 
@@ -98,10 +98,10 @@ def build_probes(ctx, wanted=None):
             elif src.id == "youtube_public":
                 skip = skip or ("" if ctx.youtube_check else "no yt-dlp on this machine")
                 probes.append(Probe(src.id, "metadata", rt.name, None if skip else ctx.youtube_check, skip))
-            elif src.id in ("competitor_stores", "competitor_pages", "reddit", "agent_reach_research"):
+            elif src.id in ("competitor_stores", "competitor_pages", "reddit", "agent_reach_research", "x_posts", "linkedin_posts"):
                 action = _OBSERVATORY_ACTIONS.get(key, "check")
                 fn = ctx.observatory_checks.get(key)
-                skip = skip or ("" if fn else "no contact address or no brand website: set OBSERVATORY_CONTACT")
+                skip = skip or ("" if fn else ("no key: set APIFY_TOKEN" if rt.name == "apify" else "no contact address or no brand website: set OBSERVATORY_CONTACT"))
                 probes.append(Probe(src.id, action, rt.name, None if skip else fn, skip))
             elif src.id == "claude":
                 skip = skip or ("" if ctx.claude_check else "no ANTHROPIC_API_KEY")

@@ -76,6 +76,22 @@ def brand_terms(brand, store, research):
     return [brand.name] + own
 
 
+def terms_from_files(brands_dir, slug, store, include_competitors=False):
+    """The words that make something the brand's world, read from the brand's own files at run time (never a list in the code, so a new brand works with no code change): its name, the keywords, topics and queries of
+    its research file, its catalogue's product terms and, when asked, its competitors' names. A brand that cannot be read: its own slug as words."""
+    from pathlib import Path
+    import yaml
+    from .brands import load_brand
+    try:
+        brand = load_brand(slug, brands_dir)
+        rp = Path(brands_dir) / slug / "research.yaml"
+        research = yaml.safe_load(rp.read_text(encoding="utf-8")) if rp.is_file() else None
+        own, competitors = split_derived(brand.name, brand, store, research)
+        return [brand.name] + own + (competitors if include_competitors else [])
+    except Exception:                                                                       # noqa: BLE001
+        return [slug.replace("_", " ")]
+
+
 def on_brand(asset, terms, floor=0.5):
     """A picture is the brand's when it is the brand's own site media (licence brand-own) or its title and credit line mention at least `floor` of the words of one of the brand's own terms."""
     if str(asset.get("license", "")).lower() == "brand-own":
@@ -129,7 +145,36 @@ def url_is_icon(src):
     return bool(re.search(r"(?i)(sprite|favicon|logo-?\d|icon|pixel|spacer|1x1|\.svg(\?|$)|\.gif(\?|$))", src))
 
 
-def find_usable(get, query, kind, *, brand=None, store=None, research=None, limit=8, bearer="", use_openverse=True, licence_ok_for_ads=True):
+def pixabay_search(get, key, query, limit=8):
+    """The FALLBACK image source for when Openverse and Wikimedia Commons return nothing usable: Pixabay's free API (a free key, no card; the Pixabay Content Licence allows commercial use without attribution). Results are assets
+    in the same shape as Openverse's, with the picture's tags as its title so the same relevance floor applies. Raises K.Failure."""
+    import json
+    from urllib.parse import quote_plus
+    from . import contract as K2
+    q = quote_plus(" ".join(str(query).split())[:100])
+    status, text = get(f"https://pixabay.com/api/?key={key}&q={q}&image_type=photo&per_page={max(3, min(int(limit), 20))}&safesearch=true", {})
+    if status == 429:
+        raise K2.Failure(K2.RATE_LIMITED, "Pixabay's limit was reached (100 requests a minute)", retry_after=60)
+    if status in (400, 401, 403):
+        raise K2.Failure(K2.NEED_LOGIN, f"Pixabay refused the key (HTTP {status})")
+    if status != 200:
+        raise K2.Failure(K2.UPSTREAM_BROKEN, f"Pixabay answered HTTP {status}")
+    try:
+        hits = json.loads(text).get("hits") or []
+    except ValueError:
+        raise K2.Failure(K2.UPSTREAM_BROKEN, "Pixabay's answer was not JSON") from None
+    out = []
+    for h in hits:
+        url = h.get("largeImageURL") or h.get("webformatURL")
+        if not url:
+            continue
+        tags = [x.strip() for x in str(h.get("tags", "")).split(",") if x.strip()]
+        out.append({"url": url, "thumbnail": h.get("webformatURL") or h.get("previewURL") or url, "title": " ".join(tags) or "pixabay picture", "tags": tags, "license": "pixabay-content-license", "attribution": f"{h.get('user', 'a photographer')} on Pixabay",
+                    "page": h.get("pageURL", ""), "kind": "image", "source": "pixabay"})
+    return out[:limit]
+
+
+def find_usable(get, query, kind, *, brand=None, store=None, research=None, limit=8, bearer="", use_openverse=True, licence_ok_for_ads=True, pixabay_key=""):
     """(kept, report): usable assets for `query`, or an empty list and a report that says what was tried. Order: the query itself; the brand's OWN terms; the brand's own site; and last the competitors' names, whose
     results must also pass the relevance floor against the ORIGINAL query (an expansion is scored against what it searched for, which is why 'Allbirds' once returned eight Allbirds shoes for 'sweatpant overalls').
     Every kept asset carries `relevance` against the ORIGINAL query and `found_with` (the query that found it). report = {tried: [{query, source, returned, kept, dropped: [(title, why)]}], used: ''}."""
@@ -176,6 +221,19 @@ def find_usable(get, query, kind, *, brand=None, store=None, research=None, limi
         if site:
             report["used"] = "the brand's own site"
             return [dict(a, relevance=1.0, found_with="the brand's own site") for a in site], report
+    if pixabay_key and kind == "images":                                                    # the fallback source: after the brand's own site, before any competitor's name
+        for q in [query] + own[:3]:
+            try:
+                found = pixabay_search(get, pixabay_key, q, limit=limit)
+            except K.Failure as exc:
+                report["tried"].append({"query": q, "source": "pixabay", "returned": 0, "kept": 0, "dropped": [], "error": f"{exc.code}: {exc.message}"})
+                break
+            kept, dropped = filter_relevant(found, q)
+            kept = [dict(a, relevance=round(relevance(a, query), 2), found_with=q) for a in kept]
+            report["tried"].append({"query": q, "source": "pixabay", "returned": len(found), "kept": len(kept), "dropped": dropped})
+            if kept:
+                report["used"] = f"{q} (Pixabay)"
+                return kept, report
     for q in competitors:
         kept = attempt(q, strict=True)
         if kept:
