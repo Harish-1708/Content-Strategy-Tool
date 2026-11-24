@@ -1,0 +1,43 @@
+{
+ "searches": [
+  {
+   "at": "2026-11-24T14:58:40Z",
+   "corpus_size": 4,
+   "matches": [
+    {
+     "credit": "swoveralls.com (the brand's own site)",
+     "id": "2c61b39a2e4a",
+     "license": "brand-own",
+     "score": 0.3277,
+     "title": "Person wearing gray overalls and white sneakers on a beige background",
+     "url": "https://swoveralls.com/cdn/shop/files/SwagBraReplacement.jpg?v=1780854121&width=533"
+    },
+    {
+     "credit": "swoveralls.com (the brand's own site)",
+     "id": "012da817914b",
+     "license": "brand-own",
+     "score": 0.325,
+     "title": "Person wearing navy blue overalls and a gray shirt on a beige background",
+     "url": "https://swoveralls.com/cdn/shop/files/AdjustImageFraming.jpg?v=1780854481&width=533"
+    },
+    {
+     "credit": "swoveralls.com (the brand's own site)",
+     "id": "c7e7d2cde81b",
+     "license": "brand-own",
+     "score": 0.3193,
+     "title": "Forest green overalls with colorful dinosaur pattern on a beige background",
+     "url": "https://swoveralls.com/cdn/shop/files/v4-02_flat-lay_4d2f6eb3-6016-4322-b9e5-9c35f33923f0.jpg?v=1795173097&width=533"
+    },
+    {
+     "credit": "swoveralls.com (the brand's own site)",
+     "id": "d91cbfbc8460",
+     "license": "brand-own",
+     "score": 0.3086,
+     "title": "Navy Blue overalls with colorful dinosaur pattern on a beige background",
+     "url": "https://swoveralls.com/cdn/shop/files/Dinosaur_Print_Extension_1_81b4a1cf-a515-400e-9613-f7a0bb5e761c.jpg?v=1795136305&width=533"
+    }
+   ],
+   "query": "sweatpant overalls"
+  }
+ ]
+}
