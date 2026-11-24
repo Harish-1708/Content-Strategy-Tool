@@ -83,8 +83,8 @@ def test_a_security_check_or_a_warning_ends_the_attempt_and_rests_the_backup_and
             raise kind("the page said S3cret-pw! for dummy_user")
         return login
     res, ledger = run(tmp_path / "c", boom(Challenge), lambda *a: {})
-    assert res["status"] == "stopped" and "Challenge" in res["detail"] and "14 days" in res["detail"] and "S3cret" not in json.dumps(res)
-    assert ledger.rest_until("tiktok") == "2026-12-03T12:00:00Z"
+    assert res["status"] == "stopped" and "Challenge" in res["detail"] and "2 days" in res["detail"] and "S3cret" not in json.dumps(res)
+    assert ledger.rest_until("tiktok") == "2026-11-21T12:00:00Z" and SP.REST_CHALLENGE_DAYS == 2 and SP.REST_WARNING_DAYS == 30
     res2, ledger2 = run(tmp_path / "d", boom(AccountWarning), lambda *a: {})
     assert "30 days" in res2["detail"] and ledger2.rest_until("tiktok") == "2026-12-19T12:00:00Z"
     res3, ledger3 = run(tmp_path / "e", boom(ValueError), lambda *a: {})
@@ -110,3 +110,30 @@ def test_the_session_ledger_counts_cannot_check_streaks_and_the_command_and_work
     with pytest.raises(SystemExit):
         from contentintel import cli
         cli.build_parser().parse_args(["observatory", "sessions", "--what", "password-everything"])
+
+
+def test_a_challenge_during_the_login_ends_the_attempt_right_there_with_no_solving_and_no_second_try_then_rests_two_days(tmp_path, monkeypatch):
+    from contentintel import browser as B
+    from contentintel import collectors as C
+    opened, steps, cleared, exported = [], [], [], []
+
+    class Br:
+        def export_cookies(self):
+            exported.append(1)
+            return "[]"
+
+        def close(self):
+            pass
+    monkeypatch.setattr(B, "open_browser", lambda *a, **k: opened.append(1) or Br())
+    monkeypatch.setattr(C, "run_steps", lambda br, st, vals: steps.append(1))
+    monkeypatch.setattr(C, "check_warning", lambda br, platform, cfg: None)
+    monkeypatch.setattr(C, "session_state", lambda br, cfg: "challenge")
+    monkeypatch.setattr(C, "clear_challenge", lambda *a, **k: cleared.append(1) or True)                                        # the collectors' puzzle routine: it must never be reached
+    login = SP.real_login("browser.yaml", str(tmp_path))
+    ledger = SP.AttemptLedger(tmp_path / "sp.json")
+    res = SP.attempt("tiktok", entry(), CREDS, ledger, NOW, login_fn=login, prove_fn=lambda *a: pytest.fail("a stopped attempt is never proved"))
+    assert res["status"] == "stopped" and "Challenge" in res["detail"] and "rests 2 days" in res["detail"]
+    assert opened == [1] and steps == [1] and cleared == [] and exported == []                                                    # one browser, one run of the login steps, no puzzle solving, no cookies taken
+    assert ledger.rest_until("tiktok") == "2026-11-21T12:00:00Z"
+    again = SP.attempt("tiktok", entry(), CREDS, ledger, NOW, login_fn=lambda *a: pytest.fail("no second try while resting"), prove_fn=lambda *a: {})
+    assert again["status"] == "skipped" and "resting until 2026-11-21" in again["detail"]

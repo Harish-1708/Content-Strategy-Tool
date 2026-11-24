@@ -165,14 +165,14 @@ def test_the_pool_retest_workflow_is_manual_commits_only_its_own_files_and_sets_
     steps = wf["jobs"]["retest"]["steps"]
     assert any(s.get("uses") == "./.github/actions/ai-pool" for s in steps)
     run = next(s for s in steps if s.get("name") == "Measure each job's providers")
-    assert "python -m contentintel ai rank" in run["run"] and "--apply" in run["run"] and "args=(--live " in run["run"]          # without --live the command would run as a scripted stand-in and measure nothing
+    assert "python -u -m contentintel ai rank" in run["run"] and "--apply" in run["run"] and "args=(--live " in run["run"]          # without --live the command would run as a scripted stand-in and measure nothing
     save = next(s for s in steps if s.get("name") == "Save the measured order")
-    assert "git add -f data/_shared/ai_rankings.json data/_shared/ai_usage.json" in save["run"] and "git add -A" not in save["run"] and save["if"] == "always() && inputs.apply"
+    assert "add_each data/_shared/ai_rankings.json data/_shared/ai_usage.json" in save["run"] and "git add -A" not in save["run"] and save["if"] == "always() && inputs.apply"
     env = wf["jobs"]["retest"]["env"]
     assert env["FREEAPI_ENCRYPTION_KEY"] and env["SAMBANOVA_API_KEY"] and env["ANTHROPIC_API_KEY"]
 
 
-NO_MODEL_JOBS = {("sessions-password-backup", "backup"): "logs in once, only when the cookie session cannot be proved: no language model", ("batch3-tools", "batch3"): "forecasting (TimesFM), the CLIP stock corpus and the MoneyPrinterTurbo status: no language model", ("concat-gate", "concat"): "installs Concat and runs the go/no-go gate: no language model", ("mpt-deploy", "deploy"): "deploys the MoneyPrinterTurbo host to Cloud Run: no language model", ("catalogue-admin", "admin"): "edits the catalogue only", ("stage-tools", "stage"): "transcription (Groq Whisper, Faster-Whisper) and the public-page bake-off call no language model", ("sessions", "sessions"): "logs a session in, no model", ("sheets", "sheets"): "writes the sheet, no model",
+NO_MODEL_JOBS = {("sessions-password-backup", "backup"): "logs in once, only when the cookie session cannot be proved: no language model", ("batch3-tools", "batch3"): "forecasting (TimesFM), the CLIP stock corpus and the MoneyPrinterTurbo status: no language model", ("concat-gate", "notice"): "Concat is dropped: the workflow only prints a notice: no language model", ("mpt-deploy", "deploy"): "deploys the MoneyPrinterTurbo host to Cloud Run: no language model", ("catalogue-admin", "admin"): "edits the catalogue only", ("stage-tools", "stage"): "transcription (Groq Whisper, Faster-Whisper) and the public-page bake-off call no language model", ("sessions", "sessions"): "logs a session in, no model", ("sheets", "sheets"): "writes the sheet, no model",
                  ("sync", "sync"): "reads the store, no model", ("ai-gateway", "mock"): "a scripted stand-in: no network, no providers", ("agent-reach-cloudrun", "cloudrun"): "deploys a service",
                  ("tests", "test"): "runs the tests", ("tests", "sabotage-updated"): "runs the tests", ("tests", "sabotage-full-observatory"): "runs the tests", ("tests", "sabotage-full-main"): "runs the tests"}
 

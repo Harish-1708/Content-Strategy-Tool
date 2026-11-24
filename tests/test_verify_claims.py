@@ -443,3 +443,23 @@ def test_a_claim_conflicted_by_a_source_is_re_checked_by_reclassify_conflicts_an
     assert reg.state()["claims"][cid]["status"] in ("verified", "unverified", "conflicted")
     fresh = C.Registry(tmp_path / "data", "swoveralls")
     assert fresh.state()["claims"][cid]["status"] == "verified"                                                                        # the contradiction is gone and a close source stands: the claim is no longer blocked
+
+
+def test_a_source_conflicted_claim_with_no_source_and_no_contradiction_on_the_re_check_is_lowered_to_unverified_and_the_tally_says_so(tmp_path, capsys, trusted):
+    from contentintel import batch2_cli as B2
+    reg = seeded(tmp_path)
+    cid = claim_id(reg, "Awards")
+    contra = "Swoveralls did not win any award in 2026, the awarding body's list shows."
+    urls = ["https://b.example.org/b"]
+    run(reg, Judge({"did not win": {"verdict": "contradicts", "quote": contra, "about_brand": True, "close_to_fact": True, "exaggeration_risk": "low", "medium": "press"}}), urls, {urls[0]: page(contra)})
+    assert reg.state()["claims"][cid]["status"] == "conflicted"
+    args = cli_args(tmp_path, "--action", "reclassify-conflicts")
+    B2.run_canon(args, cli.Store(args.data_dir), AT, clients=lambda: (Judge({}), lambda q: [], lambda u: None))
+    out = capsys.readouterr().out
+    assert "1 now UNVERIFIED" in out and "0 still CONFLICTED" in out and "1 no source and no contradiction" in out
+    assert C.Registry(tmp_path / "data", "swoveralls").state()["claims"][cid]["status"] == "unverified"
+    fresh = seeded(tmp_path / "other")
+    cid2 = claim_id(fresh, "Awards")
+    run(fresh, Judge({"did not win": {"verdict": "contradicts", "quote": contra, "about_brand": True, "close_to_fact": True, "exaggeration_risk": "low", "medium": "press"}}), urls, {urls[0]: page(contra)})
+    fresh.record_evidence(cid2, [], [], "unverified", AT)                                                                           # an ordinary (not re-check) unverified outcome leaves a conflicted claim conflicted
+    assert fresh.state()["claims"][cid2]["status"] == "conflicted"
