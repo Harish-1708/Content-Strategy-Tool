@@ -9,7 +9,7 @@ runs:
     - uses: actions/setup-node@v6
       continue-on-error: true
       with:
-        node-version: "22"
+        node-version: "24"
 
     - name: Build the pinned gateway (FreeLLMAPI)
       if: env.FREEAPI_ENCRYPTION_KEY != '' && hashFiles('gateway-src/server/dist/index.js') == ''
