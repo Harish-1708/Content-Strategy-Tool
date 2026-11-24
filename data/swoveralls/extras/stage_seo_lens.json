@@ -2,6 +2,18 @@
  "note": "PROPOSALS only: nothing here is canon, posted or sent",
  "runs": [
   {
+   "at": "2026-11-24T05:23:34Z",
+   "proposals": {
+    "keyword_research": {
+     "at": "2026-11-24T05:23:34Z",
+     "gate": "OK",
+     "note": "gate: OK; needs input: Search volume data; Competitor keyword research",
+     "skill": "seo-geo/survey/keyword-research",
+     "text": "Based on the brand's own material, proposed keyword themes for Swoveralls include: \n* Comfortable apparel\n* Sustainable fashion\n* Ethical manufacturing\n* Unique clothing designs\n* Functional and practical clothing\n* Customer satisfaction and reviews\nThe reason for each theme is rooted in the brand's mission, product features, and customer testimonials. For example, the brand's focus on using sustainable resources and ethical manufacturing processes supports the 'sustainable fashion' and 'ethical manufacturing' themes. Similarly, customer reviews praising the comfort and practicality of Swoveralls support the 'comfortable apparel' and 'functional and practical clothing' themes."
+    }
+   }
+  },
+  {
    "at": "2026-11-19T10:01:48Z",
    "proposals": {
     "content_gaps": {

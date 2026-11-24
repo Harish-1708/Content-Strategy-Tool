@@ -1,42 +1,51 @@
-# Stage 9: SEO lens for duderobe: proposals of 2026-11-19T10:01:48Z
+# Stage 9: SEO lens for duderobe: proposals of 2026-11-24T05:23:34Z
 
 Proposals only: nothing here is canon, posted or sent. Each section was read against the claims gate.
 
 ## keyword_research
-(gate: OK; needs input: Search volume data (none provided in the material); the brand has no collected yet)
+(gate: NEEDS_REVIEW: 2 checkable statement(s) nothing verifies)
 
-## Keyword Themes for DudeRobe
+Keyword themes for DudeRobe (based on brand material only)
 
-**1. Hoodie-Robe Hybrid**
-- Keywords: hoodie robe, towel hoodie, sweatshirt robe, absorbent loungewear
-- Reason: The product's core innovation is combining a hoodie's style with a towel's functionality. This theme targets men who prefer hoodies but need absorbency.
+Theme 1: Men’s hooded robe that feels like a hoodie
+- Why it fits: The product combines hoodie-style outside with terry towel inside, designed to feel familiar to men who say they’re not robe guys. Target keywords: men’s hooded robe, hoodie robe for men, robe that feels like a hoodie, hoodie-style robe.
 
-**2. Gift for Non-Robe Guys**
-- Keywords: gift for him, not a robe guy, convert him, robe for men who hate robes
-- Reason: A major customer segment is women buying for men who say they don't wear robes. This theme addresses the gift-giver's risk and the recipient's identity.
+Theme 2: Practical, wearable details that solve everyday issues
+- Why it fits: Features include a permanently attached belt, cuffed sleeves, deep pockets and a stash pocket, which are highlighted as practical benefits. Target keywords: robe with attached belt, never-lost belt robe, robe with deep pockets, cuffed sleeve robe.
 
-**3. Practical Robe Features**
-- Keywords: attached belt robe, cuffed sleeves, deep pockets, never lost belt
-- Reason: The product stresses practical details that solve common robe annoyances. This theme targets buyers who value ease and functionality.
+Theme 3: Gift-giving for men by women (giftable, low risk)
+- Why it fits: Brand stories emphasize gifting for husbands/partners and converting a non-robe guy; customers frequently gift DudeRobe. Target keywords: gift for him robe, men’s robe gift idea, robe for husband gift, gift for dad robe.
 
-**4. Sports Fan Loungewear**
-- Keywords: UFC robe, NBA robe, licensed sports robe, fan loungewear
-- Reason: Licensed editions are a significant part of the catalogue. This theme targets sports fans who want team-affiliated comfort wear.
+Theme 4: Licensed editions for fans and teams
+- Why it fits: Licensed editions include UFC, University of Michigan, and NBALAB collaborations; fans seek team/brand-aligned loungewear. Target keywords: UFC DudeRobe, University of Michigan robe, NBA NBALAB robe, licensed men’s robe.
 
-**5. Absorbent Yet Stylish**
-- Keywords: stylish bathrobe, absorbent and cool, men's lounge style, modern robe
-- Reason: The brand positions itself against 'boring' unisex robes. This theme targets buyers who want both drying power and a contemporary look.
+Theme 5: Absorbent, drying-focused design
+- Why it fits: The terry towel interior is a core differentiator and is noted for absorbing and drying; consumer wear-test notes emphasize this feature. Target keywords: absorbent robe for men, robe with terry lining, towel-lined robe.
+
+Theme 6: Premium positioning and value proposition
+- Why it fits: The main robe carries a premium price point (list price around $128) and is positioned as high-quality loungewear with distinctive features. Target keywords: premium men’s robe, high-end robe for men, durable men’s loungewear.
+
+Theme 7: Redefining men’s loungewear (category narrative)
+- Why it fits: Brand framing positions DudeRobe as a category redefiner for men’s loungewear, countering the idea that robes are girly. Target keywords: redefining men’s loungewear, men’s robe category, robe for modern man.
+
+Theme 8: Related product and category breadth (adjacent lines)
+- Why it fits: Catalogue includes shorts, pants, hoodies, kids robe, and licensed editions, suggesting clusters around broader loungewear and family gifting. Target keywords: men’s robe and loungewear set, robe plus shorts, kids robe.
+
+Notes for content planning:
+- Center hero messages on the hoodie-like feel plus towel absorbency, then weave in the “never-lost” belt and practical pockets.
+- Use gift-giving angles in product pages, blog posts, and social content, leveraging the observed gift-pattern stories.
+- Tie licensing themes to fan culture content and partnership announcements as licenses evolve.
+- When drafting headlines or meta elements, lean on the phrase that this is a robe designed for today’s man, aiming to remove robe-stigma.
+
+End goal: create pillar pages and clusters around these themes that map to the brand’s product facts and story lines, then build content calendars that reflect Quick Wins (gift-focused and practical-use content), Growth (licensed editions and fan-targeted content), and GEO opportunities (markets with strong sports/fan communities).
 
 ## content_gaps
-(gate: NEEDS_REVIEW: 1 checkable statement(s) nothing verifies; needs input: Competitor domains for coverage comparison; Site URL and content inventory for gap analysis; Business goals and audience details; the brand has no collected yet)
+(gate: OK; needs input: Traffic data; Sales data; Customer interview transcripts)
 
-Content the audience asks for or competitors cover that the brand does not:
-
-1. **Robes for women** — The Sherobe is listed as 'for women' in the manual facts, but no product page or marketing material was found. Competitors like Swoveralls and PajamaGram have explicit women's lines.
-2. **Plus-size or tall options** — No size range beyond standard S–XXL was found in the material. Competitors like Plush Necessities offer extended sizing.
-3. **Sustainable or organic materials** — No sustainability claims or certifications were found. Competitors like Parachute Home emphasize organic cotton and ethical production.
-4. **Matching family sets** — The brand has a kids robe but no explicit family matching sets. Competitors like Hanna Andersson and PajamaGram offer family matching.
-5. **Luxury positioning** — The brand's average price is $128, but no luxury framing or premium materials (e.g., silk, cashmere) were found. Competitors like Frette and Loro Piana own this space.
-6. **Subscription or auto-replenishment** — No subscription model was found. Competitors like Basic Outfitters offer subscription robes.
-7. **Personalization options** — Personalization is excluded from the catalogue, but competitors like Mark and Graham offer monogramming.
-8. **Wellness or self-care framing** — The brand mentions 'wellness' as an audience tag but does not develop this theme. Competitors like Parachute Home tie robes to self-care rituals.
+Content gaps for DudeRobe include: 
+1. Independent customer stories beyond the Yawnder wear-test review. 
+2. Trustpilot, BBB, or Sitejabber presence. 
+3. Verified media features beyond the brand's own claims. 
+4. University of Michigan robe launch date. 
+5. UFC launch date. 
+Competitors may cover these topics, but DudeRobe does not.
