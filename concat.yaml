@@ -2,6 +2,12 @@
 # (Actions > Concat gate). The gate (set by the owner): a 1080x1920 render of a small test edit, under 300 seconds, with audio, in 2 of 3 runs, with no GUI and no GPU (software rendering on the runner).
 # `render_command` is what renders: {inputs} is replaced by the test clips, {output} by the file. It is EMPTY until the first run has printed Concat's own help (the discover step of the workflow), because
 # the exact command-line could not be verified from where this tool was built: the first run shows it, then the command is filled in from that output. Nothing is guessed.
+# DECISION 2026-11-24: CONCAT IS DROPPED. Concat Gate #2 (run 45328841214) installed the right x86_64 package, but every help command tried to open a window and none of the six guessed render commands produced a video:
+# Concat is a desktop GUI editor, not a headless CLI. Running it would need a host with a desktop session, a display and GUI automation of a program whose own scripting interface was never found: that is a project of its
+# own, not a free tool we can run on a runner or on Cloud Run, and nothing in the plan depends on it (the video drafts come from MoneyPrinterTurbo, which has an API). So there is no host plan: it is DROPPED, not parked.
+# The code and this file stay as a record; `batch3 --action concat-*` says so and does nothing unless --force-dropped is given. The workflow Concat gate is a notice only and may be deleted (Actions > Concat gate).
+dropped: true
+dropped_on: "2026-11-24"
 release_repo: jub0t/concat
 asset_pattern: "*linux-x86_64.deb"
 discover_commands:

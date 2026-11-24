@@ -779,21 +779,6 @@ providers:
       tokens_per_day: 100000
       requests_per_minute: 20          # shared by all seven free models: one job cannot use the day for the others (the router's per-job share)
     models:
-    - id: "qwen/qwen3.8-27b:free"
-      approved: true
-      capabilities:
-      - text
-      note: "free (:free id) per the planner check of 2026-11-19, verified free November 2026; general text"
-    - id: "inclusionai/ling-3.0-flash-fin:free"
-      approved: true
-      capabilities:
-      - text
-      note: "free (:free id) per the planner check of 2026-11-19, verified free November 2026; general text"
-    - id: "inclusionai/ling-3.0-flash-sante:free"
-      approved: true
-      capabilities:
-      - text
-      note: "free (:free id) per the planner check of 2026-11-19, verified free November 2026; general text"
     - id: "dots-studio/dots-3-note-preview:free"
       approved: true
       capabilities:
@@ -854,6 +839,7 @@ providers:
       date: '2026-11-14'
       reason: 'Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent. Recorded for this provider on 2026-11-14 together with the personal-use decision.'
     # NVIDIA's free limit is not a fixed figure (sources say 30 to 40 a minute, varying by model and load). This is a SETTING: change it to what the account dashboard shows.
+    timeout_seconds: 240          # NVIDIA's free endpoint queues: the gateway timed out at the default on every route of provider tests #5 and #6 and the Pool retest
     limits:
       requests_per_minute: 40
     models:
@@ -1071,6 +1057,7 @@ providers:
     gateway_platform: openrouter
     direct:
       base_url: https://openrouter.ai/api/v1
+      discover_free: true          # the live list's :free ids are probed by the daily health run
     terms:
       status: verified_secondary
       date: '2026-11-03'
@@ -1872,6 +1859,7 @@ providers:
       reason: "Owner decision: Internal project and business data may be sent to every enabled provider, including free plans whose terms may allow training on prompts. The material is not secret and the aim is the best research results. Restricted data, credentials, keys, passwords and tokens are never sent."
     direct:
       base_url: https://oai.endpoints.kepler.ai.cloud.ovh.net/v1
+      discover_all: true          # every model on this keyless free endpoint is free: the live list is probed by the daily health run
       keyless: true
     terms:
       status: upstream_documented
@@ -2216,16 +2204,6 @@ providers:
       capabilities:
       - text
       note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as xkiro/mistralai/mistral-large-2512"
-    - id: "xkiro/deepseek/deepseek-v3.2"
-      approved: false          # 404 in provider test #5 (2026-11-23): the model does not exist on xKiro
-      capabilities:
-      - text
-      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as xkiro/deepseek/deepseek-v3.2"
-    - id: "xkiro/qwen/qwen3.6-plus:free"
-      approved: true
-      capabilities:
-      - text
-      note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as xkiro/qwen/qwen3.6-plus:free"
     # 2026-11-19: minimax-m3:free returned 404 'retired and no longer free'; its replacement minimax/minimax-m3 is NOT wired: nothing here shows it is free (provider test must show it first)
 
   modelscope:

@@ -1,0 +1,12 @@
+# The daily provider-model health run (Actions > Provider health, 05:30 UTC every day). It probes every enabled provider's models with ONE tiny call, discovers the live free models of providers that publish a
+# list, scores them per job with the seven weights the router already uses, and writes the ranked lists to the GENERATED files data/_shared/ai_rankings.json and data/_shared/provider_health.json: nothing else.
+# Every setting here is the owner's.
+auto_update: true               # ON by default. false = the run only REPORTS what it would change and writes nothing.
+max_swaps: 6                    # at most this many DIFFERENT routes dropped or added in one run, so one bad probe cannot churn the whole setup
+cost_guard_share: 0.10          # a model is left out of a job when ONE call of that job (its largest answer plus a typical prompt) would be more than this share of the provider's daily token allowance, or one request more than this share of its daily requests. 1 percent would leave every token-limited provider out of the 8000-token jobs; 10 percent keeps them out of nothing but the jobs where one call really could eat the day.
+stale_days: 3                   # the router uses the generated lists only while the health run is this fresh; older, or missing, it falls back to the static lists and the last pool retest
+probe_prompt: "Reply with the single word OK."
+max_discovered_per_provider: 6  # live free models probed per provider besides the pinned ones
+tie_margin: 0.01                # two scores this close are a tie the rules cannot decide
+judge: true                     # Claude is asked ONLY when the rules cannot decide (a model never seen before in a job's top 3, a tie at the top, or a job's previous top pick just died): one small call, at most once a day
+judge_max_lanes: 6

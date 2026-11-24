@@ -216,6 +216,31 @@ sources:
         experimental: true
         note: >-
           Reddit through OpenCLI in a browser a person has logged in to; complements the official API route and fills its gaps without overwriting it.
+      apify: {tier: third_party_service, access_type: site_data, login: none}
+
+  x_posts:
+    kind: collector
+    label: X (Twitter) recent posts of an account, through Apify
+    platform: x
+    status: experimental
+    capabilities: [recent public posts of an account, engagement counts]
+    limitations:
+      - public posts of one account only, no login; X caps a profile's timeline near 100 tweets
+      - the actor is khadinakbar/x-tweet-scraper (about 0.002 dollars a tweet; the free Apify plan returns up to 50 a run); its input names are from the actor's page and are proven by Acceptance
+    routes:
+      apify: {tier: third_party_service, access_type: site_data, login: none}
+
+  linkedin_posts:
+    kind: collector
+    label: LinkedIn company page posts, through Apify
+    platform: linkedin
+    status: experimental
+    capabilities: [recent public posts of a company page, reactions and comment counts]
+    limitations:
+      - company pages only (about 10 recent posts that LinkedIn shows without a login); a person's profile needs a login and is not read
+      - the actor is harvestapi/linkedin-company-posts (about 0.002 dollars a post); its input names are from the actor's page and are proven by Acceptance
+    routes:
+      apify: {tier: third_party_service, access_type: site_data, login: none}
 
   agent_reach_research:
     kind: collector

@@ -56,7 +56,7 @@ collectors:
     tasks_per_run: 1        # most Deep Research reports in one run
     cache_days: 14
   # Apify: ready-made scrapers on Apify's servers, an OPTIONAL extra for ads, TikTok and Instagram.
-  # It is off. Its free plan includes a small monthly credit; every result is charged.
+  # It runs as a FALLBACK (mode below). Its free plan includes a small monthly credit; every result is charged.
   #   mode: off       never used (the default)
   #   mode: fallback  used only when the browser route fails (expired cookies, a security check, nothing readable)
   #   mode: always    used instead of the browser
@@ -64,7 +64,7 @@ collectors:
   #                   both find is kept once, each filling the other's blanks); it costs Apify credit on every task
   # The Collect workflow's "backend" box can also switch it on for one run. Needs the APIFY_TOKEN secret.
   apify:
-    mode: off
+    mode: fallback                # on: when the browser route fails (expired cookies, a security check, an account RESTING after a warning, nothing readable) the Apify scraper runs, within the caps below
     monthly_items: 1200           # Collect's share of the 20 dollar Apify month: 6.00 dollars at 0.005 an item (contentintel/apify_budget.py)
     items_per_run: 30
     max_cost_per_run_usd: 1.0     # a hard dollar ceiling Apify enforces for a single run

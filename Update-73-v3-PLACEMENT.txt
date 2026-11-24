@@ -1,0 +1,162 @@
+UPDATE 73 v3: PLACEMENT INSTRUCTIONS (GitHub web page only; no commands).
+This is the DELTA on top of the Update 73 v2 package you already pushed (HEAD 44942d8, 105 files). Upload every file below to the same path (the folder update-73-v3 mirrors the repository), or upload the zip's contents. A = NEW, M = REPLACES the file of the same name. The manager note is not part of the repository.
+COUNTS AGAINST YOUR REPOSITORY (M239): 60 files: 5 new, 55 replace an existing file.
+NOT in this package, on purpose: your photo and video trial files, generation.yml (already on upload-artifact@v6, commit 9ec764e), anything under data/. research.yaml: the diff against v2 is the apify `mode` line and the comment above it. README.md and docs/platform/integration-matrix.md are v2 plus the v3 additions only (GitHub's diff must show only added lines).
+
+WHAT THIS DELIVERS, item by item against your follow-up 3
+
+1. Deep-review minors
+ a. session_password.py header: now says the cookie-only guarantee rests on the IDENTITY GATE (stealth.py sets allow_login False, collectors.py refuses a login while it is False), NOT on a `password_fallback: never` setting (browser.yaml says when_cookies_fail for Instagram and TikTok); with the stealth layer off that gate would not apply.
+ b. ai_lanes.yaml: every llm7 and navy entry, and the dead AnyAPI, xKiro models, are gone from the seeded chains and the pool (28 lines); a test pins that no chain lists a dead provider.
+ c. xKiro deepseek-v3.2 and qwen3.6-plus:free are REMOVED from ai_providers.yaml (not demoted); the three dead AnyAPI models (qwen3.8-27b, ling-3.0-flash-fin, ling-3.0-flash-sante) too. The xKiro minimax-m3:free record stays, unapproved.
+ d. batch3_cli.py _brand_terms docstring corrected (the brand's own terms, never competitors).
+ e. Language precedence, as the code does it: the explicit --speech-language flag first, then the video's own language, then English. (v2's PLACEMENT said the video's own first; that was wrong.)
+ f. Junk cleaning no longer needs the brand file: when it cannot be loaded, saved assets are cleaned by the brand's name.
+ g. VibeVoice install: the step still goes on after a failed install by design (the other three backends do not depend on it) and the failure is an ERROR annotation, a summary line and VIBEASR_INSTALL_ERROR, never silent. ROOT CAUSE of Stage tools #8 FOUND AND FIXED: the install step skipped the model download whenever the built binary existed, and a cache restored from an earlier failed run holds the binary and no model. Build and model are now checked separately, the cache key is v2, and a half-built checkout is removed first.
+ h. actions/cache@v5: NOT verified from here (the sandbox has no access to GitHub's action index). It is in four workflows unchanged since v1 and every green run since has used it; if a run ever shows it unresolved or silently skipping the cache, set @v4 in acceptance.yml, collect.yml, request.yml and stage-tools.yml.
+ i. Node 24 on the gateway build is still unproven live; the fallback stands (set the five lines and the lock back to 22).
+
+2. NVIDIA: a longer timeout, 240 seconds, set per provider (new timeout_seconds field), because its free endpoint queues and timed out at the default on every route. If it still times out after this, the daily health run will leave it out of the lists on its own (a timeout probe is not "dead", so it is only deprioritised by reliability) and the owner can switch it off in ai_providers.yaml.
+   aihorde is fixed live (your note).
+
+3. Suite total proven live on GitHub (Tests #1240: 6,046 passed, 5 skipped, 0 failed). Noted.
+
+5. Test-round fixes
+ - REAL TRANSCRIBE (Stage tools #9): the download now uses yt-dlp for a video page (as analyze does) and reads a direct media file with a content-type check; the result must LOOK like media (not HTML) or the run fails loudly; the route is named in the log ("download route: yt-dlp ..."); and the run summary now shows the transcribe output (tee to the summary), not only the VibeVoice line. No transcribe has run live yet.
+ - TimesFM load bug (Batch 3 tools #7): the model call returns a GENERATOR and the code indexed it. Fixed by a tested helper (first_forecast) that accepts a generator, a list, an object with .forecast or an array. The backtest still needs 12 weeks of history per series.
+ - Stage-tools save step (Stage tools #11): ROOT CAUSE confirmed and fixed everywhere: one `git add -f a b c 2>/dev/null || true` is refused WHOLE when any one file is missing and the error was hidden. Every save step (stage-tools, batch3-tools, pool-retest, sessions-password-backup, concat-gate, and the stage proposals line of skills.yml) now adds each file separately and says which were not written. This is also the answer to the 0-second save step after stock-index #2: its glob for forecasts.json matched nothing and cancelled the add of the corpus. Tested in a real git repository with only one of the files present.
+ - Bake-off: addresses may be separated by commas, spaces or new lines.
+ - Reclassify-conflicts tally (Skills #47): the re-check of a claim a SOURCE had marked conflicted can now lower it to UNVERIFIED when the new check finds no source and no contradiction; before, a conflicted claim was never lowered, so the tally and the saved outcomes disagreed. The tally now also prints what the new check found (verified / no source and no contradiction / contradicted again).
+ - Voice discover: see follow-up 4 item 1 below (narrowed to the brand's world).
+ - Storyboard: unchanged: it needs a ready brief; DudeRobe and Swoveralls have none (needs_input is the honest answer).
+ - Instagram grid (Acceptance #17: 10 images, 14 blank tiles, spinner after 60 s): the nudge now scrolls each BLANK tile into view one at a time (up to 24), because a lazy grid draws a tile only while it is on screen; then back to the top. Only a live Acceptance proves it.
+ - Sessions: TikTok is REJECTED on its 3rd check: that is the trigger of the password backup (Actions > Sessions password backup, manual). Instagram CANNOT CHECK, X and LinkedIn BLOCKED are the platforms' own checks.
+ - Serper: cause still unknown; it passes live now.
+ - Concat gate (#2): resolved: see follow-up 4 item 8 (DROPPED).
+ - Bake-off #10/#11: all NO-GO on speed; most reads hit security checks, so the gain figures are partly check-page words.
+
+7. Pool retest #2
+ a. The 'gateway_model' cluster: routes built from a measured order carry only provider and model, and the gateway clients read route["gateway_model"] and raised KeyError. They now use gateway_model if present, else the model id. This was why groq, cohere and kilo were wrongly ranked out of foundation, story_extract, story_review and conflict_check.
+ b. The retest runs unbuffered (python -u) and prints one line per route as it is measured.
+ c. Limits: a route whose provider has less than 15 percent of today's allowance left is now "not measured" with the reason, instead of burning the rest. Recommendation: run the retest in two halves with the jobs input (for example foundation_json,story_extract_json,story_review_json,conflict_check_json first, the rest on the next day), at a time the allowances are fresh (right after 00:00 UTC), and let the daily health run keep the lists alive in between.
+ d. nvidia: see 2.
+ e. The three dead AnyAPI models are removed (item 1c).
+
+6. AUTOMATIC PROVIDER-MODEL HEALTH (new ask): BUILT. Approach, in full: docs/ai/provider-health.md. In short:
+ - New scheduled workflow Provider health (05:30 UTC daily, and on demand), command `ai health --live`, settings in ai_health.yaml (the owner's switch auto_update, default ON).
+ - It extends the FreeDiscoveryClient pattern: AnyAPI and OpenRouter (:free ids) and OVH (keyless) now publish live lists that are discovered; providers without a list have their pinned models probed.
+ - ONE tiny probe per model ("Reply with the single word OK.") records answered, ms, tokens, and the error class (dead 404, credits 402, rate-limited 429, timeout); the daily cap or remaining comes from the usage ledger.
+ - Selector: rules first. Every probe-passed model is scored per job with the seven weights the tool already uses (quality 0.35, headroom 0.20, reliability 0.15, speed 0.10, cost 0.08, capability 0.07, terms 0.05). Guards: free providers only (a paid model is never added); COST GUARD: left out of a job when one call of that job would be more than 10 percent of the provider's daily token allowance (or one request more than 10 percent of its requests); the 1 percent in your example would leave every token-limited provider out of the 8,000-token jobs, so the share is a setting; CAPABILITY GUARD: text for text, reasoning for reasoning.
+ - Claude judges ONLY what the rules cannot decide (a model never seen before in a job's top 3, a tie at the top, a job's previous top pick just died): one small summarized call, at most once a day, answer recorded with its reasoning, its pick must be among candidates that already passed the guards, else ignored. If the rules decide everything: zero Claude calls.
+ - Auto-update, safe: the generated lists go to data/_shared/ai_rankings.json (which the router already reads) and data/_shared/provider_health.json; the router uses the generated lists only while fresh (3 days) and falls back to the static lists and the last retest otherwise. Only probe-passed models are added; dead ones drop out automatically; never a paid model; never the LAST working model of a job (kept and flagged); at most 6 different routes dropped or added per run; one readable commit per run (e.g. "Provider health 2026-11-25: dropped dead ..."), pushed directly with no human gate; one git revert undoes it; owner switch auto_update (off = report only).
+ - SCOPE: the run commits ONLY those two files, one path at a time. No code, no workflow, no other data file, no setting. (It does write the usage ledger locally during the run; that file is not committed.)
+ - Discovered models are added in memory as approved TEXT models of free providers, only while the health file is fresh; nothing is written into ai_providers.yaml.
+ - Not proven until the first live run: the discovery calls against the real endpoints, Claude's judge call, and that the commit lands. The first run is Actions > Provider health.
+
+
+FOLLOW-UP 4 (merged: everything in this one update)
+ 1. VOICE DISCOVER NARROWED. What is SAVED as audience voice must be about the brand's world: a discovered item is saved only if it has a link AND mentions the brand: at least half the words of one of its terms. The terms are read from the brand's own files at run time (assets_find.terms_from_files: the name, the research keywords, topics and queries, the catalogue's product terms, and, for voice, the competitors' names): no list in the code, so a new brand works with no code change (a brand with no files falls back to its own name). The seeding test is kept and now proves the other half: items that are about other things (or have no link) go to a SMALL CAPPED TRENDING LANE (at most 12, topics only, in the voice file under "trending", never counted as voice) and the seed suggestions are ranked from the saved voice plus that lane, so cross-industry topic suggestions still work.
+ 2. COST GUARD stays at 10 percent and is a setting (cost_guard_share in ai_health.yaml).
+ 3. ANALYZE LOOP. A transcript that is a LOOP (a phrase of 2 to 8 words repeated four times in a row, or fewer than one word in five new in a long text) is thrown away in ANY language and the next backend is tried, exactly like a wrong-script one. HOW THE DISCARD PATH IS PROVEN: (a) tests with looping and wrong-script transcripts from the first backend and a good one from the next; (b) every probe-transcribe run now ALSO runs an offline self-check (no key, no network) that feeds a looping transcript, a wrong-script transcript and a good one through the real failover and prints "discard-path self-check: PASSED (...)" or FAILED: so the next Stage tools run proves it live; (c) a deliberate-bug check switches the discard off and the self-check must fail.
+ 4. TIKTOK PASSWORD BACKUP. The path itself (Actions > Sessions password backup, TIKTOK_USERNAME and TIKTOK_PASSWORD, TikTok's login_steps in browser.yaml, the 2i gate) was built in Update 73 and has not run live. What was missing was the hand-off: a Stored login sessions run now ends with a "Password backup hand-off" step that says which platforms have earned the backup under the 2i rule (TikTok is REJECTED for the 3rd check: eligible) and, with the new input auto_backup (OFF by default, because the backup is never the default), starts the backup workflow for each eligible platform. Today: run Actions > Sessions password backup, platform tiktok. HOW IT SITS WITH THE STEALTH LAYER'S COOKIE-ONLY RULE: the rule is unchanged for Collect, the browser reads and the identities: it rests on the IDENTITY GATE (stealth.py sets allow_login False and collectors.py refuses a login while it is False), not on a `never` setting; the backup uses its OWN login routine for the sessions-PROOF path only, so it does not go through the collectors' login, and it is gated by the 2i rule (three unprovable checks or a rejected or expired session, no acceptance since, one attempt a week, two a month, a security check rests it 14 days, an account warning 30). It is the one narrow exception, stated in the file header, the workflow and here. The fresh cookies live in memory for one proof, are never printed or saved, and you re-export them into the secret afterwards. TikTok will probably show a CAPTCHA or code to a datacenter login: then it stops, rests 14 days and says so; that is the honest outcome, not a failure of the tool.
+ 5. PIXABAY KEY. `batch3 --action mpt-status` now REPORTS whether PIXABAY_API_KEY is configured in the run (by name only, never the value) and makes ONE real test search: "pixabay key: SET and ANSWERED ... LIVE-PROVEN", "NOT SET", or "SET but REJECTED". Whether it is configured TODAY I cannot know from here (the sandbox has no secrets): run Batch 3 tools > mpt-status after uploading and it will say so. The workflow now passes the secret in.
+ 6. DISCOVERY COVERAGE: EVERY provider. The health run now reads the live model list of EVERY enabled provider that publishes one: each direct provider's own /models and the local gateways' /v1/models (FreeLLMAPI and OmniRoute, read once per gateway); providers with no readable list (AI Horde, any provider without a key in the run) are listed with the reason and their pinned models are probed directly. Free-only rule: only providers flagged for discovery (AnyAPI and OpenRouter by :free id, OVH keyless) can ADD a model from a live list, because a list of a gateway or a paid-capable provider does not say which model is free. For all the others the list is used to REPORT pinned models that are no longer listed ("N pinned model(s) are no longer in their provider's list") and to count the live ones, in provider_health.json under live_lists. 
+ 7. FALLBACK IMAGE SOURCE: BUILT. Pixabay's free API (the PIXABAY_API_KEY, no card; the Pixabay Content Licence allows commercial use without attribution) is the fallback of Assets: order = the query (Openverse then Commons), the brand's own terms, the brand's own site, PIXABAY (the query, then up to three own terms, the same relevance floor on the picture's tags), and only last competitors' names (which must match the original query). Every saved picture says where it came from, its licence and its credit line. No key, no fallback, said plainly by an empty result. Needs the PIXABAY_API_KEY in Research tools (now passed in).
+ 8. CONCAT: DROPPED, not parked, and no host. Reason: Concat Gate #2 showed a desktop GUI editor with no headless render command (every help command opened a window, none of six guessed render commands made a video). A host would need a desktop session, a display and GUI automation of a program whose scripting interface was never found: a project of its own, and nothing in the plan depends on it (the video drafts come from MoneyPrinterTurbo, which has an API). concat.yaml records the decision (dropped: true, 2026-11-24); `batch3 --action concat-*` prints that and does nothing unless --force-dropped; the Concat gate workflow is now a notice only (installs and runs nothing); you may delete it (.github/workflows/concat-gate.yml). MoneyPrinterTurbo stays OFF until you say a host is ready.
+
+FOLLOW-UP 5 (merged in this same update)
+ 1. APIFY TIKTOK WHEN THE ACCOUNT RESTS: research.yaml now says `apify.mode: fallback` (and the built-in default in collectors.py matches it, a test pins both). When the browser route fails, including while an account rests after a warning, the Apify scraper for that source runs inside its caps (1 dollar a run, 1,200 items a month, 30 a run). The Collect workflow's backend box defaults to `auto`, which follows research.yaml. research.yaml's diff against v2 is the `mode` line and the comment line above it; nothing else.
+ 2. CAPTCHA DURING THE TIKTOK PASSWORD LOGIN, CONFIRMED BY CODE AND BY A TEST: real_login runs the login steps ONCE; if the page then shows a security check it raises Challenge immediately; it never calls the collectors' puzzle routine (clear_challenge), exports no cookies, and attempt() records the stop and rests the backup; no retry, no second try while resting. A new test patches clear_challenge to fail the test if it is ever reached, and proves one browser, one run of the steps, no cookies, and a skipped attempt afterwards.
+ 3. REST AFTER A CHALLENGE: REST_CHALLENGE_DAYS 14 -> 2 (session_password.py, the workflow header, the test). The 30-day rest after an account warning is unchanged.
+ 4. APIFY PIECES
+   - REDDIT IN COLLECT: NOT BUILT, and I say why plainly. Collect has no Reddit source at all: its sources are Meta ads, TikTok, Instagram and Deep Research, and Reddit has no browser route in it to fall back FROM. Adding it is a new Collect source end to end (the brand seed schema in research.yaml, task planning, normalisation, the caps and ledger, the CLI and about a hundred pinned tests), not a wiring change. What exists and now works: Reddit page reads in the sessions read chain have the Apify actor (trudax/reddit-scraper-lite) as a step, counted against the Reddit share, and the voice lane keeps its Reddit backup. Say if you want the Reddit Collect source built as its own item and I will do exactly that.
+   - X AND LINKEDIN ACTORS: researched on Apify's pages and wired into the sessions read chain with their own shares and the same guards (the 0.25 dollar ceiling a call, the monthly and daily shares in the ledger). X: khadinakbar/x-tweet-scraper (no login or cookies, an account's recent public tweets, about 0.002 dollars a tweet; the free plan returns up to 50 a run). LinkedIn: harvestapi/linkedin-company-posts (no cookies, a company page's public posts, 2.00 dollars per 1,000 posts; about 10 recent posts per company). NOT WORKABLE, said plainly: a LinkedIn PERSON profile or posts search needs a login we do not give Apify, so the code refuses it. X keyword search is not wired (the cheap actors need session cookies for search). The two actors' input names come from their pages, not a live call: Acceptance proves them.
+   - THE REVISED 20 DOLLAR PLAN: sessions read 3.00 -> 2.00 (minus 1.00), which is split into X read 0.50 and LinkedIn read 0.50 (new); Reddit's cost is now the READ price 0.0034 (was an assumed 0.004), so its 1.40 buys 411 items, not 349. Collect 6.00, voice 5.00, analyze comments 1.00 and the reserve 3.60 are unchanged: total 20.00.
+       feature            share  dollars  cost/item  items a month  items a day
+       Collect             30%    6.00     0.005         1200          160
+       voice               25%    5.00     0.005         1000          134
+       sessions read       10%    2.00     0.005 (assumed) 400          54
+       Reddit              7%     1.40     0.0034 (read)   411          55
+       analyze comments     5%    1.00     0.001 (read)   1000         134
+       X read             2.5%    0.50     0.002 (read)    250          34
+       LinkedIn read      2.5%    0.50     0.002 (read)    250          34
+       reserve                   3.60
+     Per-run caps: Collect 1.0 dollar a run (research.yaml), voice 3.0 dollars a run, every page read 0.25 dollars a call. Still an assumption: the Instagram and generic page-reader cost (0.005). docs/platform/apify-budget.md has the full table and the 15 dollar (3 key) version.
+   - ACCEPTANCE: three new Apify read probes, Reddit (reddit / apify), X (x_posts / apify) and LinkedIn (linkedin_posts / apify), each makes one real read of a public page (r/overalls, x.com/NASA, linkedin.com/company/nasa) at 25 cents at most; they skip plainly without APIFY_TOKEN. sources.yaml has the two new sources and the new Reddit route (17 sources, 43 routes).
+
+THE FIFTEEN PROVIDERS switched on now: aihorde, anyapi, bazaarlink, cloudflare, cohere, google, groq, kilo, nvidia, openrouter, ovh, pollinations, requesty, xkiro, zhipu.
+
+CHECKS, HONESTLY
+- pyflakes clean; actionlint clean.
+- WHOLE SUITE, one single process in my sandbox (not GitHub): 6,032 passed, 36 skipped, 0 failed (the last 36 skips are the expected missing local checkouts and environment). The earlier GitHub run, Tests #1240 (6,046 passed, 5 skipped, 0 failed), was on the v2 code.
+- Deliberate-bug checks: every check written for Update 73 is caught: the 29 first-script checks (rerun and caught 29 of 29 in the v2 round), the checks for the health run and follow-up 4 (39 of 39 after three weak tests were strengthened and one stale entry removed) and the follow-up 5 checks (10 of 10). The 52 missed checks that run only on GitHub (Tests > sabotage) are not claimed.
+- NOT PROVEN (needs a live run or something the sandbox lacks): the health run end to end (discovery endpoints, the Claude judge, the commit); a real transcribe; VibeVoice transcribing after the cache fix; the Concat gate (Concat is dropped); the password login; the Instagram grid fix; stock-index with real content and a non-empty stock search (the source: Openverse returns nothing on target; the fallback source of the 2026-11-19 plan is NOT built, only the brand site supplies pictures); Serper's cause; Node 24 on the gateway build; the Instagram/Reddit/page-reader Apify prices (assumed); MoneyPrinterTurbo (OFF, no host); M4, M196, M201 (still open, not claimed).
+
+RUN ORDER AFTER UPLOADING: Provider health (first run, then check its summary and the commit), Provider test, Stage tools > probe-transcribe (watch for the discard-path self-check line) then a real transcribe (a TikTok page URL), Batch 3 tools > mpt-status (the Pixabay key line), Stored login sessions > check (the password backup hand-off) then Sessions password backup for tiktok (a captcha ends it at once and rests 2 days), Acceptance (the three new Apify routes), Research tools > assets, Batch 3 tools > forecast then stock-index, Skills > reclassify-conflicts, Research tools > voice discover, Acceptance, and the sabotage run tonight.
+
+NEW FILES (A), with full SHA-256
+1a5d37c067587c44a3a83af738cc79d949c8768f328dc7b542276489c2065b3b  .github/workflows/provider-health.yml
+7c533d359fc6644b7ad3630d0290fb016b3e9c4a79fcd6ff0b5cb1f517532c2d  ai_health.yaml
+91b36e181d09394ebaaa114dcbae996e1cdc980fc17d70e5956474608436f775  contentintel/ai/provider_health.py
+93b084924c6b9e892c532122776f0c40578bb45c5283ab5a775f269328fa5b7c  docs/ai/provider-health.md
+287ba7d80cdab76459784cac26c92250142d3f110199650ee22100a6ac027851  tests/test_provider_health.py
+
+REPLACED FILES (M), with full SHA-256
+328820ccb3ae98f4f92ee2c712f109cdd31e2911ad22ef5b4fbf02b53a86af99  .github/workflows/batch3-tools.yml
+272e20e1c0ea220289d8ea2770fd62c1fa218619184fe656759c4a7e642d3718  .github/workflows/concat-gate.yml
+fec00acaeec41c2e3fb7d2556d765211f870f90c58b37ac2e81de5fe372124d9  .github/workflows/pool-retest.yml
+a4b1e500945acd6d9cb0608a6fbe49038078070b67483a8243faa0b89cb1ba15  .github/workflows/research-tools.yml
+33854a0e87a3c03dccb3eceb104800bebb7ca37f4dc9528465de7b3192c8976d  .github/workflows/sessions-password-backup.yml
+5f9278047c20fb3e39f20878d275b4e370cdc54e167bb6d29a1f0f96102a835a  .github/workflows/sessions.yml
+be2a8e62a1dcabf94b387bb8a93e8bacec8db38adae89146e866f76f76703ed8  .github/workflows/skills.yml
+f98a29176614930a6d6b84c053a852e778c46bad8344143dd944e16682091d44  .github/workflows/stage-tools.yml
+2ce9334ac0ccca13fb662b7cc33c029d8c5dd7262df572ed1410ed4e6bda3d48  README.md
+603c5181df6b9d39581c0bb32b471b3eece180a02e3e06a24724fd5ac31d28eb  ai_lanes.yaml
+01c75201df8ae64561aa0d399d9dc928910276a069d2e07c4061512ed33d7db3  ai_providers.yaml
+6acd5b4c05aaad0f16a5f3abd90bc68140d51b69689baa5b19b6d72a072738a7  concat.yaml
+3a05c7366731ccaedfb1e0781c772303d52bf3f8c3272d404ce9f0c191a5c6d3  contentintel/acceptance.py
+16d7d0e8e14788899013255aec90237ed404a51754f928ba46bebb1e3f11b737  contentintel/ai/clients.py
+c4b425beced86ef20b681f7e2901a9063c6eb72c5636c9cb4ce4b91b0bd0fddf  contentintel/ai/commands.py
+d849e044b12cce70392242375ea0fc9fb332949677a07a7e6d83f23e0b06edf5  contentintel/ai/ranking.py
+cc1dbb4fa5bc3a68090f99127f1c8e3fbffdb9d6027f2268492260f392330710  contentintel/ai/registry.py
+5d191c46c48b44c86c9afd753fbd540dd229dab85c1f46869bafc53002bdfd5a  contentintel/ai/router.py
+bcb2ceec077b9109ec8663770fea4195164a971dc84920a367450e322d891173  contentintel/apify_budget.py
+e04241e888e624030d3996a0c2007cd906e622ee3bdef2df3150fcc5a324374c  contentintel/assets_find.py
+67983cc12c4ba055c0e5eaf0386ef76c31dd5ca90f45486db22b56d220d7dc01  contentintel/batch2_cli.py
+24433b0646f895fdadeffd180d9b4c376a65f70234e0eeb0f7801204a3e417e4  contentintel/batch3_cli.py
+9a0ba2055cae874ed3ed027150c188ff38cb8fd1e12258a249d1be0b428a689d  contentintel/browser.py
+b9c11e11ae6b0b1ccc2d7234bc8509049f975b0224b339b1ea8a58aa21b06e0c  contentintel/canon.py
+e21391b47877b599a8b641e1e706d7e5906f526371787b3fffd03399e21e00f5  contentintel/cli.py
+e4df34334143b7f20f76186d1f38bcf725063791762eb588c02467e1de3b4f74  contentintel/collectors.py
+22a30dad931d62402c8b277aac668fef03414bf9e6921f4b0a5fc6561b5318ec  contentintel/forecast.py
+c4882cb0f32895496e13f1d73d8c30e79c9f4a2f5ce670e8c777edbd697c556e  contentintel/mpt.py
+27015611d8ea2df3ba1b2741315d780078f2b8dba3d551724e0fe40c018faf2e  contentintel/observatory/commands.py
+8b274ed0ea0fe68ee4378a1e3f588ea33a8950b127805b326b4f913f0766501b  contentintel/research_tools.py
+369cb3808167f9c9af07e0bafbee593111222827ad96fac9f4814905bd8d0427  contentintel/session_live.py
+447444e4e47a849ebe0a2c2db10c4d08c7f97e5598c35076d28ff6b63e32a5ed  contentintel/session_password.py
+1f96f1b80850cfe64821ff54aad11564582e4777ec328e2787d1a9b613589bc0  contentintel/stage_cli.py
+0e1ffe56195cab2fbb4a52ba29a7b80439b13f8d395f5bd07472d6e375290d55  contentintel/transcribe.py
+9b085807d1a7fc4981ca41b980ae3ecbc9c10c53def1bb551f9a131bc393b433  contentintel/verify_claims.py
+1d9e3939729e9842e626125eb063132965a7447100703e9b859d78f4878ce366  docs/platform/apify-budget.md
+e078e66f574eb71d46a990c01876ac6cb8eaf4cdba9ff06cb9cf09ffddcd4321  docs/platform/integration-matrix.md
+586a870b1859a4ee15a7abe4b282b4d5af0d1716fae67e48e99ec0fc80f92ae4  research.yaml
+cf514a7c20313fe98768ec884e4c6d2ccd6e0c91cc6ff7270a000f98cc3c27e5  sources.yaml
+d8fe43deb7487f97e559819f6f83bd9f8401f5de3c76667c99cbf85f60795bf5  tests/sabotage/update70_mutations.py
+1c9e790c59e89360037ec9d9c865e4b5993a44f6591722ba5147d5b2e86c4f7e  tests/test_acceptance.py
+5f8614cc6f9d58b42e925444d3151a33a42e57337c0d9344c500d242a2730881  tests/test_ai_pool.py
+a03707eb36e62fed014bbc84a0c610583d8e11d50e8dc177b18bacbd06bd77e1  tests/test_apify_async.py
+d7a27611dfd7b783666c3f98500b1583d0998aa44f75bcb9024fa3cf11a91b41  tests/test_apify_backend.py
+974a36c70c1003653fdec4dd362df08eb33ae41a9c2c9a87b657d689b7086502  tests/test_apify_budget.py
+70ccdebf24d50043da641426c6d80e904667a91efdb12ec4543b97ce7b047608  tests/test_batch3.py
+671a4068a079ee7c6e93b2b8520262d4a36df72e5891b8e7a513d24a2222f7a6  tests/test_health.py
+1e3013dfb236c7bc1c33d90b365c035463fd7cc35aaa8c6cec616cca801198fb  tests/test_ranking.py
+e3e0bc7237e974ef0077cf220b8de978c50bafa68a33cf429c74e48ff1b96b36  tests/test_round16.py
+933faa7b03fd3caba1de14a9e1e62ed79ac2912499d79bc7bf570704d72913be  tests/test_session_password.py
+ef35c6e6c5f3a32f3fa9abb32955f147ed6e6121d18410bb5bd133715840d6fa  tests/test_sources.py
+86e087f765f0f6bba93e6f143d09b0b1ccec30c92ac6611fee70e6a6a4f6f1f0  tests/test_stage1_wiring.py
+3cb49dcc7ee85075ec307aeb3b7eab77f317df33a6cdf1f19d99c0fb1731c486  tests/test_update60.py
+e2ea01f99c3dc532c3656e8f9dd4580f88aa45fc3ab306beacfe8e2fb56cde84  tests/test_update65.py
+d824a5fe2bca5194629538ba71a71775c54ec6e4185c589a59d8b5119a732a9c  tests/test_verify_claims.py
+
+MANAGER NOTE (Word document, not part of the repository)
+0815a8a4769ab467dd0080903d5569044895f588b8cf29a5a155cfb8b5a57bdd  Update-73-v3-manager-note.docx
