@@ -1,0 +1,39 @@
+{
+ "measured_at": "2026-11-24T14:18:25Z",
+ "ranking": [
+  "groq_whisper",
+  "cloudflare_whisper",
+  "vibevoice_asr",
+  "faster_whisper"
+ ],
+ "rows": [
+  {
+   "backend": "groq_whisper",
+   "ok": true,
+   "seconds": 0.43,
+   "why": "",
+   "heard": "This is a test of the transcription chain. 1, 2, 3."
+  },
+  {
+   "backend": "cloudflare_whisper",
+   "ok": true,
+   "seconds": 4.3,
+   "why": "",
+   "heard": "This is a test of the transcription chain. One, two, three."
+  },
+  {
+   "backend": "faster_whisper",
+   "ok": true,
+   "seconds": 8.45,
+   "why": "",
+   "heard": "This is a test of the transcription chain. One, two, three."
+  },
+  {
+   "backend": "vibevoice_asr",
+   "ok": true,
+   "seconds": 5.69,
+   "why": "",
+   "heard": "The subscription chain one, two, three."
+  }
+ ]
+}
