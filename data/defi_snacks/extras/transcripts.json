@@ -1,0 +1,14 @@
+{
+ "items": [
+  {
+   "at": "2026-11-24T14:26:17Z",
+   "backend": "groq_whisper",
+   "language": "English",
+   "seconds": 0.6,
+   "sha": "2fc79e3a32554197025f07b916a28abbfed01c28ae75cf72901c1bef497b1c82",
+   "source": "tiktok",
+   "text": "It's a shiny day, and everybody's feeling okay, ooh ooh, yam nangilewe, what's up to you, Samaray? Samaray."
+  }
+ ],
+ "note": "transcripts of audio the owner's research read; evidence only"
+}
