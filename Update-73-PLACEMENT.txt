@@ -1,171 +1,174 @@
 UPDATE 73: PLACEMENT INSTRUCTIONS (GitHub web page only; no commands).
 Upload every file below to the same path (the folder update-73 mirrors the repository). A = NEW, M = REPLACES the file of the same name. The manager note (Update-73-manager-note.docx) is not part of the repository.
-Built on the Update 72 state as pushed. If you changed README.md or docs/platform/integration-matrix.md after pushing Update 72, tell me before uploading those two: they are the Update 72 versions plus the Update 73 additions only (GitHub's diff must show only added lines, plus the lines named below).
+Built on the Update 72 state as pushed (the owner confirmed README.md and the matrix were not changed after it). README.md and docs/platform/integration-matrix.md are the Update 72 versions plus the Update 73 additions only.
 
-COUNTS AGAINST YOUR REPOSITORY (M239): 98 files: 24 new, 74 replace an existing file.
-NOT in this package, on purpose: your photo and video trial files, tests/test_video_trial.py (the repository's copy is newer), anything under data/.
-research.yaml: the ONLY line that changes is line 68: `monthly_items: 300` becomes `monthly_items: 1200` with a comment (diffed against the pushed file: one line).
+COUNTS AGAINST YOUR REPOSITORY (M239): 105 files: 25 new, 80 replace an existing file.
+NOT in this package: the developer's photo and video trial files, tests/test_video_trial.py, generation.yml (their upload-artifact@v6 edit is already in the repository, commit 9ec764e), anything under data/.
+research.yaml: the ONLY line that changes is line 68: `monthly_items: 300` becomes `monthly_items: 1200` with a comment.
 
-THE SEVENTEEN PROVIDERS (the non-Claude providers switched on; earlier it was fourteen connected): aihorde, anyapi, bazaarlink, cloudflare, cohere, google, groq, kilo, llm7, navy, nvidia, openrouter, ovh, pollinations, requesty, xkiro, zhipu. Claude stays the final fallback and overseer.
-  New since Update 72: anyapi, navy, requesty. Switched off since: airforce, bluesminds (no longer free). Hugging Face is switched OFF in the registry (enabled: false, no model approved) and a test pins that; Ollama stays off; NVIDIA is 40 requests a minute with NO daily figure hard-coded.
-WHAT 'EVERY PROVIDER CARRIES WORK' MEANS HERE, honestly: the eight seeded job lists rotate across all seventeen providers, so each provider is in the leading four of at least one job (a test pins it), and the router orders each job's leading four by a seven-dimension score (below) of measured rank and what each has left of its own day, so work moves to the next one as one fills up. That is the design and it is tested on scripted usage; real per-provider shares are only known after live runs (Actions > Pool retest, then Tests).
-  aihorde: in the leading four of 1 job(s) (storyboard_json)
-  anyapi: in the leading four of 2 job(s) (listen_learn_json, voice_creative_json)
-  bazaarlink: in the leading four of 2 job(s) (seo_lens_json, storyboard_json)
-  cloudflare: in the leading four of 15 job(s) (research_extraction, competitor_intelligence, audience_voice, formula_analysis, ...)
-  cohere: in the leading four of 5 job(s) (research_extraction, competitor_intelligence, formula_analysis, trend_opportunity, ...)
-  google: in the leading four of 4 job(s) (audience_voice, content_ideation, claim_verify_json, brief_json)
-  groq: in the leading four of 15 job(s) (research_extraction, competitor_intelligence, audience_voice, formula_analysis, ...)
-  kilo: in the leading four of 2 job(s) (competitor_ideas_json, creator_chain_json)
-  llm7: in the leading four of 2 job(s) (creator_chain_json, listen_learn_json)
-  navy: in the leading four of 2 job(s) (voice_creative_json, seo_lens_json)
-  nvidia: in the leading four of 2 job(s) (claim_verify_json, brief_json)
-  openrouter: in the leading four of 15 job(s) (research_extraction, competitor_intelligence, audience_voice, formula_analysis, ...)
-  ovh: in the leading four of 2 job(s) (competitor_ideas_json, creator_chain_json)
-  pollinations: in the leading four of 2 job(s) (voice_creative_json, seo_lens_json)
-  requesty: in the leading four of 2 job(s) (listen_learn_json, voice_creative_json)
-  xkiro: in the leading four of 2 job(s) (creator_chain_json, listen_learn_json)
-  zhipu: in the leading four of 9 job(s) (production_support, general_text, general_json, foundation_json, ...)
+THE FIFTEEN PROVIDERS (non-Claude, switched on after provider test #5 and the corrections of 2026-11-23): aihorde, anyapi, bazaarlink, cloudflare, cohere, google, groq, kilo, nvidia, openrouter, ovh, pollinations, requesty, xkiro, zhipu. Claude stays the final fallback and overseer.
+  Switched OFF with their records kept: airforce (402), bluesminds (503), llm7 (402, balance too low), NavyAI (400: shared-pool is not a real model and no free model id could be confirmed), Hugging Face (no free tier, card required), Ollama (402 out of credits). NVIDIA: 40 requests a minute, NO daily figure hard-coded.
+  AnyAPI: its seven :free ids are read from the live GET /v1/models list at run time: a pinned id that does not exist (qwen/qwen3.8-27b:free was a 404) is replaced by a live :free id of the same vendor and family, never a paid model, and a family with none fails the route and names the live free ids.
+  Requesty: one model, requesty/google/gemma-4-31b-it (the only chat model its own free-models page names; the earlier three were not found), 50 requests a day for a new organization (200 for a paying one). xKiro: deepseek-v3.2 (404) removed.
+WHAT 'EVERY PROVIDER CARRIES WORK' MEANS: the eight seeded job lists rotate across the providers, so each of the fifteen is in the leading four of at least one job (a test pins it), and the router orders each job's leading four by a seven-dimension score, so work moves on as one fills up. That is the design, tested on scripted usage; real shares are known only after live runs and the Pool retest (skipped in the last round, not dropped).
+  aihorde: in the leading four of 2 job(s)
+  anyapi: in the leading four of 3 job(s)
+  bazaarlink: in the leading four of 3 job(s)
+  cloudflare: in the leading four of 15 job(s)
+  cohere: in the leading four of 5 job(s)
+  google: in the leading four of 4 job(s)
+  groq: in the leading four of 15 job(s)
+  kilo: in the leading four of 2 job(s)
+  nvidia: in the leading four of 2 job(s)
+  openrouter: in the leading four of 15 job(s)
+  ovh: in the leading four of 2 job(s)
+  pollinations: in the leading four of 3 job(s)
+  requesty: in the leading four of 2 job(s)
+  xkiro: in the leading four of 2 job(s)
+  zhipu: in the leading four of 9 job(s)
+THE SEVEN DIMENSIONS: quality 0.35, headroom 0.20, reliability 0.15, speed 0.10, cost 0.08, capability 0.07, terms 0.05.
 
-THE SEVEN DIMENSIONS OF THE SCORED RANKING (weights add to 1): quality 0.35, headroom 0.20, reliability 0.15, speed 0.10, cost 0.08, capability 0.07, terms 0.05.
-THE PRICING CATALOGUE (contentintel/ai/pricing.py) is printed after the billing ledger by `ai usage`: every approved model free or paid, price per million tokens, limits and card status; a provider with no approved model (Hugging Face) still has its row.
-TIMESFM is 3.0 only: module timesfm3, weights google/timesfm-3.0-pytorch, no fallback to an older version (pinned by a test).
+DEEP RESEARCH (Gemini): BOTH menu layouts are handled, in this order: (1) if "Deep research" is a direct item of the open menu (the layout the debug files of Acceptance #15 show), it is clicked directly and the "More tools" steps are skipped; (2) otherwise "More tools" is clicked (or hovered when a click finds nothing, with a force click and the page's own click event as further ways), and "Deep research" is then clicked in its submenu. Acceptance #16 could not exercise either, because Gemini showed its Sign in button (27 cookies, 3 expired): that needs a fresh GEMINI_COOKIES export from the owner; only a live Acceptance proves which layout an account sees.
+INSTAGRAM GRID: the settle step reads the grid only when no tile is blank and the image and tile counts stay steady, nudging the page (a small scroll) while tiles are blank, and no longer waits on a spinner that never clears once everything on the page is drawn; waits are 20 s after opening, 10 s per scroll (12 in Careful Mode), up to 60 s of settling. The spinner and tile selectors are guesses at Instagram's markup: Acceptance is the proof.
+WHAT THE LIVE ROUND (#16 to #45) PROVED, and what each fix does:
+- competitor_ideas #43: the wrapper and the gate fixes are proven live (8 ideas, gate OK). Stage tools #5 failed on ffmpeg: ffmpeg is now installed by stage-tools (copied from research-tools, failing loudly without it), and the conversion happens ONLY for the hosted backends (Groq, Cloudflare), a missing ffmpeg is that backend's failure and Faster-Whisper reads the original file.
+- analyze #33: a Japanese transcript for an English video was a hallucination; transcripts are now checked against the EXPECTED language (the video's, else --speech-language, else English): one in the wrong script is thrown away and the next backend is tried. Its save step now includes analyze, so the analysis is committed.
+- Assets #31: expansions are scored against the ORIGINAL query too; competitors' names (Allbirds) are tried LAST and only keep results that match the original query; the brand's own site is tried before them; old junk in the saved list is cleaned whenever it is written. The stock corpus uses the brand's own terms only, never a competitor's name.
+- Bake-off #7: the agent-browser command broke because commands were split on blanks; they are now split like a shell (quoted strings stay whole). The report also shows what each engine adds (the share of words it saw that the plain read did not), and the comparison is saved to data/_shared/bakeoff.json (the save step now includes bakeoff).
+  ON THE 2x TIME GATE: it is the owner's rule and it stays: Lightpanda answered 9/9 and saw 99% of curl's words but took 5.5x as long, so on these three plain home pages it adds nothing and costs time. The gate is not wrong, but the test pages are the weak part: curl cannot show what a JS-heavy page adds. The new `adds` figure shows that; run the bake-off on a JS-heavy public page before deciding.
+- Stock-search #4 and stock-index: the stock-index save: the save step is now unconditional and prints what it saw, SAVED or NOTHING TO SAVE, and fails loudly if a push fails; a real git test pins that it commits and pushes. The cause of the earlier silent 0-second step is NOT proven; a stock search now keeps its matches (stock_matches.json). The corpus is empty until a stock-index run saves.
+- Reclassify-conflicts #45: it only ever looked at claims with a conflicts_with link; claims that verify-claims marked conflicted because a SOURCE contradicted them have none. They are now re-checked from public sources too (a claim can come out verified, unverified or still conflicted).
+- Serper search_web: cause unproven; it now retries without region and date filters and reads the answer box, knowledge graph and people-also-ask links, and says what the answer held when still empty.
+- verify-claims #41: the timeout is 90 minutes, the run stops starting claims at 75, each claim is printed when it starts and ends, and --max-claims is a cap for the WHOLE run across brands (not per brand).
+- probe-transcribe #4: VibeVoice's install failure (exit 127: the removed huggingface-cli) is fixed with snapshot_download and cmake installed; failures are no longer hidden; the probe transcribes a spoken sentence (espeak-ng), so TRANSCRIBED means the words came back. Output format of asr_infer is STILL unverified.
+- Concat #1: only the x86_64 .deb is downloaded and installed. The gate itself has still never run.
+- TimesFM: the weights need NO Hugging Face token (the model page is not gated; the warning is about rate limits); the forecast proves the model load on a built-in test series even with too little history (MODEL LOAD PROVEN or FAILED); the backtest still needs real history.
+- Node 24: set everywhere including ai-pool, tests.yml, observatory.yml and ai-gateway.yml (twice) and ai/gateway.lock.json: the gateway build is NOT proven on Node 24 (the lock said 22): if it fails, set those lines and the lock back to 22.
 
-APIFY, THE MATH (docs/platform/apify-budget.md): the budget is 20 dollars a month = 4 working keys at 5 dollars (key 3 was fixed 2026-11-23). Items a month = dollars / cost per item; daily number = items / 30 x 4.
-  feature           share  dollars  cost per item  items a month  items a day
-  Collect            30%     6.00     0.005          1200          160
-  voice              25%     5.00     0.005          1000          134
-  sessions read      15%     3.00     0.005           600           80
-  Reddit backup       7%     1.40     0.004           349           47
-  analyze comments    5%     1.00     0.001          1000          134
-  reserve                    3.60
-  COSTS: TikTok 0.005 (5 dollars per 1,000, Apify's published free-plan list price) and TikTok comments 0.001 (1 dollar per 1,000) were READ from Apify's pages. The Instagram and sessions-page-reader cost (0.005) and the Reddit cost (0.004) are ASSUMPTIONS, NOT LIST PRICES: no price was found for those actors. The per-call ceiling (0.25 dollars) and the 3 dollar per-run cap limit the damage if they cost more.
-  Collect's 1,200 comes from this table (6.00 / 0.005); WORKING_KEYS is 4 in contentintel/apify_budget.py.
+APIFY: the budget is 20 dollars a month = 4 working keys at 5 dollars. Items = dollars / cost per item; daily = items / 30 x 4.
+  Collect 6.00 / 0.005 = 1200 a month, 160 a day; voice 5.00 / 0.005 = 1000, 134; sessions read 3.00 / 0.005 = 600, 80; Reddit backup 1.40 / 0.004 = 349, 47; analyze comments 1.00 / 0.001 = 1000, 134; reserve 3.60.
+  COSTS: TikTok 0.005 (5 dollars per 1,000) and TikTok comments 0.001 (1 dollar per 1,000) were READ from Apify's pages. Instagram and the page reader (0.005) and Reddit (0.004) are ASSUMPTIONS, NOT LIST PRICES.
+  WHICH PER-RUN CAP: Collect enforces max_cost_per_run_usd 1.0 (research.yaml); the voice lane's cap is 3.0 dollars (CONTENTINTEL_VOICE_APIFY_RUN_USD); earlier text that said "3 dollars" for every feature was only the voice lane's number. Per-call ceilings: 0.25 (page reader, comments, Instagram, Reddit), 0.50 (TikTok).
 
-WHAT IS IN IT (all of it proven on scripted answers only; see the end for what only a live run can prove)
-- Providers and pool: AnyAPI at api.anyapi.ai/v1 with the seven :free ids (reasoning one on conflict check, claim verify and story review; the 262K one on story extract, listen-learn and competitor ideas; 100,000 tokens a day and about 20 requests a minute shared by all seven, and a job that uses up a nearly full provider is held back so the others keep some), Requesty, NavyAI; airforce and bluesminds off; Hugging Face off.
-- Routing: rate-limit-aware spreading with the scored choice, per-job share, billing ledger, pricing catalogue.
-- Claims check: any medium, one close source verifies (flagged for a spot-check), block only on contradiction; budget sized to the work waiting.
-- Stages 3 to 11 plus the storyboard stage; refusal and empty-section gate; voice fallback; the collected reader unwraps items.
-- Transcription: Groq, Cloudflare Whisper, pinned Faster-Whisper, VibeVoice-ASR (installed by the workflow in the same run; no repository variable is needed); ffmpeg conversion.
-- Analyze: speech, comment text (yt-dlp, then Apify TikTok comments, capped), routes named, analysis saved. Assets: relevance scoring, derived queries, brand-site fallback.
-- Apify money plan; Apify as an additional step of the sessions read chain; Reddit actor as a backup of the public Reddit search.
-- Deep Research fix (Acceptance #15, the Gemini More tools step): broader menu selectors in browser.yaml, a hover when a click finds nothing, and force then page-event clicks. NO new cookie export is needed.
-- Password-login backup for sessions: exactly as ruled. The cookie session is always first. It fires only after three checks in a row with no sign (UNCONFIRMED) or none possible (CANNOT CHECK), or a REJECTED or EXPIRED session, with no acceptance since; one attempt per platform a week and two a month; a security check rests it 14 days, an account warning 30; manual workflow only (Actions > Sessions password backup), never the default, never scheduled; the fresh cookies live in memory for one proof and are never printed or saved (you export fresh cookies into the secret afterwards). STEALTH LAYER: Collect and the identities keep password_fallback: never and allow_login: false, unchanged; this is the one narrow exception, for the sessions-PROOF path only, and it does not go through the collectors' login routine.
-- Batch 3: OpenMontage patterns (scored choice, run manifest, quality gates, CLIP-indexed stock corpus), ArcReel (billing ledger with pricing catalogue, storyboard stage), TimesFM 3.0 (forecast, anomalies, momentum, Idea Bank timeliness, used only after a backtest beats the naive baseline), MoneyPrinterTurbo (briefs executable, hook A/B renders, drafts: BUILT FOR A HOST AND OFF; stock footage from PIXABAY while Pexels has paused new keys, Pexels when a Pexels key exists; publishing has no switch and no code; its Cloud Run deploy is private and does nothing until you type yes), Concat (Actions > Concat gate, default auto: installs Concat headless, discovers its help, infers the render command and runs your gate in the same run; a manual render_command still works).
-- Bake-off: Lightpanda and Obscura (no stealth) and agent-browser commands set, with install steps.
-- Node 24: actions/cache, upload-artifact, setup-node, checkout bumped to their Node 24 versions.
+PASSWORD BACKUP for sessions, exactly as ruled: the cookie session is always first; it fires only after three checks in a row with no sign (UNCONFIRMED) or none possible (CANNOT CHECK), or a REJECTED or EXPIRED session, with no acceptance since; one attempt per platform a week and two a month; a security check rests it 14 days, an account warning 30; manual workflow only, never the default, never scheduled; the fresh cookies live in memory for one proof and are never printed or saved (the owner re-exports them into the secret afterwards). STEALTH LAYER: Collect and the identities keep password_fallback: never and allow_login: false; this is the one narrow exception, for the sessions-PROOF path only, and it does not use the collectors' login routine. The real browser login has never run.
 
 CHECKS, HONESTLY
 - pyflakes clean; actionlint clean.
-- Whole suite, five chunks, rerun after the last code change: 5963 passed, 36 skipped, 0 failed (with a stand-in for one test of your video trial file, which is not shipped).
-- Deliberate-bug checks: tests/sabotage/update70_mutations.py. Every check written for Update 73 is caught (including the five survivors of the last round, which now have tests). The 29 first-script checks that had been parked: rerun after the action-version strings were updated: 29 of 29 caught (three of them first survived a run whose test set left out the files that cover them, and were caught on the rerun with those files). The 52 missed checks that run only on GitHub (Tests > sabotage) are not claimed.
-- NOT PROVEN (needs a live run or something the sandbox does not have): VibeVoice transcribing in the chain (the output format of asr_infer is unverified: Actions > Stage tools > probe-transcribe must show it); the Concat gate (the render command is inferred from Concat's help and tried; the real run may report NO-GO until the right command is found; it will RUN and report); the password backup's real browser login (never run); the Deep Research fix on the live Gemini page (Acceptance); the claim check, stages, forecasting, CLIP corpus, analyze and assets on real data; the Instagram, Reddit and page-reader Apify prices; AnyAPI, Requesty and NavyAI beyond Acceptance #15 (they were proven live there); Pixabay (key added, not yet live-proven); MoneyPrinterTurbo (needs a running host and is OFF); TimesFM's real API (its call was written from the published interface); M4, M196, M201 (not provable from here, still open); the CI-mode suite; M103.
+- WHOLE SUITE: One single full run in one process, in my sandbox (not on GitHub): 5,989 passed, 36 skipped, 0 failed (a first single run had 1 failed, a test of my own expected wording, which was fixed and the whole suite then rerun in full). Earlier chunked totals are not claimed.
+  Previously: Tests #1224 on GitHub (commit a3ee573, before this round's changes) was one real full run: 6,020 passed, 5 skipped, 0 failed. The earlier 5,963 total was chunk passes plus fixed files, never one full run, and is not claimed.
+- Deliberate-bug checks (tests/sabotage/update70_mutations.py): every check written for Update 73 is caught, including the survivors of the earlier rounds (each now has a test). The 29 first-script checks: 29 of 29 caught (28 on the first pass; s1-acc-no-key-search survived a pass whose test set left out the acceptance test files and was caught on the rerun with them). The 52 missed checks that run only on GitHub (Tests > sabotage) are not claimed.
+- NOT PROVEN (needs a live run or something the sandbox does not have): VibeVoice transcribing (the probe must show TRANSCRIBED); a real transcribe end to end; the Concat gate; the password login; the Deep Research fix (needs fresh cookies); the Instagram settle on the live grid; stock-index saving and a non-empty stock search; Serper's cause; MoneyPrinterTurbo (needs a host, OFF; Pixabay key not live-proven); TimesFM's backtest (needs history); Instagram, Reddit and page-reader Apify prices; Node 24 on the gateway build; M4, M196, M201 (still open, not claimed).
 
-RUN ORDER AFTER UPLOADING
-1. Acceptance (Deep Research), then Provider test, Pool retest, Skills and registries > verify-claims, Stage tools > probe-transcribe, Concat gate (auto), then Tests > sabotage.
+RUN ORDER AFTER UPLOADING: Acceptance (after fresh GEMINI_COOKIES), Provider test, Stage tools > probe-transcribe then a real transcribe, Batch 3 tools > stock-index then stock-search, Research tools > assets then analyze, Skills > verify-claims then reclassify-conflicts, Concat gate (auto), Stage tools > bakeoff on a JS-heavy page, Pool retest, then Tests > sabotage.
 
 NEW FILES (A), with full SHA-256
-cc35e7a13611992602598de436eac49b1f77d13c3861daa04f836c4ef19cd4f8  .github/workflows/batch3-tools.yml
-b769941b20ab5ebc74c606731e5c6a6a2186cb855f65c5c42c74123e5888b1ac  .github/workflows/concat-gate.yml
+ffe2f55a844b128fbe0e9eae91baf1188e61d8c7e5f5b56b11ed0a5499108a1d  .github/workflows/batch3-tools.yml
+04a8899611e068dcae81cfd11ab7ab9ff2b6b235516c076b0360157b9e835b6c  .github/workflows/concat-gate.yml
 0a1057dc4c0cab3c46ddc1ad8f21bb244b90175b8614d6e724652cc84a479003  .github/workflows/mpt-deploy.yml
 40867b39ca48aff48593b3293e029eeb6d9e40d3b48810bbbc98fed5994d1b44  .github/workflows/sessions-password-backup.yml
-bdb92d852dccc2e91d9825e2bc4534c682ce27d0a61e21b47e430e350fdbb0ca  concat.yaml
+d6dc4afcd9285e57272b14b7af2c3cef09162fb5a4a07f9199ab1e962e65b4f1  concat.yaml
 acba238e657469c10063c4f1791e2d4e389cf432be67b5e9efc7108ae6a71369  contentintel/ai/pricing.py
-c000bb05ee3f2bfea48aee24e610c72a9970c504926fe6c04b6568a371ff362d  contentintel/apify_budget.py
-45b33da786104ed0cf36f84b4819b5b8cea3c694d3a3a0d99bf99cf00e55358a  contentintel/assets_find.py
-1029744c76d498629d143ed60caae6d37b62d5e62beda28a13ff05e32dea3cfb  contentintel/batch3_cli.py
+83a16ecff7000dad23d346e6402985e033879451aa3751761a83b8c578c4a7fd  contentintel/apify_budget.py
+133da6d02cc44184acce434096874b9180e9fbf4f15d423f4053e8f6f36ee2c8  contentintel/assets_find.py
+7658961fd0698bc27a99d823f62600ba0f1b63da9ac128a10d0feb4c8e4bb704  contentintel/batch3_cli.py
 556cf4a0001e328d2cce2a161af18bba40ab37371a98be7de51e39cac3c3e51a  contentintel/concat_gate.py
 630aad0ba694c9b93433d85a6aed670159b9eeeb56aa022dd404607e2423e17a  contentintel/forecast.py
 e82424aaae7bd8c4fffe0c6ac11b847abc7124bf751ee1181e75b6e351477556  contentintel/mpt.py
-0cc7353b6cc1cabf9972470889a77180d711e4ee55a23cb7a735b32e4026570e  contentintel/openmontage.py
+3e1bade34d55a5cea1ed2c1393b60e1f0f9c67cc9c830cfb8317856ff0e8dac4  contentintel/openmontage.py
 7604e7e368c8884f412b0a9f8b3ed58aae6088c9f1231a9384b9de57eeb6375f  contentintel/session_password.py
-8811f3073b2d053077733339cc40c40c690c2faa23eff6ab7db3dff4afe76de2  docs/ai/transcription.md
-46b049c3f0066ce0eef0b0a880f6296aaffec9d60a8ef91ea0bdf4486937a193  docs/platform/apify-budget.md
+6aff6a6d95b4a840035f0ad7cc2eb7931cdee683693dcfee95d62e5cf69eba28  docs/ai/transcription.md
+7ff4dfa18b764534cb61006292337c3cdcfac319b710822795fed473a38247cc  docs/platform/apify-budget.md
 2546abe99bd3e1158a078986a99b1fed9733156341c7d819a097d909053f0808  docs/platform/mpt-cloud-run.md
 062bcf3d33a239223efa45c919da7b11b91bd449e98c1c899f7b22dace3f6715  mpt.yaml
-42e89d8735f6489fb69929982c1f2a4ba4aea671931c84ba4587e305477723b8  tests/test_analyze_v2.py
+eee11261b0fecc51ff7627fbc88313da75cf1f515ea51d58a489a56e5607554d  tests/test_analyze_v2.py
 617539ce8ae4a7ecec7232b521ad26df35d9a1cb0ae1b3e1b5cb9ccc942e792f  tests/test_apify_budget.py
-889a35f845a5abfd48dd6b87d5d6987aabee224e1583d87e88e9b2f946f2468d  tests/test_assets_find.py
+105fda04e8216770ad06a2569dbaabe0847f3c5ab81f9e0c9128e41b03b5c072  tests/test_assets_find.py
 08e6fa896831034bf697dd049ba4523a5176c83d0b0e9a6ec3a1700f2d3691ff  tests/test_batch3.py
+695712eaa02fca8d413d44e9cbc3f4c7104332886b4ef88a60facc6dce1a4b14  tests/test_round16.py
 052748ea9ee41abce00996d0d227ada7f94345ec8baddf0ae020415c7a7d4766  tests/test_session_password.py
-46972c3e2e7303ac72342bd842191627b20ce4e7f17a382ff2bf087bd16d1a42  tests/test_spread.py
+402f8827bda0f66902b4ec216b858fa976111e725fb009f8bc934a9f33ba940f  tests/test_spread.py
 
 REPLACED FILES (M), with full SHA-256
-0ea5f3e6a7db0eed877d15a1764ef8920f82b7230f801a0bb0b2fb38d3c7028e  .github/actions/ai-pool/action.yml
+04a92ed9ee011602792c517be89be54712443c071f009639ab6b104b0b719e54  .github/actions/ai-pool/action.yml
 679fe7fd637d26a2b516e2add59ef2476e46bef00a360c46862a85a811a5a8cd  .github/workflows/acceptance.yml
 e5e80dd8c8a27ff04218c9b95a4488834ce74066829ef24e4dee5410d43828d1  .github/workflows/agent-reach-cloudrun.yml
-145f5ff52833ff7125ed2f38c54ac0caa0abb47331fa038c1107c5c91debe936  .github/workflows/ai-gateway.yml
+84c5a5329f0ca38767565e51a8c25d431477bbc186723a27e3d6d238e8ebcb33  .github/workflows/ai-gateway.yml
 af92c7e1c4e6e1a397e0bbf21af18618006d10eebad903107c48dd1722593af2  .github/workflows/brief.yml
 be624a913f869e07c29e48215ec5479064ed11169107bc3883af6e4c56146379  .github/workflows/collect.yml
-2d3dd18ffec1486eee1b4db6d05768ef6cf5e36f91913c11eaad442b9fc0561b  .github/workflows/observatory.yml
+64d6725bf3c2b97ca7527960b6bd96f0cc11eb4ddb7e16313f2438c54d33d563  .github/workflows/observatory.yml
 a702f211e65e24e51732a9ea6b85f50d5e41f8b1ccff4e5dd4f1392a6f136e44  .github/workflows/pool-retest.yml
 cc1f12b783759496c2cb6803fc88a5e0abb14cf45fa0e2b3a5de051d70584ed6  .github/workflows/provider-test.yml
 394f058f36d0857a16cb7e0dc7ead26db1b1e90f8126e67cc11d21307e79988c  .github/workflows/request.yml
-713e9f383c1bdc72d57483f545de0474521edd4627d50ef17e6587a16f3d015e  .github/workflows/research-tools.yml
+290e8c3f04a74034cd9cb16556d240b0483282446245c5bb0c9e5f23cabbd344  .github/workflows/research-tools.yml
 e3448e762b6bce3f1e29e4e3a001d68e79dbacdd9c7ec624f83e36495c63d8e3  .github/workflows/research.yml
-f4cfe29f186214f32ea9d7e7e134f6dcd6fbdac66a6f6dfcdafb5721f61be97b  .github/workflows/skills.yml
-f4c2308c470b1f771283543da28234b0a62c8328f6581ee0670159331af74bd5  .github/workflows/stage-tools.yml
-b88eecd20484dda943c96e650f95cba93c28ed31279f3917fb6eb3fb00b3dd83  .github/workflows/tests.yml
-0c8c477cdfc4832602e974661e425965f3716911fd45157eed349d83c69202b5  README.md
-3e08d519baec09317abdd15d102f0c95bb2b6f4c06e67334bd9d805b40e7e226  ai/omniroute_free_providers.yaml
-1d7761d2fc1e0a58d448b74858c6966e4422a70459e715c49600b770d6bcff07  ai_lanes.yaml
-88bca297514519c03ca625f86b2449afeb1122667bbf4e3cdebfd41254527f79  ai_providers.yaml
+0c9fac220df81fcf39aa8c1227a9f5a7d713e9796dcfb650c31284adbcbeaecc  .github/workflows/skills.yml
+19964136f3ccd4c0f43503e7ca50cd486f9ea4ac4dad024861639a32053b20d7  .github/workflows/stage-tools.yml
+980c6f20fb609285cb2918a847a2a24c642ef09e56b41a3af19368a20374d9d6  .github/workflows/tests.yml
+18cc61f37ddbb2f4ea2b5d5d219bf19eccaf684b31e93ce181d8187fbb5f1816  README.md
+6ec318a3ea6840768111f075ed1f5e0f3b91c782a962625f20986cfd27b7bd9c  ai/gateway.lock.json
+5c183d9e4c7789b9f5d732cad9bd23a5cbc324ed97bdc07f57459a92210df850  ai/omniroute_free_providers.yaml
+cc791f7aaf83cfdf024dac893c4c60d8f418a5e7e09892a50ee4791b6789df5a  ai_lanes.yaml
+00cbdbd56f614b8d5a265806422ce79873ac51d77933e6fa533857f926ccf3e1  ai_providers.yaml
 699c936d7e51775e637d4ca6840e12ec5df015a93ea6ec9185eb712dffde80be  bakeoff.yaml
-094d89d3bc556b2adf9579adb77e3bf07848e7608fe8c52d755199ea0fd5fcf9  browser.yaml
-44bc0ea82bed70076bfa88a7fe3deb62f411190448820ac45566650986d4e132  contentintel/ai/commands.py
+51d95c8416cd7b170c9d8e068375aa66f358e6f3ff0e751b68d865db37ab808f  browser.yaml
+91c34216ab245dbecd1573ba75b9025c1324f667ad06ff749e5ca05aaa556371  contentintel/ai/clients.py
+55f7cf5bf5fb71c9a141f58c68d9caa0f850dbe1e968a2c95adadc4cdd6a2a9b  contentintel/ai/commands.py
 f6d0496e2b67a50a6cc64689303b8d9b7c30569a8d02c9d34f0c50268fc7575c  contentintel/ai/ranking.py
-15906e91834ec395a468c1ee00536500d428f9564aad11d675498a9b4d985ba2  contentintel/ai/registry.py
+98c638db3b9eec99f88533ad341e1310f846536837c37ff8afdbd9fd3e607002  contentintel/ai/registry.py
 55a09cfb920a33e1ad82f3783ad8f193597bfe295b7e0cc99bbab42321c1f825  contentintel/ai/router.py
 0919aa5aaf717559d31e48dd59f2fe9e5a0758cfe64db271290f31c09f2e80d7  contentintel/ai/usage.py
-ea93c06afd76572ad80894ecce0b2407b35a1184ed766a347b6c0160baa8be8b  contentintel/batch2_cli.py
+528eecdf6f099e77ef260437190398d6cb8350363460e8ab8d5cccc2a72e83c8  contentintel/bakeoff.py
+40b144fd35427e9de6aa36940a6db9185447a69792054e286735abad1622ef47  contentintel/batch2_cli.py
 21af8e96b16f554c48b89507825b52653c4c3013dddee0b4b2159e4ab66a5ab2  contentintel/brief.py
-0942a556437376bcb371ee12725fe6c66879e6d00d5dbe3a55ccd2020b65a5d1  contentintel/browser.py
+24d62a4e72efc4a5b5fc934b4dbe2b17037c50b43916c755371db171f6b8c6e4  contentintel/browser.py
 a6e97f42da55fbe374bfabf668687ee0c46ebcbb409e10d4fc8b58d2cf03523c  contentintel/cli.py
-95d08ce41a14bd5b2b384e98fdab9057adaa5187eecb5b1601dd9a6661342a4c  contentintel/collectors.py
+b3460579d8cb2d44b3b03cb5ad7f2982b61a58870e0f3a4e62fc2cea868f5b18  contentintel/collectors.py
 148dac57434a246ba6449c84f1db4523311548257678dcdf68fa747fa62b2169  contentintel/observatory/commands.py
-a161cc4c5b2adf369dde30275302ab0a5fe05d4e145914aaa76ccef705b7907f  contentintel/observatory/config.py
-52bb9e7c6802b02ffe877a2b24fc44a91b3717fb12417ddd008cf6b8b7c31913  contentintel/research_tools.py
+20672d21b0f7d52ae184db3ce9d2a63d443e25038d65eed1d14ce09e5636c8fd  contentintel/observatory/config.py
+4125c20eb5d43c25398c05511765df32bd879e37dd7c908745a850da83ee4b3d  contentintel/providers.py
+48d094ea2b9b51e8e09c64eb4d3e4003fe1232d728cf59d26854889e3661003c  contentintel/research_tools.py
 5f03919d4965793221558b0381e17a0f31f893e84c2d04421e51490169869691  contentintel/services.py
 70b7e2ff17b559ea5fe96dd8b95390f98173a5cd5b37bd6627a7f51637fc8d64  contentintel/session_live.py
-751d14cf024c4581f465d057e1705758a97f957dd94f36995af680499a585a50  contentintel/stage_cli.py
+a5f8c687d6e3f31a724e4c96471edee3c0e66e21898758ae02db11d975e4ca09  contentintel/stage_cli.py
 60d440bb89cd7d3bfdc8bd874842c5fc275d87800de65978e3610959bcd55bcc  contentintel/stages.py
 9ad78f98ae30cc57b16c58804a7bc124164cfb4bec86347eda8f0de2d948fa08  contentintel/store.py
-3e9c3561e17003bcd2613462983642844e2cb1f21c480260410d44693362121f  contentintel/transcribe.py
-c82688e7c52594cf079045a2213a7dc09d9e937ebef0fb82a23cf2af9f1a62de  contentintel/verify_claims.py
+9b124f31691d6fbc1aa76817beade7f5f9ed3b6b7c667ef4c4d56dad98bbcafb  contentintel/transcribe.py
+59a6ebea2f2dd7128abca7bc068a9174409f5e39cd37a72c8528bde235ee3bce  contentintel/verify_claims.py
 ad5467b2d6643b1f257e49c385ad8bd0d1e63bf6703ef27b29d67232d9728105  contentintel/videometa.py
 1df00237042fbc005876e0534d9d5d416e8feb2585759798926fa5e993e11d7f  contentintel/voice.py
-77688275f36b0fc113f9210b5468d7e509bd8efbeeaca65a4b2d33642e855986  docs/ai/provider-comparison.md
+e017c90a649037c8b9dd666b119c09e3f2481e5bd0c99ac2cc0642ea85b546de  docs/ai/provider-comparison.md
 ede14b5cc1b5accc2b4383bfb62e35af94cb691c145812f9ce01fa7b47918a58  docs/platform/integration-matrix.md
 237a22a1f4d8701ea3e8b8dd7eba7584ea82c5098dbf5ec1fa01e015e73a99c9  research.yaml
 e215ce5784127ef9f9a78791497e4ef81cb554dfe5331c73b37988c65f948249  tests/sabotage/run_sabotage.py
-37aaaef20421918c9592af664673bd7ed32ae43077d4ab2670b7a46325ea7af1  tests/sabotage/update70_mutations.py
+4a31d22129153e9b2eaf94e7ae60dd99539507e7a64b32c531cd1796a8c3c790  tests/sabotage/update70_mutations.py
 15214d5ff63700ad4bb164d4516b8ce5fa393035e0260943e50fb5abf7e169de  tests/test_acceptance_fixes.py
-92fd4d2f14bbfbb4544f922790649aad9d746bc5d17fd8f397b4e35653a878af  tests/test_ai_commands.py
-be1afabd961939f6ba3aed63248bc10302b6ac2a1bab0750578970d2240ba75a  tests/test_ai_config.py
-9f894c5f632e3b8454823fb4f8e5ee559ca52c01cdb9ce7ee29f1c3ba53cd960  tests/test_ai_github.py
-c9fcb88ae4dd9a419b348c94003a33739a92acb3966c8561d8797a88507db46b  tests/test_ai_health_tab.py
-3b0f2de66ec36ba9cf59777264abad86052393e67703536a6da19c16b2b6feee  tests/test_ai_internal_switch.py
-3dab06dc857fe902b1bead8d4581fa87b55f79cbdd37199535ce1c82ea0d9f6e  tests/test_ai_pool.py
+8e10f10029f10ce66df237ad7d6310d3aac97618aa5e7f2c4f68ece9479fe6ac  tests/test_ai_commands.py
+04c5df2e1f8d7b22a9bdcfbb978d08197fc6700d47fc5ac9ffe08d08afd2aa84  tests/test_ai_config.py
+dbbd34ce174ac0bbdf317a12a5b605bad062c83560b8ea0fce7888213a0c82ea  tests/test_ai_gateway.py
+e510f072f0d2a8ecc090d11c3fbb727be9a010d2aa01f8ee44fc8c865d34e6ce  tests/test_ai_github.py
+65507b70b62e7c741c0a616cebe9826da958445c890f307cbc7850b0d989c1d9  tests/test_ai_health_tab.py
+7ada7bc5a9ff62f889bafd9c8fad7630b1d3099a07a464f381a0af22330c6352  tests/test_ai_internal_switch.py
+2861dfc9934e5e2a64964be447168272fa77b8be9f78586844a913d5d36171fc  tests/test_ai_pool.py
 07ec396163d7384eb38e10d1de7e181cb545313793bceaaa865390ae1ccfb309  tests/test_apify_backend.py
 d4c88787bbfb900daf46739f0641f278e5f581ce339c4602d14099b403ac4719  tests/test_bakeoff.py
 2cf8c957b30e5fb6d78801a5a198201a7813d9dd922dc5e40030028d572ee024  tests/test_careful_mode.py
-18f1f787351b53a368e25ed05c888ea091d188caeabb46e54cc2af600a1dfff9  tests/test_catalog.py
-f032049398ae17109b074d51e1dbf32298f241ed85bcc531709b2764a84fe4dc  tests/test_collectors.py
-9be3c94a76852d038654bcec90ccc86a408545910cec2d4408add632e5131629  tests/test_connect.py
+001090a2a11ad481923b283df67cff217b653259b6d09ebd43fd979056fddf81  tests/test_catalog.py
+bd2efed8979b62de4f668e4903b620279fb173efd7ec1830f1be2f14f5a4d42b  tests/test_collectors.py
+e37363bf8fc2a0d231d9ec121894c828b28cf13523935677e61f8b6565f958a5  tests/test_connect.py
 b6903178a772dd4c74538b0eb96d257d0ea60209daa068a8cd1ab85a97b74288  tests/test_gemini_menu_and_tiktok_search.py
 df64ff3d1a0a7b886222ea29ea5821cc2512e573002470f2a448c8fcf4b82d92  tests/test_meta_real_page.py
+655722db4a873717260eebaf852b96120cc77e66853f6126b9ab8b940323e796  tests/test_observatory_fixes46.py
 0fb72b9d3ff8bb20f495ec6288bd0e808bfef5c07fe0cff16ea8041145b19301  tests/test_ranking.py
-75dd264cf9b3c027923edfe336ec5b1b69056d54218d030984e705bf45be80eb  tests/test_services.py
+a17d2486c9a9522bb5e2bd51f4842739759b91ec0f3f246491d29c6b44e1e413  tests/test_services.py
 35bdd1695c936acbbf7dafce637994a986b04eee4c6e67213c5ce51586039641  tests/test_session_live.py
-ed1096e419327e320e07eb2dbc6329f52173734c2c3879ee6bfee088acbb9b54  tests/test_stage2b.py
+2f9e54d8314cf864ad1fd70fea01b39c7fff74b104aeb2e6da1f85d3141161de  tests/test_stage2b.py
 d8b25541c162df1742d11565bc4bac2db3ba62ff144884494d40394201c1b957  tests/test_stages.py
 5780e03862816442e720bbcf5bd7f3532f57b1032fbb46e33891afa37d6f9571  tests/test_transcribe.py
-816567b8b1e7887188368fc2a517bfe94cf8dc534c2009a25a4fdee7f87c0b7f  tests/test_update60.py
+2b3949454144d726f6c0d066a6dab53d0101fa4bbd360d17fba0065f10508ad5  tests/test_update60.py
 95558848d34cb8c7da737b0e92d225a1b09eece30c738f2b5cea77817fd38665  tests/test_update64.py
-903b19bd8381103210cb6241e48d76032cdb50bbd937232fbf769887b447e53d  tests/test_update65.py
+272c73cc2d486694fe152aedc85e702ac9c4fa57c580f96d6b923e34908a1ea8  tests/test_update65.py
 c252532a77ce334ee824f69d2056b7eec2cd22dd0481d771a22f9bc043fbda95  tests/test_update68.py
-33e2c25130765476ed3feff0ce27432d0441ac36f626aa0688aa84adf1e3df6d  tests/test_verify_claims.py
+a5b44a3a0008367a81c8a5dba68eb1e71824dbc2d3246c5d329fde76e2ed5096  tests/test_verify_claims.py
 
 MANAGER NOTE (Word document, not part of the repository)
-811e3a2023d68d85a6c232aae28685d4387a88782ddee77fb5b6cf8d301dbca9  Update-73-manager-note.docx
+3154147091a9ae308d6f6fb0816218466c7081229f73372c6d08626e22fc0a97  Update-73-manager-note.docx

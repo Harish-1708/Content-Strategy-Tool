@@ -3,7 +3,7 @@
 # `render_command` is what renders: {inputs} is replaced by the test clips, {output} by the file. It is EMPTY until the first run has printed Concat's own help (the discover step of the workflow), because
 # the exact command-line could not be verified from where this tool was built: the first run shows it, then the command is filled in from that output. Nothing is guessed.
 release_repo: jub0t/concat
-asset_pattern: "*amd64.deb"
+asset_pattern: "*linux-x86_64.deb"
 discover_commands:
   - "concat --version"
   - "concat --help"

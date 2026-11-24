@@ -238,7 +238,7 @@ lanes:
       - {provider: llm7, model: llm7/glm-5.3-flash}
       - {provider: anyapi, model: "qwen/qwen3.8-27b:free"}
       - {provider: anyapi, model: "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"}
-      - {provider: requesty, model: requesty/openai/gpt-oss-120b}
+      - {provider: requesty, model: "requesty/google/gemma-4-31b-it"}
       - {provider: navy, model: navy/shared-pool}
       - {provider: pollinations, model: pollinations/openai-fast}
       - {provider: bazaarlink, model: bazaarlink/auto:free}
@@ -261,7 +261,7 @@ lanes:
       - {provider: xkiro, model: xkiro/mistralai/mistral-large-2512}
       - {provider: llm7, model: llm7/glm-5.3-flash}
       - {provider: anyapi, model: "qwen/qwen3.8-27b:free"}
-      - {provider: requesty, model: requesty/openai/gpt-oss-120b}
+      - {provider: requesty, model: "requesty/google/gemma-4-31b-it"}
       - {provider: navy, model: navy/shared-pool}
       - {provider: pollinations, model: pollinations/openai-fast}
       - {provider: bazaarlink, model: bazaarlink/auto:free}
@@ -285,7 +285,7 @@ lanes:
       - {provider: llm7, model: llm7/glm-5.3-flash}
       - {provider: anyapi, model: "qwen/qwen3.8-27b:free"}
       - {provider: anyapi, model: "nvidia/nemotron-3.5-lightning:free"}
-      - {provider: requesty, model: requesty/openai/gpt-oss-120b}
+      - {provider: requesty, model: "requesty/google/gemma-4-31b-it"}
       - {provider: navy, model: navy/shared-pool}
       - {provider: pollinations, model: pollinations/openai-fast}
       - {provider: bazaarlink, model: bazaarlink/auto:free}
@@ -308,7 +308,7 @@ lanes:
       - {provider: xkiro, model: xkiro/mistralai/mistral-large-2512}
       - {provider: llm7, model: llm7/glm-5.3-flash}
       - {provider: anyapi, model: "qwen/qwen3.8-27b:free"}
-      - {provider: requesty, model: requesty/openai/gpt-oss-120b}
+      - {provider: requesty, model: "requesty/google/gemma-4-31b-it"}
       - {provider: navy, model: navy/shared-pool}
       - {provider: pollinations, model: pollinations/openai-fast}
       - {provider: bazaarlink, model: bazaarlink/auto:free}
@@ -332,7 +332,7 @@ lanes:
       - {provider: llm7, model: llm7/glm-5.3-flash}
       - {provider: anyapi, model: "qwen/qwen3.8-27b:free"}
       - {provider: anyapi, model: "nvidia/nemotron-3.5-lightning:free"}
-      - {provider: requesty, model: requesty/openai/gpt-oss-120b}
+      - {provider: requesty, model: "requesty/google/gemma-4-31b-it"}
       - {provider: navy, model: navy/shared-pool}
       - {provider: pollinations, model: pollinations/openai-fast}
       - {provider: bazaarlink, model: bazaarlink/auto:free}
@@ -355,7 +355,7 @@ lanes:
     max_data_class: internal
     chain:
       - {provider: anyapi, model: "qwen/qwen3.8-27b:free"}
-      - {provider: requesty, model: requesty/openai/gpt-oss-120b}
+      - {provider: requesty, model: "requesty/google/gemma-4-31b-it"}
       - {provider: navy, model: navy/shared-pool}
       - {provider: pollinations, model: pollinations/openai-fast}
       - {provider: bazaarlink, model: bazaarlink/auto:free}
@@ -395,7 +395,7 @@ lanes:
       - {provider: xkiro, model: xkiro/mistralai/mistral-large-2512}
       - {provider: llm7, model: llm7/glm-5.3-flash}
       - {provider: anyapi, model: "qwen/qwen3.8-27b:free"}
-      - {provider: requesty, model: requesty/openai/gpt-oss-120b}
+      - {provider: requesty, model: "requesty/google/gemma-4-31b-it"}
     claude_fallback: false      # the module falls back to its own Claude client, under its own spending cap, when this lane (and the shared pool after it) has no answer
     output: {format: json, schema: {type: object}}
     max_tokens: 8000
@@ -417,7 +417,7 @@ lanes:
       - {provider: xkiro, model: xkiro/mistralai/mistral-large-2512}
       - {provider: llm7, model: llm7/glm-5.3-flash}
       - {provider: anyapi, model: "qwen/qwen3.8-27b:free"}
-      - {provider: requesty, model: requesty/openai/gpt-oss-120b}
+      - {provider: requesty, model: "requesty/google/gemma-4-31b-it"}
       - {provider: navy, model: navy/shared-pool}
       - {provider: pollinations, model: pollinations/openai-fast}
     claude_fallback: false      # the module falls back to its own Claude client, under its own spending cap, when this lane (and the shared pool after it) has no answer
@@ -450,21 +450,14 @@ pool:
   - {provider: openrouter, model: google/gemma-4-31b-it:free}
   # OmniRoute's providers (2026-11-17): each is used only when the owner has given it a key; without one it is skipped with a printed note
   - {provider: xkiro, model: "xkiro/mistralai/mistral-large-2512"}
-  - {provider: xkiro, model: "xkiro/deepseek/deepseek-v3.2"}
   - {provider: xkiro, model: "xkiro/qwen/qwen3.6-plus:free"}
   - {provider: pollinations, model: "pollinations/openai-fast"}
   - {provider: pollinations, model: "pollinations/mistral"}
   - {provider: bazaarlink, model: "bazaarlink/auto:free"}
-  - {provider: llm7, model: "llm7/glm-5.3-flash"}
-  - {provider: llm7, model: "llm7/gpt-oss:20b"}
   # keyless (probed live 2026-11-18): no secret is sent; OVH answers like any OpenAI-style endpoint, AI Horde is asynchronous
   - {provider: ovh, model: Mistral-Small-3.2-24B-Instruct-2506}
   - {provider: ovh, model: gpt-oss-20b}
   - {provider: aihorde, model: aihorde/any}
-  - {provider: requesty, model: "requesty/openai/gpt-oss-120b"}
-  - {provider: requesty, model: "requesty/mistral/leanstral-1-5"}
-  - {provider: requesty, model: "requesty/nvidia/nemotron-3-nano-30b-a3b"}
-  - {provider: navy, model: "navy/shared-pool"}
   - {provider: anyapi, model: "qwen/qwen3.8-27b:free"}
   - {provider: anyapi, model: "inclusionai/ling-3.0-flash-fin:free"}
   - {provider: anyapi, model: "inclusionai/ling-3.0-flash-sante:free"}
@@ -472,3 +465,4 @@ pool:
   - {provider: anyapi, model: "google/gemma-4-26b-a4b-it:free"}
   - {provider: anyapi, model: "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"}
   - {provider: anyapi, model: "nvidia/nemotron-3.5-lightning:free"}
+  - {provider: requesty, model: "requesty/google/gemma-4-31b-it"}

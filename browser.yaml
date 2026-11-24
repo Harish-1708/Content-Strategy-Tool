@@ -79,7 +79,7 @@ sites:
     settle_seconds: 20            # Instagram draws its grid slowly: wait this long after opening a page (the general default is 3; it was 10, and Acceptance #15 read the grid half drawn)
     scroll_pause_seconds: 10      # and this long after each scroll (it was 6), so more posts have loaded before the next read (Careful Mode's pacing, below, overrides it)
     # After the fixed waits above, also wait for the grid itself: until every image on the page has loaded and the loading spinner is gone (twice in a row), up to max_seconds, before anything is read.
-    settle_images: {images_any: ['main img', 'article img'], spinner_any: ['[role="progressbar"]', 'svg[aria-label="Loading..."]', 'svg[aria-label="Loading"]', '[aria-busy="true"]'], max_seconds: 45, poll_seconds: 3, stable_polls: 2}
+    settle_images: {images_any: ['main img', 'article img'], tiles_any: ['main a[href*="/p/"]', 'main a[href*="/reel/"]', 'article a[href*="/p/"]'], spinner_any: ['[role="progressbar"]', 'svg[aria-label*="Loading" i]', '[data-visualcompletion="loading-state"]', '[aria-busy="true"]'], max_seconds: 60, poll_seconds: 3, stable_polls: 2}
     hashtag_url: https://www.instagram.com/explore/tags/{tag}/
     # Warm-up (see contentintel/warmup.py): one public profile page and one public post page, visited before any
     # listing read, so the session arrives with its cookies refreshed by real page loads. Instagram has no WAF

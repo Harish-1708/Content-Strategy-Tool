@@ -1,5 +1,5 @@
 # AI providers: every platform in the pinned FreeLLMAPI v0.16.17 (84 ids), GitHub Models (called directly), and Claude, plus OVH and AI Horde called directly (they carry their own platform entries too): 87 in all.
-# Switched on at present: aihorde, anyapi, bazaarlink, cloudflare, cohere, google, groq, kilo, llm7, navy, nvidia, openrouter, ovh, pollinations, requesty, xkiro, zhipu and claude. A test keeps this line equal to the enabled flags below. GitHub Models is retired (see its retired: record): kept, never enabled or called.
+# Switched on at present: aihorde, anyapi, bazaarlink, cloudflare, cohere, google, groq, kilo, nvidia, openrouter, ovh, pollinations, requesty, xkiro, zhipu and claude. A test keeps this line equal to the enabled flags below. GitHub Models is retired (see its retired: record): kept, never enabled or called.
 #
 # NOTHING is on unless it says enabled: true. A provider carries the terms found when it was checked (terms.status says
 # how well: verified = the provider's own page; verified_secondary = quoted by other sites; upstream_documented = the gateway
@@ -767,6 +767,7 @@ providers:
     gateway_platform: anyapi
     direct:
       base_url: https://api.anyapi.ai/v1
+      discover_free: true          # the free ids are read from GET /v1/models at run time; a pinned id that does not exist is replaced by a live :free id of the same family
     terms:
       status: upstream_documented
       date: '2026-11-19'
@@ -1729,7 +1730,7 @@ providers:
 
   llm7:
     label: "LLM7.io"
-    enabled: true
+    enabled: false
     experimental: false
     ceiling: public
     approved_classes:
@@ -1770,6 +1771,7 @@ providers:
       capabilities:
       - text
       note: "free model per the provider own catalogue or model page (provider test follow-up 2026-11-18); routed through OmniRoute as llm7/gpt-oss:20b"
+    # switched OFF 2026-11-23, record kept: provider test #5 got 402 'your balance is too low': its free use has ended for this key.
 
   huggingface:
     label: Hugging Face Router
@@ -2040,27 +2042,17 @@ providers:
       business_use: "free plan: 200 requests a day on free models, no trial expiry, no card (planner check 2026-11-19)"
       note: 'no card needed (re-checked 2026-11-19); recorded from the OmniRoute catalogue and the planner check, not from the provider own terms page'
     limits:
-      requests_per_day: 200
+      requests_per_day: 50          # Requesty's own page: 50 a day for a NEW organization, 200 for a paying one: the lower figure is used
     models:
-    - id: "requesty/openai/gpt-oss-120b"
+    - id: "requesty/google/gemma-4-31b-it"
       approved: true
       capabilities:
       - text
-      note: "listed free by the OmniRoute catalogue (2026-11-19); routed through OmniRoute as requesty/openai/gpt-oss-120b"
-    - id: "requesty/mistral/leanstral-1-5"
-      approved: true
-      capabilities:
-      - text
-      note: "listed free by the OmniRoute catalogue (2026-11-19); routed through OmniRoute as requesty/mistral/leanstral-1-5"
-    - id: "requesty/nvidia/nemotron-3-nano-30b-a3b"
-      approved: true
-      capabilities:
-      - text
-      note: "listed free by the OmniRoute catalogue (2026-11-19); routed through OmniRoute as requesty/nvidia/nemotron-3-nano-30b-a3b"
+      note: "the one chat model Requesty's own free-models page names as free (2026-11-23); the earlier ids gpt-oss-120b, leanstral and nemotron-3-nano were not found by the provider test of 2026-11-23"
 
   navy:
     label: "NavyAI"
-    enabled: true
+    enabled: false
     experimental: false
     ceiling: public
     approved_classes:
@@ -2091,6 +2083,7 @@ providers:
       capabilities:
       - text
       note: "listed free by the OmniRoute catalogue (2026-11-19); routed through OmniRoute as navy/shared-pool"
+    # switched OFF 2026-11-23, record kept: the provider test got 400 for 'shared-pool' (not a real model) and no FREE model id could be confirmed: NavyAI's endpoint is https://api.navy/v1 and its free tier is a daily token credit that favours cheap models, whose ids appear only in the logged-in dashboard. Wire it again once a real free id is known.
 
   nara:
     label: "NaraRouter"
@@ -2224,7 +2217,7 @@ providers:
       - text
       note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as xkiro/mistralai/mistral-large-2512"
     - id: "xkiro/deepseek/deepseek-v3.2"
-      approved: true
+      approved: false          # 404 in provider test #5 (2026-11-23): the model does not exist on xKiro
       capabilities:
       - text
       note: "listed free by OmniRoute catalogue (2026-11-17); routed through OmniRoute as xkiro/deepseek/deepseek-v3.2"
