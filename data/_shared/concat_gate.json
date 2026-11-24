@@ -1,0 +1,6 @@
+{
+ "at": "2026-11-24T04:48:35Z",
+ "verdict": "NO-GO",
+ "runs": [],
+ "reason": "none of the 6 command(s) inferred from Concat's help produced a video (see the discover output above for its real command line); put the right one in concat.yaml's render_command"
+}
