@@ -158,7 +158,7 @@ BASELINE = {"alpha": ["a-1", "a-2"], "delta": ["d-1"], "gamma": ["g-1"]}
 def test_the_shipped_pin_is_a_full_commit_and_matches_the_inventory():
     assert LOCK["gateway"]["tag"] == "v0.16.17" and LOCK["gateway"]["commit"] == "741d03094398facceb1b6019a838f806e4d9f7f9" == INVENTORY["pinned_gateway"]["commit"]
     assert LOCK["required_env"] == {"HOST": "127.0.0.1", "CATALOG_SYNC_DISABLED": "1", "NODE_ENV": "production"}
-    assert set(LOCK["must_stay_unset"]) == {"MODEL_PROBE_ENABLED", "BUDGET_ALERT_WEBHOOK_URL", "ALLOWED_HOSTS"} and LOCK["node"] == "22"
+    assert set(LOCK["must_stay_unset"]) == {"MODEL_PROBE_ENABLED", "BUDGET_ALERT_WEBHOOK_URL", "ALLOWED_HOSTS"} and LOCK["node"] == "24"
 
 
 @pytest.mark.parametrize("commit", ["v0.16.17", "741d030", "741d03094398facceb1b6019a838f806e4d9f7fZ", "", "741D03094398FACCEB1B6019A838F806E4D9F7F9"])

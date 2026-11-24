@@ -356,7 +356,7 @@ def test_both_jobs_build_exactly_the_pinned_commit_and_verify_it():
         assert "ai/gateway.lock.json" in build and 'git fetch --quiet --depth 1 origin "$commit"' in build and 'test "$(git rev-parse HEAD)" = "$commit"' in build
         assert "npm ci --workspace=shared --workspace=server" in build
         assert "npm run build -w server" in build and "-w shared -w server" not in build        # `shared` has no build script: building it fails the job
-        assert next(s for s in job["steps"] if "setup-node" in s.get("uses", ""))["with"]["node-version"] == "22"
+        assert next(s for s in job["steps"] if "setup-node" in s.get("uses", ""))["with"]["node-version"] == "24"
 
 
 def test_the_mock_job_never_has_secrets_and_the_live_job_passes_every_credential_the_registry_names():
@@ -444,7 +444,7 @@ def test_the_cli_module_does_not_import_the_ai_package_at_start_up():
 
 def test_the_shipped_providers_command_shows_the_rolled_out_providers_with_their_recorded_decision(ai):
     code, out = ai("providers", providers=ROOT / "ai_providers.yaml")
-    assert code == 0 and "87 providers in the registry, 18 enabled, 1 retired (kept as a record, never called)" in out
+    assert code == 0 and "87 providers in the registry, 16 enabled, 1 retired (kept as a record, never called)" in out
     assert "RETIRED" in next(l for l in out.splitlines() if l.strip().startswith("github "))
     for pid in ("cloudflare", "google", "groq", "openrouter"):
         line = next(l for l in out.splitlines() if l.strip().startswith(pid + " "))
@@ -548,9 +548,9 @@ def test_the_status_block_lists_every_provider_in_use_the_owners_switched_off_on
     lines = [ln.strip() for ln in block.splitlines()]
     assert lines[0].startswith("Provider status (a green run does not mean a provider is live")
     order = [ln.split()[0] for ln in lines[1:-1]]
-    assert order == ["LIVE", "LIVE", "FAILED"] + ["SKIPPED"] * 14 + ["DISABLED", "RETIRED"]                          # live first, retired last
-    assert [ln.split()[1] for ln in lines[1:-1]] == ["groq", "openrouter", "google", "aihorde", "anyapi", "bazaarlink", "claude", "cohere", "kilo", "llm7", "navy", "nvidia", "ovh", "pollinations", "requesty", "xkiro", "zhipu", "cloudflare", "github"]
-    assert lines[-1] == "2 LIVE, 1 FAILED, 14 SKIPPED, 1 DISABLED, 1 RETIRED"
+    assert order == ["LIVE", "LIVE", "FAILED"] + ["SKIPPED"] * 12 + ["DISABLED", "RETIRED"]                          # live first, retired last
+    assert [ln.split()[1] for ln in lines[1:-1]] == ["groq", "openrouter", "google", "aihorde", "anyapi", "bazaarlink", "claude", "cohere", "kilo", "nvidia", "ovh", "pollinations", "requesty", "xkiro", "zhipu", "cloudflare", "github"]
+    assert lines[-1] == "2 LIVE, 1 FAILED, 12 SKIPPED, 1 DISABLED, 1 RETIRED"
     assert "RETIRED" in next(ln for ln in lines if ln.endswith("never called") and ln.split()[1] == "github")
     mock = CM.provider_status_block(reg, {"groq": {"ok": 1, "failed": [], "skipped": []}}, "mock", set(), [])
-    assert not [ln for ln in mock.splitlines() if ln.strip().startswith("LIVE ")] and mock.splitlines()[-1].strip() == "0 LIVE, 1 MOCK, 0 FAILED, 17 SKIPPED, 1 RETIRED"
+    assert not [ln for ln in mock.splitlines() if ln.strip().startswith("LIVE ")] and mock.splitlines()[-1].strip() == "0 LIVE, 1 MOCK, 0 FAILED, 15 SKIPPED, 1 RETIRED"

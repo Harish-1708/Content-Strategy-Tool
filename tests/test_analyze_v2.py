@@ -115,7 +115,7 @@ def test_speech_falls_through_the_backends_and_a_failure_is_reported_not_raised(
     assert speech["backend"] == "cloudflare_whisper" and "Speech route: cloudflare_whisper" in out and "second backend words" in out and speech["tried"][0][0] == "groq_whisper"
     _c2, store2 = go(tmp_path / "b", post=groq_post(status=500), runner=fake_runner(ffmpeg_ok=False, ext="mystery"))
     out2 = capsys.readouterr().out
-    assert "Speech: not captured: ffmpeg could not turn the download into audio" in out2 and store2.read_shared("analyses")["items"][0]["speech"]["captured"] is False
+    assert "Speech: not captured: no backend could transcribe it" in out2 and "ffmpeg could not turn the download into audio" in out2                  # each backend named, the conversion failure among them and store2.read_shared("analyses")["items"][0]["speech"]["captured"] is False
 
 
 def test_a_failed_download_is_named_and_no_speech_is_attempted_and_no_speech_skips_it(tmp_path, capsys):

@@ -168,7 +168,7 @@ def test_missing_lanes_file_is_refused(tmp_path):
 
 # ---- the shipped files -----------------------------------------------------------------------------------------------------------
 
-ROLLED_OUT = ["aihorde", "anyapi", "bazaarlink", "cloudflare", "cohere", "google", "groq", "kilo", "llm7", "navy", "nvidia", "openrouter", "ovh", "pollinations", "requesty", "xkiro", "zhipu"]        # the providers the owner has approved (Update 57 added cohere, kilo, nvidia, ollama and zhipu)
+ROLLED_OUT = ["aihorde", "anyapi", "bazaarlink", "cloudflare", "cohere", "google", "groq", "kilo", "nvidia", "openrouter", "ovh", "pollinations", "requesty", "xkiro", "zhipu"]        # the providers the owner has approved (Update 57 added cohere, kilo, nvidia, ollama and zhipu)
 
 
 def test_the_shipped_registry_enables_only_checked_providers_and_claude():
@@ -178,7 +178,7 @@ def test_the_shipped_registry_enables_only_checked_providers_and_claude():
     for p in reg.providers.values():
         if p.retired:
             assert p.id == "github" and not p.enabled and not p.direct and not p.credential_env, p.id                 # the record keeps its history (approved classes, owner decision); nothing is switched on
-        elif p.id in ("mistral", "ollama", "sambanova", "nara", "airforce", "bluesminds"):          # switched off on 2026-11-18 and 2026-11-19, records kept with their approved classes and decisions
+        elif p.id in ("mistral", "ollama", "sambanova", "nara", "airforce", "bluesminds", "llm7", "navy"):          # switched off on 2026-11-18 and 2026-11-19, records kept with their approved classes and decisions
             assert not p.enabled, p.id
         elif p.id not in ROLLED_OUT + ["claude"]:
             assert not p.enabled and p.approved_classes == () and p.effective_ceiling == "public" and not p.override and not p.paid, p.id

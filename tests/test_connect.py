@@ -101,9 +101,9 @@ def test_the_eight_omniroute_providers_are_mapped_with_the_providers_own_ids_rec
     lanes = L.load_lanes("ai_lanes.yaml", reg)
     pool = L.load_pool("ai_lanes.yaml", reg)
     assert lanes
-    for pid in ("sambanova", "nara", "airforce", "bluesminds"):                                              # mapped, recorded and switched OFF (402 and a rejected key on 2026-11-18; airforce 402 and bluesminds 503 on 2026-11-19)
+    for pid in ("sambanova", "nara", "airforce", "bluesminds", "llm7", "navy"):                              # (llm7 and navy: switched off 2026-11-23) mapped, recorded and switched OFF (402 and a rejected key on 2026-11-18; airforce 402 and bluesminds 503 on 2026-11-19)
         assert reg.providers[pid].omniroute == {"provider": OMNI[pid]} and reg.providers[pid].enabled is False
-    for pid, omni_id in {k: v for k, v in OMNI.items() if k not in ("sambanova", "nara", "airforce", "bluesminds")}.items():
+    for pid, omni_id in {k: v for k, v in OMNI.items() if k not in ("sambanova", "nara", "airforce", "bluesminds", "llm7", "navy")}.items():
         p = reg.providers[pid]
         approved = [m.id for m in p.models if m.approved]
         assert p.omniroute == {"provider": omni_id} and p.enabled and p.terms["status"] == "upstream_documented" and p.terms["date"] in ("2026-11-17", "2026-11-19") and "not verified" in p.terms["trains_on_data"]

@@ -103,3 +103,48 @@ def test_a_relevant_first_result_is_used_directly_and_audio_is_not_scored_by_wor
     assert code == 0 and "2 returned, 2 kept, 0 dropped" in out and "found through" not in out and len(store.read_extra("swoveralls", "assets")["assets"]) == 2
     kept, report = AF.find_usable(World({"sound": ["Whoosh"]}), "sound", "audio")
     assert kept == [] or all(a["kind"] == "audio" for a in kept)
+
+
+ALLBIRDS = ["Allbirds Wool Runner shoes in grey", "Allbirds store front in San Francisco", "Allbirds Tree Dasher sneakers", "Allbirds retail window display", "Allbirds founders at a conference", "Allbirds shoes on a shelf",
+            "Allbirds flagship store interior", "Allbirds wool runner in the box"]
+
+
+def test_a_competitors_name_cannot_bring_in_its_own_pictures_for_a_query_they_do_not_show(tmp_path, capsys):
+    """Research tools #31: 'sweatpant overalls' found nothing, 'Allbirds' returned eight shoes and stores, all kept, each claiming query 'sweatpant overalls' and relevance 1.0."""
+    world = World({"sweatpant overalls": [], "Allbirds": ALLBIRDS}, site=None)
+    code, store = run(tmp_path, "sweatpant overalls", world)
+    out = capsys.readouterr().out
+    assert code == 0 and "tried 'Allbirds' on openverse: 8 returned, 0 kept, 8 dropped" in out and "off-target for the ORIGINAL query 'sweatpant overalls'" in out and "none usable found" in out
+    assert store.read_extra("swoveralls", "assets") is None                                                                         # nothing saved
+    mixed = World({"sweatpant overalls": [], "Allbirds": ALLBIRDS + ["Allbirds pop-up with sweatpant overalls on a rack"]}, site=None)
+    code2, store2 = run(tmp_path / "m", "sweatpant overalls", mixed)
+    saved = store2.read_extra("swoveralls", "assets")["assets"]
+    assert len(saved) == 1 and saved[0]["title"].endswith("on a rack") and saved[0]["relevance"] == 1.0 and saved[0]["found_with"] == "Allbirds" and saved[0]["query"] == "sweatpant overalls"      # relevance is against the ORIGINAL query
+
+
+def test_the_brands_own_site_is_tried_before_any_competitor_name(tmp_path, capsys):
+    world = World({"sweatpant overalls": [], "Allbirds": ALLBIRDS}, site=PAGE)
+    code, store = run(tmp_path, "sweatpant overalls", world)
+    out = capsys.readouterr().out
+    assert "tried 'sweatpant overalls' on brand site:" in out and "tried 'Allbirds'" not in out
+    assert all(a["license"] == "brand-own" and a["found_with"] == "the brand's own site" and a["relevance"] == 1.0 for a in store.read_extra("swoveralls", "assets")["assets"])
+    brand = load_brand("swoveralls", "brands")
+    research = {"ads": {"keywords": ["sweatpant overalls"], "benchmark_pages": {"Allbirds": "skip"}}, "topics": ["lounge wear"]}
+    own, competitors = AF.split_derived("swoveralls", brand, Store(tmp_path / "x"), research)
+    assert own == ["sweatpant overalls", "lounge wear"] and competitors == ["Allbirds"]
+    assert AF.brand_terms(brand, Store(tmp_path / "x"), research) == [brand.name, "sweatpant overalls", "lounge wear"] and "Allbirds" not in AF.brand_terms(brand, Store(tmp_path / "x"), research)
+
+
+def test_old_junk_in_a_brands_saved_assets_is_taken_out_when_the_list_is_written(tmp_path, capsys):
+    store = Store(tmp_path)
+    junk = [{"url": f"https://j/{n}.jpg", "title": t, "license": "by", "kind": "image", "attribution": ""} for n, t in enumerate(["Panties", "National Assembly of Benin 2003 parties", "Allbirds Wool Runner shoes"])]
+    good = {"url": "https://g/1.jpg", "title": "Sweatpant overalls navy", "license": "by", "kind": "image", "attribution": ""}
+    store.write_extra("swoveralls", "assets", {"assets": junk + [good]})
+    world = World({"sweatpant overalls": ["Sweatpant overalls on a hanger"]})
+    run(tmp_path, "sweatpant overalls", world)
+    out = capsys.readouterr().out
+    assert "Cleaned 3 saved asset(s) that are not this brand's: Panties; National Assembly of Benin 2003 parties; Allbirds Wool Runner shoes" in out
+    titles = [a["title"] for a in store.read_extra("swoveralls", "assets")["assets"]]
+    assert sorted(titles) == ["Sweatpant overalls navy", "Sweatpant overalls on a hanger"]
+    kept, removed = AF.clean_saved(junk + [good, {"title": "x", "license": "brand-own"}], ["Swoveralls", "sweatpant overalls"])
+    assert len(kept) == 2 and len(removed) == 3

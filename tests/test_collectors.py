@@ -1211,7 +1211,7 @@ class GridBrowser:
     def __init__(self, script):
         self.script, self.waits, self.polls = list(script), [], 0
 
-    def images_state(self, spinner_selectors=(), image_selectors=()):
+    def images_state(self, spinner_selectors=(), image_selectors=(), tile_selectors=()):
         self.polls += 1
         return self.script.pop(0) if len(self.script) > 1 else self.script[0]
 
@@ -1222,13 +1222,13 @@ class GridBrowser:
 def test_the_instagram_grid_is_waited_for_until_every_image_is_drawn_and_the_spinner_is_gone_and_a_stuck_grid_is_named():
     cfg = B.load_browser_settings("browser.yaml")["sites"]["instagram"]
     s = cfg["settle_images"]
-    assert cfg["settle_seconds"] == 20 and cfg["scroll_pause_seconds"] == 10 and cfg["pacing"]["scroll_pause_seconds"] == 12 and s["max_seconds"] == 45 and s["spinner_any"] and s["images_any"]        # longer fixed waits, and the grid wait
+    assert cfg["settle_seconds"] == 20 and cfg["scroll_pause_seconds"] == 10 and cfg["pacing"]["scroll_pause_seconds"] == 12 and s["max_seconds"] == 60 and s["spinner_any"] and s["images_any"] and s["tiles_any"]        # longer fixed waits, and the grid wait
     drawing = [{"loaded": 17, "total": 34, "spinner": True}, {"loaded": 25, "total": 34, "spinner": True}, {"loaded": 34, "total": 34, "spinner": True}, {"loaded": 34, "total": 34, "spinner": False}, {"loaded": 34, "total": 34, "spinner": False}]
     page = GridBrowser(drawing)
     assert C.settle_images(page, cfg) == "" and page.polls == 4 and len(page.waits) == 3 and set(page.waits) == {3}                       # kept waiting while half the tiles were blank and the spinner turned; settled only when steady
     stuck = GridBrowser([{"loaded": 17, "total": 34, "spinner": True}])
     note = C.settle_images(stuck, cfg)
-    assert note == "the grid was still filling in after 45 s (17 of 34 images drawn, spinner still showing)" and sum(stuck.waits) == 45        # it stops at max_seconds and says how far it got
+    assert note == "the grid was still filling in after 60 s (17 of 34 images drawn, spinner still showing)" and sum(stuck.waits) == 60        # it stops at max_seconds and says how far it got
     assert C.settle_images(object(), cfg) == "" and C.settle_images(GridBrowser([{}]), {"settle_seconds": 3}) == ""                       # a browser or site without the setting is not waited for
     empty = GridBrowser([{"loaded": 0, "total": 0, "spinner": False}])
     assert C.settle_images(empty, {"settle_images": {"max_seconds": 6, "poll_seconds": 3}}).startswith("the grid was still filling in after 6 s")      # an empty page is not a settled page
@@ -1287,9 +1287,9 @@ def test_the_browser_reports_how_far_the_grid_has_drawn():
                     return 1 if self.spinner else 0
             return L()
     br = B.PlaywrightBrowser.__new__(B.PlaywrightBrowser)
-    br.page = Page([34, 17], True)
-    assert br.images_state(['[role="progressbar"]']) == {"loaded": 17, "total": 34, "spinner": True}
-    br.page = Page([34, 34], False)
+    br.page = Page([34, 17, 34, 17], True)
+    assert br.images_state(['[role="progressbar"]']) == {"loaded": 17, "total": 34, "tiles": 34, "blank": 17, "spinner": True}
+    br.page = Page([34, 34, 34, 0], False)
     assert br.images_state(['[role="progressbar"]'])["spinner"] is False and br.images_state()["spinner"] is False
     br.page = Page(None, False)
-    assert br.images_state() == {"loaded": 0, "total": 0, "spinner": False}
+    assert br.images_state() == {"loaded": 0, "total": 0, "tiles": 0, "blank": 0, "spinner": False}
