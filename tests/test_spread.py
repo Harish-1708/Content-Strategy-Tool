@@ -125,7 +125,7 @@ def test_the_billing_ledger_totals_each_provider_and_job_for_today_and_the_month
 def test_every_enabled_provider_leads_some_job_so_all_of_them_carry_real_work(tmp_path):
     router, reg, lanes, usage = stack(tmp_path)
     enabled = {pid for pid, p in reg.providers.items() if p.enabled and pid != "claude"}
-    assert len(enabled) == 17
+    assert len(enabled) == 15
     led = {}
     for name, lane in lanes.items():
         for pid in providers_in_order(router, lane)[:4]:

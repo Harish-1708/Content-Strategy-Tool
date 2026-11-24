@@ -127,7 +127,7 @@ def test_the_observatory_workflow_builds_the_gateway_for_discover_and_judge_only
     assert "inputs.action == 'discover'" in build["if"] and "inputs.action == 'judge'" in build["if"] and build["continue-on-error"] is True
     assert "connections --all --what install --key freellmapi" in build["run"] and "ai/gateway.lock.json" in build["run"]
     node = next(s for s in wf()["jobs"]["observatory"]["steps"] if str(s.get("uses", "")).startswith("actions/setup-node"))
-    assert "discover" in node["if"] and node["with"]["node-version"] == "22"
+    assert "discover" in node["if"] and node["with"]["node-version"] == "24"
     names = [s.get("name", "") for s in wf()["jobs"]["observatory"]["steps"]]
     assert names.index(build["name"]) < names.index("Run")                                                  # built before it is needed
 

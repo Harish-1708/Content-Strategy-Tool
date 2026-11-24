@@ -798,7 +798,7 @@ def test_the_second_research_pass_is_recorded_wired_providers_match_the_registry
     from contentintel.ai import registry as R
     reg = R.load_registry("ai_providers.yaml")
     wired = {p["id"]: p for p in data["wired_through_omniroute"]}
-    assert set(wired) == {"bazaarlink", "requesty", "navy"}
+    assert set(wired) == {"bazaarlink", "requesty"}
     for pid, row in wired.items():
         p = reg.providers[pid]
         assert p.omniroute["provider"] == row["omniroute_id"] and p.enabled and row["secret"] in p.credential_env

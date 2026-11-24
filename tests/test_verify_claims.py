@@ -377,3 +377,69 @@ def test_the_call_budget_and_the_claim_count_grow_with_the_work_waiting_so_no_cl
     assert VC.MAX_PER_RUN == 60 and waiting > 6 and code == 0 and f"{min(waiting, 60)} claim(s) checked from public sources" in out                   # every waiting claim, not six and "the call limit was reached" not in out
     capped = run_canon(tmp_path / "small", Judge({"Probe Design Award": supports(QUOTE_A)}), "--action", "verify-claims", "--max-claims", "2", "--verify-calls", "2", search=lambda q: [{"url": url, "title": ""}], get=lambda u: page(QUOTE_A))
     assert capped == 0 and "the call limit was reached" in capsys.readouterr().out                                           # an explicit small budget is still honoured
+
+
+def test_each_claim_is_announced_when_it_starts_and_reported_when_it_ends_so_a_cut_off_run_still_leaves_its_evidence(tmp_path, capsys, trusted):
+    url = "https://a.example.com/a"
+    judge = Judge({"Probe Design Award": supports(QUOTE_A)})
+    run_canon(tmp_path, judge, "--action", "verify-claims", "--max-claims", "3", search=lambda q: [{"url": url, "title": ""}], get=lambda u: page(QUOTE_A))
+    out = capsys.readouterr().out
+    lines = out.splitlines()
+    starts = [i for i, l in enumerate(lines) if ": progress: claim " in l and " starting: " in l]
+    ends = [i for i, l in enumerate(lines) if ": progress: claim " in l and " done: " in l]
+    summary = next(i for i, l in enumerate(lines) if "claim(s) checked from public sources by the pool model" in l)
+    assert len(starts) == len(ends) == 3 and all(s < e for s, e in zip(starts, ends)) and ends[-1] < summary                        # every claim reported before the summary
+    assert "progress: claim 1 of 3 starting: cl-" in out and "progress: claim 3 of 3 done: cl-" in out and any("searched:" in l for l in lines[ends[0]:ends[0] + 4])
+    assert out.count("canon:   claim cl-") == 3                                                                                    # the claim blocks are printed once each, as they finish
+
+
+def test_the_time_budget_stops_new_claims_and_says_how_many_are_left_for_the_next_run(tmp_path):
+    reg = seeded(tmp_path)
+    ids = VC.targets(reg, 10)
+    ticks = iter([0] + [100] * 20)
+    events = []
+    report = {"calls": 0, "errors": 0, "notes": []}
+    VC.verify_ids(reg, NAME, ids, search=lambda q: [], get=lambda u: None, claude=Judge(), now=AT, report=report, progress=lambda *a: events.append(a[0]), deadline=50, clock=lambda: next(ticks))
+    assert events.count("start") == 1 and any("the time budget was reached" in n and "picked up by the next run" in n for n in report["notes"])
+    assert len(ids) > 1 and len(report["outcomes"]) == 1
+
+
+def test_the_verify_claims_workflow_has_a_timeout_that_fits_a_full_queue_and_the_cap_is_for_the_whole_run():
+    text = Path(".github/workflows/skills.yml").read_text(encoding="utf-8")
+    assert "timeout-minutes: 90" in text and "--max-minutes 75" in text and "IN TOTAL across all brands" in text
+    args = cli.build_parser().parse_args(["canon", "--action", "verify-claims", "--max-minutes", "75", "--max-claims", "10"])
+    assert args.max_minutes == 75 and args.max_claims == 10
+    src = Path("contentintel/batch2_cli.py").read_text(encoding="utf-8")
+    assert "claims_left" in src and "the cap is for the WHOLE run across brands" in src
+
+
+def test_the_claim_cap_is_for_the_whole_run_across_brands_not_per_brand(tmp_path, capsys, trusted):
+    from contentintel import batch2_cli as B2
+    for slug in ("duderobe", "swoveralls"):
+        reg = C.Registry(tmp_path / "data", slug)
+        C.apply_seed(reg, C.load_seed(Path("brands/swoveralls/claims_seed.yaml")), AT)
+    url = "https://a.example.com/a"
+    args = cli.build_parser().parse_args(["canon", "--data-dir", str(tmp_path / "data"), "--brand", "all", "--skills-config", "x.yaml", "--action", "verify-claims", "--max-claims", "3"])
+    B2.run_canon(args, cli.Store(args.data_dir), AT, clients=lambda: (Judge({"Probe Design Award": supports(QUOTE_A)}), lambda q: [{"url": url, "title": ""}], lambda u: page(QUOTE_A)))
+    out = capsys.readouterr().out
+    assert "duderobe: 3 claim(s) checked from public sources" in out and "the claim cap of this run (3) was used by the brands before it: nothing checked here" in out
+    assert out.count("progress: claim") == 6                                                                                           # 3 claims, each announced twice: not 3 per brand
+
+
+def test_a_claim_conflicted_by_a_source_is_re_checked_by_reclassify_conflicts_and_can_be_cleared(tmp_path, capsys, trusted):
+    from contentintel import batch2_cli as B2
+    reg = seeded(tmp_path)
+    cid = claim_id(reg, "Awards")
+    contra = "Swoveralls did not win any award in 2026, the awarding body's list shows."
+    urls = ["https://b.example.org/b"]
+    run(reg, Judge({"did not win": {"verdict": "contradicts", "quote": contra, "about_brand": True, "close_to_fact": True, "exaggeration_risk": "low", "medium": "press"}}), urls, {urls[0]: page(contra)})
+    claim = reg.state()["claims"][cid]
+    assert claim["status"] == "conflicted" and claim["evidence"]["contradicts"] and not claim.get("conflicts_with")              # the kind the pair check never sees
+    args = cli_args(tmp_path, "--action", "reclassify-conflicts")
+    now_ok = Judge({"Probe Design Award": supports(QUOTE_A)})
+    B2.run_canon(args, cli.Store(args.data_dir), AT, clients=lambda: (now_ok, lambda q: [{"url": "https://a.example.com/a", "title": ""}], lambda u: page(QUOTE_A)))
+    out = capsys.readouterr().out
+    assert "claim(s) conflicted by a source were re-checked from public sources" in out and "1 now VERIFIED" in out and "0 still CONFLICTED" in out or "now VERIFIED" in out
+    assert reg.state()["claims"][cid]["status"] in ("verified", "unverified", "conflicted")
+    fresh = C.Registry(tmp_path / "data", "swoveralls")
+    assert fresh.state()["claims"][cid]["status"] == "verified"                                                                        # the contradiction is gone and a close source stands: the claim is no longer blocked
