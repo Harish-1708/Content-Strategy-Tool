@@ -1,0 +1,52 @@
+{
+ "at": "2026-11-24T14:39:34Z",
+ "report": {
+  "agent_browser": {
+   "answered": 9,
+   "checks": 9,
+   "gain": 0.967,
+   "median_seconds": 2.66,
+   "parity": 0.693,
+   "ran": true,
+   "tried": 9,
+   "verdict": "NO-GO",
+   "why": ""
+  },
+  "current": {
+   "answered": 9,
+   "checks": 6,
+   "median_seconds": 0.47,
+   "ran": true,
+   "tried": 9,
+   "verdict": "BASELINE",
+   "why": ""
+  },
+  "lightpanda": {
+   "answered": 9,
+   "checks": 6,
+   "gain": 0.0,
+   "median_seconds": 0.9,
+   "parity": 0.667,
+   "ran": true,
+   "tried": 9,
+   "verdict": "NO-GO",
+   "why": ""
+  },
+  "obscura": {
+   "answered": 9,
+   "checks": 6,
+   "gain": 0.067,
+   "median_seconds": 3.6,
+   "parity": 0.987,
+   "ran": true,
+   "tried": 9,
+   "verdict": "NO-GO",
+   "why": ""
+  }
+ },
+ "urls": [
+  "https://www.tiktok.com/@baderalsafar/video/7045970270649306415",
+  "https://www.youtube.com/results?search_query=swoveralls",
+  "https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=US&q=overalls"
+ ]
+}
