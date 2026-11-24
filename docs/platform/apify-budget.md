@@ -1,40 +1,54 @@
 # The Apify money plan (the math)
 
-**Budget used: 20 dollars a month = 4 working keys at 5 dollars each** (key 3 was checked and replaced on 2026-11-23). The plan lives in `contentintel/apify_budget.py` (`WORKING_KEYS = 4`); every cap in the tool comes from it. The 20 dollars are shared by every feature that uses Apify. Items a month = dollars divided by what one item costs. A feature may use at most four days' worth of its month in one day, so none can use its month in two or three days; the daily numbers are in the table. The per-run dollar caps (1 dollar for Collect, 3 for the voice lane: see "Which cap applies") and the per-call cost ceilings stay as the guardrails.
+**Budget used: 20 dollars a month = 4 working keys at 5 dollars each.** The plan lives in `contentintel/apify_budget.py` (`WORKING_KEYS = 4`); every cap in the tool comes from it. The 20 dollars are shared by every feature that uses Apify. Items a month = dollars divided by what one item costs. A feature may use at most four days' worth of its month in one day (daily number = items / 30 x 4, rounded up), so none can use its month in a week. The guardrails stay: the per-run dollar caps (1 dollar for Collect, 3 for the voice lane) and the 0.25 dollar ceiling Apify enforces on every page read.
 
-## What one item costs
-- **Read from Apify's published prices (2026-11-19, the FREE plan's list price, the highest):** TikTok scraper (clockworks) 5.00 dollars per 1,000 results = 0.005 an item; TikTok comments scraper (clockworks) 1.00 dollars per 1,000 = 0.001 an item.
-- **ASSUMPTIONS, NOT LIST PRICES (no price was found):** Instagram and the sessions page reader 0.005 an item (TikTok's price, assumed); Reddit 0.004 an item (assumed). If they cost more, the per-call ceiling and the per-run cap limit the damage, and the next price check corrects the number.
+## What one item costs: read from the actor's own Apify page (2026-11-24)
+| Feature | Actor | Price on its page | Used here |
+|---|---|---|---|
+| Collect (TikTok) | clockworks/tiktok-scraper | 5.00 dollars per 1,000 results | 0.005 |
+| Analyze comments | clockworks/tiktok-comments-scraper | 1.00 dollar per 1,000 | 0.001 |
+| Reddit | trudax/reddit-scraper-lite | "from 3.40 dollars per 1,000 results" | 0.0034 |
+| X | khadinakbar/x-tweet-scraper | 0.002 dollars a tweet (1.84 to 2.00 per 1,000); the free plan returns up to 50 tweets a run | 0.002 |
+| LinkedIn | harvestapi/linkedin-company-posts | 2.00 dollars per 1,000 posts ("from 1.50") | 0.002 |
+Still an ASSUMPTION, not read from a page: Instagram and the generic page reader (0.005 an item). Where a page says "from", the highest listed price is used.
 
-## The split (20 dollars)
-| Feature | Share | Dollars | Most an item costs | Items a month | Items a day (at most) |
+## The split (20 dollars): what changed from the first plan
+Before: Collect 6.00, voice 5.00, sessions read 3.00, Reddit backup 1.40, analyze comments 1.00, reserve 3.60 = 20.00. Now: **sessions read goes from 3.00 to 2.00 (minus 1.00)**, and that 1.00 is split into **X read 0.50 and LinkedIn read 0.50** (new). Reddit's cost was an assumed 0.004 and is now the read 0.0034, so its 1.40 buys 411 items instead of 349. Everything else is unchanged and the reserve stays 3.60.
+
+| Feature | Share | Dollars | Cost per item | Items a month | Items a day (at most) |
 |---|---|---|---|---|---|
-| collect | 30% | 6.00 | 0.005 | 1200 | 160 |
+| Collect | 30% | 6.00 | 0.005 | 1200 | 160 |
 | voice | 25% | 5.00 | 0.005 | 1000 | 134 |
-| sessions read | 15% | 3.00 | 0.005 | 600 | 80 |
-| reddit backup | 7% | 1.40 | 0.004 | 349 | 47 |
+| sessions read (page reads of Instagram, TikTok and other sites) | 10% | 2.00 | 0.005 | 400 | 54 |
+| Reddit (voice backup and Reddit page reads) | 7% | 1.40 | 0.0034 | 411 | 55 |
 | analyze comments | 5% | 1.00 | 0.001 | 1000 | 134 |
-| reserve | 18% | 3.60 | - | - | - |
+| x read (an X account's recent tweets) | 2.5% | 0.50 | 0.002 | 250 | 34 |
+| linkedin read (a company page's posts) | 2.5% | 0.50 | 0.002 | 250 | 34 |
+| reserve (future) | 18% | 3.60 | - | - | - |
 | **Total** | 100% | **20.00** | | | |
 
-If every item cost the number in the table, the five features would spend 16.40 dollars and 3.60 dollars stay in reserve for future features: exactly the 20. **Collect's cap is 1,200 items a month** (6.00 dollars / 0.005), carried by `collectors.apify.monthly_items` in `research.yaml`; that is the only line of that file that changed.
-
 ## Which cap applies (the per-run dollar caps)
-There are three kinds of cap and they do not contradict each other: the **monthly item share** of a feature (the table above), a **per-call cost ceiling** (0.25 dollars for the page reader and the comments, 0.50 for TikTok, 0.25 for Instagram and Reddit, enforced by Apify), and a **per-run dollar cap** that depends on the lane:
-- **Collect** (the browser-or-Apify collectors, `collectors.apify` in `research.yaml`): `max_cost_per_run_usd: 1.0`. This is the rule for Collect, and it is stricter than the next one.
+There are three kinds of cap and they do not contradict each other: the **monthly item share** of a feature (the table above), a **per-call cost ceiling** (0.25 dollars for every page read: Instagram, TikTok, Reddit, X, LinkedIn; 0.50 for a TikTok collection), and a **per-run dollar cap** that depends on the lane:
+- **Collect** (`collectors.apify` in `research.yaml`): `max_cost_per_run_usd: 1.0`. Collect now runs Apify as a FALLBACK (`mode: fallback`): when the browser route fails, including while an account rests after a warning, Apify runs inside these caps.
 - **The voice lane** (audience voice and its Reddit backup): `CONTENTINTEL_VOICE_APIFY_RUN_USD`, default **3.0** dollars a run.
-Earlier text said "the 3 dollar per-run cap" for every feature: that was only the voice lane's number. For Collect the cap is 1 dollar a run.
+- **Page reads** (Reddit, X, LinkedIn, Instagram, TikTok, others): one item at most, 0.25 dollars, counted against the platform's own share (Reddit: Reddit; X: X read; LinkedIn: LinkedIn read; everything else: sessions read).
 
 ## If only 3 keys work (15 dollars)
-Everything scales with the keys: 
+Everything scales with the keys:
 
 | Feature | Dollars | Items a month | Items a day |
 |---|---|---|---|
-| collect | 4.50 | 900 | 120 |
+| Collect | 4.50 | 900 | 120 |
 | voice | 3.75 | 750 | 100 |
-| sessions read | 2.25 | 450 | 60 |
-| reddit backup | 1.05 | 262 | 35 |
+| sessions read (page reads of Instagram, TikTok and other sites) | 1.50 | 300 | 40 |
+| Reddit (voice backup and Reddit page reads) | 1.05 | 308 | 42 |
 | analyze comments | 0.75 | 750 | 100 |
-| reserve | 2.70 | - | - |
+| x read (an X account's recent tweets) | 0.38 | 190 | 26 |
+| linkedin read (a company page's posts) | 0.38 | 190 | 26 |
+| reserve (future) | 2.70 | - | - |
 
-The voice lane reads the keys it really has, so it scales by itself; Collect's number follows `WORKING_KEYS` and `research.yaml`. The owner's overrides are `CONTENTINTEL_VOICE_APIFY_MONTHLY` and `CONTENTINTEL_VOICE_APIFY_DAILY` (0 = no daily limit).
+## Reddit, X and LinkedIn: which actors work, and which do not
+- **Reddit: wired.** `trudax/reddit-scraper-lite` (21K users, no login or key).
+- **X: wired.** `khadinakbar/x-tweet-scraper`: no login, no cookies, an account's recent public tweets. Cheaper alternatives exist (0.00025 a tweet) but have a dozen users; atomus/twitter-scraper (4.00 per 1,000 on the free plan) was the second choice.
+- **LinkedIn: wired for company pages only.** `harvestapi/linkedin-company-posts` (5.5K users, no cookies). A person's profile or posts search needs a login we do not give Apify, so it is NOT read: the code refuses it plainly.
+- The input names of the X and LinkedIn actors come from the actors' pages, not from a live call: Acceptance proves them (the three new routes are probes).
