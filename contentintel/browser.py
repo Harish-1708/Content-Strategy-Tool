@@ -118,13 +118,13 @@ def _check_value(kind, value, where):
         for k, v in value.items():
             _num(v, f"{where}.{k}")
     elif kind == "settle":
-        keys = {"images_any", "spinner_any", "max_seconds", "poll_seconds", "stable_polls"}
+        keys = {"images_any", "spinner_any", "tiles_any", "max_seconds", "poll_seconds", "stable_polls"}
         if not isinstance(value, dict) or set(value) - keys or not {"max_seconds", "poll_seconds"} <= set(value):
             raise BrowserError(f"{where} must hold max_seconds and poll_seconds, and may hold: images_any, spinner_any, stable_polls")
         _num(value["max_seconds"], f"{where}.max_seconds", minimum=1)
         _num(value["poll_seconds"], f"{where}.poll_seconds", minimum=1)
         _num(value.get("stable_polls", 2), f"{where}.stable_polls", minimum=1)
-        for k in ("images_any", "spinner_any"):
+        for k in ("images_any", "spinner_any", "tiles_any"):
             if k in value:
                 _strs(value[k], f"{where}.{k}")
     elif kind == "fallback":
@@ -535,16 +535,31 @@ class PlaywrightBrowser:
                 continue
         return False
 
-    def images_state(self, spinner_selectors=(), image_selectors=("main img", "article img")):
-        """How far the page's grid has drawn: {loaded, total, spinner}. loaded counts images that finished (complete and with a width); spinner is True while any of the loading-spinner selectors is still on the page."""
+    def images_state(self, spinner_selectors=(), image_selectors=("main img", "article img"), tile_selectors=()):
+        """How far the page's grid has drawn: {loaded, total, tiles, blank, spinner}. loaded counts the images that finished (complete and with a width); tiles counts the grid's TILES (the posts' links), and blank those tiles
+        that hold no finished image yet: the lazy tiles that never drew are blank tiles, which the image count alone never saw (Acceptance #16: 13 images drawn, blank tiles and a spinner). spinner is True while any of the
+        loading-spinner selectors is on the page."""
         try:
-            counts = self.page.evaluate("""(sels) => { let total = 0, loaded = 0;
-                for (const sel of sels) { for (const img of document.querySelectorAll(sel)) { total += 1; if (img.complete && img.naturalWidth > 0) loaded += 1; } }
-                return [total, loaded]; }""", list(image_selectors))
-            total, loaded = int(counts[0]), int(counts[1])
+            counts = self.page.evaluate("""([imgs, tiles]) => { let total = 0, loaded = 0, nt = 0, blank = 0;
+                for (const sel of imgs) { for (const img of document.querySelectorAll(sel)) { total += 1; if (img.complete && img.naturalWidth > 0) loaded += 1; } }
+                const seen = new Set();
+                for (const sel of tiles) { for (const a of document.querySelectorAll(sel)) { if (seen.has(a)) continue; seen.add(a); nt += 1;
+                    const im = a.querySelector('img'); if (!im || !(im.complete && im.naturalWidth > 0)) blank += 1; } }
+                return [total, loaded, nt, blank]; }""", [list(image_selectors), list(tile_selectors)])
+            total, loaded, tiles, blank = (int(x) for x in counts)
         except Exception:                                                              # noqa: BLE001 - a page that cannot be asked says nothing: the settle step then just waits its time out
-            return {"loaded": 0, "total": 0, "spinner": False}
-        return {"loaded": loaded, "total": total, "spinner": self.exists(list(spinner_selectors)) if spinner_selectors else False}
+            return {"loaded": 0, "total": 0, "tiles": 0, "blank": 0, "spinner": False}
+        return {"loaded": loaded, "total": total, "tiles": tiles, "blank": blank, "spinner": self.exists(list(spinner_selectors)) if spinner_selectors else False}
+
+    def nudge(self):
+        """A small scroll down and back up, so tiles that draw only when they come into view are brought into view (a lazy grid never draws what has not been seen)."""
+        try:
+            self.page.mouse.wheel(0, 500)
+            self.page.wait_for_timeout(700)
+            self.page.mouse.wheel(0, -500)
+            self.page.wait_for_timeout(500)
+        except Exception:                                                              # noqa: BLE001
+            pass
 
     def hover(self, selectors):
         """Move the pointer over the first element that matches (a menu item that opens its submenu on hover, as Gemini's More tools does). True when one was found and hovered."""

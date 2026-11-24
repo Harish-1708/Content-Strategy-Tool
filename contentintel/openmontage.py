@@ -179,16 +179,29 @@ def index_assets(assets, corpus, embed_image, fetch):
     (indexed, skipped_with_reasons); a picture that cannot be fetched or embedded is skipped and said so, never guessed."""
     done, skipped = 0, []
     for a in assets:
-        url = a.get("thumbnail") or a.get("url")
-        asset_id = hashlib.sha1((a.get("url") or url or "").encode("utf-8")).hexdigest()[:12]
-        if not url or any(i["id"] == asset_id for i in corpus.items):
+        urls = [u for u in dict.fromkeys([a.get("thumbnail"), a.get("url")]) if u]                  # the thumbnail first, then the picture itself: Openverse's thumbnail proxy answered 424 for six of eleven pictures
+        asset_id = hashlib.sha1((a.get("url") or (urls[0] if urls else "")).encode("utf-8")).hexdigest()[:12]
+        if not urls or any(i["id"] == asset_id for i in corpus.items):
             continue
-        try:
-            corpus.add({**a, "id": asset_id}, embed_image(fetch(url)))
-            done += 1
-        except Exception as exc:                                                                    # noqa: BLE001
-            skipped.append((a.get("title") or url, f"{type(exc).__name__}: {str(exc)[:80]}"))
+        last = ""
+        for url in urls:
+            try:
+                corpus.add({**a, "id": asset_id}, embed_image(fetch(url)))
+                done += 1
+                last = ""
+                break
+            except Exception as exc:                                                                # noqa: BLE001
+                last = f"{type(exc).__name__}: {str(exc)[:80]}"
+        if last:
+            skipped.append((a.get("title") or urls[0], last + (" (the thumbnail and the picture were both tried)" if len(urls) > 1 else "")))
     return done, skipped
+
+
+def on_brand(asset, terms, floor=0.5):
+    """The relevance floor for the stock corpus: a picture is the brand's to use when it is the brand's own site media (licence brand-own), or when its title and credit line mention at least `floor` of the words of some
+    term derived from the brand (its name, its keywords, its products, its competitors). Anything else (a parliament, a coat of arms, a district flag) is dropped and said so, never indexed."""
+    from . import assets_find as AF
+    return AF.on_brand(asset, terms, floor)
 
 
 def clip_embedders():

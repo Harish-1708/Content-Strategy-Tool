@@ -1,6 +1,6 @@
 """The Apify money, split per feature. The allowance is 5 dollars per working key a month: 4 working keys = 20 dollars (key 3 was checked and replaced on 2026-11-23), shared by EVERY feature that uses Apify. This file is where
 the split is written down and where every cap in the tool comes from, so no number is a guess and no feature can eat the month. Each feature gets a share of the dollars, items = dollars / what one item costs, and a DAILY cap of
-four days' worth of its month, so even a feature that runs every hour cannot use its whole month in two or three days. The 3 dollar per-run cap and the per-call cost ceilings stay as guardrails.
+four days' worth of its month, so even a feature that runs every hour cannot use its whole month in two or three days. The per-run dollar cap (1 dollar for Collect: research.yaml max_cost_per_run_usd; 3 dollars for the voice lane) and the per-call cost ceilings stay as guardrails.
 
 WHAT AN ITEM COSTS. Read from Apify's published pay-per-result prices on 2026-11-19, at the FREE plan's list price (the highest one):
   TikTok scraper (clockworks): 5.00 dollars per 1,000 results = 0.005 an item;   TikTok comments scraper (clockworks): 1.00 dollars per 1,000 = 0.001 an item.

@@ -6,6 +6,7 @@ Engines are configured in bakeoff.yaml: each is a command template that prints t
 as NOT RUN with the reason, never skipped silently and never faked. The go/no-go gate (set by the owner): a candidate is GO only if, on the same pages, it answers at least as often as the current engine,
 sees at least 90 percent of the words the current engine saw, and its median time is not more than twice the current engine's."""
 import re
+import shlex
 import shutil
 import statistics
 import subprocess
@@ -40,7 +41,7 @@ def run_engine(engine, url, *, runner=subprocess.run, clock=time.monotonic):
     cmd = str(engine.get("command") or "").strip()
     if not cmd:
         return None, 0.0, "no command is configured for this engine"
-    argv = [part.replace("{url}", url) for part in cmd.split()]
+    argv = [part.replace("{url}", url) for part in shlex.split(cmd)]             # shlex, not a blank split: a quoted `sh -c '...'` command (agent-browser) stayed whole instead of breaking at its spaces ("Unterminated quoted string", Stage tools #7)
     if not shutil.which(argv[0]) and runner is subprocess.run:
         return None, 0.0, f"{argv[0]} is not installed on this machine"
     t0 = clock()
@@ -86,13 +87,16 @@ def run_bakeoff(config, *, runner=subprocess.run, clock=time.monotonic, urls=Non
             if name == "current":
                 r["verdict"] = "BASELINE" if r["ran"] else "NOT RUN"
             continue
-        parities = []
+        parities, gains = [], []
         for u, v in reads[name].items():
             theirs = next((h for h, _s, _w in v if h), "")
             ref = words(base_reads.get(u, ""))
             if ref:
                 parities.append(len(ref & words(theirs)) / len(ref))
+                seen = words(theirs)
+                gains.append(len(seen - ref) / len(seen) if seen else 0.0)
         r["parity"] = round(statistics.mean(parities), 3) if parities else 0.0
+        r["gain"] = round(statistics.mean(gains), 3) if gains else 0.0                # the share of the words it saw that the plain read did NOT: what rendering the page adds
         answers_ok = (r["answered"] / r["tried"]) >= (base.get("answered", 0) / base["tried"] if base.get("tried") else 1)
         fast_ok = not base.get("median_seconds") or r["median_seconds"] <= SPEED_FACTOR * base["median_seconds"]
         r["verdict"] = "GO" if (answers_ok and r["parity"] >= PARITY_AT and fast_ok and r["checks"] <= base.get("checks", 0)) else "NO-GO"
@@ -106,4 +110,5 @@ def format_report(report, urls):
             lines.append(f"  {name}: NOT RUN: {r['why']}")
         else:
             lines.append(f"  {name}: {r['verdict']}: answered {r['answered']} of {r['tried']}, median {r['median_seconds']} s, security checks {r['checks']}" + (f", sees {int(r.get('parity', 0) * 100)}% of the current engine's words" if "parity" in r else "") + (f"; last problem: {r['why']}" if r["why"] else ""))
+    lines += [f"  {n}: adds {int(r['gain'] * 100)}% words the plain read does not see (what rendering the page adds); the gate verdict stays {r['verdict']}" for n, r in report.items() if r.get("ran") and "gain" in r]
     return "\n".join(lines)

@@ -36,31 +36,59 @@ def filter_relevant(assets, query, *, floor=0.5):
     return kept, dropped
 
 
-def derived_queries(query, brand, store, research):
-    """Other queries to try when the first gives nothing usable, derived from the brand: its name (when the query was something else), its catalogue's product terms and its competitors' names."""
+def split_derived(query, brand, store, research):
+    """(own, competitors): other queries to try, derived from the brand and kept apart. `own` is what the brand says about itself: its keywords, topics and queries from the research file and its catalogue's product terms.
+    `competitors` is the competitors' names. A competitor's name finds the COMPETITOR's pictures (Allbirds shoes for 'sweatpant overalls'), so those results are only used when they also pass the relevance floor against
+    the ORIGINAL query, and the brand's own site is tried before them."""
     from . import voice as VOICE
-    out = []
+    research = research or {}
+    own, competitors = [], []
     try:
-        out += [t for t in VOICE.topics_for(brand, store, limit=6) if t]
+        own += [t for t in VOICE.topics_for(brand, store, limit=6) if t]
     except Exception:                                                                       # noqa: BLE001 - no catalogue yet: only the names below
         pass
-    research = research or {}
     ads = research.get("ads") if isinstance(research.get("ads"), dict) else {}
-    pool = list(ads.get("keywords") or []) + list(research.get("topics") or []) + list(research.get("queries") or [])                 # what the brand says it sells and is known for
+    own += list(ads.get("keywords") or []) + list(research.get("topics") or []) + list(research.get("queries") or [])
     pages = ads.get("benchmark_pages")
     names = list(pages) if isinstance(pages, dict) else list(pages or [])
-    for e in names + list(research.get("benchmark_pages") or []) + list(research.get("competitors") or []):                           # competitor names, however the research file lists them
-        pool.append(e.get("name") if isinstance(e, dict) else e)
-    for name in pool:
-        if isinstance(name, str) and name.strip() and name.strip().lower() != brand.name.lower():
-            out.append(name.strip())
+    for e in names + list(research.get("benchmark_pages") or []) + list(research.get("competitors") or []):
+        competitors.append(e.get("name") if isinstance(e, dict) else e)
     seen = {query.strip().lower(), brand.name.strip().lower()}                                 # the query itself and the brand's own name are never tried again
-    ordered = []
-    for q in out:
-        if q.strip().lower() not in seen:
-            seen.add(q.strip().lower())
-            ordered.append(q.strip())
-    return ordered[:MAX_EXPANSIONS]
+    def clean(items):
+        out = []
+        for q in items:
+            if isinstance(q, str) and q.strip() and q.strip().lower() not in seen:
+                seen.add(q.strip().lower())
+                out.append(q.strip())
+        return out[:MAX_EXPANSIONS]
+    return clean(own), clean(competitors)
+
+
+def derived_queries(query, brand, store, research):
+    """The own terms then the competitors' names (kept for older callers); at most MAX_EXPANSIONS in all."""
+    own, competitors = split_derived(query, brand, store, research)
+    return (own + competitors)[:MAX_EXPANSIONS]
+
+
+def brand_terms(brand, store, research):
+    """The words that make a picture the brand's to use: its name and its OWN terms, never a competitor's name."""
+    own, _competitors = split_derived(brand.name, brand, store, research)
+    return [brand.name] + own
+
+
+def on_brand(asset, terms, floor=0.5):
+    """A picture is the brand's when it is the brand's own site media (licence brand-own) or its title and credit line mention at least `floor` of the words of one of the brand's own terms."""
+    if str(asset.get("license", "")).lower() == "brand-own":
+        return True
+    return any(words(t) and relevance(asset, t) >= floor for t in terms)
+
+
+def clean_saved(assets, terms, floor=0.5):
+    """(kept, removed): the assets already saved for a brand with the pictures that are not the brand's taken out (a parliament, a coat of arms, a competitor's shoes)."""
+    kept, removed = [], []
+    for a in assets:
+        (kept if on_brand(a, terms, floor) else removed).append(a)
+    return kept, removed
 
 
 _IMG = re.compile(r"<img\b[^>]*>", re.I)
@@ -102,40 +130,57 @@ def url_is_icon(src):
 
 
 def find_usable(get, query, kind, *, brand=None, store=None, research=None, limit=8, bearer="", use_openverse=True, licence_ok_for_ads=True):
-    """(kept, report): usable assets for `query`, or an empty list and a report that says what was tried. report = {tried: [{query, source, returned, kept, dropped: [(title, why)]}], used: query-or-source or ''}."""
+    """(kept, report): usable assets for `query`, or an empty list and a report that says what was tried. Order: the query itself; the brand's OWN terms; the brand's own site; and last the competitors' names, whose
+    results must also pass the relevance floor against the ORIGINAL query (an expansion is scored against what it searched for, which is why 'Allbirds' once returned eight Allbirds shoes for 'sweatpant overalls').
+    Every kept asset carries `relevance` against the ORIGINAL query and `found_with` (the query that found it). report = {tried: [{query, source, returned, kept, dropped: [(title, why)]}], used: ''}."""
     report = {"tried": [], "used": ""}
 
-    def attempt(q):
+    def attempt(q, strict=False):
         try:
             found, which = OV.find(get, q, kind, limit=limit, bearer=bearer, use_openverse=use_openverse, licence_ok_for_ads=licence_ok_for_ads)
         except K.Failure as exc:
             report["tried"].append({"query": q, "source": "openverse/commons", "returned": 0, "kept": 0, "dropped": [], "error": f"{exc.code}: {exc.message}"})
             return []
         kept, dropped = filter_relevant(found, q) if kind == "images" else (found, [])
+        if kind == "images":
+            scored = []
+            for a in kept:
+                orig = round(relevance(a, query), 2)
+                if strict and orig < 0.5:
+                    dropped.append((a.get("title") or a.get("url", "")[:60], f"off-target for the ORIGINAL query {query!r}: its title and credit line mention {int(orig * 100)}% of its words (it matched {q!r}, a competitor's name)"))
+                else:
+                    scored.append(dict(a, relevance=orig, found_with=q))
+            kept = scored
         report["tried"].append({"query": q, "source": which, "returned": len(found), "kept": len(kept), "dropped": dropped})
         return kept
     kept = attempt(query)
     if kept:
         report["used"] = query
         return kept, report
-    if brand is not None:
-        for q in derived_queries(query, brand, store, research):
-            kept = attempt(q)
-            if kept:
-                report["used"] = q
-                return kept, report
-        if kind == "images" and getattr(brand, "domain", ""):
-            try:
-                own = site_media(get, brand.domain, query if words(query) else brand.name, limit=limit)
-                if not own and brand.name.lower() not in query.lower():
-                    own = site_media(get, brand.domain, brand.name, limit=limit)
-            except Exception as exc:                                                        # noqa: BLE001
-                report["tried"].append({"query": query, "source": "brand site", "returned": 0, "kept": 0, "dropped": [], "error": f"{type(exc).__name__}: {str(exc)[:100]}"})
-                return [], report
-            report["tried"].append({"query": query, "source": "brand site", "returned": len(own), "kept": len(own), "dropped": []})
-            if own:
-                report["used"] = "the brand's own site"
-                return own, report
+    own, competitors = split_derived(query, brand, store, research) if brand is not None else ([], [])
+    for q in own:
+        kept = attempt(q)
+        if kept:
+            report["used"] = q
+            return kept, report
+    if brand is not None and kind == "images" and getattr(brand, "domain", ""):
+        try:
+            site = site_media(get, brand.domain, query if words(query) else brand.name, limit=limit)
+            if not site and brand.name.lower() not in query.lower():
+                site = site_media(get, brand.domain, brand.name, limit=limit)
+        except Exception as exc:                                                            # noqa: BLE001
+            report["tried"].append({"query": query, "source": "brand site", "returned": 0, "kept": 0, "dropped": [], "error": f"{type(exc).__name__}: {str(exc)[:100]}"})
+            site = []
+        else:
+            report["tried"].append({"query": query, "source": "brand site", "returned": len(site), "kept": len(site), "dropped": []})
+        if site:
+            report["used"] = "the brand's own site"
+            return [dict(a, relevance=1.0, found_with="the brand's own site") for a in site], report
+    for q in competitors:
+        kept = attempt(q, strict=True)
+        if kept:
+            report["used"] = q
+            return kept, report
     return [], report
 
 

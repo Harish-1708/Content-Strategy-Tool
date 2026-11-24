@@ -30,6 +30,7 @@ def add_parsers(sub, common):
     p.add_argument("--max-new", type=int, default=20, help="refresh: new entries added per brand in one refresh (the pages after that are left for the next refresh and spend no AI calls)")
     p.add_argument("--stage", default="", help="stage: which stage to run (competitor_ideas, creator_chain, listen_learn, voice_creative, seo_lens, storyboard)")
     p.add_argument("--max-claims", type=int, default=0, help="verify-claims: check at most this many claims in one run (0 = every claim that is waiting, up to 60)")
+    p.add_argument("--max-minutes", type=int, default=0, help="verify-claims: stop starting new claims after this many minutes (0 = no limit); the claims left are picked up by the next run, and every claim's result is printed as soon as it is known")
     p.add_argument("--verify-calls", type=int, default=0, help="the AI and page-reading calls the claim check may use in one run (0 = sized to the claims waiting: about five a claim)")
     p.add_argument("--max-calls", type=int, default=0, help="at most this many model calls in one run (a retry counts; one batch of up to 20 pairs is one call). 0 = no limit for foundation and reclassify-conflicts, 48 for refresh")
     p.add_argument("--skills-config", default=SK.CONFIG_FILE, help="foundation: the skills policy file")
@@ -115,10 +116,22 @@ def _claim_verifier(reg, slug, args, claude, search, get, now, announce=False):
     waiting = len(CANON_VERIFY.targets(reg, 1000)) if not args.max_claims else args.max_claims
     budget = args.verify_calls or CANON_VERIFY.auto_budget(waiting)                      # sized to the work waiting, never a fixed small number; the rate-limit-aware routing is what makes a big budget safe
 
+    def progress(event, cid, what, position, total):
+        """Printed the moment each claim starts and again when it is done, so a run that is cut off still leaves its evidence in the log."""
+        if event == "start":
+            print(f"canon: {slug}: progress: claim {position} of {total} starting: {cid}: {str(what.get('text', ''))[:100]}", flush=True)
+        else:
+            entry = report["log"][-1] if report.get("log") else None
+            print(f"canon: {slug}: progress: claim {position} of {total} done: {cid} -> {str(what).upper()}", flush=True)
+            if entry:
+                for line in CANON_VERIFY.log_lines({"log": [entry]}):
+                    print(line, flush=True)
+
     def verifier(ids):
         new = [i for i in ids if i not in tried]
         report["checked"] += len(new)
-        done = CANON_VERIFY.verify_ids(reg, name, ids, search=search, get=get, claude=claude, now=now, max_calls=budget, report=report, tried=tried)
+        done = CANON_VERIFY.verify_ids(reg, name, ids, search=search, get=get, claude=claude, now=now, max_calls=budget, report=report, tried=tried,
+                                       progress=progress if announce else None, deadline=getattr(args, "_deadline", None))
         verified_now = [i for i in done if report["outcomes"].get(i) == "verified"]
         report["verified"].extend(verified_now)
         report.setdefault("single", []).extend(i for i in verified_now if reg.state()["claims"][i].get("single_source"))
@@ -163,6 +176,9 @@ def run_canon(args, store, now, *, clients=None):
     if missing:
         print(f"canon: no brand folder named {', '.join(missing)} in {args.brands_dir} (the brands are: {', '.join(sorted(known)) or 'none'}): nothing was done")
         return 1
+    import time as _t
+    args._deadline = (_t.monotonic() + args.max_minutes * 60) if getattr(args, "max_minutes", 0) else None
+    claims_left = args.max_claims if args.action == "verify-claims" and args.max_claims else None
     for slug in slugs:
         reg = CANON.Registry(store.data_dir, slug)
         if args.action == "seed":
@@ -294,10 +310,14 @@ def run_canon(args, store, now, *, clients=None):
             if verifier is None:
                 worst = max(worst, 1)
                 continue
-            ids = CANON_VERIFY.targets(reg, args.max_claims or CANON_VERIFY.MAX_PER_RUN)
+            limit = claims_left if claims_left is not None else CANON_VERIFY.MAX_PER_RUN              # the cap is for the WHOLE run across brands, not per brand
+            if limit <= 0:
+                print(f"canon: {slug}: the claim cap of this run ({args.max_claims}) was used by the brands before it: nothing checked here")
+                continue
+            ids = CANON_VERIFY.targets(reg, limit)
             done = verifier(ids)
-            for line in CANON_VERIFY.log_lines(vreport):
-                print(line)
+            if claims_left is not None:
+                claims_left -= len(vreport["outcomes"])
             for note in vreport["notes"][:12]:
                 print(f"canon:   note: {note}")
             print(f"canon: {slug}: {len(ids)} claim(s) checked from public sources by the pool model: {len(vreport['verified'])} became VERIFIED (one source close to the fact in any medium, exact quotation, nothing contradicting)"
@@ -329,6 +349,19 @@ def run_canon(args, store, now, *, clients=None):
             route_report(slug, claude, "conflict re-check")
             if report["errors"] and not (kept or taken_back):
                 worst = max(worst, 1)
+            # The OTHER kind of conflict: a claim that verify-claims marked CONFLICTED because a source contradicted it. It has no `conflicts_with` link to another claim (so the pair check above never sees it): it is
+            # re-checked by running the public-source check on it again, which can now find the contradiction gone, a close source, or the conflict confirmed. Skills #45 re-checked nothing for want of this.
+            by_evidence = [cid for cid, c in reg.state()["claims"].items() if c["status"] == "conflicted" and not c.get("owner_decided") and (c.get("evidence") or {}).get("contradicts")]
+            if by_evidence:
+                _c2, search2, get2 = clients() if clients else (None, None, None)
+                verifier, vrep = _claim_verifier(reg, slug, args, claude, search2, get2, now, announce=True)
+                if verifier is None:
+                    worst = max(worst, 1)
+                else:
+                    verifier(by_evidence)
+                    after = [reg.state()["claims"][c]["status"] for c in by_evidence]
+                    print(f"canon: {slug}: {len(by_evidence)} claim(s) conflicted by a source were re-checked from public sources: {after.count('verified')} now VERIFIED, {after.count('unverified')} UNVERIFIED, {after.count('conflicted')} still CONFLICTED; {vrep['calls']} AI call(s).")
+                    route_report(slug, claude, "evidence-conflict re-check")
         elif args.action == "history":
             import os
             import subprocess

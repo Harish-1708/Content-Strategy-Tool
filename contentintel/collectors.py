@@ -985,23 +985,33 @@ def rate_limited(responses):
 
 
 def settle_images(browser, site_cfg):
-    """Wait until a slow grid has finished drawing: every image on the page loaded and no loading spinner left, twice in a row (a page whose count is still moving is not settled), or the site's max_seconds. Instagram's
-    grid was read with half its tiles blank and the spinner still turning (Acceptance #15: 34 image addresses in the data, 17 drawn). Returns '' when it settled, else a note saying how far it got. A browser that cannot
-    report its images (and a site with no `settle_images` setting) is not waited for."""
+    """Wait until a slow grid has really finished drawing, not until a timeout. Done means: every image on the page loaded AND no tile of the grid is still blank (a lazy tile that never drew is a blank tile, which a
+    count of the images already on the page cannot see), steady for `stable_polls` polls in a row, and the loading spinner gone. The spinner at the foot of an infinite-scroll page can turn for ever, so once
+    everything on the page is drawn and has stayed steady two polls longer, it is no longer waited for. While tiles are blank the page is NUDGED (a small scroll down and back) every other poll, to bring them into view.
+    Acceptance #16 read the grid with 13 images drawn, blank tiles in rows 3 to 5 and a spinner that never cleared. Returns '' when it settled, else a note of how far it got. A browser that cannot report its images
+    (and a site with no `settle_images` setting) is not waited for."""
     cfg = site_cfg.get("settle_images")
     state = getattr(browser, "images_state", None)
     if not cfg or not callable(state):
         return ""
-    waited, steady, last = 0, 0, None
+    nudge = getattr(browser, "nudge", None)
+    patience = cfg.get("stable_polls", 2)
+    waited, steady, last, polls = 0, 0, None, 0
     while True:
-        now = state(cfg.get("spinner_any", []), cfg.get("images_any", ["main img", "article img"]))
-        key = (now["loaded"], now["total"])
+        now = state(cfg.get("spinner_any", []), cfg.get("images_any", ["main img", "article img"]), cfg.get("tiles_any", []))
+        blank = now.get("blank", 0)
+        key = (now["loaded"], now["total"], now.get("tiles", 0), blank)
         steady = steady + 1 if key == last else 0
         last = key
-        if now["total"] > 0 and now["loaded"] >= now["total"] and not now["spinner"] and steady >= cfg.get("stable_polls", 2) - 1:
+        drawn = now["total"] > 0 and now["loaded"] >= now["total"] and blank == 0
+        if drawn and ((not now["spinner"] and steady >= patience - 1) or steady >= patience + 1):
             return ""
         if waited >= cfg["max_seconds"]:
-            return f"the grid was still filling in after {cfg['max_seconds']} s ({last[0]} of {last[1]} images drawn{', spinner still showing' if now['spinner'] else ''})"
+            return (f"the grid was still filling in after {cfg['max_seconds']} s ({last[0]} of {last[1]} images drawn"
+                    + (f", {blank} blank tile(s)" if blank else "") + (", spinner still showing" if now["spinner"] else "") + ")")
+        if blank > 0 and callable(nudge) and polls % 2 == 1:
+            nudge()
+        polls += 1
         browser.wait(cfg["poll_seconds"])
         waited += cfg["poll_seconds"]
 

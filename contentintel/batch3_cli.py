@@ -21,6 +21,7 @@ def add_parsers(sub, common):
     p.add_argument("--query", default="", help="stock-search: the script line or idea to find a picture for")
     p.add_argument("--hooks", default="", help="mpt-hooks: other opening lines, separated by |")
     p.add_argument("--concept", type=int, default=1, help="mpt-hooks: which concept of the latest brief (1 = the first)")
+    p.add_argument("--prove-load", action=argparse_bool(), default=True, help="forecast: load the model and forecast a built-in test series even when there is too little history for a backtest, so the install, the weights download and the call are proven (ON by default)")
     p.add_argument("--backtest", action=argparse_bool(), default=True, help="forecast: run the backtest gate before trusting the model (ON by default)")
     p.add_argument("--mpt-config", default=MPT.CONFIG)
     p.add_argument("--concat-config", default="concat.yaml")
@@ -53,6 +54,14 @@ def run_forecast(args, store, now, *, model_loader=FC.load_timesfm):
     except Exception as exc:                                                                                    # noqa: BLE001
         loaded = None
         print(f"forecast: TimesFM could not be loaded ({type(exc).__name__}: {str(exc)[:120]}); the naive baseline is used")
+    if loaded is not None and getattr(args, "prove_load", True):
+        try:
+            sample = [10 + (i % 7) * 2 + i * 0.5 for i in range(48)]
+            out = loaded(sample, 4)
+            print(f"forecast: MODEL LOAD PROVEN: TimesFM 3.0 forecast a 48-point test series: {[round(x, 1) for x in out]} (this proves the install, the weights and the call, not that it beats the baseline)")
+        except Exception as exc:                                                                                # noqa: BLE001
+            print(f"forecast: MODEL LOAD FAILED: {type(exc).__name__}: {str(exc)[:200]}; the model is NOT used")
+            loaded = None
     if loaded is not None and args.backtest:
         gate = FC.backtest(pooled, loaded)
         model_fn = loaded if gate["gate"] == "PASS" else None
@@ -78,6 +87,20 @@ def _fetch(url):
         return resp.read(8 * 1024 * 1024)
 
 
+def _brand_terms(args, store, slug):
+    """The words that make a picture relevant to a brand, derived from the brand itself: its name, the keywords and topics in its research file, its catalogue's product terms and its competitors' names."""
+    from . import assets_find as AF
+    from .brands import load_brand
+    try:
+        brand = load_brand(slug, args.brands_dir)
+        import yaml
+        rp = Path(args.brands_dir) / slug / "research.yaml"
+        research = yaml.safe_load(rp.read_text(encoding="utf-8")) if rp.is_file() else None
+        return AF.brand_terms(brand, store, research)                                    # the brand's name and its OWN terms: never a competitor's name (Allbirds shoes are not Swoveralls pictures)
+    except Exception:                                                                                           # noqa: BLE001 - a brand that cannot be read: its own name only
+        return [slug]
+
+
 def run_stock(args, store, now, *, embedders=OM.clip_embedders, fetch=_fetch):
     code = 0
     try:
@@ -88,10 +111,15 @@ def run_stock(args, store, now, *, embedders=OM.clip_embedders, fetch=_fetch):
     for slug in _slugs(args):
         corpus = OM.StockCorpus(Path(args.data_dir) / slug / "extras" / "stock_corpus.json")
         if args.action == "stock-index":
-            assets = (store.read_extra(slug, "assets") or {}).get("assets", [])
-            done, skipped = OM.index_assets([a for a in assets if a.get("kind", "image") == "image"], corpus, embed_image, fetch)
+            assets = [a for a in (store.read_extra(slug, "assets") or {}).get("assets", []) if a.get("kind", "image") == "image"]
+            terms = _brand_terms(args, store, slug)
+            fit = [a for a in assets if OM.on_brand(a, terms)]
+            for a in assets:
+                if a not in fit:
+                    print(f"stock: {slug}:   dropped {str(a.get('title') or a.get('url'))[:60]!r}: off-target for this brand (its title mentions none of: {', '.join(terms[:4])})")
+            done, skipped = OM.index_assets(fit, corpus, embed_image, fetch)
             corpus.save()
-            print(f"stock: {slug}: {done} picture(s) indexed, {len(corpus.items)} in the corpus, {len(skipped)} skipped")
+            print(f"stock: {slug}: {done} picture(s) indexed, {len(corpus.items)} in the corpus, {len(skipped)} skipped, {len(assets) - len(fit)} dropped as off-target")
             for title, why in skipped[:8]:
                 print(f"stock: {slug}:   skipped {title[:60]!r}: {why}")
         else:
@@ -99,6 +127,9 @@ def run_stock(args, store, now, *, embedders=OM.clip_embedders, fetch=_fetch):
                 print("stock: --query is empty")
                 return 1
             found = corpus.search(embed_text(args.query))
+            kept = store.read_extra(slug, "stock_matches") or {"searches": []}
+            kept["searches"] = ([{"at": now, "query": args.query, "matches": found, "corpus_size": len(corpus.items)}] + kept["searches"])[:30]
+            store.write_extra(slug, "stock_matches", kept)
             print(f"stock: {slug}: {len(found)} picture(s) match {args.query!r} out of {len(corpus.items)}" + ("" if found else " (nothing close enough: none is forced)"))
             for f in found:
                 print(f"stock: {slug}:   {f['score']:.2f} {f['title'][:60]!r} [{f['license'].upper()}] {f['url']} | {f['credit'][:80]}")
