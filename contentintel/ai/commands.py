@@ -109,7 +109,7 @@ def live_clients(registry, environ, gateway_dir, workdir, notes):
                 if p.direct.get("kind") == "horde":
                     clients[p.id] = cl.HordeClient(p.direct["base_url"])
                 else:
-                    klass = cl.OpenRouterClient if str(p.direct["base_url"]).startswith("https://openrouter.ai") else cl.DirectClient
+                    klass = cl.OpenRouterClient if str(p.direct["base_url"]).startswith("https://openrouter.ai") else cl.FreeDiscoveryClient if p.direct.get("discover_free") else cl.DirectClient
                     clients[p.id] = klass(p.direct["base_url"], "" if p.direct.get("keyless") else token)
             else:
                 notes.append("SKIPPED: " + p.id + ": no credential in the environment (" + ", ".join(p.credential_env) + "), so it is not tried; add the secret or switch the provider off to remove this line")

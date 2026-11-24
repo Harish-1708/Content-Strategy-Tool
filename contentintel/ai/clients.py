@@ -5,6 +5,7 @@ gateway really used: if it answered through a provider other than the one the ro
 the data may then have reached a provider nobody approved.
 """
 import json
+import re
 import time
 import urllib.error
 import urllib.request
@@ -176,6 +177,43 @@ class DirectClient:
         usage = answer.get("usage") or {}
         return Completion(text=choice or "", tokens_in=int(usage.get("prompt_tokens", 0)), tokens_out=int(usage.get("completion_tokens", 0)), latency_ms=ms,
                           model=str(answer.get("model") or route["model"]))
+
+
+class FreeDiscoveryClient(DirectClient):
+    """A direct provider whose FREE model ids are not published anywhere but its own live list (AnyAPI): the ids pinned in the registry are only the intent. Before a call, GET {base}/models is read once; a pinned id that
+    is in the live list is used as it is, and one that is not (the provider test of 2026-11-23 found qwen/qwen3.8-27b:free does not exist) is replaced by a LIVE id that ends in :free from the same vendor and model family.
+    Only a :free id is ever substituted, never a paid one; with none left the route fails with the live free ids named, so the registry can be corrected from the log."""
+    _live = None
+
+    def _free_ids(self):
+        if self._live is None:
+            try:
+                status, answer, _r = self.http("GET", self.base_url + "/models", headers=self._headers(), body=None, timeout=30)
+                rows = answer.get("data") if status == 200 and isinstance(answer, dict) else []
+                self._live = [str(r.get("id")) for r in rows if isinstance(r, dict) and r.get("id")]
+            except Exception:                                                                    # noqa: BLE001 - no list: the pinned id is tried as it is
+                self._live = []
+        return self._live
+
+    @staticmethod
+    def _family(model):
+        vendor, _s, name = model.partition("/")
+        stem = re.match(r"[a-z]+", name.lower()) if name else None
+        return vendor.lower(), (stem.group(0) if stem else "")
+
+    def resolve(self, wanted):
+        live = self._free_ids()
+        if not live or wanted in live:
+            return wanted
+        family = self._family(wanted)
+        for cand in sorted(i for i in live if i.endswith(":free")):
+            if self._family(cand) == family:
+                return cand
+        raise Failure(contract.UPSTREAM_BROKEN, f"Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model {wanted!r} is not in the live list and no :free model of the same family is; live free ids: " + ", ".join(sorted(i for i in live if i.endswith(":free"))[:14]))
+
+    def complete(self, route, system, prompt, max_tokens, timeout=90, expect_platform=None, lane=None):
+        actual = self.resolve(route["model"])
+        return super().complete({**route, "model": actual}, system, prompt, max_tokens, timeout=timeout, expect_platform=expect_platform, lane=lane)
 
 
 class HordeClient(DirectClient):

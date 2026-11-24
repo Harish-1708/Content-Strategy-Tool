@@ -213,8 +213,8 @@ def load_registry(path=DEFAULT_PATH):
             raise RegistryError(f"{where}: a model is listed twice")
         direct = d.get("direct") or {}
         if direct:
-            _only(direct, ("base_url", "keyless", "kind"), f"{where}.direct")
-            if direct.get("kind", "openai") not in ("openai", "horde") or not isinstance(direct.get("keyless", False), bool):
+            _only(direct, ("base_url", "keyless", "kind", "discover_free"), f"{where}.direct")
+            if direct.get("kind", "openai") not in ("openai", "horde") or not isinstance(direct.get("keyless", False), bool) or not isinstance(direct.get("discover_free", False), bool):
                 raise RegistryError(f"{where}.direct.kind must be openai or horde and keyless true or false")
             base = str(direct.get("base_url", ""))
             if not any(base == ok or base.startswith(ok + "/") for ok in DIRECT_ENDPOINTS):
