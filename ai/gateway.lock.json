@@ -5,7 +5,7 @@
   "tag": "v0.16.17",
   "commit": "741d03094398facceb1b6019a838f806e4d9f7f9"
  },
- "node": "22",
+ "node": "24",
  "build": [
   "npm ci --workspace=shared --workspace=server --include-workspace-root",
   "npm run build -w shared -w server"
