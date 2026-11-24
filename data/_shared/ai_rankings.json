@@ -1,24 +1,969 @@
 {
  "jobs": {
-  "conflict_check_json": {
+  "brief_json": {
    "excluded": [
     {
      "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~33m.",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~33m."
      ],
      "mean_score": 0.0,
      "median_ms": 0,
-     "model": "openrouter/free",
+     "model": "gemini-3.5-flash",
      "passes": 0,
-     "provider": "openrouter",
+     "provider": "google",
      "runs": 2,
      "status": "measured"
     },
     {
      "failures": [
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~11h.",
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~11h."
+      "the gateway could not be reached: timed out",
+      "the gateway could not be reached: timed out"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "nvidia",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'qwen/qwen3.8-27b:free' is not in the live list and no :free mode",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'qwen/qwen3.8-27b:free' is not in the live list and no :free mode"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "qwen/qwen3.8-27b:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 16h 26m 5s)",
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 16h 26m 5s)"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "bazaarlink/auto:free",
+     "passes": 0,
+     "provider": "bazaarlink",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the model refused or deflected",
+      "the model refused or deflected"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "openai/gpt-oss-20b",
+     "passes": 0,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-a-03-2025",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~9s."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.5-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~80s. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~9m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.6v-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemma-4-31b-it",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemma-4-26b-a4b-it",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[xkiro/qwen/qwen3.6-plus:free] [404]: Model \"qwen/qwen3.6-plus:free\" does not exist. (reset after 2m)",
+      "All credentials for model qwen/qwen3.6-plus:free are cooling down"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "xkiro/qwen/qwen3.6-plus:free",
+     "passes": 0,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "pollinations/mistral",
+     "passes": 0,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gpt-oss-20b",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-fin:free' is not in the live list and",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-fin:free' is not in the live list and"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "inclusionai/ling-3.0-flash-fin:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-sante:free' is not in the live list a",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-sante:free' is not in the live list a"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "inclusionai/ling-3.0-flash-sante:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.",
+      "Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    }
+   ],
+   "not_measured": [
+    {
+     "model": "openrouter/free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "llm7/glm-5.3-flash",
+     "provider": "llm7",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "navy/shared-pool",
+     "provider": "navy",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "qwen/qwen3-coder:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "z-ai/glm-4.5-air:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "google/gemma-4-31b-it:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    }
+   ],
+   "ranking": [
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 1623,
+     "model": "xkiro/mistralai/mistral-large-2512",
+     "passes": 2,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 1729,
+     "model": "openai/gpt-oss-120b",
+     "passes": 2,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 3657,
+     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+     "passes": 2,
+     "provider": "cloudflare",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 9041,
+     "model": "command-a-reasoning-08-2025",
+     "passes": 2,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 9380,
+     "model": "pollinations/openai-fast",
+     "passes": 2,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 9543,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 2,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 10065,
+     "model": "kilo-auto/free",
+     "passes": 2,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 10414,
+     "model": "command-r-08-2024",
+     "passes": 2,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 14183,
+     "model": "dots-studio/dots-3-note-preview:free",
+     "passes": 2,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 18177,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 2,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 22515,
+     "model": "aihorde/any",
+     "passes": 2,
+     "provider": "aihorde",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 35221,
+     "model": "requesty/google/gemma-4-31b-it",
+     "passes": 2,
+     "provider": "requesty",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 41485,
+     "model": "nvidia/nemotron-3.5-lightning:free",
+     "passes": 2,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro"
+     ],
+     "mean_score": 0.5,
+     "median_ms": 10581,
+     "model": "command-r-plus-08-2024",
+     "passes": 1,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: "
+     ],
+     "mean_score": 0.5,
+     "median_ms": 34723,
+     "model": "glm-4.7-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    }
+   ],
+   "routes_tried": 32
+  },
+  "claim_verify_json": {
+   "excluded": [
+    {
+     "failures": [
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~7m.",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~7m.",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~7m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemini-3.5-flash",
+     "passes": 0,
+     "provider": "google",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: timed out",
+      "the gateway could not be reached: timed out",
+      "the gateway could not be reached: timed out"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "nvidia",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: ",
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: ",
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~10m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429:"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.7-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'qwen/qwen3.8-27b:free' is not in the live list and no :free mode",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'qwen/qwen3.8-27b:free' is not in the live list and no :free mode",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'qwen/qwen3.8-27b:free' is not in the live list and no :free mode"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "qwen/qwen3.8-27b:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 16h 45m 55s)",
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 16h 45m 55s)",
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 16h 45m 55s)"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "bazaarlink/auto:free",
+     "passes": 0,
+     "provider": "bazaarlink",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~4m. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429:",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~4m.",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~4m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.6v-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m.",
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemma-4-31b-it",
+     "passes": 0,
+     "provider": "google",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[xkiro/qwen/qwen3.6-plus:free] [404]: Model \"qwen/qwen3.6-plus:free\" does not exist. (reset after 2m)",
+      "All credentials for model qwen/qwen3.6-plus:free are cooling down",
+      "[xkiro/qwen/qwen3.6-plus:free] [404]: Model \"qwen/qwen3.6-plus:free\" does not exist. (reset after 2m)"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "xkiro/qwen/qwen3.6-plus:free",
+     "passes": 0,
+     "provider": "xkiro",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "pollinations/mistral",
+     "passes": 0,
+     "provider": "pollinations",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gpt-oss-20b",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-fin:free' is not in the live list and",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-fin:free' is not in the live list and",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-fin:free' is not in the live list and"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "inclusionai/ling-3.0-flash-fin:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-sante:free' is not in the live list a",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-sante:free' is not in the live list a",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-sante:free' is not in the live list a"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "inclusionai/ling-3.0-flash-sante:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.",
+      "Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.",
+      "Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 4,
+     "status": "measured"
+    }
+   ],
+   "not_measured": [
+    {
+     "model": "openrouter/free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "llm7/glm-5.3-flash",
+     "provider": "llm7",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "navy/shared-pool",
+     "provider": "navy",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "qwen/qwen3-coder:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "z-ai/glm-4.5-air:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "google/gemma-4-31b-it:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    }
+   ],
+   "ranking": [
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 456,
+     "model": "openai/gpt-oss-20b",
+     "passes": 4,
+     "provider": "groq",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 954,
+     "model": "openai/gpt-oss-120b",
+     "passes": 4,
+     "provider": "groq",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 1072,
+     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+     "passes": 4,
+     "provider": "cloudflare",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 1161,
+     "model": "command-r-plus-08-2024",
+     "passes": 4,
+     "provider": "cohere",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 1515,
+     "model": "command-a-03-2025",
+     "passes": 4,
+     "provider": "cohere",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 1788,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 4,
+     "provider": "anyapi",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 2470,
+     "model": "command-r-08-2024",
+     "passes": 4,
+     "provider": "cohere",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 2660,
+     "model": "pollinations/openai-fast",
+     "passes": 4,
+     "provider": "pollinations",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 2885,
+     "model": "dots-studio/dots-3-note-preview:free",
+     "passes": 4,
+     "provider": "anyapi",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 3104,
+     "model": "nvidia/nemotron-3.5-lightning:free",
+     "passes": 4,
+     "provider": "anyapi",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 4090,
+     "model": "requesty/google/gemma-4-31b-it",
+     "passes": 4,
+     "provider": "requesty",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 4892,
+     "model": "kilo-auto/free",
+     "passes": 4,
+     "provider": "kilo",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 4929,
+     "model": "command-a-reasoning-08-2025",
+     "passes": 4,
+     "provider": "cohere",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 9326,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 4,
+     "provider": "kilo",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 11602,
+     "model": "glm-4.5-flash",
+     "passes": 4,
+     "provider": "zhipu",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.7,
+     "median_ms": 482,
+     "model": "xkiro/mistralai/mistral-large-2512",
+     "passes": 2,
+     "provider": "xkiro",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.5,
+     "median_ms": 3575,
+     "model": "aihorde/any",
+     "passes": 2,
+     "provider": "aihorde",
+     "runs": 4,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.5,
+     "median_ms": 13588,
+     "model": "gemma-4-26b-a4b-it",
+     "passes": 2,
+     "provider": "google",
+     "runs": 4,
+     "status": "measured"
+    }
+   ],
+   "routes_tried": 32
+  },
+  "competitor_ideas_json": {
+   "excluded": [
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.7-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "xkiro/mistralai/mistral-large-2512",
+     "passes": 0,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'qwen/qwen3.8-27b:free' is not in the live list and no :free mode",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'qwen/qwen3.8-27b:free' is not in the live list and no :free mode"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "qwen/qwen3.8-27b:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 16875,
+     "model": "requesty/google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "requesty",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 16h 11m 37s)",
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 16h 11m 37s)"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "bazaarlink/auto:free",
+     "passes": 0,
+     "provider": "bazaarlink",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
      ],
      "mean_score": 0.0,
      "median_ms": 0,
@@ -30,14 +975,537 @@
     },
     {
      "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.375,
+     "median_ms": 45100,
+     "model": "aihorde/any",
+     "passes": 0,
+     "provider": "aihorde",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m.",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~8m."
      ],
      "mean_score": 0.0,
      "median_ms": 0,
-     "model": "qwen/qwen3-coder:free",
+     "model": "gemini-3.5-flash",
      "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: timed out"
+     ],
+     "mean_score": 0.375,
+     "median_ms": 85260,
+     "model": "google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "nvidia",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-r-plus-08-2024",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-r-08-2024",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~30s."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.5-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~59s. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~32s."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.6v-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 37131,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 0,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemma-4-31b-it",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemma-4-26b-a4b-it",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[xkiro/qwen/qwen3.6-plus:free] [404]: Model \"qwen/qwen3.6-plus:free\" does not exist. (reset after 2m)",
+      "All credentials for model qwen/qwen3.6-plus:free are cooling down"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "xkiro/qwen/qwen3.6-plus:free",
+     "passes": 0,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "pollinations/mistral",
+     "passes": 0,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gpt-oss-20b",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    }
+   ],
+   "not_measured": [
+    {
+     "model": "openrouter/free",
      "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "llm7/glm-5.3-flash",
+     "provider": "llm7",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "navy/shared-pool",
+     "provider": "navy",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "qwen/qwen3-coder:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "z-ai/glm-4.5-air:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "google/gemma-4-31b-it:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "inclusionai/ling-3.0-flash-fin:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "inclusionai/ling-3.0-flash-sante:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "dots-studio/dots-3-note-preview:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    }
+   ],
+   "ranking": [
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 1866,
+     "model": "openai/gpt-oss-20b",
+     "passes": 2,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 7039,
+     "model": "kilo-auto/free",
+     "passes": 2,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 8779,
+     "model": "command-a-03-2025",
+     "passes": 2,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 8839,
+     "model": "pollinations/openai-fast",
+     "passes": 2,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 17779,
+     "model": "nvidia/nemotron-3.5-lightning:free",
+     "passes": 2,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.875,
+     "median_ms": 2430,
+     "model": "openai/gpt-oss-120b",
+     "passes": 1,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro"
+     ],
+     "mean_score": 0.5,
+     "median_ms": 13982,
+     "model": "command-a-reasoning-08-2025",
+     "passes": 1,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    }
+   ],
+   "routes_tried": 27
+  },
+  "conflict_check_json": {
+   "excluded": [
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "openai/gpt-oss-20b",
+     "passes": 0,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "openai/gpt-oss-120b",
+     "passes": 0,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-a-03-2025",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 0,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "nvidia",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "kilo-auto/free",
+     "passes": 0,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-a-reasoning-08-2025",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gpt-oss-20b",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemma-4-26b-a4b-it",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.5-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.7-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~62m. Attempt trail: google/gemini-3.5-flash key1: daily_quota_exhausted. Last error: Google API",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~62m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemini-3.5-flash",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "answer should be object"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 2025,
+     "model": "command-r-08-2024",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~10m. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~10m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.6v-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemma-4-31b-it",
+     "passes": 0,
+     "provider": "google",
      "runs": 2,
      "status": "measured"
     },
@@ -48,6 +1516,745 @@
      ],
      "mean_score": 0.0,
      "median_ms": 0,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 0,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[xkiro/qwen/qwen3.6-plus:free] [404]: Model \"qwen/qwen3.6-plus:free\" does not exist. (reset after 2m)",
+      "All credentials for model qwen/qwen3.6-plus:free are cooling down"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "xkiro/qwen/qwen3.6-plus:free",
+     "passes": 0,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "pollinations/mistral",
+     "passes": 0,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 16h 59m 7s)",
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 16h 59m 7s)"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "bazaarlink/auto:free",
+     "passes": 0,
+     "provider": "bazaarlink",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'qwen/qwen3.8-27b:free' is not in the live list and no :free mode",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'qwen/qwen3.8-27b:free' is not in the live list and no :free mode"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "qwen/qwen3.8-27b:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-fin:free' is not in the live list and",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-fin:free' is not in the live list and"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "inclusionai/ling-3.0-flash-fin:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-sante:free' is not in the live list a",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-sante:free' is not in the live list a"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "inclusionai/ling-3.0-flash-sante:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.",
+      "Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    }
+   ],
+   "not_measured": [
+    {
+     "model": "mistral-small-latest",
+     "provider": "mistral",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "google/gemma-4-31b-it:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    }
+   ],
+   "ranking": [
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 688,
+     "model": "xkiro/mistralai/mistral-large-2512",
+     "passes": 2,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 1200,
+     "model": "openrouter/free",
+     "passes": 2,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 1237,
+     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+     "passes": 2,
+     "provider": "cloudflare",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 2804,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 2,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 3866,
+     "model": "nvidia/nemotron-3.5-lightning:free",
+     "passes": 2,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 3953,
+     "model": "pollinations/openai-fast",
+     "passes": 2,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 4347,
+     "model": "qwen/qwen3-coder:free",
+     "passes": 2,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 4955,
+     "model": "dots-studio/dots-3-note-preview:free",
+     "passes": 2,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 5541,
+     "model": "command-r-plus-08-2024",
+     "passes": 2,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 6454,
+     "model": "requesty/google/gemma-4-31b-it",
+     "passes": 2,
+     "provider": "requesty",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 7893,
+     "model": "z-ai/glm-4.5-air:free",
+     "passes": 2,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.5,
+     "median_ms": 3584,
+     "model": "aihorde/any",
+     "passes": 1,
+     "provider": "aihorde",
+     "runs": 2,
+     "status": "measured"
+    }
+   ],
+   "routes_tried": 36
+  },
+  "creator_chain_json": {
+   "excluded": [
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 2800,
+     "model": "kilo-auto/free",
+     "passes": 0,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.5,
+     "median_ms": 719,
+     "model": "xkiro/mistralai/mistral-large-2512",
+     "passes": 0,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.5,
+     "median_ms": 8737,
+     "model": "requesty/google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "requesty",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 15h 55m 15s)",
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 15h 55m 15s)"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "bazaarlink/auto:free",
+     "passes": 0,
+     "provider": "bazaarlink",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.25,
+     "median_ms": 19530,
+     "model": "aihorde/any",
+     "passes": 0,
+     "provider": "aihorde",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.25,
+     "median_ms": 743,
+     "model": "openai/gpt-oss-120b",
+     "passes": 0,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.375,
+     "median_ms": 2887,
+     "model": "command-a-reasoning-08-2025",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemini-3.5-flash",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: timed out",
+      "the gateway could not be reached: timed out"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "nvidia",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: ",
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: "
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.7-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.5,
+     "median_ms": 581,
+     "model": "openai/gpt-oss-20b",
+     "passes": 0,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.5,
+     "median_ms": 2789,
+     "model": "command-a-03-2025",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-r-plus-08-2024",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro"
+     ],
+     "mean_score": 0.25,
+     "median_ms": 8357,
+     "model": "command-r-08-2024",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~10m. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~10m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.6v-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemma-4-31b-it",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.5,
+     "median_ms": 17172,
+     "model": "gemma-4-26b-a4b-it",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[xkiro/qwen/qwen3.6-plus:free] [404]: Model \"qwen/qwen3.6-plus:free\" does not exist. (reset after 2m)",
+      "All credentials for model qwen/qwen3.6-plus:free are cooling down"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "xkiro/qwen/qwen3.6-plus:free",
+     "passes": 0,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "pollinations/mistral",
+     "passes": 0,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gpt-oss-20b",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    }
+   ],
+   "not_measured": [
+    {
+     "model": "llm7/glm-5.3-flash",
+     "provider": "llm7",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "qwen/qwen3.8-27b:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "navy/shared-pool",
+     "provider": "navy",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "openrouter/free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "qwen/qwen3-coder:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "z-ai/glm-4.5-air:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "google/gemma-4-31b-it:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "inclusionai/ling-3.0-flash-fin:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "inclusionai/ling-3.0-flash-sante:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "dots-studio/dots-3-note-preview:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3.5-lightning:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    }
+   ],
+   "ranking": [
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 3508,
+     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+     "passes": 2,
+     "provider": "cloudflare",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 6999,
+     "model": "pollinations/openai-fast",
+     "passes": 2,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.875,
+     "median_ms": 6699,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.625,
+     "median_ms": 24016,
+     "model": "glm-4.5-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    }
+   ],
+   "routes_tried": 25
+  },
+  "foundation_json": {
+   "excluded": [
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "openai/gpt-oss-20b",
+     "passes": 0,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "openai/gpt-oss-120b",
+     "passes": 0,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-a-reasoning-08-2025",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gpt-oss-20b",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-r-08-2024",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-r-plus-08-2024",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 13679,
      "model": "z-ai/glm-4.5-air:free",
      "passes": 0,
      "provider": "openrouter",
@@ -69,8 +2276,876 @@
     },
     {
      "failures": [
+      "the gateway could not be reached: timed out",
+      "the gateway could not be reached: timed out"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "nvidia",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.25,
+     "median_ms": 3398,
+     "model": "command-a-03-2025",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: "
+     ],
+     "mean_score": 0.375,
+     "median_ms": 17044,
+     "model": "glm-4.7-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429:",
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429:"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.6v-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 14185,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 0,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~78s."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemma-4-31b-it",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch"
+     ],
+     "mean_score": 0.375,
+     "median_ms": 45831,
+     "model": "gemma-4-26b-a4b-it",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 724,
+     "model": "xkiro/mistralai/mistral-large-2512",
+     "passes": 0,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[xkiro/qwen/qwen3.6-plus:free] [404]: Model \"qwen/qwen3.6-plus:free\" does not exist. (reset after 2m)",
+      "All credentials for model qwen/qwen3.6-plus:free are cooling down"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "xkiro/qwen/qwen3.6-plus:free",
+     "passes": 0,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 6633,
+     "model": "pollinations/openai-fast",
+     "passes": 0,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "pollinations/mistral",
+     "passes": 0,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[bazaarlink/auto:free] [429]: You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC). Retry after 62933 seconds, o",
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 17h 28m 53s)"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "bazaarlink/auto:free",
+     "passes": 0,
+     "provider": "bazaarlink",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'qwen/qwen3.8-27b:free' is not in the live list and no :free mode",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'qwen/qwen3.8-27b:free' is not in the live list and no :free mode"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "qwen/qwen3.8-27b:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-fin:free' is not in the live list and",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-fin:free' is not in the live list and"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "inclusionai/ling-3.0-flash-fin:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-sante:free' is not in the live list a",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-sante:free' is not in the live list a"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "inclusionai/ling-3.0-flash-sante:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 10060,
+     "model": "dots-studio/dots-3-note-preview:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.",
+      "Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 9621,
+     "model": "nvidia/nemotron-3.5-lightning:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 8318,
+     "model": "requesty/google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "requesty",
+     "runs": 2,
+     "status": "measured"
+    }
+   ],
+   "not_measured": [
+    {
+     "model": "mistral-small-latest",
+     "provider": "mistral",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    }
+   ],
+   "ranking": [
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 2147,
+     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+     "passes": 2,
+     "provider": "cloudflare",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 3125,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 2,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 6803,
+     "model": "kilo-auto/free",
+     "passes": 2,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 9157,
+     "model": "openrouter/free",
+     "passes": 2,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 15857,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 2,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 40481,
+     "model": "glm-4.5-flash",
+     "passes": 2,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 46136,
+     "model": "qwen/qwen3-coder:free",
+     "passes": 2,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.875,
+     "median_ms": 9503,
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.875,
+     "median_ms": 9888,
+     "model": "google/gemma-4-31b-it:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.875,
+     "median_ms": 13521,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.5,
+     "median_ms": 7045,
+     "model": "aihorde/any",
+     "passes": 1,
+     "provider": "aihorde",
+     "runs": 2,
+     "status": "measured"
+    }
+   ],
+   "routes_tried": 39
+  },
+  "listen_learn_json": {
+   "excluded": [
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 11322,
+     "model": "requesty/google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "requesty",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 15h 41m 11s)",
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 15h 41m 11s)"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "bazaarlink/auto:free",
+     "passes": 0,
+     "provider": "bazaarlink",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
       "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~45s."
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-a-reasoning-08-2025",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~89s."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemini-3.5-flash",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: timed out"
+     ],
+     "mean_score": 0.375,
+     "median_ms": 80293,
+     "model": "google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "nvidia",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~10m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429:",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~10m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.7-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-r-plus-08-2024",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 4472,
+     "model": "command-r-08-2024",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~89s. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~4m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.6v-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemma-4-31b-it",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemma-4-26b-a4b-it",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[xkiro/qwen/qwen3.6-plus:free] [404]: Model \"qwen/qwen3.6-plus:free\" does not exist. (reset after 2m)",
+      "All credentials for model qwen/qwen3.6-plus:free are cooling down"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "xkiro/qwen/qwen3.6-plus:free",
+     "passes": 0,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "pollinations/mistral",
+     "passes": 0,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gpt-oss-20b",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    }
+   ],
+   "not_measured": [
+    {
+     "model": "llm7/glm-5.3-flash",
+     "provider": "llm7",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "qwen/qwen3.8-27b:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3.5-lightning:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "navy/shared-pool",
+     "provider": "navy",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "openrouter/free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "qwen/qwen3-coder:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "z-ai/glm-4.5-air:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "google/gemma-4-31b-it:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "inclusionai/ling-3.0-flash-fin:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "inclusionai/ling-3.0-flash-sante:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "dots-studio/dots-3-note-preview:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    }
+   ],
+   "ranking": [
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 949,
+     "model": "xkiro/mistralai/mistral-large-2512",
+     "passes": 2,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 2061,
+     "model": "openai/gpt-oss-120b",
+     "passes": 2,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 5143,
+     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+     "passes": 2,
+     "provider": "cloudflare",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 5987,
+     "model": "command-a-03-2025",
+     "passes": 2,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 9650,
+     "model": "pollinations/openai-fast",
+     "passes": 2,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.875,
+     "median_ms": 5103,
+     "model": "kilo-auto/free",
+     "passes": 1,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.875,
+     "median_ms": 22563,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 4724,
+     "model": "openai/gpt-oss-20b",
+     "passes": 1,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.5,
+     "median_ms": 3684,
+     "model": "aihorde/any",
+     "passes": 1,
+     "provider": "aihorde",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro"
+     ],
+     "mean_score": 0.5,
+     "median_ms": 56037,
+     "model": "glm-4.5-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    }
+   ],
+   "routes_tried": 25
+  },
+  "seo_lens_json": {
+   "excluded": [
+    {
+     "failures": [
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 15h 12m 49s)",
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 15h 12m 49s)"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "bazaarlink/auto:free",
+     "passes": 0,
+     "provider": "bazaarlink",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "aihorde/any",
+     "passes": 0,
+     "provider": "aihorde",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-a-reasoning-08-2025",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: timed out",
+      "the gateway could not be reached: timed out"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "nvidia",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: ",
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: "
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.7-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.625,
+     "median_ms": 9788,
+     "model": "kilo-auto/free",
+     "passes": 0,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 11683,
+     "model": "requesty/google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "requesty",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.375,
+     "median_ms": 1104,
+     "model": "openai/gpt-oss-20b",
+     "passes": 0,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 5121,
+     "model": "command-a-03-2025",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~16s."
      ],
      "mean_score": 0.0,
      "median_ms": 0,
@@ -83,7 +3158,7 @@
     {
      "failures": [
       "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~30s."
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~58s."
      ],
      "mean_score": 0.0,
      "median_ms": 0,
@@ -95,7 +3170,7 @@
     },
     {
      "failures": [
-      "All models rate-limited after 1 attempt. Soonest cooldown reset ~8s. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429:",
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~10m. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429",
       "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~10m."
      ],
      "mean_score": 0.0,
@@ -121,24 +3196,99 @@
     },
     {
      "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
      ],
      "mean_score": 0.0,
      "median_ms": 0,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "model": "gemma-4-26b-a4b-it",
      "passes": 0,
-     "provider": "openrouter",
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[xkiro/qwen/qwen3.6-plus:free] [404]: Model \"qwen/qwen3.6-plus:free\" does not exist. (reset after 2m)",
+      "All credentials for model qwen/qwen3.6-plus:free are cooling down"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "xkiro/qwen/qwen3.6-plus:free",
+     "passes": 0,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "pollinations/mistral",
+     "passes": 0,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gpt-oss-20b",
+     "passes": 0,
+     "provider": "ovh",
      "runs": 2,
      "status": "measured"
     }
    ],
    "not_measured": [
     {
-     "model": "mistral-small-latest",
-     "provider": "mistral",
+     "model": "navy/shared-pool",
+     "provider": "navy",
      "status": "not measured",
      "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "openrouter/free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "llm7/glm-5.3-flash",
+     "provider": "llm7",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "qwen/qwen3.8-27b:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "qwen/qwen3-coder:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "z-ai/glm-4.5-air:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
     },
     {
      "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
@@ -159,105 +3309,57 @@
      "why": "daily request limit reached"
     },
     {
-     "model": "xkiro/minimax/minimax-m3:free",
-     "provider": "xkiro",
+     "model": "inclusionai/ling-3.0-flash-fin:free",
+     "provider": "anyapi",
      "status": "not measured",
-     "why": "no credentials or client available on this machine"
+     "why": "daily token limit reached"
     },
     {
-     "model": "xkiro/mistralai/mistral-large-2512",
-     "provider": "xkiro",
+     "model": "inclusionai/ling-3.0-flash-sante:free",
+     "provider": "anyapi",
      "status": "not measured",
-     "why": "no credentials or client available on this machine"
+     "why": "daily token limit reached"
     },
     {
-     "model": "xkiro/deepseek/deepseek-v3.2",
-     "provider": "xkiro",
+     "model": "dots-studio/dots-3-note-preview:free",
+     "provider": "anyapi",
      "status": "not measured",
-     "why": "no credentials or client available on this machine"
+     "why": "daily token limit reached"
     },
     {
-     "model": "xkiro/qwen/qwen3.6-plus:free",
-     "provider": "xkiro",
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "provider": "anyapi",
      "status": "not measured",
-     "why": "no credentials or client available on this machine"
+     "why": "daily token limit reached"
     },
     {
-     "model": "pollinations/openai-fast",
-     "provider": "pollinations",
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "provider": "anyapi",
      "status": "not measured",
-     "why": "no credentials or client available on this machine"
+     "why": "daily token limit reached"
     },
     {
-     "model": "pollinations/mistral",
-     "provider": "pollinations",
+     "model": "nvidia/nemotron-3.5-lightning:free",
+     "provider": "anyapi",
      "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "bazaarlink/auto:free",
-     "provider": "bazaarlink",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "llm7/DeepSeek-V4-Flash-0731",
-     "provider": "llm7",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "llm7/glm-5.3-flash",
-     "provider": "llm7",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "llm7/gpt-oss:20b",
-     "provider": "llm7",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "api-airforce/gpt-oss-20b",
-     "provider": "airforce",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "bluesminds/z-ai/glm4.7",
-     "provider": "bluesminds",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "bluesminds/moonshotai/kimi-k2.6",
-     "provider": "bluesminds",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "bluesminds/qwen/qwen3-next-80b-a3b-instruct",
-     "provider": "bluesminds",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
+     "why": "daily token limit reached"
     }
    ],
    "ranking": [
     {
      "failures": [],
      "mean_score": 1.0,
-     "median_ms": 529,
-     "model": "openai/gpt-oss-20b",
+     "median_ms": 1271,
+     "model": "xkiro/mistralai/mistral-large-2512",
      "passes": 2,
-     "provider": "groq",
+     "provider": "xkiro",
      "runs": 2,
      "status": "measured"
     },
     {
      "failures": [],
      "mean_score": 1.0,
-     "median_ms": 1075,
+     "median_ms": 1606,
      "model": "openai/gpt-oss-120b",
      "passes": 2,
      "provider": "groq",
@@ -267,78 +3369,28 @@
     {
      "failures": [],
      "mean_score": 1.0,
-     "median_ms": 1127,
-     "model": "command-a-03-2025",
+     "median_ms": 4040,
+     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
      "passes": 2,
-     "provider": "cohere",
+     "provider": "cloudflare",
      "runs": 2,
      "status": "measured"
     },
     {
      "failures": [],
      "mean_score": 1.0,
-     "median_ms": 4169,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "median_ms": 9182,
+     "model": "pollinations/openai-fast",
      "passes": 2,
-     "provider": "kilo",
+     "provider": "pollinations",
      "runs": 2,
      "status": "measured"
     },
     {
      "failures": [],
      "mean_score": 1.0,
-     "median_ms": 5735,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
-     "passes": 2,
-     "provider": "ovh",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [],
-     "mean_score": 1.0,
-     "median_ms": 6264,
-     "model": "google/gemma-4-31b-it",
-     "passes": 2,
-     "provider": "nvidia",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [],
-     "mean_score": 1.0,
-     "median_ms": 7318,
-     "model": "kilo-auto/free",
-     "passes": 2,
-     "provider": "kilo",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [],
-     "mean_score": 1.0,
-     "median_ms": 7607,
-     "model": "command-a-reasoning-08-2025",
-     "passes": 2,
-     "provider": "cohere",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [],
-     "mean_score": 1.0,
-     "median_ms": 10812,
-     "model": "gpt-oss-20b",
-     "passes": 2,
-     "provider": "ovh",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [],
-     "mean_score": 1.0,
-     "median_ms": 18673,
-     "model": "gemma-4-26b-a4b-it",
+     "median_ms": 33475,
+     "model": "gemini-3.5-flash",
      "passes": 2,
      "provider": "google",
      "runs": 2,
@@ -347,7 +3399,7 @@
     {
      "failures": [],
      "mean_score": 1.0,
-     "median_ms": 41001,
+     "median_ms": 53917,
      "model": "glm-4.5-flash",
      "passes": 2,
      "provider": "zhipu",
@@ -359,119 +3411,25 @@
       "the answer is not valid JSON"
      ],
      "mean_score": 0.5,
-     "median_ms": 3955,
-     "model": "aihorde/any",
+     "median_ms": 18670,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
      "passes": 1,
-     "provider": "aihorde",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: "
-     ],
-     "mean_score": 0.5,
-     "median_ms": 18496,
-     "model": "glm-4.7-flash",
-     "passes": 1,
-     "provider": "zhipu",
+     "provider": "kilo",
      "runs": 2,
      "status": "measured"
     }
    ],
-   "routes_tried": 23
+   "routes_tried": 25
   },
-  "foundation_json": {
+  "story_extract_json": {
    "excluded": [
     {
      "failures": [
-      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: ",
-      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: "
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
      ],
      "mean_score": 0.0,
      "median_ms": 0,
-     "model": "glm-4.7-flash",
-     "passes": 0,
-     "provider": "zhipu",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "openrouter/free",
-     "passes": 0,
-     "provider": "openrouter",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast key1: daily_quota_exhaus",
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~12h."
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-     "passes": 0,
-     "provider": "cloudflare",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "qwen/qwen3-coder:free",
-     "passes": 0,
-     "provider": "openrouter",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "z-ai/glm-4.5-air:free",
-     "passes": 0,
-     "provider": "openrouter",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [],
-     "mean_score": 0.75,
-     "median_ms": 54267,
-     "model": "gemini-3.5-flash",
-     "passes": 0,
-     "provider": "google",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [],
-     "mean_score": 0.75,
-     "median_ms": 20716,
-     "model": "google/gemma-4-31b-it",
-     "passes": 0,
-     "provider": "nvidia",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [],
-     "mean_score": 0.25,
-     "median_ms": 1127,
      "model": "command-a-03-2025",
      "passes": 0,
      "provider": "cohere",
@@ -480,44 +3438,63 @@
     },
     {
      "failures": [
-      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.5-flash key1: rate_limited. Last error: Zhipu AI API error 429: ",
-      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro"
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
      ],
      "mean_score": 0.0,
      "median_ms": 0,
-     "model": "glm-4.5-flash",
+     "model": "command-a-reasoning-08-2025",
      "passes": 0,
-     "provider": "zhipu",
+     "provider": "cohere",
      "runs": 2,
      "status": "measured"
     },
     {
      "failures": [
-      "All models rate-limited after 1 attempt. Soonest cooldown reset ~89s. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429",
-      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429:"
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
      ],
      "mean_score": 0.0,
      "median_ms": 0,
-     "model": "glm-4.6v-flash",
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
      "passes": 0,
-     "provider": "zhipu",
+     "provider": "ovh",
      "runs": 2,
      "status": "measured"
     },
     {
-     "failures": [],
-     "mean_score": 0.75,
-     "median_ms": 12875,
-     "model": "kilo-auto/free",
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-r-08-2024",
      "passes": 0,
-     "provider": "kilo",
+     "provider": "cohere",
      "runs": 2,
      "status": "measured"
     },
     {
-     "failures": [],
-     "mean_score": 0.75,
-     "median_ms": 23494,
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-r-plus-08-2024",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
      "model": "nvidia/nemotron-3.5-super-vl:free",
      "passes": 0,
      "provider": "kilo",
@@ -525,271 +3502,19 @@
      "status": "measured"
     },
     {
-     "failures": [
-      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch"
-     ],
-     "mean_score": 0.375,
-     "median_ms": 28652,
-     "model": "gemma-4-31b-it",
-     "passes": 0,
-     "provider": "google",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "gemma-4-26b-a4b-it",
-     "passes": 0,
-     "provider": "google",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-     "passes": 0,
-     "provider": "openrouter",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
-     "passes": 0,
-     "provider": "openrouter",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "google/gemma-4-26b-a4b-it:free",
-     "passes": 0,
-     "provider": "openrouter",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "google/gemma-4-31b-it:free",
-     "passes": 0,
-     "provider": "openrouter",
-     "runs": 2,
-     "status": "measured"
-    }
-   ],
-   "not_measured": [
-    {
-     "model": "mistral-small-latest",
-     "provider": "mistral",
-     "status": "not measured",
-     "why": "disabled (a person has not approved it)"
-    },
-    {
-     "model": "xkiro/minimax/minimax-m3:free",
-     "provider": "xkiro",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "xkiro/mistralai/mistral-large-2512",
-     "provider": "xkiro",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "xkiro/deepseek/deepseek-v3.2",
-     "provider": "xkiro",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "xkiro/qwen/qwen3.6-plus:free",
-     "provider": "xkiro",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "pollinations/openai-fast",
-     "provider": "pollinations",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "pollinations/mistral",
-     "provider": "pollinations",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "bazaarlink/auto:free",
-     "provider": "bazaarlink",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "llm7/DeepSeek-V4-Flash-0731",
-     "provider": "llm7",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "llm7/glm-5.3-flash",
-     "provider": "llm7",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "llm7/gpt-oss:20b",
-     "provider": "llm7",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "api-airforce/gpt-oss-20b",
-     "provider": "airforce",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "bluesminds/z-ai/glm4.7",
-     "provider": "bluesminds",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "bluesminds/moonshotai/kimi-k2.6",
-     "provider": "bluesminds",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "bluesminds/qwen/qwen3-next-80b-a3b-instruct",
-     "provider": "bluesminds",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    }
-   ],
-   "ranking": [
-    {
      "failures": [],
-     "mean_score": 1.0,
-     "median_ms": 702,
-     "model": "openai/gpt-oss-20b",
-     "passes": 2,
-     "provider": "groq",
+     "mean_score": 0.167,
+     "median_ms": 7244,
+     "model": "nvidia/nemotron-3.5-lightning:free",
+     "passes": 0,
+     "provider": "anyapi",
      "runs": 2,
      "status": "measured"
     },
-    {
-     "failures": [],
-     "mean_score": 1.0,
-     "median_ms": 1253,
-     "model": "openai/gpt-oss-120b",
-     "passes": 2,
-     "provider": "groq",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [],
-     "mean_score": 1.0,
-     "median_ms": 6389,
-     "model": "command-a-reasoning-08-2025",
-     "passes": 2,
-     "provider": "cohere",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [],
-     "mean_score": 1.0,
-     "median_ms": 7621,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
-     "passes": 2,
-     "provider": "ovh",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [],
-     "mean_score": 1.0,
-     "median_ms": 10256,
-     "model": "gpt-oss-20b",
-     "passes": 2,
-     "provider": "ovh",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
-     ],
-     "mean_score": 0.5,
-     "median_ms": 4726,
-     "model": "command-r-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
-     ],
-     "mean_score": 0.5,
-     "median_ms": 11501,
-     "model": "command-r-plus-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "AI Horde had no worker answer within 90 seconds (the job was cancelled)"
-     ],
-     "mean_score": 0.5,
-     "median_ms": 30452,
-     "model": "aihorde/any",
-     "passes": 1,
-     "provider": "aihorde",
-     "runs": 2,
-     "status": "measured"
-    }
-   ],
-   "routes_tried": 26
-  },
-  "story_extract_json": {
-   "excluded": [
     {
      "failures": [],
      "mean_score": 0.167,
-     "median_ms": 1201,
+     "median_ms": 1025,
      "model": "openai/gpt-oss-120b",
      "passes": 0,
      "provider": "groq",
@@ -797,25 +3522,19 @@
      "status": "measured"
     },
     {
-     "failures": [
-      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: ",
-      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: "
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "glm-4.7-flash",
+     "failures": [],
+     "mean_score": 0.125,
+     "median_ms": 2582,
+     "model": "openai/gpt-oss-20b",
      "passes": 0,
-     "provider": "zhipu",
+     "provider": "groq",
      "runs": 2,
      "status": "measured"
     },
     {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
+     "failures": [],
+     "mean_score": 0.146,
+     "median_ms": 15601,
      "model": "openrouter/free",
      "passes": 0,
      "provider": "openrouter",
@@ -823,49 +3542,10 @@
      "status": "measured"
     },
     {
-     "failures": [
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m.",
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~11h."
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-     "passes": 0,
-     "provider": "cloudflare",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
      "failures": [],
      "mean_score": 0.167,
-     "median_ms": 983,
-     "model": "openai/gpt-oss-20b",
-     "passes": 0,
-     "provider": "groq",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
+     "median_ms": 9585,
      "model": "qwen/qwen3-coder:free",
-     "passes": 0,
-     "provider": "openrouter",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "z-ai/glm-4.5-air:free",
      "passes": 0,
      "provider": "openrouter",
      "runs": 2,
@@ -885,11 +3565,9 @@
      "status": "measured"
     },
     {
-     "failures": [
-      "the gateway could not be reached: timed out"
-     ],
-     "mean_score": 0.291,
-     "median_ms": 35337,
+     "failures": [],
+     "mean_score": 0.375,
+     "median_ms": 54037,
      "model": "google/gemma-4-31b-it",
      "passes": 0,
      "provider": "nvidia",
@@ -897,9 +3575,22 @@
      "status": "measured"
     },
     {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: ",
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: "
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.7-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
      "failures": [],
      "mean_score": 0.167,
-     "median_ms": 27640,
+     "median_ms": 18764,
      "model": "glm-4.5-flash",
      "passes": 0,
      "provider": "zhipu",
@@ -922,23 +3613,10 @@
     {
      "failures": [],
      "mean_score": 0.167,
-     "median_ms": 12600,
+     "median_ms": 2990,
      "model": "kilo-auto/free",
      "passes": 0,
      "provider": "kilo",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "gemma-4-31b-it",
-     "passes": 0,
-     "provider": "google",
      "runs": 2,
      "status": "measured"
     },
@@ -956,25 +3634,9 @@
      "status": "measured"
     },
     {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-     "passes": 0,
-     "provider": "openrouter",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
+     "failures": [],
+     "mean_score": 0.167,
+     "median_ms": 13782,
      "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
      "passes": 0,
      "provider": "openrouter",
@@ -982,25 +3644,9 @@
      "status": "measured"
     },
     {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "google/gemma-4-26b-a4b-it:free",
-     "passes": 0,
-     "provider": "openrouter",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
+     "failures": [],
+     "mean_score": 0.146,
+     "median_ms": 17578,
      "model": "google/gemma-4-31b-it:free",
      "passes": 0,
      "provider": "openrouter",
@@ -1008,9 +3654,61 @@
      "status": "measured"
     },
     {
+     "failures": [
+      "[xkiro/qwen/qwen3.6-plus:free] [404]: Model \"qwen/qwen3.6-plus:free\" does not exist. (reset after 2m)",
+      "All credentials for model qwen/qwen3.6-plus:free are cooling down"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "xkiro/qwen/qwen3.6-plus:free",
+     "passes": 0,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
      "failures": [],
-     "mean_score": 0.125,
-     "median_ms": 22507,
+     "mean_score": 0.25,
+     "median_ms": 8893,
+     "model": "pollinations/openai-fast",
+     "passes": 0,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "pollinations/mistral",
+     "passes": 0,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 17h 16m 10s)",
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 17h 16m 10s)"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "bazaarlink/auto:free",
+     "passes": 0,
+     "provider": "bazaarlink",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
      "model": "gpt-oss-20b",
      "passes": 0,
      "provider": "ovh",
@@ -1019,13 +3717,63 @@
     },
     {
      "failures": [
-      "the answer is not valid JSON"
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'qwen/qwen3.8-27b:free' is not in the live list and no :free mode",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'qwen/qwen3.8-27b:free' is not in the live list and no :free mode"
      ],
-     "mean_score": 0.375,
-     "median_ms": 4236,
-     "model": "aihorde/any",
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "qwen/qwen3.8-27b:free",
      "passes": 0,
-     "provider": "aihorde",
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-fin:free' is not in the live list and",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-fin:free' is not in the live list and"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "inclusionai/ling-3.0-flash-fin:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-sante:free' is not in the live list a",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-sante:free' is not in the live list a"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "inclusionai/ling-3.0-flash-sante:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.",
+      "Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.167,
+     "median_ms": 4339,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 0,
+     "provider": "anyapi",
      "runs": 2,
      "status": "measured"
     }
@@ -1036,166 +3784,179 @@
      "provider": "mistral",
      "status": "not measured",
      "why": "disabled (a person has not approved it)"
-    },
-    {
-     "model": "xkiro/minimax/minimax-m3:free",
-     "provider": "xkiro",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "xkiro/mistralai/mistral-large-2512",
-     "provider": "xkiro",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "xkiro/deepseek/deepseek-v3.2",
-     "provider": "xkiro",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "xkiro/qwen/qwen3.6-plus:free",
-     "provider": "xkiro",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "pollinations/openai-fast",
-     "provider": "pollinations",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "pollinations/mistral",
-     "provider": "pollinations",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "bazaarlink/auto:free",
-     "provider": "bazaarlink",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "llm7/DeepSeek-V4-Flash-0731",
-     "provider": "llm7",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "llm7/glm-5.3-flash",
-     "provider": "llm7",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "llm7/gpt-oss:20b",
-     "provider": "llm7",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "api-airforce/gpt-oss-20b",
-     "provider": "airforce",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "bluesminds/z-ai/glm4.7",
-     "provider": "bluesminds",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "bluesminds/moonshotai/kimi-k2.6",
-     "provider": "bluesminds",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "bluesminds/qwen/qwen3-next-80b-a3b-instruct",
-     "provider": "bluesminds",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
     }
    ],
    "ranking": [
     {
      "failures": [],
      "mean_score": 1.0,
-     "median_ms": 2051,
-     "model": "command-a-03-2025",
+     "median_ms": 847,
+     "model": "xkiro/mistralai/mistral-large-2512",
      "passes": 2,
-     "provider": "cohere",
+     "provider": "xkiro",
      "runs": 2,
      "status": "measured"
     },
     {
      "failures": [],
      "mean_score": 1.0,
-     "median_ms": 5727,
-     "model": "command-a-reasoning-08-2025",
+     "median_ms": 2830,
+     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
      "passes": 2,
-     "provider": "cohere",
+     "provider": "cloudflare",
      "runs": 2,
      "status": "measured"
     },
     {
      "failures": [],
      "mean_score": 1.0,
-     "median_ms": 13111,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "median_ms": 16483,
+     "model": "requesty/google/gemma-4-31b-it",
      "passes": 2,
-     "provider": "ovh",
+     "provider": "requesty",
      "runs": 2,
      "status": "measured"
     },
     {
      "failures": [],
-     "mean_score": 0.938,
-     "median_ms": 2249,
-     "model": "command-r-08-2024",
+     "mean_score": 1.0,
+     "median_ms": 29197,
+     "model": "dots-studio/dots-3-note-preview:free",
      "passes": 2,
-     "provider": "cohere",
+     "provider": "anyapi",
      "runs": 2,
      "status": "measured"
     },
     {
      "failures": [],
      "mean_score": 0.875,
-     "median_ms": 4449,
-     "model": "command-r-plus-08-2024",
+     "median_ms": 5310,
+     "model": "aihorde/any",
      "passes": 1,
-     "provider": "cohere",
+     "provider": "aihorde",
      "runs": 2,
      "status": "measured"
     },
     {
      "failures": [],
      "mean_score": 0.584,
-     "median_ms": 6816,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "median_ms": 6101,
+     "model": "google/gemma-4-26b-a4b-it:free",
      "passes": 1,
-     "provider": "kilo",
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.584,
+     "median_ms": 9218,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.584,
+     "median_ms": 14257,
+     "model": "z-ai/glm-4.5-air:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch"
+     ],
+     "mean_score": 0.5,
+     "median_ms": 59436,
+     "model": "gemma-4-31b-it",
+     "passes": 1,
+     "provider": "google",
      "runs": 2,
      "status": "measured"
     }
    ],
-   "routes_tried": 26
+   "routes_tried": 39
   },
   "story_review_json": {
    "excluded": [
     {
      "failures": [
-      "All models rate-limited after 1 attempt. Soonest cooldown reset ~5m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: ",
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~5m."
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
      ],
      "mean_score": 0.0,
      "median_ms": 0,
-     "model": "glm-4.7-flash",
+     "model": "openai/gpt-oss-20b",
+     "passes": 0,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "openai/gpt-oss-120b",
+     "passes": 0,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-a-03-2025",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gpt-oss-20b",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.5-flash",
      "passes": 0,
      "provider": "zhipu",
      "runs": 2,
@@ -1203,79 +3964,40 @@
     },
     {
      "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
      ],
      "mean_score": 0.0,
      "median_ms": 0,
-     "model": "openrouter/free",
-     "passes": 0,
-     "provider": "openrouter",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~5m.",
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~5m."
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-     "passes": 0,
-     "provider": "cloudflare",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "qwen/qwen3-coder:free",
-     "passes": 0,
-     "provider": "openrouter",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "z-ai/glm-4.5-air:free",
-     "passes": 0,
-     "provider": "openrouter",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "gemini-3.5-flash",
-     "passes": 0,
-     "provider": "google",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "command-a-reasoning-08-2025",
+     "model": "command-r-plus-08-2024",
      "passes": 0,
      "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 0,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: 'gateway_model'",
+      "the gateway could not be reached: 'gateway_model'"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "nvidia",
      "runs": 2,
      "status": "measured"
     },
@@ -1294,37 +4016,27 @@
     },
     {
      "failures": [
-      "All models rate-limited after 1 attempt. Soonest cooldown reset ~15s. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429",
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~3m."
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~77s. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429:",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~9m."
      ],
      "mean_score": 0.0,
      "median_ms": 0,
-     "model": "glm-4.6v-flash",
+     "model": "glm-4.7-flash",
      "passes": 0,
      "provider": "zhipu",
      "runs": 2,
      "status": "measured"
     },
     {
-     "failures": [],
-     "mean_score": 0.333,
-     "median_ms": 42241,
-     "model": "kilo-auto/free",
-     "passes": 0,
-     "provider": "kilo",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
      "failures": [
-      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
-      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~9m. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429:",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~9m."
      ],
      "mean_score": 0.0,
      "median_ms": 0,
-     "model": "gemma-4-31b-it",
+     "model": "glm-4.6v-flash",
      "passes": 0,
-     "provider": "google",
+     "provider": "zhipu",
      "runs": 2,
      "status": "measured"
     },
@@ -1343,66 +4055,134 @@
     },
     {
      "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
+      "[xkiro/qwen/qwen3.6-plus:free] [404]: Model \"qwen/qwen3.6-plus:free\" does not exist. (reset after 2m)",
+      "All credentials for model qwen/qwen3.6-plus:free are cooling down"
      ],
      "mean_score": 0.0,
      "median_ms": 0,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "model": "xkiro/qwen/qwen3.6-plus:free",
      "passes": 0,
-     "provider": "openrouter",
+     "provider": "xkiro",
      "runs": 2,
      "status": "measured"
     },
     {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "failures": [],
+     "mean_score": 0.333,
+     "median_ms": 5094,
+     "model": "pollinations/openai-fast",
      "passes": 0,
-     "provider": "openrouter",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "google/gemma-4-26b-a4b-it:free",
-     "passes": 0,
-     "provider": "openrouter",
-     "runs": 2,
-     "status": "measured"
-    },
-    {
-     "failures": [
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c",
-      "Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day: https://openrouter.ai/settings/credits?utm_source=api&utm_c"
-     ],
-     "mean_score": 0.0,
-     "median_ms": 0,
-     "model": "google/gemma-4-31b-it:free",
-     "passes": 0,
-     "provider": "openrouter",
+     "provider": "pollinations",
      "runs": 2,
      "status": "measured"
     },
     {
      "failures": [
       "the answer is not valid JSON",
-      "answer should be object"
+      "the answer is not valid JSON"
      ],
      "mean_score": 0.0,
      "median_ms": 0,
+     "model": "pollinations/mistral",
+     "passes": 0,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 17h 5m 11s)",
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 17h 5m 11s)"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "bazaarlink/auto:free",
+     "passes": 0,
+     "provider": "bazaarlink",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.334,
+     "median_ms": 3718,
      "model": "aihorde/any",
      "passes": 0,
      "provider": "aihorde",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'qwen/qwen3.8-27b:free' is not in the live list and no :free mode",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'qwen/qwen3.8-27b:free' is not in the live list and no :free mode"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "qwen/qwen3.8-27b:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-fin:free' is not in the live list and",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-fin:free' is not in the live list and"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "inclusionai/ling-3.0-flash-fin:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-sante:free' is not in the live list a",
+      "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). Model 'inclusionai/ling-3.0-flash-sante:free' is not in the live list a"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "inclusionai/ling-3.0-flash-sante:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.333,
+     "median_ms": 12038,
+     "model": "dots-studio/dots-3-note-preview:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance.",
+      "Rate limit reached: free-tier daily cap is shared across users. Switch to a paid model for best performance."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "passes": 0,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.333,
+     "median_ms": 10907,
+     "model": "nvidia/nemotron-3.5-lightning:free",
+     "passes": 0,
+     "provider": "anyapi",
      "runs": 2,
      "status": "measured"
     }
@@ -1413,107 +4193,525 @@
      "provider": "mistral",
      "status": "not measured",
      "why": "disabled (a person has not approved it)"
-    },
-    {
-     "model": "xkiro/minimax/minimax-m3:free",
-     "provider": "xkiro",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "xkiro/mistralai/mistral-large-2512",
-     "provider": "xkiro",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "xkiro/deepseek/deepseek-v3.2",
-     "provider": "xkiro",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "xkiro/qwen/qwen3.6-plus:free",
-     "provider": "xkiro",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "pollinations/openai-fast",
-     "provider": "pollinations",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "pollinations/mistral",
-     "provider": "pollinations",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "bazaarlink/auto:free",
-     "provider": "bazaarlink",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "llm7/DeepSeek-V4-Flash-0731",
-     "provider": "llm7",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "llm7/glm-5.3-flash",
-     "provider": "llm7",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "llm7/gpt-oss:20b",
-     "provider": "llm7",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "api-airforce/gpt-oss-20b",
-     "provider": "airforce",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "bluesminds/z-ai/glm4.7",
-     "provider": "bluesminds",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "bluesminds/moonshotai/kimi-k2.6",
-     "provider": "bluesminds",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
-    },
-    {
-     "model": "bluesminds/qwen/qwen3-next-80b-a3b-instruct",
-     "provider": "bluesminds",
-     "status": "not measured",
-     "why": "no credentials or client available on this machine"
     }
    ],
    "ranking": [
     {
      "failures": [],
      "mean_score": 1.0,
-     "median_ms": 533,
-     "model": "openai/gpt-oss-20b",
+     "median_ms": 650,
+     "model": "xkiro/mistralai/mistral-large-2512",
      "passes": 2,
-     "provider": "groq",
+     "provider": "xkiro",
      "runs": 2,
      "status": "measured"
     },
     {
      "failures": [],
      "mean_score": 1.0,
-     "median_ms": 1260,
+     "median_ms": 1184,
+     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+     "passes": 2,
+     "provider": "cloudflare",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 3502,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 2,
+     "provider": "anyapi",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 4740,
+     "model": "command-a-reasoning-08-2025",
+     "passes": 2,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 6472,
+     "model": "requesty/google/gemma-4-31b-it",
+     "passes": 2,
+     "provider": "requesty",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 8473,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 2,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 9480,
+     "model": "google/gemma-4-31b-it:free",
+     "passes": 2,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 9707,
+     "model": "z-ai/glm-4.5-air:free",
+     "passes": 2,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 45744,
+     "model": "gemma-4-31b-it",
+     "passes": 2,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.666,
+     "median_ms": 9090,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.666,
+     "median_ms": 9185,
+     "model": "kilo-auto/free",
+     "passes": 1,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.666,
+     "median_ms": 11220,
+     "model": "qwen/qwen3-coder:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.666,
+     "median_ms": 16508,
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.666,
+     "median_ms": 25757,
+     "model": "openrouter/free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch"
+     ],
+     "mean_score": 0.5,
+     "median_ms": 3840,
+     "model": "gemini-3.5-flash",
+     "passes": 1,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    }
+   ],
+   "routes_tried": 39
+  },
+  "storyboard_json": {
+   "excluded": [
+    {
+     "failures": [
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 14h 59m 17s)",
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 14h 59m 17s)"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "bazaarlink/auto:free",
+     "passes": 0,
+     "provider": "bazaarlink",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+     "passes": 0,
+     "provider": "cloudflare",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 9953,
+     "model": "command-a-reasoning-08-2025",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemini-3.5-flash",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: timed out",
+      "the gateway could not be reached: timed out"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "nvidia",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~10m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429:",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~10m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.7-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 7180,
+     "model": "kilo-auto/free",
+     "passes": 0,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: timed out",
+      "[429]: Your organization reached its limit of concurrent requests. The limit scales with your organization's balance, top up at https://app.requesty.ai/settings"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "requesty/google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "requesty",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 15667,
+     "model": "pollinations/openai-fast",
+     "passes": 0,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.25,
+     "median_ms": 1043,
+     "model": "openai/gpt-oss-20b",
+     "passes": 0,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-r-plus-08-2024",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~75s."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-r-08-2024",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.625,
+     "median_ms": 33604,
+     "model": "glm-4.5-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~7s. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429:",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~14s."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.6v-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemma-4-31b-it",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemma-4-26b-a4b-it",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[xkiro/qwen/qwen3.6-plus:free] [404]: Model \"qwen/qwen3.6-plus:free\" does not exist. (reset after 2m)",
+      "All credentials for model qwen/qwen3.6-plus:free are cooling down"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "xkiro/qwen/qwen3.6-plus:free",
+     "passes": 0,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "pollinations/mistral",
+     "passes": 0,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gpt-oss-20b",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    }
+   ],
+   "not_measured": [
+    {
+     "model": "openrouter/free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "llm7/glm-5.3-flash",
+     "provider": "llm7",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "qwen/qwen3.8-27b:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "navy/shared-pool",
+     "provider": "navy",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "qwen/qwen3-coder:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "z-ai/glm-4.5-air:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "google/gemma-4-31b-it:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "inclusionai/ling-3.0-flash-fin:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "inclusionai/ling-3.0-flash-sante:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "dots-studio/dots-3-note-preview:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3.5-lightning:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    }
+   ],
+   "ranking": [
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 1853,
+     "model": "xkiro/mistralai/mistral-large-2512",
+     "passes": 2,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 3162,
      "model": "openai/gpt-oss-120b",
      "passes": 2,
      "provider": "groq",
@@ -1522,8 +4720,355 @@
     },
     {
      "failures": [],
+     "mean_score": 0.875,
+     "median_ms": 6362,
+     "model": "command-a-03-2025",
+     "passes": 1,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.875,
+     "median_ms": 7046,
+     "model": "aihorde/any",
+     "passes": 1,
+     "provider": "aihorde",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 17166,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    }
+   ],
+   "routes_tried": 25
+  },
+  "voice_creative_json": {
+   "excluded": [
+    {
+     "failures": [
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 15h 27m 25s)",
+      "[bazaarlink/auto:free] You have reached the daily limit of 60 free-model requests for your account (it resets at 00:00 UTC) (reset after 15h 27m 25s)"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "bazaarlink/auto:free",
+     "passes": 0,
+     "provider": "bazaarlink",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or ch",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemini-3.5-flash",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the gateway could not be reached: timed out",
+      "the gateway could not be reached: timed out"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "google/gemma-4-31b-it",
+     "passes": 0,
+     "provider": "nvidia",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: ",
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: "
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.7-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 1524,
+     "model": "openai/gpt-oss-20b",
+     "passes": 0,
+     "provider": "groq",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~27s."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "command-r-plus-08-2024",
+     "passes": 0,
+     "provider": "cohere",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~30s."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.5-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All models rate-limited after 1 attempt. Soonest cooldown reset ~60s. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~9m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "glm-4.6v-flash",
+     "passes": 0,
+     "provider": "zhipu",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 0,
+     "provider": "kilo",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~30s."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemma-4-31b-it",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro",
+      "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gemma-4-26b-a4b-it",
+     "passes": 0,
+     "provider": "google",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "[xkiro/qwen/qwen3.6-plus:free] [404]: Model \"qwen/qwen3.6-plus:free\" does not exist. (reset after 2m)",
+      "All credentials for model qwen/qwen3.6-plus:free are cooling down"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "xkiro/qwen/qwen3.6-plus:free",
+     "passes": 0,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the answer is not valid JSON",
+      "the answer is not valid JSON"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "pollinations/mistral",
+     "passes": 0,
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [
+      "the provider answered 429: its free limit was reached",
+      "the provider answered 429: its free limit was reached"
+     ],
+     "mean_score": 0.0,
+     "median_ms": 0,
+     "model": "gpt-oss-20b",
+     "passes": 0,
+     "provider": "ovh",
+     "runs": 2,
+     "status": "measured"
+    }
+   ],
+   "not_measured": [
+    {
+     "model": "qwen/qwen3.8-27b:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "navy/shared-pool",
+     "provider": "navy",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "openrouter/free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "llm7/glm-5.3-flash",
+     "provider": "llm7",
+     "status": "not measured",
+     "why": "disabled (a person has not approved it)"
+    },
+    {
+     "model": "qwen/qwen3-coder:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "z-ai/glm-4.5-air:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "google/gemma-4-31b-it:free",
+     "provider": "openrouter",
+     "status": "not measured",
+     "why": "daily request limit reached"
+    },
+    {
+     "model": "inclusionai/ling-3.0-flash-fin:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "inclusionai/ling-3.0-flash-sante:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "dots-studio/dots-3-note-preview:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    },
+    {
+     "model": "nvidia/nemotron-3.5-lightning:free",
+     "provider": "anyapi",
+     "status": "not measured",
+     "why": "daily token limit reached"
+    }
+   ],
+   "ranking": [
+    {
+     "failures": [],
      "mean_score": 1.0,
-     "median_ms": 1402,
+     "median_ms": 1180,
+     "model": "xkiro/mistralai/mistral-large-2512",
+     "passes": 2,
+     "provider": "xkiro",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 3099,
+     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+     "passes": 2,
+     "provider": "cloudflare",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 1.0,
+     "median_ms": 6457,
      "model": "command-a-03-2025",
      "passes": 2,
      "provider": "cohere",
@@ -1533,30 +5078,40 @@
     {
      "failures": [],
      "mean_score": 1.0,
-     "median_ms": 11768,
-     "model": "gpt-oss-20b",
+     "median_ms": 13833,
+     "model": "requesty/google/gemma-4-31b-it",
      "passes": 2,
-     "provider": "ovh",
+     "provider": "requesty",
      "runs": 2,
      "status": "measured"
     },
     {
      "failures": [],
      "mean_score": 1.0,
-     "median_ms": 25587,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "median_ms": 14515,
+     "model": "kilo-auto/free",
      "passes": 2,
-     "provider": "ovh",
+     "provider": "kilo",
      "runs": 2,
      "status": "measured"
     },
     {
      "failures": [],
      "mean_score": 1.0,
-     "median_ms": 35663,
-     "model": "glm-4.5-flash",
+     "median_ms": 17040,
+     "model": "pollinations/openai-fast",
      "passes": 2,
-     "provider": "zhipu",
+     "provider": "pollinations",
+     "runs": 2,
+     "status": "measured"
+    },
+    {
+     "failures": [],
+     "mean_score": 0.75,
+     "median_ms": 1809,
+     "model": "openai/gpt-oss-120b",
+     "passes": 1,
+     "provider": "groq",
      "runs": 2,
      "status": "measured"
     },
@@ -1565,8 +5120,8 @@
       "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro"
      ],
      "mean_score": 0.5,
-     "median_ms": 5216,
-     "model": "command-r-plus-08-2024",
+     "median_ms": 5377,
+     "model": "command-r-08-2024",
      "passes": 1,
      "provider": "cohere",
      "runs": 2,
@@ -1577,29 +5132,29 @@
       "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check pro"
      ],
      "mean_score": 0.5,
-     "median_ms": 6590,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "median_ms": 7233,
+     "model": "command-a-reasoning-08-2025",
      "passes": 1,
-     "provider": "kilo",
+     "provider": "cohere",
      "runs": 2,
      "status": "measured"
     },
     {
      "failures": [
-      "the gateway could not be reached: timed out"
+      "the answer is not valid JSON"
      ],
      "mean_score": 0.5,
-     "median_ms": 31121,
-     "model": "google/gemma-4-31b-it",
+     "median_ms": 13065,
+     "model": "aihorde/any",
      "passes": 1,
-     "provider": "nvidia",
+     "provider": "aihorde",
      "runs": 2,
      "status": "measured"
     }
    ],
-   "routes_tried": 26
+   "routes_tried": 25
   }
  },
- "measured_at": "2026-11-18T12:23:26Z",
+ "measured_at": "2026-11-24T06:13:32Z",
  "pass_at": 0.8
 }
