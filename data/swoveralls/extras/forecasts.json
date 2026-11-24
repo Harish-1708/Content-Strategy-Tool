@@ -1,0 +1,465 @@
+{
+ "at": "2026-11-24T14:48:46Z",
+ "backtest": {
+  "gate": "NOT ENOUGH SERIES",
+  "model_wins": 0,
+  "seconds": 0.0,
+  "share": 0.0,
+  "tested": 0
+ },
+ "method": "naive",
+ "series": {
+  "audience voice": {
+   "anomalies": [],
+   "forecast": {
+    "method": "none",
+    "note": "not enough history: 2 point(s), at least 12 are needed",
+    "values": []
+   },
+   "momentum": {
+    "before": 0.0,
+    "change": 0.0,
+    "label": "unknown",
+    "recent": 0.0
+   },
+   "points": 2
+  },
+  "found by agent_reach_research": {
+   "anomalies": [],
+   "forecast": {
+    "method": "none",
+    "note": "not enough history: 1 point(s), at least 12 are needed",
+    "values": []
+   },
+   "momentum": {
+    "before": 0.0,
+    "change": 0.0,
+    "label": "unknown",
+    "recent": 0.0
+   },
+   "points": 1
+  },
+  "found by deep_research": {
+   "anomalies": [],
+   "forecast": {
+    "method": "none",
+    "note": "not enough history: 1 point(s), at least 12 are needed",
+    "values": []
+   },
+   "momentum": {
+    "before": 0.0,
+    "change": 0.0,
+    "label": "unknown",
+    "recent": 0.0
+   },
+   "points": 1
+  },
+  "found by instagram": {
+   "anomalies": [],
+   "forecast": {
+    "method": "none",
+    "note": "not enough history: 4 point(s), at least 12 are needed",
+    "values": []
+   },
+   "momentum": {
+    "before": 0.0,
+    "change": 0.0,
+    "label": "unknown",
+    "recent": 0.0
+   },
+   "points": 4
+  },
+  "found by meta_ads": {
+   "anomalies": [],
+   "forecast": {
+    "method": "none",
+    "note": "not enough history: 5 point(s), at least 12 are needed",
+    "values": []
+   },
+   "momentum": {
+    "before": 0.0,
+    "change": 0.0,
+    "label": "unknown",
+    "recent": 0.0
+   },
+   "points": 5
+  },
+  "found by tiktok": {
+   "anomalies": [],
+   "forecast": {
+    "method": "none",
+    "note": "not enough history: 4 point(s), at least 12 are needed",
+    "values": []
+   },
+   "momentum": {
+    "before": 0.0,
+    "change": 0.0,
+    "label": "unknown",
+    "recent": 0.0
+   },
+   "points": 4
+  }
+ },
+ "timeliness": [
+  {
+   "change": 0.0,
+   "id": "IB-0609",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0610",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0611",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0612",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0613",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0614",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0615",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0616",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0617",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0618",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0619",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0620",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0621",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0622",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0623",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0624",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0625",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0626",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0627",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0628",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0629",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0630",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0631",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0632",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0633",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0634",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0635",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0636",
+   "signal": "found by instagram",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0637",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0638",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0639",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0640",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0641",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0642",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0643",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0644",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0645",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0646",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0647",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0648",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0649",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0650",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0651",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0652",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0653",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0654",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0655",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0656",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0657",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0658",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0659",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0660",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0661",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0662",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0663",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0664",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0665",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0666",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0667",
+   "signal": "",
+   "timeliness": "unknown"
+  },
+  {
+   "change": 0.0,
+   "id": "IB-0668",
+   "signal": "",
+   "timeliness": "unknown"
+  }
+ ]
+}
