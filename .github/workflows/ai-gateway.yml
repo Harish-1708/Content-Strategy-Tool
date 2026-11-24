@@ -61,7 +61,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: "22"
+          node-version: "24"
 
       - name: Fetch and build the pinned gateway
         shell: bash
@@ -151,7 +151,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: "22"
+          node-version: "24"
 
       - name: Fetch and build the pinned gateway
         shell: bash

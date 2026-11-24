@@ -64,17 +64,23 @@ jobs:
           python -m contentintel batch3 --action "$ACTION" --brand "${BRAND:-all}" --query "$QUERY"
 
       - name: Save the data
-        if: always() && (inputs.action == 'forecast' || inputs.action == 'stock-index')
+        if: always()          # no condition on the action: the step decides from what the run wrote (the earlier condition left it skipped, 0 s and no output, after a stock-index that had indexed pictures)
         run: |
           git config user.name "batch3-tools"
           git config user.email "batch3-tools@users.noreply.github.com"
-          git add -f data/*/extras/forecasts.json data/*/extras/stock_corpus.json 2>/dev/null || true
+          echo "save step: action=${{ inputs.action }}"
+          echo "--- files this run wrote (forecasts, stock corpora, stock matches):"
+          ls -la data/*/extras/forecasts.json data/*/extras/stock_corpus.json data/*/extras/stock_matches.json 2>&1 | head -20
+          git add -f data/*/extras/forecasts.json data/*/extras/stock_corpus.json data/*/extras/stock_matches.json 2>/dev/null || true
+          echo "--- staged for the commit:"
+          git diff --cached --stat | tail -5
           if git diff --cached --quiet; then
-            echo "No data changes to save."
+            echo "NOTHING TO SAVE: no forecasts.json, stock_corpus.json or stock_matches.json was written or changed by this run"
           else
             git commit -m "Batch 3 tools $(date -u +%Y-%m-%dT%H:%MZ)"
             echo "--- files this run left changed but did not save (set aside for the pull, then put back):"
             git status --porcelain | head -40
             git pull --rebase --autostash
-            git push
+            git push || { echo "::error title=Save failed::the commit could not be pushed"; exit 1; }
+            echo "SAVED: pushed $(git rev-parse --short HEAD)"
           fi

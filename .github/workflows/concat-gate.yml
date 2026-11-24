@@ -39,14 +39,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ffmpeg xvfb libgl1-mesa-dri mesa-vulkan-drivers libvulkan1
 
-      - name: Install Concat from its latest release
+      - name: Install Concat from its latest release (the x86_64 file only)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p /tmp/concat
-          gh release download --repo jub0t/concat --pattern '*amd64.deb' --dir /tmp/concat || gh release download --repo jub0t/concat --pattern '*.deb' --dir /tmp/concat
+          # The release holds BOTH Concat-<version>-linux-x86_64.deb and Concat-<version>-linux-aarch64.deb. The old pattern (*amd64.deb) matched nothing and the fallback took both, which apt refused (exit 100).
+          rm -rf /tmp/concat && mkdir -p /tmp/concat
+          gh release download --repo jub0t/concat --pattern '*linux-x86_64.deb' --dir /tmp/concat
           ls -la /tmp/concat
-          sudo apt-get install -y /tmp/concat/*.deb
+          test "$(ls /tmp/concat/*.deb | wc -l)" -eq 1 || { echo "::error title=Concat install::expected exactly one x86_64 .deb"; exit 1; }
+          sudo apt-get install -y /tmp/concat/*x86_64.deb
           which concat || dpkg -L concat 2>/dev/null | head -20
 
       - name: Run it

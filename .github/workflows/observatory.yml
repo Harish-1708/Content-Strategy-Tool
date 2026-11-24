@@ -188,7 +188,7 @@ jobs:
       - uses: actions/setup-node@v6
         if: ${{ inputs.action == 'discover' || inputs.action == 'judge' }}
         with:
-          node-version: "22"
+          node-version: "24"
 
       - name: Fetch and build the gateway (discover and judge use the AI layer)
         if: ${{ inputs.action == 'discover' || inputs.action == 'judge' }}
