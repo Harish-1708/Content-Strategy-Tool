@@ -10,7 +10,7 @@ import statistics
 from pathlib import Path
 
 PASS_AT = 0.8                                                                    # a probe run passes at this score or better
-JOBS = ("foundation_json", "story_extract_json", "story_review_json", "conflict_check_json", "claim_verify_json", "brief_json", "competitor_ideas_json", "creator_chain_json", "listen_learn_json", "voice_creative_json", "seo_lens_json", "storyboard_json")
+JOBS = ("foundation_json", "story_extract_json", "story_review_json", "conflict_check_json", "claim_verify_json", "brief_json", "competitor_ideas_json", "brief_review_json", "seed_judge_json", "creator_chain_json", "listen_learn_json", "voice_creative_json", "seo_lens_json", "storyboard_json")
 RANKINGS_FILE = "ai_rankings.json"                                               # under data/_shared
 
 PAGE = ("Probe Brand makes soft overalls for adults. The company was founded in 2017 in a small studio in Portland. Its overalls are cut from heavy organic cotton and sold directly online. "
@@ -93,7 +93,23 @@ def probes():
     def brief_score(out):
         concepts = out.get("concepts") if isinstance(out, dict) else None
         return round(0.5 * bool(isinstance(out, dict) and str(out.get("title", "")).strip()) + 0.5 * bool(isinstance(concepts, list) and concepts), 3)
-    extra = {"claim_verify_json": [(VC.QUERY_SYSTEM, "Brand: Probe Brand\nClaim: Probe Brand won the 2026 Probe Innovation Award.", query_score), (VC.CHECK_SYSTEM, verify_user, verify_score)],
+    from .. import validators as VAL
+
+    def review_score(out):
+        if not isinstance(out, dict) or out.get("verdict") not in ("pass", "revise"):
+            return 0.0
+        problems = " ".join(str(p.get("issue", "")) for p in (out.get("problems") or []) if isinstance(p, dict)).lower()
+        return round(0.5 * (out["verdict"] == "revise") + 0.5 * any(w in problems for w in ("claim", "best", "guarantee", "unverif", "proof")), 3)
+    review_user = ("Title: Probe Brand overalls\nKey message: the best overalls in the world\nConcept 1 (30 second vertical video) Proof\n  Hook: Voted the best overalls in the world, 100% guaranteed.\n"
+                   "  Script: Show the overalls. Say they are the best in the world and that every customer is guaranteed to love them.\n  Visual direction: Close-up of the overalls on a hanger.\n  Call to action: Buy now.\nValidator findings (exact checks already run): none")
+    from .. import seed_judge as SJ
+
+    def seed_score(out):
+        verdicts = SJ.parse(out, 3)
+        return round(sum(1 for i, want in ((0, True), (1, False), (2, False)) if verdicts.get(i) is want) / 3, 3)
+    seed_user = ("Brand: Probe Brand. Its own terms (what it is called, sells and researches): probe brand; soft organic cotton overalls; loungewear for adults\n\nTopics:\n"
+                 "0. Why adults are choosing soft loungewear over jeans at home\n1. Central bank raises interest rates again\n2. Quarterback signs a new contract")
+    extra = {"seed_judge_json": [(SJ.SYSTEM, seed_user, seed_score)], "brief_review_json": [(VAL.REVIEW_SYSTEM, review_user, review_score)], "claim_verify_json": [(VC.QUERY_SYSTEM, "Brand: Probe Brand\nClaim: Probe Brand won the 2026 Probe Innovation Award.", query_score), (VC.CHECK_SYSTEM, verify_user, verify_score)],
              "brief_json": [(BF.BRIEF_SYSTEM, "Ask: a short video for Probe Brand's organic cotton overalls.\nFacts you may state: Probe Brand overalls are cut from organic cotton and sold online.\nWrite 1 concept.", brief_score)]}
     extra.update(ST.probes())
     return {**extra, "story_extract_json": [(SR.EXTRACT_SYSTEM, f"Brand: Probe Brand\nPage address: https://probe.example/about\nPage text:\n{PAGE}", _extract_score)],
