@@ -290,6 +290,54 @@ lanes:
     output: {format: json, schema: {type: object}}
     max_tokens: 8000
 
+
+  brief_review_json:
+    description: "Stage 5: the independent reviewer of a brief (a model that did not write it checks it against a checklist and the validator findings, and says pass or revise). RANKING NOT YET MEASURED: seeded from the measured leaders of the existing jobs; the next pool retest measures it."
+    max_data_class: internal
+    chain:
+      - {provider: openrouter, model: openrouter/free}
+      - {provider: zhipu, model: glm-4.7-flash}
+      - {provider: kilo, model: kilo-auto/free}
+      - {provider: ovh, model: Mistral-Small-3.2-24B-Instruct-2506}
+      - {provider: xkiro, model: xkiro/mistralai/mistral-large-2512}
+      - {provider: anyapi, model: "nvidia/nemotron-3.5-lightning:free"}
+      - {provider: requesty, model: "requesty/google/gemma-4-31b-it"}
+      - {provider: pollinations, model: pollinations/openai-fast}
+      - {provider: bazaarlink, model: bazaarlink/auto:free}
+      - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
+      - {provider: aihorde, model: aihorde/any}
+      - {provider: groq, model: openai/gpt-oss-120b}
+      - {provider: cohere, model: command-a-reasoning-08-2025}
+      - {provider: google, model: gemini-3.5-flash}
+      - {provider: nvidia, model: google/gemma-4-31b-it}
+    claude_fallback: false      # the module falls back to its own Claude client, under its own spending cap, when this lane (and the shared pool after it) has no answer
+    output: {format: json, schema: {type: object}}
+    max_tokens: 8000
+
+
+  seed_judge_json:
+    description: "Discovery seeds, tier 2: could a discovered topic that shares no word with the brand help the brand? A tiny batched yes/no judgment (at most two calls a run, answers cached 30 days, no fallback to Claude). RANKING NOT YET MEASURED: seeded from the measured leaders of the existing jobs; the next pool retest measures it."
+    max_data_class: internal
+    chain:
+      - {provider: openrouter, model: openrouter/free}
+      - {provider: zhipu, model: glm-4.7-flash}
+      - {provider: kilo, model: kilo-auto/free}
+      - {provider: ovh, model: Mistral-Small-3.2-24B-Instruct-2506}
+      - {provider: xkiro, model: xkiro/mistralai/mistral-large-2512}
+      - {provider: anyapi, model: "nvidia/nemotron-3.5-lightning:free"}
+      - {provider: requesty, model: "requesty/google/gemma-4-31b-it"}
+      - {provider: pollinations, model: pollinations/openai-fast}
+      - {provider: bazaarlink, model: bazaarlink/auto:free}
+      - {provider: cloudflare, model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"}
+      - {provider: aihorde, model: aihorde/any}
+      - {provider: groq, model: openai/gpt-oss-120b}
+      - {provider: cohere, model: command-a-reasoning-08-2025}
+      - {provider: google, model: gemini-3.5-flash}
+      - {provider: nvidia, model: google/gemma-4-31b-it}
+    claude_fallback: false      # the module falls back to its own Claude client, under its own spending cap, when this lane (and the shared pool after it) has no answer
+    output: {format: json, schema: {type: object}}
+    max_tokens: 8000
+
   creator_chain_json:
     description: "Stage 6: a creator shortlist and a creator brief from the material. RANKING NOT YET MEASURED: seeded from the measured leaders of the existing jobs (the 2026-11-18 pool retest); the pool retest measures this job's own list."
     max_data_class: internal

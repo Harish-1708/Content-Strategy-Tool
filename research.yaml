@@ -65,6 +65,7 @@ collectors:
   # The Collect workflow's "backend" box can also switch it on for one run. Needs the APIFY_TOKEN secret.
   apify:
     mode: fallback                # on: when the browser route fails (expired cookies, a security check, an account RESTING after a warning, nothing readable) the Apify scraper runs, within the caps below
+    reddit_hold: true             # Reddit through Apify is ON HOLD (owner, 2026-11-24): its residential proxy costs about 8 dollars a GB. No Apify Reddit call is made while this is true; Reddit as a Collect source is not built
     monthly_items: 1200           # Collect's share of the 20 dollar Apify month: 6.00 dollars at 0.005 an item (contentintel/apify_budget.py)
     items_per_run: 30
     max_cost_per_run_usd: 1.0     # a hard dollar ceiling Apify enforces for a single run
