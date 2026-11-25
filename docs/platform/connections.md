@@ -8,7 +8,7 @@ The platform runs other people's repositories as they are, with the newest versi
 |---|---|---|---|---|
 | `agent_reach` | Agent-Reach, 14 channels | its own `agent-reach` command line, installed from its repository | the platform's own OpenCLI, yt-dlp, GitHub and page-reader adapters | Instagram, Reddit, X, Facebook and LinkedIn need a logged-in browser on a machine you control |
 | `scrapling` | Scrapling | the library in an isolated environment | the built-in polite reader (Jina, then the built-in fetcher) | a browser installed for the stealth browser |
-| `freellmapi` | FreeLLMAPI | a Node server built from the newest release in each job | Claude only | Node 22; every provider key you want it to use |
+| `freellmapi` | FreeLLMAPI | a Node server built from the newest release in each job | Claude only | Node 24; every provider key you want it to use |
 | `instagram_skill`, `youtube_skill` | hook formulas, scorers, validators | cloned from the repository, newest version | the platform's own labels and scoring | nothing |
 | `video_shotcraft` | video templates and effect cards | cloned from the repository | none yet (Creative Studio is not built) | Remotion (its own licence) to render |
 
