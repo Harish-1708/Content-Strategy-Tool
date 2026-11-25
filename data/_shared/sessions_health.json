@@ -1,7 +1,7 @@
 {
   "boss": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-24T15:55:32Z",
+    "checked_at": "2026-11-25T06:15:44Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",
@@ -13,12 +13,12 @@
   },
   "facebook": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-24T15:55:32Z",
+    "checked_at": "2026-11-25T06:15:44Z",
     "days_left": 352,
     "evidence": {
       "body_ids": [
         "splash-screen",
-        "mount_0_0_2Q",
+        "mount_0_0_KW",
         "B:0",
         "B:1",
         "B:2",
@@ -68,7 +68,7 @@
       "login_word_in_address": "",
       "noscript": "",
       "password_field": false,
-      "scripts": 392,
+      "scripts": 401,
       "status": 200,
       "text_chars": 0,
       "title": "Facebook",
@@ -76,15 +76,15 @@
       "worker_error": ""
     },
     "expires_on": "2027-11-12",
-    "proved_on": "2026-11-24T15:55:32Z",
+    "proved_on": "2026-11-25T06:15:44Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
     "unconfirmed_streak": 0
   },
   "instagram": {
-    "cannot_check_streak": 5,
-    "checked_at": "2026-11-24T15:55:32Z",
+    "cannot_check_streak": 6,
+    "checked_at": "2026-11-25T06:15:44Z",
     "days_left": 352,
     "evidence": {
       "body_ids": [],
@@ -136,7 +136,7 @@
   },
   "linkedin": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-24T15:55:32Z",
+    "checked_at": "2026-11-25T06:15:44Z",
     "days_left": 352,
     "evidence": {
       "body_ids": [],
@@ -201,16 +201,16 @@
   },
   "reddit": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-24T15:55:32Z",
+    "checked_at": "2026-11-25T06:15:44Z",
     "days_left": 168,
     "evidence": {
       "body_ids": [
         "shreddit-skip-link",
         "t2_9kjs7vyo0",
+        "d26edf67-e3af-46eb-916f-6aa1d01a22e4",
+        "d26edf67-e3af-46eb-916f-6aa1d01a22e4",
         "hamburger-button-tooltip",
-        "navbar-menu-button",
-        "reddit-logo",
-        "advertise-button"
+        "navbar-menu-button"
       ],
       "cookies_back": [
         "FPGSID",
@@ -253,7 +253,7 @@
         "token_v2"
       ],
       "fetched_with": "browser",
-      "html_chars": 427895,
+      "html_chars": 428038,
       "html_truncated": false,
       "landed": "https://www.reddit.com/settings/",
       "logged_in_found": [
@@ -281,7 +281,7 @@
       "worker_error": ""
     },
     "expires_on": "2027-05-12",
-    "proved_on": "2026-11-24T15:55:32Z",
+    "proved_on": "2026-11-25T06:15:44Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
@@ -289,7 +289,7 @@
   },
   "tiktok": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-24T15:55:32Z",
+    "checked_at": "2026-11-25T06:15:44Z",
     "days_left": 167,
     "evidence": {
       "body_ids": [
@@ -382,7 +382,7 @@
         "uid_tt_ss"
       ],
       "fetched_with": "browser",
-      "html_chars": 471906,
+      "html_chars": 471912,
       "html_truncated": false,
       "landed": "https://www.tiktok.com/",
       "logged_in_found": [],
@@ -409,13 +409,13 @@
     "expires_on": "2027-05-11",
     "proved_on": "",
     "proved_via": "",
-    "reason": "the page gave no sign of being logged in or logged out (it may be an error or a half-drawn page), so it is not counted as a refusal and the proof is kept; it is looked at again on the next check, and after 3 such checks in a row it is treated as refused (this is check 2)",
-    "state": "UNCONFIRMED",
-    "unconfirmed_streak": 2
+    "reason": "no sign of being logged in was found on 3 checks in a row (any doubt counts as not logged in): the stored session was not accepted; capture a new one",
+    "state": "REJECTED",
+    "unconfirmed_streak": 0
   },
   "x": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-24T15:55:32Z",
+    "checked_at": "2026-11-25T06:15:44Z",
     "days_left": 352,
     "evidence": {
       "body_ids": [
@@ -449,7 +449,7 @@
         "twid"
       ],
       "fetched_with": "browser",
-      "html_chars": 47000,
+      "html_chars": 47021,
       "html_truncated": false,
       "landed": "https://x.com/home",
       "logged_in_found": [],
@@ -486,7 +486,7 @@
   },
   "xiaohongshu": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-24T15:55:32Z",
+    "checked_at": "2026-11-25T06:15:44Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",
