@@ -94,8 +94,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "7",
-   "price_max": 159.0,
-   "price_min": 159.0,
+   "price_max": 149.0,
+   "price_min": 149.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/cf5.jpg?v=1793796445",
    "product_id": "15347014565999",
    "readiness": "ready",
@@ -130,7 +130,7 @@
        "value": "Boobies"
       }
      ],
-     "price": 159.0,
+     "price": 149.0,
      "sku": "SWCOMFY-467-S",
      "title": "S / Boobies"
     },
@@ -148,7 +148,7 @@
        "value": "Boobies"
       }
      ],
-     "price": 159.0,
+     "price": 149.0,
      "sku": "SWCOMFY-467-M",
      "title": "M / Boobies"
     },
@@ -166,7 +166,7 @@
        "value": "Boobies"
       }
      ],
-     "price": 159.0,
+     "price": 149.0,
      "sku": "SWCOMFY-467-L",
      "title": "L / Boobies"
     },
@@ -184,7 +184,7 @@
        "value": "Boobies"
       }
      ],
-     "price": 159.0,
+     "price": 149.0,
      "sku": "SWCOMFY-467-XL",
      "title": "XL / Boobies"
     },
@@ -202,7 +202,7 @@
        "value": "Boobies"
       }
      ],
-     "price": 159.0,
+     "price": 149.0,
      "sku": "SWCOMFY-467-2XL",
      "title": "2XL / Boobies"
     },
@@ -220,7 +220,7 @@
        "value": "Boobies"
       }
      ],
-     "price": 159.0,
+     "price": 149.0,
      "sku": "SWCOMFY-467-3XL",
      "title": "3XL / Boobies"
     },
@@ -238,7 +238,7 @@
        "value": "Boobies"
       }
      ],
-     "price": 159.0,
+     "price": 149.0,
      "sku": "SWCOMFY-467-4XL",
      "title": "4XL / Boobies"
     }
@@ -346,8 +346,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "7",
-   "price_max": 149.0,
-   "price_min": 149.0,
+   "price_max": 139.0,
+   "price_min": 139.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/cf2.jpg?v=1793796432",
    "product_id": "15347010044015",
    "readiness": "ready",
@@ -381,7 +381,7 @@
        "value": "Forest Green"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-002-S",
      "title": "S / Forest Green"
     },
@@ -399,7 +399,7 @@
        "value": "Forest Green"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-002-M",
      "title": "M / Forest Green"
     },
@@ -417,7 +417,7 @@
        "value": "Forest Green"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-002-L",
      "title": "L / Forest Green"
     },
@@ -435,7 +435,7 @@
        "value": "Forest Green"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-002-XL",
      "title": "XL / Forest Green"
     },
@@ -453,7 +453,7 @@
        "value": "Forest Green"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-002-2XL",
      "title": "2XL / Forest Green"
     },
@@ -471,7 +471,7 @@
        "value": "Forest Green"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-002-3XL",
      "title": "3XL / Forest Green"
     },
@@ -489,7 +489,7 @@
        "value": "Forest Green"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-002-4XL",
      "title": "4XL / Forest Green"
     }
@@ -597,8 +597,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "7",
-   "price_max": 149.0,
-   "price_min": 149.0,
+   "price_max": 139.0,
+   "price_min": 139.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/cf1.jpg?v=1793796428",
    "product_id": "15347007291503",
    "readiness": "ready",
@@ -632,7 +632,7 @@
        "value": "Midnight Black"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-BLK-S",
      "title": "S / Midnight Black"
     },
@@ -650,7 +650,7 @@
        "value": "Midnight Black"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-BLK-M",
      "title": "M / Midnight Black"
     },
@@ -668,7 +668,7 @@
        "value": "Midnight Black"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-BLK-L",
      "title": "L / Midnight Black"
     },
@@ -686,7 +686,7 @@
        "value": "Midnight Black"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-BLK-XL",
      "title": "XL / Midnight Black"
     },
@@ -704,7 +704,7 @@
        "value": "Midnight Black"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-BLK-2XL",
      "title": "2XL / Midnight Black"
     },
@@ -722,7 +722,7 @@
        "value": "Midnight Black"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-BLK-3XL",
      "title": "3XL / Midnight Black"
     },
@@ -740,7 +740,7 @@
        "value": "Midnight Black"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-BLK-4XL",
      "title": "4XL / Midnight Black"
     }
@@ -848,8 +848,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "7",
-   "price_max": 149.0,
-   "price_min": 149.0,
+   "price_max": 139.0,
+   "price_min": 139.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/cf3.jpg?v=1793796436",
    "product_id": "15347011616879",
    "readiness": "ready",
@@ -883,7 +883,7 @@
        "value": "Navy"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-NVY-S",
      "title": "S / Navy"
     },
@@ -901,7 +901,7 @@
        "value": "Navy"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-NVY-M",
      "title": "M / Navy"
     },
@@ -919,7 +919,7 @@
        "value": "Navy"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-NVY-L",
      "title": "L / Navy"
     },
@@ -937,7 +937,7 @@
        "value": "Navy"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-NVY-XL",
      "title": "XL / Navy"
     },
@@ -955,7 +955,7 @@
        "value": "Navy"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-NVY-2XL",
      "title": "2XL / Navy"
     },
@@ -973,7 +973,7 @@
        "value": "Navy"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-NVY-3XL",
      "title": "3XL / Navy"
     },
@@ -991,7 +991,7 @@
        "value": "Navy"
       }
      ],
-     "price": 149.0,
+     "price": 139.0,
      "sku": "SWCOMFY-NVY-4XL",
      "title": "4XL / Navy"
     }
@@ -1095,8 +1095,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "7",
-   "price_max": 159.0,
-   "price_min": 159.0,
+   "price_max": 149.0,
+   "price_min": 149.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/cf4.jpg?v=1793796441",
    "product_id": "15347013517423",
    "readiness": "ready",
@@ -1129,7 +1129,7 @@
        "value": "Jammers"
       }
      ],
-     "price": 159.0,
+     "price": 149.0,
      "sku": "SWCOMFY-ZOF-S",
      "title": "S / Jammers"
     },
@@ -1147,7 +1147,7 @@
        "value": "Jammers"
       }
      ],
-     "price": 159.0,
+     "price": 149.0,
      "sku": "SWCOMFY-ZOF-M",
      "title": "M / Jammers"
     },
@@ -1165,7 +1165,7 @@
        "value": "Jammers"
       }
      ],
-     "price": 159.0,
+     "price": 149.0,
      "sku": "SWCOMFY-ZOF-L",
      "title": "L / Jammers"
     },
@@ -1183,7 +1183,7 @@
        "value": "Jammers"
       }
      ],
-     "price": 159.0,
+     "price": 149.0,
      "sku": "SWCOMFY-ZOF-XL",
      "title": "XL / Jammers"
     },
@@ -1201,7 +1201,7 @@
        "value": "Jammers"
       }
      ],
-     "price": 159.0,
+     "price": 149.0,
      "sku": "SWCOMFY-ZOF-2XL",
      "title": "2XL / Jammers"
     },
@@ -1219,7 +1219,7 @@
        "value": "Jammers"
       }
      ],
-     "price": 159.0,
+     "price": 149.0,
      "sku": "SWCOMFY-ZOF-3XL",
      "title": "3XL / Jammers"
     },
@@ -1237,7 +1237,7 @@
        "value": "Jammers"
       }
      ],
-     "price": 159.0,
+     "price": 149.0,
      "sku": "SWCOMFY-ZOF-4XL",
      "title": "4XL / Jammers"
     }
@@ -1379,7 +1379,7 @@
      "title": "S / Bordeaux"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53755991425135,
      "options": [
@@ -1415,7 +1415,7 @@
      "title": "L / Bordeaux"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53755991490671,
      "options": [
@@ -1469,7 +1469,7 @@
      "title": "3XL / Bordeaux"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53755991588975,
      "options": [
@@ -1844,7 +1844,7 @@
    "variant_count": 7,
    "variants": [
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53755992146031,
      "options": [
@@ -1898,7 +1898,7 @@
      "title": "L / Glacier Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53755992244335,
      "options": [
@@ -1916,7 +1916,7 @@
      "title": "XL / Glacier Navy"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53755992277103,
      "options": [
@@ -6001,7 +6001,7 @@
    "variants": [
     {
      "available": false,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166813413487,
      "options": [
       {
@@ -6019,7 +6019,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166813446255,
      "options": [
       {
@@ -6037,7 +6037,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166813479023,
      "options": [
       {
@@ -6055,7 +6055,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166813511791,
      "options": [
       {
@@ -6073,7 +6073,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166813544559,
      "options": [
       {
@@ -6091,7 +6091,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166813577327,
      "options": [
       {
@@ -6109,7 +6109,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166813610095,
      "options": [
       {
@@ -6210,8 +6210,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g17.jpg?v=1793794268",
    "product_id": "15346069864559",
    "readiness": "ready",
@@ -6252,7 +6252,7 @@
        "value": "Black/White"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-686-S",
      "title": "S / Black/White"
     },
@@ -6270,7 +6270,7 @@
        "value": "Black/White"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-686-M",
      "title": "M / Black/White"
     },
@@ -6288,7 +6288,7 @@
        "value": "Black/White"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-686-L",
      "title": "L / Black/White"
     },
@@ -6306,7 +6306,7 @@
        "value": "Black/White"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-686-XL",
      "title": "XL / Black/White"
     },
@@ -6324,7 +6324,7 @@
        "value": "Black/White"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-686-2XL",
      "title": "2XL / Black/White"
     },
@@ -6342,7 +6342,7 @@
        "value": "Black/White"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-686-3XL",
      "title": "3XL / Black/White"
     },
@@ -6360,7 +6360,7 @@
        "value": "Black/White"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-686-4XL",
      "title": "4XL / Black/White"
     }
@@ -6450,8 +6450,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ElissaSwoveralls_09172026-0614.jpg?v=1790103016",
    "product_id": "15346078810223",
    "readiness": "ready",
@@ -6492,7 +6492,7 @@
        "value": "Boobies"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-467-S",
      "title": "S / Boobies"
     },
@@ -6510,7 +6510,7 @@
        "value": "Boobies"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-467-M",
      "title": "M / Boobies"
     },
@@ -6528,7 +6528,7 @@
        "value": "Boobies"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-467-L",
      "title": "L / Boobies"
     },
@@ -6546,7 +6546,7 @@
        "value": "Boobies"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-467-XL",
      "title": "XL / Boobies"
     },
@@ -6564,7 +6564,7 @@
        "value": "Boobies"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-467-2XL",
      "title": "2XL / Boobies"
     },
@@ -6582,7 +6582,7 @@
        "value": "Boobies"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-467-3XL",
      "title": "3XL / Boobies"
     },
@@ -6600,7 +6600,7 @@
        "value": "Boobies"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-467-4XL",
      "title": "4XL / Boobies"
     }
@@ -6689,8 +6689,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g14_cedbcfee-7c8f-41af-8434-3f6f74fa9824.jpg?v=1793795613",
    "product_id": "15345957273711",
    "readiness": "ready",
@@ -6730,7 +6730,7 @@
        "value": "Buffalo Plaid"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-Z05-S",
      "title": "S / Buffalo Plaid"
     },
@@ -6748,7 +6748,7 @@
        "value": "Buffalo Plaid"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-Z05-M",
      "title": "M / Buffalo Plaid"
     },
@@ -6766,7 +6766,7 @@
        "value": "Buffalo Plaid"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-Z05-L",
      "title": "L / Buffalo Plaid"
     },
@@ -6784,7 +6784,7 @@
        "value": "Buffalo Plaid"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-Z05-XL",
      "title": "XL / Buffalo Plaid"
     },
@@ -6802,7 +6802,7 @@
        "value": "Buffalo Plaid"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-Z05-2XL",
      "title": "2XL / Buffalo Plaid"
     },
@@ -6820,7 +6820,7 @@
        "value": "Buffalo Plaid"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-Z05-3XL",
      "title": "3XL / Buffalo Plaid"
     },
@@ -6838,7 +6838,7 @@
        "value": "Buffalo Plaid"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-Z05-4XL",
      "title": "4XL / Buffalo Plaid"
     }
@@ -6926,8 +6926,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g11_b6119fe8-05f0-41ff-905e-7b74f64f8666.jpg?v=1793795593",
    "product_id": "15023021490287",
    "readiness": "ready",
@@ -6965,7 +6965,7 @@
        "value": "Campfire"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-199-S",
      "title": "S / Campfire"
     },
@@ -6983,7 +6983,7 @@
        "value": "Campfire"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-199-M",
      "title": "M / Campfire"
     },
@@ -7001,7 +7001,7 @@
        "value": "Campfire"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-199-L",
      "title": "L / Campfire"
     },
@@ -7019,7 +7019,7 @@
        "value": "Campfire"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-199-XL",
      "title": "XL / Campfire"
     },
@@ -7037,7 +7037,7 @@
        "value": "Campfire"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-199-2XL",
      "title": "2XL / Campfire"
     },
@@ -7055,7 +7055,7 @@
        "value": "Campfire"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-199-3XL",
      "title": "3XL / Campfire"
     },
@@ -7073,7 +7073,7 @@
        "value": "Campfire"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-199-4XL",
      "title": "4XL / Campfire"
     }
@@ -7169,8 +7169,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_2.png?v=1754350960",
    "product_id": "15345983324271",
    "readiness": "ready",
@@ -7208,7 +7208,7 @@
        "value": "Cosmic"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BPR-S",
      "title": "S / Cosmic"
     },
@@ -7226,7 +7226,7 @@
        "value": "Cosmic"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BPR-M",
      "title": "M / Cosmic"
     },
@@ -7244,7 +7244,7 @@
        "value": "Cosmic"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BPR-L",
      "title": "L / Cosmic"
     },
@@ -7262,7 +7262,7 @@
        "value": "Cosmic"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BPR-XL",
      "title": "XL / Cosmic"
     },
@@ -7280,7 +7280,7 @@
        "value": "Cosmic"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BPR-2XL",
      "title": "2XL / Cosmic"
     },
@@ -7298,7 +7298,7 @@
        "value": "Cosmic"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BPR-3XL",
      "title": "3XL / Cosmic"
     },
@@ -7316,7 +7316,7 @@
        "value": "Cosmic"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BPR-4XL",
      "title": "4XL / Cosmic"
     }
@@ -7411,8 +7411,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Cosmic_6_5622adfc-9181-4ce0-a088-1bc9d66f3f7a.png?v=1756140244",
    "product_id": "15346022973551",
    "readiness": "ready",
@@ -7449,7 +7449,7 @@
        "value": "Dancing Skeletons"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BKX-S",
      "title": "S / Dancing Skeletons"
     },
@@ -7467,7 +7467,7 @@
        "value": "Dancing Skeletons"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BKX-M",
      "title": "M / Dancing Skeletons"
     },
@@ -7485,7 +7485,7 @@
        "value": "Dancing Skeletons"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BKX-L",
      "title": "L / Dancing Skeletons"
     },
@@ -7503,7 +7503,7 @@
        "value": "Dancing Skeletons"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BKX-XL",
      "title": "XL / Dancing Skeletons"
     },
@@ -7521,7 +7521,7 @@
        "value": "Dancing Skeletons"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BKX-2XL",
      "title": "2XL / Dancing Skeletons"
     },
@@ -7539,7 +7539,7 @@
        "value": "Dancing Skeletons"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BKX-3XL",
      "title": "3XL / Dancing Skeletons"
     },
@@ -7557,7 +7557,7 @@
        "value": "Dancing Skeletons"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BKX-4XL",
      "title": "4XL / Dancing Skeletons"
     }
@@ -7655,8 +7655,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "6",
-   "price_max": 99.0,
-   "price_min": 99.0,
+   "price_max": 89.0,
+   "price_min": 89.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwagBraReplacement.jpg?v=1780854121",
    "product_id": "3223525392484",
    "readiness": "ready",
@@ -7696,7 +7696,7 @@
        "value": "Dark Athletic Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-XXS-DGRY",
      "title": "XXS / Dark Athletic Grey"
     },
@@ -7714,7 +7714,7 @@
        "value": "Dark Athletic Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-XS-DGRY",
      "title": "XS / Dark Athletic Grey"
     },
@@ -7732,7 +7732,7 @@
        "value": "Dark Athletic Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-S-DGRY",
      "title": "S / Dark Athletic Grey"
     },
@@ -7750,7 +7750,7 @@
        "value": "Dark Athletic Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-MED-DGRY",
      "title": "M / Dark Athletic Grey"
     },
@@ -7768,7 +7768,7 @@
        "value": "Dark Athletic Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-LRG-DGRY",
      "title": "L / Dark Athletic Grey"
     },
@@ -7786,7 +7786,7 @@
        "value": "Dark Athletic Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-XL-DGRY",
      "title": "XL / Dark Athletic Grey"
     },
@@ -7804,7 +7804,7 @@
        "value": "Dark Athletic Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-2XL-DGRY",
      "title": "2XL / Dark Athletic Grey"
     },
@@ -7822,7 +7822,7 @@
        "value": "Dark Athletic Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-3XL-DGRY",
      "title": "3XL / Dark Athletic Grey"
     },
@@ -7840,7 +7840,7 @@
        "value": "Dark Athletic Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-4XL-DGRY",
      "title": "4XL / Dark Athletic Grey"
     }
@@ -7939,8 +7939,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "6",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/v4-01_on-model-man_1d4c7ff2-96a4-4bb7-8519-6e08403afc51.jpg?v=1795173097",
    "product_id": "15607981703279",
    "readiness": "ready",
@@ -7978,7 +7978,7 @@
        "value": "Dino Forest Green"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS2-GNJ-XS",
      "title": "XS / Dino Forest Green"
     },
@@ -7996,7 +7996,7 @@
        "value": "Dino Forest Green"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS2-GNJ-S",
      "title": "S / Dino Forest Green"
     },
@@ -8014,7 +8014,7 @@
        "value": "Dino Forest Green"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS2-GNJ-M",
      "title": "M / Dino Forest Green"
     },
@@ -8032,7 +8032,7 @@
        "value": "Dino Forest Green"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS2-GNJ-L",
      "title": "L / Dino Forest Green"
     },
@@ -8050,7 +8050,7 @@
        "value": "Dino Forest Green"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS2-GNJ-XL",
      "title": "XL / Dino Forest Green"
     },
@@ -8068,7 +8068,7 @@
        "value": "Dino Forest Green"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS2-GNJ-2XL",
      "title": "2XL / Dino Forest Green"
     },
@@ -8086,7 +8086,7 @@
        "value": "Dino Forest Green"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS2-GNJ-3XL",
      "title": "3XL / Dino Forest Green"
     },
@@ -8104,7 +8104,7 @@
        "value": "Dino Forest Green"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS2-GNJ-4XL",
      "title": "4XL / Dino Forest Green"
     }
@@ -8203,8 +8203,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "6",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g6_a63f42a6-2b52-43b3-b1e1-e3c1e09987a0.jpg?v=1795136304",
    "product_id": "15607977312367",
    "readiness": "ready",
@@ -8242,7 +8242,7 @@
        "value": "Dino Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS2-DIN-XS",
      "title": "XS / Dino Navy"
     },
@@ -8260,7 +8260,7 @@
        "value": "Dino Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS2-DIN-S",
      "title": "S / Dino Navy"
     },
@@ -8278,7 +8278,7 @@
        "value": "Dino Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS2-DIN-M",
      "title": "M / Dino Navy"
     },
@@ -8296,7 +8296,7 @@
        "value": "Dino Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS2-DIN-L",
      "title": "L / Dino Navy"
     },
@@ -8314,7 +8314,7 @@
        "value": "Dino Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS2-DIN-XL",
      "title": "XL / Dino Navy"
     },
@@ -8332,7 +8332,7 @@
        "value": "Dino Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS2-DIN-2XL",
      "title": "2XL / Dino Navy"
     },
@@ -8350,7 +8350,7 @@
        "value": "Dino Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS2-DIN-3XL",
      "title": "3XL / Dino Navy"
     },
@@ -8368,7 +8368,7 @@
        "value": "Dino Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS2-DIN-4XL",
      "title": "4XL / Dino Navy"
     }
@@ -8461,8 +8461,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g8_8f627ebb-6a9d-4fb9-aac6-fcd87f2d8c97.jpg?v=1793795575",
    "product_id": "7969918091375",
    "readiness": "ready",
@@ -8500,7 +8500,7 @@
        "value": "Dog Days Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BMF-XXS",
      "title": "XXS / Dog Days Navy"
     },
@@ -8518,7 +8518,7 @@
        "value": "Dog Days Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BMF-XS",
      "title": "XS / Dog Days Navy"
     },
@@ -8536,7 +8536,7 @@
        "value": "Dog Days Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BMF-S",
      "title": "S / Dog Days Navy"
     },
@@ -8554,7 +8554,7 @@
        "value": "Dog Days Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BMF-M",
      "title": "M / Dog Days Navy"
     },
@@ -8572,7 +8572,7 @@
        "value": "Dog Days Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BMF-L",
      "title": "L / Dog Days Navy"
     },
@@ -8590,7 +8590,7 @@
        "value": "Dog Days Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BMF-XL",
      "title": "XL / Dog Days Navy"
     },
@@ -8608,7 +8608,7 @@
        "value": "Dog Days Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BMF-2XL",
      "title": "2XL / Dog Days Navy"
     },
@@ -8626,7 +8626,7 @@
        "value": "Dog Days Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BMF-3XL",
      "title": "3XL / Dog Days Navy"
     },
@@ -8644,7 +8644,7 @@
        "value": "Dog Days Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BMF-4XL",
      "title": "4XL / Dog Days Navy"
     }
@@ -8730,8 +8730,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g15_8f2ce250-e8c6-4a0b-94ea-37670819b56b.jpg?v=1793795694",
    "product_id": "15346055970927",
    "readiness": "inactive",
@@ -8768,7 +8768,7 @@
        "value": "Duck Camo"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-341-S",
      "title": "S / Duck Camo"
     },
@@ -8786,7 +8786,7 @@
        "value": "Duck Camo"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-341-M",
      "title": "M / Duck Camo"
     },
@@ -8804,7 +8804,7 @@
        "value": "Duck Camo"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-341-L",
      "title": "L / Duck Camo"
     },
@@ -8822,7 +8822,7 @@
        "value": "Duck Camo"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-341-XL",
      "title": "XL / Duck Camo"
     },
@@ -8840,7 +8840,7 @@
        "value": "Duck Camo"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-341-2XL",
      "title": "2XL / Duck Camo"
     },
@@ -8858,7 +8858,7 @@
        "value": "Duck Camo"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-341-3XL",
      "title": "3XL / Duck Camo"
     },
@@ -8876,7 +8876,7 @@
        "value": "Duck Camo"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-341-4XL",
      "title": "4XL / Duck Camo"
     }
@@ -8977,8 +8977,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "6",
-   "price_max": 99.0,
-   "price_min": 99.0,
+   "price_max": 89.0,
+   "price_min": 89.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g0.jpg?v=1793794178",
    "product_id": "1509945606244",
    "readiness": "ready",
@@ -9021,7 +9021,7 @@
        "value": "Forest Green"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-XXS-FGRN",
      "title": "XXS / Forest Green"
     },
@@ -9039,7 +9039,7 @@
        "value": "Forest Green"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-XS-FGRN",
      "title": "XS / Forest Green"
     },
@@ -9057,7 +9057,7 @@
        "value": "Forest Green"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-S-FGRN",
      "title": "S / Forest Green"
     },
@@ -9075,7 +9075,7 @@
        "value": "Forest Green"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-MED-FGRN",
      "title": "M / Forest Green"
     },
@@ -9093,7 +9093,7 @@
        "value": "Forest Green"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-LRG-FGRN",
      "title": "L / Forest Green"
     },
@@ -9111,7 +9111,7 @@
        "value": "Forest Green"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-XL-FGRN",
      "title": "XL / Forest Green"
     },
@@ -9129,7 +9129,7 @@
        "value": "Forest Green"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-2XL-FGRN",
      "title": "2XL / Forest Green"
     },
@@ -9147,7 +9147,7 @@
        "value": "Forest Green"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-3XL-FGRN",
      "title": "3XL / Forest Green"
     },
@@ -9165,7 +9165,7 @@
        "value": "Forest Green"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-4XL-FGRN",
      "title": "4XL / Forest Green"
     }
@@ -9258,8 +9258,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g9_e5662f30-528f-4099-90e6-8a5844354156.jpg?v=1793795581",
    "product_id": "14917967904879",
    "readiness": "ready",
@@ -9298,7 +9298,7 @@
        "value": "Garden Party"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-452-XXS",
      "title": "XXS / Garden Party"
     },
@@ -9316,7 +9316,7 @@
        "value": "Garden Party"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-452-XS",
      "title": "XS / Garden Party"
     },
@@ -9334,7 +9334,7 @@
        "value": "Garden Party"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-452-S",
      "title": "S / Garden Party"
     },
@@ -9352,7 +9352,7 @@
        "value": "Garden Party"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-452-M",
      "title": "M / Garden Party"
     },
@@ -9370,7 +9370,7 @@
        "value": "Garden Party"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-452-L",
      "title": "L / Garden Party"
     },
@@ -9388,7 +9388,7 @@
        "value": "Garden Party"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-452-XL",
      "title": "XL / Garden Party"
     },
@@ -9406,7 +9406,7 @@
        "value": "Garden Party"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-452-2XL",
      "title": "2XL / Garden Party"
     },
@@ -9424,7 +9424,7 @@
        "value": "Garden Party"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-452-3XL",
      "title": "3XL / Garden Party"
     },
@@ -9442,7 +9442,7 @@
        "value": "Garden Party"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-452-4XL",
      "title": "4XL / Garden Party"
     }
@@ -9561,7 +9561,7 @@
    "variants": [
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53311680872559,
      "options": [
       {
@@ -9579,7 +9579,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53311680905327,
      "options": [
       {
@@ -9597,7 +9597,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53311680938095,
      "options": [
       {
@@ -9615,7 +9615,7 @@
     },
     {
      "available": false,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53311680970863,
      "options": [
       {
@@ -9633,7 +9633,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53311681003631,
      "options": [
       {
@@ -9651,7 +9651,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53311681036399,
      "options": [
       {
@@ -9669,7 +9669,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53311681069167,
      "options": [
       {
@@ -9800,7 +9800,7 @@
    "variants": [
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53311672615023,
      "options": [
       {
@@ -9818,7 +9818,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53311672647791,
      "options": [
       {
@@ -9836,7 +9836,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53311672680559,
      "options": [
       {
@@ -9854,7 +9854,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53311672713327,
      "options": [
       {
@@ -9872,7 +9872,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53311672746095,
      "options": [
       {
@@ -9890,7 +9890,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53311672778863,
      "options": [
       {
@@ -9908,7 +9908,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53311672811631,
      "options": [
       {
@@ -10019,8 +10019,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "6",
-   "price_max": 99.0,
-   "price_min": 99.0,
+   "price_max": 89.0,
+   "price_min": 89.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/lhg_model.jpg?v=1793800255",
    "product_id": "4429779927151",
    "readiness": "ready",
@@ -10062,7 +10062,7 @@
        "value": "Light Heather Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-XXS-HGRY",
      "title": "XXS / Light Heather Grey"
     },
@@ -10080,7 +10080,7 @@
        "value": "Light Heather Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-XS-HGRY",
      "title": "XS / Light Heather Grey"
     },
@@ -10098,7 +10098,7 @@
        "value": "Light Heather Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-S-HGRY",
      "title": "S / Light Heather Grey"
     },
@@ -10116,7 +10116,7 @@
        "value": "Light Heather Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-MED-HGRY",
      "title": "M / Light Heather Grey"
     },
@@ -10134,7 +10134,7 @@
        "value": "Light Heather Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-LRG-HGRY",
      "title": "L / Light Heather Grey"
     },
@@ -10152,7 +10152,7 @@
        "value": "Light Heather Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-XL-HGRY",
      "title": "XL / Light Heather Grey"
     },
@@ -10170,7 +10170,7 @@
        "value": "Light Heather Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-2XL-HGRY",
      "title": "2XL / Light Heather Grey"
     },
@@ -10188,7 +10188,7 @@
        "value": "Light Heather Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-3XL-HGRY",
      "title": "3XL / Light Heather Grey"
     },
@@ -10206,7 +10206,7 @@
        "value": "Light Heather Grey"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-4XL-HGRY",
      "title": "4XL / Light Heather Grey"
     }
@@ -10306,8 +10306,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "6",
-   "price_max": 99.0,
-   "price_min": 99.0,
+   "price_max": 89.0,
+   "price_min": 89.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g2.jpg?v=1793794185",
    "product_id": "3223478698084",
    "readiness": "ready",
@@ -10350,7 +10350,7 @@
        "value": "Midnight Black"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-XXS-BLK",
      "title": "XXS / Midnight Black"
     },
@@ -10368,7 +10368,7 @@
        "value": "Midnight Black"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-XS-BLK",
      "title": "XS / Midnight Black"
     },
@@ -10386,7 +10386,7 @@
        "value": "Midnight Black"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-S-BLK",
      "title": "S / Midnight Black"
     },
@@ -10404,7 +10404,7 @@
        "value": "Midnight Black"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-MED-BLK",
      "title": "M / Midnight Black"
     },
@@ -10422,7 +10422,7 @@
        "value": "Midnight Black"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-LRG-BLK",
      "title": "L / Midnight Black"
     },
@@ -10440,7 +10440,7 @@
        "value": "Midnight Black"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-XL-BLK",
      "title": "XL / Midnight Black"
     },
@@ -10458,7 +10458,7 @@
        "value": "Midnight Black"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-2XL-BLK",
      "title": "2XL / Midnight Black"
     },
@@ -10476,7 +10476,7 @@
        "value": "Midnight Black"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-3XL-BLK",
      "title": "3XL / Midnight Black"
     },
@@ -10494,7 +10494,7 @@
        "value": "Midnight Black"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-4XL-BLK",
      "title": "4XL / Midnight Black"
     }
@@ -10567,8 +10567,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/Cass1.jpg?v=1696969755",
    "product_id": "15345988632687",
    "readiness": "ready",
@@ -10607,7 +10607,7 @@
        "value": "NASA"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-WHN-S",
      "title": "S / NASA"
     },
@@ -10625,7 +10625,7 @@
        "value": "NASA"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-WHN-M",
      "title": "M / NASA"
     },
@@ -10643,7 +10643,7 @@
        "value": "NASA"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-WHN-L",
      "title": "L / NASA"
     },
@@ -10661,7 +10661,7 @@
        "value": "NASA"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-WHN-XL",
      "title": "XL / NASA"
     },
@@ -10679,7 +10679,7 @@
        "value": "NASA"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-WHN-2XL",
      "title": "2XL / NASA"
     },
@@ -10697,7 +10697,7 @@
        "value": "NASA"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-WHN-3XL",
      "title": "3XL / NASA"
     },
@@ -10715,7 +10715,7 @@
        "value": "NASA"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-WHN-4XL",
      "title": "4XL / NASA"
     }
@@ -10813,8 +10813,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "6",
-   "price_max": 99.0,
-   "price_min": 99.0,
+   "price_max": 89.0,
+   "price_min": 89.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/AdjustImageFraming.jpg?v=1780854481",
    "product_id": "3223501733988",
    "readiness": "ready",
@@ -10857,7 +10857,7 @@
        "value": "Navy"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-XXS-NVY",
      "title": "XXS / Navy"
     },
@@ -10875,7 +10875,7 @@
        "value": "Navy"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-XS-NVY",
      "title": "XS / Navy"
     },
@@ -10893,7 +10893,7 @@
        "value": "Navy"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-S-NVY",
      "title": "S / Navy"
     },
@@ -10911,7 +10911,7 @@
        "value": "Navy"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-MED-NVY",
      "title": "M / Navy"
     },
@@ -10929,7 +10929,7 @@
        "value": "Navy"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-LRG-NVY",
      "title": "L / Navy"
     },
@@ -10947,7 +10947,7 @@
        "value": "Navy"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-XL-NVY",
      "title": "XL / Navy"
     },
@@ -10965,7 +10965,7 @@
        "value": "Navy"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-2XL-NVY",
      "title": "2XL / Navy"
     },
@@ -10983,7 +10983,7 @@
        "value": "Navy"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-3XL-NVY",
      "title": "3XL / Navy"
     },
@@ -11001,7 +11001,7 @@
        "value": "Navy"
       }
      ],
-     "price": 99.0,
+     "price": 89.0,
      "sku": "20-4XL-NVY",
      "title": "4XL / Navy"
     }
@@ -11088,8 +11088,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g10_a2135d12-b4ef-44c2-8859-b95be5ce5e37.jpg?v=1793795587",
    "product_id": "15022560804975",
    "readiness": "ready",
@@ -11127,7 +11127,7 @@
        "value": "Nightshade Plum"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-066-S",
      "title": "S / Nightshade Plum"
     },
@@ -11145,7 +11145,7 @@
        "value": "Nightshade Plum"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-066-M",
      "title": "M / Nightshade Plum"
     },
@@ -11163,7 +11163,7 @@
        "value": "Nightshade Plum"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-066-L",
      "title": "L / Nightshade Plum"
     },
@@ -11181,7 +11181,7 @@
        "value": "Nightshade Plum"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-066-XL",
      "title": "XL / Nightshade Plum"
     },
@@ -11199,7 +11199,7 @@
        "value": "Nightshade Plum"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-066-2XL",
      "title": "2XL / Nightshade Plum"
     },
@@ -11217,7 +11217,7 @@
        "value": "Nightshade Plum"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-066-3XL",
      "title": "3XL / Nightshade Plum"
     },
@@ -11235,7 +11235,7 @@
        "value": "Nightshade Plum"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-066-4XL",
      "title": "4XL / Nightshade Plum"
     }
@@ -11321,8 +11321,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g18.jpg?v=1793794274",
    "product_id": "15346083430511",
    "readiness": "ready",
@@ -11362,7 +11362,7 @@
        "value": "Otter Romp"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-DHG-S",
      "title": "S / Otter Romp"
     },
@@ -11380,7 +11380,7 @@
        "value": "Otter Romp"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-DHG-M",
      "title": "M / Otter Romp"
     },
@@ -11398,7 +11398,7 @@
        "value": "Otter Romp"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-DHG-L",
      "title": "L / Otter Romp"
     },
@@ -11416,7 +11416,7 @@
        "value": "Otter Romp"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-DHG-XL",
      "title": "XL / Otter Romp"
     },
@@ -11434,7 +11434,7 @@
        "value": "Otter Romp"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-DHG-2XL",
      "title": "2XL / Otter Romp"
     },
@@ -11452,7 +11452,7 @@
        "value": "Otter Romp"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-DHG-3XL",
      "title": "3XL / Otter Romp"
     },
@@ -11470,7 +11470,7 @@
        "value": "Otter Romp"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-DHG-4XL",
      "title": "4XL / Otter Romp"
     }
@@ -11561,8 +11561,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g7_8dc9ffa6-865d-4ec7-bc48-ad8024f72f6e.jpg?v=1793795570",
    "product_id": "7969917927535",
    "readiness": "ready",
@@ -11599,7 +11599,7 @@
        "value": "Purr Parade Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BL4-XXS",
      "title": "XXS / Purr Parade Navy"
     },
@@ -11617,7 +11617,7 @@
        "value": "Purr Parade Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BL4-XS",
      "title": "XS / Purr Parade Navy"
     },
@@ -11635,7 +11635,7 @@
        "value": "Purr Parade Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BL4-S",
      "title": "S / Purr Parade Navy"
     },
@@ -11653,7 +11653,7 @@
        "value": "Purr Parade Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BL4-M",
      "title": "M / Purr Parade Navy"
     },
@@ -11671,7 +11671,7 @@
        "value": "Purr Parade Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BL4-L",
      "title": "L / Purr Parade Navy"
     },
@@ -11689,7 +11689,7 @@
        "value": "Purr Parade Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BL4-XL",
      "title": "XL / Purr Parade Navy"
     },
@@ -11707,7 +11707,7 @@
        "value": "Purr Parade Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BL4-2XL",
      "title": "2XL / Purr Parade Navy"
     },
@@ -11725,7 +11725,7 @@
        "value": "Purr Parade Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BL4-3XL",
      "title": "3XL / Purr Parade Navy"
     },
@@ -11743,7 +11743,7 @@
        "value": "Purr Parade Navy"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-BL4-4XL",
      "title": "4XL / Purr Parade Navy"
     }
@@ -11831,8 +11831,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g16_834b7fd4-b349-4b91-8ef1-678ea7ebccaf.jpg?v=1793795619",
    "product_id": "15346061738095",
    "readiness": "ready",
@@ -11872,7 +11872,7 @@
        "value": "Jammers"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-ZOF-S",
      "title": "S / Jammers"
     },
@@ -11890,7 +11890,7 @@
        "value": "Jammers"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-ZOF-M",
      "title": "M / Jammers"
     },
@@ -11908,7 +11908,7 @@
        "value": "Jammers"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-ZOF-L",
      "title": "L / Jammers"
     },
@@ -11926,7 +11926,7 @@
        "value": "Jammers"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-ZOF-XL",
      "title": "XL / Jammers"
     },
@@ -11944,7 +11944,7 @@
        "value": "Jammers"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-ZOF-2XL",
      "title": "2XL / Jammers"
     },
@@ -11962,7 +11962,7 @@
        "value": "Jammers"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-ZOF-3XL",
      "title": "3XL / Jammers"
     },
@@ -11980,7 +11980,7 @@
        "value": "Jammers"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-ZOF-4XL",
      "title": "4XL / Jammers"
     }
@@ -12108,7 +12108,7 @@
    "variants": [
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166816165999,
      "options": [
       {
@@ -12126,7 +12126,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166816198767,
      "options": [
       {
@@ -12144,7 +12144,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166816231535,
      "options": [
       {
@@ -12162,7 +12162,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166816264303,
      "options": [
       {
@@ -12180,7 +12180,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166816297071,
      "options": [
       {
@@ -12198,7 +12198,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166816329839,
      "options": [
       {
@@ -12216,7 +12216,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166816362607,
      "options": [
       {
@@ -12349,7 +12349,7 @@
    "variants": [
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166813708399,
      "options": [
       {
@@ -12367,7 +12367,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166813741167,
      "options": [
       {
@@ -12385,7 +12385,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166813773935,
      "options": [
       {
@@ -12403,7 +12403,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166813806703,
      "options": [
       {
@@ -12421,7 +12421,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166813839471,
      "options": [
       {
@@ -12439,7 +12439,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166813872239,
      "options": [
       {
@@ -12457,7 +12457,7 @@
     },
     {
      "available": true,
-     "compare_at_price": 120.0,
+     "compare_at_price": 110.0,
      "id": 53166813905007,
      "options": [
       {
@@ -12556,8 +12556,8 @@
    "missing_required": [],
    "on_sale": false,
    "pocket_claims": "",
-   "price_max": 120.0,
-   "price_min": 120.0,
+   "price_max": 110.0,
+   "price_min": 110.0,
    "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g19_da94473f-c398-4604-b993-5e234e644860.jpg?v=1793795625",
    "product_id": "15346086379631",
    "readiness": "ready",
@@ -12596,7 +12596,7 @@
        "value": "Trash Pandas"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-DHL-S",
      "title": "S / Trash Pandas"
     },
@@ -12614,7 +12614,7 @@
        "value": "Trash Pandas"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-DHL-M",
      "title": "M / Trash Pandas"
     },
@@ -12632,7 +12632,7 @@
        "value": "Trash Pandas"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-DHL-L",
      "title": "L / Trash Pandas"
     },
@@ -12650,7 +12650,7 @@
        "value": "Trash Pandas"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-DHL-XL",
      "title": "XL / Trash Pandas"
     },
@@ -12668,7 +12668,7 @@
        "value": "Trash Pandas"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-DHL-2XL",
      "title": "2XL / Trash Pandas"
     },
@@ -12686,12 +12686,12 @@
        "value": "Trash Pandas"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-DHL-3XL",
      "title": "3XL / Trash Pandas"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753488113775,
      "options": [
@@ -12704,7 +12704,7 @@
        "value": "Trash Pandas"
       }
      ],
-     "price": 120.0,
+     "price": 110.0,
      "sku": "SWPANTS-DHL-4XL",
      "title": "4XL / Trash Pandas"
     }
