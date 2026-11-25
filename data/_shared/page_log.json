@@ -1,8 +1,8 @@
 {
  "cursor": {
-  "instagram": 63,
-  "meta_ads": 348,
-  "tiktok": 97
+  "instagram": 65,
+  "meta_ads": 400,
+  "tiktok": 99
  },
  "days": {
   "2026-10-27": {
@@ -36,10 +36,16 @@
   "2026-11-18": {
    "meta_ads": 25,
    "tiktok": 2
+  },
+  "2026-11-25": {
+   "instagram": 2,
+   "meta_ads": 52,
+   "tiktok": 2
   }
  },
  "last": {
-  "meta_ads": "2026-11-18T14:07:43Z",
-  "tiktok": "2026-11-18T16:44:12Z"
+  "instagram": "2026-11-25T09:08:31Z",
+  "meta_ads": "2026-11-25T09:08:31Z",
+  "tiktok": "2026-11-25T09:08:31Z"
  }
 }

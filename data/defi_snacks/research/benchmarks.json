@@ -235,6 +235,81 @@
    "reason": "found with Serper and confirmed as the main official page by the AI reviewer: The page is the brand's primary global Facebook page without any regional qualifier. (https://www.facebook.com/RXBAR)",
    "source": "serper_review",
    "status": "resolved"
+  },
+  "snackcrate": {
+   "candidates": [
+    {
+     "ads": 10,
+     "likes": 575787,
+     "name": "SnackCrate",
+     "page_id": "678502425587704"
+    }
+   ],
+   "checked_at": "2026-11-25T09:08:31Z",
+   "kind": "benchmark",
+   "name": "SnackCrate",
+   "page_id": "678502425587704",
+   "page_likes": 575787,
+   "page_name": "SnackCrate",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
+  "tropicalsmoothiecafe": {
+   "candidates": [
+    {
+     "ads": 10,
+     "likes": 464931,
+     "name": "Tropical Smoothie Cafe",
+     "page_id": "57311312825"
+    }
+   ],
+   "checked_at": "2026-11-25T09:08:31Z",
+   "kind": "benchmark",
+   "name": "Tropical Smoothie Cafe",
+   "page_id": "57311312825",
+   "page_likes": 464931,
+   "page_name": "Tropical Smoothie Cafe",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
+  "whirlpool": {
+   "candidates": [
+    {
+     "ads": 1,
+     "likes": 28913572,
+     "name": "Alibaba.com",
+     "page_id": "22437985072"
+    },
+    {
+     "ads": 5,
+     "likes": 1341859,
+     "name": "Whirlpool",
+     "page_id": "152290218141343"
+    },
+    {
+     "ads": 3,
+     "likes": 935314,
+     "name": "eBay.it",
+     "page_id": "140641719402230"
+    },
+    {
+     "ads": 1,
+     "likes": 21380,
+     "name": "GV Outlet",
+     "page_id": "112186574679764"
+    }
+   ],
+   "checked_at": "2026-11-25T09:08:31Z",
+   "kind": "benchmark",
+   "name": "Whirlpool",
+   "page_id": "152290218141343",
+   "page_likes": 1341859,
+   "page_name": "Whirlpool",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
   }
  },
  "version": 1

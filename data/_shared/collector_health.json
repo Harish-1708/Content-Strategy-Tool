@@ -595,16 +595,110 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-25T09:40:36Z",
+     "code": "",
+     "items": 1,
+     "ms": 16993,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:46:06Z",
+     "code": "",
+     "items": 1,
+     "ms": 15226,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:46:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 16439,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:46:37Z",
+     "code": "",
+     "items": 1,
+     "ms": 7979,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:46:45Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:06:09Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:09:36Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-18T16:50:42Z",
+    "at": "2026-11-25T10:09:36Z",
     "code": "RATE_LIMITED",
     "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
    },
-   "last_success": "2026-11-15T09:37:31Z",
+   "last_success": "2026-11-25T09:46:37Z",
    "pause": null,
    "route": "gateway",
+   "source": "ai:cloudflare",
+   "state": "degraded"
+  },
+  "ai:cloudflare|model:@cf/meta/llama-3.3-70b-instruct-fp8-fast": {
+   "acceptance": null,
+   "consecutive_failures": 4,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-25T09:55:57Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:58:08Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:58:40Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:14:15Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-25T10:14:15Z",
+    "code": "RATE_LIMITED",
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~10m."
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "model:@cf/meta/llama-3.3-70b-instruct-fp8-fast",
    "source": "ai:cloudflare",
    "state": "degraded"
   },
@@ -938,8 +1032,8 @@
   },
   "ai:google|gateway": {
    "acceptance": null,
-   "consecutive_failures": 3,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 3,
    "history": [
     {
      "at": "2026-11-10T09:17:16Z",
@@ -1038,6 +1132,27 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-25T09:46:45Z",
+     "code": "",
+     "items": 1,
+     "ms": 17855,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:58:40Z",
+     "code": "",
+     "items": 1,
+     "ms": 45624,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T10:14:15Z",
+     "code": "",
+     "items": 1,
+     "ms": 18162,
+     "ok": true
     }
    ],
    "last_error": {
@@ -1045,16 +1160,16 @@
     "code": "UPSTREAM_BROKEN",
     "message": "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: google/gemini-3.5-flash key1: upstream_error. Last error: Google API error 503: This model is currently "
    },
-   "last_success": "2026-11-15T09:37:31Z",
+   "last_success": "2026-11-25T10:14:15Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:google",
-   "state": "degraded"
+   "state": "healthy"
   },
   "ai:groq|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 9,
+   "consecutive_successes": 2,
    "history": [
     {
      "at": "2026-11-10T08:54:44Z",
@@ -1398,14 +1513,182 @@
      "items": 1,
      "ms": 1328,
      "ok": true
+    },
+    {
+     "at": "2026-11-25T09:08:39Z",
+     "code": "",
+     "items": 1,
+     "ms": 2568,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:23:15Z",
+     "code": "",
+     "items": 1,
+     "ms": 2583,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:40:25Z",
+     "code": "",
+     "items": 1,
+     "ms": 7177,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:40:32Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:40:32Z",
+     "code": "",
+     "items": 1,
+     "ms": 3908,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:40:36Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:46:00Z",
+     "code": "",
+     "items": 1,
+     "ms": 5698,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:46:06Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:55:47Z",
+     "code": "",
+     "items": 1,
+     "ms": 6406,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:55:54Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:55:54Z",
+     "code": "",
+     "items": 1,
+     "ms": 3531,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:55:57Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:55:57Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:57:54Z",
+     "code": "",
+     "items": 1,
+     "ms": 8166,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:58:02Z",
+     "code": "",
+     "items": 1,
+     "ms": 5281,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T10:03:27Z",
+     "code": "",
+     "items": 1,
+     "ms": 4958,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T10:03:32Z",
+     "code": "",
+     "items": 1,
+     "ms": 2842,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T10:05:57Z",
+     "code": "",
+     "items": 1,
+     "ms": 5841,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T10:06:03Z",
+     "code": "",
+     "items": 1,
+     "ms": 5695,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T10:09:28Z",
+     "code": "",
+     "items": 1,
+     "ms": 7201,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T10:09:36Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:10:04Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:13:03Z",
+     "code": "",
+     "items": 1,
+     "ms": 8638,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T10:14:12Z",
+     "code": "",
+     "items": 1,
+     "ms": 2981,
+     "ok": true
     }
    ],
    "last_error": {
-    "at": "2026-11-18T16:48:09Z",
+    "at": "2026-11-25T10:10:04Z",
     "code": "RATE_LIMITED",
-    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~87s."
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~71s."
    },
-   "last_success": "2026-11-25T07:37:29Z",
+   "last_success": "2026-11-25T10:14:12Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:groq",
@@ -1413,7 +1696,7 @@
   },
   "ai:groq|model:openai/gpt-oss-120b": {
    "acceptance": null,
-   "consecutive_failures": 1,
+   "consecutive_failures": 10,
    "consecutive_successes": 0,
    "history": [
     {
@@ -1422,18 +1705,126 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-25T09:58:02Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:58:08Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:58:40Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:03:32Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:06:03Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:06:09Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:09:36Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:14:12Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:14:15Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-18T16:50:42Z",
+    "at": "2026-11-25T10:14:15Z",
     "code": "RATE_LIMITED",
-    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~7h."
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~10m."
    },
    "last_success": "",
    "pause": null,
    "route": "model:openai/gpt-oss-120b",
    "source": "ai:groq",
-   "state": "healthy"
+   "state": "degraded"
+  },
+  "ai:groq|model:openai/gpt-oss-20b": {
+   "acceptance": null,
+   "consecutive_failures": 4,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-25T09:58:08Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:58:40Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:06:09Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:14:15Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-25T10:14:15Z",
+    "code": "RATE_LIMITED",
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~10m."
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "model:openai/gpt-oss-20b",
+   "source": "ai:groq",
+   "state": "degraded"
   },
   "ai:kilo|gateway": {
    "acceptance": null,
@@ -2039,8 +2430,8 @@
   },
   "ai:openrouter|gateway": {
    "acceptance": null,
-   "consecutive_failures": 0,
-   "consecutive_successes": 19,
+   "consecutive_failures": 3,
+   "consecutive_successes": 0,
    "history": [
     {
      "at": "2026-11-10T09:13:15Z",
@@ -2209,18 +2600,172 @@
      "items": 1,
      "ms": 8629,
      "ok": true
+    },
+    {
+     "at": "2026-11-25T09:40:36Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:40:36Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:40:36Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:46:45Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:46:45Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:46:45Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:55:57Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:55:57Z",
+     "code": "",
+     "items": 1,
+     "ms": 76396,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:58:08Z",
+     "code": "",
+     "items": 1,
+     "ms": 32661,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:58:40Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:58:40Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:58:40Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:06:09Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:06:09Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:06:09Z",
+     "code": "",
+     "items": 1,
+     "ms": 22989,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T10:09:36Z",
+     "code": "",
+     "items": 1,
+     "ms": 18937,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T10:10:04Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:10:04Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:10:04Z",
+     "code": "",
+     "items": 1,
+     "ms": 12012,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T10:14:15Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:14:15Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:14:15Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-11T04:24:24Z",
+    "at": "2026-11-25T10:14:15Z",
     "code": "UPSTREAM_BROKEN",
-    "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: openrouter/qwen/qwen3-next-80b-a3b-instruct:free key1: model_not_found. Last error: OpenRouter API erro"
+    "message": "unusable answer: the answer is empty"
    },
-   "last_success": "2026-11-25T06:06:26Z",
+   "last_success": "2026-11-25T10:10:04Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:openrouter",
-   "state": "healthy"
+   "state": "degraded"
   },
   "ai:pollinations|gateway": {
    "acceptance": null,
@@ -2390,7 +2935,7 @@
   },
   "ai:zhipu|gateway": {
    "acceptance": null,
-   "consecutive_failures": 3,
+   "consecutive_failures": 5,
    "consecutive_successes": 0,
    "history": [
     {
@@ -2497,16 +3042,131 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-25T09:23:15Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:31:52Z",
+     "code": "",
+     "items": 1,
+     "ms": 21184,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:40:36Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:45:03Z",
+     "code": "",
+     "items": 1,
+     "ms": 56351,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T09:46:00Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:46:45Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:06:09Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:09:36Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:13:03Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-18T16:50:42Z",
-    "code": "RATE_LIMITED",
-    "message": "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: 该模型当前访问量过大，请您稍后再试"
+    "at": "2026-11-25T10:13:03Z",
+    "code": "UPSTREAM_BROKEN",
+    "message": "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: zhipu/glm-4.7-flash key1: timeout. Last error: The operation was aborted (zhipu, chat, 60s)"
    },
-   "last_success": "2026-11-15T09:37:31Z",
+   "last_success": "2026-11-25T09:45:03Z",
    "pause": null,
    "route": "gateway",
+   "source": "ai:zhipu",
+   "state": "degraded"
+  },
+  "ai:zhipu|model:glm-4.7-flash": {
+   "acceptance": null,
+   "consecutive_failures": 5,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-25T09:55:57Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:58:08Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T09:58:40Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:14:12Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T10:14:15Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-25T10:14:15Z",
+    "code": "RATE_LIMITED",
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~10m."
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "model:glm-4.7-flash",
    "source": "ai:zhipu",
    "state": "degraded"
   },

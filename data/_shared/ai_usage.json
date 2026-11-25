@@ -1890,8 +1890,48 @@
    }
   },
   "2026-11-25": {
+   "cloudflare": {
+    "by_lane": {
+     "general_json": {
+      "cost_usd": 0.0,
+      "requests": 11,
+      "tokens": 13012
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 7,
+    "latency_ms": 56637,
+    "requests": 11,
+    "tokens_in": 9207,
+    "tokens_out": 3805
+   },
+   "google": {
+    "by_lane": {
+     "general_json": {
+      "cost_usd": 0.0,
+      "requests": 3,
+      "tokens": 10938
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 81641,
+    "requests": 3,
+    "tokens_in": 9014,
+    "tokens_out": 1924
+   },
    "groq": {
     "by_lane": {
+     "general_json": {
+      "cost_usd": 0.0,
+      "requests": 35,
+      "tokens": 87153
+     },
+     "general_text": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 3816
+     },
      "story_review_json": {
       "cost_usd": 0.0,
       "requests": 7,
@@ -1899,14 +1939,19 @@
      }
     },
     "cost_usd": 0.0,
-    "failures": 0,
-    "latency_ms": 7839,
-    "requests": 7,
-    "tokens_in": 4240,
-    "tokens_out": 5600
+    "failures": 21,
+    "latency_ms": 99921,
+    "requests": 44,
+    "tokens_in": 40620,
+    "tokens_out": 60189
    },
    "openrouter": {
     "by_lane": {
+     "general_json": {
+      "cost_usd": 0.0,
+      "requests": 22,
+      "tokens": 219897
+     },
      "seed_judge_json": {
       "cost_usd": 0.0,
       "requests": 1,
@@ -1914,11 +1959,11 @@
      }
     },
     "cost_usd": 0.0,
-    "failures": 0,
-    "latency_ms": 8629,
-    "requests": 1,
-    "tokens_in": 280,
-    "tokens_out": 1903
+    "failures": 17,
+    "latency_ms": 1557912,
+    "requests": 23,
+    "tokens_in": 62248,
+    "tokens_out": 159832
    },
    "pollinations": {
     "by_lane": {
@@ -1964,6 +2009,26 @@
     "requests": 18,
     "tokens_in": 43574,
     "tokens_out": 10052
+   },
+   "zhipu": {
+    "by_lane": {
+     "general_json": {
+      "cost_usd": 0.0,
+      "requests": 12,
+      "tokens": 7600
+     },
+     "general_text": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 3081
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 12,
+    "latency_ms": 77535,
+    "requests": 14,
+    "tokens_in": 3136,
+    "tokens_out": 7545
    }
   }
  }

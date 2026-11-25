@@ -43,6 +43,31 @@
    "source": "auto",
    "status": "resolved"
   },
+  "carpe": {
+   "candidates": [
+    {
+     "ads": 9,
+     "likes": 73337,
+     "name": "Carpe",
+     "page_id": "315614678610514"
+    },
+    {
+     "ads": 1,
+     "likes": 16948,
+     "name": "Method Fishing",
+     "page_id": "1128671340509154"
+    }
+   ],
+   "checked_at": "2026-11-25T09:08:31Z",
+   "kind": "benchmark",
+   "name": "Carpe",
+   "page_id": "315614678610514",
+   "page_likes": 73337,
+   "page_name": "Carpe",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
   "chubbies": {
    "candidates": [
     {
@@ -210,6 +235,49 @@
    "page_id": "601495866852901",
    "page_likes": 361620,
    "page_name": "The Oodie",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
+  "sandcloud": {
+   "candidates": [
+    {
+     "ads": 1,
+     "likes": 22046147,
+     "name": "Target",
+     "page_id": "8103318119"
+    },
+    {
+     "ads": 3,
+     "likes": 2416319,
+     "name": "Marc Jacobs",
+     "page_id": "145598892122326"
+    },
+    {
+     "ads": 1,
+     "likes": 656800,
+     "name": "Sand Cloud",
+     "page_id": "431180057018014"
+    },
+    {
+     "ads": 1,
+     "likes": 104950,
+     "name": "Nobero",
+     "page_id": "108050954837270"
+    },
+    {
+     "ads": 1,
+     "likes": 39450,
+     "name": "Katy and Ryan roam",
+     "page_id": "1819953881400604"
+    }
+   ],
+   "checked_at": "2026-11-25T09:08:31Z",
+   "kind": "benchmark",
+   "name": "Sand Cloud",
+   "page_id": "431180057018014",
+   "page_likes": 656800,
+   "page_name": "Sand Cloud",
    "reason": "the only advertiser page named exactly this",
    "source": "auto",
    "status": "resolved"
