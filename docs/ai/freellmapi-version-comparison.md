@@ -52,7 +52,7 @@ No breaking change, no new environment variable, no migration.
 
 ## 6. Recommendation
 
-**Pin v0.16.17, commit `741d03094398facceb1b6019a838f806e4d9f7f9`, built from source in the Actions job, run on Node 22 (tested), with `CATALOG_SYNC_DISABLED=1`.**
+**Pin v0.16.17, commit `741d03094398facceb1b6019a838f806e4d9f7f9`, built from source in the Actions job, run on Node 24 (proven live in Provider test #7 and Provider health #1 on 2026-11-24; the earlier rounds ran it on Node 22), with `CATALOG_SYNC_DISABLED=1`.**
 
 Why:
 - The reviewed code is v0.16.15, and the whole difference to v0.16.17 is small, was read in full, and contains a fix with no breaking change. Pinning the reviewed v0.16.15 would be equally defensible; we prefer .17 for the fix.
