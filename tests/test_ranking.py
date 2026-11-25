@@ -18,6 +18,8 @@ PERFECT = {"story_extract_json": {"facts": [{"fact": "Probe Brand was founded in
            "foundation_json": {"text": "Probe Brand makes soft overalls for adults. " * 12, "needs_input": ["named competitors"], "claims_used": []},
            "claim_verify_json": [{"queries": ["Probe Brand 2026 Probe Innovation Award"]}, {"verdict": "supports", "quote": "Probe Brand won the 2026 Probe Innovation Award, the awarding body announced on 3 March 2026.", "about_brand": True}],
            "brief_json": {"title": "Organic overalls", "concepts": [{"name": "Soft"}]}}
+PERFECT["seed_judge_json"] = {"verdicts": [{"i": 0, "could_help": True}, {"i": 1, "could_help": False}, {"i": 2, "could_help": False}]}
+PERFECT["brief_review_json"] = {"verdict": "revise", "problems": [{"where": "concept 1", "issue": "an unverifiable claim: best in the world"}], "checklist": {"no_unverifiable_claim": False}}
 for _lane in ("competitor_ideas_json", "creator_chain_json", "listen_learn_json", "voice_creative_json", "seo_lens_json", "storyboard_json"):
     PERFECT[_lane] = {"text": "Probe Brand makes soft overalls for adults and the audience likes the deep pockets. " * 4, "needs_input": ["named competitors"], "claims_used": []}
 
@@ -172,7 +174,8 @@ def test_the_pool_retest_workflow_is_manual_commits_only_its_own_files_and_sets_
     assert env["FREEAPI_ENCRYPTION_KEY"] and env["SAMBANOVA_API_KEY"] and env["ANTHROPIC_API_KEY"]
 
 
-NO_MODEL_JOBS = {("sessions-password-backup", "backup"): "logs in once, only when the cookie session cannot be proved: no language model", ("batch3-tools", "batch3"): "forecasting (TimesFM), the CLIP stock corpus and the MoneyPrinterTurbo status: no language model", ("concat-gate", "notice"): "Concat is dropped: the workflow only prints a notice: no language model", ("mpt-deploy", "deploy"): "deploys the MoneyPrinterTurbo host to Cloud Run: no language model", ("catalogue-admin", "admin"): "edits the catalogue only", ("stage-tools", "stage"): "transcription (Groq Whisper, Faster-Whisper) and the public-page bake-off call no language model", ("sessions", "sessions"): "logs a session in, no model", ("sheets", "sheets"): "writes the sheet, no model",
+NO_MODEL_JOBS = {("creative-intel", "intel"): "formulas, winners, opportunity scores and the validator checks are plain code over the saved Idea Bank, and the library refresh reads two GitHub repositories: no model",
+                 ("storyboard", "storyboard"): "a storyboard built by code from a saved brief, with pictures found by search: no model", ("sessions-password-backup", "backup"): "logs in once, only when the cookie session cannot be proved: no language model", ("batch3-tools", "batch3"): "forecasting (TimesFM), the CLIP stock corpus and the MoneyPrinterTurbo status: no language model", ("concat-gate", "notice"): "Concat is dropped: the workflow only prints a notice: no language model", ("mpt-deploy", "deploy"): "deploys the MoneyPrinterTurbo host to Cloud Run: no language model", ("catalogue-admin", "admin"): "edits the catalogue only", ("stage-tools", "stage"): "transcription (Groq Whisper, Faster-Whisper) and the public-page bake-off call no language model", ("sessions", "sessions"): "logs a session in, no model", ("sheets", "sheets"): "writes the sheet, no model",
                  ("sync", "sync"): "reads the store, no model", ("ai-gateway", "mock"): "a scripted stand-in: no network, no providers", ("agent-reach-cloudrun", "cloudrun"): "deploys a service",
                  ("tests", "test"): "runs the tests", ("tests", "sabotage-updated"): "runs the tests", ("tests", "sabotage-full-observatory"): "runs the tests", ("tests", "sabotage-full-main"): "runs the tests"}
 

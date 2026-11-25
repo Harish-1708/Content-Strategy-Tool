@@ -110,7 +110,7 @@ def test_blank_tiles_are_waited_for_and_nudged_into_view_and_a_spinner_that_neve
     note = C.settle_images(page, CFG)
     assert note == "" and page.nudges >= 1 and len(page.waits) >= 6                                                          # waited through the blanks, nudged, then accepted the drawn grid although the spinner stayed
     stuck = Grid([blank])
-    note = C.settle_images(stuck, CFG)
+    note = C.settle_images(stuck, {"settle_images": {**CFG["settle_images"], "stall_polls": 999}})                 # the stall rule off: the whole time is waited, as before
     assert note == "the grid was still filling in after 30 s (13 of 13 images drawn, 27 blank tile(s), spinner still showing)" and stuck.nudges >= 4 and sum(stuck.waits) == 30
     only_images = Grid([{"loaded": 12, "total": 12, "spinner": False}] * 4)                                                  # an older browser reports no tiles: the image rule alone, as before
     assert C.settle_images(only_images, CFG) == ""

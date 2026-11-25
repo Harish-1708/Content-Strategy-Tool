@@ -124,7 +124,14 @@ def test_a_challenge_during_the_login_ends_the_attempt_right_there_with_no_solvi
 
         def close(self):
             pass
-    monkeypatch.setattr(B, "open_browser", lambda *a, **k: opened.append(1) or Br())
+    import contextlib
+
+    @contextlib.contextmanager
+    def fake_open(*a, **k):                                                                                                      # the REAL open_browser is a context manager (it yields the browser): the old fake returned the browser itself, which is why Instagram's first live attempt crashed with an AttributeError that this test never saw
+        opened.append(1)
+        yield Br()
+    assert hasattr(B.open_browser, "__wrapped__")                                                                                # still a @contextmanager function in the real module
+    monkeypatch.setattr(B, "open_browser", fake_open)
     monkeypatch.setattr(C, "run_steps", lambda br, st, vals: steps.append(1))
     monkeypatch.setattr(C, "check_warning", lambda br, platform, cfg: None)
     monkeypatch.setattr(C, "session_state", lambda br, cfg: "challenge")
@@ -137,3 +144,28 @@ def test_a_challenge_during_the_login_ends_the_attempt_right_there_with_no_solvi
     assert ledger.rest_until("tiktok") == "2026-11-21T12:00:00Z"
     again = SP.attempt("tiktok", entry(), CREDS, ledger, NOW, login_fn=lambda *a: pytest.fail("no second try while resting"), prove_fn=lambda *a: {})
     assert again["status"] == "skipped" and "resting until 2026-11-21" in again["detail"]
+
+
+def test_a_login_that_opens_a_session_returns_the_cookies_through_the_real_context_manager_shape(tmp_path, monkeypatch):
+    from contentintel import browser as B
+    from contentintel import collectors as C
+    import contextlib
+    seen = {}
+
+    class Br:
+        def export_cookies(self):
+            return '[{"name": "sessionid", "value": "x"}]'
+
+    @contextlib.contextmanager
+    def fake_open(*a, **k):
+        seen["open"] = True
+        try:
+            yield Br()
+        finally:
+            seen["closed"] = True
+    monkeypatch.setattr(B, "open_browser", fake_open)
+    monkeypatch.setattr(C, "run_steps", lambda br, st, vals: None)
+    monkeypatch.setattr(C, "check_warning", lambda br, platform, cfg: None)
+    monkeypatch.setattr(C, "session_state", lambda br, cfg: "ok")
+    cookies = SP.real_login("browser.yaml", str(tmp_path))("instagram", "user", "pw")
+    assert "sessionid" in cookies and seen == {"open": True, "closed": True}                                                    # the cookies came back and the browser was closed

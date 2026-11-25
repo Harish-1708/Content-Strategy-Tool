@@ -946,6 +946,8 @@ def test_the_voice_command_seeds_only_with_the_seed_flag(tmp_path, monkeypatch, 
     discovery = Runner((FIX / "l30_discovery_documented.json").read_text())
     store_ = Store(tmp_path / "data")
     store_.write_auto_seeds("swoveralls", {"keywords": {"direct": [], "adjacent": [], "cross_industry": []}})
+    from contentintel import assets_find as AFX
+    monkeypatch.setattr(AFX, "terms_from_files", lambda *a, **k: ["Swoveralls", "weighted hoodie loungewear", "family pyjamas"])           # the brand's own terms: both fixture topics share a word with them, so they reach the trending lane that feeds the seeds
     for flag in ([], ["--seed"]):
         args = cli.build_parser().parse_args(["voice", "--brand", "swoveralls", "--mode", "discover", "--data-dir", str(tmp_path / "data"), "--brands-dir", "brands", *flag])
         RT.run_voice(args, store_, NOW, runner=discovery, environ={})
@@ -1050,3 +1052,43 @@ def test_the_pool_command_reads_the_gateways_own_provider_list_from_the_director
     assert "  - morph:" not in with_gateway                                    # the gateway serves 'morph' in this directory, so it is not offered
     assert RT.run_pool(cli.build_parser().parse_args(["pool"])) == 0
     assert "  - morph:" in capsys.readouterr().out
+
+
+def test_discovery_seeds_have_two_tiers_a_shared_word_is_priority_and_a_pool_judge_decides_the_rest_within_its_limits(tmp_path, monkeypatch, capsys):
+    from contentintel import assets_find as AFX
+    from contentintel import seed_judge as SJ
+    ext = tmp_path / "ext"
+    shutil.copytree(checkout(tmp_path / "x"), ext / "last30days")
+    monkeypatch.setenv("CONTENTINTEL_EXTERNAL_DIR", str(ext))
+    monkeypatch.setattr(RT, "_settings", lambda a: SETTINGS)
+    monkeypatch.setattr(AFX, "terms_from_files", lambda *a, **k: ["Swoveralls", "zzzz qqqq"])                  # the brand's own terms share a word with neither fixture topic: both are tier 2
+    discovery = Runner((FIX / "l30_discovery_documented.json").read_text())
+    store_ = Store(tmp_path / "data")
+    store_.write_auto_seeds("swoveralls", {"keywords": {"direct": [], "adjacent": [], "cross_industry": []}})
+    store_.write_extra("swoveralls", "voice", {"items": [], "trending": [{"title": "Unrelated headline from an old run", "url": "", "tier": ""}, {"title": "earlier judged topic", "url": "", "tier": "judged"}]})
+    asked = []
+
+    class Judge:
+        def json_task(self, system, user, max_tokens=None):
+            asked.append(user)
+            return {"verdicts": [{"i": i, "could_help": "hoodie" in line.lower()} for i, line in enumerate(user.split("Topics:\n")[1].splitlines())]}
+    args = cli.build_parser().parse_args(["voice", "--brand", "swoveralls", "--mode", "discover", "--seed", "--data-dir", str(tmp_path / "data"), "--brands-dir", "brands"])
+    RT.run_voice(args, store_, NOW, runner=discovery, environ={}, judge=lambda: Judge())
+    out = capsys.readouterr().out
+    lane = store_.read_extra("swoveralls", "voice")["trending"]
+    assert [x["title"] for x in lane] == ["weighted hoodie blankets", "earlier judged topic"] and lane[0]["tier"] == "judged"          # the old unrelated headline is gone, what was judged useful earlier stays                         # the judge said yes to one and no to the other
+    assert "1 were judged useful to the brand by a pool model (0 from earlier judgments), 1 were judged not useful and dropped, 0 could not be judged this run" in out and "1 judge call(s)" in out
+    assert len(asked) == 1 and "Brand: swoveralls. Its own terms" in asked[0] and "zzzz qqqq" in asked[0]
+    assert store_.read_auto_seeds("swoveralls")["keywords"]["cross_industry"] == ["weighted hoodie blankets"]
+    assert store_.load_usage()["months"][NOW[:7]][SJ.COUNTER] == 1 and len(store_.read_extra("swoveralls", "seed_judgments")["verdicts"]) == 2
+    RT.run_voice(args, store_, NOW, runner=discovery, environ={}, judge=lambda: Judge())
+    again = capsys.readouterr().out
+    assert len(asked) == 1 and "(2 from earlier judgments)" in again and "0 judge call(s)" in again                         # asked once, remembered after
+    class NoPool:
+        def __call__(self):
+            return None
+    fresh = Store(tmp_path / "data2")
+    fresh.write_auto_seeds("swoveralls", {"keywords": {"direct": [], "adjacent": [], "cross_industry": []}})
+    RT.run_voice(cli.build_parser().parse_args(["voice", "--brand", "swoveralls", "--mode", "discover", "--data-dir", str(tmp_path / "data2"), "--brands-dir", "brands"]), fresh, NOW, runner=discovery, environ={}, judge=NoPool())
+    nope = capsys.readouterr().out
+    assert "2 could not be judged this run (no pool model is available to judge them)" in nope and not (fresh.read_extra("swoveralls", "voice") or {}).get("trending")

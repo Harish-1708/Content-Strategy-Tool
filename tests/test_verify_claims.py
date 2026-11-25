@@ -376,7 +376,7 @@ def test_the_call_budget_and_the_claim_count_grow_with_the_work_waiting_so_no_cl
     out = capsys.readouterr().out
     assert VC.MAX_PER_RUN == 60 and waiting > 6 and code == 0 and f"{min(waiting, 60)} claim(s) checked from public sources" in out                   # every waiting claim, not six and "the call limit was reached" not in out
     capped = run_canon(tmp_path / "small", Judge({"Probe Design Award": supports(QUOTE_A)}), "--action", "verify-claims", "--max-claims", "2", "--verify-calls", "2", search=lambda q: [{"url": url, "title": ""}], get=lambda u: page(QUOTE_A))
-    assert capped == 0 and "the call limit was reached" in capsys.readouterr().out                                           # an explicit small budget is still honoured
+    assert capped == 0 and "the call limit (2) was reached" in capsys.readouterr().out                                           # an explicit small budget is still honoured
 
 
 def test_each_claim_is_announced_when_it_starts_and_reported_when_it_ends_so_a_cut_off_run_still_leaves_its_evidence(tmp_path, capsys, trusted):
