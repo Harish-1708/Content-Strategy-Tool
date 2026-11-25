@@ -1,0 +1,45 @@
+{
+ "note": "what the pool judge said about each discovered topic (could it help this brand), kept 30 days so a topic is never judged twice",
+ "verdicts": {
+  "dario oss models": {
+   "at": "2026-11-25",
+   "yes": false
+  },
+  "hurried announcement alessandro masullo grh": {
+   "at": "2026-11-25",
+   "yes": false
+  },
+  "inkling 2 mini": {
+   "at": "2026-11-25",
+   "yes": false
+  },
+  "jensen huang resigns": {
+   "at": "2026-11-25",
+   "yes": false
+  },
+  "ladybird is now in alpha": {
+   "at": "2026-11-25",
+   "yes": false
+  },
+  "lean verification of the riemann hypothesis": {
+   "at": "2026-11-25",
+   "yes": false
+  },
+  "levent alpöge generalized riemann hypothesis": {
+   "at": "2026-11-25",
+   "yes": false
+  },
+  "nvidia reinstates jensen huang as ceo": {
+   "at": "2026-11-25",
+   "yes": false
+  },
+  "pill": {
+   "at": "2026-11-25",
+   "yes": false
+  },
+  "toyota nissan honda": {
+   "at": "2026-11-25",
+   "yes": false
+  }
+ }
+}

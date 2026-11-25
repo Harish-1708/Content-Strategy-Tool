@@ -1888,6 +1888,23 @@
     "tokens_in": 7120,
     "tokens_out": 21687
    }
+  },
+  "2026-11-25": {
+   "openrouter": {
+    "by_lane": {
+     "seed_judge_json": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 2183
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 8629,
+    "requests": 1,
+    "tokens_in": 280,
+    "tokens_out": 1903
+   }
   }
  }
 }
