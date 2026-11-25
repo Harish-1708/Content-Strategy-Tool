@@ -650,3 +650,16 @@ def test_a_blocked_claim_in_the_brief_makes_it_need_review_and_a_checkable_state
     viol = BR.gate_violations({"title": "T", "concepts": [{"name": "n", "hook": "Clinically proven to be comfy.", "script": "", "visual_direction": "", "cta": ""}]}, reg)
     assert viol and all(v["severity"] == "warning" and v["message"].startswith("NEEDS_REVIEW:") for v in viol)
     assert BR.gate_violations({"title": "Soft overalls", "concepts": []}, reg) == []
+
+
+def test_a_validator_error_or_a_reviewer_that_says_revise_stops_a_brief_being_ready_and_the_findings_are_saved(store, swov, ruleset, usable):
+    ok = make(store, swov, ruleset, {"claude-sonnet-5-5": claude_with(good_brief(), {"verdict": "pass", "problems": [], "checklist": {"hook_confirms_the_ask": True}})})
+    assert ok["status"] == "ready" and ok["review"]["verdict"] == "pass" and ok["rules_version"] == 1 and ok["content"]["concepts"][0]["name"] == "Comfort switch"
+    invisible = good_brief(concepts=[concept(script="Show the zip,\u200b then the pockets.")])
+    bad = make(store, swov, ruleset, {"claude-sonnet-5-5": claude_with(invisible, {"verdict": "pass", "problems": [], "checklist": {}})})
+    assert bad["violations"] == [] and bad["status"] == "needs review" and any(f["rule"] == "slop_invisible" and f["severity"] == "error" for f in bad["validator_findings"])      # only the validator bank objected
+    revise = make(store, swov, ruleset, {"claude-sonnet-5-5": claude_with(good_brief(), {"verdict": "revise", "problems": [{"where": "concept 1", "issue": "no proof"}], "checklist": {"no_unverifiable_claim": False}})})
+    assert revise["violations"] == [] and not [f for f in revise["validator_findings"] if f["severity"] == "error"] and revise["status"] == "needs review" and revise["review"]["verdict"] == "revise"
+    assert any(n.startswith("independent review: revise") for n in revise["notes"]) and any(n.startswith("validator bank:") for n in bad["notes"])
+    down = make(store, swov, ruleset, {"claude-sonnet-5-5": claude_with(good_brief())})
+    assert down["status"] == "ready" and down["review"]["verdict"] == "unavailable"                                                       # a reviewer that cannot answer never blocks a brief

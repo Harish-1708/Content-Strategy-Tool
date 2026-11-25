@@ -112,10 +112,10 @@ def test_the_save_step_adds_only_files_that_exist_and_says_so_without_a_fatal_er
     (tmp_path / "data" / "_shared" / "sessions_health.json").write_text("{}", encoding="utf-8")                  # a check run: no reads file yet
     done = subprocess.run(["bash", "-c", script], capture_output=True, text=True)
     assert done.returncode == 0 and "fatal" not in done.stdout + done.stderr and "pathspec" not in done.stdout + done.stderr, done.stderr
-    assert "data/_shared/sessions_reads.json does not exist yet" in done.stdout and done.stdout.strip().splitlines()[-1] == "data/_shared/sessions_health.json"
+    assert "Skipped (this kind of run does not write it): data/_shared/sessions_reads.json" in done.stdout and done.stdout.strip().splitlines()[-1] == "data/_shared/sessions_health.json"
     (tmp_path / "data" / "_shared" / "sessions_reads.json").write_text("[]", encoding="utf-8")                   # a read run: both exist, both are staged
     done = subprocess.run(["bash", "-c", script], capture_output=True, text=True)
-    assert done.returncode == 0 and "does not exist yet" not in done.stdout and set(done.stdout.split()[-2:]) == {"data/_shared/sessions_health.json", "data/_shared/sessions_reads.json"}
+    assert done.returncode == 0 and "Skipped (" not in done.stdout and set(done.stdout.split()[-2:]) == {"data/_shared/sessions_health.json", "data/_shared/sessions_reads.json"}
 
 
 # ---- a monitoring run gets the browser ----------------------------------------------------------------------------------------------------

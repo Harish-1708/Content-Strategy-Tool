@@ -64,7 +64,16 @@ def lane(apify, **kw):
     return V.ApifyVoice(apify, R.Ledger({}, "2026-11"), per_run=60, monthly=500, shared_cap=600, normalize=lambda source, raw: ([], len(raw)), day="2026-11-19", **kw)
 
 
-def test_the_reddit_actor_is_asked_only_as_a_backup_when_the_public_reddit_search_failed_and_from_its_own_share():
+def test_reddit_through_apify_is_on_hold_by_default_and_no_call_is_made(monkeypatch):
+    from contentintel import apify as AP
+    assert AP.reddit_held("research.yaml") is True and AP.reddit_held("no-such-file.yaml") is True       # the owner's hold (the residential proxy costs about 8 dollars a GB): on in the file, and on when the file cannot be read
+    a = Apify()
+    items, notes = lane(a).run("overalls", reddit_backup=True)
+    assert not [c for c in a.calls if c[0] == "trudax/reddit-scraper-lite"] and any("apify reddit for 'overalls': not asked (Reddit through Apify is on hold" in n for n in notes)
+
+
+def test_the_reddit_actor_is_asked_only_as_a_backup_when_the_public_reddit_search_failed_and_from_its_own_share(monkeypatch):
+    monkeypatch.setattr(V, "reddit_held", lambda *a, **k: False)                                           # the hold lifted, as it will be when Reddit comes back
     a = Apify()
     quiet, _notes = lane(a).run("overalls")
     assert not [c for c in a.calls if c[0] == "trudax/reddit-scraper-lite"]                                                        # not asked when the public search worked
@@ -146,7 +155,8 @@ def test_the_revised_plan_still_adds_up_to_twenty_dollars_with_x_and_linkedin_in
     assert "| x read | 2% | 0.50 |" in doc or "x read" in doc and "linkedin read" in doc and "khadinakbar/x-tweet-scraper" in doc and "harvestapi/linkedin-company-posts" in doc
 
 
-def test_x_and_linkedin_and_reddit_page_reads_go_through_their_own_actors_and_are_counted_against_their_own_shares():
+def test_x_and_linkedin_and_reddit_page_reads_go_through_their_own_actors_and_are_counted_against_their_own_shares(monkeypatch):
+    monkeypatch.setattr(SL, "reddit_held", lambda *a, **k: False)                                         # the hold lifted, as it will be when Reddit comes back
     calls = []
 
     class Fake:

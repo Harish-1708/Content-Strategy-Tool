@@ -374,7 +374,7 @@ def test_the_concat_workflow_is_a_notice_only_because_concat_is_dropped_and_the_
     concat = Path(".github/workflows/concat-gate.yml").read_text(encoding="utf-8")
     assert "Concat is DROPPED" in concat and "xvfb" not in concat and "gh release download" not in concat and "apt-get" not in concat and "git push" not in concat
     b3 = Path(".github/workflows/batch3-tools.yml").read_text(encoding="utf-8")
-    assert 'pip install "timesfm[torch]"' in b3 and "sentence-transformers" in b3 and "data/*/extras/forecasts.json data/*/extras/stock_corpus.json" in b3
+    assert 'pip install "timesfm[torch]>=3.0"' in b3 and "sentence-transformers" in b3 and "data/*/extras/forecasts.json data/*/extras/stock_corpus.json" in b3
     stage = Path(".github/workflows/stage-tools.yml").read_text(encoding="utf-8")
     assert "lightpanda-x86_64-linux" in stage and "obscura-x86_64-linux.tar.gz" in stage and "microsoft/VibeASR.cpp" in stage and "vibeasr-lm-i2_s-embed-q6_k.gguf" in stage and "asr_infer" in stage and "npm install -g agent-browser" in stage
     import yaml
@@ -385,7 +385,7 @@ def test_the_concat_workflow_is_a_notice_only_because_concat_is_dropped_and_the_
 def test_timesfm_is_version_3_with_no_fallback_to_an_older_one():
     import sys
     text = Path("contentintel/forecast.py").read_text(encoding="utf-8")
-    assert FC.TIMESFM_CHECKPOINT == "google/timesfm-3.0-pytorch" and "from timesfm3 import ModelConfig, TimesFM3Evaluator" in text and "TimesFM_3_0" not in text and "timesfm-2" not in text
+    assert FC.TIMESFM_CHECKPOINT == "google/timesfm-3.0-pytorch" and "from timesfm3 import TimesFM3Forecaster" in text and "TimesFM3Forecaster.from_pretrained(TIMESFM_CHECKPOINT" in text and "TimesFM_3_0" not in text and "timesfm-2" not in text
     sys.modules["timesfm3"] = None
     try:
         with pytest.raises(ImportError, match="no fallback to an older version"):
@@ -485,3 +485,33 @@ def test_stock_footage_comes_from_pixabay_while_pexels_is_paused_and_from_pexels
     assert all(p["video_source"] == "pixabay" for _l, p in jobs)
     hooks = MPT.hook_variants(BRIEF["concepts"][0], ["Another hook."], cfg, "x", source="pexels")
     assert all(p["video_source"] == "pexels" for _l, p in hooks) and MPT.params_for(BRIEF["concepts"][0], cfg)["video_source"] == "pixabay"          # Pixabay is the default
+
+
+def test_the_loader_uses_the_published_3_0_entry_point_and_names_the_installed_version_when_the_import_fails(monkeypatch):
+    import sys
+    import types
+    calls = {}
+
+    class Out:
+        forecast = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
+
+    class Forecaster:
+        @classmethod
+        def from_pretrained(cls, name, device=None, **kw):
+            calls["load"] = (name, device)
+            return cls()
+
+        def predict(self, context, horizon):
+            calls["predict"] = (len(context), horizon)
+            return Out()
+    fake = types.ModuleType("timesfm3")
+    fake.TimesFM3Forecaster = Forecaster
+    monkeypatch.setitem(sys.modules, "timesfm3", fake)
+    run = FC.load_timesfm()
+    assert run([1, 2, 3, 4, 5, 6, 7, 8], 4) == [1.0, 2.0, 3.0, 4.0] and calls == {"load": ("google/timesfm-3.0-pytorch", "cpu"), "predict": (8, 4)}
+    monkeypatch.setitem(sys.modules, "timesfm3", None)
+    monkeypatch.setattr(FC, "installed_version", lambda: "1.3.0")
+    with pytest.raises(ImportError, match=r"installed timesfm: 1\.3\.0.*timesfm\[torch\]>=3\.0"):
+        FC.load_timesfm()
+    wf = Path(".github/workflows/batch3-tools.yml").read_text(encoding="utf-8")
+    assert 'pip install "timesfm[torch]>=3.0"' in wf and "pip show timesfm" in wf
