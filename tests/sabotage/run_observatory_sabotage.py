@@ -932,7 +932,15 @@ MUTATIONS[:] = [m for m in MUTATIONS if m[0] not in SUPERSEDED]
 MUTATIONS.extend(_U68)
 from update70_mutations import U70 as _U70          # Update 70 (Batch 2, stage 1)
 MUTATIONS.extend(_U70)
-UPDATED_IDS = {m[0] for m in [*U57_LOCAL, *_U57, *_U58, *_U59, *_U60, *_U61, *_U62, *_U63, *_U64, *_U65, *_U68, *_U70]} - set(SUPERSEDED)          # the checks written since Update 57: SABOTAGE_SET=updated runs only these
+from update70_mutations import U73K as _U73K          # Update 73 v3, follow-up 6
+MUTATIONS.extend(_U73K)
+from update70_mutations import U73S as _U73S          # Update 73 v4, Stages 4 and 5
+MUTATIONS.extend(_U73S)
+from update70_mutations import U73T as _U73T          # Update 73 v4, the library refresh and Stage 7 layer 1
+MUTATIONS.extend(_U73T)
+from update70_mutations import U73U as _U73U          # Update 73 v4, the two-tier discovery seeds judge
+MUTATIONS.extend(_U73U)
+UPDATED_IDS = {m[0] for m in [*U57_LOCAL, *_U57, *_U58, *_U59, *_U60, *_U61, *_U62, *_U63, *_U64, *_U65, *_U68, *_U70, *_U73K, *_U73S, *_U73T, *_U73U]} - set(SUPERSEDED)          # the checks written since Update 57: SABOTAGE_SET=updated runs only these
 
 
 def run_tests(workdir):
