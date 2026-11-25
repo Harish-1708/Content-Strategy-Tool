@@ -1,0 +1,5 @@
+These three files are snapshots of data from two MIT-licensed repositories, kept here so the formula library and the validators work in any run without a clone:
+  ig_hooks.json  <- Jakeschincariol/instagram-agent-skill, skills/ig-reel/hooks.json (26 Reel hook formulas)
+  yt_hooks.json  <- Jakeschincariol/youtube-agent-skill, skills/yt-script/hooks.json (21 YouTube hook formulas)
+  slop.json      <- Jakeschincariol/instagram-agent-skill, skills/ig-human/slop.json (AI-writing lexicon)
+Copyright (c) 2026 Jake Schincariol, MIT License. When a newer checkout of either repository is present in the external folder (contentintel/connections.py), contentintel/formulas.py reads that instead and says so.

@@ -1,0 +1,30 @@
+{
+  "checked_at": "2026-11-25T02:35:36Z",
+  "note": "which commit of each repository the copy in this folder came from; written by `intel --action refresh-library`",
+  "files": {
+    "ig_hooks": {
+      "repo": "Jakeschincariol/instagram-agent-skill",
+      "path": "skills/ig-reel/hooks.json",
+      "commit": "d03c56bb598be770c60b201f94237e5d1a4268a6",
+      "sha256": "147230762fd9e17cf58302913cb97069b3a3c7edae211b3b0196c180adf1412f",
+      "entries": 26,
+      "changed_on": "2026-11-25T02:35:36Z"
+    },
+    "yt_hooks": {
+      "repo": "Jakeschincariol/youtube-agent-skill",
+      "path": "skills/yt-script/hooks.json",
+      "commit": "a2feb2104981a375ffd4f87ee04f4f5344ac43c6",
+      "sha256": "76c47b4ad410a8856c9d27aa489d7c447b3ebe30a9024f03e2d59fefe267f5cb",
+      "entries": 21,
+      "changed_on": "2026-11-25T02:35:36Z"
+    },
+    "slop": {
+      "repo": "Jakeschincariol/instagram-agent-skill",
+      "path": "skills/ig-human/slop.json",
+      "commit": "d03c56bb598be770c60b201f94237e5d1a4268a6",
+      "sha256": "987dedae2008742c04ba8e2728f9149f67dc6a665beba891731d6e048abdab2d",
+      "entries": 96,
+      "changed_on": "2026-11-25T02:35:36Z"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "note": "OUR additions on top of the library's own patterns (the library data is refreshed from its repositories and these stay). 'add' patterns are OR-ed with the library's; 'replace' swaps a pattern that is broken. Each entry says why. Written 2026-11-25 after measuring the library against its own 47 worked examples: its own patterns matched 32 of 47 with first-match and 38 of 47 with the best-match rule used here; with these 9 additions all 47 match.",
+  "instagram": {
+    "7":  {"add": ["\\byou(?:'re| are) \\w+ing\\b[^.!?]*\\bwrong\\b"], "why": "pattern gap: only 'doing ... wrong' was covered, not 'writing captions wrong'"},
+    "8":  {"add": ["\\bi (?:spent|worked|ran|was|have been)\\b[^.!?]*\\b(?:one|two|three|four|five|six|seven|eight|nine|ten|twelve|fifteen|twenty)\\s+years?\\b", "\\bwhat we never (?:put|told|said|showed)\\b"], "why": "pattern gap: years written as a word"},
+    "11": {"add": ["^\\s*(?:one|two|three|four|five|six|seven|eight|nine|ten|twelve|fifteen|twenty)\\s+\\w+", "\\bnumber (?:one|two|three|four|five|six|seven|eight|nine|ten)\\b"], "why": "pattern gap: a count written as a word"},
+    "12": {"replace": "^\\s*[\"\u201c'][^\"\u201d]{5,120}[\"\u201d][,.]?\\s*(?:fine|ok|okay|sure|right|here)", "why": "broken pattern: the quoted part could not contain an apostrophe, so \"I don't want...\" never matched"},
+    "14": {"add": ["^\\s*[a-z]+(?:ers|ists|ors|ants)\\b[^.!?:]{0,40}:"], "why": "pattern gap: the callout may run past 28 characters before its colon"},
+    "19": {"add": ["\\bthe (?:second|moment|minute|day) you\\b"], "why": "pattern gap: time pressure said as 'the second you ...'"}
+  },
+  "youtube": {
+    "the-mistake": {"add": ["\\b(?:are|is) why (?:nobody|no one|most people)\\b", "\\bit(?: is|'s) not the (?:topic|content|idea)\\b"], "why": "pattern gap: the mistake named as the reason people leave"},
+    "the-clock":   {"add": ["\\bin (?:the next )?(?:one|two|three|four|five|six|seven|eight|nine|ten|fifteen|twenty|thirty|sixty) (?:seconds|minutes|hours)\\b"], "why": "pattern gap: a time written as a word"},
+    "the-list":    {"add": ["^(?:one|two|three|four|five|six|seven|eight|nine|ten|twelve|fifteen|twenty) \\w+"], "why": "pattern gap: a count written as a word"}
+  }
+}
