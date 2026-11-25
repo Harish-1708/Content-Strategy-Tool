@@ -1,0 +1,365 @@
+{
+ "brand": "defi_snacks",
+ "formulas": [
+  {
+   "confidence": "low",
+   "formula": "ig:11",
+   "items": 3,
+   "lift": null,
+   "name": "Numbered With A Favourite",
+   "note": "lift needs at least 8 tagged items and one winner (this brand has 7 tagged, 2 winner(s))",
+   "winners": 1
+  },
+  {
+   "confidence": "low",
+   "formula": "ig:16",
+   "items": 2,
+   "lift": null,
+   "name": "The Verbatim Question",
+   "note": "lift needs at least 8 tagged items and one winner (this brand has 7 tagged, 2 winner(s))",
+   "winners": 1
+  },
+  {
+   "confidence": "low",
+   "formula": "ig:10",
+   "items": 1,
+   "lift": null,
+   "name": "If This, Then Watch",
+   "note": "lift needs at least 8 tagged items and one winner (this brand has 7 tagged, 2 winner(s))",
+   "winners": 0
+  },
+  {
+   "confidence": "low",
+   "formula": "ig:17",
+   "items": 1,
+   "lift": null,
+   "name": "Head To Head",
+   "note": "lift needs at least 8 tagged items and one winner (this brand has 7 tagged, 2 winner(s))",
+   "winners": 0
+  }
+ ],
+ "generated_at": "2026-11-25T05:33:28Z",
+ "library": {
+  "age_days": 0,
+  "checked_at": "2026-11-25T05:33:26Z",
+  "instagram": 26,
+  "source": "snapshot in contentintel/data/formulas",
+  "version": {
+   "ig_hooks": "d03c56bb59",
+   "slop": "d03c56bb59",
+   "yt_hooks": "a2feb21049"
+  },
+  "youtube": 21
+ },
+ "notes": [],
+ "opportunities": [
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "Blitz Bar",
+   "id": "IB-0121",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.9,
+    "fit": 0.6,
+    "momentum": 1.0,
+    "originality": 0.5,
+    "strategic": 0.4
+   },
+   "platform": "meta_ads",
+   "score": 73.0,
+   "title": "Blitz Bar",
+   "unknown": [
+    "originality"
+   ]
+  },
+  {
+   "confidence": "high",
+   "formula": "ig:11",
+   "handle": "American Spoon",
+   "id": "IB-0045",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.9,
+    "fit": 0.56,
+    "momentum": 1.0,
+    "originality": 0.571,
+    "strategic": 0.4
+   },
+   "platform": "meta_ads",
+   "score": 72.9,
+   "title": "One Jar Will NOT Be Enough...",
+   "unknown": []
+  },
+  {
+   "confidence": "high",
+   "formula": "ig:16",
+   "handle": "SnackCrate",
+   "id": "IB-0007",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.6,
+    "fit": 0.63,
+    "momentum": 1.0,
+    "originality": 0.714,
+    "strategic": 0.4
+   },
+   "platform": "meta_ads",
+   "score": 72.6,
+   "title": "Where will SnackCrate take you?",
+   "unknown": []
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "Ahead France",
+   "id": "IB-0071",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.6,
+    "fit": 0.72,
+    "momentum": 1.0,
+    "originality": 0.5,
+    "strategic": 0.4
+   },
+   "platform": "meta_ads",
+   "score": 72.1,
+   "title": "Team dark or team milk chocolate? Be honest.",
+   "unknown": [
+    "originality"
+   ]
+  },
+  {
+   "confidence": "high",
+   "formula": "ig:10",
+   "handle": "Stars + Honey",
+   "id": "IB-0038",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.9,
+    "fit": 0.68,
+    "momentum": 0.45,
+    "originality": 0.857,
+    "strategic": 0.4
+   },
+   "platform": "meta_ads",
+   "score": 69.8,
+   "title": "Fall in LOVE with your protein bar for the very first time...",
+   "unknown": []
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "Howdysnax",
+   "id": "IB-0015",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.6,
+    "fit": 0.62,
+    "momentum": 1.0,
+    "originality": 0.5,
+    "strategic": 0.4
+   },
+   "platform": "meta_ads",
+   "score": 69.1,
+   "title": "Biltong slabs are finally here!",
+   "unknown": [
+    "originality"
+   ]
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "Power of the Almond",
+   "id": "IB-0057",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.6,
+    "fit": 0.59,
+    "momentum": 1.0,
+    "originality": 0.5,
+    "strategic": 0.4
+   },
+   "platform": "meta_ads",
+   "score": 68.2,
+   "title": "Chocolate and peanut butter, the classic combo. Meet Milk Chocolate Peanut Butter Crunch.",
+   "unknown": [
+    "originality"
+   ]
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "Grapes From California",
+   "id": "IB-0060",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.6,
+    "fit": 0.71,
+    "momentum": 0.733,
+    "originality": 0.5,
+    "strategic": 0.4
+   },
+   "platform": "meta_ads",
+   "score": 66.5,
+   "title": "Afternoon crash? Build your own snack box in 15 seconds.",
+   "unknown": [
+    "originality"
+   ]
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "Bootylicious Muffins",
+   "id": "IB-0011",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.6,
+    "fit": 0.53,
+    "momentum": 1.0,
+    "originality": 0.5,
+    "strategic": 0.4
+   },
+   "platform": "meta_ads",
+   "score": 66.4,
+   "title": "Use code FIRST15 for 15% off your purchase today! 😋",
+   "unknown": [
+    "originality"
+   ]
+  },
+  {
+   "confidence": "high",
+   "formula": "ig:16",
+   "handle": "wellbean.life",
+   "id": "IB-0206",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.9,
+    "fit": 0.51,
+    "momentum": 0.633,
+    "originality": 0.714,
+    "strategic": 0.4
+   },
+   "platform": "instagram",
+   "score": 66.2,
+   "title": "Can't pick a flavor? Try all four.",
+   "unknown": []
+  }
+ ],
+ "sample": {
+  "confidence": "high",
+  "kept_items": 31,
+  "tagged_with_a_formula": 7,
+  "winners": 9,
+  "with_signal": 31
+ },
+ "weights": {
+  "evidence": 0.1,
+  "feasibility": 0.15,
+  "fit": 0.3,
+  "momentum": 0.2,
+  "originality": 0.15,
+  "strategic": 0.1
+ },
+ "winners": [
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 11,
+   "handle": "balancedbyelii",
+   "id": "IB-0181",
+   "multiple": 71.9,
+   "platform": "tiktok",
+   "url": "https://www.tiktok.com/@balancedbyelii/video/7670267511157607702"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 11,
+   "handle": "rockyyfnybx",
+   "id": "IB-0225",
+   "multiple": 24.91,
+   "platform": "tiktok",
+   "url": "https://www.tiktok.com/@rockyyfnybx/video/7702522689130351894"
+  },
+  {
+   "confidence": "low",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 6,
+   "handle": "shweta_sakode",
+   "id": "IB-0184",
+   "multiple": 10.3,
+   "platform": "instagram",
+   "url": "https://www.instagram.com/reel/DZKBNa_siN7/"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 11,
+   "handle": "realbalanced",
+   "id": "IB-0085",
+   "multiple": 9.86,
+   "platform": "tiktok",
+   "url": "https://www.tiktok.com/@realbalanced/video/6880232331651697926"
+  },
+  {
+   "confidence": "medium",
+   "formula": "ig:11",
+   "formula_name": "Numbered With A Favourite",
+   "group_n": 14,
+   "handle": "American Spoon",
+   "id": "IB-0045",
+   "multiple": 9.31,
+   "platform": "meta_ads",
+   "url": "https://www.facebook.com/ads/library/?id=1398437501584213"
+  },
+  {
+   "confidence": "medium",
+   "formula": "ig:16",
+   "formula_name": "The Verbatim Question",
+   "group_n": 14,
+   "handle": "SnackCrate",
+   "id": "IB-0007",
+   "multiple": 3.74,
+   "platform": "meta_ads",
+   "url": "https://www.facebook.com/ads/library/?id=1570012057629955"
+  },
+  {
+   "confidence": "low",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 6,
+   "handle": "inspo_by_rio_",
+   "id": "IB-0228",
+   "multiple": 3.3,
+   "platform": "instagram",
+   "url": "https://www.instagram.com/p/Ch99qc1D_U_/"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 14,
+   "handle": "Bootylicious Muffins",
+   "id": "IB-0011",
+   "multiple": 3.29,
+   "platform": "meta_ads",
+   "url": "https://www.facebook.com/ads/library/?id=1473706287470356"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 11,
+   "handle": "brittany1wilson",
+   "id": "IB-0093",
+   "multiple": 3.21,
+   "platform": "tiktok",
+   "url": "https://www.tiktok.com/@brittany1wilson/video/7485835858092821806"
+  }
+ ]
+}

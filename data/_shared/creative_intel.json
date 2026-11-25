@@ -1,0 +1,73 @@
+{
+ "brands": {
+  "defi_snacks": {
+   "confidence": "high",
+   "kept_items": 31,
+   "tagged_with_a_formula": 7,
+   "winners": 9,
+   "with_signal": 31
+  },
+  "duderobe": {
+   "confidence": "high",
+   "kept_items": 31,
+   "tagged_with_a_formula": 2,
+   "winners": 8,
+   "with_signal": 31
+  },
+  "swoveralls": {
+   "confidence": "high",
+   "kept_items": 62,
+   "tagged_with_a_formula": 12,
+   "winners": 19,
+   "with_signal": 55
+  }
+ },
+ "cross_brand": {
+  "brands": [
+   "defi_snacks",
+   "duderobe",
+   "swoveralls"
+  ],
+  "could_transfer": [
+   {
+    "formula": "ig:11",
+    "unused_in": [
+     "duderobe"
+    ],
+    "wins_in": [
+     "defi_snacks"
+    ]
+   },
+   {
+    "formula": "ig:16",
+    "unused_in": [
+     "duderobe"
+    ],
+    "wins_in": [
+     "defi_snacks"
+    ]
+   },
+   {
+    "formula": "ig:26",
+    "unused_in": [
+     "defi_snacks",
+     "duderobe"
+    ],
+    "wins_in": [
+     "swoveralls"
+    ]
+   }
+  ],
+  "note": "",
+  "winning_in_several_brands": []
+ },
+ "generated_at": "2026-11-25T05:33:28Z",
+ "weights": {
+  "evidence": 0.1,
+  "feasibility": 0.15,
+  "fit": 0.3,
+  "momentum": 0.2,
+  "originality": 0.15,
+  "strategic": 0.1
+ }
+}

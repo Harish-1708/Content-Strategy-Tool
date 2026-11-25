@@ -1,0 +1,408 @@
+{
+ "brand": "swoveralls",
+ "formulas": [
+  {
+   "confidence": "low",
+   "formula": "ig:26",
+   "items": 1,
+   "lift": 12.0,
+   "name": "The Superlative",
+   "note": "",
+   "winners": 1
+  },
+  {
+   "confidence": "low",
+   "formula": "ig:11",
+   "items": 7,
+   "lift": 0.0,
+   "name": "Numbered With A Favourite",
+   "note": "",
+   "winners": 0
+  },
+  {
+   "confidence": "low",
+   "formula": "ig:16",
+   "items": 1,
+   "lift": 0.0,
+   "name": "The Verbatim Question",
+   "note": "",
+   "winners": 0
+  },
+  {
+   "confidence": "low",
+   "formula": "ig:2",
+   "items": 1,
+   "lift": 0.0,
+   "name": "Negative Command",
+   "note": "",
+   "winners": 0
+  },
+  {
+   "confidence": "low",
+   "formula": "ig:14",
+   "items": 1,
+   "lift": 0.0,
+   "name": "The Callout",
+   "note": "",
+   "winners": 0
+  },
+  {
+   "confidence": "low",
+   "formula": "ig:17",
+   "items": 1,
+   "lift": 0.0,
+   "name": "Head To Head",
+   "note": "",
+   "winners": 0
+  }
+ ],
+ "generated_at": "2026-11-25T05:33:28Z",
+ "library": {
+  "age_days": 0,
+  "checked_at": "2026-11-25T05:33:26Z",
+  "instagram": 26,
+  "source": "snapshot in contentintel/data/formulas",
+  "version": {
+   "ig_hooks": "d03c56bb59",
+   "slop": "d03c56bb59",
+   "yt_hooks": "a2feb21049"
+  },
+  "youtube": 21
+ },
+ "notes": [
+  "7 kept item(s) carry no performance signal (no likes, comments, shares or days running), so they cannot be winners"
+ ],
+ "opportunities": [
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "Madepants",
+   "id": "IB-0148",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.9,
+    "fit": 0.61,
+    "momentum": 1.0,
+    "originality": 0.5,
+    "strategic": 1.0
+   },
+   "platform": "meta_ads",
+   "score": 79.3,
+   "title": "Overalls you'll want to live in",
+   "unknown": [
+    "originality"
+   ]
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "Must Have Finds",
+   "id": "IB-0181",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.9,
+    "fit": 0.62,
+    "momentum": 0.883,
+    "originality": 0.5,
+    "strategic": 1.0
+   },
+   "platform": "meta_ads",
+   "score": 77.3,
+   "title": "Overalls She'll Wear on Repeat All Fall",
+   "unknown": [
+    "originality"
+   ]
+  },
+  {
+   "confidence": "medium",
+   "formula": "ig:17",
+   "handle": "babyk22__",
+   "id": "IB-0654",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.5,
+    "fit": 0.68,
+    "momentum": 0.889,
+    "originality": 0.917,
+    "strategic": 0.4
+   },
+   "platform": "tiktok",
+   "score": 73.4,
+   "title": "Mom vs Dad: who dresses me better?",
+   "unknown": [
+    "feasibility"
+   ]
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "Kayarize",
+   "id": "IB-0150",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.9,
+    "fit": 0.61,
+    "momentum": 1.0,
+    "originality": 0.5,
+    "strategic": 0.4
+   },
+   "platform": "meta_ads",
+   "score": 73.3,
+   "title": "You walk in their prayers",
+   "unknown": [
+    "originality"
+   ]
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "Madepants",
+   "id": "IB-0008",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.9,
+    "fit": 0.47,
+    "momentum": 1.0,
+    "originality": 0.5,
+    "strategic": 0.4
+   },
+   "platform": "meta_ads",
+   "score": 69.1,
+   "title": "Men's Vintage-Inspired Casual Utility Pants",
+   "unknown": [
+    "originality"
+   ]
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "instagram.com",
+   "id": "IB-0327",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.6,
+    "fit": 0.72,
+    "momentum": 0.5,
+    "originality": 0.5,
+    "strategic": 1.0
+   },
+   "platform": "web",
+   "score": 68.1,
+   "title": "Forget the traditional Father's Day bouquet—this year, give ...",
+   "unknown": [
+    "momentum",
+    "originality"
+   ]
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "Free the Sheep",
+   "id": "IB-0057",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.9,
+    "fit": 0.59,
+    "momentum": 0.45,
+    "originality": 0.5,
+    "strategic": 1.0
+   },
+   "platform": "meta_ads",
+   "score": 67.7,
+   "title": "Your nervous system called…It wants this",
+   "unknown": [
+    "originality"
+   ]
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "instagram.com",
+   "id": "IB-0428",
+   "parts": {
+    "evidence": 0.667,
+    "feasibility": 0.9,
+    "fit": 0.64,
+    "momentum": 0.5,
+    "originality": 0.5,
+    "strategic": 1.0
+   },
+   "platform": "web",
+   "score": 66.9,
+   "title": "For the dads, husbands, grandpas, and men who swear ...",
+   "unknown": [
+    "momentum",
+    "originality"
+   ]
+  },
+  {
+   "confidence": "medium",
+   "formula": "ig:26",
+   "handle": "theandreac",
+   "id": "IB-0652",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.5,
+    "fit": 0.53,
+    "momentum": 0.778,
+    "originality": 0.917,
+    "strategic": 0.4
+   },
+   "platform": "tiktok",
+   "score": 66.7,
+   "title": "The only outfit formula you need: baggy overalls, fitted top.",
+   "unknown": [
+    "feasibility"
+   ]
+  },
+  {
+   "confidence": "low",
+   "formula": "",
+   "handle": "tiktok.com",
+   "id": "IB-0410",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.5,
+    "fit": 0.71,
+    "momentum": 0.5,
+    "originality": 0.5,
+    "strategic": 1.0
+   },
+   "platform": "web",
+   "score": 66.3,
+   "title": "Father's Day Surprise Gift Reaction — Heartfelt Dad Reveal",
+   "unknown": [
+    "momentum",
+    "originality",
+    "feasibility"
+   ]
+  }
+ ],
+ "sample": {
+  "confidence": "high",
+  "kept_items": 62,
+  "tagged_with_a_formula": 12,
+  "winners": 19,
+  "with_signal": 55
+ },
+ "weights": {
+  "evidence": 0.1,
+  "feasibility": 0.15,
+  "fit": 0.3,
+  "momentum": 0.2,
+  "originality": 0.15,
+  "strategic": 0.1
+ },
+ "winners": [
+  {
+   "confidence": "low",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 7,
+   "handle": "tiktok.com",
+   "id": "IB-0412",
+   "multiple": 17501.31,
+   "platform": "web",
+   "url": "https://www.tiktok.com/@nep2une12/video/7653703607425961229"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 14,
+   "handle": "gracemweston",
+   "id": "IB-0472",
+   "multiple": 502.67,
+   "platform": "instagram",
+   "url": "https://www.instagram.com/reel/DfJWyf2vViC/"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 14,
+   "handle": "flipdaddie",
+   "id": "IB-0275",
+   "multiple": 383.17,
+   "platform": "instagram",
+   "url": "https://www.instagram.com/reel/DJruFhIx1bG/"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 14,
+   "handle": "marieloulou_official",
+   "id": "IB-0477",
+   "multiple": 90.63,
+   "platform": "instagram",
+   "url": "https://www.instagram.com/reel/Dbto9SUyDIJ/"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 23,
+   "handle": "roamory",
+   "id": "IB-0469",
+   "multiple": 90.17,
+   "platform": "tiktok",
+   "url": "https://www.tiktok.com/@roamory/video/7690253230793641247"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 23,
+   "handle": "cosyvera",
+   "id": "IB-0470",
+   "multiple": 43.61,
+   "platform": "tiktok",
+   "url": "https://www.tiktok.com/@cosyvera/video/7635561389922323734"
+  },
+  {
+   "confidence": "low",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 7,
+   "handle": "instagram.com",
+   "id": "IB-0424",
+   "multiple": 14.54,
+   "platform": "web",
+   "url": "https://www.instagram.com/reel/DZ6N4jupYNj/"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 23,
+   "handle": "steffyweffy28",
+   "id": "IB-0537",
+   "multiple": 11.95,
+   "platform": "tiktok",
+   "url": "https://www.tiktok.com/@steffyweffy28/video/7666632924782955783"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 23,
+   "handle": "planetunya",
+   "id": "IB-0650",
+   "multiple": 11.67,
+   "platform": "tiktok",
+   "url": "https://www.tiktok.com/@planetunya/video/7682494506955967758"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 23,
+   "handle": "mariah.moreland",
+   "id": "IB-0587",
+   "multiple": 11.21,
+   "platform": "tiktok",
+   "url": "https://www.tiktok.com/@mariah.moreland/video/7516720233227226398"
+  }
+ ]
+}
