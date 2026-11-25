@@ -1,0 +1,84 @@
+name: Creative intelligence
+
+# Stage 4 (formula library, winners, opportunity scores, cross-brand) and the Stage 5 checks that call no model (golden set, brand gate).
+# Reads the Idea Bank of each brand and writes data/<brand>/extras/creative_intel.json and data/_shared/creative_intel.json. Nothing here calls a model, a paid service or a social site.
+# ON by default: it also runs by itself every Monday at 07:00 UTC, so the report is fresh when the week's collection has landed. Before each report the formula library is refreshed from its two repositories
+# (the newest commit is read, checked, and only used if the validator bank's golden set still passes with it; VERSION.json says which commit the copy came from).
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "report (all brands, saved; the formula library is refreshed first), refresh-library (only the refresh), formulas, winners, opportunities, golden (the validator bank's own check) or gate (every brand passes the same checks)"
+        required: false
+        type: choice
+        default: report
+        options: [report, refresh-library, formulas, winners, opportunities, golden, gate]
+      brand:
+        description: "a brand slug, or all"
+        required: false
+        default: "all"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalogue-data
+  cancel-in-progress: false
+
+jobs:
+  intel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: pip install -r requirements.txt
+
+      - name: Refresh the formula library
+        if: github.event_name == 'schedule' || inputs.action == 'report' || inputs.action == 'refresh-library'
+        continue-on-error: true          # a failed refresh never stops the report: the copy in the repository is used and the report says how old it is
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -o pipefail
+          { echo "### Formula library refresh"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          code=0
+          python -m contentintel intel --action refresh-library 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || code=$?
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Run it
+        if: inputs.action != 'refresh-library'
+        env:
+          ACTION: ${{ inputs.action }}
+          BRAND: ${{ inputs.brand }}
+        run: |
+          set -o pipefail
+          { echo "### Creative intelligence"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          code=0
+          python -m contentintel intel --action "${ACTION:-report}" --brand "${BRAND:-all}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || code=$?
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Save the data
+        if: always()
+        run: |
+          git config user.name "creative-intel"
+          git config user.email "creative-intel@users.noreply.github.com"
+          add_each() { for f in "$@"; do if [ -e "$f" ]; then git add -f "$f"; else echo "not written by this run (skipped): $f"; fi; done; }          # one path at a time: a single add of several is refused whole when one is missing
+          add_each data/*/extras/creative_intel.json data/_shared/creative_intel.json contentintel/data/formulas/ig_hooks.json contentintel/data/formulas/yt_hooks.json contentintel/data/formulas/slop.json contentintel/data/formulas/VERSION.json
+          if git diff --cached --quiet; then
+            echo "NOTHING TO SAVE: no creative_intel.json or formula library file was written or changed by this run"
+          else
+            git commit -m "Creative intelligence $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase --autostash
+            git push || { echo "::error title=Save failed::the commit could not be pushed"; exit 1; }
+            echo "SAVED: pushed $(git rev-parse --short HEAD)"
+          fi

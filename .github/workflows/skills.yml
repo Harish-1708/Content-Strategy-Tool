@@ -156,7 +156,7 @@ jobs:
         run: |
           git config user.name "skills"
           git config user.email "skills@users.noreply.github.com"
-          git add -f data/_shared/skills_catalogue.json 2>/dev/null || true          # only the files this tool writes, not the whole data tree
+          if [ -e data/_shared/skills_catalogue.json ]; then git add -f data/_shared/skills_catalogue.json; fi          # only the files this tool writes, not the whole data tree; a missing file is skipped in the open, never hidden by a swallowed error
           for d in data/*/registry; do
             if [ -d "$d" ]; then git add -f "$d"; fi
           done

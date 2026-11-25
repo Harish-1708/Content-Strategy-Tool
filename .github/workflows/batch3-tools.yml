@@ -45,7 +45,9 @@ jobs:
         continue-on-error: true
         run: |
           pip install torch --index-url https://download.pytorch.org/whl/cpu
-          pip install "timesfm[torch]"          # TimesFM 3.0 (module timesfm3), weights google/timesfm-3.0-pytorch
+          pip install "timesfm[torch]>=3.0"          # TimesFM 3.0 (module timesfm3), weights google/timesfm-3.0-pytorch; 3.0 or newer, so an older release can never be picked
+          pip show timesfm | head -3          # the installed version is in the log
+          python -c "import timesfm3; print('timesfm3 module found at', timesfm3.__file__)"
 
       - name: Install the CLIP model (CPU)
         if: startsWith(inputs.action, 'stock')

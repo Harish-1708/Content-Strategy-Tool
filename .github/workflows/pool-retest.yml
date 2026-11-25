@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       jobs:
-        description: "Which jobs: all, or comma-separated (foundation_json, story_extract_json, story_review_json, conflict_check_json, claim_verify_json, brief_json, competitor_ideas_json, creator_chain_json, listen_learn_json, voice_creative_json, seo_lens_json)"
+        description: "Which jobs: all, or comma-separated (foundation_json, story_extract_json, story_review_json, conflict_check_json, claim_verify_json, brief_json, brief_review_json, competitor_ideas_json, creator_chain_json, listen_learn_json, voice_creative_json, seo_lens_json)"
         required: false
         default: "all"
       runs:

@@ -118,14 +118,15 @@ jobs:
           git config user.name "stored-sessions"
           git config user.email "stored-sessions@users.noreply.github.com"
           for f in data/_shared/sessions_health.json data/_shared/sessions_reads.json; do
-            if [ -f "$f" ]; then git add -f "$f"; else echo "$f does not exist yet (this kind of run does not write it): nothing to save for it."; fi
+            if [ -f "$f" ]; then git add -f "$f"; else echo "Skipped (this kind of run does not write it): $f"; fi          # a file this kind of run does not write is only skipped; the other file is still saved
           done
           if git diff --cached --quiet; then
-            echo "No changes to save."
+            echo "No changes to save (the stored results are already what this run found)."
           else
             git commit -m "Stored login sessions $(date -u +%Y-%m-%dT%H:%MZ)"
             git pull --rebase
             git push
+            echo "Saved: commit $(git rev-parse --short HEAD) with $(git show --name-only --format= HEAD | tr '\n' ' ')"
           fi
 
       - name: Password backup hand-off (which platforms have earned it; starts it only when auto_backup is on)

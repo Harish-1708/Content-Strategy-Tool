@@ -1,0 +1,80 @@
+name: Storyboard
+
+# Stage 7 layer 1: a storyboard and styleframes for the concepts of a brief that already passed the rules, the claims gate, the validator bank and the reviewer.
+# Built by code, no model is called, nothing is rendered or published. Each shot gets a still the brand may use (its own saved pictures, its own site, Openverse, Wikimedia Commons, Pixabay) with its licence and credit.
+# Saves data/<brand>/extras/storyboard.json and storyboard.html (a contact sheet to open).
+on:
+  workflow_dispatch:
+    inputs:
+      brand:
+        description: "a brand slug"
+        required: true
+        default: "swoveralls"
+      brief_id:
+        description: "the brief record (BR-0001...); the latest when empty"
+        required: false
+        default: ""
+      concept:
+        description: "which concept of the brief (1 = the first); 0 = all of them"
+        required: false
+        default: "0"
+      stills:
+        description: "find a styleframe for every shot"
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalogue-data
+  cancel-in-progress: false
+
+jobs:
+  storyboard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: pip install -r requirements.txt
+
+      - name: Build it
+        env:
+          BRAND: ${{ inputs.brand }}
+          BRIEF_ID: ${{ inputs.brief_id }}
+          CONCEPT: ${{ inputs.concept }}
+          STILLS: ${{ inputs.stills }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          OPENVERSE_CLIENT_ID: ${{ secrets.OPENVERSE_CLIENT_ID }}
+          OPENVERSE_CLIENT_SECRET: ${{ secrets.OPENVERSE_CLIENT_SECRET }}
+        run: |
+          set -o pipefail
+          flag="--stills"; [ "$STILLS" = "false" ] && flag="--no-stills"
+          { echo "### Storyboard"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          code=0
+          python -m contentintel intel --action storyboard --brand "$BRAND" --brief-id "$BRIEF_ID" --concept "${CONCEPT:-0}" $flag 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || code=$?
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Save the data
+        if: always()
+        run: |
+          git config user.name "storyboard"
+          git config user.email "storyboard@users.noreply.github.com"
+          add_each() { for f in "$@"; do if [ -e "$f" ]; then git add -f "$f"; else echo "not written by this run (skipped): $f"; fi; done; }          # one path at a time: a single add of several is refused whole when one is missing
+          add_each "data/${{ inputs.brand }}/extras/storyboard.json" "data/${{ inputs.brand }}/extras/storyboard.html"
+          if git diff --cached --quiet; then
+            echo "NOTHING TO SAVE: no storyboard was written or changed by this run"
+          else
+            git commit -m "Storyboard ${{ inputs.brand }} $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase --autostash
+            git push || { echo "::error title=Save failed::the commit could not be pushed"; exit 1; }
+            echo "SAVED: pushed $(git rev-parse --short HEAD)"
+          fi
