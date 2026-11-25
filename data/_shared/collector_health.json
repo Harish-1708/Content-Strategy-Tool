@@ -481,7 +481,7 @@
   },
   "ai:cloudflare|gateway": {
    "acceptance": null,
-   "consecutive_failures": 3,
+   "consecutive_failures": 1,
    "consecutive_successes": 0,
    "history": [
     {
@@ -644,18 +644,137 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-25T18:23:44Z",
+     "code": "",
+     "items": 1,
+     "ms": 25752,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:24:10Z",
+     "code": "",
+     "items": 1,
+     "ms": 16111,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:24:26Z",
+     "code": "",
+     "items": 1,
+     "ms": 16770,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:24:43Z",
+     "code": "",
+     "items": 1,
+     "ms": 13732,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:24:56Z",
+     "code": "",
+     "items": 1,
+     "ms": 18827,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:25:24Z",
+     "code": "",
+     "items": 1,
+     "ms": 15029,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:25:39Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T18:31:04Z",
+     "code": "",
+     "items": 1,
+     "ms": 13785,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:31:18Z",
+     "code": "",
+     "items": 1,
+     "ms": 21543,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:31:40Z",
+     "code": "",
+     "items": 1,
+     "ms": 15574,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:31:55Z",
+     "code": "",
+     "items": 1,
+     "ms": 7372,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:32:03Z",
+     "code": "",
+     "items": 1,
+     "ms": 3893,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:34:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 16938,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:34:39Z",
+     "code": "",
+     "items": 1,
+     "ms": 13567,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:34:53Z",
+     "code": "",
+     "items": 1,
+     "ms": 16123,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:35:09Z",
+     "code": "",
+     "items": 1,
+     "ms": 16836,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:35:26Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-25T10:09:36Z",
-    "code": "RATE_LIMITED",
-    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~2m."
+    "at": "2026-11-25T18:35:26Z",
+    "code": "UPSTREAM_BROKEN",
+    "message": "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast key1: timeout. Last error: The operation was aborted (cloud"
    },
-   "last_success": "2026-11-25T09:46:37Z",
+   "last_success": "2026-11-25T18:35:09Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:cloudflare",
-   "state": "degraded"
+   "state": "healthy"
   },
   "ai:cloudflare|model:@cf/meta/llama-3.3-70b-instruct-fp8-fast": {
    "acceptance": null,
@@ -705,7 +824,7 @@
   "ai:cohere|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 8,
+   "consecutive_successes": 9,
    "history": [
     {
      "at": "2026-11-14T05:00:40Z",
@@ -818,6 +937,13 @@
      "items": 1,
      "ms": 270,
      "ok": true
+    },
+    {
+     "at": "2026-11-25T18:25:39Z",
+     "code": "",
+     "items": 1,
+     "ms": 7974,
+     "ok": true
     }
    ],
    "last_error": {
@@ -825,7 +951,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: cohere/command-r-08-2024 key1: timeout. Last error: The operation was aborted (cohere, chat, 15s)"
    },
-   "last_success": "2026-11-15T09:37:31Z",
+   "last_success": "2026-11-25T18:25:39Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:cohere",
@@ -1032,8 +1158,8 @@
   },
   "ai:google|gateway": {
    "acceptance": null,
-   "consecutive_failures": 0,
-   "consecutive_successes": 3,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
    "history": [
     {
      "at": "2026-11-10T09:17:16Z",
@@ -1153,12 +1279,19 @@
      "items": 1,
      "ms": 18162,
      "ok": true
+    },
+    {
+     "at": "2026-11-25T18:25:39Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-18T16:48:09Z",
-    "code": "UPSTREAM_BROKEN",
-    "message": "All 1 routed attempt(s) failed with upstream provider errors (upstream_error ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: google/gemini-3.5-flash key1: upstream_error. Last error: Google API error 503: This model is currently "
+    "at": "2026-11-25T18:25:39Z",
+    "code": "RATE_LIMITED",
+    "message": "All models rate-limited after 1 attempt. Soonest cooldown reset ~44s. Attempt trail: google/gemini-3.5-flash key1: daily_quota_exhausted. Last error: Google API error 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: [redac"
    },
    "last_success": "2026-11-25T10:14:15Z",
    "pause": null,
@@ -1169,7 +1302,7 @@
   "ai:groq|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 2,
+   "consecutive_successes": 1,
    "history": [
     {
      "at": "2026-11-10T08:54:44Z",
@@ -1681,14 +1814,63 @@
      "items": 1,
      "ms": 2981,
      "ok": true
+    },
+    {
+     "at": "2026-11-25T18:23:36Z",
+     "code": "",
+     "items": 1,
+     "ms": 7413,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:23:44Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T18:25:15Z",
+     "code": "",
+     "items": 1,
+     "ms": 7995,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:25:24Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T18:30:58Z",
+     "code": "",
+     "items": 1,
+     "ms": 5716,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:31:04Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T18:35:26Z",
+     "code": "",
+     "items": 1,
+     "ms": 7221,
+     "ok": true
     }
    ],
    "last_error": {
-    "at": "2026-11-25T10:10:04Z",
+    "at": "2026-11-25T18:31:04Z",
     "code": "RATE_LIMITED",
-    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~71s."
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~84s."
    },
-   "last_success": "2026-11-25T10:14:12Z",
+   "last_success": "2026-11-25T18:35:26Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:groq",
@@ -2107,6 +2289,30 @@
    "last_success": "2026-11-18T16:48:09Z",
    "pause": null,
    "route": "gateway",
+   "source": "ai:nvidia",
+   "state": "healthy"
+  },
+  "ai:nvidia|model:google/gemma-4-31b-it": {
+   "acceptance": null,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-25T18:25:39Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-25T18:25:39Z",
+    "code": "UPSTREAM_BROKEN",
+    "message": "Every routed provider reports the model as not found or removed upstream (1 attempt(s)). The catalog entry looks stale; pick another model or call /v1/models for the available list. Attempt trail: nvidia/google/gemma-4-31b-it key1: model_not_found. Last error: NVIDIA NIM API error 410: The model 'go"
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "model:google/gemma-4-31b-it",
    "source": "ai:nvidia",
    "state": "healthy"
   },
@@ -2935,7 +3141,7 @@
   },
   "ai:zhipu|gateway": {
    "acceptance": null,
-   "consecutive_failures": 5,
+   "consecutive_failures": 2,
    "consecutive_successes": 0,
    "history": [
     {
@@ -3105,18 +3311,60 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-25T18:23:36Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T18:25:15Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T18:29:05Z",
+     "code": "",
+     "items": 1,
+     "ms": 54106,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:30:00Z",
+     "code": "",
+     "items": 1,
+     "ms": 58872,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:30:58Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-25T18:34:21Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-25T10:13:03Z",
-    "code": "UPSTREAM_BROKEN",
-    "message": "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: zhipu/glm-4.7-flash key1: timeout. Last error: The operation was aborted (zhipu, chat, 60s)"
+    "at": "2026-11-25T18:34:21Z",
+    "code": "RATE_LIMITED",
+    "message": "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: 该模型当前访问量过大，请您稍后再试"
    },
-   "last_success": "2026-11-25T09:45:03Z",
+   "last_success": "2026-11-25T18:30:00Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:zhipu",
-   "state": "degraded"
+   "state": "healthy"
   },
   "ai:zhipu|model:glm-4.7-flash": {
    "acceptance": null,
@@ -6522,7 +6770,7 @@
     "version": "be333a7ac33a"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 57,
+   "consecutive_successes": 59,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -6922,10 +7170,24 @@
      "items": 3,
      "ms": 15988,
      "ok": true
+    },
+    {
+     "at": "2026-11-25T18:18:32Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T18:18:32Z",
+     "code": "",
+     "items": 20,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-25T06:24:30Z",
+   "last_success": "2026-11-25T18:18:32Z",
    "pause": null,
    "route": "browser",
    "source": "meta_ads",
@@ -8080,7 +8342,7 @@
     "version": "be333a7ac33a"
    },
    "consecutive_failures": 0,
-   "consecutive_successes": 5,
+   "consecutive_successes": 6,
    "history": [
     {
      "at": "2026-11-03T07:34:12Z",
@@ -8130,6 +8392,13 @@
      "items": 3,
      "ms": 23818,
      "ok": true
+    },
+    {
+     "at": "2026-11-25T18:18:32Z",
+     "code": "",
+     "items": 30,
+     "ms": 0,
+     "ok": true
     }
    ],
    "last_error": {
@@ -8137,7 +8406,7 @@
     "code": "NEED_SETUP",
     "message": "Apify rejected the API key (HTTP 401)"
    },
-   "last_success": "2026-11-25T06:24:30Z",
+   "last_success": "2026-11-25T18:18:32Z",
    "pause": null,
    "route": "apify",
    "source": "tiktok",

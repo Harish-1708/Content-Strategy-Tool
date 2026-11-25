@@ -2169,8 +2169,8 @@
      },
      "general_json": {
       "cost_usd": 0.0,
-      "requests": 11,
-      "tokens": 13012
+      "requests": 28,
+      "tokens": 66656
      },
      "listen_learn_json": {
       "cost_usd": 0.0,
@@ -2209,11 +2209,11 @@
      }
     },
     "cost_usd": 0.0,
-    "failures": 37,
-    "latency_ms": 56637,
-    "requests": 41,
-    "tokens_in": 9207,
-    "tokens_out": 3805
+    "failures": 39,
+    "latency_ms": 311211,
+    "requests": 58,
+    "tokens_in": 48621,
+    "tokens_out": 18035
    },
    "cohere": {
     "by_lane": {
@@ -2251,6 +2251,11 @@
       "cost_usd": 0.0,
       "requests": 8,
       "tokens": 2964
+     },
+     "general_json": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 3842
      },
      "listen_learn_json": {
       "cost_usd": 0.0,
@@ -2290,10 +2295,10 @@
     },
     "cost_usd": 0.0,
     "failures": 42,
-    "latency_ms": 392823,
-    "requests": 120,
-    "tokens_in": 24333,
-    "tokens_out": 20998
+    "latency_ms": 400797,
+    "requests": 121,
+    "tokens_in": 27173,
+    "tokens_out": 22000
    },
    "google": {
     "by_lane": {
@@ -2334,7 +2339,7 @@
      },
      "general_json": {
       "cost_usd": 0.0,
-      "requests": 3,
+      "requests": 4,
       "tokens": 10938
      },
      "listen_learn_json": {
@@ -2369,9 +2374,9 @@
      }
     },
     "cost_usd": 0.0,
-    "failures": 64,
+    "failures": 65,
     "latency_ms": 339315,
-    "requests": 87,
+    "requests": 88,
     "tokens_in": 14481,
     "tokens_out": 5196
    },
@@ -2414,8 +2419,8 @@
      },
      "general_json": {
       "cost_usd": 0.0,
-      "requests": 35,
-      "tokens": 87153
+      "requests": 42,
+      "tokens": 111475
      },
      "general_text": {
       "cost_usd": 0.0,
@@ -2459,11 +2464,11 @@
      }
     },
     "cost_usd": 0.0,
-    "failures": 22,
-    "latency_ms": 180674,
-    "requests": 104,
-    "tokens_in": 62820,
-    "tokens_out": 101536
+    "failures": 25,
+    "latency_ms": 209019,
+    "requests": 111,
+    "tokens_in": 74408,
+    "tokens_out": 114270
    },
    "kilo": {
     "by_lane": {
@@ -2582,6 +2587,11 @@
       "requests": 2,
       "tokens": 0
      },
+     "general_json": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 0
+     },
      "listen_learn_json": {
       "cost_usd": 0.0,
       "requests": 2,
@@ -2619,9 +2629,9 @@
      }
     },
     "cost_usd": 0.0,
-    "failures": 30,
+    "failures": 31,
     "latency_ms": 0,
-    "requests": 30,
+    "requests": 31,
     "tokens_in": 0,
     "tokens_out": 0
    },
@@ -3014,8 +3024,8 @@
      },
      "general_json": {
       "cost_usd": 0.0,
-      "requests": 12,
-      "tokens": 7600
+      "requests": 18,
+      "tokens": 23024
      },
      "general_text": {
       "cost_usd": 0.0,
@@ -3059,11 +3069,11 @@
      }
     },
     "cost_usd": 0.0,
-    "failures": 95,
-    "latency_ms": 274962,
-    "requests": 104,
-    "tokens_in": 5012,
-    "tokens_out": 15015
+    "failures": 99,
+    "latency_ms": 387940,
+    "requests": 110,
+    "tokens_in": 10326,
+    "tokens_out": 25125
    }
   }
  }

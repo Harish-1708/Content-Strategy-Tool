@@ -1,5 +1,17 @@
 {
  "items": {
+  "bitsmithagency": {
+   "candidates": [],
+   "checked_at": "2026-11-25T18:18:32Z",
+   "kind": "benchmark",
+   "name": "Bitsmith Agency, LLC",
+   "page_id": "",
+   "page_likes": 0,
+   "page_name": "",
+   "reason": "searching for this name turned up no ads that name an advertiser page",
+   "source": "auto",
+   "status": "unresolved"
+  },
   "chobani": {
    "candidates": [
     {
@@ -194,6 +206,49 @@
    "page_name": "Magic Spoon Cereal (@magicspooncereal)",
    "reason": "found with Serper and confirmed as the main official page by the AI reviewer: The page is named Magic Spoon Cereal, its description matches the brand's high-protein, low-carb cereal, and it has no regional indicator in its name or address. (https://www.facebook.com/magicspooncereal)",
    "source": "serper_review",
+   "status": "resolved"
+  },
+  "metaforbusiness": {
+   "candidates": [
+    {
+     "ads": 14,
+     "likes": 20507951,
+     "name": "Meta for Business",
+     "page_id": "74100576336"
+    },
+    {
+     "ads": 1,
+     "likes": 172514,
+     "name": "Muse",
+     "page_id": "1300124196515361"
+    },
+    {
+     "ads": 1,
+     "likes": 35907,
+     "name": "WorldFirst",
+     "page_id": "126600647086"
+    },
+    {
+     "ads": 1,
+     "likes": 14314,
+     "name": "WhatChimp",
+     "page_id": "359717073888008"
+    },
+    {
+     "ads": 1,
+     "likes": 9645,
+     "name": "AppLovin",
+     "page_id": "234059493299584"
+    }
+   ],
+   "checked_at": "2026-11-25T18:18:32Z",
+   "kind": "benchmark",
+   "name": "Meta for Business",
+   "page_id": "74100576336",
+   "page_likes": 20507951,
+   "page_name": "Meta for Business",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
    "status": "resolved"
   },
   "olipop": {
