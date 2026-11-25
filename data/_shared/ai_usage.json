@@ -1890,6 +1890,21 @@
    }
   },
   "2026-11-25": {
+   "groq": {
+    "by_lane": {
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 7,
+      "tokens": 9840
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 7839,
+    "requests": 7,
+    "tokens_in": 4240,
+    "tokens_out": 5600
+   },
    "openrouter": {
     "by_lane": {
      "seed_judge_json": {
@@ -1904,6 +1919,51 @@
     "requests": 1,
     "tokens_in": 280,
     "tokens_out": 1903
+   },
+   "pollinations": {
+    "by_lane": {
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 9671
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 45640,
+    "requests": 2,
+    "tokens_in": 2613,
+    "tokens_out": 7058
+   },
+   "xkiro": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 6935
+     },
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 11014
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 34973
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 704
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 74984,
+    "requests": 18,
+    "tokens_in": 43574,
+    "tokens_out": 10052
    }
   }
  }

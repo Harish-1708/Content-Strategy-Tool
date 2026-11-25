@@ -1,0 +1,10 @@
+{
+ "note": "each time a brand's brief rules change, they get the next version number; every brief records the version it was written under",
+ "versions": [
+  {
+   "digest": "4ac493be2891",
+   "first_seen": "2026-11-25T07:37:45Z",
+   "version": 1
+  }
+ ]
+}

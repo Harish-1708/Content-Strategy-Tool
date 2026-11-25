@@ -1054,7 +1054,7 @@
   "ai:groq|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 2,
+   "consecutive_successes": 9,
    "history": [
     {
      "at": "2026-11-10T08:54:44Z",
@@ -1349,6 +1349,55 @@
      "items": 1,
      "ms": 2460,
      "ok": true
+    },
+    {
+     "at": "2026-11-25T07:35:49Z",
+     "code": "",
+     "items": 1,
+     "ms": 1465,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:36:09Z",
+     "code": "",
+     "items": 1,
+     "ms": 1110,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:36:52Z",
+     "code": "",
+     "items": 1,
+     "ms": 1029,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:37:00Z",
+     "code": "",
+     "items": 1,
+     "ms": 883,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:37:09Z",
+     "code": "",
+     "items": 1,
+     "ms": 1084,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:37:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 940,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:37:29Z",
+     "code": "",
+     "items": 1,
+     "ms": 1328,
+     "ok": true
     }
    ],
    "last_error": {
@@ -1356,7 +1405,7 @@
     "code": "RATE_LIMITED",
     "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~87s."
    },
-   "last_success": "2026-11-18T16:50:42Z",
+   "last_success": "2026-11-25T07:37:29Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:groq",
@@ -2171,6 +2220,172 @@
    "pause": null,
    "route": "gateway",
    "source": "ai:openrouter",
+   "state": "healthy"
+  },
+  "ai:pollinations|gateway": {
+   "acceptance": null,
+   "consecutive_failures": 0,
+   "consecutive_successes": 2,
+   "history": [
+    {
+     "at": "2026-11-25T07:35:51Z",
+     "code": "",
+     "items": 1,
+     "ms": 12975,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:36:10Z",
+     "code": "",
+     "items": 1,
+     "ms": 32665,
+     "ok": true
+    }
+   ],
+   "last_error": null,
+   "last_success": "2026-11-25T07:36:10Z",
+   "pause": null,
+   "route": "gateway",
+   "source": "ai:pollinations",
+   "state": "healthy"
+  },
+  "ai:xkiro|gateway": {
+   "acceptance": null,
+   "consecutive_failures": 0,
+   "consecutive_successes": 18,
+   "history": [
+    {
+     "at": "2026-11-25T07:35:45Z",
+     "code": "",
+     "items": 1,
+     "ms": 3633,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:36:04Z",
+     "code": "",
+     "items": 1,
+     "ms": 4994,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:36:43Z",
+     "code": "",
+     "items": 1,
+     "ms": 962,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:36:44Z",
+     "code": "",
+     "items": 1,
+     "ms": 7453,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:36:53Z",
+     "code": "",
+     "items": 1,
+     "ms": 2215,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:36:55Z",
+     "code": "",
+     "items": 1,
+     "ms": 4706,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:37:01Z",
+     "code": "",
+     "items": 1,
+     "ms": 1709,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:37:03Z",
+     "code": "",
+     "items": 1,
+     "ms": 5761,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:37:10Z",
+     "code": "",
+     "items": 1,
+     "ms": 3718,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:37:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 1063,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:37:15Z",
+     "code": "",
+     "items": 1,
+     "ms": 5672,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:37:22Z",
+     "code": "",
+     "items": 1,
+     "ms": 1986,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:37:24Z",
+     "code": "",
+     "items": 1,
+     "ms": 5487,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:37:31Z",
+     "code": "",
+     "items": 1,
+     "ms": 1671,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:37:34Z",
+     "code": "",
+     "items": 1,
+     "ms": 5456,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:37:40Z",
+     "code": "",
+     "items": 1,
+     "ms": 1877,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:37:42Z",
+     "code": "",
+     "items": 1,
+     "ms": 2466,
+     "ok": true
+    },
+    {
+     "at": "2026-11-25T07:38:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 14155,
+     "ok": true
+    }
+   ],
+   "last_error": null,
+   "last_success": "2026-11-25T07:38:07Z",
+   "pause": null,
+   "route": "gateway",
+   "source": "ai:xkiro",
    "state": "healthy"
   },
   "ai:zhipu|gateway": {
