@@ -20,6 +20,9 @@ from . import openverse as OPENVERSE
 from . import pace as PACE
 from . import videometa as VMETA
 from . import voice as VOICE
+from . import formulas as FORMULAS
+from . import story_refresh as SR
+from . import validators as VALIDATORS
 from . import rules as rules_mod
 from .drive import DOCX, DriveError, file_url, safe_name
 from .export import price_range
@@ -482,20 +485,30 @@ def make_brief(brand, store, *, brief_name, ask, ruleset, decisions, claude_for,
     if canon_reg is not None:
         won["violations"] = list(won["violations"]) + gate_violations(won["brief"], canon_reg)                 # every claim in the brief goes through the gate
     notes = list(canon_notes) + notes + won["notes"] + judged                                           # the canon note is part of a brief that was written, never of the reason none was
+    library = FORMULAS.load_library(CONN.external_dir())                                                    # Stage 5: the validator bank (exact checks) and the independent reviewer, on the brief that won
+    bank_findings = VALIDATORS.brief_bank(won["brief"], library)
+    if bank_findings:
+        stats = VALIDATORS.summarise(bank_findings)
+        notes.append(f"validator bank: {stats['errors']} error(s) and {stats['warnings']} warning(s) ({', '.join(stats['rules'])})")
+    review = VALIDATORS.review(won["brief"], bank_findings, SR.for_job(claude_for(settings.brief_models[0]), "brief_review"), rules_note=_rules_text(ruleset))
+    notes.append(f"independent review: {review['verdict']}" + ("".join(f"; {p['where']}: {p['issue']}" for p in review["problems"][:4]) if review["problems"] else "") + (f" ({review['why']})" if review.get("why") else ""))
+    rules_version, rules_before = VALIDATORS.note_rules_version(store, brand.slug, ruleset.digest, now)
+    if rules_before:
+        notes.append(f"the brief rules changed since the last brief: version {rules_before} -> {rules_version}")
     shown = [i for i in items if i["id"] in {r for c in won["brief"]["concepts"] for r in c["references"]}]
     images, picture_notes = saved_pictures(shown, drive, settings.brief_images_per_item)
     notes += picture_notes
     record = {"id": store.next_brief_id(brand.slug), "brief": brief_name, "ask": " ".join(ask.split()), "created": now,
-              "status": "needs review" if errors_of(won["violations"]) else "ready", "items": [i["id"] for i in items],
+              "status": "needs review" if (errors_of(won["violations"]) or errors_of(bank_findings) or review["verdict"] == "revise") else "ready", "items": [i["id"] for i in items],
               "used_items": [i["id"] for i in shown], "violations": won["violations"], "models": [won["model"]]
               + [c["model"] for c in candidates if c is not won], "notes": notes, "drive_link": "", "title": won["brief"]["title"],
-              "request_id": request_id, "rules_digest": ruleset.digest}
+              "request_id": request_id, "rules_digest": ruleset.digest, "rules_version": rules_version, "review": review, "validator_findings": bank_findings, "content": won["brief"]}
     try:
         store.write_extra(brand.slug, "last_brief", {"id": record["id"], "title": record["title"], "status": record["status"], "created": now, "violations": record["violations"], "brief": won["brief"]})     # the storyboard stage and the draft-video step read the latest brief from here
     except OSError:
         pass
     meta = {"id": record["id"], "brief": brief_name, "ask": record["ask"], "created": now}
-    docx = build_docx(won["brief"], brand, meta, items, images, won["violations"], ruleset, notes)
+    docx = build_docx(won["brief"], brand, meta, items, images, list(won["violations"]) + bank_findings, ruleset, notes)
     if drive is not None:
         try:
             folder = drive.briefs_folder(drive.brand_folder(brand.name))

@@ -98,7 +98,22 @@ def run_skills(args, store, now, *, environ=None, runner=None):
     return 0 if result["ok"] else 1
 
 
-def _claim_verifier(reg, slug, args, claude, search, get, now, announce=False):
+def recheck_explanations(slug, claims, ids, outcomes, after):
+    """One line for every re-checked claim whose status is not what the new check found (so the tally and the per-claim outcomes can never look like a contradiction): a claim the call limit did not reach, and a claim that stays CONFLICTED
+    because it ALSO conflicts with another claim (a pair conflict is cleared by the pair check, never by a source search)."""
+    lines = []
+    for cid, found, status_now in zip(ids, outcomes, after):
+        if found == "not checked":
+            lines.append(f"canon: {slug}:   {cid}: NOT CHECKED (call limit): stays {status_now.upper()}; the next run checks it")
+        elif found != status_now:
+            pair = claims[cid].get("conflicts_with")
+            why = (f"it also conflicts with claim {pair} (a pair conflict is cleared by the pair check, never by a source search)" if pair
+                   else "its status follows the evidence already recorded for it")
+            lines.append(f"canon: {slug}:   {cid}: the new check found {found.upper()}, the claim is {status_now.upper()}: {why}")
+    return lines
+
+
+def _claim_verifier(reg, slug, args, claude, search, get, now, announce=False, extra_waiting=0):
     """(verifier, report): verifier(ids) checks those claims from public sources with the pool model (the tool finds the sources itself: Serper search and a page fetch) and returns the ids that became verified.
     None when this run has no AI client, no search or no page fetch (the foundation then works as before; verify-claims says what is missing)."""
     report = {"calls": 0, "errors": 0, "notes": [], "verified": [], "checked": 0, "outcomes": {}}
@@ -113,13 +128,15 @@ def _claim_verifier(reg, slug, args, claude, search, get, now, announce=False):
     except Exception:                                                                  # noqa: BLE001 - a brand file problem must not stop the check
         name = slug
     tried = set()
-    waiting = len(CANON_VERIFY.targets(reg, 1000)) if not args.max_claims else args.max_claims
+    waiting = (len(CANON_VERIFY.targets(reg, 1000)) + int(extra_waiting)) if not args.max_claims else args.max_claims          # extra_waiting: claims already checked once that are being re-checked (targets() leaves them out)
     budget = args.verify_calls or CANON_VERIFY.auto_budget(waiting)                      # sized to the work waiting, never a fixed small number; the rate-limit-aware routing is what makes a big budget safe
 
     def progress(event, cid, what, position, total):
         """Printed the moment each claim starts and again when it is done, so a run that is cut off still leaves its evidence in the log."""
         if event == "start":
             print(f"canon: {slug}: progress: claim {position} of {total} starting: {cid}: {str(what.get('text', ''))[:100]}", flush=True)
+        elif event == "skipped":
+            print(f"canon: {slug}: progress: claim {position} of {total} NOT CHECKED ({what}): {cid}", flush=True)
         else:
             entry = report["log"][-1] if report.get("log") else None
             print(f"canon: {slug}: progress: claim {position} of {total} done: {cid} -> {str(what).upper()}", flush=True)
@@ -354,7 +371,7 @@ def run_canon(args, store, now, *, clients=None):
             by_evidence = [cid for cid, c in reg.state()["claims"].items() if c["status"] == "conflicted" and not c.get("owner_decided") and (c.get("evidence") or {}).get("contradicts")]
             if by_evidence:
                 _c2, search2, get2 = clients() if clients else (None, None, None)
-                verifier, vrep = _claim_verifier(reg, slug, args, claude, search2, get2, now, announce=True)
+                verifier, vrep = _claim_verifier(reg, slug, args, claude, search2, get2, now, announce=True, extra_waiting=len(by_evidence))
                 if verifier is None:
                     worst = max(worst, 1)
                 else:
@@ -362,7 +379,9 @@ def run_canon(args, store, now, *, clients=None):
                     after = [reg.state()["claims"][c]["status"] for c in by_evidence]
                     outcomes = [vrep["outcomes"].get(c, "not checked") for c in by_evidence]
                     print(f"canon: {slug}: {len(by_evidence)} claim(s) conflicted by a source were re-checked from public sources: {after.count('verified')} now VERIFIED, {after.count('unverified')} now UNVERIFIED, {after.count('conflicted')} still CONFLICTED; "
-                          f"what the new check found: {outcomes.count('verified')} verified, {outcomes.count('unverified')} no source and no contradiction, {outcomes.count('conflicted')} contradicted again; {vrep['calls']} AI call(s).")
+                          f"what the new check found: {outcomes.count('verified')} verified, {outcomes.count('unverified')} no source and no contradiction, {outcomes.count('conflicted')} contradicted again, {outcomes.count('not checked')} not checked; {vrep['calls']} AI call(s).")
+                    for line in recheck_explanations(slug, reg.state()["claims"], by_evidence, outcomes, after):
+                        print(line)
                     route_report(slug, claude, "evidence-conflict re-check")
         elif args.action == "history":
             import os

@@ -59,7 +59,7 @@ DEFAULT_APIFY_ACTORS = {"meta_ads": "apify/facebook-ads-scraper", "tiktok": "clo
 DEFAULT_COLLECTORS = {
     "browser": {"monthly_items": 0, "items_per_run": 30, "cache_days": 3},          # 0 = no monthly limit
     "gemini": {"monthly_tasks": 2, "tasks_per_run": 1, "cache_days": 14},
-    "apify": {"mode": "fallback", "monthly_items": AB.items("collect", AB.WORKING_KEYS), "items_per_run": 30, "max_cost_per_run_usd": 1.0, "check_max_cost_usd": 0.5,
+    "apify": {"mode": "fallback", "reddit_hold": True, "monthly_items": AB.items("collect", AB.WORKING_KEYS), "items_per_run": 30, "max_cost_per_run_usd": 1.0, "check_max_cost_usd": 0.5,
               "actors": DEFAULT_APIFY_ACTORS},
     "claude": {"model": "claude-sonnet-5-5", "monthly_calls": 60, "max_rounds": 3, "max_tokens": 700, "prompt_max_tokens": 2000, "review_rounds": 1,
                "prepare_prompt": True},
@@ -1006,6 +1006,9 @@ def settle_images(browser, site_cfg):
         drawn = now["total"] > 0 and now["loaded"] >= now["total"] and blank == 0
         if drawn and ((not now["spinner"] and steady >= patience - 1) or steady >= patience + 1):
             return ""
+        if blank > 0 and steady >= cfg.get("stall_polls", 8):                       # nothing at all changed for this many polls although the blank tiles were visited: the grid has stalled (Acceptance #18: 7 images and 17 blank tiles for the whole 60 s), so it is read as it stands instead of waited for
+            return (f"the grid stalled: {last[0]} of {last[1]} images drawn, {blank} blank tile(s), nothing changed for {steady} polls ({waited} s) although the blank tiles were visited; it was read as it stood"
+                    + (", spinner still showing" if now["spinner"] else ""))
         if waited >= cfg["max_seconds"]:
             return (f"the grid was still filling in after {cfg['max_seconds']} s ({last[0]} of {last[1]} images drawn"
                     + (f", {blank} blank tile(s)" if blank else "") + (", spinner still showing" if now["spinner"] else "") + ")")

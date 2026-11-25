@@ -61,7 +61,7 @@ def run_forecast(args, store, now, *, model_loader=FC.load_timesfm):
             out = loaded(sample, 4)
             print(f"forecast: MODEL LOAD PROVEN: TimesFM 3.0 forecast a 48-point test series: {[round(x, 1) for x in out]} (this proves the install, the weights and the call, not that it beats the baseline)")
         except Exception as exc:                                                                                # noqa: BLE001
-            print(f"forecast: MODEL LOAD FAILED: {type(exc).__name__}: {str(exc)[:200]}; the model is NOT used")
+            print(f"forecast: MODEL LOAD FAILED: {type(exc).__name__}: {str(exc)[:600]}; the model is NOT used")
             loaded = None
     if loaded is not None and args.backtest:
         gate = FC.backtest(pooled, loaded)

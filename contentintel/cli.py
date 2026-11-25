@@ -17,6 +17,7 @@ from . import apify as apify_mod
 from . import batch2_cli as batch2_mod
 from . import stage_cli as stage_mod
 from . import batch3_cli as batch3_mod
+from . import intel_cli as intel_mod
 from .claude_client import Claude
 from .contract import Failure, classify_message
 from . import contract as contract_mod
@@ -193,6 +194,7 @@ def build_parser():
     batch2_mod.add_parsers(sub, _common)
     stage_mod.add_parsers(sub, _common)
     batch3_mod.add_parsers(sub, _common)
+    intel_mod.add_parsers(sub, _common)
 
     p = sub.add_parser("health", help="show how each source and route is doing, and which ones have earned trust")
     _common(p)
@@ -363,6 +365,20 @@ def _routed(claude, purpose, args, store):
             raise services.GatewayUnavailable(why)                                            # said out loud: a run never silently falls back to Claude
         return router, finish
     return services.ai_client(hub, purpose, claude, stack_factory=stack, now_fn=sync_mod.utc_now)
+
+
+class _NoClaude:
+    """The inner client of the seed judge: it never answers. The judge's lane is the pool only; when the pool has no answer the topics stay unjudged instead of using up Claude's cap on a nice-to-have."""
+    model = "none"
+
+    def json_task(self, system, user, max_tokens=None):
+        raise RuntimeError("the pool had no answer and the seed judge never falls back to Claude")
+
+
+def _seed_judge_client(args, store):
+    """The routed client for the seed judge (route 'autoseeds', the job's own ranked lane seed_judge_json), or None when the owner has not routed that purpose to the gateway."""
+    client = _routed(_NoClaude(), "autoseeds", args, store)
+    return client.for_job("seed_judge") if callable(getattr(client, "for_job", None)) else None
 
 
 def _search_providers(args, purpose):
@@ -1162,6 +1178,8 @@ def _acceptance_context(args, store, registry, now):
     for src, platform, url in (("reddit", "reddit", "https://www.reddit.com/r/overalls/"), ("x_posts", "x", "https://x.com/NASA"), ("linkedin_posts", "linkedin", "https://www.linkedin.com/company/nasa/")):
         if apify is None:
             ctx.missing[(src, "apify")] = "no key: set APIFY_TOKEN"
+        elif src == "reddit" and _sl.reddit_held():
+            ctx.missing[(src, "apify")] = "on hold by the owner's decision (Apify's Reddit needs a residential proxy, about 8 dollars a GB, which would use the 20 dollar month up too fast; research.yaml apify.reddit_hold)"
         else:
             ctx.observatory_checks[(src, "apify")] = (lambda p=platform, u=url: (lambda rows: (len(rows), f"{p}: Apify read {len(rows)} item(s) of {u} ({rows[0]['actor']})") if rows else (0, "the actor ran but returned nothing"))(_sl.apify_rows(p, u, apify)))
     try:                                                         # why a Reddit route cannot be checked here, in plain words (never a failure)
@@ -1309,7 +1327,7 @@ def main(argv=None):
             _save_health(ledger, store, args)
             return code
         if args.cmd == "voice":
-            return tools_mod.run_voice(args, store, sync_mod.utc_now())
+            return tools_mod.run_voice(args, store, sync_mod.utc_now(), judge=lambda: _seed_judge_client(args, store))
         if args.cmd == "analyze":
             return tools_mod.run_analyze(args, sync_mod.utc_now(), store=store)
         if args.cmd == "skills":
@@ -1318,6 +1336,8 @@ def main(argv=None):
             return stage_mod.run_stage(args, store, sync_mod.utc_now())
         if args.cmd == "batch3":
             return batch3_mod.run_batch3(args, store, sync_mod.utc_now())
+        if args.cmd == "intel":
+            return intel_mod.run_intel(args, store, sync_mod.utc_now())
         if args.cmd == "canon":
             return batch2_mod.run_canon(args, store, sync_mod.utc_now(), clients=lambda: _registry_clients(args, store))
         if args.cmd == "analytics":

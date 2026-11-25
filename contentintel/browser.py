@@ -118,9 +118,9 @@ def _check_value(kind, value, where):
         for k, v in value.items():
             _num(v, f"{where}.{k}")
     elif kind == "settle":
-        keys = {"images_any", "spinner_any", "tiles_any", "max_seconds", "poll_seconds", "stable_polls"}
+        keys = {"images_any", "spinner_any", "tiles_any", "max_seconds", "poll_seconds", "stable_polls", "stall_polls"}
         if not isinstance(value, dict) or set(value) - keys or not {"max_seconds", "poll_seconds"} <= set(value):
-            raise BrowserError(f"{where} must hold max_seconds and poll_seconds, and may hold: images_any, spinner_any, stable_polls")
+            raise BrowserError(f"{where} must hold max_seconds and poll_seconds, and may hold: images_any, spinner_any, tiles_any, stable_polls, stall_polls")
         _num(value["max_seconds"], f"{where}.max_seconds", minimum=1)
         _num(value["poll_seconds"], f"{where}.poll_seconds", minimum=1)
         _num(value.get("stable_polls", 2), f"{where}.stable_polls", minimum=1)

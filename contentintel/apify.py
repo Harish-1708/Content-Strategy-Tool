@@ -137,6 +137,16 @@ def _run_id_from_body(body):
     return None
 
 
+def reddit_held(path="research.yaml"):
+    """True while the owner has Reddit on hold (research.yaml apify.reddit_hold, default TRUE). Reddit refuses Apify's datacenter addresses and its residential proxy costs about 8 dollars a GB, which would use the 20 dollar month up too fast, so no Apify Reddit call is made until the owner lifts the hold."""
+    try:
+        import yaml
+        data = yaml.safe_load(open(path, encoding="utf-8")) or {}
+        return bool((data.get("apify") or {}).get("reddit_hold", True))
+    except Exception:                                                                    # noqa: BLE001 - no readable file: the hold stays on
+        return True
+
+
 class Apify(Provider):
     name = "apify"
     label = "Apify"
@@ -180,8 +190,25 @@ class Apify(Provider):
                 wait = int(retry_after) if str(retry_after or "").isdigit() else 2 ** attempt
                 self.sleep(min(wait, 30))
                 continue
-            raise ProviderError(f"{self.label}: HTTP {status}: {self._clean(text)[:200]}")
+            raise ProviderError(f"{self.label}: HTTP {status}: {self._clean(text)[:200]}" + self._why_run_failed(body))
         raise ProviderError(f"{self.label}: gave up after retries ({last})")
+
+    def _why_run_failed(self, body):
+        """' (the actor said: ...)': what the failed run's own status message says, read with one GET of the run the answer names. '' when no run is named or the read fails: a diagnostic, never a new failure."""
+        text = body if isinstance(body, str) else json.dumps(body)
+        run_id = _run_id_from_body(body) if isinstance(body, dict) else None
+        if not run_id:
+            found = re.search(r"run ID:? ?([A-Za-z0-9]{12,24})", text)
+            run_id = found.group(1) if found else None
+        if not run_id:
+            return ""
+        try:
+            status, got, _retry = self.http("GET", f"{self.base}/actor-runs/{run_id}", params=None, json_body=None, headers=self._auth(), timeout=20)
+            data = (got.get("data") if isinstance(got, dict) else None) or {}
+            said = str(data.get("statusMessage") or "").strip()
+            return f" (run {run_id} {data.get('status', '')}: the actor said: {self._clean(said)[:240]})" if said else f" (run {run_id}: the actor gave no reason)"
+        except Exception:                                                                 # noqa: BLE001
+            return f" (run {run_id}; its status message could not be read)"
 
     def _start_run(self, actor, payload, *, max_items, max_cost_usd, max_wait):
         """Start an async run and return its run record at once. One attempt only, never retried: a

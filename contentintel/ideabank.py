@@ -1524,6 +1524,26 @@ def _counts(bank):
     return out
 
 
+def _ledger_line(slug, bank, ids_before, kept_before, after):
+    """One line that makes the kept count ADD UP: kept before + what is kept now that was not (taken in this run, or brought back / judged again) - what is no longer kept (and why) = kept now; and what became of every item taken in. 'Taken in' alone is not 'kept': a new item waits to be scored (it is not shown), may be removed as a copy or as not relevant enough, and a kept item can be removed later in the same run (a copy, a very same file, a lower score). The first Collect runs printed '16 taken in, 0 removed' while the sheets did not grow."""
+    items = bank["items"]
+    kept_now = {i for i, it in items.items() if state_of(it) == "kept"}
+    gained, lost = kept_now - kept_before, kept_before - kept_now
+    intake = set(items) - ids_before
+    intake_kept = intake & kept_now
+    intake_removed = {i for i in intake if items[i]["state"] == "removed"}
+    intake_waiting = {i for i in intake if state_of(items[i]) == "new"}
+    why = {}
+    for i in lost:
+        reason = (items[i].get("removed_reason") or "no longer kept") if items[i]["state"] == "removed" else "no longer kept"
+        key = reason.split(" (")[0][:40]
+        why[key] = why.get(key, 0) + 1
+    return (f"{slug}: ledger: kept {len(kept_before)} -> {after['kept']} = {len(kept_before)} + {len(gained)} now kept ({len(intake_kept)} taken in this run, {len(gained) - len(intake_kept)} brought back or judged again) - {len(lost)} no longer kept"
+            + (f" ({'; '.join(f'{n} {k}' for k, n in sorted(why.items()))})" if why else "")
+            + f"; of the {len(intake)} taken in: {len(intake_kept)} kept, {len(intake_removed)} dropped at once, {len(intake_waiting)} still waiting to be scored (not shown)"
+            + ("" if len(kept_before) + len(gained) - len(lost) == after["kept"] else "; THE LEDGER DOES NOT ADD UP"))
+
+
 def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=None, request=None, web_sources=None,
                  dry_run=False, budget=None, since="", skip_brands=(), audit=False, video_runner=None, cookies=None, rescues=(), browser_factory=None, protected=None, health=None,
                  video_facts=None, pace_fn=None, motion_entries=None):
@@ -1543,6 +1563,7 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
             item["approved"] = idea_id in approved and state_of(item) == "kept"
     pages = own_page_ids(store, brand.slug)
     skipped = {}
+    ids_before = set(bank["items"])                                                       # for the ledger line at the end: which items this run took in
     new = intake_collected(bank, store.read_collected(brand.slug), settings, now, request, since, brand, pages, skipped)
     if web_sources:
         new += intake_web(bank, web_sources, settings, now, request, brand, pages, skipped)
@@ -1657,5 +1678,6 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
     if removed_now:
         lines.append(f"{brand.slug}: {removed_now} item(s) removed ({own} the brand's own, {skipped_brands} from brands you skip, {copies} cop(ies), "
                      f"{irrelevant} not relevant enough" + (f", {same_technique} the same technique as better ideas" if same_technique else "") + f") in this run; the bank now holds {after['kept']} kept item(s), {added_kept} of them new in this run")
+    lines.append(_ledger_line(brand.slug, bank, ids_before, kept_before, after))
     store.write_ideabank(brand.slug, bank)
     return new, lines

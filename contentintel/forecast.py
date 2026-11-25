@@ -43,15 +43,24 @@ def load_timesfm(horizon_limit=64):
     timesfm3 module reports that instead. forecast_fn(series, horizon) -> list of floats. The weights are under Google's non-commercial licence, accepted by the owner for this personal tool."""
     try:
         import numpy as np
-        from timesfm3 import ModelConfig, TimesFM3Evaluator
-    except ImportError:
-        raise ImportError('pip install "timesfm[torch]"  (TimesFM 3.0, module timesfm3; the weights google/timesfm-3.0-pytorch download on first use; there is no fallback to an older version)') from None
-    forecaster = TimesFM3Evaluator(ModelConfig(checkpoint_path=TIMESFM_CHECKPOINT, per_core_batch_size=8, device="cpu"))
+        from timesfm3 import TimesFM3Forecaster                                          # the 3.0 package's own entry point (checked against the published timesfm 3.0.2 wheel)
+    except ImportError as exc:
+        raise ImportError(f'TimesFM 3.0 could not be imported ({type(exc).__name__}: {exc}); installed timesfm: {installed_version()}; it needs timesfm 3.0 or newer with the torch extra: pip install "timesfm[torch]>=3.0"; there is no fallback to an older version') from None
+    forecaster = TimesFM3Forecaster.from_pretrained(TIMESFM_CHECKPOINT, device="cpu", per_core_batch_size=8)
 
     def run(series, horizon):
-        outputs = (forecaster.predict_batch if hasattr(forecaster, "predict_batch") else forecaster.predict)([np.asarray(series, dtype=np.float32)], horizon=horizon)
-        return first_forecast(outputs, horizon)
+        out = forecaster.predict(np.asarray(series, dtype=np.float32), horizon)          # a ForecastOutput: .forecast is the point forecast
+        return first_forecast([out], horizon)
     return run
+
+
+def installed_version():
+    """The installed timesfm distribution's version (or 'not installed'), for the load message: a wrong version was the suspected cause of the first live load failures."""
+    try:
+        from importlib import metadata
+        return metadata.version("timesfm")
+    except Exception:                                                                    # noqa: BLE001
+        return "not installed"
 
 
 def mae(actual, predicted):
