@@ -168,12 +168,17 @@ def verify_ids(reg, name, ids, *, search, get, claude, now, max_calls=None, max_
             left = len([i for i in ids[position - 1:] if i not in tried])
             report["notes"].append(f"the time budget was reached: {left} claim(s) were not checked in this run; they are picked up by the next run")
             break
+        if max_calls and report["calls"] >= max_calls:
+            left_ids = [i for i in ids[position - 1:] if i not in tried and i not in report["outcomes"]]
+            for i in left_ids:
+                report["outcomes"][i] = "not checked"                                   # never silently dropped: the tally counts them and the next run picks them up
+                if progress:
+                    progress("skipped", i, "call limit", position, total)
+            report["notes"].append(f"the call limit ({max_calls}) was reached: {len(left_ids)} claim(s) were NOT checked in this run; raise --verify-calls or run again")
+            break
         tried.add(cid)
         if progress:
             progress("start", cid, claim, position, total)
-        if max_calls and report["calls"] >= max_calls:
-            report["notes"].append("the call limit was reached: the remaining claim(s) were not checked")
-            break
         before = claim["status"]
         outcome = verify_claim(reg, name, claim, search=search, get=get, claude=claude, now=now, report=report, max_pages=max_pages, max_calls=max_calls, recheck=recheck)
         report["outcomes"][cid] = outcome

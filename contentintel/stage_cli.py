@@ -133,4 +133,6 @@ def run_stage(args, store, now, *, environ=None, post=None, loader=None, runner=
         print(f"stage: {args.brand}: the download ({path.name}) was converted to {out['converted']} because the hosted backend only accepts audio and video files of known types")
     TR.save_transcript(store, args.brand, {"sha": TR.sha_of(path), "source": args.source or args.url or args.file, "backend": out["backend"], "language": out["language"], "text": out["text"], "seconds": out["seconds"]}, now)
     print(f"stage: {args.brand}: transcribed {len(out['text'])} characters with {out['backend']} in {out['seconds']} s" + (f" (after: {'; '.join(f'{b}: {w}' for b, w in out['tried'])})" if out["tried"] else ""))
+    shown = " ".join(str(out["text"]).split())
+    print(f"stage: {args.brand}: transcript" + (f" (first 1500 of {len(shown)} characters; the whole text is saved in the repository)" if len(shown) > 1500 else "") + f": {shown[:1500]}")                 # the run page shows what was said, not only how long it was
     return 0

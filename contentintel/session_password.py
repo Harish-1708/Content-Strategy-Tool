@@ -110,8 +110,7 @@ def real_login(browser_config="browser.yaml", debug_dir="debug"):
         site_cfg = cfg["sites"].get(platform) or {}
         if not site_cfg.get("login_steps"):
             raise B.BrowserError(f"no login_steps for {platform} in {browser_config}")
-        br = B.open_browser(platform, cfg, B.site_pacing(cfg, platform), "", debug_dir, headless=True)
-        try:
+        with B.open_browser(platform, cfg, B.site_pacing(cfg, platform), "", debug_dir, headless=True) as br:          # open_browser is a context manager (it yields the browser): Instagram's first real attempt failed with an AttributeError because the manager itself was used
             C.run_steps(br, site_cfg["login_steps"], {"username": username, "password": password})
             C.check_warning(br, platform, site_cfg)
             state = C.session_state(br, site_cfg)
@@ -120,10 +119,6 @@ def real_login(browser_config="browser.yaml", debug_dir="debug"):
             if state == "login_wall":
                 raise B.LoginWall(f"{platform}: the login did not open a session")
             return br.export_cookies()
-        finally:
-            closer = getattr(br, "close", None)
-            if callable(closer):
-                closer()
     return login
 
 

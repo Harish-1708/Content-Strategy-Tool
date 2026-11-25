@@ -20,7 +20,7 @@ from urllib.parse import quote_plus
 
 from . import connections as CONN
 from . import contract as K
-from .apify import ApifyRunUnfinished
+from .apify import ApifyRunUnfinished, reddit_held
 from .safety import scrub
 
 SCRIPT = Path("skills") / "last30days" / "scripts" / "last30days.py"
@@ -388,6 +388,9 @@ class ApifyVoice:
         from . import apify_budget as AB
         for source in ("tiktok", "instagram") + (("reddit",) if reddit_backup else ()):          # Reddit only as the BACKUP: when the public Reddit search failed in this ask
             n = min(self.room(), budget - read_here)
+            if source == "reddit" and reddit_held():
+                notes.append(f"apify reddit for {topic!r}: not asked (Reddit through Apify is on hold by the owner's decision: its residential proxy costs about 8 dollars a GB)")
+                continue
             if source == "reddit":
                 n = min(AB.room("reddit_backup", self.ledger, self.day or "0", self.keys), 25, self.per_run - self.spent_this_run)
             if source == "tiktok":

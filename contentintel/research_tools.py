@@ -24,6 +24,7 @@ from . import apify as apify_mod
 from . import apify_budget as apify_budget_mod
 from . import pace as PACE
 from . import providers as providers_mod
+from . import seed_judge as SJ
 from . import poolcatalog as POOL
 from . import services as SERVICES
 from . import videometa as VMETA
@@ -157,9 +158,10 @@ def _skipped_names(args, slug):
     return {bench.norm_name(n): str(n) for n, v in pages.items() if str(v).strip().lower() in bench.SKIP_WORDS} if isinstance(pages, dict) else {}
 
 
-def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, environ=None, clock=None):
+def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, environ=None, clock=None, judge=None):
     import os
     import time
+    from . import research as research_mod
     environ = dict(os.environ) if environ is None else environ
     settings = _settings(args)
     if settings is None:
@@ -169,6 +171,7 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
     if not slugs or slugs == [None]:
         print("Error: choose --brand NAME or --all")
         return 1
+    judge_calls = [SJ.CALLS_PER_RUN]                                                      # one count for the whole run, across every brand and topic
     handed = [n for n in CONN.CONNECTIONS["last30days"]["secrets"] if n in CONN.external_env(settings, "last30days", environ)]
     print("Keys the engine is given (names only, never values): " + (", ".join(handed) if handed else "none")
           + f". SCRAPECREATORS_API_KEY is {'set in this run' if environ.get('SCRAPECREATORS_API_KEY') else 'NOT set in this run'}"
@@ -204,6 +207,8 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
             continue
         kept = store.read_extra(slug, "voice") or {}
         total_new = 0
+        judge_cache = SJ.load_cache(store, slug, now) if args.mode == "discover" else {}
+        judge_usage = research_mod.Ledger(store.load_usage(), now[:7]) if args.mode == "discover" else None
         trending_lane = list((kept or {}).get("trending", [])) if isinstance(kept, dict) else []          # the small capped lane of trending topics (never audience voice)
         run_entities = {}
         apify_lane, ledger = apify_all if args.mode in ("research", "competitors") and args.apify else (None, None)
@@ -219,11 +224,19 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
                 from . import assets_find as AF2
                 terms = AF2.terms_from_files(getattr(args, "brands_dir", "brands"), slug, store, include_competitors=True)
                 to_merge, other = _split_discover(items, terms)
+                other_all = len(other)
+                two = SJ.run(slug, other, terms, _lane_ok, judge or (lambda: None), judge_cache, now, calls_left=judge_calls, usage=judge_usage)          # tier 1: shares a word with the brand's own terms (priority, no model); tier 2: a pool model judges whether the rest could help the brand
+                if two["calls"]:
+                    store.save_usage(judge_usage.usage)                                   # spent is spent: saved before anything else can fail
+                    SJ.save_cache(store, slug, judge_cache)
+                print(f"{slug}: {len(to_merge)} discovered item(s) are about this brand's world and were saved; of the {other_all} that are not: {len(two['priority'])} share a word with the brand's own terms (priority), {len(two['judged'])} were judged useful to the brand by a pool model ({two['cached']} from earlier judgments), {two['dropped']} were judged not useful and dropped, {two['unjudged']} could not be judged this run" + (f" ({two['why']})" if two["why"] else "") + f"; {two['calls']} judge call(s); the lane keeps at most {TRENDING_CAP}, topics only, never audience voice")
+                tier_of = {SJ.key_of(o): "priority" for o in two["priority"]} | {SJ.key_of(o): "judged" for o in two["judged"]}
+                other = two["priority"] + two["judged"]
+                trending_lane = [x for x in trending_lane if x.get("tier") == "judged" or _lane_ok(x, terms)]          # an old lane is cleaned by the same rule (what the judge said yes to earlier stays)
                 scored_other = VOICE.merge({"items": []}, other, now)[0].get("items", [])                  # the same weighting and clustering as the voice, so the seed suggestions rank the trending items the way they always did
-                keep_other = [{"title": o.get("title", ""), "url": o.get("url", ""), "source": o.get("source", ""), "weight": o.get("weight", 0), "cluster": o.get("cluster", ""), "at": now} for o in scored_other]
+                keep_other = [{"title": o.get("title", ""), "url": o.get("url", ""), "source": o.get("source", ""), "weight": o.get("weight", 0), "cluster": o.get("cluster", ""), "at": now, "tier": tier_of.get(SJ.key_of(o), "priority")} for o in scored_other]
                 seen_t = {(x.get("url") or x.get("title")) for x in keep_other}
                 trending_lane = (keep_other + [x for x in trending_lane if (x.get("url") or x.get("title")) not in seen_t])[:TRENDING_CAP]
-                print(f"{slug}: {len(to_merge)} discovered item(s) are about this brand's world and were saved; {len(other)} are about other things (or have no link) and went to the trending lane only (topics for the seed suggestions, at most {TRENDING_CAP} kept, never audience voice)")
             kept, fresh = VOICE.merge(kept, to_merge, now)
             total_new += fresh
             for it in items:
@@ -289,7 +302,7 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
                 print(f"{slug}: talk about each competitor: " + "; ".join(f"{e}: {n} item(s), {w:,} engagement" for e, (n, w) in sorted(ents.items(), key=lambda kv: -kv[1][1])))
             if kept["seed_topics"]:
                 print(f"{slug}: topics people are discussing (suggested next research topics): " + "; ".join(kept["seed_topics"]))
-            print(f"{slug}: audience voice now holds {len(kept.get('items', []))} item(s), {total_new} new this run." + (f"\n  Strongest:\n{top}" if top else ""))
+            print(f"{slug}: audience voice now holds {len(kept.get('items', []))} item(s), {total_new} new this run." + (f"\n  Strongest in the saved voice (these are stored items, not only this run's):\n{top}" if top else ""))
     if apify_all[0] is not None and apify_all[0].asks_made:                              # once per run, after every brand, and only when something was asked
         lane, led = apify_all
         print(f"Apify usage after this run: voice {led.month_used('voice_apify_items'):g}/{lane.monthly} items this month, all Apify use {led.month_used('apify_items'):g}/{lane.shared_cap} (this run read {lane.spent_this_run}" + ("; no call was made: every ask was refused, see the notes above" if not lane.attempted else "") + ").")
@@ -553,6 +566,13 @@ def _split_discover(items, terms):
         about = any(AF.words(term) and AF.relevance(text, term) >= 0.5 for term in terms)
         (mine if about and url.startswith("http") else other).append(it)                 # saved only when about the brand AND openable: an item with no link can still suggest a topic, never be voice
     return mine, other
+
+
+def _lane_ok(item, terms):
+    """True when a discovered or lane item shares at least one word (four letters or more) with the brand's own terms (name, research keywords, topics, product terms, competitors). No link is needed: the lane holds topics for the seed suggestions, never audience voice (voice still needs a link)."""
+    from . import assets_find as AF
+    want = {w for t in terms for w in AF.words(t) if len(w) >= 4}
+    return bool(want & set(AF.words(f"{item.get('title', '')} {item.get('summary', '')}")))
 
 
 def _speech(path, tmp, runner, env, post, loader, data_dir, language="en"):

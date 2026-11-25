@@ -3,7 +3,7 @@ MPT is a web application: it has to be RUNNING somewhere (Cloud Run is the plann
 no site to log into: it is software you install). So nothing here runs until the owner says a host is ready: `mpt.yaml` has `enabled: false`, and even then MPT_URL must name the host.
 What it does when on: (1) DRAFTS: one draft video per concept of a brief; (2) EXECUTABLE BRIEFS: only a brief that passed the claims gate and the brief rules is turned into jobs (a brief that needs review is refused with the reason); (3) HOOK A/B RENDERS:
 the same concept rendered with several different opening lines, labelled A, B, C, so the hooks can be compared. PUBLISHING IS OFF AND CANNOT BE SWITCHED ON HERE: this module has no publish, upload or post function at all;
-a draft is a file for the owner to look at. Pexels (free, no card) supplies the stock footage MPT uses: PEXELS_API_KEY goes into MPT's own configuration on the host, not into this tool."""
+a draft is a file for the owner to look at. Free stock footage (Pixabay by default, free with no card, because Pexels has paused new key issuance; Pexels when its key exists) is what MPT uses: the key goes into MPT's own configuration on the host, not into this tool."""
 import json
 import re
 import time

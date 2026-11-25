@@ -17,6 +17,7 @@ from pathlib import Path
 
 from . import contract as K
 from . import session_chain as SC
+from .apify import reddit_held
 from . import sessions as S
 
 PROVED_DAYS = 14                      # a passed check counts as live proof for this long
@@ -664,13 +665,15 @@ APIFY_PAGE_CEILING = 0.25                                                       
 
 def apify_rows(platform, url, client, usage=None, now="", keys=4):
     """The page through Apify's own infrastructure: public content only, no login, no risk to our account (Instagram refuses a GitHub runner's visit, Apify's servers are not refused). It cannot prove the
-    session or read what only a logged-in person sees. One call, at most one item, 25 cents, counted against the sessions-read share of the Apify month (apify_budget)."""
+    session or read what only a logged-in person sees. One call, at most one item, 25 cents, counted against the share of the Apify month that belongs to the platform read (sessions read, X read or LinkedIn read, apify_budget)."""
     from . import apify_budget as AB
     day = (now or "0000-00-00")[:10]
     feature = APIFY_FEATURE.get(platform, "sessions_read")
     if usage is not None and AB.room(feature, usage, day, keys) < 1:
         raise K.Failure(K.RATE_LIMITED, f"the {feature.replace('_', '-')} share of this month's Apify money (or today's share of it) is used up")
     actor, payload = APIFY_PAGE_ACTORS.get(platform, APIFY_PAGE_ACTORS["default"])
+    if platform == "reddit" and reddit_held():
+        raise K.Failure(K.NEED_SETUP, "Reddit through Apify is on hold by the owner's decision (Apify's Reddit needs a residential proxy, about 8 dollars a GB, which would use the 20 dollar month up too fast; research.yaml apify.reddit_hold)")
     if platform == "x" and not _x_handle(url):
         raise K.Failure(K.BAD_INPUT, f"{url} is not an X profile or tweet address: the X actor reads an account's recent tweets")
     if platform == "linkedin" and "/company/" not in str(url):
