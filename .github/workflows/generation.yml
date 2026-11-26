@@ -162,6 +162,7 @@ jobs:
           exit "$code"
 
       - name: "Save the report and the trial log (never a secret value: the log holds secret names and counts only)"
+        if: always()
         shell: bash
         run: |
           git config user.name "generation"
@@ -174,9 +175,17 @@ jobs:
             echo "No changes to save."
           else
             git commit -m "Generation ${{ inputs.mode }} $(date -u +%Y-%m-%dT%H:%MZ)"
-            git pull --rebase --autostash
-            git push
+            bash .github/scripts/push-with-retry.sh
           fi
+
+      - name: Keep the unsaved data (only when the save failed)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: unsaved-data
+          path: unsaved-data/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Upload the generation files (drafts only — watermarked, personal-use)
         if: always()

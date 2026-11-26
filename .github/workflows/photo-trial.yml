@@ -79,6 +79,7 @@ jobs:
           exit "$code"
 
       - name: "Save the verdicts (never a secret value)"
+        if: always()
         shell: bash
         run: |
           git config user.name "photo-trial"
@@ -88,9 +89,17 @@ jobs:
             echo "No changes to save."
           else
             git commit -m "Photo trial $(date -u +%Y-%m-%dT%H:%MZ)"
-            git pull --rebase --autostash
-            git push
+            bash .github/scripts/push-with-retry.sh
           fi
+
+      - name: Keep the unsaved data (only when the save failed)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: unsaved-data
+          path: unsaved-data/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Upload the photo (draft only — personal-use)
         if: always()
