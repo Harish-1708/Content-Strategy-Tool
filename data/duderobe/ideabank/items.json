@@ -29113,7 +29113,7 @@
    "media_format": "",
    "media_role": "",
    "media_url": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/910303315_17891529165620564_8272851901572451158_n.jpg?stp=dst-jpg_e35_p1080x1080_tt6&_nc_cat=105&_nc_map=urlgen_bucketless&ig_cache_key=NDAzMjMxNjg1NTg2NTkwNjYzNg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTU4My5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=T-28SlAwKMUQ7kNvwGMKXU_&_nc_oc=Adp9kcsopzwQyNgRaPHAQTCPGpRhp92nWgQTtPOZXoefHV9XXSG8N5Opmgtx8GWUUlI&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=gIQpFkIu-tejjx1K2WhSig&_nc_ss=703ba&_nc_ct=RQosPBUIFQIlBAAAAA&oh=00_AQT_-ZrMcXbJQZeEVPPxbNKoKumn2K0sLrAOg_R-K1QluQ&oe=6B0C950C",
-   "meta_tries": 1,
+   "meta_tries": 2,
    "metrics": {
     "comments": 59,
     "likes": 1104
@@ -29202,7 +29202,7 @@
    "idea": 50,
    "kind": "social post",
    "link_refreshes": 0,
-   "look": "",
+   "look": "ugc",
    "mechanism": "meme hook",
    "media_format": "",
    "media_role": "",
@@ -29289,9 +29289,9 @@
    "video_note": "",
    "video_status": "saved",
    "video_tries": 0,
-   "visual_hook": "",
-   "visual_quality": "",
-   "visual_tries": 0
+   "visual_hook": "Woman in white loungewear opens a hooded Highland cow robe in a living room; caption reads 'that cool Highland Cow robe we bought on tiktok' with emojis.",
+   "visual_quality": "good",
+   "visual_tries": 1
   },
   "IB-0367": {
    "added_at": "2026-11-25T18:22:25Z",
@@ -29841,7 +29841,7 @@
    "fingerprint": "024c3766a8f66a29",
    "first_test": "Create a 3‑slide carousel ad, target 10k high‑income males 25‑45, measure purchase intent.",
    "fit": 60,
-   "format": "static",
+   "format": "ai",
    "generic": false,
    "handle": "vespira.atelier",
    "hook_line": "The Royal Men's Lounge Collection.",
@@ -29850,12 +29850,12 @@
    "idea": 55,
    "kind": "social post",
    "link_refreshes": 0,
-   "look": "",
+   "look": "ai-generated",
    "mechanism": "aspirational luxury hook",
    "media_format": "",
    "media_role": "",
    "media_url": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/921098890_17930767260201585_4121089863396111007_n.webp?stp=dst-webp_p1080x1080_sh2.08&_nc_cat=106&_nc_map=urlgen_bucketless&ig_cache_key=NDAzNTU0MTkzNTk2MTkxOTQxMA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=9O6wNNff18YQ7kNvwGBoDOy&_nc_oc=AdpHmhE04Z9sfcSuHoVSVHDmK4SgwN-ZxSJDoZohd5D5UA-Bl5MTmt733TItboIGj1o&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=G7r00ziDxQmbfy_Pivkz_A&_nc_ss=703ba&_nc_ct=RQosPBUIFQIlBAAAAA&oh=00_AQQlAiBVeYqN88RNDaMIs7P_iPfYqCjpN_UvQz7qkLJlcg&oe=6B0C6E89",
-   "meta_tries": 1,
+   "meta_tries": 2,
    "metrics": {
     "comments": 1,
     "likes": 18
@@ -29887,9 +29887,9 @@
    "video_note": "this post has no video",
    "video_status": "none",
    "video_tries": 1,
-   "visual_hook": "",
-   "visual_quality": "",
-   "visual_tries": 0
+   "visual_hook": "Five embroidered satin robe-and-pajama sets on mannequins with matching slippers, gold-lit marble stage, 'Vespira Atelier – The Royal Mens Lounge Collection' logo and colorway labels.",
+   "visual_quality": "ok",
+   "visual_tries": 1
   },
   "IB-0374": {
    "added_at": "2026-11-25T18:22:25Z",
@@ -30199,7 +30199,7 @@
    "media_format": "",
    "media_role": "",
    "media_url": "",
-   "meta_tries": 1,
+   "meta_tries": 2,
    "metrics": {
     "comments": 0,
     "likes": 6
@@ -30543,7 +30543,7 @@
    "media_format": "",
    "media_role": "",
    "media_url": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/928519511_18346828750277123_1506988176400277248_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&_nc_map=urlgen_bucketless&ig_cache_key=NDAzNzI5OTAyMzk4NDg1OTEyMA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTA4OC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=4ek0c27X8rAQ7kNvwHU1tV-&_nc_oc=AdrgHNPfcqBbCZCqvZyBd0xlrm3Sy6QLwCL1DFgIt1RxPTFC798p2Sg7f5053G63Zi4&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=G7r00ziDxQmbfy_Pivkz_A&_nc_ss=703ba&_nc_ct=RQosPBUIFQIlBAAAAA&oh=00_AQQyVBSM6i8u0SMz4MljL3CI89_esvG369VBk7YYqIHPHg&oe=6B0C7792",
-   "meta_tries": 1,
+   "meta_tries": 2,
    "metrics": {
     "comments": 0,
     "likes": 1
@@ -30573,8 +30573,8 @@
    "title": "",
    "topic": "Lounge set gift",
    "url": "https://www.instagram.com/p/DgHXhJgphfw/",
-   "video_note": "",
-   "video_status": "",
+   "video_note": "Instagram refused the download from this server",
+   "video_status": "blocked",
    "video_tries": 0,
    "visual_hook": "Black lounge T-shirt and pants folded and tied with a cream ribbon bow on a beige ground. Headline \"Because nobody wants another mug\" with green callout labels naming each piece.",
    "visual_quality": "good",
@@ -30806,7 +30806,7 @@
    "fingerprint": "02d39554ec84a847",
    "first_test": "Social media ad with scarcity theme",
    "fit": 40,
-   "format": "static",
+   "format": "ai",
    "generic": false,
    "handle": "Nobero",
    "hook_line": "Limited time offer for travel outfit",
@@ -30815,7 +30815,7 @@
    "idea": 60,
    "kind": "ad",
    "link_refreshes": 0,
-   "look": "",
+   "look": "ai-generated",
    "mechanism": "scarcity hook",
    "media_format": "DCO",
    "media_role": "",
@@ -30852,9 +30852,9 @@
    "video_note": "",
    "video_status": "",
    "video_tries": 0,
-   "visual_hook": "",
-   "visual_quality": "",
-   "visual_tries": 0
+   "visual_hook": "Six folded tee-and-jogger sets in olive, navy, black, light blue, beige and lilac on dark concrete, headed 'BACK IN STOCK AIRPORT CO-ORDS' in bold white type.",
+   "visual_quality": "good",
+   "visual_tries": 1
   },
   "IB-0388": {
    "added_at": "2026-11-25T18:22:25Z",

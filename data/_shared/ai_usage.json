@@ -3339,6 +3339,11 @@
       "requests": 2,
       "tokens": 795
      },
+     "general_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 29208
+     },
      "listen_learn_json": {
       "cost_usd": 0.0,
       "requests": 2,
@@ -3377,10 +3382,10 @@
     },
     "cost_usd": 0.0,
     "failures": 24,
-    "latency_ms": 13697,
-    "requests": 30,
-    "tokens_in": 1526,
-    "tokens_out": 699
+    "latency_ms": 127364,
+    "requests": 38,
+    "tokens_in": 22350,
+    "tokens_out": 9083
    },
    "cohere": {
     "by_lane": {
@@ -3579,6 +3584,16 @@
       "requests": 4,
       "tokens": 3358
      },
+     "general_json": {
+      "cost_usd": 0.0,
+      "requests": 14,
+      "tokens": 32442
+     },
+     "general_text": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 1909
+     },
      "listen_learn_json": {
       "cost_usd": 0.0,
       "requests": 4,
@@ -3616,11 +3631,11 @@
      }
     },
     "cost_usd": 0.0,
-    "failures": 1,
-    "latency_ms": 84976,
-    "requests": 61,
-    "tokens_in": 29034,
-    "tokens_out": 48882
+    "failures": 8,
+    "latency_ms": 116958,
+    "requests": 76,
+    "tokens_in": 44989,
+    "tokens_out": 67278
    },
    "kilo": {
     "by_lane": {
@@ -4169,6 +4184,11 @@
       "requests": 6,
       "tokens": 2297
      },
+     "general_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
      "listen_learn_json": {
       "cost_usd": 0.0,
       "requests": 6,
@@ -4206,9 +4226,9 @@
      }
     },
     "cost_usd": 0.0,
-    "failures": 66,
+    "failures": 68,
     "latency_ms": 552131,
-    "requests": 90,
+    "requests": 92,
     "tokens_in": 6666,
     "tokens_out": 16015
    }

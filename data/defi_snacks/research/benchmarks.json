@@ -1,16 +1,24 @@
 {
  "items": {
   "bitsmithagency": {
-   "candidates": [],
-   "checked_at": "2026-11-25T18:18:32Z",
+   "candidates": [
+    {
+     "ads": 0,
+     "likes": 0,
+     "name": "Bitsmith Agency, LLC | Atlanta GA",
+     "page_id": "",
+     "url": "https://www.facebook.com/bitsmithagency"
+    }
+   ],
+   "checked_at": "2026-11-26T09:42:46Z",
    "kind": "benchmark",
    "name": "Bitsmith Agency, LLC",
-   "page_id": "",
+   "page_id": "100071792161224",
    "page_likes": 0,
-   "page_name": "",
-   "reason": "searching for this name turned up no ads that name an advertiser page",
-   "source": "auto",
-   "status": "unresolved"
+   "page_name": "Bitsmith Agency, LLC | Atlanta GA",
+   "reason": "found with Serper and confirmed as the main official page by the AI reviewer: The page name matches the brand exactly and has no regional qualifier, indicating it is the primary official page. (https://www.facebook.com/bitsmithagency)",
+   "source": "serper_review",
+   "status": "resolved"
   },
   "chobani": {
    "candidates": [

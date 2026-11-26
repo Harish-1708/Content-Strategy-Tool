@@ -1,53 +1,51 @@
 {
- "generated_at": "2026-11-25T09:08:31Z",
+ "generated_at": "2026-11-26T09:42:46Z",
  "model": "claude-sonnet-5-5",
- "profile": "Brand: Swoveralls (swoveralls.com), a shopify store with 62 products on sale or coming soon.\ncore: 42 products, $89-$159. Families: Swoveralls, Swovie Shorts, Comfyalls, Corduroy Swoveralls, Grid Fleece Swoveralls. 27 limited edition, 24 new, 5 on sale.\nkids: 6 products, $43.99-$49. Families: Kids Swoveralls. 2 limited edition, 4 new, 2 on sale.\nmerch: 14 products, $25-$36. Families: Sidekick Tee - Dancing Skeletons, Sidekick Tee - Swoveralls, The Free Your Waistband Beanie, The Sidekick Tee, Sidekick Tee - Good at Naps, Sidekick Tee - Jimothy, Sidekick Tee - Trash Panda, The Free Your Waistband Hat, The Good At Naps Hat, The Sidekick Tee in Marble Heather. 13 new.\nMaterials seen: cotton, spandex, polyester.\nPocket claims: 5, 6, 7.\nAudiences hinted: kids (6 products).",
- "profile_hash": "23042ea59f8ee0ff",
+ "profile": "Brand: Swoveralls (swoveralls.com), a shopify store with 62 products on sale or coming soon.\ncore: 42 products, $89-$149. Families: Swoveralls, Swovie Shorts, Comfyalls, Corduroy Swoveralls, Grid Fleece Swoveralls. 27 limited edition, 24 new, 5 on sale.\nkids: 6 products, $43.99-$49. Families: Kids Swoveralls. 2 limited edition, 4 new, 2 on sale.\nmerch: 14 products, $25-$36. Families: Sidekick Tee - Dancing Skeletons, Sidekick Tee - Swoveralls, The Free Your Waistband Beanie, The Sidekick Tee, Sidekick Tee - Good at Naps, Sidekick Tee - Jimothy, Sidekick Tee - Trash Panda, The Free Your Waistband Hat, The Good At Naps Hat, The Sidekick Tee in Marble Heather. 13 new.\nMaterials seen: cotton, spandex, polyester.\nPocket claims: 5, 6, 7.\nAudiences hinted: kids (6 products).",
+ "profile_hash": "7676b324b165d566",
  "seeds": {
   "benchmarks": [
    "Madepants",
-   "The Oodie",
-   "Dollar Shave Club",
-   "Liquid Death",
-   "Allbirds",
-   "Cotopaxi",
+   "Shein",
+   "Allbirds ME",
+   "Lululemon",
+   "Gymshark",
    "SKIMS",
-   "Gymshark"
+   "The Oodie",
+   "Liquid Death"
   ],
-  "context": "Swoveralls is a Shopify store offering overalls, shorts, and merchandise for adults and children, with core adult items priced between $89 and $159. The brand emphasizes comfort and utility through materials like cotton, spandex, and polyester, highlighting features such as multiple pockets. Target audiences include families and kids, supported by a 'Sidekick' mascot and humorous apparel designs.",
+  "context": "Swoveralls sells a range of overalls, shorts, and matching merch such as tees and hats, with core adult items priced $89‑$149 and kids items $43.99‑$49. The catalog includes 27 limited‑edition adult pieces and 2 limited‑edition kids pieces, emphasizing multiple pockets (5‑7) and comfort fabrics like cotton, spandex, and polyester. Merchandise like the Sidekick Tee and beanies are priced $25‑$36. The brand targets both adults and children looking for casual, utility‑focused apparel.",
   "instagram_hashtags": [
-   "overalls outfit",
-   "cozy aesthetic",
-   "oversized fashion",
-   "family style",
-   "daily wear"
+   "overalls",
+   "cozyfashion",
+   "limitededition",
+   "familystyle",
+   "comfortwear"
   ],
   "keywords": {
    "adjacent": [
-    "Lounge shorts",
-    "cotton sweatpants",
-    "oversized hoodies"
+    "loungewear tees",
+    "cozy hats"
    ],
    "cross_industry": [
-    "Cozy clothing ads",
-    "Oversized fashion ads"
+    "limited edition drops",
+    "pocket utility ads"
    ],
    "direct": [
-    "Women's overalls",
-    "denim overalls",
-    "cozy overalls"
+    "overalls",
+    "kids overalls"
    ]
   },
   "questions": [
-   "Which ad hooks, formats, and angles are performing best right now across the best consumer brands in any industry, and how can Swoveralls adapt these high-performing creative strategies to its specific product line and brand voice?",
-   "How are direct competitors like Madepants and The Oodie positioning their overalls and loungewear to drive sales, and what specific messaging or visual elements are resonating most with their target audience?"
+   "Which ad hooks, formats, and angles are currently performing best across top consumer brands in any industry, and how could Swoveralls adapt those creative strategies to its utility‑focused, limited‑edition overalls line?",
+   "What messaging and creative themes most effectively highlight multi‑pocket functionality and family‑friendly sizing for both adult and kids overalls in paid social campaigns?"
   ],
   "tiktok_hashtags": [
-   "overalls fashion",
-   "cozy outfits",
-   "oversized clothing",
-   "family outfits",
-   "daily look"
+   "overalls",
+   "cozyfashion",
+   "limitededition",
+   "familystyle",
+   "comfortwear"
   ]
  },
  "version": 2

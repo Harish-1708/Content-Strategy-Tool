@@ -526,8 +526,8 @@
   },
   "ai:cloudflare|gateway": {
    "acceptance": null,
-   "consecutive_failures": 1,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 8,
    "history": [
     {
      "at": "2026-11-10T09:20:48Z",
@@ -808,6 +808,62 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-26T09:51:29Z",
+     "code": "",
+     "items": 1,
+     "ms": 11956,
+     "ok": true
+    },
+    {
+     "at": "2026-11-26T09:57:24Z",
+     "code": "",
+     "items": 1,
+     "ms": 16346,
+     "ok": true
+    },
+    {
+     "at": "2026-11-26T09:57:40Z",
+     "code": "",
+     "items": 1,
+     "ms": 12425,
+     "ok": true
+    },
+    {
+     "at": "2026-11-26T09:57:53Z",
+     "code": "",
+     "items": 1,
+     "ms": 12667,
+     "ok": true
+    },
+    {
+     "at": "2026-11-26T09:58:06Z",
+     "code": "",
+     "items": 1,
+     "ms": 12853,
+     "ok": true
+    },
+    {
+     "at": "2026-11-26T09:58:19Z",
+     "code": "",
+     "items": 1,
+     "ms": 13374,
+     "ok": true
+    },
+    {
+     "at": "2026-11-26T09:58:32Z",
+     "code": "",
+     "items": 1,
+     "ms": 7014,
+     "ok": true
+    },
+    {
+     "at": "2026-11-26T09:58:39Z",
+     "code": "",
+     "items": 1,
+     "ms": 27032,
+     "ok": true
     }
    ],
    "last_error": {
@@ -815,7 +871,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast key1: timeout. Last error: The operation was aborted (cloud"
    },
-   "last_success": "2026-11-25T18:35:09Z",
+   "last_success": "2026-11-26T09:58:39Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:cloudflare",
@@ -1521,7 +1577,7 @@
   },
   "ai:groq|gateway": {
    "acceptance": null,
-   "consecutive_failures": 1,
+   "consecutive_failures": 3,
    "consecutive_successes": 0,
    "history": [
     {
@@ -2090,18 +2146,123 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-26T09:42:56Z",
+     "code": "",
+     "items": 1,
+     "ms": 742,
+     "ok": true
+    },
+    {
+     "at": "2026-11-26T09:42:58Z",
+     "code": "",
+     "items": 1,
+     "ms": 2312,
+     "ok": true
+    },
+    {
+     "at": "2026-11-26T09:51:18Z",
+     "code": "",
+     "items": 1,
+     "ms": 5962,
+     "ok": true
+    },
+    {
+     "at": "2026-11-26T09:51:24Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-26T09:51:24Z",
+     "code": "",
+     "items": 1,
+     "ms": 4705,
+     "ok": true
+    },
+    {
+     "at": "2026-11-26T09:51:29Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-26T09:51:29Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-26T09:52:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 3147,
+     "ok": true
+    },
+    {
+     "at": "2026-11-26T09:54:54Z",
+     "code": "",
+     "items": 1,
+     "ms": 3483,
+     "ok": true
+    },
+    {
+     "at": "2026-11-26T09:57:12Z",
+     "code": "",
+     "items": 1,
+     "ms": 7001,
+     "ok": true
+    },
+    {
+     "at": "2026-11-26T09:57:19Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-26T09:57:19Z",
+     "code": "",
+     "items": 1,
+     "ms": 4630,
+     "ok": true
+    },
+    {
+     "at": "2026-11-26T09:57:24Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-26T09:57:24Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-26T09:57:40Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-26T04:47:17Z",
-    "code": "UPSTREAM_BROKEN",
-    "message": "unusable answer: the answer is not valid JSON"
+    "at": "2026-11-26T09:57:40Z",
+    "code": "RATE_LIMITED",
+    "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~74s."
    },
-   "last_success": "2026-11-25T18:35:26Z",
+   "last_success": "2026-11-26T09:57:19Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:groq",
-   "state": "healthy"
+   "state": "degraded"
   },
   "ai:groq|model:openai/gpt-oss-120b": {
    "acceptance": null,
@@ -3424,7 +3585,7 @@
   },
   "ai:zhipu|gateway": {
    "acceptance": null,
-   "consecutive_failures": 2,
+   "consecutive_failures": 4,
    "consecutive_successes": 0,
    "history": [
     {
@@ -3636,10 +3797,24 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-26T09:51:29Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-26T09:57:24Z",
+     "code": "RATE_LIMITED",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-25T18:34:21Z",
+    "at": "2026-11-26T09:57:24Z",
     "code": "RATE_LIMITED",
     "message": "All models rate-limited after 1 attempt. Soonest cooldown reset ~2m. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: 该模型当前访问量过大，请您稍后再试"
    },
@@ -3647,7 +3822,7 @@
    "pause": null,
    "route": "gateway",
    "source": "ai:zhipu",
-   "state": "healthy"
+   "state": "degraded"
   },
   "ai:zhipu|model:glm-4.7-flash": {
    "acceptance": null,

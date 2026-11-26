@@ -19,6 +19,18 @@
    "source": "auto",
    "status": "ambiguous"
   },
+  "allbirdsme": {
+   "candidates": [],
+   "checked_at": "2026-11-26T09:42:46Z",
+   "kind": "benchmark",
+   "name": "Allbirds ME",
+   "page_id": "",
+   "page_likes": 0,
+   "page_name": "",
+   "reason": "searching for this name turned up no ads that name an advertiser page",
+   "source": "auto",
+   "status": "unresolved"
+  },
   "cotopaxi": {
    "candidates": [
     {
@@ -137,6 +149,49 @@
    "source": "auto",
    "status": "resolved"
   },
+  "lululemon": {
+   "candidates": [
+    {
+     "ads": 5,
+     "likes": 3815970,
+     "name": "lululemon",
+     "page_id": "33693527731"
+    },
+    {
+     "ads": 1,
+     "likes": 100250,
+     "name": "Depop",
+     "page_id": "156405867784232"
+    },
+    {
+     "ads": 1,
+     "likes": 96866,
+     "name": "lululemon Southeast Asia",
+     "page_id": "136293796581505"
+    },
+    {
+     "ads": 1,
+     "likes": 23881,
+     "name": "lululemon Middle East",
+     "page_id": "1473531389627583"
+    },
+    {
+     "ads": 1,
+     "likes": 2006,
+     "name": "GŌSHT NY",
+     "page_id": "101511729475860"
+    }
+   ],
+   "checked_at": "2026-11-26T09:42:46Z",
+   "kind": "benchmark",
+   "name": "Lululemon",
+   "page_id": "33693527731",
+   "page_likes": 3815970,
+   "page_name": "lululemon",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
   "madepants": {
    "candidates": [
     {
@@ -189,6 +244,49 @@
    "page_id": "601495866852901",
    "page_likes": 360803,
    "page_name": "The Oodie",
+   "reason": "the only advertiser page named exactly this",
+   "source": "auto",
+   "status": "resolved"
+  },
+  "shein": {
+   "candidates": [
+    {
+     "ads": 1,
+     "likes": 39612354,
+     "name": "SHEIN",
+     "page_id": "380039845369159"
+    },
+    {
+     "ads": 5,
+     "likes": 8447043,
+     "name": "SHEIN CURVE",
+     "page_id": "1894913033945980"
+    },
+    {
+     "ads": 3,
+     "likes": 7819472,
+     "name": "SHEIN Mexico",
+     "page_id": "1980557928867086"
+    },
+    {
+     "ads": 2,
+     "likes": 4934506,
+     "name": "SHEIN MEN",
+     "page_id": "241728119797071"
+    },
+    {
+     "ads": 1,
+     "likes": 3170646,
+     "name": "SHEIN KIDS",
+     "page_id": "470423686753096"
+    }
+   ],
+   "checked_at": "2026-11-26T09:42:46Z",
+   "kind": "benchmark",
+   "name": "Shein",
+   "page_id": "380039845369159",
+   "page_likes": 39612354,
+   "page_name": "SHEIN",
    "reason": "the only advertiser page named exactly this",
    "source": "auto",
    "status": "resolved"
