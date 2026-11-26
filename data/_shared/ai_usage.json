@@ -3075,6 +3075,108 @@
     "tokens_in": 10326,
     "tokens_out": 25125
    }
+  },
+  "2026-11-26": {
+   "bazaarlink": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 15451
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 1,
+    "latency_ms": 64814,
+    "requests": 1,
+    "tokens_in": 7451,
+    "tokens_out": 8000
+   },
+   "cohere": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 0
+     },
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 5,
+      "tokens": 3828
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 9,
+      "tokens": 43891
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 10,
+      "tokens": 4929
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 1,
+    "latency_ms": 69383,
+    "requests": 25,
+    "tokens_in": 47496,
+    "tokens_out": 5152
+   },
+   "groq": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 7958
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 1,
+    "latency_ms": 2579,
+    "requests": 1,
+    "tokens_in": 6934,
+    "tokens_out": 1024
+   },
+   "kilo": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 11137
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 4168
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 1,
+    "latency_ms": 82324,
+    "requests": 3,
+    "tokens_in": 9463,
+    "tokens_out": 5842
+   },
+   "pollinations": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 0
+     },
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 13068
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 1,
+    "latency_ms": 57878,
+    "requests": 5,
+    "tokens_in": 2160,
+    "tokens_out": 10908
+   }
   }
  }
 }
