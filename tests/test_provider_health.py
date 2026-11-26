@@ -359,7 +359,7 @@ def test_the_workflow_is_scheduled_daily_commits_only_the_two_generated_files_an
     steps = wf["jobs"]["health"]["steps"]
     save = next(s for s in steps if s.get("name", "").startswith("Save the generated lists"))["run"]
     assert "add_each data/_shared/provider_health.json data/_shared/ai_rankings.json" in save and "git add -f data" not in save.replace("git add -f \"$f\"", "")
-    assert "::error title=Save failed::" in save and "health_message.txt" in save
+    assert "push-with-retry.sh" in save and "health_message.txt" in save and "::error title=Save failed::" in Path(".github/scripts/push-with-retry.sh").read_text(encoding="utf-8")
     probe = next(s for s in steps if s.get("name") == "Probe, score and decide")["run"]
     assert "python -u -m contentintel ai health --live" in probe and any(s.get("uses") == "./.github/actions/ai-pool" for s in steps)
     assert "ANTHROPIC_API_KEY" in wf["jobs"]["health"]["env"]

@@ -171,3 +171,9 @@ def no_real_provider_calls(monkeypatch):
             raise ConnectionError("no real provider calls in tests: " + str(urlsplit(str(url)).hostname))
         return real(method, url, headers=headers, body=body, timeout=timeout)
     monkeypatch.setattr(ai_clients, "default_http", guarded)
+
+
+@pytest.fixture(autouse=True)
+def _no_real_browser_for_the_sessions_proof(monkeypatch):
+    """The sessions check proves TikTok and Instagram with a real browser when a run of the tool has one; the tests never start one (a test that wants the proof passes its own `opener`)."""
+    monkeypatch.setenv("CONTENTINTEL_SESSIONS_BROWSER_PROOF", "0")

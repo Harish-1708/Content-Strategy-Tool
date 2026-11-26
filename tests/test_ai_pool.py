@@ -116,10 +116,11 @@ def test_the_pool_loader_refuses_what_would_make_the_pool_unsafe_or_confusing(tm
 
 def test_the_lane_caps_are_raised_so_the_stronger_models_can_be_used_fully():
     caps = {n: lane.max_tokens for n, lane in LANE_MAP.items()}
-    assert caps == {name: 8000 for name in LANE_MAP} and len(caps) == 26                                              # every lane, none left lower: quality comes first
+    assert caps == {**{name: 8000 for name in LANE_MAP}, "seed_judge_json": 700, "brief_review_json": 2000} and len(caps) == 26          # every lane, none left lower: quality comes first, except the two jobs whose whole answer is a short verdict (an enforced small cap, so a call never reserves 8,000 tokens of a provider's allowance)
     was = {"research_extraction": 1500, "competitor_intelligence": 1500, "audience_voice": 1500, "formula_analysis": 800, "trend_opportunity": 2000, "strategic_reasoning": 2500,
            "content_ideation": 1800, "brief_generation": 3000, "production_support": 1500, "validation_qa": 1200, "general_text": 2000, "general_json": 2500, "foundation_json": 2500, "story_extract_json": 2500, "story_review_json": 2500, "conflict_check_json": 2500}
-    assert all(caps[n] >= 2 * was.get(n, 4000) for n in caps) and min(caps.values()) == 8000          # the lanes added since (the claim check, the brief, the five stages) start at 8000
+    small = {"seed_judge_json", "brief_review_json"}
+    assert all(caps[n] >= 2 * was.get(n, 4000) for n in caps if n not in small) and min(v for n, v in caps.items() if n not in small) == 8000          # the lanes added since (the claim check, the brief, the five stages) start at 8000
 
 
 def test_the_claude_spending_cap_and_claude_s_place_are_untouched():

@@ -1,5 +1,6 @@
 """Verifying claims from public sources with the pool model (verify_claims.py), the evidence rule enforced where the ledger is read (canon.py), the foundation's use of it and the exit-code policy
 (a section the gate rejects is recorded and the run goes on)."""
+import json
 from pathlib import Path
 
 import pytest
@@ -440,6 +441,7 @@ def test_a_claim_conflicted_by_a_source_is_re_checked_by_reclassify_conflicts_an
     B2.run_canon(args, cli.Store(args.data_dir), AT, clients=lambda: (now_ok, lambda q: [{"url": "https://a.example.com/a", "title": ""}], lambda u: page(QUOTE_A)))
     out = capsys.readouterr().out
     assert "claim(s) conflicted by a source were re-checked from public sources" in out and "1 now VERIFIED" in out and "0 still CONFLICTED" in out or "now VERIFIED" in out
+    assert "reclassify result, both kinds of conflict together: 4 claim(s) were CONFLICTED at the start; now 1 VERIFIED, 0 taken back to UNVERIFIED, 3 still CONFLICTED (" in out        # one line that adds up (4 = this claim and the 3 the seed leaves in conflict), whatever kind of conflict it was
     assert reg.state()["claims"][cid]["status"] in ("verified", "unverified", "conflicted")
     fresh = C.Registry(tmp_path / "data", "swoveralls")
     assert fresh.state()["claims"][cid]["status"] == "verified"                                                                        # the contradiction is gone and a close source stands: the claim is no longer blocked
@@ -463,3 +465,19 @@ def test_a_source_conflicted_claim_with_no_source_and_no_contradiction_on_the_re
     run(fresh, Judge({"did not win": {"verdict": "contradicts", "quote": contra, "about_brand": True, "close_to_fact": True, "exaggeration_risk": "low", "medium": "press"}}), urls, {urls[0]: page(contra)})
     fresh.record_evidence(cid2, [], [], "unverified", AT)                                                                           # an ordinary (not re-check) unverified outcome leaves a conflicted claim conflicted
     assert fresh.state()["claims"][cid2]["status"] == "conflicted"
+
+
+def test_the_spot_check_action_lists_every_claim_verified_from_one_source_with_its_source_and_quotation_and_changes_nothing(tmp_path, capsys, trusted):
+    reg = seeded(tmp_path)
+    one, two = claim_id(reg, "Awards"), None
+    reg.record_evidence(one, [ev("body.org", QUOTE_B, close=True, risk="low", medium="interview")], [], "verified", AT)
+    others = [cid for cid, c in reg.state()["claims"].items() if cid != one and c["status"] != "verified"]
+    two = others[0]
+    reg.record_evidence(two, [ev("a.com"), ev("b.org", QUOTE_B)], [], "verified", AT)                                         # two sources: not single-source
+    before = json.dumps(reg.state()["claims"], sort_keys=True)
+    code = run_canon(tmp_path, None, "--action", "spot-check")
+    out = capsys.readouterr().out
+    assert code == 0 and "1 claim(s) are VERIFIED FROM ONE SOURCE" in out and f"{one}:" in out and f"{two}:" not in out
+    assert "source: https://body.org/x (interview)" in out and "quote:" in out and "should open the source once" in out
+    assert json.dumps(reg.state()["claims"], sort_keys=True) == before                                                          # it only reads
+    assert "spot-check) python -m contentintel canon --action spot-check" in Path(".github/workflows/skills.yml").read_text(encoding="utf-8")

@@ -39,7 +39,7 @@ def store(tmp_path, swov):
 
 
 def concept(**over):
-    base = {"name": "Comfort switch", "format": "30 second vertical video", "hook": "Sweatpants that secretly zip up into overalls", "script": "Show the zip, then the pockets.",
+    base = {"name": "Comfort switch", "format": "30 second vertical video", "hook": "Sweatpants that secretly zip up into a full outfit", "script": "Show the zip, then the pockets.",
             "visual_direction": "Natural light, one take.", "cta": "Try the comfort switch", "product": "swoveralls-navy", "references": ["IB-0001"]}
     base.update(over)
     return base
@@ -47,7 +47,7 @@ def concept(**over):
 
 def good_brief(**over):
     base = {"title": "Father's Day comfort", "objective": "Win gift orders", "audience": "adults buying for dad", "key_message": "Comfort he will wear",
-            "tone": "warm", "concepts": [concept(), concept(name="Dad reacts", hook="Dad opens his sweatpants overalls", references=["IB-0002"])],
+            "tone": "warm", "concepts": [concept(), concept(name="Dad reacts", hook="Dad opens his sweatpants", references=["IB-0002"])],
             "dos": ["Show the pockets"], "donts": ["Do not show denim"], "deliverables": ["2 videos"], "notes_for_creators": "Keep it real"}
     base.update(over)
     return base
@@ -199,13 +199,13 @@ def test_a_brief_that_obeys_every_rule_has_no_violations(store, ruleset):
 
 def test_a_banned_character_in_a_hook_is_found_and_located(store, ruleset):
     found = checked(store, ruleset, concepts=[concept(hook="Sweatpants — then overalls!")])
-    assert {(v["where"], v["rule"]) for v in found} == {("concept 1 (Comfort switch) hook", "banned_char")} and len(found) == 2
+    assert {(v["where"], v["rule"]) for v in found} == {("concept 1 (Comfort switch) hook", "banned_char"), ("concept 1 (Comfort switch) hook", "banned_phrase")} and len(found) == 3          # the em dash, the exclamation point, and 'overalls' in a hook (the Update 73 v5 rule)
     assert all(v["severity"] == "error" for v in found)
 
 
 def test_the_word_order_rule_applies_to_hooks_only(store, ruleset):
     bad_hook = checked(store, ruleset, concepts=[concept(hook="Overalls that feel like sweatpants")])
-    assert [(v["where"], v["rule"]) for v in bad_hook] == [("concept 1 (Comfort switch) hook", "ordered_terms")]
+    assert sorted((v["where"], v["rule"]) for v in bad_hook) == [("concept 1 (Comfort switch) hook", "banned_phrase"), ("concept 1 (Comfort switch) hook", "ordered_terms")]
     in_script = checked(store, ruleset, concepts=[concept(script="Overalls first, then sweatpants")])
     assert in_script == []
 
@@ -265,7 +265,7 @@ def test_a_brief_that_passes_is_one_call_and_no_repair(store, swov, ruleset):
 def test_rule_breaking_is_sent_back_once_and_the_fixed_brief_is_used(store, swov, ruleset):
     claude = claude_with(BAD, good_brief())
     (brief, violations, notes, calls), budget = write(store, swov, ruleset, claude)
-    assert violations == [] and calls == 2 and notes == ["one repair pass: 0 rule problem(s) left"] and brief["concepts"][0]["hook"] == "Sweatpants that secretly zip up into overalls"
+    assert violations == [] and calls == 2 and notes == ["one repair pass: 0 rule problem(s) left"] and brief["concepts"][0]["hook"] == "Sweatpants that secretly zip up into a full outfit"
     system, user, _ = claude.json_calls[1]
     assert "Problems to fix:\n- concept 1 (Comfort switch) hook: Contains em dash (1x)" in user and "exclamation point" in user and "Rules:" in user and "Brief:" in user and "keeping everything else word for word" in system
 
@@ -381,7 +381,7 @@ def test_the_file_is_a_real_word_document_with_every_section(store, swov, rulese
                    "Audience", "Key message", "Tone", "Concepts", "1. Comfort switch", "2. Dad reacts", "Do: Show the pockets", "Don't: Do not show denim", "Deliverables", "2 videos",
                    "Notes for creators", "Keep it real", "Reference gallery"):
         assert needle in text, needle
-    assert "Sweatpants that secretly zip up into overalls" in tables and "swoveralls-navy" in tables and "IB-0001" in tables and "Natural light, one take." in tables
+    assert "Sweatpants that secretly zip up into a full outfit" in tables and "swoveralls-navy" in tables and "IB-0001" in tables and "Natural light, one take." in tables
 
 
 def test_the_gallery_lists_each_referenced_idea_with_its_links(store, swov, ruleset):
@@ -663,3 +663,71 @@ def test_a_validator_error_or_a_reviewer_that_says_revise_stops_a_brief_being_re
     assert any(n.startswith("independent review: revise") for n in revise["notes"]) and any(n.startswith("validator bank:") for n in bad["notes"])
     down = make(store, swov, ruleset, {"claude-sonnet-5-5": claude_with(good_brief())})
     assert down["status"] == "ready" and down["review"]["verdict"] == "unavailable"                                                       # a reviewer that cannot answer never blocks a brief
+
+
+def test_a_script_given_as_a_list_of_lines_stays_lines_and_is_never_shown_as_a_python_list():
+    raw = good_brief(concepts=[concept(script=["Show the zip.", "  Then   the pockets. ", "", "Say the fit."]), concept(name="Plain", script="One line only")])
+    brief, _notes = BR.clean_brief(raw, {"IB-0001", "IB-0002"}, {"swoveralls-navy"}, 7)
+    assert brief["concepts"][0]["script"] == "Show the zip.\nThen the pockets.\nSay the fit." and "[" not in brief["concepts"][0]["script"] and brief["concepts"][1]["script"] == "One line only"
+    assert "plain text with one spoken or shown line per line" in BR.BRIEF_SYSTEM and "normal apostrophes in contractions" in BR.BRIEF_SYSTEM
+
+
+class RoutedFake(FakeClaude):
+    """A routed client that says how its calls were answered (as services.RoutedClaude does) and why the pool did not."""
+    def __init__(self, route, notes=(), answers=()):
+        super().__init__()
+        self.calls, self.notes, self.json_answers = [], [], list(answers)
+        self.route, self.pending = route, list(notes)
+
+    def json_task(self, system, user, max_tokens=None, **kw):
+        self.calls.append(self.route)
+        self.notes += self.pending                                                                                                              # the reason is written while the call is made, as the real client does
+        self.pending = []
+        return super().json_task(system, user, max_tokens)
+
+    def for_job(self, job):
+        return self
+
+
+def test_the_record_says_who_wrote_the_brief_and_why_the_pool_did_not_when_claude_did(store, swov, ruleset, usable):
+    pool = make(store, swov, ruleset, {"claude-sonnet-5-5": RoutedFake("gateway", answers=[good_brief(), {"verdict": "pass", "problems": [], "checklist": {}}])})
+    assert pool["built_by"] == "the pool (lane brief_json)" and "writer: the pool (lane brief_json)" in pool["notes"] and pool["revision"] == 0 and pool["revision_of"] == ""
+    claude = make(store, swov, ruleset, {"claude-sonnet-5-5": RoutedFake("claude", notes=["AI Gateway had no answer for brief (every route failed); Claude was used"], answers=[good_brief(), {"verdict": "pass", "problems": [], "checklist": {}}])})
+    assert claude["built_by"] == "Claude (the pool had no usable answer)" and any("every route failed" in n for n in claude["notes"])
+    plain = make(store, swov, ruleset, {"claude-sonnet-5-5": claude_with(good_brief())})
+    assert plain["built_by"] == "claude-sonnet-5-5"                                                                                            # an unrouted client: the configured model name, as before
+
+
+def test_a_brief_that_needs_review_is_revised_from_its_own_problems_and_the_revision_says_which_brief_it_fixes(store, swov, ruleset, usable):
+    first = make(store, swov, ruleset, {"claude-sonnet-5-5": claude_with(good_brief(concepts=[concept(script="Show the zip,\u200b then the pockets.")]),
+                                                                          {"verdict": "revise", "problems": [{"where": "concept 1", "issue": "the hook never says the product"}], "checklist": {"hook_confirms_the_ask": False}})})
+    assert first["status"] == "needs review" and first["content"]["concepts"][0]["script"].startswith("Show the zip")
+    lines = BR.revision_problems(first)
+    assert any("slop_invisible" in l or "invisible character" in l for l in lines) and "concept 1: the hook never says the product (independent reviewer)" in lines
+    claude = claude_with(good_brief(), {"verdict": "pass", "problems": [], "checklist": {"hook_confirms_the_ask": True}})
+    second = make(store, swov, ruleset, {"claude-sonnet-5-5": claude}, revise_of=first)
+    assert second["status"] == "ready" and second["revision"] == 1 and second["revision_of"] == first["id"] and second["id"] != first["id"] and second["review"]["verdict"] == "pass"
+    system, user, _ = claude.json_calls[0]
+    assert system.endswith(BR.REVISE_ADDENDUM) and "The brief to revise:" in user and "the hook never says the product (independent reviewer)" in user and "Show the zip,\u200b then the pockets." in user
+    third = make(store, swov, ruleset, {"claude-sonnet-5-5": claude_with(good_brief(), {"verdict": "pass", "problems": [], "checklist": {}})}, revise_of=second)
+    assert third["revision"] == 2 and third["revision_of"] == second["id"]
+    plain = claude_with(good_brief(), {"verdict": "pass", "problems": [], "checklist": {}})
+    make(store, swov, ruleset, {"claude-sonnet-5-5": plain})
+    assert BR.REVISE_ADDENDUM not in plain.json_calls[0][0] and "The brief to revise:" not in plain.json_calls[0][1]                                # a new brief is written as before
+
+
+def test_the_blocked_claim_is_named_to_the_revision_as_something_to_remove_never_to_restate():
+    record = {"violations": [{"where": "concept 6 (POV) script", "rule": "claims-gate", "severity": "error", "message": "BLOCKED: the cotton claim"}, {"where": "c1 hook", "rule": "banned_char", "severity": "error", "message": "Contains em dash"}],
+              "validator_findings": [{"where": "c1 hook", "rule": "hook_no_formula", "severity": "warning", "message": "no formula"}], "review": {"problems": []}}
+    lines = BR.revision_problems(record)
+    assert lines[0].endswith("(BLOCKED claim: remove it, never restate it)") and "Contains em dash" in lines[1] and lines[-1] == "c1 hook: no formula (warning)"
+
+
+def test_a_phrase_can_be_banned_only_where_it_matters_and_the_swoveralls_overalls_rule_bans_it_in_the_hook_only():
+    from contentintel import rules as R
+    swov_rules = R.load_ruleset("briefs/swoveralls-new-audience/rules.yaml")
+    assert [v.rule for v in R.check_text(swov_rules, "sweatpants overalls in three colors", "hook")] == ["banned_phrase"]               # BR-0001's hooks 1 and 2 said it
+    assert R.check_text(swov_rules, "Free the waistband with Swoveralls", "hook") == [] and R.check_text(swov_rules, "Overalls with six pockets", "copy") == []     # the brand name and the body copy are fine
+    ordered = [v for v in R.check_text(swov_rules, "overalls then sweatpants", "hook") if v.rule == "ordered_terms"]
+    assert ordered                                                                                                                      # the older word-order rule is untouched
+    assert next(item for item in swov_rules.rules["text_rules"]["banned_phrases"])["severity"] == "error"

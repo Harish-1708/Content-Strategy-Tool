@@ -572,7 +572,7 @@ def test_a_short_key_or_token_in_an_error_never_reaches_the_log():
 def test_the_save_step_keeps_a_failed_foundation_runs_proposals_and_stages_only_the_registry_files():
     wf = yaml.safe_load(Path(".github/workflows/skills.yml").read_text(encoding="utf-8"))
     step = next(s for s in wf["jobs"]["skills"]["steps"] if s.get("name") == "Save the data")
-    assert step["if"].startswith("always() && (") and "'foundation'" in step["if"] and "'reclassify-conflicts'" in step["if"]
+    assert step["if"].startswith("always()") and "inputs.action" not in step["if"].split("#")[0]                                       # every action saves what it wrote (v5: not a list of actions)
     assert "git add -f data/_shared/skills_catalogue.json" in step["run"] and 'git add -f "$d"' in step["run"] and "git add -A" not in step["run"] and "git add -f data\n" not in step["run"]
     assert "append-only" in Path("docs/platform/batch2-external-skills.md").read_text(encoding="utf-8")
 
@@ -724,6 +724,7 @@ def test_the_save_step_commits_only_the_registry_files_and_the_catalogue_and_pus
     clone = tmp_path / "clone"
     subprocess.run(["git", "clone", "-q", str(bare), str(clone)], check=True, capture_output=True)
     (clone / "README.md").write_text("x", encoding="utf-8")
+    shutil.copytree(Path(".github/scripts"), clone / ".github" / "scripts")                                                  # a checkout has the save helper every workflow now calls
     git(clone, "add", "-A")
     git(clone, "commit", "-q", "-m", "start")
     git(clone, "push", "-q", "origin", "HEAD:main")

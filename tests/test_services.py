@@ -769,3 +769,12 @@ def test_a_central_proxy_default_uses_the_listed_proxies_and_an_explicit_proxy_r
     assert SV.resolve_scrapling(s, "site.example", "competitors", {"proxy": True})["proxy"] is True                         # explicit: kept, and advanced_for refuses with the reason
     with pytest.raises(K.Failure, match="no proxy names"):
         WC.advanced_for({"domain": "site.example", "advanced": {"proxy": True}}, s)
+
+
+def test_a_gateway_answer_that_is_not_usable_json_is_said_in_the_notes_with_who_gave_it_and_then_claude_is_used():
+    claude = Claude()
+    router = Router(output="not json")
+    router.provider, router.model = "xkiro", "mistral-large-2512"
+    wrapped = SV.RoutedClaude(claude, "brief", factory_for(router, []), lambda: "t")
+    assert wrapped.json_task("S", "U") == {"from": "claude"} and wrapped.calls == ["claude"]
+    assert any("AI Gateway answered brief on lane general_json" in n and "not a usable JSON object; Claude was used" in n for n in wrapped.notes)

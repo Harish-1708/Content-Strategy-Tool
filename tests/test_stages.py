@@ -172,7 +172,7 @@ def test_the_skills_workflow_has_the_verify_claims_and_stage_actions_and_saves_t
     assert 'verify-claims) python -m contentintel canon --action verify-claims' in text and 'stage) python -m contentintel canon --action stage --stage "$STAGE"' in text
     steps = {s.get("name"): s for s in wf["jobs"]["skills"]["steps"] if s.get("name")}
     for name in ("Set up the free provider pool", "Save the data"):
-        assert "verify-claims" in steps[name]["if"] and "inputs.action == 'stage'" in steps[name]["if"]
+        assert "verify-claims" in steps[name]["if"] and "inputs.action == 'stage'" in steps[name]["if"] if name == "Set up the free provider pool" else steps[name]["if"].startswith("always()")           # the pool set-up still lists its actions; the save runs for every action (v5)
     assert "data/*/extras/stage_*.json" in steps["Save the data"]["run"] and "data/*/catalogue/stage_*.md" in steps["Save the data"]["run"]
     assert "inputs.action == 'stage'" in steps["Check out the skills repository at the pinned commit"]["if"]
 

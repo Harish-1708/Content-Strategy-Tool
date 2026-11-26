@@ -440,7 +440,7 @@ def brief_args(*extra, brief="swoveralls-new-audience"):
 
 def good_brief():
     return {"title": "Father's Day comfort", "objective": "o", "audience": "a", "key_message": "k", "tone": "t",
-            "concepts": [{"name": "Switch", "format": "video", "hook": "Sweatpants that zip into overalls", "script": "s", "visual_direction": "v", "cta": "c",
+            "concepts": [{"name": "Switch", "format": "video", "hook": "Sweatpants that zip into a full outfit", "script": "s", "visual_direction": "v", "cta": "c",
                           "product": "swoveralls-navy", "references": ["IB-0001"]}], "dos": [], "donts": [], "deliverables": [], "notes_for_creators": ""}
 
 
@@ -559,7 +559,7 @@ def test_the_request_workflow_installs_the_browser_only_to_run_and_updates_the_s
 def test_the_brief_workflow_has_its_inputs_and_secrets():
     wf = load("brief")
     inputs = wf[True]["workflow_dispatch"]["inputs"]
-    assert set(inputs) == {"brand", "brief", "ask", "request_id", "include_maybe", "refresh_story_bank"} and inputs["include_maybe"]["default"] is False and inputs["refresh_story_bank"]["default"] is True and inputs["ask"]["required"] is True
+    assert set(inputs) == {"brand", "brief", "ask", "revise", "rounds", "request_id", "include_maybe", "refresh_story_bank"} and inputs["include_maybe"]["default"] is False and inputs["refresh_story_bank"]["default"] is True and inputs["ask"]["required"] is False and inputs["revise"]["default"] == "" and inputs["rounds"]["default"] == "2"
     s = step(wf, "brief", "Write the brief")
     assert s["env"]["ASK"] == "${{ inputs.ask }}" and "${{ inputs." not in s["run"] and '--ask "$ASK"' in s["run"] and "--include-maybe" in s["run"] and '--request "$REQUEST_ID"' in s["run"]
     for name in ("ANTHROPIC_API_KEY", "GOOGLE_SERVICE_ACCOUNT_JSON", "IDEA_BANK_FOLDER_ID", "SHEET_SHARE_EMAIL", "SHEET_FOLDER_ID"):

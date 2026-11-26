@@ -507,8 +507,16 @@ def test_the_loader_uses_the_published_3_0_entry_point_and_names_the_installed_v
     fake = types.ModuleType("timesfm3")
     fake.TimesFM3Forecaster = Forecaster
     monkeypatch.setitem(sys.modules, "timesfm3", fake)
-    run = FC.load_timesfm()
+    fake_numpy = types.ModuleType("numpy")                                                                                     # the Tests runner has no numpy (Tests #1267 and Sabotage #1268 failed on it): the test supplies its own
+    fake_numpy.float32 = float
+    fake_numpy.asarray = lambda values, dtype=None: list(values)
+    monkeypatch.setitem(sys.modules, "numpy", fake_numpy)
+    monkeypatch.setitem(sys.modules, "numpy", None)                                                                            # numpy genuinely unimportable while the model loads
+    run = FC.load_timesfm()                                                                                                    # loading needs neither numpy nor torch
+    monkeypatch.setitem(sys.modules, "numpy", fake_numpy)
     assert run([1, 2, 3, 4, 5, 6, 7, 8], 4) == [1.0, 2.0, 3.0, 4.0] and calls == {"load": ("google/timesfm-3.0-pytorch", "cpu"), "predict": (8, 4)}
+    monkeypatch.delitem(sys.modules, "numpy")                                                                                  # and a model that is loaded can be asked for a forecast only where numpy exists
+    assert "import numpy as np" in Path("contentintel/forecast.py").read_text(encoding="utf-8").split("def run(series, horizon):")[1].split("return first_forecast")[0]
     monkeypatch.setitem(sys.modules, "timesfm3", None)
     monkeypatch.setattr(FC, "installed_version", lambda: "1.3.0")
     with pytest.raises(ImportError, match=r"installed timesfm: 1\.3\.0.*timesfm\[torch\]>=3\.0"):

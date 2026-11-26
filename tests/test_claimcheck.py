@@ -286,7 +286,7 @@ def test_a_bad_claim_rules_section_is_refused_with_a_plain_message(tmp_path, blo
 
 
 def test_the_digest_of_an_older_rules_file_is_unchanged_and_a_claim_rule_changes_it(tmp_path):
-    assert RU.load_ruleset(BRIEFS_DIR / "swoveralls-new-audience" / "rules.yaml").digest == "4ac493be2891"
+    assert RU.load_ruleset(BRIEFS_DIR / "swoveralls-new-audience" / "rules.yaml").digest == "83ac74b2f988"                                      # the older digest was 4ac493be2891: the file changed on purpose in Update 73 v5 (the hook rule), so every brand's rules version moves to the next number
     plain = RU.load_ruleset(write_rules(tmp_path, ""))
     assert "claim_rules" not in plain.rules and RU.load_ruleset(write_rules(tmp_path, "claim_rules:\n  allowed_offers: ['20% off']\n")).digest != plain.digest
 
@@ -312,7 +312,7 @@ def clean(brief, handles=("swoveralls-navy", "swoveralls-midnight-black", "swove
 def test_a_brief_that_invents_a_price_an_offer_and_a_claim_is_caught_where_it_says_them(store, swov, ruleset):
     products = products_for(store, ruleset)
     brief = clean(good_brief(key_message="Only $5 today", concepts=[concept(hook="Sweatpants with free shipping", script="It is 100% vegan and cures back pain.", cta="Use code FIRST15"),
-                                                                    concept(name="Dad reacts", hook="Dad opens his sweatpants overalls", references=["IB-0002"])]))
+                                                                    concept(name="Dad reacts", hook="Dad opens his sweatpants", references=["IB-0002"])]))
     found = BR.check_brief(brief, ruleset, products, swov.claims)
     by_where = {(v["where"], v["rule"]) for v in found}
     assert ("key_message", "price_not_in_catalogue") in by_where and ("concept 1 (Comfort switch) hook", "offer_not_provided") in by_where
@@ -358,7 +358,7 @@ def write(store, swov, ruleset, claude, cap=100):
 
 def test_a_repair_pass_is_asked_to_remove_the_invented_claims_and_the_final_brief_is_clean(store, swov, ruleset):
     banked(store)
-    invented = good_brief(concepts=[concept(hook="Sweatpants for just $5", script="Say it is 100% vegan"), concept(name="Dad reacts", hook="Dad opens his sweatpants overalls", references=["IB-0002"])])
+    invented = good_brief(concepts=[concept(hook="Sweatpants for just $5", script="Say it is 100% vegan"), concept(name="Dad reacts", hook="Dad opens his sweatpants", references=["IB-0002"])])
     claude = claude_with(invented, good_brief())
     brief, violations, notes, calls = write(store, swov, ruleset, claude)
     assert calls == 2 and violations == [] and "one repair pass: 0 rule problem(s) left" in notes
@@ -442,7 +442,7 @@ def test_bad_facts_in_a_record_are_ignored_not_trusted():
 def test_the_register_is_used_while_a_brief_is_written_and_repaired(store, swov, ruleset):
     banked(store)
     brand = replace(swov, claims=[{"id": "dad", "text": "Dad approved", "status": "prohibited"}])
-    bad = good_brief(concepts=[concept(hook="Sweatpants that are Dad approved"), concept(name="Dad reacts", hook="Dad opens his sweatpants overalls", references=["IB-0002"])])
+    bad = good_brief(concepts=[concept(hook="Sweatpants that are Dad approved"), concept(name="Dad reacts", hook="Dad opens his sweatpants", references=["IB-0002"])])
     budget = IB.ClaudeBudget(store, NOW, 100)
     brief, violations, notes, calls = BR.write_brief(claude_with(bad, good_brief()), brand, "Father's Day", items_of(store), products_for(store, ruleset), ruleset, S, budget)
     assert calls == 2 and violations == [] and "one repair pass: 0 rule problem(s) left" in notes

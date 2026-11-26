@@ -115,3 +115,11 @@ def test_the_judge_has_its_own_ranked_lane_job_probe_and_the_cli_routes_it():
     assert cli._seed_judge_client(SimpleNamespace(), None) is None or True
     text = Path("contentintel/cli.py").read_text(encoding="utf-8")
     assert '_routed(_NoClaude(), "autoseeds", args, store)' in text and "judge=lambda: _seed_judge_client(args, store)" in text
+
+
+def test_the_judges_answer_size_is_a_lane_cap_the_router_enforces_not_only_an_estimate():
+    import yaml
+    raw = yaml.safe_load(Path("ai_lanes.yaml").read_text(encoding="utf-8"))["lanes"]
+    assert raw["seed_judge_json"]["max_tokens"] == 700 and raw["brief_review_json"]["max_tokens"] == 2000 and SJ.ITEMS_PER_CALL * 40 > 0
+    router_src = Path("contentintel/ai/router.py").read_text(encoding="utf-8")
+    assert "cap = min(lane.max_tokens," in router_src and "max_out=lane.max_tokens" in router_src                                           # the cap limits the answer and is what the call reserves

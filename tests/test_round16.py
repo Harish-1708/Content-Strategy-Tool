@@ -202,7 +202,7 @@ def test_with_a_spoken_sample_the_probe_checks_that_each_backend_really_transcri
     res = TR.probe(tmp_path, key="k", post=post, cloudflare=("a", "t"))
     rows = {r["backend"]: r for r in res["rows"]}
     assert rows["groq_whisper"]["ok"] and rows["groq_whisper"]["heard"].startswith("This is a test")
-    assert not rows["cloudflare_whisper"]["ok"] and "did not transcribe the spoken sentence" in rows["cloudflare_whisper"]["why"]                  # it answered, but heard nothing: not a pass
+    assert not rows["cloudflare_whisper"]["ok"] and "words wrong" in rows["cloudflare_whisper"]["why"] and "is refused" in rows["cloudflare_whisper"]["why"]                  # it answered, but heard nothing: not a pass
     assert res["ranking"][0] == "groq_whisper"
     from contentintel import stage_cli as SC
     args = cli.build_parser().parse_args(["stage", "--action", "probe-transcribe", "--data-dir", str(tmp_path / "d")])
@@ -260,6 +260,10 @@ def run_save_step(tmp_path, workflow, step_name, files):
     subprocess.run(["git", "clone", str(remote), str(work)], check=True, capture_output=True)
     subprocess.run(["git", "-C", str(work), "commit", "--allow-empty", "-m", "init", "-q"], check=True, env={"GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@t", "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@t", "PATH": "/usr/bin:/bin"})
     subprocess.run(["git", "-C", str(work), "push", "-q", "origin", "HEAD:main"], check=True, capture_output=True)
+    shutil.copytree(Path(".github/scripts"), work / ".github" / "scripts")                                       # the save helper every workflow now calls (a checkout has it)
+    subprocess.run(["git", "-C", str(work), "add", "-A"], check=True, capture_output=True)
+    subprocess.run(["git", "-C", str(work), "commit", "-qm", "scripts"], check=True, env={"GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@t", "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@t", "PATH": "/usr/bin:/bin", "HOME": str(tmp_path)}, capture_output=True)
+    subprocess.run(["git", "-C", str(work), "push", "-q", "origin", "HEAD:main"], check=True, capture_output=True)
     for rel in files:
         f = work / rel
         f.parent.mkdir(parents=True, exist_ok=True)
@@ -277,7 +281,7 @@ def test_the_forecast_and_stock_save_step_commits_and_pushes_what_the_run_wrote_
     code2, out2, log2 = run_save_step(tmp_path / "b", "batch3-tools", "Save the data", [])
     assert code2 == 0 and "NOTHING TO SAVE: no forecasts.json, stock_corpus.json or stock_matches.json was written or changed by this run" in out2 and "Batch 3 tools" not in log2
     text = Path(".github/workflows/batch3-tools.yml").read_text(encoding="utf-8")
-    assert '::error title=Save failed::the commit could not be pushed' in text
+    assert "::error title=Save failed::the commit could not be pushed" in Path(".github/scripts/push-with-retry.sh").read_text(encoding="utf-8") and "push-with-retry.sh" in text
 
 
 # ---- Serper, Node 24, docs --------------------------------------------------------------------------------------------------------------------------------
@@ -398,10 +402,10 @@ def test_the_stage_tools_workflow_installs_ffmpeg_and_fails_loudly_without_it_an
     ff = step("stage-tools", "Install ffmpeg")
     assert ff["if"] == "inputs.action != 'bakeoff'" and "for attempt in 1 2 3" in ff["run"] and "::error title=ffmpeg::" in ff["run"] and "exit 1" in ff["run"]
     save = step("stage-tools", "Save the data")
-    assert "inputs.action == 'bakeoff'" in save["if"] and "data/_shared/bakeoff.json" in save["run"]
+    assert save["if"].startswith("always()") and "data/_shared/bakeoff.json" in save["run"]
     rt = yaml.safe_load(Path(".github/workflows/research-tools.yml").read_text(encoding="utf-8"))
     sv = next(s for s in rt["jobs"][next(iter(rt["jobs"]))]["steps"] if s.get("name") == "Save the data")
-    assert "inputs.tool == 'analyze'" in sv["if"] and "inputs.tool == 'voice'" in sv["if"] and "inputs.tool == 'assets'" in sv["if"]
+    assert sv["if"].startswith("always()") and "inputs.tool" not in sv["if"].split("#")[0]                                       # every tool saves what it wrote (analyze was once left out of a list)
 
 
 # ---- the bake-off ---------------------------------------------------------------------------------------------------------------------------------------

@@ -34,9 +34,10 @@ def test_clean_copy_passes(sw_rules):
 
 
 def test_ordering_rule_when_both_words_appear(sw_rules):
-    assert check_text(sw_rules, "Sweatpants that happen to be overalls", scope="hook") == []
+    ordered = lambda text, **kw: [v for v in check_text(sw_rules, text, scope="hook", **kw) if v.rule == "ordered_terms"]          # the word-order rule on its own: the v5 rule that bans 'overalls' in a hook is tested in test_brief.py
+    assert ordered("Sweatpants that happen to be overalls") == []
     bad = check_text(sw_rules, "Overalls that feel like sweatpants", scope="hook")
-    assert rules_of(bad) == ["ordered_terms"]
+    assert rules_of(bad) == ["banned_phrase", "ordered_terms"] and ordered("Overalls that feel like sweatpants")
 
 
 def test_ordering_rule_ignores_words_inside_other_words(sw_rules):
@@ -49,9 +50,9 @@ def test_ordering_rule_only_applies_to_its_scope(sw_rules):
 
 def test_the_two_readings_of_the_sweatpants_rule_really_differ(sw_rules):
     hook = "I DIDN'T THINK I'D EVER WEAR OVERALLS. THEN I PUT THESE ON."
-    assert check_text(sw_rules, hook, scope="hook") == []
+    assert [v for v in check_text(sw_rules, hook, scope="hook") if v.rule == "ordered_terms"] == []
     strict = check_text(sw_rules, hook, scope="hook", ordered_mode="strict")
-    assert rules_of(strict) == ["ordered_terms"] and strict[0].detail["mode"] == "strict"
+    assert sorted(rules_of(strict)) == ["banned_phrase", "ordered_terms"] and next(v for v in strict if v.rule == "ordered_terms").detail["mode"] == "strict"          # the owner's own source hook also says 'overalls': the v5 hook rule flags it, which is the point of that rule
     assert check_text(sw_rules, "THESE SWEATPANTS GREW STRAPS.", scope="hook", ordered_mode="strict") == []
 
 

@@ -1162,7 +1162,7 @@ def test_the_commands_store_every_read_and_compare_and_a_read_that_pulled_nothin
 def test_the_sessions_workflow_saves_the_reads_and_compares_as_well_as_the_checks():
     text = (ROOT / ".github" / "workflows" / "sessions.yml").read_text(encoding="utf-8")
     step = text[text.index("- name: Save what was found"):text.index("- name: Update the Google Sheets")]                 # the save step only: the Sheets step after it has the same condition
-    assert "if: ${{ inputs.what == 'check' || inputs.what == 'read' || inputs.what == 'compare' }}" in step
+    assert "if: ${{ always() && (inputs.what == 'check' || inputs.what == 'read' || inputs.what == 'compare') }}" in step
     assert "for f in data/_shared/sessions_health.json data/_shared/sessions_reads.json; do" in step and 'if [ -f "$f" ]; then git add -f "$f"' in step and "never a secret value" in step
 
 
@@ -1189,12 +1189,12 @@ def test_three_checks_in_a_row_with_no_sign_either_way_count_as_a_refusal_and_a_
     row = check("tiktok", settings, ledger, Worker(lambda item: TIKTOK_GLITCH), now="2026-11-13T13:00:00Z")
     assert row["state"] == SL.REJECTED and "no sign of being logged in was found on 3 checks in a row" in row["reason"] and SL.exit_code([row]) == 1 and not ledger.proved("tiktok", "2026-11-13T13:00:00Z")
     assert ledger.data["tiktok"]["unconfirmed_streak"] == 0                                                          # a refusal ends the streak
-    check("tiktok", settings, ledger, Worker(lambda item: TIKTOK_GLITCH), now="2026-11-14T10:00:00Z")
-    check("tiktok", settings, ledger, Worker(lambda item: TIKTOK_GLITCH), now="2026-11-14T11:00:00Z")
-    assert ledger.data["tiktok"]["unconfirmed_streak"] == 2
-    check("tiktok", settings, ledger, Worker(lambda item: logged_in_page("tiktok")), now="2026-11-14T12:00:00Z")
+    again = check("tiktok", settings, ledger, Worker(lambda item: TIKTOK_GLITCH), now="2026-11-14T10:00:00Z")
+    assert again["state"] == SL.REJECTED and "still no sign of being logged in" in again["reason"] and "earlier refusal stands" in again["reason"]                 # the refusal STAYS (Sessions #39 said REJECTED, then Acceptance #19 ran the same check and restarted the count at UNCONFIRMED 1 of 3)
+    assert check("tiktok", settings, ledger, Worker(lambda item: TIKTOK_GLITCH), now="2026-11-14T11:00:00Z")["state"] == SL.REJECTED and ledger.data["tiktok"]["unconfirmed_streak"] == 0
+    assert check("tiktok", settings, ledger, Worker(lambda item: logged_in_page("tiktok")), now="2026-11-14T12:00:00Z")["state"] == SL.ACCEPTED               # only a clear logged-in page lifts it
     assert ledger.data["tiktok"]["unconfirmed_streak"] == 0
-    assert check("tiktok", settings, ledger, Worker(lambda item: TIKTOK_GLITCH), now="2026-11-14T13:00:00Z")["state"] == SL.UNCONFIRMED               # the count began again
+    assert check("tiktok", settings, ledger, Worker(lambda item: TIKTOK_GLITCH), now="2026-11-14T13:00:00Z")["state"] == SL.UNCONFIRMED               # and then the count begins again
     assert ledger.data["tiktok"]["unconfirmed_streak"] == 1
 
 
@@ -1254,3 +1254,124 @@ def test_apify_answers_when_the_plain_reader_and_the_session_both_fail_and_is_of
     assert got.route == "apify" and got.rows[0]["route"] == "apify" and [t[0] for t in got.trail][:3] == ["primary", "session", "apify"] and got.trail[2][1] == "ok"
     none = read(settings, ledger, Worker(page_for(WALL, WALL)), apify=None, env=environ("x"))
     assert [t[:2] for t in none.trail if t[0] == "apify"] == [("apify", "off")]
+
+
+# ---- the rendered-page proof (Update 73 v5) ---------------------------------------------------------------------------------------------------------------------------------------------
+
+import contextlib                                                                          # noqa: E402
+
+
+class PageBrowser:
+    """A browser whose page shows what the script says at each look: a list of states in the order the markers are read ('ok', 'login_wall', 'challenge' or 'unknown'), and a warning if given."""
+    def __init__(self, looks, opens_fail=False, warning=""):
+        self.looks, self.i, self.opened, self.waited, self.opens_fail, self.warning, self.url = list(looks), 0, [], [], opens_fail, warning, "https://www.tiktok.com/"
+
+    def open(self, url):
+        if self.opens_fail:
+            raise RuntimeError("net::ERR_TOO_MANY_REDIRECTS")
+        self.opened.append(url)
+
+    def wait(self, seconds):
+        self.waited.append(seconds)
+
+    def _state(self):
+        return self.looks[min(self.i, len(self.looks) - 1)]
+
+    def exists(self, selectors):
+        state = self._state()
+        joined = " ".join(selectors)
+        if "challenge" in joined or "captcha" in joined or "verify" in joined:
+            return state == "challenge"
+        if "profile-icon" in joined or "upload" in joined or "inbox" in joined:
+            if state == "ok":
+                self.i += 1
+            return state == "ok"
+        if "login" in joined.lower():
+            if state == "login_wall":
+                self.i += 1
+            return state == "login_wall"
+        return False
+
+
+def proof_for(browser, platform="tiktok", with_session=True, **kw):
+    seen = {}
+
+    @contextlib.contextmanager
+    def opener(site, cfg, pacing, text, debug, headless=True):
+        seen["opened"] = (site, text)
+        yield browser
+    spec = SL.S.PLATFORMS[platform]
+    session = S.load(platform, environ(platform), NOW) if with_session else None
+    sleeps = []
+    got = SL.browser_proof(platform, spec, session, opener=opener, sleep=sleeps.append, **kw)
+    return got, seen, sleeps
+
+
+def test_a_session_is_proved_by_the_rendered_page_loaded_with_the_stored_cookies_not_by_a_half_drawn_one(monkeypatch):
+    from contentintel import collectors as C
+    states = iter(["unknown", "unknown", "ok"])
+    monkeypatch.setattr(C, "session_state", lambda br, cfg: next(states))
+    monkeypatch.setattr(C, "warning_seen", lambda br, cfg: "")
+    br = PageBrowser([])
+    got, seen, sleeps = proof_for(br)
+    assert got["state"] == SL.ACCEPTED and "check 3" in got["reason"] and got["evidence"]["polls"] == 3 and sleeps == [3, 3, 6]                          # a half-drawn page is given time, on the SAME page
+    cookies = json.loads(seen["opened"][1])
+    assert seen["opened"][0] == "tiktok" and cookies and all(c["name"] and c["domain"] for c in cookies) and br.opened == ["https://www.tiktok.com/"]                               # the stored cookies went into the browser, the home page was opened once
+
+
+def test_the_proof_gives_up_as_unconfirmed_only_after_waiting_and_one_reload_a_login_wall_is_a_refusal_and_a_challenge_is_never_asked_twice(monkeypatch):
+    from contentintel import collectors as C
+    monkeypatch.setattr(C, "warning_seen", lambda br, cfg: "")
+    monkeypatch.setattr(C, "session_state", lambda br, cfg: "unknown")
+    br = PageBrowser([])
+    got, _seen, sleeps = proof_for(br)
+    assert got["state"] == SL.UNCONFIRMED and got["evidence"]["reloaded"] is True and len(br.opened) == 2 and sleeps == [3, 3, 6, 9]
+    monkeypatch.setattr(C, "session_state", lambda br, cfg: "login_wall")
+    wall, _s, _w = proof_for(PageBrowser([]))
+    assert wall["state"] == SL.REJECTED and "login wall" in wall["reason"] and "capture a new one" in wall["reason"]
+    monkeypatch.setattr(C, "session_state", lambda br, cfg: "challenge")
+    br2 = PageBrowser([])
+    chal, _s2, sleeps2 = proof_for(br2)
+    assert chal["state"] == SL.BLOCKED and "not asked again" in chal["reason"] and br2.opened == ["https://www.tiktok.com/"] and sleeps2 == [3]               # one load, one look: never retried
+    monkeypatch.setattr(C, "warning_seen", lambda br, cfg: "your account has been restricted")
+    warned, _s3, _w3 = proof_for(PageBrowser([]))
+    assert warned["state"] == SL.BLOCKED and "warning to the account" in warned["reason"]
+
+
+def test_a_page_that_does_not_open_is_cannot_check_and_a_missing_browser_or_cookie_falls_back_to_the_older_route():
+    got, _s, _w = proof_for(PageBrowser([], opens_fail=True))
+    assert got["state"] == SL.CANNOT_CHECK and "ERR_TOO_MANY_REDIRECTS" in got["reason"] and "not the platform's answer" in got["reason"]
+    assert proof_for(PageBrowser([]), with_session=False)[0] is None                                                                                    # no stored session: nothing to prove with
+    spec = SL.S.PLATFORMS["tiktok"]
+    session = S.load("tiktok", environ("tiktok"), NOW)
+
+    def broken(*a, **k):
+        raise RuntimeError("no browser engine")
+    gone = SL.browser_proof("tiktok", spec, session, opener=broken)
+    assert gone == {"unavailable": "the browser could not start (RuntimeError: no browser engine)"}                                                      # no engine here: the Scrapling route answers, and the row says the proof did not run
+    assert SL.browser_proof("reddit", SL.S.PLATFORMS["reddit"], S.load("reddit", environ("reddit"), NOW)) is None                                   # a platform with no markers in browser.yaml
+    assert SL.BROWSER_PROOF == ("tiktok", "instagram")
+
+
+def test_check_platform_uses_the_browser_proof_for_tiktok_and_instagram_and_never_lets_a_public_read_stand_in(settings, ledger):
+    calls = []
+
+    def proof(platform, spec, session):
+        calls.append(platform)
+        return {"state": SL.ACCEPTED, "reason": "the rendered page showed a logged-in state (check 1)", "evidence": {"polls": 1}}
+    row = SL.check_platform("tiktok", settings, "c@example.com", "python", environ=environ("tiktok"), runner=lambda *a, **k: (_ for _ in ()).throw(AssertionError("the worker must not be asked")), now="2026-11-25T10:00:00Z", ledger=ledger, proof=proof)
+    assert row["state"] == SL.ACCEPTED and calls == ["tiktok"] and ledger.proved("tiktok", "2026-11-25T10:00:00Z") and row["evidence"]["fetched_with"].startswith("browser")
+    ambiguous = SL.check_platform("instagram", settings, "c@example.com", "python", environ=environ("instagram"), runner=lambda *a, **k: None, now="2026-11-25T11:00:00Z", ledger=ledger,
+                                  proof=lambda p, s, sess: {"state": SL.UNCONFIRMED, "reason": "no sign", "evidence": {}})
+    assert ambiguous["state"] == SL.UNCONFIRMED and ledger.data["instagram"]["unconfirmed_streak"] == 1                                                   # the same streak rule as the older route
+    assert "browser_proof" in Path("contentintel/session_live.py").read_text(encoding="utf-8").split("def check_platform")[1]
+
+
+def test_when_the_browser_cannot_start_the_older_route_answers_and_the_row_says_the_rendered_page_proof_did_not_run(settings, ledger):
+    row = check("tiktok", settings, ledger, Worker(lambda item: logged_in_page("tiktok")), proof=lambda p, s, sess: {"unavailable": "the browser could not start (RuntimeError: no engine)"})
+    assert row["state"] == SL.ACCEPTED and row["evidence"]["browser_proof"] == "did not run: the browser could not start (RuntimeError: no engine)"
+    other = check("x", settings, ledger, Worker(lambda item: logged_in_page("x")))
+    assert "browser_proof" not in other["evidence"]                                                                                          # only the platforms that use the proof say so
+    wf = yaml.safe_load(Path(".github/workflows/sessions.yml").read_text(encoding="utf-8"))
+    step = next(s for s in wf["jobs"]["sessions"]["steps"] if s.get("name", "").startswith("Install the browser the rendered-page proof uses"))
+    assert "requirements-browser.txt" in step["run"] and "playwright install --with-deps chromium" in step["run"] and "inputs.what != 'list'" in step["if"]

@@ -492,3 +492,44 @@ def test_a_worked_example_the_bank_refuses_is_caught_by_the_golden_set_and_a_bra
     assert "acme: FAILED" in out and "must be flagged" in out and "1 brand(s) FAILED" in out
     (brands / "golden.yaml").write_text("cases:\n  - {text: 'Let us delve into it.', expect: flag, rule: slop_word}\n", encoding="utf-8")
     assert intel_cli.run_intel(args, Store(tmp_path / "d"), NOW) == 0 and "acme: PASSED" in capsys.readouterr().out
+
+
+def test_every_text_an_item_has_is_tried_and_the_report_shows_the_coverage_and_what_is_not_named():
+    cost = "$18,000 is what one missing clause cost me."
+    a = item(1, hook="Here are our overalls.", title=cost)                                                                              # the hook line matches nothing, the title does: it was hidden before
+    b = item(2, hook="", title="", text="Plain caption about the new colours. " + cost)
+    c = item(3, hook="Soft cotton overalls in navy.", title="Soft overalls", text="Nothing here either.")
+    f, field = F.tag_with_field(a, LIB)
+    assert f["id"] == "ig:1" and field == "title" and F.tag_with_field(b, LIB)[1] == "text" and F.tag_with_field(c, LIB) == (None, "")
+    cov = F.coverage([a, b, c], LIB)
+    assert cov["kept"] == 3 and cov["tagged"] == 2 and cov["rate"] == round(2 / 3, 3) and cov["by_platform"] == {"instagram": [2, 3]} and cov["by_field"] == {"title": 1, "text": 1}
+    assert cov["untagged_sample"] == [{"id": "IB-0003", "platform": "instagram", "text": "Soft cotton overalls in navy."}]
+    rep = F.build_report("swoveralls", bank_of(c, item(4, hook="Also plain words."), item(5, hook="Plain again."), a), LIB, NOW)
+    assert rep["coverage"]["tagged"] == 1 and any("names a formula for only 1 of 4 kept item(s) (25%)" in n for n in rep["notes"])
+    lines = F.render(rep)
+    assert any(l.startswith("  coverage: 1 of 4 kept item(s) name a formula (25%)") for l in lines) and any(l.startswith("    untagged IB-0003") for l in lines)
+    full = F.build_report("swoveralls", bank_of(a, b), LIB, NOW)
+    assert not any("names a formula for only" in n for n in full["notes"])
+
+
+def test_one_blocked_concept_is_flagged_and_the_others_are_saved_and_the_run_only_fails_when_nothing_is_clean(tmp_path, capsys):
+    from types import SimpleNamespace
+    from contentintel import canon as canon_mod
+    from contentintel import intel_cli
+    store = Store(tmp_path / "data")
+    reg = canon_mod.Registry(store.data_dir, "swoveralls")
+    canon_mod.apply_seed(reg, canon_mod.load_seed(Path("brands/swoveralls/claims_seed.yaml")), NOW)
+    blocked = next(c["text"] for c in reg.state()["claims"].values() if c["status"] == "blocked")
+    store.write_brief("swoveralls", {"id": "BR-0001", "brief": "x", "content": {"concepts": [concept(**LONG), concept(name="Bad one", script=blocked + " Show the overalls on a hanger and say so. Then say it again for the camera."), concept(name="Third", **LONG)]}})
+    args = SimpleNamespace(action="storyboard", brand="swoveralls", brands_dir="brands", briefs_dir="briefs", brief_id="", concept=0, stills=False, top=10)
+    assert intel_cli.run_storyboard(args, store, NOW) == 0
+    out = capsys.readouterr().out
+    assert "2 of 3 concept(s) storyboarded cleanly; BLOCKED and flagged, not ready: concept(s) 2" in out
+    saved = store.read_extra("swoveralls", "storyboard")
+    assert saved["ready"] == [1, 3] and saved["blocked"] == [2] and [b["status"] for b in saved["boards"]] == ["ok", "blocked", "ok"]
+    sheet = (tmp_path / "data" / "swoveralls" / "extras" / "storyboard.html").read_text(encoding="utf-8")
+    assert sheet.count("<b>BLOCKED</b>") == 1 and sheet.count("<h1>") == 3
+    only = {"id": "BR-0002", "brief": "x", "content": {"concepts": [concept(name="Bad one", script=blocked + " Show the overalls on a hanger and say so.")]}}
+    store.write_brief("swoveralls", only)
+    assert intel_cli.run_storyboard(args, store, NOW) == 1                                                                                      # nothing clean: the run fails
+    assert "0 of 1 concept(s) storyboarded cleanly" in capsys.readouterr().out

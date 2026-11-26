@@ -177,7 +177,7 @@ def test_the_stage_tools_workflow_runs_no_model_keeps_the_key_in_the_step_and_sa
     run = next(s for s in steps if s.get("name") == "Run it")
     assert run["env"]["GROQ_API_KEY"] == "${{ secrets.GROQ_API_KEY }}" and "stage --action probe-transcribe" in run["run"] and "stage --action bakeoff" in run["run"]
     save = next(s for s in steps if s.get("name") == "Save the data")
-    assert "git pull --rebase --autostash" in save["run"] and "git status --porcelain" in save["run"] and "transcribe_rankings.json" in save["run"]
+    assert "bash .github/scripts/push-with-retry.sh" in save["run"] and "--autostash" in Path(".github/scripts/push-with-retry.sh").read_text(encoding="utf-8") and "git status --porcelain" in save["run"] and "transcribe_rankings.json" in save["run"]
     assert next(s for s in steps if "faster-whisper" in s.get("run", ""))["continue-on-error"] is True
 
 
