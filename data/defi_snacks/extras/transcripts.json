@@ -1,6 +1,22 @@
 {
  "items": [
   {
+   "at": "2026-11-26T10:10:41Z",
+   "backend": "cloudflare_whisper",
+   "language": "es",
+   "needs_review": false,
+   "second_opinion": {
+    "agreement": 1.0,
+    "differences": [],
+    "flag": false,
+    "with": "groq_whisper"
+   },
+   "seconds": 2.18,
+   "sha": "56db55b2bc5e162ae6cc830ced2117e5b5e1b978dddb3d05245bed7e58ceacc6",
+   "source": "tiktok",
+   "text": "Salí a caminar con mi bebé y cerca de mi casa quedó un King Super y quería probar estos chocolates de la marca DeFi. En la web salía que lo tenían en esa tienda. No encontré el exhibidor nuevo, pero lo encontré en el área de snack y agarré el último que había. Me encantó porque son súper crunchy y se siente bastante el chocolate negro. Como aquí solo quedaba este sabor, voy a usar la oferta en Bogo en su página web via Store Locator para poder probar los demás. Aquí ya no estábamos regresando a casa porque estaba haciendo mucho frío."
+  },
+  {
    "at": "2026-11-25T05:47:17Z",
    "backend": "groq_whisper",
    "language": "English",
