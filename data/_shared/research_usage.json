@@ -5,18 +5,18 @@
   }
  },
  "lifetime": {
-  "agent_reach_youtube": 26,
+  "agent_reach_youtube": 28,
   "apify_analyze_comments_items": 12,
-  "apify_items": 618,
+  "apify_items": 627,
   "claude_calls": 14,
-  "collected_items": 3272,
+  "collected_items": 3278,
   "deep_research_tasks": 1,
-  "exa": 26,
-  "exa_mcp": 28,
+  "exa": 28,
+  "exa_mcp": 29,
   "seed_judge_calls": 1,
-  "serpapi": 36,
-  "serper_dev": 117,
-  "tavily": 36,
+  "serpapi": 38,
+  "serper_dev": 119,
+  "tavily": 38,
   "voice_apify_items": 240
  },
  "months": {
@@ -29,17 +29,17 @@
    "tavily": 6
   },
   "2026-11": {
-   "agent_reach_youtube": 26,
+   "agent_reach_youtube": 28,
    "apify_analyze_comments_items": 12,
-   "apify_items": 618,
+   "apify_items": 627,
    "claude_calls": 7,
-   "collected_items": 2532,
-   "exa": 26,
-   "exa_mcp": 28,
+   "collected_items": 2538,
+   "exa": 28,
+   "exa_mcp": 29,
    "seed_judge_calls": 1,
-   "serpapi": 30,
-   "serper_dev": 78,
-   "tavily": 30,
+   "serpapi": 32,
+   "serper_dev": 80,
+   "tavily": 32,
    "voice_apify_items": 240
   }
  }

@@ -1,7 +1,7 @@
 {
   "boss": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T04:00:38Z",
+    "checked_at": "2026-11-26T17:04:04Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",
@@ -13,16 +13,16 @@
   },
   "facebook": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T04:00:38Z",
-    "days_left": 351,
+    "checked_at": "2026-11-26T17:04:04Z",
+    "days_left": 350,
     "evidence": {
       "body_ids": [
         "splash-screen",
-        "mount_0_0_rw",
+        "mount_0_0_5O",
         "B:0",
-        "right_rail_container",
-        "u_0_0_g0",
-        "u_0_1_HT"
+        "B:1",
+        "B:2",
+        "B:3"
       ],
       "cookies_back": [
         "c_user",
@@ -68,7 +68,7 @@
       "login_word_in_address": "",
       "noscript": "",
       "password_field": false,
-      "scripts": 355,
+      "scripts": 351,
       "status": 200,
       "text_chars": 0,
       "title": "Facebook",
@@ -76,7 +76,7 @@
       "worker_error": ""
     },
     "expires_on": "2027-11-12",
-    "proved_on": "2026-11-26T04:00:38Z",
+    "proved_on": "2026-11-26T17:04:04Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
@@ -84,23 +84,23 @@
   },
   "instagram": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T04:09:55Z",
-    "days_left": 357,
+    "checked_at": "2026-11-26T17:04:04Z",
+    "days_left": 356,
     "evidence": {
       "fetched_with": "browser (rendered page, stored cookies)",
       "landed": "https://www.instagram.com/"
     },
     "expires_on": "2027-11-18",
-    "proved_on": "2026-11-26T04:09:55Z",
-    "proved_via": "browser",
-    "reason": "the rendered Instagram page, loaded with the stored cookies, showed a logged-in state (check 1)",
-    "state": "ACCEPTED",
+    "proved_on": "",
+    "proved_via": "",
+    "reason": "the rendered Instagram page, loaded with the stored cookies, showed its login wall: the stored session was not accepted; capture a new one",
+    "state": "REJECTED",
     "unconfirmed_streak": 0
   },
   "linkedin": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T04:00:38Z",
-    "days_left": 351,
+    "checked_at": "2026-11-26T17:04:04Z",
+    "days_left": 350,
     "evidence": {
       "body_ids": [],
       "cookies_back": [],
@@ -164,8 +164,8 @@
   },
   "reddit": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T04:00:38Z",
-    "days_left": 167,
+    "checked_at": "2026-11-26T17:04:04Z",
+    "days_left": 166,
     "evidence": {
       "body_ids": [
         "shreddit-skip-link",
@@ -216,7 +216,7 @@
         "token_v2"
       ],
       "fetched_with": "browser",
-      "html_chars": 428038,
+      "html_chars": 428000,
       "html_truncated": false,
       "landed": "https://www.reddit.com/settings/",
       "logged_in_found": [
@@ -244,7 +244,7 @@
       "worker_error": ""
     },
     "expires_on": "2027-05-12",
-    "proved_on": "2026-11-26T04:00:38Z",
+    "proved_on": "2026-11-26T17:04:04Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
@@ -252,8 +252,8 @@
   },
   "tiktok": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T04:00:38Z",
-    "days_left": 166,
+    "checked_at": "2026-11-26T17:04:04Z",
+    "days_left": 165,
     "evidence": {
       "fetched_with": "browser (rendered page, stored cookies)",
       "landed": "https://www.tiktok.com/"
@@ -267,8 +267,8 @@
   },
   "x": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T04:00:38Z",
-    "days_left": 351,
+    "checked_at": "2026-11-26T17:04:04Z",
+    "days_left": 350,
     "evidence": {
       "body_ids": [
         "challenge-error-text"
@@ -301,7 +301,7 @@
         "twid"
       ],
       "fetched_with": "browser",
-      "html_chars": 46979,
+      "html_chars": 47001,
       "html_truncated": false,
       "landed": "https://x.com/home",
       "logged_in_found": [],
@@ -338,7 +338,7 @@
   },
   "xiaohongshu": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T04:00:38Z",
+    "checked_at": "2026-11-26T17:04:04Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",
