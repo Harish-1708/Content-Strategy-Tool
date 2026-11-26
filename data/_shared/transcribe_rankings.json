@@ -1,38 +1,41 @@
 {
- "measured_at": "2026-11-25T05:42:16Z",
+ "measured_at": "2026-11-26T09:41:00Z",
  "ranking": [
-  "groq_whisper",
   "cloudflare_whisper",
-  "vibevoice_asr",
+  "groq_whisper",
   "faster_whisper"
  ],
  "rows": [
   {
    "backend": "groq_whisper",
    "ok": true,
-   "seconds": 0.35,
+   "seconds": 0.3,
+   "wer": 0.273,
    "why": "",
    "heard": "This is a test of the transcription chain. 1, 2, 3."
   },
   {
    "backend": "cloudflare_whisper",
    "ok": true,
-   "seconds": 2.36,
+   "seconds": 1.19,
+   "wer": 0.0,
    "why": "",
    "heard": "This is a test of the transcription chain. One, two, three."
   },
   {
    "backend": "faster_whisper",
    "ok": true,
-   "seconds": 9.18,
+   "seconds": 8.31,
+   "wer": 0.273,
    "why": "",
    "heard": "This is a test of the transcription chain. 1, 2, 3."
   },
   {
    "backend": "vibevoice_asr",
-   "ok": true,
-   "seconds": 4.82,
-   "why": "",
+   "ok": false,
+   "seconds": 5.89,
+   "wer": 0.545,
+   "why": "it answered but got 55% of the spoken sentence's words wrong (more than 34% is refused): heard 'The subscription chain one, two, three.'",
    "heard": "The subscription chain one, two, three."
   }
  ]
