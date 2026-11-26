@@ -84,17 +84,17 @@
   },
   "instagram": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T04:00:38Z",
-    "days_left": 351,
+    "checked_at": "2026-11-26T04:09:55Z",
+    "days_left": 357,
     "evidence": {
       "fetched_with": "browser (rendered page, stored cookies)",
       "landed": "https://www.instagram.com/"
     },
-    "expires_on": "2027-11-12",
-    "proved_on": "",
-    "proved_via": "",
-    "reason": "the rendered Instagram page, loaded with the stored cookies, showed its login wall: the stored session was not accepted; capture a new one",
-    "state": "REJECTED",
+    "expires_on": "2027-11-18",
+    "proved_on": "2026-11-26T04:09:55Z",
+    "proved_via": "browser",
+    "reason": "the rendered Instagram page, loaded with the stored cookies, showed a logged-in state (check 1)",
+    "state": "ACCEPTED",
     "unconfirmed_streak": 0
   },
   "linkedin": {
