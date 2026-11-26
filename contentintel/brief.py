@@ -45,7 +45,11 @@ BRIEF_SYSTEM = (
     "\"deliverables\": [\"...\"], \"notes_for_creators\": \"...\"}. Each concept must be inspired by at least one reference idea and "
     "list it in references; write the brand's own version, never a copy of someone else's content. Obey every rule exactly, including "
     "the banned characters and words, in every hook, script, visual direction and cta. Use only product handles from the list. Do not "
-    "invent prices, offers, claims, results or quotes.")
+    "invent prices, offers, claims, results or quotes. Write the script as plain text with one spoken or shown line per line (never a JSON list), "
+    "and write natural speech with normal apostrophes in contractions (can't, doesn't, dad's).")
+
+REVISE_ADDENDUM = (" You are REVISING a brief that was checked and sent back. Fix every listed problem in the concepts it names, keep what was not criticised word for word, "
+                   "never restate a blocked claim (replace it with something approved), and return the full revised brief in the same JSON shape.")
 
 REPAIR_SYSTEM = (
     "You fix a creative brief that broke some of its rules. Return the full corrected brief as JSON in exactly the same shape, changing "
@@ -168,7 +172,12 @@ def clean_brief(raw, item_ids, handles, max_concepts):
         raise BriefError("the brief was not in the expected shape")
     notes, concepts = [], []
 
-    def text(value, limit=1200):
+    def text(value, limit=1200, lines=False):
+        if isinstance(value, (list, tuple)):                                   # a model may give the script as a list of lines: it stays lines (BR-0001 showed "['a', 'b']")
+            parts = [" ".join(str(v).split()) for v in value if str(v or "").strip()]
+            return ("\n".join(parts) if lines else " ".join(parts))[:limit]
+        if lines:
+            return "\n".join(" ".join(row.split()) for row in str(value or "").splitlines() if row.strip())[:limit]
         return " ".join(str(value or "").split())[:limit]
 
     for entry in raw.get("concepts") if isinstance(raw.get("concepts"), list) else []:
@@ -184,7 +193,7 @@ def clean_brief(raw, item_ids, handles, max_concepts):
             notes.append(f"concept '{text(entry.get('name'), 60)}': product '{product}' is not an allowed product and was removed")
             product = ""
         concepts.append({"name": text(entry.get("name"), 80) or f"Concept {len(concepts) + 1}", "format": text(entry.get("format"), 120),
-                         "hook": text(entry.get("hook"), 400), "script": text(entry.get("script"), 1500),
+                         "hook": text(entry.get("hook"), 400), "script": text(entry.get("script"), 1500, lines=True),
                          "visual_direction": text(entry.get("visual_direction"), 800), "cta": text(entry.get("cta"), 200),
                          "product": product, "references": refs})
     if not concepts:
@@ -249,15 +258,21 @@ def _violation_lines(violations):
     return "\n".join(f"- {v['where']}: {v['message']}" for v in violations)
 
 
-def write_brief(claude, brand, ask, items, products, ruleset, settings, budget, extras=""):
-    """One model's brief: write, check against the rules, repair once. Returns (brief, violations, notes, calls used)."""
+def write_brief(claude, brand, ask, items, products, ruleset, settings, budget, extras="", revise=None):
+    """One model's brief: write, check against the rules, repair once. Returns (brief, violations, notes, calls used).
+    The writer is the ranked list for this job (lane brief_json: best measured first, backups behind it, Claude last); `revise` is {'brief': the previous brief, 'problems': [...]}: the brief is then revised, not written afresh."""
+    claude = SR.for_job(claude, "brief")
     ids, handles = {i["id"] for i in items}, set(products)
     calls, notes = 0, []
     if not budget.take():
         raise BriefError(f"the monthly Claude limit ({budget.cap} calls) is reached")
     calls += 1
     try:
-        raw = claude.json_task(BRIEF_SYSTEM, build_prompt(brand, ask, items, products, ruleset, settings.brief_max_concepts, extras), max_tokens=6000)
+        prompt = build_prompt(brand, ask, items, products, ruleset, settings.brief_max_concepts, extras)
+        if revise:
+            prompt += ("\n\nThe brief to revise:\n" + json.dumps(revise["brief"], ensure_ascii=False)[:9000] + "\n\nProblems found by the checks and the independent reviewer (fix each):\n"
+                       + "\n".join(f"- {p}" for p in revise["problems"][:40]))
+        raw = claude.json_task(BRIEF_SYSTEM + (REVISE_ADDENDUM if revise else ""), prompt, max_tokens=6000)
     except ProviderError as exc:
         raise BriefError(f"Claude could not write the brief: {exc}") from exc
     brief, fixes = clean_brief(raw, ids, handles, settings.brief_max_concepts)
@@ -450,8 +465,17 @@ def gate_violations(brief, reg):
     return found
 
 
+def revision_problems(record):
+    """The problems a revision must fix, as plain lines: the rule and claim violations, the validator bank's findings and what the independent reviewer said."""
+    out = [f"{v['where']}: {v['message']}" + (" (BLOCKED claim: remove it, never restate it)" if v.get("rule") == "claims-gate" or "BLOCKED" in v["message"] else "") for v in record.get("violations", [])]
+    out += [f"{f['where']}: {f['message']}" for f in record.get("validator_findings", []) if f["severity"] == "error"]
+    out += [f"{p['where']}: {p['issue']} (independent reviewer)" for p in (record.get("review") or {}).get("problems", [])]
+    out += [f"{f['where']}: {f['message']} (warning)" for f in record.get("validator_findings", []) if f["severity"] != "error"][:12]
+    return out
+
+
 def make_brief(brand, store, *, brief_name, ask, ruleset, decisions, claude_for, settings, budget, now, drive=None,
-               include_maybe=False, request_id=""):
+               include_maybe=False, request_id="", revise_of=None):
     """Write, check and save one brief from the approved items. Returns the saved record. Raises BriefError with the fix if it cannot."""
     state = catalogue_state(brand.slug, store, now)
     if not state["usable"]:
@@ -469,14 +493,20 @@ def make_brief(brand, store, *, brief_name, ask, ruleset, decisions, claude_for,
     canon_reg, canon_block, canon_notes = canon_layer(store, brand.slug)
     candidates, notes, calls = [], [], 0
     extras = extras_text(store, brand, items, motion=_motion_for(ask, items), assets=_assets_of(store, brand)) + (("\n\n" + canon_block) if canon_block else "")
+    revise = {"brief": revise_of["content"], "problems": revision_problems(revise_of)} if revise_of else None
     for model in settings.brief_models:
+        client = claude_for(model)
+        seen_calls, seen_notes = len(getattr(client, "calls", [])), len(getattr(client, "notes", []))
         try:
-            brief, violations, model_notes, used = write_brief(claude_for(model), brand, ask, items, products, ruleset, settings, budget, extras)
+            brief, violations, model_notes, used = write_brief(client, brand, ask, items, products, ruleset, settings, budget, extras, revise=revise)
         except BriefError as exc:
             notes.append(f"{model}: {exc}")
             continue
+        route = list(getattr(client, "calls", []))[seen_calls:]
+        built_by = ("the pool (lane brief_json)" if route and set(route) == {"gateway"} else "Claude (the pool had no usable answer)" if route and "gateway" not in route else "the pool, then Claude" if route else model)
+        model_notes = [f"writer: {built_by}"] + [n for n in list(getattr(client, "notes", []))[seen_notes:]] + model_notes          # why the pool did not write it is in the brief's notes, not only in the log
         calls += used
-        candidates.append({"model": model, "brief": brief, "violations": violations, "notes": model_notes})
+        candidates.append({"model": model, "brief": brief, "violations": violations, "notes": model_notes, "built_by": built_by})
     if not candidates:
         raise BriefError("no model produced a usable brief: " + "; ".join(notes))
     best, judged = pick_best(candidates, claude_for(settings.brief_models[0]) if len(candidates) > 1 else None, budget,
@@ -502,7 +532,8 @@ def make_brief(brand, store, *, brief_name, ask, ruleset, decisions, claude_for,
               "status": "needs review" if (errors_of(won["violations"]) or errors_of(bank_findings) or review["verdict"] == "revise") else "ready", "items": [i["id"] for i in items],
               "used_items": [i["id"] for i in shown], "violations": won["violations"], "models": [won["model"]]
               + [c["model"] for c in candidates if c is not won], "notes": notes, "drive_link": "", "title": won["brief"]["title"],
-              "request_id": request_id, "rules_digest": ruleset.digest, "rules_version": rules_version, "review": review, "validator_findings": bank_findings, "content": won["brief"]}
+              "request_id": request_id, "rules_digest": ruleset.digest, "rules_version": rules_version, "review": review, "validator_findings": bank_findings, "content": won["brief"],
+              "built_by": won.get("built_by", won["model"]), "revision": ((revise_of or {}).get("revision") or 0) + 1 if revise_of else 0, "revision_of": (revise_of or {}).get("id", "")}
     try:
         store.write_extra(brand.slug, "last_brief", {"id": record["id"], "title": record["title"], "status": record["status"], "created": now, "violations": record["violations"], "brief": won["brief"]})     # the storyboard stage and the draft-video step read the latest brief from here
     except OSError:

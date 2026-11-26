@@ -261,6 +261,10 @@ class Session:
         """{name: value} for this platform's own cookies: the shape the Scrapling worker reads (it scopes them to each page's address itself)."""
         return {c["name"]: c["value"] for c in self._cookies()}
 
+    def browser_cookies_json(self):
+        """This platform's cookies in full (domain, path, expiry...) as the JSON list a real browser takes (`browser.open_browser`): the stored session loaded into a browser. Never printed or saved."""
+        return json.dumps([dict(c) for c in self._cookies()])
+
     def worker_env(self):
         """(environment variable name, JSON text) for the Scrapling worker's `cookies_env`: the worker is handed only this one named secret, as an object of name and value."""
         return f"SESSION_COOKIES_{self.platform.upper()}", json.dumps(self.cookie_jar(), separators=(",", ":"))

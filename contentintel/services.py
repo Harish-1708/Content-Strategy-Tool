@@ -718,6 +718,8 @@ class RoutedClaude:
         if res and isinstance(res.get("output"), (dict, list)) and res["output"]:
             self.calls.append("gateway")
             return res["output"]
+        if res:                                                                                  # the pool answered but not with usable JSON: said, not silent (which model wrote a brief was a guess in Brief #2)
+            self.notes.append(f"AI Gateway answered {self.purpose} on lane {lane} ({res.get('provider', '?')} {res.get('model', '')}, {res.get('status', '?')}) but the answer was not a usable JSON object; Claude was used")
         self.calls.append("claude")
         return self.inner.json_task(system, user, max_tokens)
 

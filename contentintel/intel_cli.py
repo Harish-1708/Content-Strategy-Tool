@@ -108,19 +108,23 @@ def run_storyboard(args, store, now, finder=None):
     gate = (lambda b: BR.gate_violations(b, reg)) if (reg.state()["canon"] or reg.state()["claims"]) else None
     lib = F.load_library(CONN.external_dir())
     finder = finder or (_default_finder(args, store) if args.stills else None)
-    boards, worst = [], 0
+    boards = []
     for no, concept in concepts:
         board = SB.build(concept, brief_id=record["id"], concept_no=no)
         findings = SB.check(board, lib, rules=ruleset, claim_gate=gate)
         got = SB.add_styleframes(board, finder) if finder else 0
         board["findings"], board["styleframes"] = findings, got
         errors = [f for f in findings if f["severity"] == "error"]
-        worst = max(worst, 1 if errors else 0)
+        board["status"] = "blocked" if errors else "ok"                                   # one blocked concept is flagged and left out of the ready ones; it never stops the others from being storyboarded and saved
         print(f"{args.brand}: {record['id']} concept {no} ({board['concept']}): {len(board['shots'])} shot(s), {board['total_seconds']} s of {board['target_seconds']} s, {got} styleframe(s)" + (" (stills off)" if not finder else "") + f", {len(errors)} error(s), {len(findings) - len(errors)} warning(s)")
         for f in findings[:8]:
             print(f"  {f['severity']}: {f['where']}: {f['message']}")
         boards.append(board)
-    store.write_extra(args.brand, "storyboard", {"generated_at": now, "brief": record["id"], "rules_version": record.get("rules_version"), "library": lib.source, "boards": boards})
+    blocked = [b for b in boards if b["status"] == "blocked"]
+    worst = 1 if boards and len(blocked) == len(boards) else 0                          # the run fails only when NOTHING could be storyboarded cleanly
+    print(f"{args.brand}: {len(boards) - len(blocked)} of {len(boards)} concept(s) storyboarded cleanly" + (f"; BLOCKED and flagged, not ready: concept(s) {', '.join(str(b['concept_no']) for b in blocked)} (fix the brief, or revise it, then run this again for them: --concept N)" if blocked else ""))
+    store.write_extra(args.brand, "storyboard", {"generated_at": now, "brief": record["id"], "rules_version": record.get("rules_version"), "library": lib.source,
+                                                 "ready": [b["concept_no"] for b in boards if b["status"] == "ok"], "blocked": [b["concept_no"] for b in blocked], "boards": boards})
     html_path = store._brand_file(args.brand, "extras", "storyboard.html")
     html_path.parent.mkdir(parents=True, exist_ok=True)
     html_path.write_text("\n<hr>\n".join(SB.render_html(b, b["findings"]) for b in boards), encoding="utf-8")

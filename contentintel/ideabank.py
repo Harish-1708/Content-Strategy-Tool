@@ -1524,6 +1524,28 @@ def _counts(bank):
     return out
 
 
+class _Phases:
+    """Says, as it happens, which phase of the Idea Bank run is under way and how long the last one took, and keeps the total per phase for the summary line. The 81 minute Collect #70 had a 42 minute Idea Bank step that printed nothing until it ended."""
+
+    def __init__(self, slug, out=None, clock=None):
+        import time
+        self.slug, self.out, self.clock = slug, out or (lambda message: print(message, flush=True)), clock or time.monotonic
+        self.start = self.last = self.clock()
+        self.spent = []
+
+    def mark(self, label, detail=""):
+        now = self.clock()
+        took = now - self.last
+        self.last = now
+        self.spent.append((label, took))
+        self.out(f"{self.slug}: [{now - self.start:.0f}s] {label} done in {took:.0f}s" + (f" ({detail})" if detail else ""))
+
+    def line(self, paused=0.0):
+        slow = sorted(self.spent, key=lambda x: -x[1])[:5]
+        return (f"{self.slug}: time by phase (slowest first): " + ", ".join(f"{label} {took:.0f}s" for label, took in slow if took >= 1)
+                + f"; total {self.last - self.start:.0f}s" + (f", of which {paused:.0f}s were the deliberate pauses between video downloads (the pace set in research.yaml)" if paused >= 1 else ""))
+
+
 def _ledger_line(slug, bank, ids_before, kept_before, after):
     """One line that makes the kept count ADD UP: kept before + what is kept now that was not (taken in this run, or brought back / judged again) - what is no longer kept (and why) = kept now; and what became of every item taken in. 'Taken in' alone is not 'kept': a new item waits to be scored (it is not shown), may be removed as a copy or as not relevant enough, and a kept item can be removed later in the same run (a copy, a very same file, a lower score). The first Collect runs printed '16 taken in, 0 removed' while the sheets did not grow."""
     items = bank["items"]
@@ -1553,6 +1575,18 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
     items that scored at least `min_relevance` and remove the rest; save pictures and videos only for the kept ones; move the Drive folders
     of removed items to the trash. Missing helpers are not errors: without Drive the files are skipped, without Claude items wait unscored."""
     lines = []
+    ph = _Phases(brand.slug)
+    paused = [0.0]
+    if pace_fn is not None:
+        real_pace = pace_fn
+
+        def pace_fn(*a, **k):                                                                # noqa: F811 - the same pause, counted
+            import time
+            t = time.monotonic()
+            try:
+                return real_pace(*a, **k)
+            finally:
+                paused[0] += time.monotonic() - t
     bank = normalise_bank(store.read_ideabank(brand.slug))
     if rescues and not dry_run:
         _, notes = rescue_items(bank, rescues, drive)
@@ -1574,6 +1608,7 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
         lines.append(f"{brand.slug}: {skipped['refreshed']} picture or video link(s) were refreshed from this collection, for items with no file yet")
     if dry_run:
         return new, lines
+    ph.mark("intake", f"{len(new)} new")
     before = _counts(bank)
     kept_before = {i for i, it in bank["items"].items() if state_of(it) == "kept"}
     was_removed = {i for i, it in bank["items"].items() if it["state"] == "removed"}
@@ -1590,11 +1625,13 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
                 lines.append(f"{brand.slug}: facts read for {got_facts} video(s) (views, sound, captions, who posted, outlier against the poster's followers)")
         except Exception as exc:                                                   # noqa: BLE001 - extra evidence never stops the bank
             lines.append(f"{brand.slug}: video facts skipped ({exc.__class__.__name__})")
+    ph.mark("tidy and video facts")
     if claude is not None and budget is not None:
         unscored = [i for i, it in bank["items"].items() if needs_scoring(it)]
         scored, notes = score_items(bank, unscored, claude, brand, store, settings, budget, now, request)
         lines += notes
         lines.append(f"{brand.slug}: {scored} item(s) scored")
+        ph.mark("scoring", f"{scored} scored")
     irrelevant = apply_relevance(bank, settings)
     weak = [it["score"] for i, it in bank["items"].items()
             if it["state"] == "removed" and i not in was_removed and it["removed_reason"].startswith("not relevant enough")]
@@ -1613,6 +1650,7 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
             lines.append(f"{brand.slug}: {enriched} item(s) got a hook line, first test, audience and channel")
     else:
         same_technique = 0
+    ph.mark("technique groups and enrichment")
     if motion_entries:
         try:
             matched = note_motion(bank, motion_entries)
@@ -1623,6 +1661,7 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
     if get is not None:
         _, notes = resolve_covers(bank, get, settings)
         lines += [f"{brand.slug}: {n}" for n in notes]
+    ph.mark("motion formats and covers")
     waiting = sum(1 for it in bank["items"].values() if state_of(it) == "new")
     if waiting:
         lines.append(f"{brand.slug}: {waiting} item(s) wait to be scored before they are shown or get a folder"
@@ -1635,12 +1674,15 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
     if settings.save_assets and drive is not None and get is not None:
         _, notes = refresh_meta_links(bank, browser_factory, settings, now)
         lines += [f"{brand.slug}: {n}" for n in notes]
+    ph.mark("picture and video link refresh")
     retry = [i for i, it in bank["items"].items() if needs_assets(it)]
     try:
         if settings.save_assets and drive is not None and get is not None:
+            ph.out(f"{brand.slug}: saving pictures for {len(retry)} item(s) ...")
             saved, notes = save_assets(bank, retry, brand.name, drive, get, settings, now=now)
             lines += notes
             lines.append(f"{brand.slug}: files saved for {saved} item(s)")
+            ph.mark("saving pictures", f"{saved} item(s)")
             wanting = [i for i, it in bank["items"].items() if needs_video(it, settings)]
             if wanting and video_runner is None:
                 lines.append(f"{brand.slug}: {len(wanting)} TikTok/Instagram video(s) not saved: yt-dlp is not available here, so only cover pictures are kept")
@@ -1650,6 +1692,7 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
                     got, notes = save_videos(bank, wanting, brand.name, drive, settings, video_runner, jar, health=health, now=now, pace_fn=pace_fn)
                 lines += notes
                 lines.append(f"{brand.slug}: real videos saved for {got} item(s)")
+                ph.mark("saving videos", f"{got} of {len(wanting)}")
         elif settings.save_assets and retry:
             lines.append(f"{brand.slug}: files not saved (no Drive folder is set up: add the IDEA_BANK_FOLDER_ID secret)")
     except DriveError as exc:
@@ -1670,6 +1713,7 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
                 lines.append(f"{brand.slug}: {moved} folder(s) of removed items moved to the Drive trash")
         except DriveError as exc:
             lines.append(f"{brand.slug}: Drive stopped the tidy-up of folders: {exc}")
+    ph.mark("visual review and folder tidy-up")
     after = _counts(bank)
     removed_now = after["removed"] - before["removed"]
     added_kept = len({i for i, it in bank["items"].items() if state_of(it) == "kept"} - kept_before)
@@ -1679,5 +1723,6 @@ def run_ideabank(brand, store, *, settings, now, claude=None, drive=None, get=No
         lines.append(f"{brand.slug}: {removed_now} item(s) removed ({own} the brand's own, {skipped_brands} from brands you skip, {copies} cop(ies), "
                      f"{irrelevant} not relevant enough" + (f", {same_technique} the same technique as better ideas" if same_technique else "") + f") in this run; the bank now holds {after['kept']} kept item(s), {added_kept} of them new in this run")
     lines.append(_ledger_line(brand.slug, bank, ids_before, kept_before, after))
+    lines.append(ph.line(paused[0]))
     store.write_ideabank(brand.slug, bank)
     return new, lines

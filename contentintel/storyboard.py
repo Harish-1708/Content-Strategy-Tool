@@ -69,7 +69,8 @@ def build(concept, *, brief_id="", concept_no=1):
         shots.append({"n": n, "role": role, "seconds": round(secs, 1), "spoken": spoken, "on_screen": short(spoken), "visual": visual, "product": product, "still_query": _query(visual, spoken, product), "still": None})
     total = round(sum(s["seconds"] for s in shots), 1)
     if abs(total - target) > target * FIT_TOLERANCE:
-        notes.append(f"the shots add up to {total} s but the format names {target} s: the script is too {'short' if total < target else 'long'} for it")
+        notes.append(f"the shots add up to {total} s but the format names {target} s: the script is too {'short' if total < target else 'long'} for it ("
+                     + (f"add beats to the script, or name a shorter format such as {int(round(total / 5.0) * 5) or 5} second" if total < target else "cut beats from the script, or name a longer format") + ")")
     if not beats:
         notes.append("the script has no sentences: the storyboard holds only the hook and the call to action")
     return {"brief": brief_id, "concept_no": concept_no, "concept": str(concept.get("name") or ""), "format": str(concept.get("format") or ""), "target_seconds": target, "aspect": "9:16",
@@ -130,5 +131,6 @@ def render_html(board, findings=()):
     notes = "".join(f"<li>{esc(f['where'])}: {esc(f['message'])}</li>" for f in findings)
     return ('<!doctype html><meta charset="utf-8"><title>Storyboard</title><style>body{font-family:sans-serif;max-width:1000px;margin:1em auto}.shot{border:1px solid #ccc;border-radius:6px;padding:8px 12px;margin:10px 0}'
             '.credit,.missing{font-size:12px;color:#666}.missing{color:#a00}</style>'
-            f'<h1>{esc(board["concept"])}</h1><p>{esc(board["format"])} &middot; {board["total_seconds"]} s of {board["target_seconds"]} s &middot; {esc(board["aspect"])} &middot; brief {esc(board["brief"])}, concept {board["concept_no"]}</p>'
+            + ('<p style="background:#fde8e8;border:1px solid #c33;padding:6px 10px"><b>BLOCKED</b>: this concept broke a rule or the claims gate and is not ready; see the findings below.</p>' if board.get("status") == "blocked" else "")
+            + f'<h1>{esc(board["concept"])}</h1><p>{esc(board["format"])} &middot; {board["total_seconds"]} s of {board["target_seconds"]} s &middot; {esc(board["aspect"])} &middot; brief {esc(board["brief"])}, concept {board["concept_no"]}</p>'
             + "".join(cards) + (f"<h2>Findings</h2><ul>{notes}</ul>" if notes else ""))

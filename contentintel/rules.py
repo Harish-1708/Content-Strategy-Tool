@@ -118,6 +118,8 @@ def check_text(ruleset, text, scope="copy", ordered_mode=None):
             out.append(Violation("banned_char", _severity(item),
                                  f"Contains {name} ({count}x)", {"char": item["char"]}))
     for item in rules.get("banned_phrases") or []:
+        if item.get("scopes") and scope not in item["scopes"]:                              # a phrase banned only where it matters (for example the hook: the first two seconds)
+            continue
         if re.search(r"\b" + re.escape(item["phrase"]) + r"\b", text, re.I):
             out.append(Violation("banned_phrase", _severity(item),
                                  f"Contains banned word '{item['phrase']}'",

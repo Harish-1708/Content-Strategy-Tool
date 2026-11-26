@@ -188,7 +188,69 @@ def twscrape_layer(session, environ, runner=subprocess.run, timeout=150):
     return {"state": state if state in ("accepted", "rejected", "unreachable") else "unreachable", "detail": detail}
 
 
-def check_platform(platform, settings, contact, python, *, environ=None, runner=subprocess.run, now="", ledger=None, offline=False):
+BROWSER_PROOF = ("tiktok", "instagram")                      # platforms whose proof is the RENDERED page loaded with the stored cookies through the collectors' own browser (Acceptance read both that way: "login ok, 3 items"); the Scrapling worker's 3 second one-shot load kept giving half-drawn pages (TikTok) and a redirect loop (Instagram)
+PROOF_WAITS = (3, 3, 6, 9)                                   # seconds waited before each look at the SAME page: a half-drawn page is given time, a challenge page is never asked again
+
+
+def browser_proof(platform, spec, session, *, cfg_path="browser.yaml", opener=None, sleep=None):
+    """Judge a stored session by the login markers on the rendered home page, loaded WITH the stored cookies in a real browser (the collectors' own `open_browser` and `session_state`, the markers listed in browser.yaml).
+    Returns None when this proof cannot be made here (no markers for the platform, no cookies, no browser engine): the caller then uses the older route. Otherwise {'state', 'reason', 'evidence'} with state ACCEPTED (markers of a
+    logged-in page), REJECTED (the login wall), BLOCKED (a challenge or an account warning: never retried, never judged), UNCONFIRMED (nothing either way after waiting and one reload) or CANNOT CHECK (the page did not open).
+    Only the logged-in markers of a page loaded with the stored session count: the public-profile read and the Apify lane are not our cookies and can never prove a session."""
+    import time
+    from . import browser as B
+    from . import collectors as C
+    if opener is None and os.environ.get("CONTENTINTEL_SESSIONS_BROWSER_PROOF", "1") == "0":           # the Tests runner switches the real browser off; a run of the tool leaves it on (the default)
+        return None
+    sleep = sleep or time.sleep
+    try:
+        cfg = B.load_browser_settings(cfg_path)
+    except Exception:                                                                    # noqa: BLE001
+        return None
+    site_cfg = (cfg.get("sites") or {}).get(platform)
+    cookies_text = session.browser_cookies_json() if session is not None else ""                           # the STORED SESSION's own cookies (the *_SESSION_B64 secret): it is a different capture from the collectors' *_COOKIES secret, so a logged-in Acceptance login says nothing about it
+    if not site_cfg or not site_cfg.get("logged_in_any") or not site_cfg.get("home") or not cookies_text.strip():
+        return None
+    ev = {"route": "rendered page, stored cookies", "polls": 0, "reloaded": False}
+    try:
+        manager = (opener or B.open_browser)(platform, cfg, B.site_pacing(cfg, platform), cookies_text, "debug/sessions-proof", headless=True)
+        browser = manager.__enter__()
+    except Exception as exc:                                                             # noqa: BLE001 - no browser engine here: the older route answers, and the row says the proof could not run
+        return {"unavailable": f"the browser could not start ({type(exc).__name__}: {str(exc)[:120]})"}
+    try:
+        try:
+            browser.open(site_cfg["home"])
+        except Exception as exc:                                                         # noqa: BLE001 - the page did not open (a redirect loop, a refused connection)
+            return {"state": CANNOT_CHECK, "reason": f"the browser could not open {spec['label']}'s home page ({str(exc)[:200]}); nothing was judged, this is not the platform's answer about the session", "evidence": ev}
+        for attempt, wait in enumerate(PROOF_WAITS):
+            sleep(wait)
+            ev["polls"] = attempt + 1
+            ev["landed"] = str(getattr(browser, "url", "") or "")[:200]
+            warning = C.warning_seen(browser, site_cfg)
+            if warning:
+                return {"state": BLOCKED, "reason": f"{spec['label']} is showing a warning to the account ({warning}); the session was not judged and the page is not asked again", "evidence": ev}
+            state = C.session_state(browser, site_cfg)
+            if state == "challenge":                                                     # a challenge page is never asked for again with the same session
+                return {"state": BLOCKED, "reason": f"{spec['label']} showed a bot-check or challenge page to this runner, so the session itself could not be judged (not asked again); this is the platform blocking the runner, not a bad session", "evidence": ev}
+            if state == "ok":
+                return {"state": ACCEPTED, "reason": f"the rendered {spec['label']} page, loaded with the stored cookies, showed a logged-in state (check {ev['polls']})", "evidence": ev}
+            if state == "login_wall":
+                return {"state": REJECTED, "reason": f"the rendered {spec['label']} page, loaded with the stored cookies, showed its login wall: the stored session was not accepted; capture a new one", "evidence": ev}
+            if attempt == len(PROOF_WAITS) - 2 and not ev["reloaded"]:                   # a half-drawn page: one reload, then the last look
+                try:
+                    browser.open(site_cfg["home"])
+                    ev["reloaded"] = True
+                except Exception:                                                        # noqa: BLE001
+                    break
+        return {"state": UNCONFIRMED, "reason": "no sign of being logged in was found on the rendered page after waiting and one reload (it gave no logged-out sign either)", "evidence": ev}
+    finally:
+        try:
+            manager.__exit__(None, None, None)
+        except Exception:                                                                # noqa: BLE001
+            pass
+
+
+def check_platform(platform, settings, contact, python, *, environ=None, runner=subprocess.run, now="", ledger=None, offline=False, proof=None):
     """One platform's result as a dict: state (ACCEPTED, REJECTED, EXPIRED, BAD CAPTURE, CANNOT CHECK, UNCONFIRMED, NOT SET UP or OFF), why, expiry and the day it was last proved.
     `offline` makes no request (status only). Never raises."""
     environ = os.environ if environ is None else environ
@@ -218,6 +280,19 @@ def check_platform(platform, settings, contact, python, *, environ=None, runner=
     if offline:
         proof = f"proved live on {ledger.proved_on(platform)[:10]}" if ledger is not None and ledger.proved(platform, now) else "not yet proved against the live site"
         return done("PRESENT", f"stored session present and not expired; {proof}", record=False)
+    unavailable = ""
+    if platform in BROWSER_PROOF:
+        got = (proof or browser_proof)(platform, spec, session)
+        if got is not None and "unavailable" in got:                                      # no browser engine in this run: the older route answers, and the evidence says the rendered-page proof did not run
+            unavailable = got["unavailable"]
+            got = None
+        else:
+            unavailable = ""
+        if got is not None:
+            row["evidence"] = {**got.get("evidence", {}), "fetched_with": "browser (rendered page, stored cookies)"}
+            if got["state"] == UNCONFIRMED:
+                return _ambiguous(done, ledger, platform, got["reason"])
+            return done(got["state"], got["reason"])
     try:
         res = _worker_page(platform, spec["check_url"], settings, contact, python, environ, runner, with_session=True)
     except K.Failure as exc:
@@ -226,7 +301,7 @@ def check_platform(platform, settings, contact, python, *, environ=None, runner=
     plain = bool(res.get("browser_note"))
     why_plain = f"the browser could not be used here ({res.get('browser_error') or 'no reason was given'})"
     err = res.get("error") or {}
-    row["evidence"] = _evidence(platform, res, session, plain)
+    row["evidence"] = {**_evidence(platform, res, session, plain), **({"browser_proof": "did not run: " + unavailable} if platform in BROWSER_PROOF and unavailable else {})}
     refused = "err_http_response_code_failure" in str(err.get("message", "")).lower()                  # the browser's own words for a platform that answers an automated visit with an error status
     if err and err.get("code") != "PLATFORM_BLOCKED" and not refused and not WALL.search(str(err.get("message", ""))) and int(status or 0) not in (401, 403) and not looks_like_challenge(status, html, row["evidence"]["title"]):
         return done(CANNOT_CHECK, f"the Scrapling worker could not read the page cleanly ({humanise_error(err.get('code'), err.get('message', ''), platform)}), so nothing was judged; this is not the platform's answer")
@@ -256,12 +331,21 @@ def check_platform(platform, settings, contact, python, *, environ=None, runner=
     if plain:
         return done(UNCONFIRMED, f"{reason}; but the page was read over plain HTTP because {why_plain}, and this site may only show its logged-in state in a browser")
     if reason.startswith(AMBIGUOUS):                                                      # nothing says logged in, and nothing says logged out either: an error page, a half-drawn page, an empty one
-        streak = ((ledger.data.get(platform) or {}).get("unconfirmed_streak", 0) + 1) if ledger is not None else 1
-        if streak < UNCONFIRMED_LIMIT:
-            return done(UNCONFIRMED, f"the page gave no sign of being logged in or logged out (it may be an error or a half-drawn page), so it is not counted as a refusal and the proof is kept; "
-                                     f"it is looked at again on the next check, and after {UNCONFIRMED_LIMIT} such checks in a row it is treated as refused (this is check {streak})")
-        return done(REJECTED, f"no sign of being logged in was found on {streak} checks in a row (any doubt counts as not logged in): the stored session was not accepted; capture a new one")
+        return _ambiguous(done, ledger, platform, reason)
     return done(REJECTED, f"{reason}: the stored session was not accepted; capture a new one")
+
+
+def _ambiguous(done, ledger, platform, reason):
+    """No sign either way. Counted as doubt, not refusal, for UNCONFIRMED_LIMIT checks in a row; after that REJECTED, and it STAYS rejected while the page still gives no sign (the next check used to restart the count at 1, so a later check
+    overwrote REJECTED with UNCONFIRMED: Sessions #39 said REJECTED and Acceptance #19, running the same check, said UNCONFIRMED 1 of 3). Only a clear logged-in page (ACCEPTED), a clear login wall or a new capture changes it."""
+    entry = (ledger.data.get(platform) or {}) if ledger is not None else {}
+    if entry.get("state") == REJECTED and str(entry.get("reason", "")).startswith(("no sign of being logged in was found", "still no sign of being logged in")):
+        return done(REJECTED, f"still no sign of being logged in ({reason}); the earlier refusal stands until a check shows a logged-in page or a new session is captured")
+    streak = (entry.get("unconfirmed_streak", 0) + 1) if ledger is not None else 1
+    if streak < UNCONFIRMED_LIMIT:
+        return done(UNCONFIRMED, f"the page gave no sign of being logged in or logged out (it may be an error or a half-drawn page), so it is not counted as a refusal and the proof is kept; "
+                                 f"it is looked at again on the next check, and after {UNCONFIRMED_LIMIT} such checks in a row it is treated as refused (this is check {streak})")
+    return done(REJECTED, f"no sign of being logged in was found on {streak} checks in a row (any doubt counts as not logged in): the stored session was not accepted; capture a new one")
 
 
 def check_all(settings, contact, python, *, platforms=None, environ=None, runner=subprocess.run, now="", ledger=None, offline=False):

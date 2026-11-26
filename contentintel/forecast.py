@@ -42,13 +42,13 @@ def load_timesfm(horizon_limit=64):
     """forecast_fn for TimesFM 3.0 (pip install "timesfm[torch]", weights google/timesfm-3.0-pytorch, CPU), or raises ImportError. It never falls back to 2.0 or 2.5: a runner whose library has no
     timesfm3 module reports that instead. forecast_fn(series, horizon) -> list of floats. The weights are under Google's non-commercial licence, accepted by the owner for this personal tool."""
     try:
-        import numpy as np
         from timesfm3 import TimesFM3Forecaster                                          # the 3.0 package's own entry point (checked against the published timesfm 3.0.2 wheel)
     except ImportError as exc:
         raise ImportError(f'TimesFM 3.0 could not be imported ({type(exc).__name__}: {exc}); installed timesfm: {installed_version()}; it needs timesfm 3.0 or newer with the torch extra: pip install "timesfm[torch]>=3.0"; there is no fallback to an older version') from None
     forecaster = TimesFM3Forecaster.from_pretrained(TIMESFM_CHECKPOINT, device="cpu", per_core_batch_size=8)
 
     def run(series, horizon):
+        import numpy as np                                                                 # imported when a forecast is made, not when the model loads: timesfm needs numpy anyway, and the Tests runner (which has no numpy) can load the faked 3.0 path (Tests #1267 failed on this)
         out = forecaster.predict(np.asarray(series, dtype=np.float32), horizon)          # a ForecastOutput: .forecast is the point forecast
         return first_forecast([out], horizon)
     return run

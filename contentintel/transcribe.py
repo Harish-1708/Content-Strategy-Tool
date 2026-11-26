@@ -160,6 +160,57 @@ def faster_whisper_local(path, *, model_size="small", loader=None, language=None
     return {"text": " ".join(s["text"] for s in segs).strip(), "language": str(getattr(info, "language", "") or ""), "segments": segs[:400]}
 
 
+def words_of(text):
+    import re
+    return re.findall(r"[a-z0-9']+", str(text or "").lower())
+
+
+def word_error_rate(reference, heard):
+    """The share of the reference's words the transcript got wrong (substitutions, drops and insertions over the reference length): 0.0 is perfect. Works for any sentence and any word: nothing is written for one word."""
+    ref, hyp = words_of(reference), words_of(heard)
+    if not ref:
+        return 0.0 if not hyp else 1.0
+    prev = list(range(len(hyp) + 1))
+    for i, r in enumerate(ref, start=1):
+        cur = [i] + [0] * len(hyp)
+        for j, h in enumerate(hyp, start=1):
+            cur[j] = min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (r != h))
+        prev = cur
+    return round(prev[-1] / len(ref), 3)
+
+
+MAX_PROBE_WER = 0.34                         # a backend that gets more than a third of a plain spoken sentence wrong is not used
+CHECK_AGREEMENT = 0.80                       # two backends that agree on less than this share of the words: the transcript is flagged for a person to read
+CROSS_CHECKERS = ("groq_whisper", "cloudflare_whisper")           # the quick hosted backends that give the second opinion
+
+
+def agreement(first, second):
+    """(share of words the two transcripts agree on, [(heard by the first, heard by the second)] for the first few differences)."""
+    import difflib
+    a, b = words_of(first), words_of(second)
+    if not a and not b:
+        return 1.0, []
+    sm = difflib.SequenceMatcher(None, a, b, autojunk=False)
+    same = sum(block.size for block in sm.get_matching_blocks())
+    diffs = [(" ".join(a[i1:i2]), " ".join(b[j1:j2])) for tag, i1, i2, j1, j2 in sm.get_opcodes() if tag != "equal"][:6]
+    return round(same / max(len(a), len(b)), 3), diffs
+
+
+def cross_check(path, primary, backends, **kw):
+    """A second opinion on a transcript: the same audio through the next quick hosted backend (never the one that wrote it). Returns {'with', 'agreement', 'differences', 'flag'}, or {'with': '', 'why': ...} when none could be asked.
+    A mishearing that one backend makes (VibeVoice heard 'subscription' for 'transcription') is caught here because the other backend disagrees on that word, whichever word it is."""
+    last = ""
+    for other in [b for b in backends if b in CROSS_CHECKERS and b != primary["backend"]]:
+        try:
+            second = transcribe(path, backends=(other,), **kw)
+        except Failure as exc:
+            last = f"{other}: {exc.message[:100]}"
+            continue
+        share, diffs = agreement(primary["text"], second["text"])
+        return {"with": other, "agreement": share, "differences": diffs, "flag": share < CHECK_AGREEMENT}
+    return {"with": "", "why": "no second hosted backend could be asked" + (f" ({last})" if last else "")}
+
+
 def order(shared_dir):
     """The backends in their MEASURED order (the probe's result), the seeded order until a probe has run. A backend the probe found failing is left last, never dropped."""
     path = Path(shared_dir) / RANKINGS_FILE
@@ -293,13 +344,14 @@ def probe(workdir, *, key="", post=None, loader=None, clock=time.monotonic, clou
         try:
             out = transcribe(path, backends=(backend,), key=key, post=post, loader=loader, clock=clock, cloudflare=cloudflare, vibevoice=vibevoice, runner=runner)
             heard = " ".join(str(out.get("text", "")).split())[:120]
-            if spoken and not any(w in heard.lower() for w in SPEECH_WORDS):
-                rows.append({"backend": backend, "ok": False, "seconds": round(clock() - t0, 2), "why": f"it answered but did not transcribe the spoken sentence: heard {heard!r}", "heard": heard})
+            wer = word_error_rate(SPEECH_TEXT, heard) if spoken else None
+            if spoken and (not any(w in heard.lower() for w in SPEECH_WORDS) or wer > MAX_PROBE_WER):
+                rows.append({"backend": backend, "ok": False, "seconds": round(clock() - t0, 2), "wer": wer, "why": f"it answered but got {int(round((wer or 1) * 100))}% of the spoken sentence's words wrong (more than {int(MAX_PROBE_WER * 100)}% is refused): heard {heard!r}", "heard": heard})
             else:
-                rows.append({"backend": backend, "ok": True, "seconds": round(clock() - t0, 2), "why": "", "heard": heard if spoken else ""})
+                rows.append({"backend": backend, "ok": True, "seconds": round(clock() - t0, 2), "wer": wer, "why": "", "heard": heard if spoken else ""})
         except Failure as exc:
             rows.append({"backend": backend, "ok": False, "seconds": round(clock() - t0, 2), "why": exc.message[:200], "heard": ""})
-    return {"ranking": [r["backend"] for r in sorted((r for r in rows if r["ok"]), key=lambda r: r["seconds"])], "rows": rows}
+    return {"ranking": [r["backend"] for r in sorted((r for r in rows if r["ok"]), key=lambda r: ((r.get("wer") or 0.0), r["seconds"]))], "rows": rows}          # the most accurate first, the fastest among equals: a backend that mishears a word ranks below one that does not
 
 
 def save_transcript(store, slug, record, now):

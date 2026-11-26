@@ -134,6 +134,8 @@ def build_parser():
     p.add_argument("--ask", default="", help="what the brief is for, in your own words")
     p.add_argument("--request", default="", help="only use items found by this request")
     p.add_argument("--include-maybe", action="store_true", help="also use rows marked Maybe")
+    p.add_argument("--revise", default="", help="revise a saved brief (for example BR-0001) that needs review: the checks' and the reviewer's problems are fixed, each round saved as a new brief that says which one it revises")
+    p.add_argument("--rounds", type=int, default=2, help="with --revise: at most this many rounds, stopping as soon as a brief is ready")
     p.add_argument("--research-config", default="research.yaml")
     p.add_argument("--sheets-config", default="sheets.yaml")
     p.add_argument("--briefs-dir", default="briefs")
@@ -671,16 +673,34 @@ def _brief(args, store):
         drive, missing = _drive()
         if drive is None:
             print(f"Pictures will not be placed in the brief and the file will not be saved in Drive: the {missing} secret is not set.")
-        record = brief_mod.make_brief(
-            brand, store, brief_name=args.brief, ask=args.ask, ruleset=ruleset, decisions=decisions,
-            claude_for=lambda model: _job_client(_routed(_claude(csettings, model), "brief", args, store), "brief"), settings=settings,
-            budget=ib_mod.ClaudeBudget(store, now, settings.claude_monthly_calls), now=now, drive=drive,
-            include_maybe=args.include_maybe, request_id=args.request.strip())
+        previous = None
+        if args.revise:
+            previous = next((r for r in store.list_briefs(brand.slug) if r["id"] == args.revise.strip()), None)
+            if previous is None or not previous.get("content"):
+                print(f"Error: {'there is no brief ' + args.revise if previous is None else args.revise + ' has no saved content (briefs made before Update 73 v4 kept none)'}: make it again")
+                return 1
+            if previous.get("brief") != args.brief:
+                print(f"Error: {args.revise} was made under the rules '{previous.get('brief')}', not '{args.brief}'")
+                return 1
+            args.ask = args.ask or previous["ask"]
+        budget = ib_mod.ClaudeBudget(store, now, settings.claude_monthly_calls)
+        record = None
+        for round_no in range(1, (max(1, args.rounds) if previous else 1) + 1):
+            record = brief_mod.make_brief(
+                brand, store, brief_name=args.brief, ask=args.ask, ruleset=ruleset, decisions=decisions,
+                claude_for=lambda model: _job_client(_routed(_claude(csettings, model), "brief", args, store), "brief"), settings=settings,
+                budget=budget, now=now, drive=drive,
+                include_maybe=args.include_maybe, request_id=args.request.strip(), revise_of=previous)
+            if previous:
+                print(f"Revision round {round_no}: {previous['id']} -> {record['id']} ({record['status']})")
+            if record["status"] == "ready" or not previous:
+                break
+            previous = record
     except (brief_mod.BriefError, drive_mod.DriveError, sheets_mod.SheetsError) as exc:
         print(f"Error: {exc}")
         return 1
     print(f"Brief {record['id']} ({record['status']}): {record['title']}")
-    print(f"  built from {len(record['items'])} approved item(s); {len(record['violations'])} rule problem(s) left; model: {record['models'][0]}")
+    print(f"  built from {len(record['items'])} approved item(s); {len(record['violations'])} rule problem(s) left; written by {record.get('built_by', record['models'][0])}; reviewer: {(record.get('review') or {}).get('verdict', 'none')}" + (f"; revision {record['revision']} of {record['revision_of']}" if record.get("revision_of") else ""))
     print(f"  saved in the repository as data/{brand.slug}/briefs/{record['id']}.docx" + (f" and in Drive: {record['drive_link']}" if record["drive_link"] else ""))
     for note in record["notes"]:
         print(f"  note: {note}")

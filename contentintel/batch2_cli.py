@@ -20,7 +20,7 @@ def add_parsers(sub, common):
     p = sub.add_parser("canon", help="the narrative canon and the offer-claims ledger: seed, status, gate, export, history")
     common(p)
     p.add_argument("--brand", default="all")
-    p.add_argument("--action", choices=["seed", "status", "gate", "export", "history", "refresh", "foundation", "reclassify-conflicts", "verify-claims", "stage"], default="status")
+    p.add_argument("--action", choices=["seed", "status", "gate", "export", "history", "refresh", "foundation", "reclassify-conflicts", "verify-claims", "spot-check", "stage"], default="status")
     p.add_argument("--text", default="", help="gate: the text to check against the claims ledger")
     p.add_argument("--steps", default="", help="foundation: only these sections, comma-separated (positioning, audience_beliefs, category_narrative, strategic_narrative, message_house, message_system, language, story_bank, proof_points)")
     p.add_argument("--redo", action="store_true", help="foundation: propose a new version of a section that already has a proposal or approved text")
@@ -349,6 +349,7 @@ def run_canon(args, store, now, *, clients=None):
                 continue
             report = {"calls": 0, "errors": 0, "notes": []}
             claims = reg.state()["claims"]
+            start_conflicted = {cid: c["status"] for cid, c in claims.items() if c["status"] == "conflicted"}                 # for the one combined line at the end: the two kinds of re-check together
             todo = [(cid, other) for cid, c in claims.items() if c["status"] == "conflicted" and not c.get("decided_at") and str(c.get("source", "")).startswith("http") and c.get("conflicts_with")
                     for other in c["conflicts_with"] if other in claims]
             relations = SR.classify_pairs(claude, slug, [(claims[o]["text"] + " " + (claims[o].get("reason") or ""), claims[c]["text"]) for c, o in todo], report=report, fallback="contradicts", max_calls=args.max_calls or None)
@@ -383,6 +384,20 @@ def run_canon(args, store, now, *, clients=None):
                     for line in recheck_explanations(slug, reg.state()["claims"], by_evidence, outcomes, after):
                         print(line)
                     route_report(slug, claude, "evidence-conflict re-check")
+            end_states = reg.state()["claims"]
+            if start_conflicted:
+                moved = {s: sorted(c for c in start_conflicted if end_states[c]["status"] == s) for s in ("verified", "unverified", "conflicted")}
+                print(f"canon: {slug}: reclassify result, both kinds of conflict together: {len(start_conflicted)} claim(s) were CONFLICTED at the start; now {len(moved['verified'])} VERIFIED, {len(moved['unverified'])} taken back to UNVERIFIED"
+                      + (f" ({', '.join(moved['unverified'])})" if moved["unverified"] else "") + f", {len(moved['conflicted'])} still CONFLICTED" + (f" ({', '.join(moved['conflicted'])})" if moved["conflicted"] else ""))
+        elif args.action == "spot-check":
+            one = [(cid, c) for cid, c in reg.state()["claims"].items() if c["status"] == "verified" and "VERIFIED FROM ONE SOURCE" in str(c.get("reason", ""))]
+            print(f"canon: {slug}: {len(one)} claim(s) are VERIFIED FROM ONE SOURCE: the check found a single page, post or interview that states the fact word for word and nothing contradicting it. They stay verified, but a person should open the source once.")
+            for cid, c in one:
+                best = ((c.get("evidence") or {}).get("supports") or [{}])[0]
+                print(f"canon: {slug}:   {cid}: {str(c.get('text', ''))[:110]}")
+                print(f"canon: {slug}:     source: {best.get('url') or best.get('domain', '?')} ({best.get('medium', 'other')})  quote: \"{str(best.get('quote', ''))[:140]}\"")
+                if "exaggerate" in str(c.get("reason", "")):
+                    print(f"canon: {slug}:     note: the source may have a reason to exaggerate this claim")
         elif args.action == "history":
             import os
             import subprocess

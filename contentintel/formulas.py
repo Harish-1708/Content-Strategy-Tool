@@ -152,8 +152,39 @@ def platform_of_item(item):
     return "youtube" if item.get("platform") == "youtube" else "instagram"
 
 
+def tag_with_field(item, lib):
+    """(formula or None, the field that matched): every text the item has is tried, not only the first one that is not empty (a hook line that matches nothing used to hide a title or a caption that does): the hook line, the title, the first
+    sentence of the text and then the text itself. The library's patterns describe SPOKEN hooks, so a caption or an ad's body matches less often than a hook line."""
+    platform = platform_of_item(item)
+    for field, value in (("hook_line", item.get("hook_line")), ("title", item.get("title")), ("first sentence of the text", hook_line(item.get("text"))), ("text", item.get("text"))):
+        if value:
+            found = lib.classify(value, platform)
+            if found:
+                return found, field
+    return None, ""
+
+
 def tag(item, lib):
-    return lib.classify(item.get("hook_line") or item.get("text") or item.get("title") or "", platform_of_item(item))
+    return tag_with_field(item, lib)[0]
+
+
+def coverage(items, lib, sample=8):
+    """How much of the bank the library names, and what it does not: {'kept', 'tagged', 'rate', 'by_platform': {platform: [tagged, total]}, 'by_field': {...}, 'untagged_sample': [{id, platform, text}]}.
+    The sample is what a person reads to judge whether the library is missing shapes it should know or the items simply are not hooks."""
+    by_platform, by_field, untagged = {}, {}, []
+    tagged = 0
+    for it in items:
+        found, field = tag_with_field(it, lib)
+        row = by_platform.setdefault(it.get("platform") or "?", [0, 0])
+        row[1] += 1
+        if found:
+            row[0] += 1
+            tagged += 1
+            by_field[field] = by_field.get(field, 0) + 1
+        elif len(untagged) < sample:
+            text = it.get("hook_line") or it.get("title") or it.get("text") or ""
+            untagged.append({"id": it["id"], "platform": it.get("platform", ""), "text": " ".join(str(text).split())[:160]})
+    return {"kept": len(items), "tagged": tagged, "rate": round(tagged / len(items), 3) if items else 0.0, "by_platform": by_platform, "by_field": by_field, "untagged_sample": untagged}
 
 
 def winners(items, lib):
@@ -239,7 +270,10 @@ def build_report(slug, bank, lib, now, top=20):
                      "formula": f["id"] if f else "", **o})
     opps.sort(key=lambda o: -o["score"])
     with_signal = sum(1 for it in kept if signal_of(it) is not None)
+    cov = coverage(kept, lib)
     notes = []
+    if kept and cov["rate"] < 0.5:
+        notes.append(f"the library names a formula for only {cov['tagged']} of {len(kept)} kept item(s) ({int(cov['rate'] * 100)}%): its patterns describe spoken hooks, so captions and ad copy match less; read the untagged sample to judge whether it is missing shapes or the items are not hooks")
     if len(kept) < MIN_GROUP:
         notes.append(f"only {len(kept)} kept item(s): too few to compare anything; the report shows what it can and marks the rest as not enough data")
     if with_signal < len(kept):
@@ -249,7 +283,7 @@ def build_report(slug, bank, lib, now, top=20):
         notes.append(f"the formula library copy was last checked {'never' if age is None else f'{age} days ago'}: run Creative intelligence > refresh-library")
     return {"brand": slug, "generated_at": now, "library": {"source": lib.source, **lib.counts, "version": {k: v["commit"][:10] for k, v in read_version().get("files", {}).items()}, "checked_at": read_version().get("checked_at", ""), "age_days": age},
             "sample": {"kept_items": len(kept), "with_signal": with_signal, "tagged_with_a_formula": n_tagged, "winners": len(win), "confidence": confidence_of(len(kept))},
-            "winners": win[:top], "formulas": formulas[:top], "opportunities": opps[:top], "weights": WEIGHTS, "notes": notes}
+            "coverage": cov, "winners": win[:top], "formulas": formulas[:top], "opportunities": opps[:top], "weights": WEIGHTS, "notes": notes}
 
 
 def cross_brand(reports):
@@ -272,6 +306,11 @@ def render(report):
     """Plain lines for the run page."""
     s = report["sample"]
     lines = [f"{report['brand']}: {s['kept_items']} kept item(s) (confidence {s['confidence']}), {s['with_signal']} with a performance signal, {s['tagged_with_a_formula']} tagged with a formula, {s['winners']} winner(s); library: {report['library']['source']}"]
+    cov = report.get("coverage")
+    if cov:
+        lines.append(f"  coverage: {cov['tagged']} of {cov['kept']} kept item(s) name a formula ({int(cov['rate'] * 100)}%); by platform " + ", ".join(f"{k} {a}/{b}" for k, (a, b) in sorted(cov["by_platform"].items())) + (f"; matched through {', '.join(f'{k} {v}' for k, v in sorted(cov['by_field'].items()))}" if cov["by_field"] else ""))
+        for u in cov["untagged_sample"][:4]:
+            lines.append(f"    untagged {u['id']} ({u['platform']}): {u['text'][:90]}")
     for w in report["winners"][:5]:
         lines.append(f"  winner {w['id']} ({w['platform']}, {w['handle'] or 'unknown'}): {w['multiple']}x the median of {w['group_n']} ({w['confidence']} confidence)" + (f", formula {w['formula_name']}" if w["formula"] else ", no known formula"))
     for f in report["formulas"][:5]:

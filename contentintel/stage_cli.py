@@ -131,7 +131,14 @@ def run_stage(args, store, now, *, environ=None, post=None, loader=None, runner=
         return 1
     if out.get("converted"):
         print(f"stage: {args.brand}: the download ({path.name}) was converted to {out['converted']} because the hosted backend only accepts audio and video files of known types")
-    TR.save_transcript(store, args.brand, {"sha": TR.sha_of(path), "source": args.source or args.url or args.file, "backend": out["backend"], "language": out["language"], "text": out["text"], "seconds": out["seconds"]}, now)
+    second = TR.cross_check(path, out, TR.order(shared), workdir=Path(args.data_dir) / "_probe", which=(lambda name: name) if runner else None, key=TR.env_key(environ), post=post, loader=loader, language=args.language or None,
+                            cloudflare=TR.env_cloudflare(environ), runner=runner)                                   # a second opinion from another quick hosted backend: where they disagree, a person should read
+    TR.save_transcript(store, args.brand, {"sha": TR.sha_of(path), "source": args.source or args.url or args.file, "backend": out["backend"], "language": out["language"], "text": out["text"], "seconds": out["seconds"],
+                                           "second_opinion": second, "needs_review": bool(second.get("flag"))}, now)
+    if second.get("with"):
+        print(f"stage: {args.brand}: second opinion from {second['with']}: the two backends agree on {int(second['agreement'] * 100)}% of the words" + ("; CHECK THIS TRANSCRIPT, they disagree where: " + "; ".join(f"'{a}' vs '{b}'" for a, b in second["differences"]) if second["flag"] else ""))
+    else:
+        print(f"stage: {args.brand}: no second opinion ({second.get('why', '')})")
     print(f"stage: {args.brand}: transcribed {len(out['text'])} characters with {out['backend']} in {out['seconds']} s" + (f" (after: {'; '.join(f'{b}: {w}' for b, w in out['tried'])})" if out["tried"] else ""))
     shown = " ".join(str(out["text"]).split())
     print(f"stage: {args.brand}: transcript" + (f" (first 1500 of {len(shown)} characters; the whole text is saved in the repository)" if len(shown) > 1500 else "") + f": {shown[:1500]}")                 # the run page shows what was said, not only how long it was

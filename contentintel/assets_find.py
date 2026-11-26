@@ -112,7 +112,7 @@ _ATTR = re.compile(r"""(\w[\w-]*)\s*=\s*(?:"([^"]*)"|'([^']*)')""")
 _OG = re.compile(r"""<meta[^>]+property=["']og:image["'][^>]*content=["']([^"']+)["']""", re.I)
 
 
-def site_media(get, domain, query, *, limit=8):
+def site_media(get, domain, query, *, limit=8, front_page=True):
     """The brand's own pictures from its own front page (og:image and <img> with a name or description that mentions the query's words). They are the brand's, so the licence is `brand-own`: the owner is the
     rights holder. Returns [] with the reason in the report when the page cannot be read."""
     from urllib.parse import urljoin
@@ -121,7 +121,7 @@ def site_media(get, domain, query, *, limit=8):
     html = html if isinstance(html, str) else str(html or "")
     out, seen = [], set()
     want = set(words(query))
-    for m in _OG.finditer(html):
+    for m in (_OG.finditer(html) if front_page else ()):                                    # the front page image is the brand's own picture of ITSELF: offered only when the topic is about the brand
         url = urljoin(base, m.group(1))
         if url not in seen:
             seen.add(url)
@@ -209,10 +209,9 @@ def find_usable(get, query, kind, *, brand=None, store=None, research=None, limi
             report["used"] = q
             return kept, report
     if brand is not None and kind == "images" and getattr(brand, "domain", ""):
+        about_brand = bool(set(words(query)) & (set(words(brand.name)) | {w for t in own for w in words(t)}))          # the topic names the brand or one of its own terms
         try:
-            site = site_media(get, brand.domain, query if words(query) else brand.name, limit=limit)
-            if not site and brand.name.lower() not in query.lower():
-                site = site_media(get, brand.domain, brand.name, limit=limit)
+            site = site_media(get, brand.domain, query if words(query) else brand.name, limit=limit, front_page=about_brand or not words(query))   # an unrelated topic no longer returns the generic front-page picture, so the Pixabay fallback can be reached (Research tools #43)
         except Exception as exc:                                                            # noqa: BLE001
             report["tried"].append({"query": query, "source": "brand site", "returned": 0, "kept": 0, "dropped": [], "error": f"{type(exc).__name__}: {str(exc)[:100]}"})
             site = []
