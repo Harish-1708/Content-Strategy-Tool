@@ -1,47 +1,39 @@
 {
+ "blocked": [],
  "boards": [
   {
    "aspect": "9:16",
-   "brief": "BR-0001",
+   "brief": "BR-0003",
    "concept": "The Color Debate",
    "concept_no": 1,
-   "findings": [
-    {
-     "message": "the shots add up to 17.2 s but the format names 30 s: the script is too short for it",
-     "rule": "length",
-     "severity": "warning",
-     "where": "storyboard"
-    }
-   ],
+   "findings": [],
    "format": "30 second vertical video, yapper-style single-take talking head",
-   "notes": [
-    "the shots add up to 17.2 s but the format names 30 s: the script is too short for it"
-   ],
+   "notes": [],
    "shots": [
     {
      "n": 1,
-     "on_screen": "sweatpants overalls in three colors and",
+     "on_screen": "POV I cant pick between three",
      "product": "",
      "role": "hook",
      "seconds": 3.0,
-     "spoken": "sweatpants overalls in three colors and I still cant pick",
+     "spoken": "POV: I cant pick between three Swoveralls colors",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
       "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "title": "Light_Heather_Grey.png?v=1745771558&width=96",
+      "url": "https://swoveralls.com/cdn/shop/files/Light_Heather_Grey.png?v=1745771558&width=96"
      },
      "still_query": "natural light minimal editing",
      "visual": "Natural light, minimal editing."
     },
     {
      "n": 2,
-     "on_screen": "'sweatpants overalls in three colors and",
+     "on_screen": "sweatpants Swoveralls in three colors and",
      "product": "",
      "role": "beat",
-     "seconds": 8.0,
-     "spoken": "['sweatpants overalls in three colors and I still cant pick', 'Forest Green for the outdoors, Navy for everyday, Midnight Black for everything else', 'Six pockets, adjustable straps, and a fit that moves with you', 'Check the size chart to find your perfect match']",
+     "seconds": 5.5,
+     "spoken": "sweatpants Swoveralls in three colors and I still cant pick",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
@@ -54,51 +46,94 @@
     },
     {
      "n": 3,
+     "on_screen": "Forest Green for the outdoors Navy",
+     "product": "",
+     "role": "beat",
+     "seconds": 7.2,
+     "spoken": "Forest Green for the outdoors, Navy for everyday, Midnight Black for everything else",
+     "still": {
+      "credit": "swoveralls.com (the brand's own site)",
+      "license": "brand-own",
+      "source": "brand site",
+      "title": "Midnight black ovralls with a secret inside zipped front pocket labeled on a white background",
+      "url": "https://swoveralls.com/cdn/shop/files/5_bef14919-bfd1-4f53-ab81-7eebcd6822b4.png?v=1767819895&amp;width=1200"
+     },
+     "still_query": "neutral background casual attire",
+     "visual": "Neutral background, casual attire."
+    },
+    {
+     "n": 4,
+     "on_screen": "Six pockets adjustable straps and a",
+     "product": "",
+     "role": "beat",
+     "seconds": 6.1,
+     "spoken": "Six pockets, adjustable straps, and a fit that moves with you",
+     "still": {
+      "credit": "swoveralls.com (the brand's own site)",
+      "license": "brand-own",
+      "source": "brand site",
+      "title": "Midnight black ovralls with a secret inside zipped front pocket labeled on a white background",
+      "url": "https://swoveralls.com/cdn/shop/files/5_bef14919-bfd1-4f53-ab81-7eebcd6822b4.png?v=1767819895&amp;width=1200"
+     },
+     "still_query": "neutral background casual attire",
+     "visual": "Neutral background, casual attire."
+    },
+    {
+     "n": 5,
+     "on_screen": "Check the size chart to find",
+     "product": "",
+     "role": "beat",
+     "seconds": 5.0,
+     "spoken": "Check the size chart to find your perfect match",
+     "still": {
+      "credit": "swoveralls.com (the brand's own site)",
+      "license": "brand-own",
+      "source": "brand site",
+      "title": "Midnight black ovralls with a secret inside zipped front pocket labeled on a white background",
+      "url": "https://swoveralls.com/cdn/shop/files/5_bef14919-bfd1-4f53-ab81-7eebcd6822b4.png?v=1767819895&amp;width=1200"
+     },
+     "still_query": "neutral background casual attire",
+     "visual": "Neutral background, casual attire."
+    },
+    {
+     "n": 6,
      "on_screen": "Find your fit on swoveralls com",
      "product": "",
      "role": "cta",
-     "seconds": 6.2,
+     "seconds": 3.3,
      "spoken": "Find your fit on swoveralls.com",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
       "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "title": "Midnight black ovralls with a secret inside zipped front pocket labeled on a white background",
+      "url": "https://swoveralls.com/cdn/shop/files/5_bef14919-bfd1-4f53-ab81-7eebcd6822b4.png?v=1767819895&amp;width=1200"
      },
      "still_query": "neutral background casual attire",
      "visual": "Neutral background, casual attire."
     }
    ],
-   "styleframes": 3,
+   "status": "ok",
+   "styleframes": 6,
    "target_seconds": 30,
-   "total_seconds": 17.2
+   "total_seconds": 30.1
   },
   {
    "aspect": "9:16",
-   "brief": "BR-0001",
+   "brief": "BR-0003",
    "concept": "Made to Live In",
    "concept_no": 2,
-   "findings": [
-    {
-     "message": "the shots add up to 17.2 s but the format names 30 s: the script is too short for it",
-     "rule": "length",
-     "severity": "warning",
-     "where": "storyboard"
-    }
-   ],
+   "findings": [],
    "format": "30 second vertical video, yapper-style single-take talking head",
-   "notes": [
-    "the shots add up to 17.2 s but the format names 30 s: the script is too short for it"
-   ],
+   "notes": [],
    "shots": [
     {
      "n": 1,
-     "on_screen": "sweatpants overalls you will want to",
+     "on_screen": "POV Swoveralls you will want to",
      "product": "swoveralls-midnight-black",
      "role": "hook",
      "seconds": 3.0,
-     "spoken": "sweatpants overalls you will want to live in",
+     "spoken": "POV: Swoveralls you will want to live in",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
@@ -111,11 +146,11 @@
     },
     {
      "n": 2,
-     "on_screen": "'sweatpants overalls you will want to",
+     "on_screen": "sweatpants Swoveralls you will want to",
      "product": "swoveralls-midnight-black",
      "role": "beat",
-     "seconds": 8.0,
-     "spoken": "['sweatpants overalls you will want to live in', '95 percent cotton, 5 percent spandex for a soft, stretchy feel', 'Six pockets, zipper fly, and straps that adjust to you', 'No trends, just comfort that lasts']",
+     "seconds": 5.3,
+     "spoken": "sweatpants Swoveralls you will want to live in",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
@@ -128,11 +163,11 @@
     },
     {
      "n": 3,
-     "on_screen": "Try the comfort at swoveralls com",
+     "on_screen": "95 percent cotton 5 percent spandex",
      "product": "swoveralls-midnight-black",
-     "role": "cta",
-     "seconds": 6.2,
-     "spoken": "Try the comfort at swoveralls.com",
+     "role": "beat",
+     "seconds": 7.2,
+     "spoken": "95 percent cotton, 5 percent spandex for a soft, stretchy feel",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
@@ -142,15 +177,67 @@
      },
      "still_query": "swoveralls-midnight-black neutral background relaxed posture",
      "visual": "Neutral background, relaxed posture."
+    },
+    {
+     "n": 4,
+     "on_screen": "Six pockets zipper fly and straps",
+     "product": "swoveralls-midnight-black",
+     "role": "beat",
+     "seconds": 6.6,
+     "spoken": "Six pockets, zipper fly, and straps that adjust to you",
+     "still": {
+      "credit": "swoveralls.com (the brand's own site)",
+      "license": "brand-own",
+      "source": "brand site",
+      "title": "front page image",
+      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+     },
+     "still_query": "swoveralls-midnight-black check john before commissioning footage",
+     "visual": "Check with John before commissioning new footage."
+    },
+    {
+     "n": 5,
+     "on_screen": "No trends just comfort that lasts",
+     "product": "swoveralls-midnight-black",
+     "role": "beat",
+     "seconds": 4.0,
+     "spoken": "No trends, just comfort that lasts",
+     "still": {
+      "credit": "swoveralls.com (the brand's own site)",
+      "license": "brand-own",
+      "source": "brand site",
+      "title": "front page image",
+      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+     },
+     "still_query": "swoveralls-midnight-black check john before commissioning footage",
+     "visual": "Check with John before commissioning new footage."
+    },
+    {
+     "n": 6,
+     "on_screen": "Try the comfort at swoveralls com",
+     "product": "swoveralls-midnight-black",
+     "role": "cta",
+     "seconds": 4.0,
+     "spoken": "Try the comfort at swoveralls.com",
+     "still": {
+      "credit": "swoveralls.com (the brand's own site)",
+      "license": "brand-own",
+      "source": "brand site",
+      "title": "front page image",
+      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+     },
+     "still_query": "swoveralls-midnight-black check john before commissioning footage",
+     "visual": "Check with John before commissioning new footage."
     }
    ],
-   "styleframes": 3,
+   "status": "ok",
+   "styleframes": 6,
    "target_seconds": 30,
-   "total_seconds": 17.2
+   "total_seconds": 30.1
   },
   {
    "aspect": "9:16",
-   "brief": "BR-0001",
+   "brief": "BR-0003",
    "concept": "Dads Bouquet Surprise",
    "concept_no": 3,
    "findings": [],
@@ -159,11 +246,11 @@
    "shots": [
     {
      "n": 1,
-     "on_screen": "Forget the bouquet this year",
+     "on_screen": "POV Forget the bouquet this year",
      "product": "",
      "role": "hook",
-     "seconds": 2.0,
-     "spoken": "Forget the bouquet this year",
+     "seconds": 3.0,
+     "spoken": "POV: Forget the bouquet this year, give Swoveralls",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
@@ -176,68 +263,111 @@
     },
     {
      "n": 2,
-     "on_screen": "'Forget the bouquet this year' 'Roll",
+     "on_screen": "Forget the bouquet this year",
      "product": "",
      "role": "beat",
-     "seconds": 8.0,
-     "spoken": "['Forget the bouquet this year', 'Roll up Swoveralls in Navy and Midnight Black', 'Add a ribbon, watch his face light up', 'A gift he will actually wear']",
+     "seconds": 1.7,
+     "spoken": "Forget the bouquet this year",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "credit": "822640 on Pixabay",
+      "license": "pixabay-content-license",
+      "source": "pixabay",
+      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
+      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
      },
      "still_query": "warm homey lighting",
      "visual": "Warm, homey lighting."
     },
     {
      "n": 3,
+     "on_screen": "Roll up Swoveralls in Navy and",
+     "product": "",
+     "role": "beat",
+     "seconds": 2.7,
+     "spoken": "Roll up Swoveralls in Navy and Midnight Black",
+     "still": {
+      "credit": "822640 on Pixabay",
+      "license": "pixabay-content-license",
+      "source": "pixabay",
+      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
+      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
+     },
+     "still_query": "warm homey lighting",
+     "visual": "Warm, homey lighting."
+    },
+    {
+     "n": 4,
+     "on_screen": "Add a ribbon watch his face",
+     "product": "",
+     "role": "beat",
+     "seconds": 2.7,
+     "spoken": "Add a ribbon, watch his face light up",
+     "still": {
+      "credit": "822640 on Pixabay",
+      "license": "pixabay-content-license",
+      "source": "pixabay",
+      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
+      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
+     },
+     "still_query": "warm homey lighting",
+     "visual": "Warm, homey lighting."
+    },
+    {
+     "n": 5,
+     "on_screen": "A gift he will actually wear",
+     "product": "",
+     "role": "beat",
+     "seconds": 2.1,
+     "spoken": "A gift he will actually wear",
+     "still": {
+      "credit": "822640 on Pixabay",
+      "license": "pixabay-content-license",
+      "source": "pixabay",
+      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
+      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
+     },
+     "still_query": "warm homey lighting",
+     "visual": "Warm, homey lighting."
+    },
+    {
+     "n": 6,
      "on_screen": "Give comfort this Father's Day at",
      "product": "",
      "role": "cta",
-     "seconds": 3.7,
+     "seconds": 2.7,
      "spoken": "Give comfort this Father's Day at swoveralls.com",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "credit": "822640 on Pixabay",
+      "license": "pixabay-content-license",
+      "source": "pixabay",
+      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
+      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
      },
      "still_query": "warm homey lighting",
      "visual": "Warm, homey lighting."
     }
    ],
-   "styleframes": 3,
+   "status": "ok",
+   "styleframes": 6,
    "target_seconds": 15,
-   "total_seconds": 13.7
+   "total_seconds": 14.9
   },
   {
    "aspect": "9:16",
-   "brief": "BR-0001",
+   "brief": "BR-0003",
    "concept": "For the Dad Who Says He is Fine",
    "concept_no": 4,
-   "findings": [
-    {
-     "message": "the shots add up to 16.4 s but the format names 30 s: the script is too short for it",
-     "rule": "length",
-     "severity": "warning",
-     "where": "storyboard"
-    }
-   ],
+   "findings": [],
    "format": "30 second vertical video, scene-based",
-   "notes": [
-    "the shots add up to 16.4 s but the format names 30 s: the script is too short for it"
-   ],
+   "notes": [],
    "shots": [
     {
      "n": 1,
-     "on_screen": "For the dad who says he",
+     "on_screen": "POV For the dad who says",
      "product": "swoveralls-dark-athletic-grey",
      "role": "hook",
      "seconds": 3.0,
-     "spoken": "For the dad who says he is fine after 12 hours on his feet",
+     "spoken": "POV: For the dad who says he is fine after 12 hours on his feet, Swoveralls",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
@@ -250,11 +380,11 @@
     },
     {
      "n": 2,
-     "on_screen": "'For the dad who says he",
+     "on_screen": "For the dad who says he",
      "product": "swoveralls-dark-athletic-grey",
      "role": "beat",
      "seconds": 8.0,
-     "spoken": "['For the dad who says he is fine after 12 hours on his feet', 'Boots off, coffee in hand, time to relax', 'Slip into Swoveralls, the comfort he deserves', 'Six pockets, soft fabric, and a fit made for downtime']",
+     "spoken": "For the dad who says he is fine after 12 hours on his feet",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
@@ -267,10 +397,61 @@
     },
     {
      "n": 3,
+     "on_screen": "Boots off coffee in hand time",
+     "product": "swoveralls-dark-athletic-grey",
+     "role": "beat",
+     "seconds": 4.9,
+     "spoken": "Boots off, coffee in hand, time to relax",
+     "still": {
+      "credit": "swoveralls.com (the brand's own site)",
+      "license": "brand-own",
+      "source": "brand site",
+      "title": "front page image",
+      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+     },
+     "still_query": "swoveralls-dark-athletic-grey cozy indoor setting soft lighting",
+     "visual": "Cozy indoor setting, soft lighting."
+    },
+    {
+     "n": 4,
+     "on_screen": "Slip into Swoveralls the comfort he",
+     "product": "swoveralls-dark-athletic-grey",
+     "role": "beat",
+     "seconds": 4.3,
+     "spoken": "Slip into Swoveralls, the comfort he deserves",
+     "still": {
+      "credit": "swoveralls.com (the brand's own site)",
+      "license": "brand-own",
+      "source": "brand site",
+      "title": "front page image",
+      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+     },
+     "still_query": "swoveralls-dark-athletic-grey cozy indoor setting soft lighting",
+     "visual": "Cozy indoor setting, soft lighting."
+    },
+    {
+     "n": 5,
+     "on_screen": "Six pockets soft fabric and a",
+     "product": "swoveralls-dark-athletic-grey",
+     "role": "beat",
+     "seconds": 6.1,
+     "spoken": "Six pockets, soft fabric, and a fit made for downtime",
+     "still": {
+      "credit": "swoveralls.com (the brand's own site)",
+      "license": "brand-own",
+      "source": "brand site",
+      "title": "front page image",
+      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+     },
+     "still_query": "swoveralls-dark-athletic-grey cozy indoor setting soft lighting",
+     "visual": "Cozy indoor setting, soft lighting."
+    },
+    {
+     "n": 6,
      "on_screen": "Help him unwind with Swoveralls",
      "product": "swoveralls-dark-athletic-grey",
      "role": "cta",
-     "seconds": 5.4,
+     "seconds": 3.1,
      "spoken": "Help him unwind with Swoveralls",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
@@ -283,97 +464,134 @@
      "visual": "Cozy indoor setting, soft lighting."
     }
    ],
-   "styleframes": 3,
+   "status": "ok",
+   "styleframes": 6,
    "target_seconds": 30,
-   "total_seconds": 16.4
+   "total_seconds": 29.4
   },
   {
    "aspect": "9:16",
-   "brief": "BR-0001",
+   "brief": "BR-0003",
    "concept": "The Gift He Actually Wants",
    "concept_no": 5,
-   "findings": [
-    {
-     "message": "the shots add up to 17.6 s but the format names 30 s: the script is too short for it",
-     "rule": "length",
-     "severity": "warning",
-     "where": "storyboard"
-    }
-   ],
+   "findings": [],
    "format": "Static carousel post",
-   "notes": [
-    "the shots add up to 17.6 s but the format names 30 s: the script is too short for it"
-   ],
+   "notes": [],
    "shots": [
     {
      "n": 1,
-     "on_screen": "Gifts dads secretly hate",
+     "on_screen": "POV Gifts dads secretly hate Swoveralls",
      "product": "",
      "role": "hook",
-     "seconds": 1.6,
-     "spoken": "Gifts dads secretly hate",
+     "seconds": 2.8,
+     "spoken": "POV: Gifts dads secretly hate, Swoveralls instead",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
       "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "title": "Woman in Midnight Black Swoveralls and a tie-dye hoodie showing off the bib pocket at home.",
+      "url": "https://swoveralls.com/cdn/shop/files/vermomster.poster.jpg?v=1790901174&amp;width=480"
      },
      "still_query": "carousel first slide showing novelty gifts socks gadgets second text-only third ",
      "visual": "Carousel with first slide showing novelty gifts (socks, gadgets), second slide text-only, third slide product shot of Swoveralls in Midnight Black and Navy, fourth slide lifestyle shot of someone wearing Swoveralls on a couch."
     },
     {
      "n": 2,
-     "on_screen": "'Slide 1 Novelty socks random gadgets",
+     "on_screen": "Slide 1 Novelty socks random gadgets",
      "product": "",
      "role": "beat",
-     "seconds": 8.0,
-     "spoken": "['Slide 1: Novelty socks, random gadgets, another tie', 'Slide 2: What he really wants', 'Slide 3: Swoveralls in Midnight Black or Navy', 'Slide 4: Comfort he will wear every day']",
+     "seconds": 5.4,
+     "spoken": "Slide 1: Novelty socks, random gadgets, another tie",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
       "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "title": "Woman in Midnight Black Swoveralls and a tie-dye hoodie showing off the bib pocket at home.",
+      "url": "https://swoveralls.com/cdn/shop/files/vermomster.poster.jpg?v=1790901174&amp;width=480"
      },
      "still_query": "carousel first slide showing novelty gifts socks gadgets second text-only third ",
      "visual": "Carousel with first slide showing novelty gifts (socks, gadgets), second slide text-only, third slide product shot of Swoveralls in Midnight Black and Navy, fourth slide lifestyle shot of someone wearing Swoveralls on a couch."
     },
     {
      "n": 3,
-     "on_screen": "Shop the gift he will love",
+     "on_screen": "Slide 2 What he really wants",
      "product": "",
-     "role": "cta",
-     "seconds": 8.0,
-     "spoken": "Shop the gift he will love at swoveralls.com",
+     "role": "beat",
+     "seconds": 4.1,
+     "spoken": "Slide 2: What he really wants",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
       "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "title": "Woman in Midnight Black Swoveralls and a tie-dye hoodie showing off the bib pocket at home.",
+      "url": "https://swoveralls.com/cdn/shop/files/vermomster.poster.jpg?v=1790901174&amp;width=480"
+     },
+     "still_query": "carousel first slide showing novelty gifts socks gadgets second text-only third ",
+     "visual": "Carousel with first slide showing novelty gifts (socks, gadgets), second slide text-only, third slide product shot of Swoveralls in Midnight Black and Navy, fourth slide lifestyle shot of someone wearing Swoveralls on a couch."
+    },
+    {
+     "n": 4,
+     "on_screen": "Slide 3 Swoveralls in Midnight Black",
+     "product": "",
+     "role": "beat",
+     "seconds": 5.4,
+     "spoken": "Slide 3: Swoveralls in Midnight Black or Navy",
+     "still": {
+      "credit": "swoveralls.com (the brand's own site)",
+      "license": "brand-own",
+      "source": "brand site",
+      "title": "Woman in Midnight Black Swoveralls and a tie-dye hoodie showing off the bib pocket at home.",
+      "url": "https://swoveralls.com/cdn/shop/files/vermomster.poster.jpg?v=1790901174&amp;width=480"
+     },
+     "still_query": "carousel first slide showing novelty gifts socks gadgets second text-only third ",
+     "visual": "Carousel with first slide showing novelty gifts (socks, gadgets), second slide text-only, third slide product shot of Swoveralls in Midnight Black and Navy, fourth slide lifestyle shot of someone wearing Swoveralls on a couch."
+    },
+    {
+     "n": 5,
+     "on_screen": "Slide 4 Comfort he will wear",
+     "product": "",
+     "role": "beat",
+     "seconds": 5.4,
+     "spoken": "Slide 4: Comfort he will wear every day",
+     "still": {
+      "credit": "swoveralls.com (the brand's own site)",
+      "license": "brand-own",
+      "source": "brand site",
+      "title": "Woman in Midnight Black Swoveralls and a tie-dye hoodie showing off the bib pocket at home.",
+      "url": "https://swoveralls.com/cdn/shop/files/vermomster.poster.jpg?v=1790901174&amp;width=480"
+     },
+     "still_query": "carousel first slide showing novelty gifts socks gadgets second text-only third ",
+     "visual": "Carousel with first slide showing novelty gifts (socks, gadgets), second slide text-only, third slide product shot of Swoveralls in Midnight Black and Navy, fourth slide lifestyle shot of someone wearing Swoveralls on a couch."
+    },
+    {
+     "n": 6,
+     "on_screen": "Shop Swoveralls in Midnight Black or",
+     "product": "",
+     "role": "cta",
+     "seconds": 6.8,
+     "spoken": "Shop Swoveralls in Midnight Black or Navy at swoveralls.com",
+     "still": {
+      "credit": "swoveralls.com (the brand's own site)",
+      "license": "brand-own",
+      "source": "brand site",
+      "title": "Woman in Midnight Black Swoveralls and a tie-dye hoodie showing off the bib pocket at home.",
+      "url": "https://swoveralls.com/cdn/shop/files/vermomster.poster.jpg?v=1790901174&amp;width=480"
      },
      "still_query": "carousel first slide showing novelty gifts socks gadgets second text-only third ",
      "visual": "Carousel with first slide showing novelty gifts (socks, gadgets), second slide text-only, third slide product shot of Swoveralls in Midnight Black and Navy, fourth slide lifestyle shot of someone wearing Swoveralls on a couch."
     }
    ],
-   "styleframes": 3,
+   "status": "ok",
+   "styleframes": 6,
    "target_seconds": 30,
-   "total_seconds": 17.6
+   "total_seconds": 29.9
   },
   {
    "aspect": "9:16",
-   "brief": "BR-0001",
+   "brief": "BR-0003",
    "concept": "POV Dad Says He Doesnt Need Anything",
    "concept_no": 6,
-   "findings": [
-    {
-     "message": "BLOCKED: \"[\"POV Dad says he doesnt need anything for Father's Day\", 'You hand him Swoveralls in Dark Athletic Grey', 'He tries the\": the ledger says conflicted: sources disagree: 0 support it and 1 contradict it (swoveralls.com): the owner decides",
-     "rule": "claims-gate",
-     "severity": "error",
-     "where": "concept 1 (POV Dad Says He Doesnt Need Anything) script"
-    }
-   ],
+   "findings": [],
    "format": "15 second vertical video, POV UGC-style",
    "notes": [],
    "shots": [
@@ -383,7 +601,7 @@
      "product": "swoveralls-dark-athletic-grey",
      "role": "hook",
      "seconds": 3.0,
-     "spoken": "POV Dad says he doesnt need anything for Father's Day",
+     "spoken": "POV: Dad says he doesnt need anything for Father's Day, Swoveralls",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
@@ -399,8 +617,8 @@
      "on_screen": "POV Dad says he doesnt need",
      "product": "swoveralls-dark-athletic-grey",
      "role": "beat",
-     "seconds": 8.0,
-     "spoken": "[\"POV Dad says he doesnt need anything for Father's Day\", 'You hand him Swoveralls in Dark Athletic Grey', 'He tries them on, then keeps wearing them', 'Comfort wins every time']",
+     "seconds": 2.7,
+     "spoken": "POV Dad says he doesnt need anything for Father's Day",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
@@ -413,11 +631,11 @@
     },
     {
      "n": 3,
-     "on_screen": "Give him comfort at swoveralls com",
+     "on_screen": "95 percent cotton 5 percent spandex",
      "product": "swoveralls-dark-athletic-grey",
-     "role": "cta",
-     "seconds": 2.8,
-     "spoken": "Give him comfort at swoveralls.com",
+     "role": "beat",
+     "seconds": 2.9,
+     "spoken": "95 percent cotton, 5 percent spandex for a soft, stretchy feel",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
@@ -427,89 +645,193 @@
      },
      "still_query": "swoveralls-dark-athletic-grey casual home setting natural light",
      "visual": "Casual, home setting with natural light."
+    },
+    {
+     "n": 4,
+     "on_screen": "He tries them on then keeps",
+     "product": "swoveralls-dark-athletic-grey",
+     "role": "beat",
+     "seconds": 2.1,
+     "spoken": "He tries them on, then keeps wearing them",
+     "still": {
+      "credit": "822640 on Pixabay",
+      "license": "pixabay-content-license",
+      "source": "pixabay",
+      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
+      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
+     },
+     "still_query": "swoveralls-dark-athletic-grey casual home setting natural light",
+     "visual": "Casual, home setting with natural light."
+    },
+    {
+     "n": 5,
+     "on_screen": "Six pockets soft fabric and a",
+     "product": "swoveralls-dark-athletic-grey",
+     "role": "beat",
+     "seconds": 2.7,
+     "spoken": "Six pockets, soft fabric, and a fit made for downtime",
+     "still": {
+      "credit": "822640 on Pixabay",
+      "license": "pixabay-content-license",
+      "source": "pixabay",
+      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
+      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
+     },
+     "still_query": "swoveralls-dark-athletic-grey casual home setting natural light",
+     "visual": "Casual, home setting with natural light."
+    },
+    {
+     "n": 6,
+     "on_screen": "Give him comfort at swoveralls com",
+     "product": "swoveralls-dark-athletic-grey",
+     "role": "cta",
+     "seconds": 1.6,
+     "spoken": "Give him comfort at swoveralls.com",
+     "still": {
+      "credit": "822640 on Pixabay",
+      "license": "pixabay-content-license",
+      "source": "pixabay",
+      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
+      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
+     },
+     "still_query": "swoveralls-dark-athletic-grey casual home setting natural light",
+     "visual": "Casual, home setting with natural light."
     }
    ],
-   "styleframes": 3,
+   "status": "ok",
+   "styleframes": 6,
    "target_seconds": 15,
-   "total_seconds": 13.8
+   "total_seconds": 15.0
   },
   {
    "aspect": "9:16",
-   "brief": "BR-0001",
+   "brief": "BR-0003",
    "concept": "The Same Gift Every Year",
    "concept_no": 7,
-   "findings": [
-    {
-     "message": "the shots add up to 18.0 s but the format names 30 s: the script is too short for it",
-     "rule": "length",
-     "severity": "warning",
-     "where": "storyboard"
-    }
-   ],
+   "findings": [],
    "format": "30 second vertical video, humor-style",
-   "notes": [
-    "the shots add up to 18.0 s but the format names 30 s: the script is too short for it"
-   ],
+   "notes": [],
    "shots": [
     {
      "n": 1,
-     "on_screen": "The same gift every year and",
+     "on_screen": "POV The same gift every year",
      "product": "",
      "role": "hook",
      "seconds": 3.0,
-     "spoken": "The same gift every year and he is still thrilled",
+     "spoken": "POV: The same gift every year and he is still thrilled, Swoveralls",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "credit": "822640 on Pixabay",
+      "license": "pixabay-content-license",
+      "source": "pixabay",
+      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
+      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
      },
      "still_query": "montage opening color swoveralls each year exaggerated happy reactions",
      "visual": "Montage of dad opening a new color of Swoveralls each year, with exaggerated happy reactions."
     },
     {
      "n": 2,
-     "on_screen": "'Year one Swoveralls in Midnight Black'",
+     "on_screen": "Year one Swoveralls in Midnight Black",
      "product": "",
      "role": "beat",
-     "seconds": 8.0,
-     "spoken": "['Year one: Swoveralls in Midnight Black', 'Year two: Swoveralls in Navy', 'Year three: Swoveralls in Dark Athletic Grey', 'Because comfort never gets old']",
+     "seconds": 5.4,
+     "spoken": "Year one: Swoveralls in Midnight Black",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "credit": "KELLEPICS on Pixabay",
+      "license": "pixabay-content-license",
+      "source": "pixabay",
+      "title": "composing ape woman laugh sepia brown gorilla watch scene fantasy view mystical lighting mood fantasy picture face fairy",
+      "url": "https://pixabay.com/get/g3ba2189b7dd665b0a81ac73e5653310aba5806207bbd84ab4a63c095f68c9c59f9bf113bdcf05ade5bf0d454206cf921a7c3a6cc8138164d1bde5d49c23bf456_1280.jpg"
      },
      "still_query": "bright lighting emphasize humor",
      "visual": "Bright, fun lighting to emphasize the humor."
     },
     {
      "n": 3,
+     "on_screen": "Year two Swoveralls in Navy",
+     "product": "",
+     "role": "beat",
+     "seconds": 4.5,
+     "spoken": "Year two: Swoveralls in Navy",
+     "still": {
+      "credit": "KELLEPICS on Pixabay",
+      "license": "pixabay-content-license",
+      "source": "pixabay",
+      "title": "composing ape woman laugh sepia brown gorilla watch scene fantasy view mystical lighting mood fantasy picture face fairy",
+      "url": "https://pixabay.com/get/g3ba2189b7dd665b0a81ac73e5653310aba5806207bbd84ab4a63c095f68c9c59f9bf113bdcf05ade5bf0d454206cf921a7c3a6cc8138164d1bde5d49c23bf456_1280.jpg"
+     },
+     "still_query": "bright lighting emphasize humor",
+     "visual": "Bright, fun lighting to emphasize the humor."
+    },
+    {
+     "n": 4,
+     "on_screen": "Year three Swoveralls in Dark Athletic",
+     "product": "",
+     "role": "beat",
+     "seconds": 6.3,
+     "spoken": "Year three: Swoveralls in Dark Athletic Grey",
+     "still": {
+      "credit": "KELLEPICS on Pixabay",
+      "license": "pixabay-content-license",
+      "source": "pixabay",
+      "title": "composing ape woman laugh sepia brown gorilla watch scene fantasy view mystical lighting mood fantasy picture face fairy",
+      "url": "https://pixabay.com/get/g3ba2189b7dd665b0a81ac73e5653310aba5806207bbd84ab4a63c095f68c9c59f9bf113bdcf05ade5bf0d454206cf921a7c3a6cc8138164d1bde5d49c23bf456_1280.jpg"
+     },
+     "still_query": "bright lighting emphasize humor",
+     "visual": "Bright, fun lighting to emphasize the humor."
+    },
+    {
+     "n": 5,
+     "on_screen": "Because comfort never gets old",
+     "product": "",
+     "role": "beat",
+     "seconds": 4.5,
+     "spoken": "Because comfort never gets old",
+     "still": {
+      "credit": "KELLEPICS on Pixabay",
+      "license": "pixabay-content-license",
+      "source": "pixabay",
+      "title": "composing ape woman laugh sepia brown gorilla watch scene fantasy view mystical lighting mood fantasy picture face fairy",
+      "url": "https://pixabay.com/get/g3ba2189b7dd665b0a81ac73e5653310aba5806207bbd84ab4a63c095f68c9c59f9bf113bdcf05ade5bf0d454206cf921a7c3a6cc8138164d1bde5d49c23bf456_1280.jpg"
+     },
+     "still_query": "bright lighting emphasize humor",
+     "visual": "Bright, fun lighting to emphasize the humor."
+    },
+    {
+     "n": 6,
      "on_screen": "Keep the tradition going at swoveralls",
      "product": "",
      "role": "cta",
-     "seconds": 7.0,
+     "seconds": 6.3,
      "spoken": "Keep the tradition going at swoveralls.com",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "credit": "KELLEPICS on Pixabay",
+      "license": "pixabay-content-license",
+      "source": "pixabay",
+      "title": "composing ape woman laugh sepia brown gorilla watch scene fantasy view mystical lighting mood fantasy picture face fairy",
+      "url": "https://pixabay.com/get/g3ba2189b7dd665b0a81ac73e5653310aba5806207bbd84ab4a63c095f68c9c59f9bf113bdcf05ade5bf0d454206cf921a7c3a6cc8138164d1bde5d49c23bf456_1280.jpg"
      },
      "still_query": "bright lighting emphasize humor",
      "visual": "Bright, fun lighting to emphasize the humor."
     }
    ],
-   "styleframes": 3,
+   "status": "ok",
+   "styleframes": 6,
    "target_seconds": 30,
-   "total_seconds": 18.0
+   "total_seconds": 30.0
   }
  ],
- "brief": "BR-0001",
- "generated_at": "2026-11-25T07:47:20Z",
+ "brief": "BR-0003",
+ "generated_at": "2026-11-26T04:57:54Z",
  "library": "snapshot in contentintel/data/formulas",
- "rules_version": 1
+ "ready": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7
+ ],
+ "rules_version": 2
 }
