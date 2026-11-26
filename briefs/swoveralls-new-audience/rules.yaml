@@ -9,6 +9,10 @@ text_rules:
   banned_chars:
     - {char: "\u2014", name: "em dash"}
     - {char: "!", name: "exclamation point"}
+  banned_phrases:
+    # Brief: "Never use the word 'overalls' ... in the first two seconds of video." The hook is the first two seconds, so the word is banned in the hook
+    # (the whole word: "Swoveralls" is fine). Encoded 2026-11-25 after BR-0001, whose hooks 1 and 2 said it and which only the reviewer caught. Set severity: warning to relax it.
+    - {phrase: overalls, scopes: [hook], severity: error}
   ordered_terms:
     # Brief: "Say 'sweatpants' before 'overalls' in every hook."
     # Encoded loosely (order only matters when both words appear); see open_questions.
