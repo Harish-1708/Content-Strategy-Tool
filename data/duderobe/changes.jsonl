@@ -72,3 +72,5 @@
 {"at": "2026-11-24T22:26:13Z", "details": {}, "handle": "the-whole-outfit", "product_id": "16084160708894", "title": "The Whole Outfit", "type": "new"}
 {"at": "2026-11-25T21:41:36Z", "details": {"product": null, "variants_restocked": ["Black / XS (10-15 Year Old)"], "variants_sold_out": []}, "handle": "kids-hooded-bathrobe", "product_id": "8927175672094", "title": "Kids DudeRobe", "type": "availability"}
 {"at": "2026-11-25T21:41:36Z", "details": {"product": null, "variants_restocked": ["Black / XS"], "variants_sold_out": []}, "handle": "luxury-mens-hooded-bathrobe", "product_id": "1363889356843", "title": "The DudeRobe", "type": "availability"}
+{"at": "2026-11-26T09:26:10Z", "details": {"product": null, "variants_restocked": [], "variants_sold_out": ["Black / XS (10-15 Year Old)"]}, "handle": "kids-hooded-bathrobe", "product_id": "8927175672094", "title": "Kids DudeRobe", "type": "availability"}
+{"at": "2026-11-26T09:26:10Z", "details": {"product": null, "variants_restocked": [], "variants_sold_out": ["Black / XS"]}, "handle": "luxury-mens-hooded-bathrobe", "product_id": "1363889356843", "title": "The DudeRobe", "type": "availability"}
