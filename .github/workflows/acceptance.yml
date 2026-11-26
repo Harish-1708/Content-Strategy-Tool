@@ -249,7 +249,7 @@ jobs:
           exit "$code"
 
       - name: Save the results
-        if: inputs.plan != true
+        if: always() && inputs.plan != true
         shell: bash
         run: |
           git config user.name "catalogue-acceptance"
@@ -259,10 +259,17 @@ jobs:
             echo "No changes to save."
           else
             git commit -m "Acceptance $(date -u +%Y-%m-%dT%H:%MZ)"
-            git pull --rebase
-            git push
+            bash .github/scripts/push-with-retry.sh
           fi
 
+      - name: Keep the unsaved data (only when the save failed)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: unsaved-data
+          path: unsaved-data/
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Show the run as red when a route failed
         if: steps.acceptance.outcome == 'failure' || steps.sheets.outcome == 'failure' || steps.sessions.outcome == 'failure'
         run: exit 1

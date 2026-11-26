@@ -258,6 +258,7 @@ jobs:
           exit "$code"
 
       - name: Save the data
+        if: always()
         shell: bash
         run: |
           git config user.name "catalogue-request"
@@ -268,10 +269,17 @@ jobs:
             echo "No data changes to save."
           else
             git commit -m "Request $(date -u +%Y-%m-%dT%H:%MZ)"
-            git pull --rebase
-            git push
+            bash .github/scripts/push-with-retry.sh
           fi
 
+      - name: Keep the unsaved data (only when the save failed)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: unsaved-data
+          path: unsaved-data/
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Show the run as red when attention is needed
         if: steps.request.outcome == 'failure' || steps.sheets.outcome == 'failure' || steps.docs.outcome == 'failure'
         run: exit 1

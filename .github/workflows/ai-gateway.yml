@@ -287,10 +287,17 @@ jobs:
             echo "No changes to save."
           else
             git commit -m "AI live check $(date -u +%Y-%m-%dT%H:%MZ)"
-            git pull --rebase
-            git push
+            bash .github/scripts/push-with-retry.sh
           fi
 
+      - name: Keep the unsaved data (only when the save failed)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: unsaved-data
+          path: unsaved-data/
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Show the run as red when the problem is ours
         if: steps.live.outcome == 'failure' || steps.evaluate.outcome == 'failure'
         run: exit 1

@@ -103,6 +103,14 @@ jobs:
             echo "No ranking changes to save."
           else
             git commit -m "Pool retest: measured order of each job's providers"
-            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
-            git push
+            bash .github/scripts/push-with-retry.sh
           fi
+
+      - name: Keep the unsaved data (only when the save failed)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: unsaved-data
+          path: unsaved-data/
+          if-no-files-found: ignore
+          retention-days: 14

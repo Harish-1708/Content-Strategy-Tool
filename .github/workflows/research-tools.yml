@@ -210,7 +210,7 @@ jobs:
           exit "$code"
 
       - name: Save the data
-        if: always() && (inputs.tool == 'voice' || inputs.tool == 'assets' || inputs.tool == 'analyze')          # analyze was left out: its "Analysis saved" line was printed and nothing was committed (Research tools #33)
+        if: always()          # every action that writes data (the step saves only what exists and changed): one failing step never loses a run's data
         shell: bash
         run: |
           git config user.name "research-tools"
@@ -220,6 +220,14 @@ jobs:
             echo "No data changes to save."
           else
             git commit -m "Research tools $(date -u +%Y-%m-%dT%H:%MZ)"
-            git pull --rebase
-            git push
+            bash .github/scripts/push-with-retry.sh
           fi
+
+      - name: Keep the unsaved data (only when the save failed)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: unsaved-data
+          path: unsaved-data/
+          if-no-files-found: ignore
+          retention-days: 14

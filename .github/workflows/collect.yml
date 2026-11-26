@@ -26,6 +26,8 @@ name: Collect
 on:
   schedule:
     - cron: "41 7 * * 3"          # Wednesdays 07:41 UTC
+    - cron: "41 9 * * 3"          # and two later tries the same day: GitHub delays or skips scheduled runs under load (the 25 Nov 2026 run never fired), and a missed week is a ZERO in the forecast history.
+    - cron: "41 11 * * 3"         # A later try does nothing when this week's Collect has already been saved (the guard job below)
   workflow_dispatch:
     inputs:
       brand:
@@ -87,7 +89,36 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      run: ${{ steps.week.outputs.run }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Has this week's Collect already been saved?
+        id: week
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          # A person starting Collect by hand always runs. A scheduled try runs only when no real Collect was saved in the last 5 days (the save commit is "Collect <date>").
+          if [ "$EVENT" != "schedule" ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          last="$(git log --since='5 days ago' --grep='^Collect ' --format='%h %cI' -1)"
+          if [ -n "$last" ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "This week's Collect was already saved ($last): this scheduled try does nothing."
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            echo "No Collect was saved in the last 5 days: this scheduled try runs it."
+          fi
+
   collect:
+    needs: guard
+    if: ${{ always() && (github.event_name != 'schedule' || needs.guard.outputs.run == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
@@ -338,6 +369,7 @@ jobs:
           exit "$code"
 
       - name: Save the data
+        if: always()
         shell: bash
         run: |
           git config user.name "catalogue-collect"
@@ -348,10 +380,17 @@ jobs:
             echo "No data changes to save."
           else
             git commit -m "Collect $(date -u +%Y-%m-%dT%H:%MZ)"
-            git pull --rebase
-            git push
+            bash .github/scripts/push-with-retry.sh
           fi
 
+      - name: Keep the unsaved data (only when the save failed)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: unsaved-data
+          path: unsaved-data/
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Alert if collection needs attention
         if: steps.collect.outcome == 'failure' || steps.sheets.outcome == 'failure' || steps.docs.outcome == 'failure' || steps.docscheck.outcome == 'failure' || steps.ideabank.outcome == 'failure' || steps.ideabankcheck.outcome == 'failure'
         shell: bash

@@ -63,6 +63,19 @@ jobs:
           "$RUNNER_TEMP/scrapling-env/bin/python" -m patchright install --with-deps chromium      # patchright, not playwright: it is the library Scrapling's stealth browser runs on, and each one looks for its own pinned browser build (a mismatch looked like "no browser installed")
           echo "SCRAPLING_PYTHON=$RUNNER_TEMP/scrapling-env/bin/python" >> "$GITHUB_ENV"
 
+      - name: Install the browser the rendered-page proof uses (TikTok and Instagram)
+        if: ${{ inputs.what != 'list' }}
+        shell: bash
+        run: |
+          # The proof loads the home page with the stored session's cookies in the collectors' own browser (the one Acceptance uses). Without this step the proof cannot start and the older route answers.
+          pip install -r requirements-browser.txt
+          for attempt in 1 2 3; do
+            if playwright install --with-deps chromium; then exit 0; fi
+            echo "The browser download failed (try $attempt of 3); trying again in 20 seconds"
+            sleep 20
+          done
+          echo "::warning::The browser for the rendered-page proof could not be installed: the sessions check uses its older route and says so in each row."
+
       - name: Install the isolated twscrape environment (the last resort for X only)
         if: ${{ inputs.what == 'check' }}
         shell: bash
@@ -112,7 +125,7 @@ jobs:
           exit "$code"
 
       - name: Save what was found (states, dates, counts and the first words of public reads only, never a secret value)
-        if: ${{ inputs.what == 'check' || inputs.what == 'read' || inputs.what == 'compare' }}
+        if: ${{ always() && (inputs.what == 'check' || inputs.what == 'read' || inputs.what == 'compare') }}
         shell: bash
         run: |
           git config user.name "stored-sessions"
@@ -124,11 +137,18 @@ jobs:
             echo "No changes to save (the stored results are already what this run found)."
           else
             git commit -m "Stored login sessions $(date -u +%Y-%m-%dT%H:%MZ)"
-            git pull --rebase
-            git push
+            bash .github/scripts/push-with-retry.sh
             echo "Saved: commit $(git rev-parse --short HEAD) with $(git show --name-only --format= HEAD | tr '\n' ' ')"
           fi
 
+      - name: Keep the unsaved data (only when the save failed)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: unsaved-data
+          path: unsaved-data/
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Password backup hand-off (which platforms have earned it; starts it only when auto_backup is on)
         if: ${{ inputs.what == 'check' }}
         shell: bash

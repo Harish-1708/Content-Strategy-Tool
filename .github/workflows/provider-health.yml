@@ -83,7 +83,14 @@ jobs:
             echo "No list changes to save."
           else
             git commit -m "$(cat "$RUNNER_TEMP/health_message.txt" 2>/dev/null || echo "Provider health $(date -u +%Y-%m-%d)")"
-            git pull --rebase --autostash
-            git push || { echo "::error title=Save failed::the commit could not be pushed"; exit 1; }
-            echo "SAVED: pushed $(git rev-parse --short HEAD)"
+            bash .github/scripts/push-with-retry.sh
           fi
+
+      - name: Keep the unsaved data (only when the save failed)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: unsaved-data
+          path: unsaved-data/
+          if-no-files-found: ignore
+          retention-days: 14

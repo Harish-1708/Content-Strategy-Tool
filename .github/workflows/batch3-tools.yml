@@ -85,7 +85,14 @@ jobs:
             git commit -m "Batch 3 tools $(date -u +%Y-%m-%dT%H:%MZ)"
             echo "--- files this run left changed but did not save (set aside for the pull, then put back):"
             git status --porcelain | head -40
-            git pull --rebase --autostash
-            git push || { echo "::error title=Save failed::the commit could not be pushed"; exit 1; }
-            echo "SAVED: pushed $(git rev-parse --short HEAD)"
+            bash .github/scripts/push-with-retry.sh
           fi
+
+      - name: Keep the unsaved data (only when the save failed)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: unsaved-data
+          path: unsaved-data/
+          if-no-files-found: ignore
+          retention-days: 14

@@ -14,8 +14,17 @@ on:
         description: "The brief's rules folder under briefs/ (for example swoveralls-new-audience)"
         required: true
       ask:
-        description: "What the brief is for, in your own words"
-        required: true
+        description: "What the brief is for, in your own words (blank when you revise a brief: its own ask is used)"
+        required: false
+        default: ""
+      revise:
+        description: "Revise a saved brief that needs review (for example BR-0001): the checks' and the reviewer's problems are fixed, each round saved as a new brief; blank writes a new brief"
+        required: false
+        default: ""
+      rounds:
+        description: "With revise: at most this many rounds (it stops as soon as a brief is ready)"
+        required: false
+        default: "2"
       request_id:
         description: "Only use items found by this request, for example RQ-0001 (blank uses every approved item)"
         required: false
@@ -104,6 +113,8 @@ jobs:
           BRAND: ${{ inputs.brand }}
           BRIEF: ${{ inputs.brief }}
           ASK: ${{ inputs.ask }}
+          REVISE: ${{ inputs.revise }}
+          ROUNDS: ${{ inputs.rounds }}
           REQUEST_ID: ${{ inputs.request_id }}
           INCLUDE_MAYBE: ${{ inputs.include_maybe }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -115,6 +126,7 @@ jobs:
           set +e
           args=(--brand "$BRAND" --brief "$BRIEF" --ask "$ASK")
           if [ -n "$REQUEST_ID" ]; then args+=(--request "$REQUEST_ID"); fi
+          if [ -n "$REVISE" ]; then args+=(--revise "$REVISE" --rounds "${ROUNDS:-2}"); fi
           if [ "$INCLUDE_MAYBE" = "true" ]; then args+=(--include-maybe); fi
           { echo "### Brief"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           python -m contentintel brief "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
@@ -140,6 +152,7 @@ jobs:
           exit "$code"
 
       - name: Save the data
+        if: always()
         shell: bash
         run: |
           git config user.name "catalogue-brief"
@@ -149,10 +162,17 @@ jobs:
             echo "No data changes to save."
           else
             git commit -m "Brief $(date -u +%Y-%m-%dT%H:%MZ)"
-            git pull --rebase
-            git push
+            bash .github/scripts/push-with-retry.sh
           fi
 
+      - name: Keep the unsaved data (only when the save failed)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: unsaved-data
+          path: unsaved-data/
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Show the run as red when attention is needed
         if: steps.brief.outcome == 'failure' || steps.sheets.outcome == 'failure'
         run: exit 1

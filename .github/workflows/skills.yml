@@ -5,6 +5,7 @@
 #   catalogue      writes data/_shared/skills_catalogue.json (each skill's hash; git keeps the history)
 #   seed-claims    loads each brand's claims seed (the story-bank gaps) into its ledger as blocked / unverified / conflicted, never verified
 #   claims-status  counts per brand
+#   spot-check     the claims VERIFIED FROM ONE SOURCE, with the source and the quotation, so a person can open each once (nothing is checked or changed)
 #   gate           checks the text in 'text' against the brand's claims ledger (OK / NEEDS_REVIEW / BLOCKED); the run FAILS on BLOCKED
 #   refresh-story-bank  public-source research per brand (also monthly, on the 2nd): new facts enter ONLY as UNVERIFIED claims with their source and quotation; a disagreement keeps BOTH as a conflict for the owner; nothing is deleted, verified or made canon
 #   foundation     the per-brand foundation chain: proposes canon sections (never approved by the tool); at most max_steps steps and max_calls model calls per run; a failed call is asked once more and its error is printed in full
@@ -21,7 +22,7 @@ on:
       action:
         description: "What to run"
         type: choice
-        options: [status, verify, update-report, catalogue, seed-claims, claims-status, gate, refresh-story-bank, foundation, reclassify-conflicts, verify-claims, stage]
+        options: [status, verify, update-report, catalogue, seed-claims, claims-status, gate, refresh-story-bank, foundation, reclassify-conflicts, verify-claims, spot-check, stage]
         default: status
       brand:
         description: "Brand folder name (for example swoveralls) or all"
@@ -146,12 +147,13 @@ jobs:
             refresh-story-bank) python -m contentintel canon --action refresh "${brand_args[@]}" ;;
             foundation) python -m contentintel canon --action foundation --steps "$STEPS" --max-steps "$MAX_STEPS" --max-calls "$MAX_CALLS" "${brand_args[@]}" ;;
             reclassify-conflicts) python -m contentintel canon --action reclassify-conflicts --max-calls "$MAX_CALLS" "${brand_args[@]}" ;;
+            spot-check) python -m contentintel canon --action spot-check "${brand_args[@]}" ;;
             verify-claims) python -m contentintel canon --action verify-claims --max-claims "$MAX_CLAIMS" --max-minutes 75 "${brand_args[@]}" ;;
             stage) python -m contentintel canon --action stage --stage "$STAGE" --max-calls "$MAX_CALLS" "${brand_args[@]}" ;;
           esac
 
       - name: Save the data
-        if: always() && (inputs.action == 'catalogue' || inputs.action == 'seed-claims' || inputs.action == 'foundation' || inputs.action == 'refresh-story-bank' || inputs.action == 'reclassify-conflicts' || inputs.action == 'verify-claims' || inputs.action == 'stage' || github.event_name == 'schedule')
+        if: always()          # every action that writes data (the step saves only what exists and changed): one failing step never loses a run's data
         shell: bash
         run: |
           git config user.name "skills"
@@ -167,6 +169,14 @@ jobs:
             git commit -m "Skills and registries $(date -u +%Y-%m-%dT%H:%MZ)"
             echo "--- files this run left changed but did not save (set aside for the pull, then put back):"
             git status --porcelain | head -40
-            git pull --rebase --autostash          # a tracked file the run changed (a usage or health file) must not stop the pull
-            git push
+            bash .github/scripts/push-with-retry.sh
           fi
+
+      - name: Keep the unsaved data (only when the save failed)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: unsaved-data
+          path: unsaved-data/
+          if-no-files-found: ignore
+          retention-days: 14

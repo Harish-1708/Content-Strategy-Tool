@@ -163,7 +163,7 @@ jobs:
           esac
 
       - name: Save the data
-        if: always() && (inputs.action == 'probe-transcribe' || inputs.action == 'transcribe' || inputs.action == 'bakeoff')
+        if: always()          # every action that writes data (the step saves only what exists and changed): one failing step never loses a run's data
         run: |
           git config user.name "stage-tools"
           git config user.email "stage-tools@users.noreply.github.com"
@@ -175,6 +175,14 @@ jobs:
             git commit -m "Stage tools $(date -u +%Y-%m-%dT%H:%MZ)"
             echo "--- files this run left changed but did not save (set aside for the pull, then put back):"
             git status --porcelain | head -40
-            git pull --rebase --autostash
-            git push
+            bash .github/scripts/push-with-retry.sh
           fi
+
+      - name: Keep the unsaved data (only when the save failed)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: unsaved-data
+          path: unsaved-data/
+          if-no-files-found: ignore
+          retention-days: 14

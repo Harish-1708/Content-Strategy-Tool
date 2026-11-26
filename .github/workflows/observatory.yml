@@ -357,7 +357,7 @@ jobs:
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Save the data
-        if: ${{ !contains(fromJSON('["plan","report","status","history"]'), inputs.action || 'monitor') }}
+        if: ${{ always() && (!contains(fromJSON('["plan","report","status","history"]'), inputs.action || 'monitor')) }}
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
@@ -367,10 +367,17 @@ jobs:
             echo "No data changes to save."
           else
             git commit -m "Observatory $(date -u +%Y-%m-%dT%H:%MZ)"
-            git pull --rebase -q || true
-            git push
+            bash .github/scripts/push-with-retry.sh
           fi
 
+      - name: Keep the unsaved data (only when the save failed)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: unsaved-data
+          path: unsaved-data/
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Update Google Sheets
         id: sheets
         if: ${{ !contains(fromJSON('["plan","report","status","history","prune"]'), inputs.action || 'monitor') }}
