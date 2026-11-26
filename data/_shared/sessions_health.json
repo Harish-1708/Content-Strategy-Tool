@@ -1,7 +1,7 @@
 {
   "boss": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T03:31:42Z",
+    "checked_at": "2026-11-26T04:00:38Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",
@@ -13,16 +13,16 @@
   },
   "facebook": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T03:31:42Z",
+    "checked_at": "2026-11-26T04:00:38Z",
     "days_left": 351,
     "evidence": {
       "body_ids": [
         "splash-screen",
-        "mount_0_0_xh",
+        "mount_0_0_rw",
         "B:0",
-        "B:1",
-        "B:2",
-        "B:3"
+        "right_rail_container",
+        "u_0_0_g0",
+        "u_0_1_HT"
       ],
       "cookies_back": [
         "c_user",
@@ -68,7 +68,7 @@
       "login_word_in_address": "",
       "noscript": "",
       "password_field": false,
-      "scripts": 399,
+      "scripts": 355,
       "status": 200,
       "text_chars": 0,
       "title": "Facebook",
@@ -76,7 +76,7 @@
       "worker_error": ""
     },
     "expires_on": "2027-11-12",
-    "proved_on": "2026-11-26T03:31:42Z",
+    "proved_on": "2026-11-26T04:00:38Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
@@ -84,7 +84,7 @@
   },
   "instagram": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T03:31:42Z",
+    "checked_at": "2026-11-26T04:00:38Z",
     "days_left": 351,
     "evidence": {
       "fetched_with": "browser (rendered page, stored cookies)",
@@ -99,7 +99,7 @@
   },
   "linkedin": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T03:31:42Z",
+    "checked_at": "2026-11-26T04:00:38Z",
     "days_left": 351,
     "evidence": {
       "body_ids": [],
@@ -164,7 +164,7 @@
   },
   "reddit": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T03:31:42Z",
+    "checked_at": "2026-11-26T04:00:38Z",
     "days_left": 167,
     "evidence": {
       "body_ids": [
@@ -244,7 +244,7 @@
       "worker_error": ""
     },
     "expires_on": "2027-05-12",
-    "proved_on": "2026-11-26T03:31:42Z",
+    "proved_on": "2026-11-26T04:00:38Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
@@ -252,7 +252,7 @@
   },
   "tiktok": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T03:31:42Z",
+    "checked_at": "2026-11-26T04:00:38Z",
     "days_left": 166,
     "evidence": {
       "fetched_with": "browser (rendered page, stored cookies)",
@@ -261,28 +261,22 @@
     "expires_on": "2027-05-11",
     "proved_on": "2026-11-26T03:31:42Z",
     "proved_via": "browser",
-    "reason": "the rendered TikTok page, loaded with the stored cookies, showed a logged-in state (check 1)",
-    "state": "ACCEPTED",
+    "reason": "TikTok showed a bot-check or challenge page to this runner, so the session itself could not be judged (not asked again); this is the platform blocking the runner, not a bad session",
+    "state": "BLOCKED",
     "unconfirmed_streak": 0
   },
   "x": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T03:31:42Z",
+    "checked_at": "2026-11-26T04:00:38Z",
     "days_left": 351,
     "evidence": {
       "body_ids": [
-        "react-root",
-        "placeholder",
-        "ScriptLoadFailure",
-        "loading-x-anim-0",
-        "loading-x-anim-1",
-        "loading-x-anim-2"
+        "challenge-error-text"
       ],
       "cookies_back": [
         "__cf_bm",
         "__cuid",
         "auth_token",
-        "cf_clearance",
         "ct0",
         "g_state",
         "gt",
@@ -307,13 +301,12 @@
         "twid"
       ],
       "fetched_with": "browser",
-      "html_chars": 321540,
+      "html_chars": 46979,
       "html_truncated": false,
       "landed": "https://x.com/home",
-      "logged_in_found": [
-        "\"isloggedin\":true"
-      ],
+      "logged_in_found": [],
       "logged_in_missing": [
+        "\"isloggedin\":true",
         "data-testid=\"sidebarcolumn\"",
         "/compose/post",
         "aria-label=\"home timeline\""
@@ -323,25 +316,29 @@
       "logged_out_in_text": [],
       "logged_out_only_in_code": [],
       "login_word_in_address": "",
-      "noscript": "body { -ms-overflow-style: scrollbar; overflow-y: scroll; overscroll-behavior-y: none; } .errorContainer { background-color: #FFF; color: #0F1419; max-width: 600px; margin: 0 auto; padding: 10%; font-",
+      "noscript": "Enable JavaScript and cookies to continue",
       "password_field": false,
-      "scripts": 14,
-      "status": 200,
-      "text_chars": 170,
-      "title": "",
+      "scripts": 3,
+      "status": 403,
+      "text_chars": 1297,
+      "title": "Just a moment...",
       "visible_text_available": true,
-      "worker_error": ""
+      "worker_error": "PLATFORM_BLOCKED: x.com still refused after 1 attempt(s) (a bot-check or challenge page was shown); marked failed and moved on"
     },
     "expires_on": "2027-11-12",
     "proved_on": "2026-11-26T03:31:42Z",
     "proved_via": "browser",
-    "reason": "the platform's own page showed a logged-in state",
-    "state": "ACCEPTED",
+    "reason": "X (Twitter) showed a bot-check or challenge page to this runner, so the session itself could not be judged. This is the platform blocking the runner, not a bad session. The last-resort twscrape check could not judge it either: NoAccountError: No account available for queue UserByRestId; twscrape logged: Unknown error. Account timeouted for 15 minutes. Create issue please: https://github.com/vladkens/twscrape/issues If it mistake, you can unlock accounts with `twscrape reset_locks`. Err: HttpStatusError 403; username=session-check; queue=UserByRestId; backend=httpx; proxy=False. X has answered 403 to this runner's address on both routes (its web page and its profile interface) and has also accepted it (the check of 14 Nov 2026 reached x.com/home logged in), so it is intermittent: when it blocks, its session cannot be proved from GitHub's servers and only a different network address would change that",
+    "state": "BLOCKED",
+    "twscrape": {
+      "detail": "NoAccountError: No account available for queue UserByRestId; twscrape logged: Unknown error. Account timeouted for 15 minutes. Create issue please: https://github.com/vladkens/twscrape/issues If it mistake, you can unlock accounts with `twscrape reset_locks`. Err: HttpStatusError 403; username=session-check; queue=UserByRestId; backend=httpx; proxy=False",
+      "state": "unreachable"
+    },
     "unconfirmed_streak": 0
   },
   "xiaohongshu": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-26T03:31:42Z",
+    "checked_at": "2026-11-26T04:00:38Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",
