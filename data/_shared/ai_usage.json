@@ -3077,105 +3077,1140 @@
    }
   },
   "2026-11-26": {
+   "aihorde": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 1760
+     },
+     "brief_review_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 931
+     },
+     "claim_verify_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 2138
+     },
+     "competitor_ideas_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 1822
+     },
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 365
+     },
+     "creator_chain_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 1248
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 1321
+     },
+     "listen_learn_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 1369
+     },
+     "seed_judge_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 815
+     },
+     "seo_lens_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 876
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 870
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 1074
+     },
+     "storyboard_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 1529
+     },
+     "voice_creative_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 1831
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 9,
+    "latency_ms": 271033,
+    "requests": 30,
+    "tokens_in": 9097,
+    "tokens_out": 8852
+   },
+   "anyapi": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 28506
+     },
+     "claim_verify_json": {
+      "cost_usd": 0.0,
+      "requests": 16,
+      "tokens": 11122
+     },
+     "competitor_ideas_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 11926
+     },
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 4808
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 8696
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 11086
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 11374
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 30,
+    "latency_ms": 313596,
+    "requests": 58,
+    "tokens_in": 8934,
+    "tokens_out": 78584
+   },
    "bazaarlink": {
     "by_lane": {
      "brief_json": {
       "cost_usd": 0.0,
-      "requests": 1,
-      "tokens": 15451
+      "requests": 3,
+      "tokens": 31107
+     },
+     "brief_review_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 4604
+     },
+     "claim_verify_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 7338
+     },
+     "competitor_ideas_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 11658
+     },
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 3364
+     },
+     "creator_chain_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 5790
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 5992
+     },
+     "listen_learn_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 13733
+     },
+     "seed_judge_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 1824
+     },
+     "seo_lens_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 6374
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 3444
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 16294
+     },
+     "storyboard_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 15617
+     },
+     "voice_creative_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 7886
      }
     },
     "cost_usd": 0.0,
-    "failures": 1,
-    "latency_ms": 64814,
-    "requests": 1,
-    "tokens_in": 7451,
-    "tokens_out": 8000
+    "failures": 8,
+    "latency_ms": 659053,
+    "requests": 31,
+    "tokens_in": 17173,
+    "tokens_out": 117852
+   },
+   "claude": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.001568,
+      "requests": 2,
+      "tokens": 3934
+     },
+     "brief_review_json": {
+      "cost_usd": 0.001132,
+      "requests": 2,
+      "tokens": 2920
+     }
+    },
+    "cost_usd": 0.0027,
+    "failures": 0,
+    "latency_ms": 24845,
+    "requests": 4,
+    "tokens_in": 1816,
+    "tokens_out": 5038
+   },
+   "cloudflare": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "brief_review_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "claim_verify_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 0
+     },
+     "competitor_ideas_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "creator_chain_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 795
+     },
+     "listen_learn_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "seed_judge_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "seo_lens_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 818
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 612
+     },
+     "storyboard_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "voice_creative_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 24,
+    "latency_ms": 13697,
+    "requests": 30,
+    "tokens_in": 1526,
+    "tokens_out": 699
    },
    "cohere": {
     "by_lane": {
      "brief_json": {
       "cost_usd": 0.0,
-      "requests": 1,
+      "requests": 9,
+      "tokens": 4298
+     },
+     "brief_review_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 4305
+     },
+     "claim_verify_json": {
+      "cost_usd": 0.0,
+      "requests": 16,
+      "tokens": 4122
+     },
+     "competitor_ideas_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 3176
+     },
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 13,
+      "tokens": 6894
+     },
+     "creator_chain_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 4624
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 3097
+     },
+     "listen_learn_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 5401
+     },
+     "seed_judge_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 2186
+     },
+     "seo_lens_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 6695
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 17,
+      "tokens": 47431
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 18,
+      "tokens": 7337
+     },
+     "storyboard_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 4134
+     },
+     "voice_creative_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 5019
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 41,
+    "latency_ms": 505877,
+    "requests": 145,
+    "tokens_in": 74233,
+    "tokens_out": 34486
+   },
+   "google": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 0
+     },
+     "brief_review_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 0
+     },
+     "claim_verify_json": {
+      "cost_usd": 0.0,
+      "requests": 12,
+      "tokens": 432
+     },
+     "competitor_ideas_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
       "tokens": 0
      },
      "conflict_check_json": {
       "cost_usd": 0.0,
-      "requests": 5,
-      "tokens": 3828
+      "requests": 6,
+      "tokens": 890
+     },
+     "creator_chain_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 874
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 830
+     },
+     "listen_learn_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 0
+     },
+     "seed_judge_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 472
+     },
+     "seo_lens_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 547
      },
      "story_extract_json": {
       "cost_usd": 0.0,
-      "requests": 9,
-      "tokens": 43891
+      "requests": 6,
+      "tokens": 0
      },
      "story_review_json": {
       "cost_usd": 0.0,
-      "requests": 10,
-      "tokens": 4929
+      "requests": 6,
+      "tokens": 287
+     },
+     "storyboard_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "voice_creative_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 1362
      }
     },
     "cost_usd": 0.0,
-    "failures": 1,
-    "latency_ms": 69383,
-    "requests": 25,
-    "tokens_in": 47496,
-    "tokens_out": 5152
+    "failures": 73,
+    "latency_ms": 264906,
+    "requests": 86,
+    "tokens_in": 4045,
+    "tokens_out": 1649
    },
    "groq": {
     "by_lane": {
      "brief_json": {
       "cost_usd": 0.0,
-      "requests": 1,
-      "tokens": 7958
+      "requests": 5,
+      "tokens": 13896
+     },
+     "brief_review_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 3653
+     },
+     "claim_verify_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 5012
+     },
+     "competitor_ideas_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 6889
+     },
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 2990
+     },
+     "creator_chain_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 2728
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 3358
+     },
+     "listen_learn_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 11390
+     },
+     "seed_judge_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 1664
+     },
+     "seo_lens_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 4653
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 3965
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 2623
+     },
+     "storyboard_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 5789
+     },
+     "voice_creative_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 9306
      }
     },
     "cost_usd": 0.0,
     "failures": 1,
-    "latency_ms": 2579,
-    "requests": 1,
-    "tokens_in": 6934,
-    "tokens_out": 1024
+    "latency_ms": 84976,
+    "requests": 61,
+    "tokens_in": 29034,
+    "tokens_out": 48882
    },
    "kilo": {
     "by_lane": {
      "brief_json": {
       "cost_usd": 0.0,
-      "requests": 2,
-      "tokens": 11137
+      "requests": 6,
+      "tokens": 19473
+     },
+     "brief_review_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 6968
+     },
+     "claim_verify_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 11130
+     },
+     "competitor_ideas_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 14417
+     },
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 2878
+     },
+     "creator_chain_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 4268
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 5067
+     },
+     "listen_learn_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 9666
+     },
+     "seed_judge_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 1895
+     },
+     "seo_lens_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 8737
      },
      "story_extract_json": {
       "cost_usd": 0.0,
-      "requests": 1,
-      "tokens": 4168
+      "requests": 5,
+      "tokens": 8100
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 3752
+     },
+     "storyboard_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 5601
+     },
+     "voice_creative_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 12353
      }
     },
     "cost_usd": 0.0,
     "failures": 1,
-    "latency_ms": 82324,
-    "requests": 3,
-    "tokens_in": 9463,
-    "tokens_out": 5842
+    "latency_ms": 1246998,
+    "requests": 63,
+    "tokens_in": 29687,
+    "tokens_out": 84618
+   },
+   "nvidia": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "brief_review_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "claim_verify_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 0
+     },
+     "competitor_ideas_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "creator_chain_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "listen_learn_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "seed_judge_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "seo_lens_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "storyboard_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "voice_creative_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 30,
+    "latency_ms": 0,
+    "requests": 30,
+    "tokens_in": 0,
+    "tokens_out": 0
+   },
+   "openrouter": {
+    "by_lane": {
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 3880
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 14,
+      "tokens": 27016
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 14,
+      "tokens": 14925
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 14,
+      "tokens": 38845
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 5,
+    "latency_ms": 681063,
+    "requests": 44,
+    "tokens_in": 11688,
+    "tokens_out": 72978
+   },
+   "ovh": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 12,
+      "tokens": 0
+     },
+     "brief_review_json": {
+      "cost_usd": 0.0,
+      "requests": 12,
+      "tokens": 0
+     },
+     "claim_verify_json": {
+      "cost_usd": 0.0,
+      "requests": 24,
+      "tokens": 0
+     },
+     "competitor_ideas_json": {
+      "cost_usd": 0.0,
+      "requests": 12,
+      "tokens": 0
+     },
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 12,
+      "tokens": 0
+     },
+     "creator_chain_json": {
+      "cost_usd": 0.0,
+      "requests": 12,
+      "tokens": 0
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 12,
+      "tokens": 13621
+     },
+     "listen_learn_json": {
+      "cost_usd": 0.0,
+      "requests": 12,
+      "tokens": 0
+     },
+     "seed_judge_json": {
+      "cost_usd": 0.0,
+      "requests": 12,
+      "tokens": 0
+     },
+     "seo_lens_json": {
+      "cost_usd": 0.0,
+      "requests": 12,
+      "tokens": 0
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 12,
+      "tokens": 0
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 12,
+      "tokens": 0
+     },
+     "storyboard_json": {
+      "cost_usd": 0.0,
+      "requests": 12,
+      "tokens": 0
+     },
+     "voice_creative_json": {
+      "cost_usd": 0.0,
+      "requests": 12,
+      "tokens": 0
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 173,
+    "latency_ms": 78768,
+    "requests": 180,
+    "tokens_in": 2099,
+    "tokens_out": 11522
    },
    "pollinations": {
     "by_lane": {
      "brief_json": {
       "cost_usd": 0.0,
-      "requests": 1,
+      "requests": 5,
+      "tokens": 10168
+     },
+     "brief_review_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 4680
+     },
+     "claim_verify_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 6904
+     },
+     "competitor_ideas_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 9508
+     },
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 8,
+      "tokens": 16412
+     },
+     "creator_chain_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 7790
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 6092
+     },
+     "listen_learn_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 10436
+     },
+     "seed_judge_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 1720
+     },
+     "seo_lens_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 7652
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 5142
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 4266
+     },
+     "storyboard_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 15386
+     },
+     "voice_creative_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 15652
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 31,
+    "latency_ms": 113818,
+    "requests": 65,
+    "tokens_in": 27006,
+    "tokens_out": 94802
+   },
+   "requesty": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 4248
+     },
+     "brief_review_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 2416
+     },
+     "claim_verify_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 2424
+     },
+     "competitor_ideas_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 3142
+     },
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 1586
+     },
+     "creator_chain_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 1934
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 1700
+     },
+     "listen_learn_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 2266
+     },
+     "seed_judge_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 958
+     },
+     "seo_lens_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 2316
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 2696
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 1312
+     },
+     "storyboard_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "voice_creative_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 2666
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 2,
+    "latency_ms": 311057,
+    "requests": 30,
+    "tokens_in": 8406,
+    "tokens_out": 21258
+   },
+   "xkiro": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "brief_review_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "claim_verify_json": {
+      "cost_usd": 0.0,
+      "requests": 4,
+      "tokens": 0
+     },
+     "competitor_ideas_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
       "tokens": 0
      },
      "conflict_check_json": {
       "cost_usd": 0.0,
-      "requests": 4,
-      "tokens": 13068
+      "requests": 2,
+      "tokens": 0
+     },
+     "creator_chain_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "listen_learn_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "seed_judge_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "seo_lens_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "storyboard_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
+     "voice_creative_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
      }
     },
     "cost_usd": 0.0,
-    "failures": 1,
-    "latency_ms": 57878,
-    "requests": 5,
-    "tokens_in": 2160,
-    "tokens_out": 10908
+    "failures": 30,
+    "latency_ms": 0,
+    "requests": 30,
+    "tokens_in": 0,
+    "tokens_out": 0
+   },
+   "zhipu": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 0
+     },
+     "brief_review_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 0
+     },
+     "claim_verify_json": {
+      "cost_usd": 0.0,
+      "requests": 12,
+      "tokens": 3463
+     },
+     "competitor_ideas_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 0
+     },
+     "conflict_check_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 2033
+     },
+     "creator_chain_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 3594
+     },
+     "foundation_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 2297
+     },
+     "listen_learn_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 0
+     },
+     "seed_judge_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 1127
+     },
+     "seo_lens_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 2264
+     },
+     "story_extract_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 2469
+     },
+     "story_review_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 1544
+     },
+     "storyboard_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 3890
+     },
+     "voice_creative_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 0
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 66,
+    "latency_ms": 552131,
+    "requests": 90,
+    "tokens_in": 6666,
+    "tokens_out": 16015
    }
   }
  }
