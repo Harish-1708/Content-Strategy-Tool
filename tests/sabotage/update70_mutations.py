@@ -529,8 +529,7 @@ U73T = [
     ('u73t-licence', 'contentintel/storyboard.py', '        pick = next((a for a in found if a.get("license")), found[0])', '        pick = found[0]', 'a picture with no licence is preferred'),
     ('u73t-missing', 'contentintel/storyboard.py', '            s["still"] = {"missing": "no usable picture was found for: " + (s["still_query"] or "(no query)")}', '            s["still"] = {"url": "https://example.invalid/placeholder.jpg"}', 'a shot with no picture is given a made-up one'),
     ('u73t-escape', 'contentintel/storyboard.py', '    esc = html.escape', '    esc = str', 'text is put into the contact sheet unescaped'),
-    ('u73t-content', 'contentintel/brief.py', '"validator_findings": bank_findings, "content": won["brief"]}', '"validator_findings": bank_findings}', 'a brief record keeps no content to storyboard'),
-    ('u73t-board-exit', 'contentintel/intel_cli.py', '        worst = max(worst, 1 if errors else 0)', '        worst = 0', 'a blocked claim does not fail the storyboard command'),
+    ('u73t-content', 'contentintel/brief.py', '"validator_findings": bank_findings, "content": won["brief"],', '"validator_findings": bank_findings, "content": None,', 'a brief record keeps no content to storyboard'),
     ('u73t-board-save', 'contentintel/intel_cli.py', '    store.write_extra(args.brand, "storyboard",', '    store.write_extra(args.brand, "storyboard_unsaved",', 'the storyboard is never saved'),
     ('u73t-wf-refresh', '.github/workflows/creative-intel.yml', "        if: github.event_name == 'schedule' || inputs.action == 'report' || inputs.action == 'refresh-library'", "        if: inputs.action == 'refresh-library'", 'the weekly report does not refresh the library first'),
 ]
@@ -555,4 +554,45 @@ U73U = [
     ('u73u-no-claude', 'contentintel/cli.py', '        raise RuntimeError("the pool had no answer and the seed judge never falls back to Claude")', '        return {"verdicts": []}', 'the judge may fall back to Claude'),
     ('u73u-route', 'contentintel/cli.py', '_routed(_NoClaude(), "autoseeds", args, store)', '_routed(_NoClaude(), "foundation", args, store)', 'the judge is routed through another purpose'),
     ('u73u-lane-chain', 'ai_lanes.yaml', 'Discovery seeds, tier 2:', 'Discovery seeds:', 'the lane no longer says what it is for'),
+]
+
+
+U73V = [
+    ('u73v-numpy', 'contentintel/forecast.py', '    try:\n        from timesfm3 import TimesFM3Forecaster ', '    try:\n        import numpy as np\n        from timesfm3 import TimesFM3Forecaster ', 'the loader needs numpy again to load (Tests #1267)'),
+    ('u73v-save-resolve', '.github/scripts/push-with-retry.sh', 'origin "$branch" || resolve_conflicts; then', 'origin "$branch"; then', 'a conflict is never resolved'),
+    ('u73v-save-patch', '.github/scripts/push-with-retry.sh', 'git format-patch -1 HEAD -o unsaved-data', 'true', 'a failed save keeps nothing'),
+    ('u73v-merge-lists', '.github/scripts/merge-json-conflict.py', '        return list(other) + [x for x in mine if json.dumps(x, sort_keys=True) not in seen]', '        return mine', 'the other run\'s list items are dropped'),
+    ('u73v-merge-keys', '.github/scripts/merge-json-conflict.py', '            elif in_o:\n                if not (in_b and base[key] == other[key]):', '            elif in_o:\n                if False:', 'a key only the other run added is dropped'),
+    ('u73v-merge-delete', '.github/scripts/merge-json-conflict.py', '            elif not (in_b and base[key] == mine[key]):', '            elif True:', 'a key the other run deleted comes back'),
+    ('u73v-builtby', 'contentintel/brief.py', '        route = list(getattr(client, "calls", []))[seen_calls:]', '        route = []', 'the record never says who wrote the brief'),
+    ('u73v-revision', 'contentintel/brief.py', '"revision": ((revise_of or {}).get("revision") or 0) + 1 if revise_of else 0,', '"revision": 0,', 'a revision does not say which round it is'),
+    ('u73v-revise-prompt', 'contentintel/brief.py', '        raw = claude.json_task(BRIEF_SYSTEM + (REVISE_ADDENDUM if revise else ""), prompt, max_tokens=6000)', '        raw = claude.json_task(BRIEF_SYSTEM, prompt, max_tokens=6000)', 'a revision is asked as if it were a new brief'),
+    ('u73v-script-lines', 'contentintel/brief.py', '            return ("\\n".join(parts) if lines else " ".join(parts))[:limit]', '            return " ".join(parts)[:limit]', 'a script list is flattened into one line'),
+    ('u73v-blocked-claim', 'contentintel/brief.py', ' + (" (BLOCKED claim: remove it, never restate it)" if v.get("rule") == "claims-gate" or "BLOCKED" in v["message"] else "")', '', 'a revision is not told to remove a blocked claim'),
+    ('u73v-rules-scope', 'contentintel/rules.py', '        if item.get("scopes") and scope not in item["scopes"]:', '        if False:', 'a phrase banned only in the hook is banned everywhere'),
+    ('u73v-note-unusable', 'contentintel/services.py', 'self.notes.append(f"AI Gateway answered {self.purpose} on lane', '(lambda *a: None)(f"AI Gateway answered {self.purpose} on lane', 'a pool answer that is not usable is not said'),
+    ('u73v-board-exit', 'contentintel/intel_cli.py', '    worst = 1 if boards and len(blocked) == len(boards) else 0', '    worst = 1 if blocked else 0', 'one blocked concept fails the whole storyboard run'),
+    ('u73v-proof-route', 'contentintel/session_live.py', '    if platform in BROWSER_PROOF:\n        got =', '    if False:\n        got =', 'the rendered page proof is never used'),
+    ('u73v-proof-cookies', 'contentintel/session_live.py', 'cookies_text = session.browser_cookies_json() if session is not None else ""', 'cookies_text = ""', 'the browser is not given the stored session'),
+    ('u73v-proof-challenge', 'contentintel/session_live.py', '            if state == "challenge":                                                     # a challenge page is never asked for again', '            if False:                                                     # a challenge page is never asked for again', 'a challenge page is waited on and retried'),
+    ('u73v-proof-wall', 'contentintel/session_live.py', '            if state == "login_wall":\n                return {"state": REJECTED, "reason": f"the rendered', '            if False:\n                return {"state": REJECTED, "reason": f"the rendered', 'a login wall is not a refusal'),
+    ('u73v-sticky', 'contentintel/session_live.py', '    if entry.get("state") == REJECTED and str(entry.get("reason", "")).startswith(("no sign', '    if False and str(entry.get("reason", "")).startswith(("no sign', 'a refusal is overwritten by the next doubtful check'),
+    ('u73v-ledger-phase', 'contentintel/ideabank.py', '    lines.append(ph.line(paused[0]))', '    pass', 'the Idea Bank run never says where its time went'),
+    ('u73v-front-page', 'contentintel/assets_find.py', 'front_page=about_brand or not words(query))', 'front_page=True)', 'an unrelated topic still gets the front-page picture'),
+    ('u73v-wer-cap', 'contentintel/transcribe.py', 'MAX_PROBE_WER = 0.34 ', 'MAX_PROBE_WER = 1.0 ', 'a backend that gets most words wrong is accepted'),
+    ('u73v-wer-rank', 'contentintel/transcribe.py', 'key=lambda r: ((r.get("wer") or 0.0), r["seconds"]))', 'key=lambda r: r["seconds"])', 'the fastest backend ranks first even if it mishears'),
+    ('u73v-agree-flag', 'contentintel/transcribe.py', '"flag": share < CHECK_AGREEMENT}', '"flag": False}', 'two backends that disagree raise no flag'),
+    ('u73v-reclassify-line', 'contentintel/batch2_cli.py', '            if start_conflicted:\n                moved =', '            if False:\n                moved =', 'the reclassify run has no combined result line'),
+    ('u73v-spotcheck', 'contentintel/batch2_cli.py', 'if c["status"] == "verified" and "VERIFIED FROM ONE SOURCE" in str(c.get("reason", ""))]', 'if c["status"] == "verified"]', 'the spot-check lists every verified claim'),
+    ('u73v-title-field', 'contentintel/formulas.py', '("title", item.get("title")),', '("title", None),', 'a title that matches a formula is ignored'),
+    ('u73v-coverage-note', 'contentintel/formulas.py', '    if kept and cov["rate"] < 0.5:', '    if False:', 'a thin coverage says nothing'),
+    ('u73v-guard-event', '.github/workflows/collect.yml', 'if [ "$EVENT" != "schedule" ]; then echo "run=true"', 'if [ "$EVENT" = "schedule" ]; then echo "run=true"', 'a person\'s own Collect is held back and a scheduled one never is'),
+    ('u73v-guard-days', '.github/workflows/collect.yml', "--since='5 days ago'", "--since='5000 days ago'", 'a Collect saved years ago counts as this week\'s'),
+    ('u73v-judge-cap', 'ai_lanes.yaml', 'max_tokens: 700      # a yes/no', 'max_tokens: 8000      # a yes/no', 'the judge may reserve 8,000 tokens a call'),
+]
+
+
+U73W = [
+    ('u73w-unavailable-row', 'contentintel/session_live.py', '**({"browser_proof": "did not run: " + unavailable} if platform in BROWSER_PROOF and unavailable else {})}', '}', 'a proof that could not run is not said in the row'),
+    ('u73w-install-browser', '.github/workflows/sessions.yml', '          pip install -r requirements-browser.txt\n          for attempt in 1 2 3; do\n            if playwright install', '          true\n          for attempt in 1 2 3; do\n            if playwright install', 'the sessions workflow never installs the browser the proof needs'),
 ]

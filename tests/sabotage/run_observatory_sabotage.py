@@ -940,7 +940,11 @@ from update70_mutations import U73T as _U73T          # Update 73 v4, the librar
 MUTATIONS.extend(_U73T)
 from update70_mutations import U73U as _U73U          # Update 73 v4, the two-tier discovery seeds judge
 MUTATIONS.extend(_U73U)
-UPDATED_IDS = {m[0] for m in [*U57_LOCAL, *_U57, *_U58, *_U59, *_U60, *_U61, *_U62, *_U63, *_U64, *_U65, *_U68, *_U70, *_U73K, *_U73S, *_U73T, *_U73U]} - set(SUPERSEDED)          # the checks written since Update 57: SABOTAGE_SET=updated runs only these
+from update70_mutations import U73V as _U73V          # Update 73 v5
+MUTATIONS.extend(_U73V)
+from update70_mutations import U73W as _U73W          # Update 73 v5, the proof's browser
+MUTATIONS.extend(_U73W)
+UPDATED_IDS = {m[0] for m in [*U57_LOCAL, *_U57, *_U58, *_U59, *_U60, *_U61, *_U62, *_U63, *_U64, *_U65, *_U68, *_U70, *_U73K, *_U73S, *_U73T, *_U73U, *_U73V, *_U73W]} - set(SUPERSEDED)          # the checks written since Update 57: SABOTAGE_SET=updated runs only these
 
 
 def run_tests(workdir):
