@@ -263,7 +263,7 @@ lanes:
       - {provider: aihorde, model: aihorde/any}
       - {provider: groq, model: openai/gpt-oss-120b}
       - {provider: cohere, model: command-a-reasoning-08-2025}
-    claude_fallback: false      # the module falls back to its own Claude client, under its own spending cap, when this lane (and the shared pool after it) has no answer
+    claude_fallback: true      # Claude is the LAST route of this lane (after every ranked pool route), never second or third; it is counted against the spending cap
     output: {format: json, schema: {type: object}}
     max_tokens: 8000
 
@@ -310,9 +310,9 @@ lanes:
       - {provider: cohere, model: command-a-reasoning-08-2025}
       - {provider: google, model: gemini-3.5-flash}
       - {provider: nvidia, model: google/gemma-4-31b-it}
-    claude_fallback: false      # the module falls back to its own Claude client, under its own spending cap, when this lane (and the shared pool after it) has no answer
+    claude_fallback: true      # Claude is the LAST route of this lane (after every ranked pool route), never second or third; it is counted against the spending cap
     output: {format: json, schema: {type: object}}
-    max_tokens: 8000
+    max_tokens: 2000      # the reviewer's JSON verdict is short: the cap is the enforced size of the answer and of what the router reserves from a provider's allowance
 
 
   seed_judge_json:
@@ -336,7 +336,7 @@ lanes:
       - {provider: nvidia, model: google/gemma-4-31b-it}
     claude_fallback: false      # the module falls back to its own Claude client, under its own spending cap, when this lane (and the shared pool after it) has no answer
     output: {format: json, schema: {type: object}}
-    max_tokens: 8000
+    max_tokens: 700      # a yes/no verdict for at most 12 topics is about 150 tokens: the cap is the ENFORCED size of the answer (and of what the router reserves from a provider's allowance for the call)
 
   creator_chain_json:
     description: "Stage 6: a creator shortlist and a creator brief from the material. RANKING NOT YET MEASURED: seeded from the measured leaders of the existing jobs (the 2026-11-18 pool retest); the pool retest measures this job's own list."
