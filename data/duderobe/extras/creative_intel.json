@@ -1,29 +1,112 @@
 {
  "brand": "duderobe",
+ "coverage": {
+  "by_field": {
+   "first sentence of the text": 1,
+   "hook_line": 4
+  },
+  "by_platform": {
+   "instagram": [
+    2,
+    21
+   ],
+   "meta_ads": [
+    2,
+    17
+   ],
+   "tiktok": [
+    1,
+    16
+   ]
+  },
+  "kept": 54,
+  "rate": 0.093,
+  "tagged": 5,
+  "untagged_sample": [
+   {
+    "id": "IB-0004",
+    "platform": "meta_ads",
+    "text": "Out of the pool, straight into The DudeRobe."
+   },
+   {
+    "id": "IB-0010",
+    "platform": "meta_ads",
+    "text": "Weekend reset: coffee, couch, DudeRobe, and absolutely nothing else on the schedule."
+   },
+   {
+    "id": "IB-0018",
+    "platform": "tiktok",
+    "text": "Gift for him? Green-screen over a DudeRobe: 'the robe he'll actually wear every day.'"
+   },
+   {
+    "id": "IB-0019",
+    "platform": "tiktok",
+    "text": "Verified gift for the men in your life: open on a real customer message about their DudeRobe."
+   },
+   {
+    "id": "IB-0048",
+    "platform": "meta_ads",
+    "text": "Love the robe? Now wear that comfort all day with The Pants."
+   },
+   {
+    "id": "IB-0056",
+    "platform": "meta_ads",
+    "text": "Retire the worn-out gym shorts. The DudeRobe is what you wear when the day's done."
+   },
+   {
+    "id": "IB-0059",
+    "platform": "meta_ads",
+    "text": "New drop for the proud: The All-American (Dude)Robe is here."
+   },
+   {
+    "id": "IB-0066",
+    "platform": "meta_ads",
+    "text": "Born here, moved here, or just love it here? This one's for you."
+   }
+  ]
+ },
  "formulas": [
+  {
+   "confidence": "low",
+   "formula": "ig:10",
+   "items": 2,
+   "lift": null,
+   "name": "If This, Then Watch",
+   "note": "lift needs at least 8 tagged items and one winner (this brand has 5 tagged, 2 winner(s))",
+   "winners": 1
+  },
   {
    "confidence": "low",
    "formula": "ig:2",
    "items": 1,
    "lift": null,
    "name": "Negative Command",
-   "note": "lift needs at least 8 tagged items and one winner (this brand has 2 tagged, 0 winner(s))",
+   "note": "lift needs at least 8 tagged items and one winner (this brand has 5 tagged, 2 winner(s))",
+   "winners": 1
+  },
+  {
+   "confidence": "low",
+   "formula": "ig:26",
+   "items": 1,
+   "lift": null,
+   "name": "The Superlative",
+   "note": "lift needs at least 8 tagged items and one winner (this brand has 5 tagged, 2 winner(s))",
    "winners": 0
   },
   {
    "confidence": "low",
-   "formula": "ig:10",
+   "formula": "ig:14",
    "items": 1,
    "lift": null,
-   "name": "If This, Then Watch",
-   "note": "lift needs at least 8 tagged items and one winner (this brand has 2 tagged, 0 winner(s))",
+   "name": "The Callout",
+   "note": "lift needs at least 8 tagged items and one winner (this brand has 5 tagged, 2 winner(s))",
    "winners": 0
   }
  ],
- "generated_at": "2026-11-25T05:33:28Z",
+ "generated_at": "2026-11-26T04:26:27Z",
  "library": {
   "age_days": 0,
-  "checked_at": "2026-11-25T05:33:26Z",
+  "checked_at": "2026-11-26T04:26:26Z",
   "instagram": 26,
   "source": "snapshot in contentintel/data/formulas",
   "version": {
@@ -33,8 +116,148 @@
   },
   "youtube": 21
  },
- "notes": [],
+ "notes": [
+  "the library names a formula for only 5 of 54 kept item(s) (9%): its patterns describe spoken hooks, so captions and ad copy match less; read the untagged sample to judge whether it is missing shapes or the items are not hooks"
+ ],
  "opportunities": [
+  {
+   "confidence": "medium",
+   "formula": "ig:14",
+   "handle": "rachellekaii_",
+   "id": "IB-0341",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.5,
+    "fit": 0.86,
+    "momentum": 0.833,
+    "originality": 0.8,
+    "strategic": 0.4
+   },
+   "platform": "instagram",
+   "score": 76.0,
+   "title": "Every year he says he doesn't want anything... until he gets this.",
+   "unknown": [
+    "feasibility"
+   ]
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "thedudecloset",
+   "id": "IB-0363",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.9,
+    "fit": 0.74,
+    "momentum": 0.933,
+    "originality": 0.5,
+    "strategic": 0.4
+   },
+   "platform": "instagram",
+   "score": 75.9,
+   "title": "The old dad aesthetic strikes again.",
+   "unknown": [
+    "originality"
+   ]
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "mirta_loncar",
+   "id": "IB-0357",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.6,
+    "fit": 0.84,
+    "momentum": 0.967,
+    "originality": 0.5,
+    "strategic": 0.4
+   },
+   "platform": "instagram",
+   "score": 75.0,
+   "title": "THE SET YOU’LL NEVER WANT TO TAKE OFF",
+   "unknown": [
+    "originality"
+   ]
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "undrgoods",
+   "id": "IB-0383",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.9,
+    "fit": 0.68,
+    "momentum": 0.978,
+    "originality": 0.5,
+    "strategic": 0.4
+   },
+   "platform": "instagram",
+   "score": 75.0,
+   "title": "Cozy lounge set for loved ones",
+   "unknown": [
+    "originality"
+   ]
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "daniel.reith",
+   "id": "IB-0364",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.9,
+    "fit": 0.66,
+    "momentum": 0.956,
+    "originality": 0.5,
+    "strategic": 0.4
+   },
+   "platform": "instagram",
+   "score": 73.9,
+   "title": "DADSTYLE - Sunday Fit",
+   "unknown": [
+    "originality"
+   ]
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "handle": "SnoozeBand",
+   "id": "IB-0292",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.9,
+    "fit": 0.61,
+    "momentum": 1.0,
+    "originality": 0.5,
+    "strategic": 0.4
+   },
+   "platform": "meta_ads",
+   "score": 73.3,
+   "title": "SnoozeBand",
+   "unknown": [
+    "originality"
+   ]
+  },
+  {
+   "confidence": "high",
+   "formula": "ig:10",
+   "handle": "Savvyy",
+   "id": "IB-0311",
+   "parts": {
+    "evidence": 1.0,
+    "feasibility": 0.6,
+    "fit": 0.7,
+    "momentum": 1.0,
+    "originality": 0.6,
+    "strategic": 0.4
+   },
+   "platform": "meta_ads",
+   "score": 73.0,
+   "title": "Chat with us",
+   "unknown": []
+  },
   {
    "confidence": "medium",
    "formula": "",
@@ -58,79 +281,19 @@
   {
    "confidence": "medium",
    "formula": "",
-   "handle": "Cozy Earth",
-   "id": "IB-0069",
+   "handle": "overdressed_school_run",
+   "id": "IB-0365",
    "parts": {
     "evidence": 1.0,
     "feasibility": 0.9,
-    "fit": 0.52,
-    "momentum": 1.0,
-    "originality": 0.5,
-    "strategic": 0.4
-   },
-   "platform": "meta_ads",
-   "score": 70.6,
-   "title": "Kim Garcia",
-   "unknown": [
-    "originality"
-   ]
-  },
-  {
-   "confidence": "medium",
-   "formula": "",
-   "handle": "X Suit",
-   "id": "IB-0121",
-   "parts": {
-    "evidence": 1.0,
-    "feasibility": 0.9,
-    "fit": 0.51,
-    "momentum": 1.0,
-    "originality": 0.5,
-    "strategic": 0.4
-   },
-   "platform": "meta_ads",
-   "score": 70.3,
-   "title": "The World's Most Comfortable Suit",
-   "unknown": [
-    "originality"
-   ]
-  },
-  {
-   "confidence": "medium",
-   "formula": "",
-   "handle": "Chubbies",
-   "id": "IB-0142",
-   "parts": {
-    "evidence": 1.0,
-    "feasibility": 0.6,
-    "fit": 0.66,
-    "momentum": 1.0,
-    "originality": 0.5,
-    "strategic": 0.4
-   },
-   "platform": "meta_ads",
-   "score": 70.3,
-   "title": "New NFL by Chubbies Gear Is Here",
-   "unknown": [
-    "originality"
-   ]
-  },
-  {
-   "confidence": "medium",
-   "formula": "",
-   "handle": "modernrevivaltn",
-   "id": "IB-0195",
-   "parts": {
-    "evidence": 1.0,
-    "feasibility": 0.9,
-    "fit": 0.51,
-    "momentum": 0.833,
+    "fit": 0.64,
+    "momentum": 0.9,
     "originality": 0.5,
     "strategic": 0.4
    },
    "platform": "instagram",
-   "score": 67.0,
-   "title": "She said it would be 45 minutes. He found the robe.",
+   "score": 72.2,
+   "title": "I’d like to thank all the school-gate mums...",
    "unknown": [
     "originality"
    ]
@@ -138,100 +301,19 @@
   {
    "confidence": "medium",
    "formula": "",
-   "handle": "PETH.",
-   "id": "IB-0004",
+   "handle": "prettypickedd",
+   "id": "IB-0361",
    "parts": {
     "evidence": 1.0,
     "feasibility": 0.6,
-    "fit": 0.5,
-    "momentum": 1.0,
+    "fit": 0.72,
+    "momentum": 0.967,
     "originality": 0.5,
     "strategic": 0.4
    },
-   "platform": "meta_ads",
-   "score": 65.5,
-   "title": "Free Shipping & Customisation",
-   "unknown": [
-    "originality"
-   ]
-  },
-  {
-   "confidence": "medium",
-   "formula": "",
-   "handle": "XYXX",
-   "id": "IB-0010",
-   "parts": {
-    "evidence": 1.0,
-    "feasibility": 0.6,
-    "fit": 0.5,
-    "momentum": 1.0,
-    "originality": 0.5,
-    "strategic": 0.4
-   },
-   "platform": "meta_ads",
-   "score": 65.5,
-   "title": "Weekend reset: coffee, couch, DudeRobe, and absolutely nothing else on the schedule.",
-   "unknown": [
-    "originality"
-   ]
-  },
-  {
-   "confidence": "medium",
-   "formula": "",
-   "handle": "hohohome._",
-   "id": "IB-0186",
-   "parts": {
-    "evidence": 1.0,
-    "feasibility": 0.5,
-    "fit": 0.7,
-    "momentum": 0.644,
-    "originality": 0.5,
-    "strategic": 0.4
-   },
-   "platform": "instagram",
-   "score": 62.9,
-   "title": "Movie night used to mean fighting over the blanket.",
-   "unknown": [
-    "originality",
-    "feasibility"
-   ]
-  },
-  {
-   "confidence": "medium",
-   "formula": "",
-   "handle": "The Oodie",
-   "id": "IB-0244",
-   "parts": {
-    "evidence": 1.0,
-    "feasibility": 0.6,
-    "fit": 0.6,
-    "momentum": 0.717,
-    "originality": 0.5,
-    "strategic": 0.4
-   },
-   "platform": "meta_ads",
-   "score": 62.8,
-   "title": "The Oodie™ Original Reimagined 🚨",
-   "unknown": [
-    "originality"
-   ]
-  },
-  {
-   "confidence": "medium",
-   "formula": "",
-   "handle": "Contare Sleep & Lounge",
-   "id": "IB-0056",
-   "parts": {
-    "evidence": 1.0,
-    "feasibility": 0.9,
-    "fit": 0.68,
-    "momentum": 0.367,
-    "originality": 0.5,
-    "strategic": 0.4
-   },
-   "platform": "meta_ads",
-   "score": 62.7,
-   "title": "Retire your Worn-Out Sleepwear",
+   "platform": "tiktok",
+   "score": 71.4,
+   "title": "I’m usually a small and I’m wearing a kids xl.",
    "unknown": [
     "originality"
    ]
@@ -239,10 +321,10 @@
  ],
  "sample": {
   "confidence": "high",
-  "kept_items": 31,
-  "tagged_with_a_formula": 2,
-  "winners": 8,
-  "with_signal": 31
+  "kept_items": 54,
+  "tagged_with_a_formula": 5,
+  "winners": 20,
+  "with_signal": 54
  },
  "weights": {
   "evidence": 0.1,
@@ -257,65 +339,21 @@
    "confidence": "medium",
    "formula": "",
    "formula_name": "",
-   "group_n": 10,
-   "handle": "thebaldcomb.shop",
-   "id": "IB-0250",
-   "multiple": 41.31,
+   "group_n": 21,
+   "handle": "imlollypopinsta",
+   "id": "IB-0317",
+   "multiple": 4748.41,
    "platform": "instagram",
-   "url": "https://www.instagram.com/p/DZBOOOqzdzi/"
+   "url": "https://www.instagram.com/p/DfUU7EohOCs/"
   },
   {
    "confidence": "medium",
    "formula": "",
    "formula_name": "",
-   "group_n": 10,
-   "handle": "hohohome._",
-   "id": "IB-0186",
-   "multiple": 6.7,
-   "platform": "instagram",
-   "url": "https://www.instagram.com/reel/De4ykLsMmxJ/"
-  },
-  {
-   "confidence": "medium",
-   "formula": "",
-   "formula_name": "",
-   "group_n": 12,
-   "handle": "X Suit",
-   "id": "IB-0121",
-   "multiple": 6.64,
-   "platform": "meta_ads",
-   "url": "https://www.facebook.com/ads/library/?id=1158987935843211"
-  },
-  {
-   "confidence": "medium",
-   "formula": "",
-   "formula_name": "",
-   "group_n": 12,
-   "handle": "The Mitten State",
-   "id": "IB-0066",
-   "multiple": 4.61,
-   "platform": "meta_ads",
-   "url": "https://www.facebook.com/ads/library/?id=936575849327926"
-  },
-  {
-   "confidence": "medium",
-   "formula": "",
-   "formula_name": "",
-   "group_n": 10,
-   "handle": "itsthemcfarlands",
-   "id": "IB-0254",
-   "multiple": 4.26,
-   "platform": "instagram",
-   "url": "https://www.instagram.com/p/Ct-VrUTgm3T/"
-  },
-  {
-   "confidence": "medium",
-   "formula": "",
-   "formula_name": "",
-   "group_n": 9,
+   "group_n": 16,
    "handle": "indy.vreuls",
    "id": "IB-0149",
-   "multiple": 4.25,
+   "multiple": 558.96,
    "platform": "tiktok",
    "url": "https://www.tiktok.com/@indy.vreuls/video/7700646585952226592"
   },
@@ -323,23 +361,89 @@
    "confidence": "medium",
    "formula": "",
    "formula_name": "",
-   "group_n": 12,
-   "handle": "Cozy Earth",
-   "id": "IB-0069",
-   "multiple": 4.24,
-   "platform": "meta_ads",
-   "url": "https://www.facebook.com/ads/library/?id=1665168554828729"
+   "group_n": 16,
+   "handle": "drewfromladue",
+   "id": "IB-0018",
+   "multiple": 345.69,
+   "platform": "tiktok",
+   "url": "https://www.tiktok.com/@drewfromladue/video/7301428398822395166"
   },
   {
    "confidence": "medium",
    "formula": "",
    "formula_name": "",
-   "group_n": 12,
-   "handle": "PETH.",
-   "id": "IB-0004",
-   "multiple": 3.08,
+   "group_n": 16,
+   "handle": "thecozygrump.us",
+   "id": "IB-0088",
+   "multiple": 258.02,
+   "platform": "tiktok",
+   "url": "https://www.tiktok.com/@thecozygrump.us/video/7683408259264335125"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 21,
+   "handle": "thebaldcomb.shop",
+   "id": "IB-0250",
+   "multiple": 162.71,
+   "platform": "instagram",
+   "url": "https://www.instagram.com/p/DZBOOOqzdzi/"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 16,
+   "handle": "sideofstef",
+   "id": "IB-0019",
+   "multiple": 158.77,
+   "platform": "tiktok",
+   "url": "https://www.tiktok.com/@sideofstef/video/7690688440761093389"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 21,
+   "handle": "hohohome._",
+   "id": "IB-0186",
+   "multiple": 26.4,
+   "platform": "instagram",
+   "url": "https://www.instagram.com/reel/De4ykLsMmxJ/"
+  },
+  {
+   "confidence": "medium",
+   "formula": "ig:2",
+   "formula_name": "Negative Command",
+   "group_n": 16,
+   "handle": "cozykind.us",
+   "id": "IB-0097",
+   "multiple": 17.15,
+   "platform": "tiktok",
+   "url": "https://www.tiktok.com/@cozykind.us/video/7692447725387910413"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 21,
+   "handle": "itsthemcfarlands",
+   "id": "IB-0254",
+   "multiple": 16.76,
+   "platform": "instagram",
+   "url": "https://www.instagram.com/p/Ct-VrUTgm3T/"
+  },
+  {
+   "confidence": "medium",
+   "formula": "",
+   "formula_name": "",
+   "group_n": 17,
+   "handle": "SnoozeBand",
+   "id": "IB-0292",
+   "multiple": 12.79,
    "platform": "meta_ads",
-   "url": "https://www.facebook.com/ads/library/?id=996870409949995"
+   "url": "https://www.facebook.com/ads/library/?id=669350799413688"
   }
  ]
 }
