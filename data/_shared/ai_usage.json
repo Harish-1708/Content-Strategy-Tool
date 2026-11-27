@@ -4232,6 +4232,68 @@
     "tokens_in": 6666,
     "tokens_out": 16015
    }
+  },
+  "2026-11-27": {
+   "cloudflare": {
+    "by_lane": {
+     "general_json": {
+      "cost_usd": 0.0,
+      "requests": 3,
+      "tokens": 12044
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 39227,
+    "requests": 3,
+    "tokens_in": 9407,
+    "tokens_out": 2637
+   },
+   "groq": {
+    "by_lane": {
+     "general_json": {
+      "cost_usd": 0.0,
+      "requests": 6,
+      "tokens": 21164
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 2,
+    "latency_ms": 24945,
+    "requests": 6,
+    "tokens_in": 10020,
+    "tokens_out": 11144
+   },
+   "openrouter": {
+    "by_lane": {
+     "general_json": {
+      "cost_usd": 0.0,
+      "requests": 3,
+      "tokens": 27936
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 2,
+    "latency_ms": 387571,
+    "requests": 3,
+    "tokens_in": 7311,
+    "tokens_out": 20625
+   },
+   "zhipu": {
+    "by_lane": {
+     "general_json": {
+      "cost_usd": 0.0,
+      "requests": 3,
+      "tokens": 0
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 3,
+    "latency_ms": 0,
+    "requests": 3,
+    "tokens_in": 0,
+    "tokens_out": 0
+   }
   }
  }
 }

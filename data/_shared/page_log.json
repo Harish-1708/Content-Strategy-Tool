@@ -1,7 +1,7 @@
 {
  "cursor": {
   "instagram": 65,
-  "meta_ads": 427,
+  "meta_ads": 434,
   "tiktok": 101
  },
  "days": {
@@ -48,6 +48,7 @@
   },
   "2026-11-27": {
    "instagram": 1,
+   "meta_ads": 7,
    "tiktok": 1
   }
  },
@@ -59,6 +60,15 @@
     "detail": "instagram: the site showed its login page, so the session in INSTAGRAM_COOKIES was not accepted from this runner. This cannot tell an expired session from one the site refuses from a datacenter address: when the cookies are not expired by d",
     "pages": 1,
     "state": "login_wall"
+   }
+  ],
+  "meta_ads": [
+   {
+    "at": "2026-11-27T13:25:34Z",
+    "by": "collect",
+    "detail": "Collect read 7 page(s)",
+    "pages": 0,
+    "state": "ok"
    }
   ],
   "tiktok": [
@@ -73,7 +83,7 @@
  },
  "last": {
   "instagram": "2026-11-27T09:09:14Z",
-  "meta_ads": "2026-11-26T09:42:46Z",
+  "meta_ads": "2026-11-27T13:25:34Z",
   "tiktok": "2026-11-27T09:09:14Z"
  },
  "outcomes": {
@@ -83,6 +93,13 @@
    "detail": "instagram: the site showed its login page, so the session in INSTAGRAM_COOKIES was not accepted from this runner. This cannot tell an expired session from one the site refuses from a datacenter address: when the cookies are not expired by d",
    "pages": 1,
    "state": "login_wall"
+  },
+  "meta_ads": {
+   "at": "2026-11-27T13:25:34Z",
+   "by": "collect",
+   "detail": "Collect read 7 page(s)",
+   "pages": 0,
+   "state": "ok"
   },
   "tiktok": {
    "at": "2026-11-27T09:09:14Z",
