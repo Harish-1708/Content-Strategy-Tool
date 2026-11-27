@@ -45,11 +45,51 @@
   "2026-11-26": {
    "meta_ads": 18,
    "tiktok": 2
+  },
+  "2026-11-27": {
+   "instagram": 1,
+   "tiktok": 1
   }
  },
+ "history": {
+  "instagram": [
+   {
+    "at": "2026-11-27T09:09:14Z",
+    "by": "acceptance",
+    "detail": "instagram: the site showed its login page, so the session in INSTAGRAM_COOKIES was not accepted from this runner. This cannot tell an expired session from one the site refuses from a datacenter address: when the cookies are not expired by d",
+    "pages": 1,
+    "state": "login_wall"
+   }
+  ],
+  "tiktok": [
+   {
+    "at": "2026-11-27T09:09:14Z",
+    "by": "acceptance",
+    "detail": "login ok; 3 items (3 from the site's data, 0 only from page links) - #overalls was searched first (hashtag_via_search_first), instead of opening the tag page (typed into the search box, as a person would) - stealth: 1 page(s) read as tiktok",
+    "pages": 1,
+    "state": "ok"
+   }
+  ]
+ },
  "last": {
-  "instagram": "2026-11-25T09:08:31Z",
+  "instagram": "2026-11-27T09:09:14Z",
   "meta_ads": "2026-11-26T09:42:46Z",
-  "tiktok": "2026-11-26T09:42:46Z"
+  "tiktok": "2026-11-27T09:09:14Z"
+ },
+ "outcomes": {
+  "instagram": {
+   "at": "2026-11-27T09:09:14Z",
+   "by": "acceptance",
+   "detail": "instagram: the site showed its login page, so the session in INSTAGRAM_COOKIES was not accepted from this runner. This cannot tell an expired session from one the site refuses from a datacenter address: when the cookies are not expired by d",
+   "pages": 1,
+   "state": "login_wall"
+  },
+  "tiktok": {
+   "at": "2026-11-27T09:09:14Z",
+   "by": "acceptance",
+   "detail": "login ok; 3 items (3 from the site's data, 0 only from page links) - #overalls was searched first (hashtag_via_search_first), instead of opening the tag page (typed into the search box, as a person would) - stealth: 1 page(s) read as tiktok",
+   "pages": 1,
+   "state": "ok"
+  }
  }
 }
