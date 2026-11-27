@@ -1,6 +1,6 @@
 {
  "brand": "swoveralls",
- "count": 73,
+ "count": 72,
  "products": [
   {
    "allergens": "",
@@ -1347,6 +1347,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_In Demand",
     "badge_NEW",
     "InventoryCheck",
     "LimitedSW",
@@ -1415,7 +1416,7 @@
      "title": "L / Bordeaux"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53755991490671,
      "options": [
@@ -1591,6 +1592,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_In Demand",
     "badge_NEW",
     "InventoryCheck",
     "LimitedSW",
@@ -1831,6 +1833,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "badge_NEW",
     "InventoryCheck",
     "LimitedSW",
@@ -1898,7 +1901,7 @@
      "title": "L / Glacier Navy"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53755992244335,
      "options": [
@@ -2068,6 +2071,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "badge_NEW",
     "InventoryCheck",
     "LimitedSW",
@@ -2519,6 +2523,7 @@
     "Active",
     "ag-ygg",
     "All",
+    "badge_Limited Edition",
     "color-family:",
     "color-family:YELLOW",
     "final sale",
@@ -2727,6 +2732,7 @@
     "Active",
     "ag-ygg",
     "All",
+    "badge_Limited Edition",
     "color-family:",
     "color-family:YELLOW",
     "final sale",
@@ -5983,6 +5989,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "color-family:",
     "color-family:YELLOW",
     "final sale",
@@ -6220,6 +6227,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "badge_NEW",
     "color-family:",
     "color-family:BLACK",
@@ -6460,6 +6468,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "badge_NEW",
     "Boobies",
     "color-family:",
@@ -6551,7 +6560,7 @@
      "title": "XL / Boobies"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753477267567,
      "options": [
@@ -6699,6 +6708,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "badge_NEW",
     "color-family:",
     "color-family:RED",
@@ -6936,6 +6946,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "color-family:",
     "color-family:ORANGE",
     "full price",
@@ -7179,6 +7190,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "badge_NEW",
     "color-family-black",
     "igg26_fashion_forward",
@@ -7421,6 +7433,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "badge_NEW",
     "igg26_fashion_forward",
     "InventoryCheck",
@@ -7665,6 +7678,7 @@
     "Active",
     "ag-core",
     "All",
+    "badge_In Demand",
     "Bundle",
     "color-family:GREY",
     "Core",
@@ -7949,6 +7963,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_In Demand",
     "badge_NEW",
     "color-family:GREEN",
     "full price",
@@ -8213,6 +8228,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_In Demand",
     "badge_NEW",
     "color-family:BLUE",
     "full price",
@@ -8739,6 +8755,7 @@
    "tags": [
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "badge_NEW",
     "color-family:GREEN",
     "full price",
@@ -8987,6 +9004,7 @@
     "Active",
     "ag-core",
     "All",
+    "badge_In Demand",
     "Bundle",
     "color-family:GREEN",
     "Core",
@@ -9542,6 +9560,7 @@
     "Active",
     "ag-ygg",
     "All",
+    "badge_Limited Edition",
     "color-family:",
     "color-family:YELLOW",
     "final sale",
@@ -9781,6 +9800,7 @@
     "Active",
     "ag-ygg",
     "All",
+    "badge_Limited Edition",
     "color-family:",
     "color-family:YELLOW",
     "final sale",
@@ -10316,6 +10336,7 @@
     "Active",
     "ag-core",
     "All",
+    "badge_In Demand",
     "Best Sellers",
     "Bundle",
     "color-family:BLACK",
@@ -10577,6 +10598,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "badge_NEW",
     "color-family:WHITE",
     "full price",
@@ -10823,6 +10845,7 @@
     "Active",
     "ag-core",
     "All",
+    "badge_In Demand",
     "Bundle",
     "color-family:BLUE",
     "Core",
@@ -11098,6 +11121,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "color-family:",
     "color-family:PURPLE",
     "full price",
@@ -11331,6 +11355,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "badge_NEW",
     "color-family:",
     "color-family:BLUE",
@@ -11385,7 +11410,7 @@
      "title": "M / Otter Romp"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753483919471,
      "options": [
@@ -11841,6 +11866,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "badge_NEW",
     "color-family:",
     "color-family:BLACK",
@@ -12090,6 +12116,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "color-family:",
     "color-family:YELLOW",
     "final sale",
@@ -12331,6 +12358,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "color-family:",
     "color-family:YELLOW",
     "final sale",
@@ -12566,6 +12594,7 @@
     "Active",
     "ag-le-prints",
     "All",
+    "badge_Limited Edition",
     "badge_NEW",
     "color-family:BLUE",
     "full price",
@@ -12655,7 +12684,7 @@
      "title": "XL / Trash Pandas"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 53753488048239,
      "options": [
@@ -15226,12 +15255,12 @@
    "handle": "the-sidekick-tee-copy-copy",
    "image_count": 6,
    "images": [
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/1_fb00b5dd-4935-4c95-9473-2cfaab67b287.png?v=1762960356",
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/3_46873a72-9c19-4ae3-bea4-07b30c640023.png?v=1762960356",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/4_462b1098-7adc-47d4-8a21-8213c090b49e.png?v=1762960356",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2_ca783948-c5f7-4b33-9d89-f9a4d93b4b76.png?v=1762960356",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_tee_fog.jpg?v=1793799472",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/5_0908fa0a-ca35-4566-bd98-2c39e9cd7249.png?v=1762960356",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/1_fb00b5dd-4935-4c95-9473-2cfaab67b287.png?v=1762960356",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/3_46873a72-9c19-4ae3-bea4-07b30c640023.png?v=1762960356"
+    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/5_0908fa0a-ca35-4566-bd98-2c39e9cd7249.png?v=1762960356"
    ],
    "in_stock": true,
    "ingredients": "",
@@ -15244,7 +15273,7 @@
    "pocket_claims": "",
    "price_max": 25.0,
    "price_min": 25.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/4_462b1098-7adc-47d4-8a21-8213c090b49e.png?v=1762960356",
+   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/1_fb00b5dd-4935-4c95-9473-2cfaab67b287.png?v=1762960356",
    "product_id": "7934710153327",
    "readiness": "ready",
    "status": "active",
@@ -15283,7 +15312,7 @@
      "title": "S / Fog Grey"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 43827118211183,
      "options": [
@@ -15371,212 +15400,6 @@
      "price": 25.0,
      "sku": "23414SW-6AZ-XXXL",
      "title": "3XL / Fog Grey"
-    }
-   ]
-  },
-  {
-   "allergens": "",
-   "audience_hints": [],
-   "audience_stated": "",
-   "category": "merch",
-   "description": "Every hero needs a sidekick. For your Swoveralls or Swovie Shorts, this is it. Made from 100% ringspun cotton jersey, The Sidekick Tee is soft, breathable, and built to last. It is the only tee you’ll ever need whether you are rocking straps or going solo. Basic, no frills, just a perfect fit that works with everything. A small nod to the free waistband movement lives on the back, reminding everyone who does a double take that comfort is a way of life. Details 100% ringspun cotton jersey for a soft, lived-in feel from day one Pairs perfectly with Swoveralls or Swovie Shorts and looks great on its own Classic crew neck, timeless fit Pre-shrunk to keep its shape wash after wash Subtle free waistband graphic on the back",
-   "excluded": false,
-   "excluded_reason": null,
-   "fact_conflicts": [],
-   "facts": {
-    "description": {
-     "source": "catalogue_description",
-     "status": "stated",
-     "value": {
-      "chars": 726
-     }
-    },
-    "features": {
-     "source": "catalogue_description",
-     "status": "stated",
-     "value": [
-      "100% ringspun cotton jersey for a soft, lived-in feel from day one",
-      "Pairs perfectly with Swoveralls or Swovie Shorts and looks great on its own",
-      "Classic crew neck, timeless fit",
-      "Pre-shrunk to keep its shape wash after wash",
-      "Subtle free waistband graphic on the back"
-     ]
-    },
-    "images": {
-     "source": "catalogue_images",
-     "status": "stated",
-     "value": {
-      "count": 6
-     }
-    },
-    "materials": {
-     "source": "catalogue_description",
-     "status": "stated",
-     "value": {
-      "consistent": true,
-      "items": [
-       {
-        "label": "ringspun cotton",
-        "material": "cotton",
-        "percent": 100
-       }
-      ],
-      "total": 100
-     }
-    }
-   },
-   "family": "The Sidekick Tee",
-   "flags": [
-    "new"
-   ],
-   "handle": "the-sidekick-tee-copy-copy-copy",
-   "image_count": 6,
-   "images": [
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/14_4791a4eb-a2b4-4ae6-bd45-79e9380a6a0f.png?v=1762960356",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/12_dc56d2e0-b8b6-4d74-9dd4-782a89070f87.png?v=1762960356",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_tee_saltnavy.jpg?v=1793799478",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/15_edc07633-bc21-42d8-90ac-ce5770e72f9a.png?v=1762960356",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/11_c6b2126a-8035-4d71-9699-9263f7e75e1b.png?v=1762960356",
-    "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/13_a1cf1b9f-d848-4cb0-b7fc-0cd13779273d.png?v=1762960356"
-   ],
-   "in_stock": true,
-   "ingredients": "",
-   "materials": "cotton 100%",
-   "missing_expected": [
-    "pocket_claims"
-   ],
-   "missing_required": [],
-   "on_sale": false,
-   "pocket_claims": "",
-   "price_max": 25.0,
-   "price_min": 25.0,
-   "primary_image": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/14_4791a4eb-a2b4-4ae6-bd45-79e9380a6a0f.png?v=1762960356",
-   "product_id": "7934710644847",
-   "readiness": "ready",
-   "status": "active",
-   "tags": [
-    "Active",
-    "All",
-    "badge_NEW",
-    "full price",
-    "igg26_fashion_forward",
-    "image-tall",
-    "Shop",
-    "stock",
-    "swatch_group_sidekick_tees",
-    "t-shirt"
-   ],
-   "title": "The Sidekick Tee - Salt Navy",
-   "url": "https://swoveralls.com/products/the-sidekick-tee-copy-copy-copy",
-   "variant_count": 6,
-   "variants": [
-    {
-     "available": false,
-     "compare_at_price": null,
-     "id": 43827119718511,
-     "options": [
-      {
-       "name": "Size",
-       "value": "S"
-      },
-      {
-       "name": "Color",
-       "value": "Salt Navy"
-      }
-     ],
-     "price": 25.0,
-     "sku": "23414SW-6AX-SMALL",
-     "title": "S / Salt Navy"
-    },
-    {
-     "available": true,
-     "compare_at_price": null,
-     "id": 43827119751279,
-     "options": [
-      {
-       "name": "Size",
-       "value": "M"
-      },
-      {
-       "name": "Color",
-       "value": "Salt Navy"
-      }
-     ],
-     "price": 25.0,
-     "sku": "23414SW-6AX-MED",
-     "title": "M / Salt Navy"
-    },
-    {
-     "available": false,
-     "compare_at_price": null,
-     "id": 43827119784047,
-     "options": [
-      {
-       "name": "Size",
-       "value": "L"
-      },
-      {
-       "name": "Color",
-       "value": "Salt Navy"
-      }
-     ],
-     "price": 25.0,
-     "sku": "23414SW-6AX-LARGE",
-     "title": "L / Salt Navy"
-    },
-    {
-     "available": false,
-     "compare_at_price": null,
-     "id": 43827119816815,
-     "options": [
-      {
-       "name": "Size",
-       "value": "XL"
-      },
-      {
-       "name": "Color",
-       "value": "Salt Navy"
-      }
-     ],
-     "price": 25.0,
-     "sku": "23414SW-6AX-XL",
-     "title": "XL / Salt Navy"
-    },
-    {
-     "available": false,
-     "compare_at_price": null,
-     "id": 43827119849583,
-     "options": [
-      {
-       "name": "Size",
-       "value": "2XL"
-      },
-      {
-       "name": "Color",
-       "value": "Salt Navy"
-      }
-     ],
-     "price": 25.0,
-     "sku": "23414SW-6AX-XXL",
-     "title": "2XL / Salt Navy"
-    },
-    {
-     "available": false,
-     "compare_at_price": null,
-     "id": 43827119882351,
-     "options": [
-      {
-       "name": "Size",
-       "value": "3XL"
-      },
-      {
-       "name": "Color",
-       "value": "Salt Navy"
-      }
-     ],
-     "price": 25.0,
-     "sku": "23414SW-6AX-XXXL",
-     "title": "3XL / Salt Navy"
     }
    ]
   },

@@ -1746,7 +1746,7 @@
      "title": "Black / Youth (5-9 Year Old)"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 47532988793118,
      "options": [
@@ -3376,7 +3376,7 @@
      "title": "Grey / 2XL-3XL"
     },
     {
-     "available": false,
+     "available": true,
      "compare_at_price": null,
      "id": 47315796820254,
      "options": [

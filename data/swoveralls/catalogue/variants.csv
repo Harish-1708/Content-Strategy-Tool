@@ -37,7 +37,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991392367,S / Bordeaux,Size=S; Color=Bordeaux,SWPANTSCORD-781-S,129.00,,false
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991425135,M / Bordeaux,Size=M; Color=Bordeaux,SWPANTSCORD-781-M,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991457903,L / Bordeaux,Size=L; Color=Bordeaux,SWPANTSCORD-781-L,129.00,,true
-15347005489263,Corduroy Swoveralls - Bordeaux,53755991490671,XL / Bordeaux,Size=XL; Color=Bordeaux,SWPANTSCORD-781-XL,129.00,,true
+15347005489263,Corduroy Swoveralls - Bordeaux,53755991490671,XL / Bordeaux,Size=XL; Color=Bordeaux,SWPANTSCORD-781-XL,129.00,,false
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991523439,2XL / Bordeaux,Size=2XL; Color=Bordeaux,SWPANTSCORD-781-2XL,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991556207,3XL / Bordeaux,Size=3XL; Color=Bordeaux,SWPANTSCORD-781-3XL,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991588975,4XL / Bordeaux,Size=4XL; Color=Bordeaux,SWPANTSCORD-781-4XL,129.00,,true
@@ -51,7 +51,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992146031,S / Glacier Navy,Size=S; Color=Glacier Navy,SWPANTSGRID-179-S,129.00,,true
 15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992178799,M / Glacier Navy,Size=M; Color=Glacier Navy,SWPANTSGRID-179-M,129.00,,true
 15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992211567,L / Glacier Navy,Size=L; Color=Glacier Navy,SWPANTSGRID-179-L,129.00,,true
-15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992244335,XL / Glacier Navy,Size=XL; Color=Glacier Navy,SWPANTSGRID-179-XL,129.00,,true
+15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992244335,XL / Glacier Navy,Size=XL; Color=Glacier Navy,SWPANTSGRID-179-XL,129.00,,false
 15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992277103,2XL / Glacier Navy,Size=2XL; Color=Glacier Navy,SWPANTSGRID-179-2XL,129.00,,true
 15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992309871,3XL / Glacier Navy,Size=3XL; Color=Glacier Navy,SWPANTSGRID-179-3XL,129.00,,true
 15347005816943,Grid Fleece Swoveralls - Glacier Navy,53755992342639,4XL / Glacier Navy,Size=4XL; Color=Glacier Navy,SWPANTSGRID-179-4XL,129.00,,true
@@ -187,7 +187,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15346078810223,Swoveralls - Boobies,53753477169263,M / Boobies,Size=M; Color=Boobies,SWPANTS-467-M,110.00,,false
 15346078810223,Swoveralls - Boobies,53753477202031,L / Boobies,Size=L; Color=Boobies,SWPANTS-467-L,110.00,,true
 15346078810223,Swoveralls - Boobies,53753477234799,XL / Boobies,Size=XL; Color=Boobies,SWPANTS-467-XL,110.00,,true
-15346078810223,Swoveralls - Boobies,53753477267567,2XL / Boobies,Size=2XL; Color=Boobies,SWPANTS-467-2XL,110.00,,true
+15346078810223,Swoveralls - Boobies,53753477267567,2XL / Boobies,Size=2XL; Color=Boobies,SWPANTS-467-2XL,110.00,,false
 15346078810223,Swoveralls - Boobies,53753477300335,3XL / Boobies,Size=3XL; Color=Boobies,SWPANTS-467-3XL,110.00,,true
 15346078810223,Swoveralls - Boobies,53753477333103,4XL / Boobies,Size=4XL; Color=Boobies,SWPANTS-467-4XL,110.00,,true
 15345957273711,Swoveralls - Buffalo Plaid,53753141919855,S / Buffalo Plaid,Size=S; Color=Buffalo Plaid,SWPANTS-Z05-S,110.00,,false
@@ -334,7 +334,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15022560804975,Swoveralls - Nightshade Plum,53160030208111,4XL / Nightshade Plum,Size=4XL; Color=Nightshade Plum,SWPANTS-066-4XL,110.00,,true
 15346083430511,Swoveralls - Otter Romp,53753483853935,S / Otter Romp,Size=S; Color=Otter Romp,SWPANTS-DHG-S,110.00,,false
 15346083430511,Swoveralls - Otter Romp,53753483886703,M / Otter Romp,Size=M; Color=Otter Romp,SWPANTS-DHG-M,110.00,,true
-15346083430511,Swoveralls - Otter Romp,53753483919471,L / Otter Romp,Size=L; Color=Otter Romp,SWPANTS-DHG-L,110.00,,true
+15346083430511,Swoveralls - Otter Romp,53753483919471,L / Otter Romp,Size=L; Color=Otter Romp,SWPANTS-DHG-L,110.00,,false
 15346083430511,Swoveralls - Otter Romp,53753483952239,XL / Otter Romp,Size=XL; Color=Otter Romp,SWPANTS-DHG-XL,110.00,,false
 15346083430511,Swoveralls - Otter Romp,53753483985007,2XL / Otter Romp,Size=2XL; Color=Otter Romp,SWPANTS-DHG-2XL,110.00,,false
 15346083430511,Swoveralls - Otter Romp,53753484017775,3XL / Otter Romp,Size=3XL; Color=Otter Romp,SWPANTS-DHG-3XL,110.00,,true
@@ -373,7 +373,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15346086379631,Swoveralls - Trash Pandas,53753487949935,M / Trash Pandas,Size=M; Color=Trash Pandas,SWPANTS-DHL-M,110.00,,false
 15346086379631,Swoveralls - Trash Pandas,53753487982703,L / Trash Pandas,Size=L; Color=Trash Pandas,SWPANTS-DHL-L,110.00,,false
 15346086379631,Swoveralls - Trash Pandas,53753488015471,XL / Trash Pandas,Size=XL; Color=Trash Pandas,SWPANTS-DHL-XL,110.00,,false
-15346086379631,Swoveralls - Trash Pandas,53753488048239,2XL / Trash Pandas,Size=2XL; Color=Trash Pandas,SWPANTS-DHL-2XL,110.00,,false
+15346086379631,Swoveralls - Trash Pandas,53753488048239,2XL / Trash Pandas,Size=2XL; Color=Trash Pandas,SWPANTS-DHL-2XL,110.00,,true
 15346086379631,Swoveralls - Trash Pandas,53753488081007,3XL / Trash Pandas,Size=3XL; Color=Trash Pandas,SWPANTS-DHL-3XL,110.00,,true
 15346086379631,Swoveralls - Trash Pandas,53753488113775,4XL / Trash Pandas,Size=4XL; Color=Trash Pandas,SWPANTS-DHL-4XL,110.00,,false
 3303528693860,Swoveralls Gift Card,40624410427503,$10,Title=$10,,10.00,,true
@@ -450,17 +450,11 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15486918590575,The Free Your Waistband Hat,54156349440111,Default Title,Title=Default Title,G217R-B00006,36.00,,true
 15486912757871,The Good At Naps Hat,54156332105839,Default Title,Title=Default Title,GB523-B00006,36.00,,true
 7934710153327,The Sidekick Tee - Fog Grey,43827118178415,S / Fog Grey,Size=S; Color=Fog Grey,23414SW-6AZ-SMALL,25.00,,true
-7934710153327,The Sidekick Tee - Fog Grey,43827118211183,M / Fog Grey,Size=M; Color=Fog Grey,23414SW-6AZ-MED,25.00,,true
+7934710153327,The Sidekick Tee - Fog Grey,43827118211183,M / Fog Grey,Size=M; Color=Fog Grey,23414SW-6AZ-MED,25.00,,false
 7934710153327,The Sidekick Tee - Fog Grey,43827118243951,L / Fog Grey,Size=L; Color=Fog Grey,23414SW-6AZ-LARGE,25.00,,true
 7934710153327,The Sidekick Tee - Fog Grey,43827118276719,XL / Fog Grey,Size=XL; Color=Fog Grey,23414SW-6AZ-XL,25.00,,true
 7934710153327,The Sidekick Tee - Fog Grey,43827118309487,2XL / Fog Grey,Size=2XL; Color=Fog Grey,23414SW-6AZ-XXL,25.00,,false
 7934710153327,The Sidekick Tee - Fog Grey,43827118342255,3XL / Fog Grey,Size=3XL; Color=Fog Grey,23414SW-6AZ-XXXL,25.00,,false
-7934710644847,The Sidekick Tee - Salt Navy,43827119718511,S / Salt Navy,Size=S; Color=Salt Navy,23414SW-6AX-SMALL,25.00,,false
-7934710644847,The Sidekick Tee - Salt Navy,43827119751279,M / Salt Navy,Size=M; Color=Salt Navy,23414SW-6AX-MED,25.00,,true
-7934710644847,The Sidekick Tee - Salt Navy,43827119784047,L / Salt Navy,Size=L; Color=Salt Navy,23414SW-6AX-LARGE,25.00,,false
-7934710644847,The Sidekick Tee - Salt Navy,43827119816815,XL / Salt Navy,Size=XL; Color=Salt Navy,23414SW-6AX-XL,25.00,,false
-7934710644847,The Sidekick Tee - Salt Navy,43827119849583,2XL / Salt Navy,Size=2XL; Color=Salt Navy,23414SW-6AX-XXL,25.00,,false
-7934710644847,The Sidekick Tee - Salt Navy,43827119882351,3XL / Salt Navy,Size=3XL; Color=Salt Navy,23414SW-6AX-XXXL,25.00,,false
 14987685986415,The Sidekick Tee in Marble Heather - READ THE ROOM,53021367894127,S / Marble Heather,Size=S; Color=Marble Heather,21459-257-S,25.00,,true
 14987685986415,The Sidekick Tee in Marble Heather - READ THE ROOM,53021367959663,M / Marble Heather,Size=M; Color=Marble Heather,21459-257-M,25.00,,true
 14987685986415,The Sidekick Tee in Marble Heather - READ THE ROOM,53021368025199,L / Marble Heather,Size=L; Color=Marble Heather,21459-257-L,25.00,,true
