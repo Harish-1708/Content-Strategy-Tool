@@ -4258,23 +4258,23 @@
      },
      "story_extract_json": {
       "cost_usd": 0.0,
-      "requests": 38,
-      "tokens": 135315
+      "requests": 48,
+      "tokens": 156810
      }
     },
     "cost_usd": 0.0,
     "failures": 0,
-    "latency_ms": 244378,
-    "requests": 41,
-    "tokens_in": 137416,
-    "tokens_out": 9943
+    "latency_ms": 294051,
+    "requests": 51,
+    "tokens_in": 156233,
+    "tokens_out": 12621
    },
    "cohere": {
     "by_lane": {
      "conflict_check_json": {
       "cost_usd": 0.0,
-      "requests": 4,
-      "tokens": 3801
+      "requests": 10,
+      "tokens": 9234
      },
      "story_extract_json": {
       "cost_usd": 0.0,
@@ -4283,16 +4283,16 @@
      },
      "story_review_json": {
       "cost_usd": 0.0,
-      "requests": 37,
-      "tokens": 15655
+      "requests": 47,
+      "tokens": 20333
      }
     },
     "cost_usd": 0.0,
     "failures": 1,
-    "latency_ms": 76023,
-    "requests": 44,
-    "tokens_in": 19212,
-    "tokens_out": 4750
+    "latency_ms": 102177,
+    "requests": 60,
+    "tokens_in": 27631,
+    "tokens_out": 6442
    },
    "groq": {
     "by_lane": {
@@ -4353,16 +4353,16 @@
     "by_lane": {
      "conflict_check_json": {
       "cost_usd": 0.0,
-      "requests": 21,
-      "tokens": 70803
+      "requests": 27,
+      "tokens": 89502
      }
     },
     "cost_usd": 0.0,
-    "failures": 0,
-    "latency_ms": 256759,
-    "requests": 21,
-    "tokens_in": 12710,
-    "tokens_out": 58093
+    "failures": 1,
+    "latency_ms": 317826,
+    "requests": 27,
+    "tokens_in": 18449,
+    "tokens_out": 71053
    },
    "zhipu": {
     "by_lane": {
