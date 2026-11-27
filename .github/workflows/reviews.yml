@@ -1,0 +1,94 @@
+name: Reviews
+
+# Customer reviews kept WORD FOR WORD, so a brief can quote a customer and be checked (never invented, combined or polished).
+#   collect  (the default, fully automatic) reads the Judge.me widget on each product page of the brand's own shop and then Judge.me's own public pages of reviews, page by page, ALL of them: the first reading of a product takes its whole
+#            history; after that a product is only topped up (the newest pages, until one holds nothing new) once its last top-up is 28 days old. Needs nothing from you.
+#   import   OPTIONAL: the Judge.me export file (Judge.me > Reviews > Export, uploaded to imports/<brand>-judgeme-reviews.csv), only if you ever want it
+#   status   what is stored, and how many products were read in full
+# Runs by itself every Sunday: a run that reaches its time limit is simply continued by the next one until every product is read in full, then it does nothing until a top-up is due (about monthly).
+# Saves data/<brand>/extras/reviews.json. No email address or IP address is ever read or kept; nothing is written to a shop or to Judge.me.
+on:
+  schedule:
+    - cron: "30 6 * * 0"
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "collect (from the product pages), import (the Judge.me export file) or status"
+        required: false
+        type: choice
+        default: collect
+        options: [collect, import, status]
+      brand:
+        description: "a brand slug, or all"
+        required: false
+        default: "all"
+      file:
+        description: "import (optional): the export file in the repository (blank: imports/<brand>-judgeme-reviews.csv)"
+        required: false
+        default: ""
+      force:
+        description: "collect: top up every product now, whatever the date of its last top-up"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalogue-data
+  cancel-in-progress: false
+
+jobs:
+  reviews:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: pip install -r requirements.txt
+
+      - name: Run it
+        env:
+          ACTION: ${{ inputs.action }}
+          BRAND: ${{ inputs.brand }}
+          FILE: ${{ inputs.file }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          set -o pipefail
+          { echo "### Reviews"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          code=0
+          args=(reviews --action "${ACTION:-collect}" --brand "${BRAND:-all}")
+          if [ -n "$FILE" ]; then args+=(--file "$FILE"); fi
+          if [ "$FORCE" = "true" ]; then args+=(--force); fi
+          python -m contentintel "${args[@]}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || code=$?
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Save the data
+        if: always()
+        run: |
+          git config user.name "reviews"
+          git config user.email "reviews@users.noreply.github.com"
+          add_each() { for f in "$@"; do if [ -e "$f" ]; then git add -f "$f"; else echo "not written by this run (skipped): $f"; fi; done; }          # one path at a time: a single add of several is refused whole when one is missing
+          add_each data/*/extras/reviews.json
+          if git diff --cached --quiet; then
+            echo "NOTHING TO SAVE: no reviews.json was written or changed by this run"
+          else
+            git commit -m "Reviews $(date -u +%Y-%m-%dT%H:%MZ)"
+            bash .github/scripts/push-with-retry.sh
+          fi
+
+      - name: Keep the unsaved data (only when the save failed)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: unsaved-data
+          path: unsaved-data/
+          if-no-files-found: ignore
+          retention-days: 14

@@ -17,6 +17,20 @@ on:
         description: "What the brief is for, in your own words (blank when you revise a brief: its own ask is used)"
         required: false
         default: ""
+      kind:
+        description: "What the concepts are: video (the default), static (images for a designer), carousel (cards) or cuts (edits of the footage in the brand's Footage folder: run Footage > scan first)"
+        required: false
+        type: choice
+        default: video
+        options: [video, static, carousel, cuts]
+      for_person:
+        description: "Who the brief is for (shown at the top), for example Sarah"
+        required: false
+        default: ""
+      offer:
+        description: "The ONE offer for this brief, exactly as written in the brand's allowed offers (the guard list in its rules; blank = no offer is stated)"
+        required: false
+        default: ""
       revise:
         description: "Revise a saved brief that needs review (for example BR-0001): the checks' and the reviewer's problems are fixed, each round saved as a new brief; blank writes a new brief"
         required: false
@@ -114,6 +128,9 @@ jobs:
           BRIEF: ${{ inputs.brief }}
           ASK: ${{ inputs.ask }}
           REVISE: ${{ inputs.revise }}
+          KIND: ${{ inputs.kind }}
+          FOR_PERSON: ${{ inputs.for_person }}
+          OFFER: ${{ inputs.offer }}
           ROUNDS: ${{ inputs.rounds }}
           REQUEST_ID: ${{ inputs.request_id }}
           INCLUDE_MAYBE: ${{ inputs.include_maybe }}
@@ -126,6 +143,9 @@ jobs:
           set +e
           args=(--brand "$BRAND" --brief "$BRIEF" --ask "$ASK")
           if [ -n "$REQUEST_ID" ]; then args+=(--request "$REQUEST_ID"); fi
+          if [ -n "$KIND" ] && [ -z "$REVISE" ]; then args+=(--kind "$KIND"); fi          # a revision keeps its brief's kind
+          if [ -n "$FOR_PERSON" ]; then args+=(--for "$FOR_PERSON"); fi
+          if [ -n "$OFFER" ]; then args+=(--offer "$OFFER"); fi
           if [ -n "$REVISE" ]; then args+=(--revise "$REVISE" --rounds "${ROUNDS:-2}"); fi
           if [ "$INCLUDE_MAYBE" = "true" ]; then args+=(--include-maybe); fi
           { echo "### Brief"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
