@@ -1375,3 +1375,29 @@ def test_when_the_browser_cannot_start_the_older_route_answers_and_the_row_says_
     wf = yaml.safe_load(Path(".github/workflows/sessions.yml").read_text(encoding="utf-8"))
     step = next(s for s in wf["jobs"]["sessions"]["steps"] if s.get("name", "").startswith("Install the browser the rendered-page proof uses"))
     assert "requirements-browser.txt" in step["run"] and "playwright install --with-deps chromium" in step["run"] and "inputs.what != 'list'" in step["if"]
+
+
+def test_the_report_prints_every_verdict_of_the_rendered_page_proof_and_evidence_missing_fields_never_crash_it(monkeypatch, settings, ledger):
+    """Sessions #40 and #41 saved every verdict and then died in the report printer: the proof's evidence has route, polls, reloaded, landed and fetched_with, and evidence_lines read ev['title'] directly. The Tests runner switches the real browser off, so nothing caught it."""
+    from contentintel import collectors as C
+    rows = []
+    for state in ("ok", "login_wall", "challenge", "unknown"):
+        monkeypatch.setattr(C, "session_state", lambda br, cfg, s=state: s)
+        monkeypatch.setattr(C, "warning_seen", lambda br, cfg: "")
+
+        @contextlib.contextmanager
+        def opener(site, cfg, pacing, text, debug, headless=True):
+            yield PageBrowser([])
+        row = check("tiktok", settings, ledger, Worker(lambda item: logged_in_page("tiktok")),
+                    proof=lambda p, s, sess, o=opener: SL.browser_proof(p, s, sess, opener=o, sleep=lambda x: None))
+        assert row["evidence"]["route"] == SL.PROOF_ROUTE and "title" not in row["evidence"]                                                      # the evidence has exactly the shape that crashed the printer
+        rows.append(row)
+    cannot = check("instagram", settings, ledger, Worker(lambda item: logged_in_page("instagram")),
+                   proof=lambda p, s, sess: SL.browser_proof(p, s, sess, opener=contextlib.contextmanager(lambda *a, **k: (_ for _ in ()).throw(RuntimeError("x")))))
+    text = SL.format_report(rows + [cannot])
+    assert text.count("look(s) at the same page") >= 4 and "landed on https://www.tiktok.com/" in text and "reloaded once" in text                         # the unknown verdict waited and reloaded
+    assert [r["state"] for r in rows] == [SL.ACCEPTED, SL.REJECTED, SL.BLOCKED, SL.UNCONFIRMED]
+    lines = SL.evidence_lines({"state": SL.REJECTED, "evidence": {"fetched_with": "scrapling worker"}})                                           # evidence missing every other field
+    assert lines and "no title" in lines[0] and "cookies sent (names): none" in lines[1]
+    assert SL.evidence_lines({"state": SL.ACCEPTED, "evidence": {"route": SL.PROOF_ROUTE, "polls": 2, "reloaded": False, "landed": "https://x/", "fetched_with": "browser (rendered page, stored cookies)", "browser_proof": "kept"}}) == [
+        "      page: read with the browser (rendered page, stored cookies); 2 look(s) at the same page; landed on https://x/; kept"]

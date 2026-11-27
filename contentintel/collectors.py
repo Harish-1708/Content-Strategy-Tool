@@ -29,6 +29,7 @@ from . import apify_budget as AB
 from . import guards
 from . import main_page
 from . import contract
+from . import read_gate as RG
 from . import deepcheck
 from . import evidence as evidence_mod
 from .browser import AccountWarning, BrowserError, Challenge, LoginWall, describe_cookies, describe_form_facts, site_pacing, site_scrolls
@@ -59,7 +60,7 @@ DEFAULT_APIFY_ACTORS = {"meta_ads": "apify/facebook-ads-scraper", "tiktok": "clo
 DEFAULT_COLLECTORS = {
     "browser": {"monthly_items": 0, "items_per_run": 30, "cache_days": 3},          # 0 = no monthly limit
     "gemini": {"monthly_tasks": 2, "tasks_per_run": 1, "cache_days": 14},
-    "apify": {"mode": "fallback", "reddit_hold": True, "monthly_items": AB.items("collect", AB.WORKING_KEYS), "items_per_run": 30, "max_cost_per_run_usd": 1.0, "check_max_cost_usd": 0.5,
+    "apify": {"mode": "fallback", "reddit_hold": False, "reddit_lane": "always", "monthly_items": AB.items("collect", AB.WORKING_KEYS), "items_per_run": 30, "max_cost_per_run_usd": 1.0, "check_max_cost_usd": 0.5,
               "actors": DEFAULT_APIFY_ACTORS},
     "claude": {"model": "claude-sonnet-5-5", "monthly_calls": 60, "max_rounds": 3, "max_tokens": 700, "prompt_max_tokens": 2000, "review_rounds": 1,
                "prepare_prompt": True},
@@ -874,7 +875,8 @@ def clear_cooldowns(store, now):
 def cookie_facts(site, creds):
     """A sentence about the cookies that were loaded (names and counts, never values), or nothing without cookies."""
     text = (creds or {}).get("cookies")
-    return f" Cookie facts (no values shown): {describe_cookies(text, site)}." if text else ""
+    source = f" read from {creds['cookies_from']}, the stored session the sessions check proves," if (creds or {}).get("cookies_from") else ""
+    return f" Cookie facts (no values shown):{source} {describe_cookies(text, site)}." if text else ""
 
 
 def clear_challenge(browser, site_cfg):
@@ -915,7 +917,7 @@ def run_steps(browser, steps, creds):
 
 def ensure_session(browser, site, site_cfg, creds):
     """Open the site and make sure the dummy account is logged in. Returns the state seen."""
-    cookies_name = _secret_names(site_cfg).get("cookies", "the cookies secret")
+    cookies_name = creds.get("cookies_from") or _secret_names(site_cfg).get("cookies", "the cookies secret")          # the secret the cookies really came from (the stored session capture when there is one)
     browser.open(site_cfg["home"])
     browser.wait(3)
     check_warning(browser, site, site_cfg)
@@ -960,8 +962,11 @@ def ensure_session(browser, site, site_cfg, creds):
                             f"Log in once in a normal browser and export the cookies into {cookies_name}")
     if state == "login_wall":
         browser.screenshot(f"login-wall-{site}")
-        raise LoginWall(f"{site}: not logged in. The cookies in {cookies_name} may have expired; "
-                        f"export fresh ones from the dummy account.{cookie_facts(site, creds)}")
+        no_password = ""
+        if creds.get("username") and creds.get("password"):
+            no_password = (" No password login was tried: " + ("this site's setting says never" if site_cfg.get("password_fallback") == "never" else "the identity is cookie-only (the stealth layer's rule: a missing or refused session means nothing is read, never a fresh login from a new device and address)" if identity is not None and not identity.get("allow_login", True) else "it was not allowed here") + ".") if not password_ok else ""
+        raise LoginWall(f"{site}: the site showed its login page, so the session in {cookies_name} was not accepted from this runner. This cannot tell an expired session from one the site refuses from a datacenter address: "
+                        f"when the cookies are not expired by date (see the cookie facts), the second is likely, and the sessions check says whether the stored session itself is alive.{no_password}{cookie_facts(site, creds)}")
     if state == "unknown":
         browser.screenshot(f"unknown-state-{site}")
     return state
@@ -1151,7 +1156,7 @@ def run_browser_task(browser, task, n, site_cfg, browser_cfg, creds, page_budget
                             "once in a normal browser as the dummy account and export fresh cookies")
         if after == "login_wall":
             browser.screenshot(f"login-wall-{source}")
-            raise LoginWall(f"{source}: the page asked for a login; the cookies may have expired")
+            raise LoginWall(f"{source}: the page asked for a login, so the session was not accepted from this runner (an expired session and one the site refuses from a datacenter address look the same here)")
 
     for number, url in enumerate(urls):
         # A tag page can fail (an error, or a puzzle) while the same search works by hand, so a site can ask for the
@@ -1312,7 +1317,7 @@ def collect_deep_research(browser, question, site_cfg, *, claude=None, context="
     state = session_state(browser, site_cfg)
     if state == "login_wall":
         browser.screenshot("login-wall-gemini")
-        raise LoginWall("gemini: not logged in. The cookies in GEMINI_COOKIES may have expired; "
+        raise LoginWall("gemini: the site showed its login page, so the session in GEMINI_COOKIES was not accepted from this runner (it may have expired or been refused); "
                         "export fresh ones from the dummy Google account")
     mode_note = switch_to_deep_research(browser, site_cfg)
     if mode_note:
@@ -1951,6 +1956,14 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
         page_log["cursor"][site] = page_log["cursor"].get(site, 0) + stats.get("pages_planned", opened)
         if opened:
             page_log.setdefault("last", {})[site] = now                    # when the account was last read: the gap is counted from here
+            RG.record(page_log, site, now, by="collect", state=RG.OK, pages=0, detail=f"Collect read {opened} page(s)")          # how this read ended, for Acceptance to report from (the pages were counted just above)
+        store.write_page_log(page_log)
+
+    def note_blocked_read(site, exc, kind):
+        """A read that met a login wall, a challenge or an account warning still touched the account: it starts the gap and is recorded with its outcome, so nothing else reads the account straight after."""
+        if dry_run:
+            return
+        RG.record(page_log, site, now, by="collect", state={"warning": RG.WARNING, "challenge": RG.CHALLENGE}.get(kind, RG.LOGIN_WALL), pages=0, detail=str(exc))
         store.write_page_log(page_log)
 
     def rest_after(exc, site):
@@ -2171,6 +2184,8 @@ def run_collect(brands, store, *, browser_factory, creds, settings, browser_cfg,
                         # one source failing never fails the whole run: it is skipped, the other brands and sources
                         # finish, and the run is a partial success (or a failure only when nothing was delivered)
                         kind = "warning" if isinstance(exc, AccountWarning) else "challenge" if isinstance(exc, Challenge) else "login_wall"
+                        if site_cfg.get("min_hours_between_runs"):
+                            note_blocked_read(site, exc, kind)
                         blocked[site] = kind
                         blocked_here = True
                         result.skipped_sources.setdefault(site, skip_details(site, exc, opened))
