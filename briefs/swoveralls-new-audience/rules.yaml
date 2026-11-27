@@ -27,6 +27,11 @@ product_rules:
     - swoveralls-navy
     - swoveralls-dark-athletic-grey
 
+claim_rules:
+  # Example offer for testing the offer feature (Harish, 2026-11-27). Any other offer, price, number or claim in a generated brief is flagged.
+  allowed_offers:
+    - "30% off"
+
 judgement_rules:
   - "Never show the classic overalls look (crossed straps, denim-style) in the first two seconds."
   - "Never use the word 'overalls' or a denim-overalls visual in the first two seconds of video."
