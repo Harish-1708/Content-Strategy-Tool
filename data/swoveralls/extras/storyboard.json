@@ -3,465 +3,348 @@
  "boards": [
   {
    "aspect": "9:16",
-   "brief": "BR-0003",
-   "concept": "The Color Debate",
+   "brief": "BR-0005",
+   "concept": "Color Dilemma Solved",
    "concept_no": 1,
    "findings": [],
-   "format": "30 second vertical video, yapper-style single-take talking head",
+   "format": "carousel 4:5",
    "notes": [],
    "shots": [
     {
      "n": 1,
-     "on_screen": "POV I cant pick between three",
-     "product": "",
+     "on_screen": "Can't decide between Forest Green Navy",
+     "product": "swoveralls-navy",
      "role": "hook",
      "seconds": 3.0,
-     "spoken": "POV: I cant pick between three Swoveralls colors",
+     "spoken": "Can't decide between Forest Green, Navy or Midnight Black?",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
+      "credit": "Swoveralls",
       "license": "brand-own",
-      "source": "brand site",
-      "title": "Light_Heather_Grey.png?v=1745771558&width=96",
-      "url": "https://swoveralls.com/cdn/shop/files/Light_Heather_Grey.png?v=1745771558&width=96"
+      "source": "catalogue image",
+      "title": "Swoveralls - Forest Green (picture 1)",
+      "url": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/g0.jpg?v=1793794178"
      },
-     "still_query": "natural light minimal editing",
-     "visual": "Natural light, minimal editing."
+     "still_query": "swoveralls-navy clean product shots neutral background size chart overlay minima",
+     "visual": "Clean product shots on neutral background, size‑chart overlay, minimal text, brand colors."
     },
     {
      "n": 2,
-     "on_screen": "sweatpants Swoveralls in three colors and",
-     "product": "",
+     "on_screen": "Slide 1 Can't decide between Forest",
+     "product": "swoveralls-navy",
      "role": "beat",
-     "seconds": 5.5,
-     "spoken": "sweatpants Swoveralls in three colors and I still cant pick",
+     "seconds": 5.1,
+     "spoken": "Slide 1: Can't decide between Forest Green, Navy or Midnight Black?",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
+      "credit": "Swoveralls",
       "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "source": "catalogue image",
+      "title": "Swoveralls - Forest Green (picture 2)",
+      "url": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/d0442dac-5cdf-4ca4-bdc4-2ba5140f0ea1.jpg?v=1793651377"
      },
-     "still_query": "speaker holds swoveralls each color forest green navy midnight black points size",
-     "visual": "Speaker holds up Swoveralls in each color (Forest Green, Navy, Midnight Black) one by one, then points to a size chart on a tablet or paper."
+     "still_query": "swoveralls-navy clean product shots neutral background size chart overlay minima",
+     "visual": "Clean product shots on neutral background, size‑chart overlay, minimal text, brand colors."
     },
     {
      "n": 3,
-     "on_screen": "Forest Green for the outdoors Navy",
-     "product": "",
+     "on_screen": "Slide 2 Three colors side by",
+     "product": "swoveralls-navy",
      "role": "beat",
-     "seconds": 7.2,
-     "spoken": "Forest Green for the outdoors, Navy for everyday, Midnight Black for everything else",
+     "seconds": 6.4,
+     "spoken": "Slide 2: Three colors side by side, each with a quick size‑chart callout.",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
       "source": "brand site",
-      "title": "Midnight black ovralls with a secret inside zipped front pocket labeled on a white background",
-      "url": "https://swoveralls.com/cdn/shop/files/5_bef14919-bfd1-4f53-ab81-7eebcd6822b4.png?v=1767819895&amp;width=1200"
+      "title": "Swoveralls logo with a blue flag on a white background",
+      "url": "https://swoveralls.com/cdn/shop/files/Swoveralls_logo_FTW.png?v=1774552365&amp;width=600"
      },
-     "still_query": "neutral background casual attire",
-     "visual": "Neutral background, casual attire."
+     "still_query": "swoveralls-navy clean product shots neutral background size chart overlay minima",
+     "visual": "Clean product shots on neutral background, size‑chart overlay, minimal text, brand colors."
     },
     {
      "n": 4,
-     "on_screen": "Six pockets adjustable straps and a",
-     "product": "",
+     "on_screen": "Slide 3 All three are made",
+     "product": "swoveralls-navy",
      "role": "beat",
-     "seconds": 6.1,
-     "spoken": "Six pockets, adjustable straps, and a fit that moves with you",
+     "seconds": 7.4,
+     "spoken": "Slide 3: All three are made from 95% cotton, 5% spandex and have six handy pockets.",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "Midnight black ovralls with a secret inside zipped front pocket labeled on a white background",
-      "url": "https://swoveralls.com/cdn/shop/files/5_bef14919-bfd1-4f53-ab81-7eebcd6822b4.png?v=1767819895&amp;width=1200"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Clean product shots on neutral background, size‑chart overlay, minimal text, brand colors.",
+      "url": "https://image.pollinations.ai/prompt/Clean%20product%20shots%20on%20neutral%20background%2C%20size%E2%80%91chart%20overlay%2C%20minimal%20text%2C%20brand%20colors..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=4"
      },
-     "still_query": "neutral background casual attire",
-     "visual": "Neutral background, casual attire."
+     "still_query": "swoveralls-navy clean product shots neutral background size chart overlay minima",
+     "visual": "Clean product shots on neutral background, size‑chart overlay, minimal text, brand colors."
     },
     {
      "n": 5,
-     "on_screen": "Check the size chart to find",
-     "product": "",
+     "on_screen": "Slide 4 Swipe up to see",
+     "product": "swoveralls-navy",
      "role": "beat",
-     "seconds": 5.0,
-     "spoken": "Check the size chart to find your perfect match",
+     "seconds": 6.4,
+     "spoken": "Slide 4: Swipe up to see the full fit guide and find your confidence.",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "Midnight black ovralls with a secret inside zipped front pocket labeled on a white background",
-      "url": "https://swoveralls.com/cdn/shop/files/5_bef14919-bfd1-4f53-ab81-7eebcd6822b4.png?v=1767819895&amp;width=1200"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Clean product shots on neutral background, size‑chart overlay, minimal text, brand colors.",
+      "url": "https://image.pollinations.ai/prompt/Clean%20product%20shots%20on%20neutral%20background%2C%20size%E2%80%91chart%20overlay%2C%20minimal%20text%2C%20brand%20colors..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=5"
      },
-     "still_query": "neutral background casual attire",
-     "visual": "Neutral background, casual attire."
+     "still_query": "swoveralls-navy clean product shots neutral background size chart overlay minima",
+     "visual": "Clean product shots on neutral background, size‑chart overlay, minimal text, brand colors."
     },
     {
      "n": 6,
-     "on_screen": "Find your fit on swoveralls com",
-     "product": "",
+     "on_screen": "Find your fit",
+     "product": "swoveralls-navy",
      "role": "cta",
-     "seconds": 3.3,
-     "spoken": "Find your fit on swoveralls.com",
+     "seconds": 1.7,
+     "spoken": "Find your fit",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "Midnight black ovralls with a secret inside zipped front pocket labeled on a white background",
-      "url": "https://swoveralls.com/cdn/shop/files/5_bef14919-bfd1-4f53-ab81-7eebcd6822b4.png?v=1767819895&amp;width=1200"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Clean product shots on neutral background, size‑chart overlay, minimal text, brand colors.",
+      "url": "https://image.pollinations.ai/prompt/Clean%20product%20shots%20on%20neutral%20background%2C%20size%E2%80%91chart%20overlay%2C%20minimal%20text%2C%20brand%20colors..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=6"
      },
-     "still_query": "neutral background casual attire",
-     "visual": "Neutral background, casual attire."
+     "still_query": "swoveralls-navy clean product shots neutral background size chart overlay minima",
+     "visual": "Clean product shots on neutral background, size‑chart overlay, minimal text, brand colors."
     }
    ],
    "status": "ok",
    "styleframes": 6,
    "target_seconds": 30,
-   "total_seconds": 30.1
+   "total_seconds": 30.0
   },
   {
    "aspect": "9:16",
-   "brief": "BR-0003",
-   "concept": "Made to Live In",
+   "brief": "BR-0005",
+   "concept": "Live‑In Comfort",
    "concept_no": 2,
    "findings": [],
-   "format": "30 second vertical video, yapper-style single-take talking head",
+   "format": "carousel 4:5",
    "notes": [],
    "shots": [
     {
      "n": 1,
-     "on_screen": "POV Swoveralls you will want to",
-     "product": "swoveralls-midnight-black",
+     "on_screen": "A piece you can actually live",
+     "product": "swoveralls-dark-athletic-grey",
      "role": "hook",
-     "seconds": 3.0,
-     "spoken": "POV: Swoveralls you will want to live in",
+     "seconds": 2.8,
+     "spoken": "A piece you can actually live in.",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
+      "credit": "Swoveralls",
       "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "source": "catalogue image",
+      "title": "Kids Swoveralls - Light Heather Grey (picture 1)",
+      "url": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/k2.jpg?v=1793796475"
      },
-     "still_query": "swoveralls-midnight-black natural light minimal editing",
-     "visual": "Natural light, minimal editing."
+     "still_query": "swoveralls-dark-athletic-grey single take talking head style natural light creat",
+     "visual": "Single‑take talking‑head style, natural light, creator holding the product, minimal cuts."
     },
     {
      "n": 2,
-     "on_screen": "sweatpants Swoveralls you will want to",
-     "product": "swoveralls-midnight-black",
+     "on_screen": "Slide 1 A piece you can",
+     "product": "swoveralls-dark-athletic-grey",
      "role": "beat",
-     "seconds": 5.3,
-     "spoken": "sweatpants Swoveralls you will want to live in",
+     "seconds": 5.6,
+     "spoken": "Slide 1: A piece you can actually live in.",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
+      "credit": "Swoveralls",
       "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "source": "catalogue image",
+      "title": "Kids Swoveralls - Light Heather Grey (picture 2)",
+      "url": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Overalls_Redesign-2.png?v=1785442917"
      },
-     "still_query": "swoveralls-midnight-black speaker wears midnight black swoveralls casually demon",
-     "visual": "Speaker wears Midnight Black Swoveralls, casually demonstrating the pockets and straps."
+     "still_query": "swoveralls-dark-athletic-grey single take talking head style natural light creat",
+     "visual": "Single‑take talking‑head style, natural light, creator holding the product, minimal cuts."
     },
     {
      "n": 3,
-     "on_screen": "95 percent cotton 5 percent spandex",
-     "product": "swoveralls-midnight-black",
+     "on_screen": "Slide 2 Soft 95% cotton blend",
+     "product": "swoveralls-dark-athletic-grey",
      "role": "beat",
-     "seconds": 7.2,
-     "spoken": "95 percent cotton, 5 percent spandex for a soft, stretchy feel",
+     "seconds": 5.6,
+     "spoken": "Slide 2: Soft 95% cotton blend feels like sweatpants.",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
+      "credit": "Swoveralls",
       "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "source": "catalogue image",
+      "title": "Kids Swoveralls - Light Heather Grey (picture 3)",
+      "url": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FabricTextureDesign_8647408f-5399-4b8f-a6b5-dff23fb6b706.jpg?v=1793799512"
      },
-     "still_query": "swoveralls-midnight-black neutral background relaxed posture",
-     "visual": "Neutral background, relaxed posture."
+     "still_query": "swoveralls-dark-athletic-grey single take talking head style natural light creat",
+     "visual": "Single‑take talking‑head style, natural light, creator holding the product, minimal cuts."
     },
     {
      "n": 4,
-     "on_screen": "Six pockets zipper fly and straps",
-     "product": "swoveralls-midnight-black",
+     "on_screen": "Slide 3 Six pockets keep essentials",
+     "product": "swoveralls-dark-athletic-grey",
      "role": "beat",
-     "seconds": 6.6,
-     "spoken": "Six pockets, zipper fly, and straps that adjust to you",
+     "seconds": 6.2,
+     "spoken": "Slide 3: Six pockets keep essentials close, no extra bulk.",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
+      "credit": "Swoveralls",
       "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "source": "catalogue image",
+      "title": "Kids Swoveralls - Light Heather Grey (picture 4)",
+      "url": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Label_Removal_Only_4.jpg?v=1785442918"
      },
-     "still_query": "swoveralls-midnight-black check john before commissioning footage",
-     "visual": "Check with John before commissioning new footage."
+     "still_query": "swoveralls-dark-athletic-grey single take talking head style natural light creat",
+     "visual": "Single‑take talking‑head style, natural light, creator holding the product, minimal cuts."
     },
     {
      "n": 5,
-     "on_screen": "No trends just comfort that lasts",
-     "product": "swoveralls-midnight-black",
+     "on_screen": "Slide 4 Swipe to see why",
+     "product": "swoveralls-dark-athletic-grey",
      "role": "beat",
-     "seconds": 4.0,
-     "spoken": "No trends, just comfort that lasts",
+     "seconds": 7.5,
+     "spoken": "Slide 4: Swipe to see why people call it their everyday uniform.",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
+      "credit": "Swoveralls",
       "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "source": "catalogue image",
+      "title": "Kids Swoveralls - Light Heather Grey (picture 5)",
+      "url": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Image_Color_Matching.png?v=1785442918"
      },
-     "still_query": "swoveralls-midnight-black check john before commissioning footage",
-     "visual": "Check with John before commissioning new footage."
+     "still_query": "swoveralls-dark-athletic-grey single take talking head style natural light creat",
+     "visual": "Single‑take talking‑head style, natural light, creator holding the product, minimal cuts."
     },
     {
      "n": 6,
-     "on_screen": "Try the comfort at swoveralls com",
-     "product": "swoveralls-midnight-black",
+     "on_screen": "See the details",
+     "product": "swoveralls-dark-athletic-grey",
      "role": "cta",
-     "seconds": 4.0,
-     "spoken": "Try the comfort at swoveralls.com",
+     "seconds": 2.3,
+     "spoken": "See the details",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
+      "credit": "Swoveralls",
       "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "source": "catalogue image",
+      "title": "Kids Swoveralls - Light Heather Grey (picture 6)",
+      "url": "https://cdn.shopify.com/s/files/1/0047/6862/8836/products/light-grey_tag_67426d85-37ea-445a-be06-d1c4ff4bb305.jpg?v=1724408393"
      },
-     "still_query": "swoveralls-midnight-black check john before commissioning footage",
-     "visual": "Check with John before commissioning new footage."
+     "still_query": "swoveralls-dark-athletic-grey single take talking head style natural light creat",
+     "visual": "Single‑take talking‑head style, natural light, creator holding the product, minimal cuts."
     }
    ],
    "status": "ok",
    "styleframes": 6,
    "target_seconds": 30,
-   "total_seconds": 30.1
+   "total_seconds": 30.0
   },
   {
    "aspect": "9:16",
-   "brief": "BR-0003",
-   "concept": "Dads Bouquet Surprise",
+   "brief": "BR-0005",
+   "concept": "Father’s Day Bouquet",
    "concept_no": 3,
    "findings": [],
-   "format": "15 second vertical video, UGC-style",
+   "format": "carousel 4:5",
    "notes": [],
    "shots": [
     {
      "n": 1,
-     "on_screen": "POV Forget the bouquet this year",
-     "product": "",
+     "on_screen": "This Father's Day give a bouquet",
+     "product": "swoveralls-midnight-black",
      "role": "hook",
      "seconds": 3.0,
-     "spoken": "POV: Forget the bouquet this year, give Swoveralls",
+     "spoken": "This Father's Day, give a bouquet that fits.",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Stop‑motion of garments being rolled, bright ribbon, close‑up of fabric texture.",
+      "url": "https://image.pollinations.ai/prompt/Stop%E2%80%91motion%20of%20garments%20being%20rolled%2C%20bright%20ribbon%2C%20close%E2%80%91up%20of%20fabric%20texture..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=1"
      },
-     "still_query": "close-up hands rolling swoveralls bouquet shape tying ribbon quick unwrapping su",
-     "visual": "Close-up of hands rolling Swoveralls into a bouquet shape, tying with a ribbon, then a quick cut to a dad unwrapping it with a surprised but happy expression."
+     "still_query": "swoveralls-midnight-black stop motion garments being rolled bright ribbon fabric",
+     "visual": "Stop‑motion of garments being rolled, bright ribbon, close‑up of fabric texture."
     },
     {
      "n": 2,
-     "on_screen": "Forget the bouquet this year",
-     "product": "",
+     "on_screen": "Slide 1 This Father's Day give",
+     "product": "swoveralls-midnight-black",
      "role": "beat",
-     "seconds": 1.7,
-     "spoken": "Forget the bouquet this year",
+     "seconds": 5.8,
+     "spoken": "Slide 1: This Father's Day, give a bouquet that fits.",
      "still": {
-      "credit": "822640 on Pixabay",
-      "license": "pixabay-content-license",
-      "source": "pixabay",
-      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
-      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Stop‑motion of garments being rolled, bright ribbon, close‑up of fabric texture.",
+      "url": "https://image.pollinations.ai/prompt/Stop%E2%80%91motion%20of%20garments%20being%20rolled%2C%20bright%20ribbon%2C%20close%E2%80%91up%20of%20fabric%20texture..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=2"
      },
-     "still_query": "warm homey lighting",
-     "visual": "Warm, homey lighting."
+     "still_query": "swoveralls-midnight-black stop motion garments being rolled bright ribbon fabric",
+     "visual": "Stop‑motion of garments being rolled, bright ribbon, close‑up of fabric texture."
     },
     {
      "n": 3,
-     "on_screen": "Roll up Swoveralls in Navy and",
-     "product": "",
-     "role": "beat",
-     "seconds": 2.7,
-     "spoken": "Roll up Swoveralls in Navy and Midnight Black",
-     "still": {
-      "credit": "822640 on Pixabay",
-      "license": "pixabay-content-license",
-      "source": "pixabay",
-      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
-      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
-     },
-     "still_query": "warm homey lighting",
-     "visual": "Warm, homey lighting."
-    },
-    {
-     "n": 4,
-     "on_screen": "Add a ribbon watch his face",
-     "product": "",
-     "role": "beat",
-     "seconds": 2.7,
-     "spoken": "Add a ribbon, watch his face light up",
-     "still": {
-      "credit": "822640 on Pixabay",
-      "license": "pixabay-content-license",
-      "source": "pixabay",
-      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
-      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
-     },
-     "still_query": "warm homey lighting",
-     "visual": "Warm, homey lighting."
-    },
-    {
-     "n": 5,
-     "on_screen": "A gift he will actually wear",
-     "product": "",
-     "role": "beat",
-     "seconds": 2.1,
-     "spoken": "A gift he will actually wear",
-     "still": {
-      "credit": "822640 on Pixabay",
-      "license": "pixabay-content-license",
-      "source": "pixabay",
-      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
-      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
-     },
-     "still_query": "warm homey lighting",
-     "visual": "Warm, homey lighting."
-    },
-    {
-     "n": 6,
-     "on_screen": "Give comfort this Father's Day at",
-     "product": "",
-     "role": "cta",
-     "seconds": 2.7,
-     "spoken": "Give comfort this Father's Day at swoveralls.com",
-     "still": {
-      "credit": "822640 on Pixabay",
-      "license": "pixabay-content-license",
-      "source": "pixabay",
-      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
-      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
-     },
-     "still_query": "warm homey lighting",
-     "visual": "Warm, homey lighting."
-    }
-   ],
-   "status": "ok",
-   "styleframes": 6,
-   "target_seconds": 15,
-   "total_seconds": 14.9
-  },
-  {
-   "aspect": "9:16",
-   "brief": "BR-0003",
-   "concept": "For the Dad Who Says He is Fine",
-   "concept_no": 4,
-   "findings": [],
-   "format": "30 second vertical video, scene-based",
-   "notes": [],
-   "shots": [
-    {
-     "n": 1,
-     "on_screen": "POV For the dad who says",
-     "product": "swoveralls-dark-athletic-grey",
-     "role": "hook",
-     "seconds": 3.0,
-     "spoken": "POV: For the dad who says he is fine after 12 hours on his feet, Swoveralls",
-     "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
-     },
-     "still_query": "swoveralls-dark-athletic-grey scene opens taking boots holding coffee sitting do",
-     "visual": "Scene opens with dad taking off boots, holding a coffee mug, then sitting down and putting on Dark Athletic Grey Swoveralls."
-    },
-    {
-     "n": 2,
-     "on_screen": "For the dad who says he",
-     "product": "swoveralls-dark-athletic-grey",
+     "on_screen": "Slide 2 Rolled Swoveralls in Navy",
+     "product": "swoveralls-midnight-black",
      "role": "beat",
      "seconds": 8.0,
-     "spoken": "For the dad who says he is fine after 12 hours on his feet",
+     "spoken": "Slide 2: Rolled Swoveralls in Navy, Midnight Black and Dark Grey tied with a ribbon.",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
+      "credit": "Swoveralls",
       "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "source": "catalogue image",
+      "title": "Kids Swoveralls - Midnight Black (picture 1)",
+      "url": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/k4.jpg?v=1793796485"
      },
-     "still_query": "swoveralls-dark-athletic-grey cozy indoor setting soft lighting",
-     "visual": "Cozy indoor setting, soft lighting."
-    },
-    {
-     "n": 3,
-     "on_screen": "Boots off coffee in hand time",
-     "product": "swoveralls-dark-athletic-grey",
-     "role": "beat",
-     "seconds": 4.9,
-     "spoken": "Boots off, coffee in hand, time to relax",
-     "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
-     },
-     "still_query": "swoveralls-dark-athletic-grey cozy indoor setting soft lighting",
-     "visual": "Cozy indoor setting, soft lighting."
+     "still_query": "swoveralls-midnight-black stop motion garments being rolled bright ribbon fabric",
+     "visual": "Stop‑motion of garments being rolled, bright ribbon, close‑up of fabric texture."
     },
     {
      "n": 4,
-     "on_screen": "Slip into Swoveralls the comfort he",
-     "product": "swoveralls-dark-athletic-grey",
+     "on_screen": "Slide 3 Six pockets for tools",
+     "product": "swoveralls-midnight-black",
      "role": "beat",
-     "seconds": 4.3,
-     "spoken": "Slip into Swoveralls, the comfort he deserves",
+     "seconds": 5.8,
+     "spoken": "Slide 3: Six pockets for tools, snacks, and love notes.",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Stop‑motion of garments being rolled, bright ribbon, close‑up of fabric texture.",
+      "url": "https://image.pollinations.ai/prompt/Stop%E2%80%91motion%20of%20garments%20being%20rolled%2C%20bright%20ribbon%2C%20close%E2%80%91up%20of%20fabric%20texture..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=4"
      },
-     "still_query": "swoveralls-dark-athletic-grey cozy indoor setting soft lighting",
-     "visual": "Cozy indoor setting, soft lighting."
+     "still_query": "swoveralls-midnight-black stop motion garments being rolled bright ribbon fabric",
+     "visual": "Stop‑motion of garments being rolled, bright ribbon, close‑up of fabric texture."
     },
     {
      "n": 5,
-     "on_screen": "Six pockets soft fabric and a",
-     "product": "swoveralls-dark-athletic-grey",
+     "on_screen": "Slide 4 Swipe to see the",
+     "product": "swoveralls-midnight-black",
      "role": "beat",
-     "seconds": 6.1,
-     "spoken": "Six pockets, soft fabric, and a fit made for downtime",
+     "seconds": 4.6,
+     "spoken": "Slide 4: Swipe to see the unboxing surprise.",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Stop‑motion of garments being rolled, bright ribbon, close‑up of fabric texture.",
+      "url": "https://image.pollinations.ai/prompt/Stop%E2%80%91motion%20of%20garments%20being%20rolled%2C%20bright%20ribbon%2C%20close%E2%80%91up%20of%20fabric%20texture..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=5"
      },
-     "still_query": "swoveralls-dark-athletic-grey cozy indoor setting soft lighting",
-     "visual": "Cozy indoor setting, soft lighting."
+     "still_query": "swoveralls-midnight-black stop motion garments being rolled bright ribbon fabric",
+     "visual": "Stop‑motion of garments being rolled, bright ribbon, close‑up of fabric texture."
     },
     {
      "n": 6,
-     "on_screen": "Help him unwind with Swoveralls",
-     "product": "swoveralls-dark-athletic-grey",
+     "on_screen": "Shop the bouquet",
+     "product": "swoveralls-midnight-black",
      "role": "cta",
-     "seconds": 3.1,
-     "spoken": "Help him unwind with Swoveralls",
+     "seconds": 2.2,
+     "spoken": "Shop the bouquet",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Stop‑motion of garments being rolled, bright ribbon, close‑up of fabric texture.",
+      "url": "https://image.pollinations.ai/prompt/Stop%E2%80%91motion%20of%20garments%20being%20rolled%2C%20bright%20ribbon%2C%20close%E2%80%91up%20of%20fabric%20texture..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=6"
      },
-     "still_query": "swoveralls-dark-athletic-grey cozy indoor setting soft lighting",
-     "visual": "Cozy indoor setting, soft lighting."
+     "still_query": "swoveralls-midnight-black stop motion garments being rolled bright ribbon fabric",
+     "visual": "Stop‑motion of garments being rolled, bright ribbon, close‑up of fabric texture."
     }
    ],
    "status": "ok",
@@ -471,114 +354,127 @@
   },
   {
    "aspect": "9:16",
-   "brief": "BR-0003",
-   "concept": "The Gift He Actually Wants",
-   "concept_no": 5,
-   "findings": [],
-   "format": "Static carousel post",
+   "brief": "BR-0005",
+   "concept": "After‑Work Relief",
+   "concept_no": 4,
+   "findings": [
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 1 (hook) spoken"
+    },
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 2 (beat) spoken"
+    }
+   ],
+   "format": "carousel 4:5",
    "notes": [],
    "shots": [
     {
      "n": 1,
-     "on_screen": "POV Gifts dads secretly hate Swoveralls",
-     "product": "",
+     "on_screen": "12 hours on his feet and",
+     "product": "swoveralls-navy",
      "role": "hook",
-     "seconds": 2.8,
-     "spoken": "POV: Gifts dads secretly hate, Swoveralls instead",
+     "seconds": 3.0,
+     "spoken": "12 hours on his feet and he’s still saying I’m fine.",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
       "source": "brand site",
-      "title": "Woman in Midnight Black Swoveralls and a tie-dye hoodie showing off the bib pocket at home.",
-      "url": "https://swoveralls.com/cdn/shop/files/vermomster.poster.jpg?v=1790901174&amp;width=480"
+      "title": "Man in Midnight Black Swoveralls, a polka dot shirt, and a black hat dancing in a kitchen.",
+      "url": "https://swoveralls.com/cdn/shop/files/mr-larrie-polka-dot.poster.jpg?v=1790901179&amp;width=480"
      },
-     "still_query": "carousel first slide showing novelty gifts socks gadgets second text-only third ",
-     "visual": "Carousel with first slide showing novelty gifts (socks, gadgets), second slide text-only, third slide product shot of Swoveralls in Midnight Black and Navy, fourth slide lifestyle shot of someone wearing Swoveralls on a couch."
+     "still_query": "swoveralls-navy lifestyle scene kitchen table relaxed product visible warm light",
+     "visual": "Lifestyle scene: dad at kitchen table, relaxed, product visible, warm lighting."
     },
     {
      "n": 2,
-     "on_screen": "Slide 1 Novelty socks random gadgets",
-     "product": "",
+     "on_screen": "Slide 1 12 hours on his",
+     "product": "swoveralls-navy",
      "role": "beat",
-     "seconds": 5.4,
-     "spoken": "Slide 1: Novelty socks, random gadgets, another tie",
+     "seconds": 6.5,
+     "spoken": "Slide 1: 12 hours on his feet and he’s still saying I’m fine.",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "Woman in Midnight Black Swoveralls and a tie-dye hoodie showing off the bib pocket at home.",
-      "url": "https://swoveralls.com/cdn/shop/files/vermomster.poster.jpg?v=1790901174&amp;width=480"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Lifestyle scene: dad at kitchen table, relaxed, product visible, warm lighting.",
+      "url": "https://image.pollinations.ai/prompt/Lifestyle%20scene%3A%20dad%20at%20kitchen%20table%2C%20relaxed%2C%20product%20visible%2C%20warm%20lighting..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=2"
      },
-     "still_query": "carousel first slide showing novelty gifts socks gadgets second text-only third ",
-     "visual": "Carousel with first slide showing novelty gifts (socks, gadgets), second slide text-only, third slide product shot of Swoveralls in Midnight Black and Navy, fourth slide lifestyle shot of someone wearing Swoveralls on a couch."
+     "still_query": "swoveralls-navy lifestyle scene kitchen table relaxed product visible warm light",
+     "visual": "Lifestyle scene: dad at kitchen table, relaxed, product visible, warm lighting."
     },
     {
      "n": 3,
-     "on_screen": "Slide 2 What he really wants",
-     "product": "",
+     "on_screen": "Slide 2 He kicks off his",
+     "product": "swoveralls-navy",
      "role": "beat",
-     "seconds": 4.1,
-     "spoken": "Slide 2: What he really wants",
+     "seconds": 7.0,
+     "spoken": "Slide 2: He kicks off his shoes, grabs a coffee, and slides into Swoveralls.",
      "still": {
       "credit": "swoveralls.com (the brand's own site)",
       "license": "brand-own",
       "source": "brand site",
-      "title": "Woman in Midnight Black Swoveralls and a tie-dye hoodie showing off the bib pocket at home.",
-      "url": "https://swoveralls.com/cdn/shop/files/vermomster.poster.jpg?v=1790901174&amp;width=480"
+      "title": "Swoveralls logo with a blue flag on a white background",
+      "url": "https://swoveralls.com/cdn/shop/files/Swoveralls_logo_FTW.png?v=1774552365&amp;width=600"
      },
-     "still_query": "carousel first slide showing novelty gifts socks gadgets second text-only third ",
-     "visual": "Carousel with first slide showing novelty gifts (socks, gadgets), second slide text-only, third slide product shot of Swoveralls in Midnight Black and Navy, fourth slide lifestyle shot of someone wearing Swoveralls on a couch."
+     "still_query": "swoveralls-navy lifestyle scene kitchen table relaxed product visible warm light",
+     "visual": "Lifestyle scene: dad at kitchen table, relaxed, product visible, warm lighting."
     },
     {
      "n": 4,
-     "on_screen": "Slide 3 Swoveralls in Midnight Black",
-     "product": "",
+     "on_screen": "Slide 3 Soft cotton stretch and",
+     "product": "swoveralls-navy",
      "role": "beat",
-     "seconds": 5.4,
-     "spoken": "Slide 3: Swoveralls in Midnight Black or Navy",
+     "seconds": 6.0,
+     "spoken": "Slide 3: Soft cotton, stretch, and six pockets make the unwind effortless.",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "Woman in Midnight Black Swoveralls and a tie-dye hoodie showing off the bib pocket at home.",
-      "url": "https://swoveralls.com/cdn/shop/files/vermomster.poster.jpg?v=1790901174&amp;width=480"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Lifestyle scene: dad at kitchen table, relaxed, product visible, warm lighting.",
+      "url": "https://image.pollinations.ai/prompt/Lifestyle%20scene%3A%20dad%20at%20kitchen%20table%2C%20relaxed%2C%20product%20visible%2C%20warm%20lighting..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=4"
      },
-     "still_query": "carousel first slide showing novelty gifts socks gadgets second text-only third ",
-     "visual": "Carousel with first slide showing novelty gifts (socks, gadgets), second slide text-only, third slide product shot of Swoveralls in Midnight Black and Navy, fourth slide lifestyle shot of someone wearing Swoveralls on a couch."
+     "still_query": "swoveralls-navy lifestyle scene kitchen table relaxed product visible warm light",
+     "visual": "Lifestyle scene: dad at kitchen table, relaxed, product visible, warm lighting."
     },
     {
      "n": 5,
-     "on_screen": "Slide 4 Comfort he will wear",
-     "product": "",
+     "on_screen": "Slide 4 Swipe to see why",
+     "product": "swoveralls-navy",
      "role": "beat",
-     "seconds": 5.4,
-     "spoken": "Slide 4: Comfort he will wear every day",
+     "seconds": 5.5,
+     "spoken": "Slide 4: Swipe to see why dads choose this after work.",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "Woman in Midnight Black Swoveralls and a tie-dye hoodie showing off the bib pocket at home.",
-      "url": "https://swoveralls.com/cdn/shop/files/vermomster.poster.jpg?v=1790901174&amp;width=480"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Lifestyle scene: dad at kitchen table, relaxed, product visible, warm lighting.",
+      "url": "https://image.pollinations.ai/prompt/Lifestyle%20scene%3A%20dad%20at%20kitchen%20table%2C%20relaxed%2C%20product%20visible%2C%20warm%20lighting..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=5"
      },
-     "still_query": "carousel first slide showing novelty gifts socks gadgets second text-only third ",
-     "visual": "Carousel with first slide showing novelty gifts (socks, gadgets), second slide text-only, third slide product shot of Swoveralls in Midnight Black and Navy, fourth slide lifestyle shot of someone wearing Swoveralls on a couch."
+     "still_query": "swoveralls-navy lifestyle scene kitchen table relaxed product visible warm light",
+     "visual": "Lifestyle scene: dad at kitchen table, relaxed, product visible, warm lighting."
     },
     {
      "n": 6,
-     "on_screen": "Shop Swoveralls in Midnight Black or",
-     "product": "",
+     "on_screen": "Discover comfort",
+     "product": "swoveralls-navy",
      "role": "cta",
-     "seconds": 6.8,
-     "spoken": "Shop Swoveralls in Midnight Black or Navy at swoveralls.com",
+     "seconds": 1.9,
+     "spoken": "Discover comfort",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "Woman in Midnight Black Swoveralls and a tie-dye hoodie showing off the bib pocket at home.",
-      "url": "https://swoveralls.com/cdn/shop/files/vermomster.poster.jpg?v=1790901174&amp;width=480"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Lifestyle scene: dad at kitchen table, relaxed, product visible, warm lighting.",
+      "url": "https://image.pollinations.ai/prompt/Lifestyle%20scene%3A%20dad%20at%20kitchen%20table%2C%20relaxed%2C%20product%20visible%2C%20warm%20lighting..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=6"
      },
-     "still_query": "carousel first slide showing novelty gifts socks gadgets second text-only third ",
-     "visual": "Carousel with first slide showing novelty gifts (socks, gadgets), second slide text-only, third slide product shot of Swoveralls in Midnight Black and Navy, fourth slide lifestyle shot of someone wearing Swoveralls on a couch."
+     "still_query": "swoveralls-navy lifestyle scene kitchen table relaxed product visible warm light",
+     "visual": "Lifestyle scene: dad at kitchen table, relaxed, product visible, warm lighting."
     }
    ],
    "status": "ok",
@@ -588,231 +484,601 @@
   },
   {
    "aspect": "9:16",
-   "brief": "BR-0003",
-   "concept": "POV Dad Says He Doesnt Need Anything",
-   "concept_no": 6,
-   "findings": [],
-   "format": "15 second vertical video, POV UGC-style",
+   "brief": "BR-0005",
+   "concept": "Surprise Unwrap",
+   "concept_no": 5,
+   "findings": [
+    {
+     "message": "typographic marks that read as AI-written: HORIZONTAL ELLIPSIS, RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 1 (hook) spoken"
+    },
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 1 (hook) on screen"
+    },
+    {
+     "message": "typographic marks that read as AI-written: HORIZONTAL ELLIPSIS, RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 2 (beat) spoken"
+    },
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 2 (beat) on screen"
+    },
+    {
+     "message": "Rule-of-three triad: Two items or four. Three is the model's default rhythm.",
+     "rule": "slop_structure",
+     "severity": "warning",
+     "where": "shot 4 (beat) spoken"
+    }
+   ],
+   "format": "carousel 4:5",
    "notes": [],
    "shots": [
     {
      "n": 1,
-     "on_screen": "POV Dad says he doesnt need",
+     "on_screen": "Three two one what’s inside",
      "product": "swoveralls-dark-athletic-grey",
      "role": "hook",
-     "seconds": 3.0,
-     "spoken": "POV: Dad says he doesnt need anything for Father's Day, Swoveralls",
+     "seconds": 2.0,
+     "spoken": "Three, two, one… what’s inside?",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "UGC‑style clip of dad unwrapping, authentic reaction, no staged lines.",
+      "url": "https://image.pollinations.ai/prompt/UGC%E2%80%91style%20clip%20of%20dad%20unwrapping%2C%20authentic%20reaction%2C%20no%20staged%20lines..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=1"
      },
-     "still_query": "swoveralls-dark-athletic-grey handing wrapped swoveralls trying them smiling",
-     "visual": "POV shot of handing a wrapped Swoveralls to dad, then cut to him trying them on and smiling."
+     "still_query": "swoveralls-dark-athletic-grey style clip unwrapping authentic reaction staged li",
+     "visual": "UGC‑style clip of dad unwrapping, authentic reaction, no staged lines."
     },
     {
      "n": 2,
-     "on_screen": "POV Dad says he doesnt need",
+     "on_screen": "Slide 1 Three two one what’s",
      "product": "swoveralls-dark-athletic-grey",
      "role": "beat",
-     "seconds": 2.7,
-     "spoken": "POV Dad says he doesnt need anything for Father's Day",
+     "seconds": 4.8,
+     "spoken": "Slide 1: Three, two, one… what’s inside?",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "UGC‑style clip of dad unwrapping, authentic reaction, no staged lines.",
+      "url": "https://image.pollinations.ai/prompt/UGC%E2%80%91style%20clip%20of%20dad%20unwrapping%2C%20authentic%20reaction%2C%20no%20staged%20lines..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=2"
      },
-     "still_query": "swoveralls-dark-athletic-grey casual home setting natural light",
-     "visual": "Casual, home setting with natural light."
+     "still_query": "swoveralls-dark-athletic-grey style clip unwrapping authentic reaction staged li",
+     "visual": "UGC‑style clip of dad unwrapping, authentic reaction, no staged lines."
     },
     {
      "n": 3,
-     "on_screen": "95 percent cotton 5 percent spandex",
+     "on_screen": "Slide 2 Dad pulls the wrapping",
      "product": "swoveralls-dark-athletic-grey",
      "role": "beat",
-     "seconds": 2.9,
-     "spoken": "95 percent cotton, 5 percent spandex for a soft, stretchy feel",
+     "seconds": 8.0,
+     "spoken": "Slide 2: Dad pulls the wrapping, eyes widen at the sleek Swoveralls.",
      "still": {
-      "credit": "swoveralls.com (the brand's own site)",
-      "license": "brand-own",
-      "source": "brand site",
-      "title": "front page image",
-      "url": "http://swoveralls.com/cdn/shop/files/Screenshot_2026-08-20_at_12.12.09_PM.png?v=1787242339"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "UGC‑style clip of dad unwrapping, authentic reaction, no staged lines.",
+      "url": "https://image.pollinations.ai/prompt/UGC%E2%80%91style%20clip%20of%20dad%20unwrapping%2C%20authentic%20reaction%2C%20no%20staged%20lines..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=3"
      },
-     "still_query": "swoveralls-dark-athletic-grey casual home setting natural light",
-     "visual": "Casual, home setting with natural light."
+     "still_query": "swoveralls-dark-athletic-grey style clip unwrapping authentic reaction staged li",
+     "visual": "UGC‑style clip of dad unwrapping, authentic reaction, no staged lines."
     },
     {
      "n": 4,
-     "on_screen": "He tries them on then keeps",
+     "on_screen": "Slide 3 Close up of fabric",
      "product": "swoveralls-dark-athletic-grey",
      "role": "beat",
-     "seconds": 2.1,
-     "spoken": "He tries them on, then keeps wearing them",
+     "seconds": 6.2,
+     "spoken": "Slide 3: Close‑up of fabric, pockets, and stretch.",
      "still": {
-      "credit": "822640 on Pixabay",
-      "license": "pixabay-content-license",
-      "source": "pixabay",
-      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
-      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "UGC‑style clip of dad unwrapping, authentic reaction, no staged lines.",
+      "url": "https://image.pollinations.ai/prompt/UGC%E2%80%91style%20clip%20of%20dad%20unwrapping%2C%20authentic%20reaction%2C%20no%20staged%20lines..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=4"
      },
-     "still_query": "swoveralls-dark-athletic-grey casual home setting natural light",
-     "visual": "Casual, home setting with natural light."
+     "still_query": "swoveralls-dark-athletic-grey style clip unwrapping authentic reaction staged li",
+     "visual": "UGC‑style clip of dad unwrapping, authentic reaction, no staged lines."
     },
     {
      "n": 5,
-     "on_screen": "Six pockets soft fabric and a",
+     "on_screen": "Slide 4 Swipe to watch the",
      "product": "swoveralls-dark-athletic-grey",
      "role": "beat",
-     "seconds": 2.7,
-     "spoken": "Six pockets, soft fabric, and a fit made for downtime",
+     "seconds": 6.2,
+     "spoken": "Slide 4: Swipe to watch the full reaction video.",
      "still": {
-      "credit": "822640 on Pixabay",
-      "license": "pixabay-content-license",
-      "source": "pixabay",
-      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
-      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "UGC‑style clip of dad unwrapping, authentic reaction, no staged lines.",
+      "url": "https://image.pollinations.ai/prompt/UGC%E2%80%91style%20clip%20of%20dad%20unwrapping%2C%20authentic%20reaction%2C%20no%20staged%20lines..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=5"
      },
-     "still_query": "swoveralls-dark-athletic-grey casual home setting natural light",
-     "visual": "Casual, home setting with natural light."
+     "still_query": "swoveralls-dark-athletic-grey style clip unwrapping authentic reaction staged li",
+     "visual": "UGC‑style clip of dad unwrapping, authentic reaction, no staged lines."
     },
     {
      "n": 6,
-     "on_screen": "Give him comfort at swoveralls com",
+     "on_screen": "Watch the reveal",
      "product": "swoveralls-dark-athletic-grey",
      "role": "cta",
-     "seconds": 1.6,
-     "spoken": "Give him comfort at swoveralls.com",
+     "seconds": 2.6,
+     "spoken": "Watch the reveal",
      "still": {
-      "credit": "822640 on Pixabay",
-      "license": "pixabay-content-license",
-      "source": "pixabay",
-      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
-      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "UGC‑style clip of dad unwrapping, authentic reaction, no staged lines.",
+      "url": "https://image.pollinations.ai/prompt/UGC%E2%80%91style%20clip%20of%20dad%20unwrapping%2C%20authentic%20reaction%2C%20no%20staged%20lines..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=6"
      },
-     "still_query": "swoveralls-dark-athletic-grey casual home setting natural light",
-     "visual": "Casual, home setting with natural light."
+     "still_query": "swoveralls-dark-athletic-grey style clip unwrapping authentic reaction staged li",
+     "visual": "UGC‑style clip of dad unwrapping, authentic reaction, no staged lines."
     }
    ],
    "status": "ok",
    "styleframes": 6,
-   "target_seconds": 15,
-   "total_seconds": 15.0
+   "target_seconds": 30,
+   "total_seconds": 29.8
   },
   {
    "aspect": "9:16",
-   "brief": "BR-0003",
-   "concept": "The Same Gift Every Year",
-   "concept_no": 7,
-   "findings": [],
-   "format": "30 second vertical video, humor-style",
+   "brief": "BR-0005",
+   "concept": "Annual Tradition",
+   "concept_no": 6,
+   "findings": [
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 1 (hook) visual"
+    },
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 2 (beat) visual"
+    },
+    {
+     "message": "typographic marks that read as AI-written: EN DASH",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 3 (beat) spoken"
+    },
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 3 (beat) visual"
+    },
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 4 (beat) spoken"
+    },
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 4 (beat) visual"
+    },
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 5 (beat) spoken"
+    },
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 5 (beat) visual"
+    },
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 6 (cta) visual"
+    }
+   ],
+   "format": "carousel 4:5",
    "notes": [],
    "shots": [
     {
      "n": 1,
-     "on_screen": "POV The same gift every year",
-     "product": "",
+     "on_screen": "Another year another Swoveralls surprise",
+     "product": "swoveralls-midnight-black",
      "role": "hook",
-     "seconds": 3.0,
-     "spoken": "POV: The same gift every year and he is still thrilled, Swoveralls",
+     "seconds": 2.0,
+     "spoken": "Another year, another Swoveralls surprise.",
      "still": {
-      "credit": "822640 on Pixabay",
-      "license": "pixabay-content-license",
-      "source": "pixabay",
-      "title": "boy child fishing fishing rod bucket fisherman kid young small childhood summer adventure nature outdoors lake water ove",
-      "url": "https://pixabay.com/get/g112cc821a7c35cc1eb090be4dccb25f2d1a78299b296461071fcabe3e78630ac287a471ea07ba5dbaeea52642540f87840aa9a0996d1d38ee15e816d4578714c_1280.jpg"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Series of short clips showing dad’s reaction over multiple years, consistent branding.",
+      "url": "https://image.pollinations.ai/prompt/Series%20of%20short%20clips%20showing%20dad%E2%80%99s%20reaction%20over%20multiple%20years%2C%20consistent%20branding..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=1"
      },
-     "still_query": "montage opening color swoveralls each year exaggerated happy reactions",
-     "visual": "Montage of dad opening a new color of Swoveralls each year, with exaggerated happy reactions."
+     "still_query": "swoveralls-midnight-black series short clips showing dad’s reaction multiple yea",
+     "visual": "Series of short clips showing dad’s reaction over multiple years, consistent branding."
     },
     {
      "n": 2,
-     "on_screen": "Year one Swoveralls in Midnight Black",
-     "product": "",
+     "on_screen": "Slide 1 Another year another Swoveralls",
+     "product": "swoveralls-midnight-black",
      "role": "beat",
-     "seconds": 5.4,
-     "spoken": "Year one: Swoveralls in Midnight Black",
+     "seconds": 4.3,
+     "spoken": "Slide 1: Another year, another Swoveralls surprise.",
      "still": {
-      "credit": "KELLEPICS on Pixabay",
-      "license": "pixabay-content-license",
-      "source": "pixabay",
-      "title": "composing ape woman laugh sepia brown gorilla watch scene fantasy view mystical lighting mood fantasy picture face fairy",
-      "url": "https://pixabay.com/get/g3ba2189b7dd665b0a81ac73e5653310aba5806207bbd84ab4a63c095f68c9c59f9bf113bdcf05ade5bf0d454206cf921a7c3a6cc8138164d1bde5d49c23bf456_1280.jpg"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Series of short clips showing dad’s reaction over multiple years, consistent branding.",
+      "url": "https://image.pollinations.ai/prompt/Series%20of%20short%20clips%20showing%20dad%E2%80%99s%20reaction%20over%20multiple%20years%2C%20consistent%20branding..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=2"
      },
-     "still_query": "bright lighting emphasize humor",
-     "visual": "Bright, fun lighting to emphasize the humor."
+     "still_query": "swoveralls-midnight-black series short clips showing dad’s reaction multiple yea",
+     "visual": "Series of short clips showing dad’s reaction over multiple years, consistent branding."
     },
     {
      "n": 3,
-     "on_screen": "Year two Swoveralls in Navy",
-     "product": "",
+     "on_screen": "Slide 2 Dad opens a box",
+     "product": "swoveralls-midnight-black",
      "role": "beat",
-     "seconds": 4.5,
-     "spoken": "Year two: Swoveralls in Navy",
+     "seconds": 7.3,
+     "spoken": "Slide 2: Dad opens a box, finds a new colour – Midnight Black.",
      "still": {
-      "credit": "KELLEPICS on Pixabay",
-      "license": "pixabay-content-license",
-      "source": "pixabay",
-      "title": "composing ape woman laugh sepia brown gorilla watch scene fantasy view mystical lighting mood fantasy picture face fairy",
-      "url": "https://pixabay.com/get/g3ba2189b7dd665b0a81ac73e5653310aba5806207bbd84ab4a63c095f68c9c59f9bf113bdcf05ade5bf0d454206cf921a7c3a6cc8138164d1bde5d49c23bf456_1280.jpg"
+      "credit": "Swoveralls",
+      "license": "brand-own",
+      "source": "catalogue image",
+      "title": "Kids Swoveralls - Midnight Black (picture 1)",
+      "url": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/k4.jpg?v=1793796485"
      },
-     "still_query": "bright lighting emphasize humor",
-     "visual": "Bright, fun lighting to emphasize the humor."
+     "still_query": "swoveralls-midnight-black series short clips showing dad’s reaction multiple yea",
+     "visual": "Series of short clips showing dad’s reaction over multiple years, consistent branding."
     },
     {
      "n": 4,
-     "on_screen": "Year three Swoveralls in Dark Athletic",
-     "product": "",
+     "on_screen": "Slide 3 Quick flash of past",
+     "product": "swoveralls-midnight-black",
      "role": "beat",
-     "seconds": 6.3,
-     "spoken": "Year three: Swoveralls in Dark Athletic Grey",
+     "seconds": 7.3,
+     "spoken": "Slide 3: Quick flash of past years’ colours, each with a smile.",
      "still": {
-      "credit": "KELLEPICS on Pixabay",
-      "license": "pixabay-content-license",
-      "source": "pixabay",
-      "title": "composing ape woman laugh sepia brown gorilla watch scene fantasy view mystical lighting mood fantasy picture face fairy",
-      "url": "https://pixabay.com/get/g3ba2189b7dd665b0a81ac73e5653310aba5806207bbd84ab4a63c095f68c9c59f9bf113bdcf05ade5bf0d454206cf921a7c3a6cc8138164d1bde5d49c23bf456_1280.jpg"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Series of short clips showing dad’s reaction over multiple years, consistent branding.",
+      "url": "https://image.pollinations.ai/prompt/Series%20of%20short%20clips%20showing%20dad%E2%80%99s%20reaction%20over%20multiple%20years%2C%20consistent%20branding..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=4"
      },
-     "still_query": "bright lighting emphasize humor",
-     "visual": "Bright, fun lighting to emphasize the humor."
+     "still_query": "swoveralls-midnight-black series short clips showing dad’s reaction multiple yea",
+     "visual": "Series of short clips showing dad’s reaction over multiple years, consistent branding."
     },
     {
      "n": 5,
-     "on_screen": "Because comfort never gets old",
-     "product": "",
+     "on_screen": "Slide 4 Swipe to add this",
+     "product": "swoveralls-midnight-black",
      "role": "beat",
-     "seconds": 4.5,
-     "spoken": "Because comfort never gets old",
+     "seconds": 6.7,
+     "spoken": "Slide 4: Swipe to add this year’s colour to your list.",
      "still": {
-      "credit": "KELLEPICS on Pixabay",
-      "license": "pixabay-content-license",
-      "source": "pixabay",
-      "title": "composing ape woman laugh sepia brown gorilla watch scene fantasy view mystical lighting mood fantasy picture face fairy",
-      "url": "https://pixabay.com/get/g3ba2189b7dd665b0a81ac73e5653310aba5806207bbd84ab4a63c095f68c9c59f9bf113bdcf05ade5bf0d454206cf921a7c3a6cc8138164d1bde5d49c23bf456_1280.jpg"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Series of short clips showing dad’s reaction over multiple years, consistent branding.",
+      "url": "https://image.pollinations.ai/prompt/Series%20of%20short%20clips%20showing%20dad%E2%80%99s%20reaction%20over%20multiple%20years%2C%20consistent%20branding..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=5"
      },
-     "still_query": "bright lighting emphasize humor",
-     "visual": "Bright, fun lighting to emphasize the humor."
+     "still_query": "swoveralls-midnight-black series short clips showing dad’s reaction multiple yea",
+     "visual": "Series of short clips showing dad’s reaction over multiple years, consistent branding."
     },
     {
      "n": 6,
-     "on_screen": "Keep the tradition going at swoveralls",
-     "product": "",
+     "on_screen": "Add to your calendar",
+     "product": "swoveralls-midnight-black",
      "role": "cta",
-     "seconds": 6.3,
-     "spoken": "Keep the tradition going at swoveralls.com",
+     "seconds": 2.4,
+     "spoken": "Add to your calendar",
      "still": {
-      "credit": "KELLEPICS on Pixabay",
-      "license": "pixabay-content-license",
-      "source": "pixabay",
-      "title": "composing ape woman laugh sepia brown gorilla watch scene fantasy view mystical lighting mood fantasy picture face fairy",
-      "url": "https://pixabay.com/get/g3ba2189b7dd665b0a81ac73e5653310aba5806207bbd84ab4a63c095f68c9c59f9bf113bdcf05ade5bf0d454206cf921a7c3a6cc8138164d1bde5d49c23bf456_1280.jpg"
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Series of short clips showing dad’s reaction over multiple years, consistent branding.",
+      "url": "https://image.pollinations.ai/prompt/Series%20of%20short%20clips%20showing%20dad%E2%80%99s%20reaction%20over%20multiple%20years%2C%20consistent%20branding..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=6"
      },
-     "still_query": "bright lighting emphasize humor",
-     "visual": "Bright, fun lighting to emphasize the humor."
+     "still_query": "swoveralls-midnight-black series short clips showing dad’s reaction multiple yea",
+     "visual": "Series of short clips showing dad’s reaction over multiple years, consistent branding."
+    }
+   ],
+   "status": "ok",
+   "styleframes": 6,
+   "target_seconds": 30,
+   "total_seconds": 30.0
+  },
+  {
+   "aspect": "9:16",
+   "brief": "BR-0005",
+   "concept": "Gifts Dads Actually Want",
+   "concept_no": 7,
+   "findings": [
+    {
+     "message": "typographic marks that read as AI-written: HORIZONTAL ELLIPSIS",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 1 (hook) spoken"
+    },
+    {
+     "message": "typographic marks that read as AI-written: HORIZONTAL ELLIPSIS",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 2 (beat) spoken"
+    },
+    {
+     "message": "typographic marks that read as AI-written: EN DASH",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 4 (beat) spoken"
+    }
+   ],
+   "format": "carousel 4:5",
+   "notes": [],
+   "shots": [
+    {
+     "n": 1,
+     "on_screen": "Socks gadgets none of the stuff",
+     "product": "swoveralls-dark-athletic-grey",
+     "role": "hook",
+     "seconds": 3.0,
+     "spoken": "Socks, gadgets… none of the stuff dads actually want.",
+     "still": {
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Split screen: left side shows unwanted gifts, right side shows Swoveralls, bright contrast.",
+      "url": "https://image.pollinations.ai/prompt/Split%20screen%3A%20left%20side%20shows%20unwanted%20gifts%2C%20right%20side%20shows%20Swoveralls%2C%20bright%20contrast..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=1"
+     },
+     "still_query": "swoveralls-dark-athletic-grey split screen left side shows unwanted gifts right ",
+     "visual": "Split screen: left side shows unwanted gifts, right side shows Swoveralls, bright contrast."
+    },
+    {
+     "n": 2,
+     "on_screen": "Slide 1 Socks gadgets none of",
+     "product": "swoveralls-dark-athletic-grey",
+     "role": "beat",
+     "seconds": 6.8,
+     "spoken": "Slide 1: Socks, gadgets… none of the stuff dads actually want.",
+     "still": {
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Split screen: left side shows unwanted gifts, right side shows Swoveralls, bright contrast.",
+      "url": "https://image.pollinations.ai/prompt/Split%20screen%3A%20left%20side%20shows%20unwanted%20gifts%2C%20right%20side%20shows%20Swoveralls%2C%20bright%20contrast..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=2"
+     },
+     "still_query": "swoveralls-dark-athletic-grey split screen left side shows unwanted gifts right ",
+     "visual": "Split screen: left side shows unwanted gifts, right side shows Swoveralls, bright contrast."
+    },
+    {
+     "n": 3,
+     "on_screen": "Slide 2 Instead a sleek Swoveralls",
+     "product": "swoveralls-dark-athletic-grey",
+     "role": "beat",
+     "seconds": 6.2,
+     "spoken": "Slide 2: Instead, a sleek Swoveralls in Dark Athletic Grey.",
+     "still": {
+      "credit": "Swoveralls",
+      "license": "brand-own",
+      "source": "catalogue image",
+      "title": "Swoveralls - Dark Athletic Grey (picture 1)",
+      "url": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwagBraReplacement.jpg?v=1780854121"
+     },
+     "still_query": "swoveralls-dark-athletic-grey split screen left side shows unwanted gifts right ",
+     "visual": "Split screen: left side shows unwanted gifts, right side shows Swoveralls, bright contrast."
+    },
+    {
+     "n": 4,
+     "on_screen": "Slide 3 Six pockets soft cotton",
+     "product": "swoveralls-dark-athletic-grey",
+     "role": "beat",
+     "seconds": 6.8,
+     "spoken": "Slide 3: Six pockets, soft cotton, stretch – ready for any task.",
+     "still": {
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Split screen: left side shows unwanted gifts, right side shows Swoveralls, bright contrast.",
+      "url": "https://image.pollinations.ai/prompt/Split%20screen%3A%20left%20side%20shows%20unwanted%20gifts%2C%20right%20side%20shows%20Swoveralls%2C%20bright%20contrast..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=4"
+     },
+     "still_query": "swoveralls-dark-athletic-grey split screen left side shows unwanted gifts right ",
+     "visual": "Split screen: left side shows unwanted gifts, right side shows Swoveralls, bright contrast."
+    },
+    {
+     "n": 5,
+     "on_screen": "Slide 4 Swipe to shop the",
+     "product": "swoveralls-dark-athletic-grey",
+     "role": "beat",
+     "seconds": 4.9,
+     "spoken": "Slide 4: Swipe to shop the practical gift.",
+     "still": {
+      "credit": "Swoveralls",
+      "license": "brand-own",
+      "source": "catalogue image",
+      "title": "Swoveralls Gift Card (picture 1)",
+      "url": "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/ScreenShot2023-06-30at1.38.45PM.png?v=1688157544"
+     },
+     "still_query": "swoveralls-dark-athletic-grey split screen left side shows unwanted gifts right ",
+     "visual": "Split screen: left side shows unwanted gifts, right side shows Swoveralls, bright contrast."
+    },
+    {
+     "n": 6,
+     "on_screen": "Shop practical",
+     "product": "swoveralls-dark-athletic-grey",
+     "role": "cta",
+     "seconds": 2.3,
+     "spoken": "Shop practical",
+     "still": {
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "Split screen: left side shows unwanted gifts, right side shows Swoveralls, bright contrast.",
+      "url": "https://image.pollinations.ai/prompt/Split%20screen%3A%20left%20side%20shows%20unwanted%20gifts%2C%20right%20side%20shows%20Swoveralls%2C%20bright%20contrast..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=6"
+     },
+     "still_query": "swoveralls-dark-athletic-grey split screen left side shows unwanted gifts right ",
+     "visual": "Split screen: left side shows unwanted gifts, right side shows Swoveralls, bright contrast."
+    }
+   ],
+   "status": "ok",
+   "styleframes": 6,
+   "target_seconds": 30,
+   "total_seconds": 30.0
+  },
+  {
+   "aspect": "9:16",
+   "brief": "BR-0005",
+   "concept": "Dad Says No",
+   "concept_no": 8,
+   "findings": [
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 1 (hook) spoken"
+    },
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 1 (hook) on screen"
+    },
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 2 (beat) spoken"
+    },
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 2 (beat) on screen"
+    },
+    {
+     "message": "typographic marks that read as AI-written: RIGHT SINGLE QUOTE",
+     "rule": "slop_typographic",
+     "severity": "warning",
+     "where": "shot 5 (beat) spoken"
+    }
+   ],
+   "format": "carousel 4:5",
+   "notes": [],
+   "shots": [
+    {
+     "n": 1,
+     "on_screen": "Dad says he doesn’t need anything",
+     "product": "swoveralls-navy",
+     "role": "hook",
+     "seconds": 3.0,
+     "spoken": "Dad says he doesn’t need anything for Father’s Day.",
+     "still": {
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "POV style, natural lighting, authentic reaction, no scripted lines.",
+      "url": "https://image.pollinations.ai/prompt/POV%20style%2C%20natural%20lighting%2C%20authentic%20reaction%2C%20no%20scripted%20lines..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=1"
+     },
+     "still_query": "swoveralls-navy style natural lighting authentic reaction scripted lines",
+     "visual": "POV style, natural lighting, authentic reaction, no scripted lines."
+    },
+    {
+     "n": 2,
+     "on_screen": "Slide 1 Dad says he doesn’t",
+     "product": "swoveralls-navy",
+     "role": "beat",
+     "seconds": 6.6,
+     "spoken": "Slide 1: Dad says he doesn’t need anything for Father’s Day.",
+     "still": {
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "POV style, natural lighting, authentic reaction, no scripted lines.",
+      "url": "https://image.pollinations.ai/prompt/POV%20style%2C%20natural%20lighting%2C%20authentic%20reaction%2C%20no%20scripted%20lines..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=2"
+     },
+     "still_query": "swoveralls-navy style natural lighting authentic reaction scripted lines",
+     "visual": "POV style, natural lighting, authentic reaction, no scripted lines."
+    },
+    {
+     "n": 3,
+     "on_screen": "Slide 2 He opens a box",
+     "product": "swoveralls-navy",
+     "role": "beat",
+     "seconds": 6.0,
+     "spoken": "Slide 2: He opens a box, finds a Swoveralls, smiles.",
+     "still": {
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "POV style, natural lighting, authentic reaction, no scripted lines.",
+      "url": "https://image.pollinations.ai/prompt/POV%20style%2C%20natural%20lighting%2C%20authentic%20reaction%2C%20no%20scripted%20lines..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=3"
+     },
+     "still_query": "swoveralls-navy style natural lighting authentic reaction scripted lines",
+     "visual": "POV style, natural lighting, authentic reaction, no scripted lines."
+    },
+    {
+     "n": 4,
+     "on_screen": "Slide 3 Close up of fabric",
+     "product": "swoveralls-navy",
+     "role": "beat",
+     "seconds": 6.0,
+     "spoken": "Slide 3: Close‑up of fabric, pockets, and relaxed fit.",
+     "still": {
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "POV style, natural lighting, authentic reaction, no scripted lines.",
+      "url": "https://image.pollinations.ai/prompt/POV%20style%2C%20natural%20lighting%2C%20authentic%20reaction%2C%20no%20scripted%20lines..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=4"
+     },
+     "still_query": "swoveralls-navy style natural lighting authentic reaction scripted lines",
+     "visual": "POV style, natural lighting, authentic reaction, no scripted lines."
+    },
+    {
+     "n": 5,
+     "on_screen": "Slide 4 Swipe to see why",
+     "product": "swoveralls-navy",
+     "role": "beat",
+     "seconds": 5.4,
+     "spoken": "Slide 4: Swipe to see why he’s secretly thrilled.",
+     "still": {
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "POV style, natural lighting, authentic reaction, no scripted lines.",
+      "url": "https://image.pollinations.ai/prompt/POV%20style%2C%20natural%20lighting%2C%20authentic%20reaction%2C%20no%20scripted%20lines..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=5"
+     },
+     "still_query": "swoveralls-navy style natural lighting authentic reaction scripted lines",
+     "visual": "POV style, natural lighting, authentic reaction, no scripted lines."
+    },
+    {
+     "n": 6,
+     "on_screen": "See why he loves it",
+     "product": "swoveralls-navy",
+     "role": "cta",
+     "seconds": 3.0,
+     "spoken": "See why he loves it",
+     "still": {
+      "credit": "generated image (Pollinations): a stand-in, not a photograph of the product",
+      "license": "generated for this shot",
+      "source": "generated",
+      "title": "POV style, natural lighting, authentic reaction, no scripted lines.",
+      "url": "https://image.pollinations.ai/prompt/POV%20style%2C%20natural%20lighting%2C%20authentic%20reaction%2C%20no%20scripted%20lines..%20Natural%20light%2C%20candid%20photograph%2C%20no%20text%2C%20no%20logos%2C%20no%20watermark.?width=720&height=1280&nologo=true&seed=6"
+     },
+     "still_query": "swoveralls-navy style natural lighting authentic reaction scripted lines",
+     "visual": "POV style, natural lighting, authentic reaction, no scripted lines."
     }
    ],
    "status": "ok",
@@ -821,8 +1087,8 @@
    "total_seconds": 30.0
   }
  ],
- "brief": "BR-0003",
- "generated_at": "2026-11-26T04:57:54Z",
+ "brief": "BR-0005",
+ "generated_at": "2026-11-27T15:18:41Z",
  "library": "snapshot in contentintel/data/formulas",
  "ready": [
   1,
@@ -831,7 +1097,8 @@
   4,
   5,
   6,
-  7
+  7,
+  8
  ],
  "rules_version": 2
 }
