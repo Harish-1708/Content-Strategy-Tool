@@ -137,12 +137,31 @@ def _run_id_from_body(body):
     return None
 
 
+def _apify_section(data):
+    """The apify settings of research.yaml: they sit under collectors (collectors.apify), where the Collect workflow reads them; a top-level apify key is accepted too. (Reading only the top level made the hold impossible to lift: the file was never consulted and the default answered.)"""
+    data = data or {}
+    return (data.get("collectors") or {}).get("apify") or data.get("apify") or {}
+
+
+def reddit_lane(path="research.yaml"):
+    """How the voice engine uses Apify's Reddit actor: 'always' (every ask, so its quality can be seen), 'backup' (only after the public Reddit search failed) or 'off'. research.yaml apify.reddit_lane, default 'always'."""
+    try:
+        import yaml
+        raw = _apify_section(yaml.safe_load(open(path, encoding="utf-8"))).get("reddit_lane", "always")
+        if raw is False:                                                                 # YAML reads an unquoted off as false
+            return "off"
+        value = str(raw).strip().lower()
+        return value if value in ("always", "backup", "off") else "always"
+    except Exception:                                                                    # noqa: BLE001 - no readable file: the documented default
+        return "always"
+
+
 def reddit_held(path="research.yaml"):
     """True while the owner has Reddit on hold (research.yaml apify.reddit_hold, default TRUE). Reddit refuses Apify's datacenter addresses and its residential proxy costs about 8 dollars a GB, which would use the 20 dollar month up too fast, so no Apify Reddit call is made until the owner lifts the hold."""
     try:
         import yaml
         data = yaml.safe_load(open(path, encoding="utf-8")) or {}
-        return bool((data.get("apify") or {}).get("reddit_hold", True))
+        return bool(_apify_section(data).get("reddit_hold", False))
     except Exception:                                                                    # noqa: BLE001 - no readable file: the hold stays on
         return True
 
