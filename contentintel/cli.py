@@ -18,6 +18,9 @@ from . import batch2_cli as batch2_mod
 from . import stage_cli as stage_mod
 from . import batch3_cli as batch3_mod
 from . import intel_cli as intel_mod
+from . import read_gate as read_gate_mod
+from . import reviews_cli as reviews_mod
+from . import footage_cli as footage_mod
 from .claude_client import Claude
 from .contract import Failure, classify_message
 from . import contract as contract_mod
@@ -134,6 +137,9 @@ def build_parser():
     p.add_argument("--ask", default="", help="what the brief is for, in your own words")
     p.add_argument("--request", default="", help="only use items found by this request")
     p.add_argument("--include-maybe", action="store_true", help="also use rows marked Maybe")
+    p.add_argument("--kind", choices=["video", "static", "carousel", "cuts"], default="", help="what the concepts are: video (the default), static images for a designer, carousels of cards, or cuts (edits of the footage inventory); a revision keeps its brief's kind")
+    p.add_argument("--for", dest="for_person", default="", help="who the brief is for (shown at the top of the document)")
+    p.add_argument("--offer", default="", help="the ONE offer for this brief, exactly as written in the brand's claim_rules.allowed_offers (the guard list: any other offer is an error); blank means no offer is stated")
     p.add_argument("--revise", default="", help="revise a saved brief (for example BR-0001) that needs review: the checks' and the reviewer's problems are fixed, each round saved as a new brief that says which one it revises")
     p.add_argument("--rounds", type=int, default=2, help="with --revise: at most this many rounds, stopping as soon as a brief is ready")
     p.add_argument("--research-config", default="research.yaml")
@@ -197,6 +203,8 @@ def build_parser():
     stage_mod.add_parsers(sub, _common)
     batch3_mod.add_parsers(sub, _common)
     intel_mod.add_parsers(sub, _common)
+    reviews_mod.add_parsers(sub, _common)
+    footage_mod.add_parsers(sub, _common)
 
     p = sub.add_parser("health", help="show how each source and route is doing, and which ones have earned trust")
     _common(p)
@@ -690,7 +698,7 @@ def _brief(args, store):
                 brand, store, brief_name=args.brief, ask=args.ask, ruleset=ruleset, decisions=decisions,
                 claude_for=lambda model: _job_client(_routed(_claude(csettings, model), "brief", args, store), "brief"), settings=settings,
                 budget=budget, now=now, drive=drive,
-                include_maybe=args.include_maybe, request_id=args.request.strip(), revise_of=previous)
+                include_maybe=args.include_maybe, request_id=args.request.strip(), revise_of=previous, kind=args.kind, for_person=args.for_person, offer=args.offer)
             if previous:
                 print(f"Revision round {round_no}: {previous['id']} -> {record['id']} ({record['status']})")
             if record["status"] == "ready" or not previous:
@@ -788,10 +796,31 @@ def _research(args, store):
 _BROWSER_FACTORY = None       # tests replace this; None means a real Chromium through Playwright
 
 
+def _shared_capture(site, env):
+    """(cookie JSON, secret name) of the STORED SESSION capture for a site that has one (<PLATFORM>_SESSION_B64, the one the sessions check proves), or (None, ""). One fresh export then serves the sessions check and the
+    collectors: Collect #73 hit Instagram's login wall with INSTAGRAM_COOKIES while the sessions check had INSTAGRAM_SESSION_B64 alive, because they were two different captures."""
+    from datetime import datetime, timezone
+    from . import sessions as sessions_mod
+    spec = sessions_mod.PLATFORMS.get(site)
+    if not spec or not (env.get(spec["secret"]) or "").strip():
+        return None, ""
+    try:
+        session = sessions_mod.load(site, env, datetime.now(timezone.utc).isoformat())
+        return session.browser_cookies_json(), spec["secret"]
+    except Exception:                                                                    # noqa: BLE001 - an unusable or expired capture: the site's own cookies secret is used as before
+        return None, ""
+
+
 def _site_creds(browser_cfg, env):
-    """Each site's cookies / username / password, read from the secrets named in browser.yaml."""
-    return {site: {k: ((env.get(name) or "").strip() or None) for k, name in cfg.get("secrets", {}).items()}
-            for site, cfg in browser_cfg["sites"].items()}
+    """Each site's cookies / username / password, read from the secrets named in browser.yaml. For a site that also has a stored session capture, that capture is the cookies (see _shared_capture), and `cookies_from` names it."""
+    creds = {site: {k: ((env.get(name) or "").strip() or None) for k, name in cfg.get("secrets", {}).items()}
+             for site, cfg in browser_cfg["sites"].items()}
+    for site, entry in creds.items():
+        if "cookies" in browser_cfg["sites"][site].get("secrets", {}):
+            shared, name = _shared_capture(site, env)
+            if shared:
+                entry["cookies"], entry["cookies_from"] = shared, name
+    return creds
 
 
 def _real_factory(browser_cfg, creds, debug_dir):
@@ -1140,6 +1169,9 @@ def _observatory_checks(args, now):
         return {}
 
 
+NO_APIFY_KEY = "no key: set APIFY_TOKEN (none of " + ", ".join(apify_mod.KEY_NAMES) + " is set in this step: the skip is about the environment of the step, not about a probe)"
+
+
 def _acceptance_context(args, store, registry, now):
     from .shopify_fetch import fetch_products
     settings = collectors_mod.load_collector_settings(args.research_config)
@@ -1156,7 +1188,7 @@ def _acceptance_context(args, store, registry, now):
         if not collectors_mod.has_access(browser_cfg["sites"][site], creds.get(site, {})):
             ctx.missing[(source, "browser")] = collectors_mod.missing_access_message(browser_cfg["sites"][site])
         if apify is None:
-            ctx.missing[(source, "apify")] = "no key: set APIFY_TOKEN"
+            ctx.missing[(source, "apify")] = NO_APIFY_KEY
     ctx.missing.update(providers_mod.agent_reach_search_missing(os.environ, providers))               # an opted-in Agent-Reach search that cannot run here is skipped with its true reason
     from . import agent_reach_instagram as ar_probe
     if ar_probe.hosted_runner():
@@ -1169,11 +1201,23 @@ def _acceptance_context(args, store, registry, now):
         if backend == "agent_reach":                         # OpenCLI in a logged-in browser: only on a machine that has both, never on a hosted runner
             from . import agent_reach_instagram as ar_mod
             return {"source": source, **ar_mod.check_row(ar_mod.OpenCLI(os.environ.get("OPENCLI_BIN", "opencli")), os.environ.get("INSTAGRAM_CHECK_HANDLE", "instagram"))}
+        site = collectors_mod.SITE_OF[source]
+        site_cfg = browser_cfg["sites"][site]
+        careful = backend == "browser" and bool(site_cfg.get("min_hours_between_runs"))
+        page_log = store.read_page_log() if careful else None
+        if careful:                                                                                 # the one gate Collect uses too: inside the gap Acceptance reports from the last read instead of reading again
+            action, outcome = read_gate_mod.decide(page_log, site, site_cfg, now)
+            if action != "read":
+                return read_gate_mod.reuse_row(source, action, outcome, site_cfg, now)
         if "factory" not in state:
             state["factory"] = (_BROWSER_FACTORY or _real_factory)(browser_cfg, creds, args.debug_dir)
         rows = collectors_mod.check_collectors(state["factory"], creds, settings, browser_cfg, store, research_mod.Ledger, now, [source],
                                                apify=apify, claude=None, backend=backend)
-        return next(r for r in rows if r["source"] == source)
+        row = next(r for r in rows if r["source"] == source)
+        if careful:                                                                                 # this read is recorded like Collect's: the gap counts from it and Collect then waits its turn
+            read_gate_mod.record(page_log, site, now, by="acceptance", state=read_gate_mod.OK if row.get("ok") else read_gate_mod.classify(row.get("detail")), pages=1, detail=row.get("detail", ""))
+            store.write_page_log(page_log)
+        return row
 
     cache = {}
 
@@ -1197,7 +1241,7 @@ def _acceptance_context(args, store, registry, now):
     from . import session_live as _sl                                           # the three Apify read routes (Reddit, X, LinkedIn): one real read of a public page each, 25 cents at most, proven live like the Collect ones
     for src, platform, url in (("reddit", "reddit", "https://www.reddit.com/r/overalls/"), ("x_posts", "x", "https://x.com/NASA"), ("linkedin_posts", "linkedin", "https://www.linkedin.com/company/nasa/")):
         if apify is None:
-            ctx.missing[(src, "apify")] = "no key: set APIFY_TOKEN"
+            ctx.missing[(src, "apify")] = NO_APIFY_KEY
         elif src == "reddit" and _sl.reddit_held():
             ctx.missing[(src, "apify")] = "on hold by the owner's decision (Apify's Reddit needs a residential proxy, about 8 dollars a GB, which would use the 20 dollar month up too fast; research.yaml apify.reddit_hold)"
         else:
@@ -1358,6 +1402,11 @@ def main(argv=None):
             return batch3_mod.run_batch3(args, store, sync_mod.utc_now())
         if args.cmd == "intel":
             return intel_mod.run_intel(args, store, sync_mod.utc_now())
+        if args.cmd == "reviews":
+            return reviews_mod.run_reviews(args, store, sync_mod.utc_now())
+        if args.cmd == "footage":
+            drive, missing = _drive() if args.action == "scan" else (None, "")
+            return footage_mod.run_footage(args, store, sync_mod.utc_now(), drive=drive, missing=missing)
         if args.cmd == "canon":
             return batch2_mod.run_canon(args, store, sync_mod.utc_now(), clients=lambda: _registry_clients(args, store))
         if args.cmd == "analytics":
