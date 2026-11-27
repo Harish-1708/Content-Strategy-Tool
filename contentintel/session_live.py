@@ -188,6 +188,9 @@ def twscrape_layer(session, environ, runner=subprocess.run, timeout=150):
     return {"state": state if state in ("accepted", "rejected", "unreachable") else "unreachable", "detail": detail}
 
 
+PROOF_ROUTE = "rendered page, stored cookies"
+EVIDENCE_DEFAULTS = {"fetched_with": "", "status": None, "landed": "", "title": "", "logged_in_found": [], "logged_in_missing": [], "logged_in_text_found": [], "logged_in_text_missing": [], "visible_text_available": False,
+                     "logged_out_in_text": [], "logged_out_only_in_code": [], "cookies_sent": [], "cookies_back": [], "password_field": False, "login_word_in_address": "", "text_starts": "", "html_chars": 0, "scripts": 0, "noscript": 0, "body_ids": [], "worker_error": "", "browser_proof": ""}
 BROWSER_PROOF = ("tiktok", "instagram")                      # platforms whose proof is the RENDERED page loaded with the stored cookies through the collectors' own browser (Acceptance read both that way: "login ok, 3 items"); the Scrapling worker's 3 second one-shot load kept giving half-drawn pages (TikTok) and a redirect loop (Instagram)
 PROOF_WAITS = (3, 3, 6, 9)                                   # seconds waited before each look at the SAME page: a half-drawn page is given time, a challenge page is never asked again
 
@@ -211,7 +214,7 @@ def browser_proof(platform, spec, session, *, cfg_path="browser.yaml", opener=No
     cookies_text = session.browser_cookies_json() if session is not None else ""                           # the STORED SESSION's own cookies (the *_SESSION_B64 secret): it is a different capture from the collectors' *_COOKIES secret, so a logged-in Acceptance login says nothing about it
     if not site_cfg or not site_cfg.get("logged_in_any") or not site_cfg.get("home") or not cookies_text.strip():
         return None
-    ev = {"route": "rendered page, stored cookies", "polls": 0, "reloaded": False}
+    ev = {"route": PROOF_ROUTE, "polls": 0, "reloaded": False}
     try:
         manager = (opener or B.open_browser)(platform, cfg, B.site_pacing(cfg, platform), cookies_text, "debug/sessions-proof", headless=True)
         browser = manager.__enter__()
@@ -362,6 +365,11 @@ def evidence_lines(r):
     ev = r.get("evidence")
     if not ev:
         return []
+    if ev.get("route") == PROOF_ROUTE:                                                    # the rendered-page proof records what it did (looks, reload, landing page), not a fetched page's headers: Sessions #40 and #41 died here with KeyError 'title' AFTER every verdict was saved
+        looks = int(ev.get("polls", 0) or 0)
+        return [f"      page: read with the {ev.get('fetched_with') or 'browser (rendered page, stored cookies)'}; {looks} look(s) at the same page" + ("; reloaded once" if ev.get("reloaded") else "") + f"; landed on {ev.get('landed') or 'no address'}"
+                + (f"; {ev['browser_proof']}" if ev.get("browser_proof") else "")]
+    ev = {**EVIDENCE_DEFAULTS, **ev}                                                      # any evidence that lacks a field is still printed, never a crash in the report after the verdicts were saved
     shown = f"read with the {ev['fetched_with']}; HTTP {ev['status'] or 'no answer'}; landed on {ev['landed'] or 'no address'}; title '{ev['title']}'" if ev["title"] else \
             f"read with the {ev['fetched_with']}; HTTP {ev['status'] or 'no answer'}; landed on {ev['landed'] or 'no address'}; no title"
     found = ev["logged_in_found"]

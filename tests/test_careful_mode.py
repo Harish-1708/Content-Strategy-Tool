@@ -232,7 +232,9 @@ def test_the_first_run_opens_two_pages_and_remembers_it_covered_some(tmp_path, s
     assert "careful mode: opened 2 of 5 pages this run" in result.brands["swoveralls"][0].detail
     (record,) = store.read_collected("swoveralls")
     assert record["partial"] is True and (record["pages_done"], record["pages_total"]) == (2, 5)
-    assert store.read_page_log() == {"days": {"2026-10-20": {"instagram": 2}}, "cursor": {"instagram": 2}, "last": {"instagram": "2026-10-20T07:00:00Z"}}                 # the time the account was last read is kept for the gap
+    log = store.read_page_log()
+    assert {k: log[k] for k in ("days", "cursor", "last")} == {"days": {"2026-10-20": {"instagram": 2}}, "cursor": {"instagram": 2}, "last": {"instagram": "2026-10-20T07:00:00Z"}}                 # the time the account was last read is kept for the gap
+    assert log["outcomes"]["instagram"]["by"] == "collect" and log["outcomes"]["instagram"]["state"] == "ok" and len(log["history"]["instagram"]) == 1                              # and, since v6, how the read ended (the shared gate)
 
 
 def test_the_next_runs_carry_on_where_it_stopped_until_the_days_cap(tmp_path, store, swov, cfg, settings):
@@ -342,10 +344,10 @@ def test_a_run_that_is_warned_still_stops_and_rests_in_careful_mode(tmp_path, st
 # ---- the page log ------------------------------------------------------------------------------------------------------------
 
 def test_reading_the_page_log_creates_nothing_and_a_round_trip_keeps_it(store, tmp_path):
-    assert store.read_page_log() == {"days": {}, "cursor": {}, "last": {}} and not (tmp_path / "data").exists()
+    assert store.read_page_log() == {"days": {}, "cursor": {}, "last": {}, "outcomes": {}, "history": {}} and not (tmp_path / "data").exists()
     log = {"days": {"2026-10-20": {"instagram": 3}}, "cursor": {"instagram": 7}}
     store.write_page_log(log)
-    assert store.read_page_log() == {**log, "last": {}}
+    assert store.read_page_log() == {**log, "last": {}, "outcomes": {}, "history": {}}
 
 
 def test_only_the_last_two_weeks_are_kept(store):
@@ -359,7 +361,7 @@ def test_a_damaged_page_log_means_nothing_has_been_opened_never_a_crash(store, t
     path = tmp_path / "data" / "_shared" / "page_log.json"
     path.parent.mkdir(parents=True)
     path.write_text(content, encoding="utf-8")
-    assert store.read_page_log() == {"days": {}, "cursor": {}, "last": {}}
+    assert store.read_page_log() == {"days": {}, "cursor": {}, "last": {}, "outcomes": {}, "history": {}}
 
 
 def test_a_run_with_a_damaged_page_log_just_starts_again(tmp_path, store, swov, cfg, settings):

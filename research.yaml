@@ -65,7 +65,8 @@ collectors:
   # The Collect workflow's "backend" box can also switch it on for one run. Needs the APIFY_TOKEN secret.
   apify:
     mode: fallback                # on: when the browser route fails (expired cookies, a security check, an account RESTING after a warning, nothing readable) the Apify scraper runs, within the caps below
-    reddit_hold: true             # Reddit through Apify is ON HOLD (owner, 2026-11-24): its residential proxy costs about 8 dollars a GB. No Apify Reddit call is made while this is true; Reddit as a Collect source is not built
+    reddit_hold: false            # Reddit through Apify is ON (owner, 2026-11-27, so its quality and cost can be seen; it was on hold from 2026-11-24 because Reddit's residential proxy costs about 8 dollars a GB). true puts it back on hold: no Apify Reddit call is then made anywhere
+    reddit_lane: always           # how the voice engine uses it: always = on every voice ask, alongside the public Reddit search, so its quality can be compared; backup = only when the public search failed; off = never. Its money share stays capped (7 percent of the month, 25 items an ask, a 25 cent ceiling a call) and every run prints a quality line
     monthly_items: 1200           # Collect's share of the 20 dollar Apify month: 6.00 dollars at 0.005 an item (contentintel/apify_budget.py)
     items_per_run: 30
     max_cost_per_run_usd: 1.0     # a hard dollar ceiling Apify enforces for a single run

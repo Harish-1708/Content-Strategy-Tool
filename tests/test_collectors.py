@@ -477,7 +477,7 @@ def test_a_login_wall_or_challenge_that_appears_mid_collection_is_reported(cfg):
     ig = site(cfg, "instagram")
     home = {"https://www.instagram.com/explore/tags/": {"present": {ig["login_wall_any"][0]}},
             "https://www.instagram.com/": {"present": {ig["logged_in_any"][0]}}}
-    with pytest.raises(B.LoginWall, match="cookies may have expired"):
+    with pytest.raises(B.LoginWall, match="session was not accepted from this runner"):
         run_task(cfg, FakeBrowser(home), ig_task("a"), 5)
     home["https://www.instagram.com/explore/tags/"] = {"present": {ig["challenge_any"][0]}}
     with pytest.raises(B.Challenge, match="security check appeared"):

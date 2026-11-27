@@ -64,9 +64,10 @@ def lane(apify, **kw):
     return V.ApifyVoice(apify, R.Ledger({}, "2026-11"), per_run=60, monthly=500, shared_cap=600, normalize=lambda source, raw: ([], len(raw)), day="2026-11-19", **kw)
 
 
-def test_reddit_through_apify_is_on_hold_by_default_and_no_call_is_made(monkeypatch):
+def test_reddit_through_apify_can_be_put_back_on_hold_and_then_no_call_is_made(monkeypatch):
     from contentintel import apify as AP
-    assert AP.reddit_held("research.yaml") is True and AP.reddit_held("no-such-file.yaml") is True       # the owner's hold (the residential proxy costs about 8 dollars a GB): on in the file, and on when the file cannot be read
+    monkeypatch.setattr(V, "reddit_held", lambda *a, **k: True)                                            # the owner's switch (research.yaml apify.reddit_hold: true) puts Reddit back on hold
+    assert AP.reddit_held("research.yaml") is False and AP.reddit_held("no-such-file.yaml") is True       # ON in the file since 2026-11-27 (owner decision); the safe default when the file cannot be read stays on hold;       # the owner's hold (the residential proxy costs about 8 dollars a GB): on in the file, and on when the file cannot be read
     a = Apify()
     items, notes = lane(a).run("overalls", reddit_backup=True)
     assert not [c for c in a.calls if c[0] == "trudax/reddit-scraper-lite"] and any("apify reddit for 'overalls': not asked (Reddit through Apify is on hold" in n for n in notes)
@@ -83,6 +84,8 @@ def test_the_reddit_actor_is_asked_only_as_a_backup_when_the_public_reddit_searc
     reddit = [c for c in b.calls if c[0] == "trudax/reddit-scraper-lite"]
     assert len(reddit) == 1 and reddit[0][1] == {"searches": ["overalls"], "searchPosts": True, "searchComments": False, "maxItems": 25, "sort": "top"} and reddit[0][3] == 0.25
     assert [i for i in items if i["source"] == "apify reddit"] and any("apify reddit for 'overalls': asked for 25, 25 item(s) read" in n for n in notes)
+    quality = [n for n in notes if n.startswith("apify reddit quality for 'overalls': ")]
+    assert len(quality) == 1 and quality[0].split(": ", 1)[1].startswith("25 post(s): ") and " with a score, " in quality[0] and " with a comment count, " in quality[0] and " with text, " in quality[0] and " with a community" in quality[0]          # every Reddit read says how good it was
     assert lb.ledger.month_used("apify_reddit_backup_items") == 25 and lb.ledger.month_used("voice_apify_items") == 0 and lb.committed_usd == pytest.approx(0.25 + 0.5 + 0.25)           # its own counter, its own dollars
 
 

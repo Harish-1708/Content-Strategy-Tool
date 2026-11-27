@@ -1,5 +1,6 @@
 """Stages 4 and 5 (Update 73 v4): the formula library, winners, opportunity scores and cross-brand view; the validator bank, golden set, rule versions and the independent reviewer; and their wiring."""
 import json
+from types import SimpleNamespace
 from pathlib import Path
 
 from contentintel import formulas as F
@@ -342,9 +343,16 @@ def test_data_that_does_not_parse_or_breaks_the_golden_set_never_replaces_the_co
 
 
 def test_the_report_names_the_library_commits_and_calls_an_old_copy_stale(tmp_path):
-    fresh = F.build_report("swoveralls", bank_of(item(1)), LIB, "2026-11-26T00:00:00Z")
-    assert fresh["library"]["version"]["ig_hooks"] == "d03c56bb59" and fresh["library"]["age_days"] == 1 and not any("last checked" in n for n in fresh["notes"])
-    old = F.build_report("swoveralls", bank_of(item(1)), LIB, "2026-12-30T00:00:00Z")
+    from datetime import datetime, timedelta
+    version = F.read_version()                                                                                                                    # the copy in the repository is refreshed every week: the expected age is computed from its own timestamp, never a date written into the test (Sabotage #1278 failed on a hardcoded 1)
+    checked = datetime.strptime(version["checked_at"][:10], "%Y-%m-%d")
+    day_after = (checked + timedelta(days=1)).strftime("%Y-%m-%dT00:00:00Z")
+    fresh = F.build_report("swoveralls", bank_of(item(1)), LIB, day_after)
+    assert fresh["library"]["version"]["ig_hooks"] == version["files"]["ig_hooks"]["commit"][:10] and fresh["library"]["age_days"] == 1 and not any("last checked" in n for n in fresh["notes"])
+    same_day = F.build_report("swoveralls", bank_of(item(1)), LIB, version["checked_at"])
+    assert same_day["library"]["age_days"] == 0
+    long_after = (checked + timedelta(days=35)).strftime("%Y-%m-%dT00:00:00Z")
+    old = F.build_report("swoveralls", bank_of(item(1)), LIB, long_after)
     assert old["library"]["age_days"] == 35 and any("last checked 35 days ago" in n for n in old["notes"])
 
 
@@ -413,20 +421,29 @@ def test_each_shot_gets_a_licensed_still_or_an_honest_none_found():
     def finder(query, kind):
         asked.append((query, kind))
         if "contract" in query:
-            return [{"url": "https://pics.example/a.jpg", "title": "Contract", "license": "CC0", "attribution": "A. Person", "source": "openverse"}]
+            return [{"url": "https://pics.example/a.jpg", "title": "Contract", "license": "CC0", "attribution": "A. Person", "source": "catalogue image"}]
         if "daylight" in query:
             raise RuntimeError("down")
         return []
     got = SB.add_styleframes(board, finder)
     stills = [s["still"] for s in board["shots"]]
     assert got == sum(1 for s in stills if s.get("url")) and stills[0]["url"] == "https://pics.example/a.jpg" and stills[0]["license"] == "CC0" and stills[0]["credit"] == "A. Person" and "the picture search failed (RuntimeError)" in stills[1]["missing"]
-    assert all("missing" in s for s in stills if not s.get("url")) and any("no usable picture was found for" in s["missing"] for s in stills if "missing" in s)
+    assert all("missing" in s for s in stills if not s.get("url")) and any("no picture that matches this shot was found for" in s["missing"] for s in stills if "missing" in s)
     assert {k for _q, k in asked} == {"image"}
     pair = SB.build(concept(), brief_id="BR-0001")
-    SB.add_styleframes(pair, lambda q, k: [{"url": "https://pics.example/nolicence.jpg"}, {"url": "https://pics.example/licensed.jpg", "license": "CC0", "attribution": "B"}])
+    SB.add_styleframes(pair, lambda q, k: [{"url": "https://pics.example/nolicence.jpg", "source": "catalogue image"}, {"url": "https://pics.example/licensed.jpg", "license": "CC0", "attribution": "B", "source": "catalogue image"}])
     assert pair["shots"][0]["still"]["url"] == "https://pics.example/licensed.jpg"                                                              # a picture with a licence is preferred to one without
     page = SB.render_html(board, [{"where": "shot 1", "message": "<b>careful</b>"}])
-    assert "<img src=\"https://pics.example/a.jpg\"" in page and "CC0 A. Person" in page and "&lt;b&gt;careful&lt;/b&gt;" in page and "no usable picture" in page
+    assert "<img src=\"https://pics.example/a.jpg\"" in page and "CC0 A. Person" in page and "&lt;b&gt;careful&lt;/b&gt;" in page and "no picture that matches this shot" in page
+
+
+def unique_pictures():
+    n = [0]
+
+    def finder(q, k):
+        n[0] += 1
+        return [{"url": f"https://pics.example/x{n[0]}.jpg", "license": "CC0", "attribution": "X", "source": "catalogue image"}]
+    return finder
 
 
 def test_the_storyboard_command_works_from_a_saved_brief_and_saves_json_and_a_contact_sheet(tmp_path, capsys):
@@ -436,13 +453,13 @@ def test_the_storyboard_command_works_from_a_saved_brief_and_saves_json_and_a_co
     content = {"title": "t", "key_message": "k", "concepts": [concept(**LONG), concept(name="Second", hook="Here are our overalls.", **LONG)]}
     store.write_brief("swoveralls", {"id": "BR-0001", "brief": "no-such-brief", "rules_version": 3, "content": content})
     args = SimpleNamespace(action="storyboard", brand="swoveralls", brands_dir="brands", briefs_dir="briefs", brief_id="", concept=0, stills=True, top=10)
-    code = intel_cli.run_storyboard(args, store, NOW, finder=lambda q, k: [{"url": "https://pics.example/x.jpg", "license": "CC0", "attribution": "X"}])
+    code = intel_cli.run_storyboard(args, store, NOW, finder=unique_pictures())
     out = capsys.readouterr().out
     assert code == 0 and "BR-0001 concept 1 (Cost confession): 6 shot(s)" in out and "BR-0001 concept 2 (Second)" in out and "saved data/swoveralls/extras/storyboard.json and storyboard.html" in out
     saved = store.read_extra("swoveralls", "storyboard")
     assert saved["brief"] == "BR-0001" and saved["rules_version"] == 3 and len(saved["boards"]) == 2 and saved["boards"][0]["styleframes"] == 6
     sheet = (tmp_path / "data" / "swoveralls" / "extras" / "storyboard.html").read_text(encoding="utf-8")
-    assert sheet.count("<h1>") == 2 and "pics.example/x.jpg" in sheet
+    assert sheet.count("<h1>") == 2 and "pics.example/x1.jpg" in sheet
     args.concept = 2
     assert intel_cli.run_storyboard(args, store, NOW, finder=lambda q, k: []) == 0 and len(store.read_extra("swoveralls", "storyboard")["boards"]) == 1
     args.concept = 5
@@ -533,3 +550,66 @@ def test_one_blocked_concept_is_flagged_and_the_others_are_saved_and_the_run_onl
     store.write_brief("swoveralls", only)
     assert intel_cli.run_storyboard(args, store, NOW) == 1                                                                                      # nothing clean: the run fails
     assert "0 of 1 concept(s) storyboarded cleanly" in capsys.readouterr().out
+
+
+def test_a_picture_is_used_once_per_storyboard_so_a_front_page_image_is_not_repeated_across_shots():
+    board = SB.build(concept(**LONG), brief_id="BR-0001")
+    front = {"url": "https://swoveralls.com/front.jpg", "title": "front page image", "license": "brand-own", "attribution": "Swoveralls", "source": "catalogue image"}
+    other = {"url": "https://pics.example/b.jpg", "title": "b", "license": "CC0", "attribution": "B", "source": "catalogue image"}
+    got = SB.add_styleframes(board, lambda q, k: [front, other] if "contract" in q else [front])
+    urls = [s["still"].get("url") for s in board["shots"]]
+    assert urls.count("https://swoveralls.com/front.jpg") == 1 and got == 1 + (1 if other["url"] in urls else 0)
+    assert any("already used on earlier shots" in (s["still"].get("missing") or "") for s in board["shots"])                                       # said, not repeated
+    assert board["shots"][0]["still"]["url"] == front["url"]
+
+
+# ---- the still picker: brand, product and generated pictures only, each one matching its shot -------------------------------------------------------------------------------------------------
+
+def shot(visual="Dad pulls the zip and the sweatpants turn into overalls", spoken="Watch this.", product=""):
+    return {"n": 2, "visual": visual, "spoken": spoken, "product": product, "role": "beat", "seconds": 3.0, "on_screen": "x", "still_query": "zip sweatpants overalls", "still": None}
+
+
+def test_a_picture_must_match_its_shot_a_stock_photo_that_does_not_is_dropped_and_the_shot_says_so():
+    from contentintel import stills as ST
+    s = shot()
+    assert ST.relevant(s, {"source": "brand site", "title": "Sweatpants with a zip front", "url": "https://x/p/a.jpg"})
+    assert ST.relevant(s, {"source": "brand site", "title": "", "url": "https://x/files/sweatpants-overalls-navy.jpg"})                                   # the file name counts
+    assert not ST.relevant(s, {"source": "openverse", "title": "Boy fishing from a boat", "url": "https://x/p/boy-fishing.jpg"})
+    assert not ST.relevant(s, {"source": "brand site", "title": "front page image", "url": "https://x/front.jpg"})                                         # a generic front page shares nothing with the shot
+    assert ST.relevant(s, {"source": "generated", "title": "", "url": "https://x"}) and ST.relevant(s, {"source": "catalogue image", "title": "", "url": "https://x"})
+    board = SB.build(concept(**LONG), brief_id="BR-0001")
+    got = SB.add_styleframes(board, lambda q, k: [{"url": "https://pics.example/boy.jpg", "title": "Boy fishing", "source": "openverse", "license": "CC0"}])
+    assert got == 0 and all("no picture that matches this shot was found" in s_["still"]["missing"] and "1 candidate(s) did not match it" in s_["still"]["missing"] for s_ in board["shots"])
+
+
+def test_the_default_picker_uses_the_products_own_pictures_the_sites_matching_pictures_and_a_generated_one_and_never_stock():
+    from contentintel import stills as ST
+    brand = SimpleNamespace(name="Swoveralls", slug="swoveralls", domain="swoveralls.com")
+    products = {"1": {"handle": "swoveralls-navy", "title": "Swoveralls - Navy", "images": [{"src": "https://cdn.shopify.com/navy-1.jpg"}, {"key": "https://cdn.shopify.com/navy-2.jpg"}]},
+                "2": {"handle": "swoveralls-garden-party", "title": "Swoveralls - Garden Party Floral", "images": [{"src": "https://cdn.shopify.com/garden.jpg"}]}}
+    html = '<html><head><meta property="og:image" content="/files/front-page-hero.jpg"></head><body><img src="/files/zip-sweatpants-detail.jpg" alt="Zip detail on the sweatpants"><img src="/files/crowd.jpg" alt="Crowd at a concert"></body></html>'
+    finder = ST.build_finder(brand, products, aspect_of=lambda board: "9:16", get=lambda url: (200, html))
+    about_product = finder("navy", "image", shot=shot(visual="Close on the navy pair, the zip running up the front", product="swoveralls-navy"))
+    assert [c["source"] for c in about_product][:2] == ["catalogue image", "catalogue image"] and about_product[0]["url"] == "https://cdn.shopify.com/navy-1.jpg" and about_product[-1]["source"] == "generated"
+    assert not any("garden" in c["url"] for c in about_product)                                                                                            # the other product's pictures are not offered
+    scene = finder("window", "image", shot=shot(visual="Dad opens the kitchen window at dawn", product="swoveralls-navy"))
+    assert [c["source"] for c in scene] == ["generated"]                                                                                                   # a scene shot never gets a product picture just because the concept names a product
+    site = finder("zip sweatpants", "image", shot=shot())
+    assert [c["source"] for c in site][-1] == "generated" and any(c["source"] == "brand site" and "zip-sweatpants-detail" in c["url"] for c in site)
+    assert not any("front-page-hero" in c["url"] for c in about_product + scene + site)                                                                   # the site's generic front-page picture is never offered for a shot
+    gen = site[-1]
+    assert gen["url"].startswith("https://image.pollinations.ai/prompt/Dad%20pulls%20the%20zip") and "width=720&height=1280" in gen["url"] and "seed=2" in gen["url"] and gen["license"] == "generated for this shot" and "not a photograph of the product" in gen["attribution"]
+    assert "openverse" not in str([c["source"] for c in about_product + scene + site]) and "width=1080&height=1350&nologo=true&seed=1" in ST.generated_still(shot(), aspect="4:5")["url"]
+    board = SB.build(concept(**LONG), brief_id="BR-0001")
+    got = SB.add_styleframes(board, ST.build_finder(brand, products, get=lambda url: (404, "")))
+    assert got == len(board["shots"]) and all(s_["still"]["url"] for s_ in board["shots"])                                                                 # every shot gets a picture that matches it (generated when nothing of the brand's does)
+    used = [s_["still"]["url"] for s_ in board["shots"]]
+    assert len(set(used)) == len(used)
+
+
+def test_the_stock_libraries_are_no_longer_reached_by_the_storyboard_picker():
+    text = Path("contentintel/intel_cli.py").read_text(encoding="utf-8")
+    body = text[text.index("def _default_finder"):text.index("def run_storyboard")]
+    assert "find_usable" not in body and "pixabay" not in body.lower() and "openverse" not in body.lower() and "STL.build_finder" in body
+    src = Path("contentintel/stills.py").read_text(encoding="utf-8")
+    assert "find_usable" not in src and "pixabay" not in src.lower().replace("pixabay, competitors", "")

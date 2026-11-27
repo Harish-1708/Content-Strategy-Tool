@@ -90,6 +90,16 @@ def structure_check(concept, where):
     return out
 
 
+def f_hook_shape_repeat(brief, concept, lib):
+    """True when this concept's hook names the same known formula as every other concept's (and there are at least three concepts): seven hooks of one shape is what the independent reviewer faulted in BR-0003."""
+    concepts = brief.get("concepts", [])
+    if len(concepts) < 3:
+        return False
+    shapes = [lib.classify(c.get("hook"), "instagram") for c in concepts]
+    mine = lib.classify(concept.get("hook"), "instagram")
+    return bool(mine) and all(s and s["id"] == mine["id"] for s in shapes)
+
+
 def brief_bank(brief, lib):
     """The whole bank over a brief ({'concepts': [...]}) -> list of findings."""
     out = []
@@ -97,7 +107,17 @@ def brief_bank(brief, lib):
         label = f"concept {n} ({c.get('name', '')})"
         out += structure_check(c, label)
         out += hook_check(c.get("hook"), lib, f"{label} hook")
-        for field in ("name", "hook", "script", "visual_direction", "cta"):
+        if brief.get("kind"):                                                          # a brief written with the production fields (alt hook, angle, awareness, what it tests, size)
+            if c.get("alt_hook"):
+                out += hook_check(c["alt_hook"], lib, f"{label} alt hook")
+                if str(c["alt_hook"]).strip().lower() == str(c.get("hook", "")).strip().lower():
+                    out.append(_finding(f"{label} alt hook", "alt_hook_same", "warning", "the alt hook is the same as the hook: there is nothing to test against"))
+            for field, rule, what in (("alt_hook", "missing_alt_hook", "an alt hook to test against the hook"), ("angle", "missing_angle", "an angle"), ("awareness", "missing_awareness", "an awareness level (Unaware, Cold or Warm)"), ("tests", "missing_tests", "a line on what it tests")):
+                if not str(c.get(field) or "").strip():
+                    out.append(_finding(label, rule, "warning", f"the concept has no {what}"))
+            if f_hook_shape_repeat(brief, c, lib):
+                out.append(_finding(label, "same_hook_shape", "warning", "this concept's hook uses the same formula as every other concept's: the reviewer faults a brief whose hooks all share one shape"))
+        for field in ("name", "hook", "alt_hook", "script", "visual_direction", "cta", "angle", "tests"):
             out += slop_check(c.get(field), lib, f"{label} {field.replace('_', ' ')}")
     for field in ("title", "key_message"):
         out += slop_check(brief.get(field), lib, field)

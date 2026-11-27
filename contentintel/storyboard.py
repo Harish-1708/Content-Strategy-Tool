@@ -8,6 +8,7 @@ a copy of the brief that a person may have edited. Each shot then gets a STYLEFR
 import html
 import re
 
+from . import stills as STILLS
 from . import validators as V
 
 WORDS_PER_SECOND = 2.5
@@ -104,16 +105,24 @@ def check(board, lib, *, rules=None, claim_gate=None):
 def add_styleframes(board, finder):
     """A still for every shot. finder(query, kind) -> [{url, title, license, attribution, source, ...}] (the brand's saved pictures first, then the usable-picture search); the first one with a licence is used; none found is said plainly. Returns how many shots got one."""
     got = 0
+    used = set()                                                                       # one picture is used once per storyboard: Storyboard #2 repeated the brand's front-page image across shots
     for s in board["shots"]:
         try:
-            found = [a for a in (finder(s["still_query"], "image") or []) if a.get("url")] if s["still_query"] else []
+            raw = (finder(s["still_query"], "image", shot=s, board=board) if getattr(finder, "wants_shot", False) else finder(s["still_query"], "image")) or [] if s["still_query"] else []
+            found = [a for a in raw if a.get("url") and STILLS.relevant(s, a)]                    # a picture that does not match its shot is dropped, never used
+            dropped = len([a for a in raw if a.get("url")]) - len(found)
         except Exception as exc:                                                            # noqa: BLE001
             s["still"] = {"missing": f"the picture search failed ({type(exc).__name__})"}
             continue
         if not found:
-            s["still"] = {"missing": "no usable picture was found for: " + (s["still_query"] or "(no query)")}
+            s["still"] = {"missing": "no picture that matches this shot was found for: " + (s["still_query"] or "(no query)") + (f" ({dropped} candidate(s) did not match it)" if dropped else "")}
             continue
-        pick = next((a for a in found if a.get("license")), found[0])
+        fresh = [a for a in found if a["url"] not in used]
+        if not fresh:
+            s["still"] = {"missing": "the only pictures found for this shot were already used on earlier shots of this storyboard: " + (s["still_query"] or "(no query)")}
+            continue
+        pick = next((a for a in fresh if a.get("license")), fresh[0])
+        used.add(pick["url"])
         s["still"] = {"url": pick["url"], "title": str(pick.get("title", ""))[:120], "license": str(pick.get("license", "")), "credit": str(pick.get("attribution") or pick.get("credit") or ""), "source": str(pick.get("source", ""))}
         got += 1
     return got

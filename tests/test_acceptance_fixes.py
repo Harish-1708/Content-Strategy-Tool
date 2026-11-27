@@ -213,7 +213,7 @@ def test_by_default_a_signed_out_page_with_cookies_is_reported_not_logged_into_w
     ig = {k: v for k, v in site(cfg, "instagram").items() if k != "password_fallback"}          # the setting absent: the default applies
     b = FakeBrowser({}, present_always={ig["login_wall_any"][0]}, typeable={"x"}, clickable={"x"})
     creds = {"cookies": json.dumps([{"name": "sessionid", "value": "v", "domain": ".instagram.com", "path": "/"}]), "username": "u", "password": "p"}
-    with pytest.raises(B.LoginWall, match="export fresh ones.*Cookie facts"):
+    with pytest.raises(B.LoginWall, match="not accepted from this runner.*cannot tell an expired session.*No password login was tried.*Cookie facts"):
         C.ensure_session(b, "instagram", ig, creds)
     assert b.typed == [] and b.clicks == [] and b.opened == [ig["home"]] and b.shots == ["login-wall-instagram"]
 

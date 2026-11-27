@@ -386,19 +386,22 @@ class Store:
         return rows[-limit:] if limit else rows
 
     def read_page_log(self):
-        """{"days": {date: {site: pages opened}}, "cursor": {site: where the next run starts}}. Reading creates nothing."""
+        """{"days": {date: {site: pages opened}}, "cursor": {site: where the next run starts}, "last": {site: when it was last read}, "outcomes": {site: how the last read ended}, "history": {site: the last few reads}}: the one clock Collect and Acceptance share (read_gate.py). Reading creates nothing."""
         try:
             data = _read(self.data_dir / "_shared" / "page_log.json", {})
         except ValueError:
             data = {}
         data = data if isinstance(data, dict) else {}
         days, cursor, last = data.get("days"), data.get("cursor"), data.get("last")
-        return {"days": days if isinstance(days, dict) else {}, "cursor": cursor if isinstance(cursor, dict) else {}, "last": last if isinstance(last, dict) else {}}
+        outcomes, history = data.get("outcomes"), data.get("history")
+        return {"days": days if isinstance(days, dict) else {}, "cursor": cursor if isinstance(cursor, dict) else {}, "last": last if isinstance(last, dict) else {},
+                "outcomes": outcomes if isinstance(outcomes, dict) else {}, "history": history if isinstance(history, dict) else {}}
 
     def write_page_log(self, data):
         keep = sorted(data.get("days", {}))[-14:]                       # two weeks is plenty
         return _atomic_write(self.data_dir / "_shared" / "page_log.json",
-                             {"days": {d: data["days"][d] for d in keep}, "cursor": data.get("cursor", {}), "last": data.get("last", {})})
+                             {"days": {d: data["days"][d] for d in keep}, "cursor": data.get("cursor", {}), "last": data.get("last", {}),
+                              "outcomes": data.get("outcomes", {}), "history": data.get("history", {})})
 
     def write_export(self, slug, name, text):
         """Write one file under catalogue/. Returns True only if the content changed."""

@@ -1,6 +1,7 @@
 """Briefs from approved Idea Bank items only: selection, Claude's structured output, the exact rules checked by code, one repair
 pass, the optional bake-off, and the Word file (opened and read back for real)."""
 import io
+from types import SimpleNamespace
 import base64
 from dataclasses import replace
 
@@ -731,3 +732,194 @@ def test_a_phrase_can_be_banned_only_where_it_matters_and_the_swoveralls_overall
     ordered = [v for v in R.check_text(swov_rules, "overalls then sweatpants", "hook") if v.rule == "ordered_terms"]
     assert ordered                                                                                                                      # the older word-order rule is untouched
     assert next(item for item in swov_rules.rules["text_rules"]["banned_phrases"])["severity"] == "error"
+
+
+# ---- the production-brief fields (Update 73 v6) ------------------------------------------------------------------------------------------------------------------------------------------------
+
+def full_concept(**over):
+    return concept(**{"alt_hook": "Sweatpants that become a whole outfit", "angle": "comfort without giving up style", "awareness": "cold", "tests": "whether the comfort angle beats the style angle",
+                      "size": "9:16 1080x1920", "never": ["never say it replaces jeans", "never show a price"], **over})
+
+
+def test_every_concept_carries_an_alt_hook_angle_awareness_what_it_tests_a_size_and_its_own_never_list_and_junk_is_dropped():
+    raw = good_brief(concepts=[full_concept(), concept(name="Plain", awareness="Mild", never="one thing only")])
+    brief, _notes = BR.clean_brief(raw, {"IB-0001", "IB-0002"}, {"swoveralls-navy"}, 7)
+    a, b = brief["concepts"]
+    assert a["alt_hook"] == "Sweatpants that become a whole outfit" and a["awareness"] == "Cold" and a["never"] == ["never say it replaces jeans", "never show a price"] and a["size"] == "9:16 1080x1920"
+    assert b["awareness"] == "" and b["never"] == ["one thing only"] and b["alt_hook"] == "" and brief["held_back"] == []                                      # not one of the three levels: dropped, not guessed
+    assert "alt_hook" in BR.BRIEF_SYSTEM and "Unaware, Cold or Warm" in BR.BRIEF_SYSTEM and "a different angle and a different hook shape" in BR.BRIEF_SYSTEM
+
+
+def test_a_concept_with_no_hook_or_over_the_limit_is_held_back_with_its_reason_not_lost():
+    raw = good_brief(concepts=[concept(name="Ok"), {"name": "No hook", "hook": "", "script": "x"}, concept(name="Third"), concept(name="Fourth")])
+    brief, notes = BR.clean_brief(raw, {"IB-0001"}, {"swoveralls-navy"}, 2)
+    assert [c["name"] for c in brief["concepts"]] == ["Ok", "Third"]
+    assert brief["held_back"] == [{"name": "No hook", "reason": "no hook was written, so there is nothing to shoot"}, {"name": "Fourth", "reason": "over the limit of 2 concepts for one brief"}] and any("kept the first 2" in n for n in notes)
+
+
+def test_the_alt_hook_obeys_the_hook_rules_and_the_claims_gate_sees_every_new_text(ruleset):
+    brief, _ = BR.clean_brief(good_brief(concepts=[full_concept(alt_hook="Sweatpants overalls for dads", angle="a medical cure")]), {"IB-0001", "IB-0002"}, {"swoveralls-navy"}, 7)
+    found = BR.check_brief(brief, ruleset, {"swoveralls-navy": {}}, ())
+    assert any(v["where"].endswith("alt hook") and v["rule"] == "banned_phrase" for v in found)                                                  # the 'overalls' hook rule applies to the second hook too
+
+    class Reg:
+        def gate(self, text):
+            return {"findings": [{"result": "BLOCKED", "sentence": text, "why": "x"}] if "medical" in text else []}
+    gated = BR.gate_violations({**brief, "offer": "a medical offer"}, Reg())
+    assert {v["where"] for v in gated} == {"concept 1 (Comfort switch) angle", "offer"}
+
+
+def test_code_fills_in_the_kind_the_recipient_the_one_offer_the_sizes_the_reference_links_and_the_done_when_checklist(ruleset):
+    brief, _ = BR.clean_brief(good_brief(concepts=[full_concept(size=""), concept(name="Two")]), {"IB-0001", "IB-0002"}, {"swoveralls-navy"}, 7)
+    items = [{"id": "IB-0001", "url": "https://www.instagram.com/p/abc/"}, {"id": "IB-0002", "url": ""}]
+    none = BR.finish_brief(brief, "static", " Sarah  Lopez ", "", items, ruleset)
+    assert none == [] and brief["kind"] == "static" and brief["for"] == "Sarah Lopez" and brief["offer"] == "" and brief["offer_placement"] == ""
+    assert [c["size"] for c in brief["concepts"]] == ["4:5 1080x1350", "4:5 1080x1350"] and brief["concepts"][0]["reference_links"] == [{"id": "IB-0001", "url": "https://www.instagram.com/p/abc/"}]
+    assert brief["done_when"][0].startswith("All 2 concept(s) are made") and brief["done_when"][1] == "Every concept is delivered at its own size: 4:5 1080x1350" and brief["done_when"][-1].startswith("Each image keeps its layout")
+    allowed = SimpleNamespace(rules={"claim_rules": {"allowed_offers": ["Buy 2+, 30% off. No code needed."]}})
+    blank = BR.finish_brief(brief, "video", "", "", items, allowed)
+    assert blank == [] and brief["offer"] == "" and brief["offer_placement"] == ""                                                              # the offer comes from the input each time: the rules' only allowed offer is NOT used by default
+    one = BR.finish_brief(brief, "video", "", "buy 2+, 30% off. no code needed.", items, allowed)
+    assert one == [] and brief["offer"] == "buy 2+, 30% off. no code needed." and brief["offer_placement"] == BR.OFFER_PLACEMENT["video"] and any("30% off" in d and "one place only" in d for d in brief["done_when"])          # checked against the guard list without regard to case
+    bad = BR.finish_brief(brief, "video", "", "50% off everything", items, allowed)
+    assert bad[0]["rule"] == "offer_not_allowed" and bad[0]["severity"] == "error" and "Buy 2+, 30% off. No code needed." in bad[0]["message"]
+    nothing = BR.finish_brief(brief, "video", "", "free shipping", items, ruleset)
+    assert "the rules allow no offer" in nothing[0]["message"]
+    assert BR.finish_brief(brief, "weird", "", "", items, ruleset) == [] and brief["kind"] == "video"
+
+
+def test_the_word_document_has_the_recipient_the_offer_an_at_a_glance_table_the_new_rows_held_back_concepts_and_the_checklist(store, swov, ruleset, usable):
+    import docx as docx_mod
+    first = good_brief(concepts=[full_concept(), full_concept(name="Blocked one", hook="Sweatpants that fix everything")])
+    claude = claude_with(first, {"verdict": "pass", "problems": [], "checklist": {}})
+    record = make(store, swov, ruleset, {"claude-sonnet-5-5": claude}, for_person="Sarah")
+    assert record["content"]["for"] == "Sarah" and record["content"]["kind"] == "video" and record["content"]["concepts"][0]["awareness"] == "Cold" and record["content"]["done_when"]
+    blocked = [{"where": "concept 2 (Blocked one) script", "rule": "claims-gate", "severity": "error", "message": "BLOCKED: it fixes everything"}]
+    meta = {"brief": "x", "id": "BR-0009", "created": "2026-11-26T00:00:00Z", "ask": "a test"}
+    content = dict(record["content"], offer="Buy 2+, 30% off. No code needed.", offer_placement="a sticker on the opening shot", held_back=[{"name": "Third", "reason": "over the limit of 2 concepts for one brief"}])
+    data = BR.build_docx(content, swov, meta, [], {}, blocked, ruleset, [])
+    import io
+    d = docx_mod.Document(io.BytesIO(data))
+    text = "\n".join(p.text for p in d.paragraphs)
+    cells = " | ".join(c.text for t in d.tables for r in t.rows for c in r.cells)
+    assert "For: Sarah" in text and "Buy 2+, 30% off. No code needed.  (shown once, in this place: a sticker on the opening shot)" in text
+    assert "At a glance" in text and "What it tests" in cells and "comfort without giving up style (Cold)" in cells and "Alt hook" in cells and "never say it replaces jeans; never show a price" in cells
+    assert "Held back" in text and "Blocked one: the claims gate blocked a claim in it: BLOCKED: it fixes everything" in text and "Third: over the limit of 2 concepts for one brief" in text
+    assert text.count("Concepts") >= 1 and "2. Blocked one" not in text and "1. Comfort switch" in text                                               # the blocked concept is not handed out to shoot
+    assert "[ ] All 2 concept(s) are made" in text and "Done when" in text
+
+
+def test_a_static_or_carousel_brief_changes_what_the_writer_is_asked_and_a_revision_keeps_its_kind(store, swov, ruleset, usable):
+    claude = claude_with(good_brief(concepts=[full_concept(format="static image 4:5", size="")]), {"verdict": "pass", "problems": [], "checklist": {}})
+    first = make(store, swov, ruleset, {"claude-sonnet-5-5": claude}, kind="static")
+    assert first["content"]["kind"] == "static" and first["content"]["concepts"][0]["size"] == "4:5 1080x1350"
+    system, user, _ = claude.json_calls[0]
+    assert "STATIC images, not videos" in user and "exact on-image copy" in user and "carousel" not in user.lower().split("static")[1][:0]
+    revised = make(store, swov, ruleset, {"claude-sonnet-5-5": claude_with(good_brief(concepts=[full_concept(format="static image 4:5")]), {"verdict": "pass", "problems": [], "checklist": {}})}, revise_of=first)
+    assert revised["content"]["kind"] == "static" and revised["revision_of"] == first["id"]
+    car = claude_with(good_brief(concepts=[full_concept(format="carousel 4:5", script="Slide 1: a\nSlide 2: b\nSlide 3: c")]), {"verdict": "pass", "problems": [], "checklist": {}})
+    make(store, swov, ruleset, {"claude-sonnet-5-5": car}, kind="carousel")
+    assert "CAROUSELS" in car.json_calls[0][1] and "numbered (Slide 1: ...)" in car.json_calls[0][1]
+    video = claude_with(good_brief(), {"verdict": "pass", "problems": [], "checklist": {}})
+    make(store, swov, ruleset, {"claude-sonnet-5-5": video})
+    assert "STATIC images" not in video.json_calls[0][1] and "CAROUSELS" not in video.json_calls[0][1]                                                  # the default is the video brief, unchanged
+
+
+def test_the_validator_bank_warns_about_missing_production_fields_a_repeated_hook_shape_and_an_alt_hook_that_is_the_same():
+    from contentintel import formulas as FM
+    from contentintel import validators as VAL
+    lib = FM.load_library()
+    cost = "$18,000 is what one missing clause cost me."
+    bare = {"kind": "video", "concepts": [concept(hook=cost), concept(name="B", hook=cost), concept(name="C", hook=cost)]}
+    found = VAL.brief_bank(bare, lib)
+    rules = {f["rule"] for f in found}
+    assert {"missing_alt_hook", "missing_angle", "missing_awareness", "missing_tests", "same_hook_shape"} <= rules and all(f["severity"] == "warning" for f in found if f["rule"].startswith("missing") or f["rule"] == "same_hook_shape")
+    same = VAL.brief_bank({"kind": "video", "concepts": [full_concept(hook=cost, alt_hook=cost)]}, lib)
+    assert any(f["rule"] == "alt_hook_same" for f in same) and not any(f["rule"] == "same_hook_shape" for f in same)                                   # one concept cannot repeat itself across concepts
+    legacy = VAL.brief_bank({"concepts": [concept(hook=cost)]}, lib)
+    assert not any(f["rule"].startswith("missing") or f["rule"] == "alt_hook_same" for f in legacy)                                                    # a brief written before these fields is not nagged
+
+
+def test_the_offer_is_only_what_the_brief_is_given_and_only_an_allowed_one_reaches_the_writer(store, swov, ruleset, usable):
+    allowed = "Buy 2+, 30% off. No code needed."
+    import dataclasses
+    rules = dataclasses.replace(ruleset, rules={**ruleset.rules, "claim_rules": {**(ruleset.rules.get("claim_rules") or {}), "allowed_offers": [allowed]}})
+    ok = claude_with(good_brief(), {"verdict": "pass", "problems": [], "checklist": {}})
+    rec = make(store, swov, rules, {"claude-sonnet-5-5": ok}, offer=allowed)
+    assert rec["content"]["offer"] == allowed and f"placed once ({BR.OFFER_PLACEMENT['video']}): {allowed}" in ok.json_calls[0][1]
+    none = claude_with(good_brief(), {"verdict": "pass", "problems": [], "checklist": {}})
+    rec2 = make(store, swov, rules, {"claude-sonnet-5-5": none})
+    assert rec2["content"]["offer"] == "" and "The ONE offer for this brief" not in none.json_calls[0][1]                                      # one allowed offer is not used unless it is given
+    bad = claude_with(good_brief(), {"verdict": "pass", "problems": [], "checklist": {}})
+    rec3 = make(store, swov, rules, {"claude-sonnet-5-5": bad}, offer="50% off everything")
+    assert "The ONE offer for this brief" not in bad.json_calls[0][1] and any(v["rule"] == "offer_not_allowed" for v in rec3["violations"]) and rec3["status"] == "needs review"   # an offer outside the guard list never reaches the writer and the brief is flagged
+    assert "50%" not in " ".join(allowed_offers for allowed_offers in BR.allowed_offers(rules))
+
+
+from contentintel import reviews as R_                                                                                                              # noqa: E402
+
+
+def reviews_for_brief(*rows):
+    return [R_.make_review(body, rating=5, reviewer=who, date=date, handle=h, source="judge.me export") for body, who, date, h in rows]
+
+
+def test_the_brief_offers_reviews_to_the_writer_attributes_a_valid_quote_and_flags_an_invented_one(store, swov, ruleset, usable):
+    stored = reviews_for_brief(("So soft and the pockets are huge, I wear it every single day.", "Jess P.", "2026-09-01", "swoveralls-navy"))
+    R_.merge(store, "swoveralls", stored, "judge.me export", "2026-11-26T08:00:00Z")
+    rid = stored[0]["id"]
+    good = claude_with(good_brief(concepts=[concept(quote={"review_id": rid, "text": "the pockets are huge"})]), {"verdict": "pass", "problems": [], "checklist": {}})
+    rec = make(store, swov, ruleset, {"claude-sonnet-5-5": good})
+    assert f"- {rid}: \"So soft and the pockets are huge, I wear it every single day.\"" in good.json_calls[0][1] and "Customer reviews you may quote." in good.json_calls[0][1]
+    assert rec["content"]["concepts"][0]["quote"]["attribution"] == f"Jess P., 2026-09-01 (judge.me export, 5 stars, {rid})" and not [v for v in rec["violations"] if v["rule"].startswith("quote_")]
+    import docx as docx_mod
+    import io
+    meta = {"brief": "x", "id": "BR-1", "created": "2026-11-26T08:00:00Z", "ask": "a"}
+    cells = " | ".join(c.text for t in docx_mod.Document(io.BytesIO(BR.build_docx(rec["content"], swov, meta, [], {}, [], ruleset, []))).tables for r in t.rows for c in r.cells)
+    assert "Customer quote" in cells and "\"the pockets are huge\"  Jess P., 2026-09-01" in cells
+    bad = claude_with(good_brief(concepts=[concept(script='She says "It is the softest thing I have ever worn, truly".')]), {"verdict": "pass", "problems": [], "checklist": {}})
+    rec2 = make(store, swov, ruleset, {"claude-sonnet-5-5": bad})
+    assert any(v["rule"] == "quote_not_verbatim" and v["severity"] == "error" for v in rec2["violations"]) and rec2["status"] == "needs review"
+    assert any("not word for word in any one stored review" in line for line in BR.revision_problems(rec2))                                          # the revision is told exactly what to fix
+    empty_store = Store(store.data_dir.parent / "elsewhere")
+    assert R_.load(empty_store, "swoveralls") == {"reviews": []}
+
+
+# ---- cuts briefs: edits of the footage inventory --------------------------------------------------------------------------------------------------------------------------------------------
+
+def stored_footage(store):
+    from contentintel import footage as FT_
+    files = [{"id": "f1", "name": "zip-demo.mp4", "path": "creators/Sarah", "mime": "video/mp4", "size": 20_000_000, "modified": "2026-11-20T10:00:00Z", "seconds": 20.0, "width": 1080, "height": 1920},
+             {"id": "f2", "name": "unboxing.mov", "path": "", "mime": "video/quicktime", "size": 9_000_000, "modified": "2026-11-10T10:00:00Z", "seconds": 12.0, "width": 1080, "height": 1920}]
+    clips, ignored = FT_.build_inventory(files)
+    FT_.save(store, "swoveralls", clips, ignored, "FOLDER1", "2026-11-27T08:00:00Z")
+    return clips
+
+
+def test_a_cuts_brief_needs_the_footage_inventory_and_says_where_the_clips_go_when_there_is_none(store, swov, ruleset, usable):
+    claude = claude_with(good_brief(), {"verdict": "pass", "problems": [], "checklist": {}})
+    with pytest.raises(BR.BriefError) as e:
+        make(store, swov, ruleset, {"claude-sonnet-5-5": claude}, kind="cuts")
+    assert "a cuts brief needs the footage inventory" in str(e.value) and "<Idea Bank folder> / <brand> / Footage" in str(e.value) and "Footage > scan" in str(e.value) and claude.json_calls == []          # the writer is never asked
+
+
+def test_a_cuts_brief_shows_the_writer_the_inventory_checks_every_clip_and_prints_the_shot_list(store, swov, ruleset, usable):
+    import docx as docx_mod
+    clips = stored_footage(store)
+    by_name = {c["name"]: c["id"] for c in clips}
+    a, b = by_name["zip-demo.mp4"], by_name["unboxing.mov"]
+    good = claude_with(good_brief(concepts=[full_concept(format="15 second cut", clips=[{"clip": a, "start": 2, "end": 9}, {"clip": b, "start": 0, "end": 8}])]), {"verdict": "pass", "problems": [], "checklist": {}})
+    rec = make(store, swov, ruleset, {"claude-sonnet-5-5": good}, kind="cuts")
+    system, user, _ = good.json_calls[0]
+    assert "CUTS" in user and "Footage you may cut from." in user and f"- {a}: creators/Sarah/zip-demo.mp4 (20 s, vertical" in user
+    assert rec["content"]["kind"] == "cuts" and rec["content"]["concepts"][0]["clips"] == [{"clip": a, "start": 2.0, "end": 9.0}, {"clip": b, "start": 0.0, "end": 8.0}] and not [v for v in rec["violations"] if v["rule"].startswith("cuts_")]
+    assert set(rec["content"]["footage_used"]) == {a, b} and rec["content"]["footage_used"][a]["name"] == "zip-demo.mp4"
+    meta = {"brief": "x", "id": "BR-1", "created": "2026-11-27T08:00:00Z", "ask": "a"}
+    cells = " | ".join(c.text for t in docx_mod.Document(io.BytesIO(BR.build_docx(rec["content"], swov, meta, [], {}, [], ruleset, []))).tables for r in t.rows for c in r.cells)
+    assert "Cut from" in cells and f"{a}: zip-demo.mp4 (creators/Sarah), 2 to 9 s" in cells and f"{b}: unboxing.mov, 0 to 8 s" in cells
+    bad = claude_with(good_brief(concepts=[full_concept(format="15 second cut", clips=[{"clip": a, "start": 15, "end": 25}, {"clip": "FT-nope00", "start": 0, "end": 3}])]), {"verdict": "pass", "problems": [], "checklist": {}})
+    rec2 = make(store, swov, ruleset, {"claude-sonnet-5-5": bad}, kind="cuts")
+    rules = {v["rule"] for v in rec2["violations"]}
+    assert {"cuts_past_the_end", "cuts_unknown_clip"} <= rules and rec2["status"] == "needs review"
+    none = claude_with(good_brief(concepts=[full_concept(format="15 second cut")]), {"verdict": "pass", "problems": [], "checklist": {}})
+    assert any(v["rule"] == "cuts_no_clips" for v in make(store, swov, ruleset, {"claude-sonnet-5-5": none}, kind="cuts")["violations"])
+    assert BR.DEFAULT_SIZE["cuts"] == "9:16 1080x1920" and rec["content"]["done_when"][-1].startswith("Each cut uses only the clips")

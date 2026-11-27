@@ -265,7 +265,7 @@ def test_in_fallback_mode_a_failed_login_is_rescued_by_apify_but_still_flagged(t
     expired_instagram(cfg, f)
     result = run(store, tmp_path, swov, cfg, settings, f, apify=apify, backend="fallback")
     assert statuses(result) == [("meta_ads", "ran"), ("tiktok", "ran"), ("instagram", "ran")]
-    assert "via Apify (the browser failed: instagram: not logged in" in result.brands["swoveralls"][2].detail
+    assert "via Apify (the browser failed: instagram: the site showed its login page" in result.brands["swoveralls"][2].detail
     assert not result.problems and list(result.needs_you) == ["instagram"]                         # the cookies still need refreshing
     assert {r["source"]: r["via"] for r in store.read_collected("swoveralls")} == {"meta_ads": "browser", "tiktok": "browser", "instagram": "apify"}
     assert used(store) == {"collected_items": 4, "apify_items": 1}
@@ -290,7 +290,7 @@ def test_in_fallback_mode_without_a_token_a_browser_failure_is_just_a_failure(tm
     f = world(cfg)
     expired_instagram(cfg, f)
     result = run(store, tmp_path, swov, cfg, settings, f, apify=None, backend="fallback", sources=("instagram",))
-    assert statuses(result) == [("instagram", "skipped")] and "not logged in" in result.brands["swoveralls"][0].detail
+    assert statuses(result) == [("instagram", "skipped")] and "the site showed its login page" in result.brands["swoveralls"][0].detail
 
 
 def test_in_fallback_mode_a_used_up_apify_allowance_leaves_the_browser_failure_standing(tmp_path, store, swov, cfg, settings):

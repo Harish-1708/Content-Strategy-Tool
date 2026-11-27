@@ -20,7 +20,7 @@ from urllib.parse import quote_plus
 
 from . import connections as CONN
 from . import contract as K
-from .apify import ApifyRunUnfinished, reddit_held
+from .apify import ApifyRunUnfinished, reddit_held, reddit_lane
 from .safety import scrub
 
 SCRIPT = Path("skills") / "last30days" / "scripts" / "last30days.py"
@@ -452,7 +452,28 @@ class ApifyVoice:
                     it["entity"], it["mode"] = entity, "competitors"
             items += got
             notes.append(f"apify {source} for {topic!r}: asked for {n}, {len(raw)} item(s) read within a {self.ceiling(source):g} dollar ceiling, {len(got)} usable" + (f", {bad} unreadable" if bad else ""))
+            if source == "reddit":
+                notes.append(f"apify reddit quality for {topic!r}: {reddit_quality(raw)}")
         return items, notes
+
+
+def reddit_wanted(status, lane=None):
+    """Whether this ask also uses Apify's Reddit actor: on every ask ('always'), only after the public Reddit search failed ('backup'), or never ('off')."""
+    lane = lane or reddit_lane()
+    return lane == "always" or (lane == "backup" and status.get("reddit") in FAILED)
+
+
+def reddit_quality(raw):
+    """One line on what Apify's Reddit actor returned, so its quality can be judged from a run: how many posts, how many carry a score, a comment count, text and a community, and which communities."""
+    rows = [r for r in raw if isinstance(r, dict)]
+    have = lambda *keys: sum(1 for r in rows if any(r.get(k) not in (None, "") for k in keys))          # noqa: E731
+    communities = []
+    for r in rows:
+        c = str(r.get("communityName") or r.get("parsedCommunityName") or r.get("subreddit") or "").strip()
+        if c and c not in communities:
+            communities.append(c)
+    return (f"{len(rows)} post(s): {have('upVotes', 'score')} with a score, {have('numberOfComments', 'numComments')} with a comment count, {have('body', 'text')} with text, {have('communityName', 'parsedCommunityName', 'subreddit')} with a community"
+            + (f" ({', '.join(communities[:5])}{', ...' if len(communities) > 5 else ''})" if communities else ""))
 
 
 def reddit_items(rows, limit=300):

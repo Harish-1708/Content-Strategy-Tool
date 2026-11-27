@@ -153,13 +153,14 @@ def test_a_failed_apify_run_says_why_in_the_actors_own_words():
 
 
 def test_reddit_stays_on_hold_everywhere_it_would_spend_apify_money(monkeypatch):
+    monkeypatch.setattr(SL, "reddit_held", lambda *a, **k: True)                                           # the owner's switch back to hold (research.yaml collectors.apify.reddit_hold: true)
     with pytest.raises(K.Failure) as f:
         SL.apify_rows("reddit", "https://www.reddit.com/r/overalls/", client=SimpleNamespace(run=lambda *a, **k: pytest.fail("no Apify call while Reddit is on hold")))
     assert f.value.code == K.NEED_SETUP and "on hold" in str(f.value)
     assert SL.APIFY_PAGE_ACTORS["reddit"][1]("https://www.reddit.com/r/x/", 1) == {"startUrls": [{"url": "https://www.reddit.com/r/x/"}], "maxItems": 1, "maxPostCount": 1, "skipComments": True}   # no proxy field: the residential proxy is about 8 dollars a GB
     assert "proxy" not in str(__import__("contentintel.voice", fromlist=["x"]).__dict__.get("REDDIT_PROXY", ""))
-    assert "apify" in Path("research.yaml").read_text(encoding="utf-8") and "reddit_hold: true" in Path("research.yaml").read_text(encoding="utf-8")
-    assert "on hold by the owner's decision" in Path("contentintel/cli.py").read_text(encoding="utf-8")
+    assert "apify" in Path("research.yaml").read_text(encoding="utf-8") and "reddit_hold: false" in Path("research.yaml").read_text(encoding="utf-8")
+    assert "on hold by the owner's decision" in Path("contentintel/cli.py").read_text(encoding="utf-8")                                              # the hold can still be switched back on
 
 
 def test_the_save_steps_say_plainly_what_was_saved_and_skipped_and_hide_no_error():

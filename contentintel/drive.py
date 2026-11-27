@@ -187,6 +187,37 @@ class DriveClient:
             if not token:
                 return out
 
+    def list_tree(self, folder_id, max_files=2000, _path=()):
+        """Every file under a folder, subfolders included, as [{id, name, path (the folders between), mime, size, modified, seconds, width, height}]. seconds/width/height come from Drive's own video metadata (None while Drive has not
+        read a fresh upload yet). Nothing is downloaded."""
+        out, token, folders = [], None, []
+        while True:
+            params = {"q": f"'{_q(folder_id)}' in parents and trashed = false", "fields": "nextPageToken,files(id,name,mimeType,size,modifiedTime,videoMediaMetadata(durationMillis,width,height),imageMediaMetadata(width,height))",
+                      "supportsAllDrives": "true", "includeItemsFromAllDrives": "true", "corpora": "allDrives", "pageSize": "200"}
+            if token:
+                params["pageToken"] = token
+            body = self._json("GET", API, params=params)
+            for f in body.get("files") or []:
+                if f.get("mimeType") == FOLDER:
+                    folders.append(f)
+                    continue
+                video, image = f.get("videoMediaMetadata") or {}, f.get("imageMediaMetadata") or {}
+                ms = video.get("durationMillis")
+                out.append({"id": f["id"], "name": f["name"], "path": "/".join(_path), "mime": f.get("mimeType", ""), "size": int(f.get("size") or 0), "modified": f.get("modifiedTime", ""),
+                            "seconds": round(int(ms) / 1000, 1) if ms else None, "width": video.get("width") or image.get("width"), "height": video.get("height") or image.get("height")})
+            token = body.get("nextPageToken")
+            if not token:
+                break
+        for sub_folder in folders:
+            if len(out) >= max_files:
+                break
+            out += self.list_tree(sub_folder["id"], max_files - len(out), _path + (sub_folder["name"],))
+        return out[:max_files]
+
+    def footage_folder(self, brand_name):
+        """The brand's Footage folder (made now when it is not there yet): <Idea Bank folder>/<brand>/Footage."""
+        return self.ensure_folder(self.brand_folder(brand_name), "Footage")
+
     # ---- files -------------------------------------------------------------------------------------------------------
     def upload(self, parent_id, name, data, mime):
         """Put `data` (bytes) in a folder as `name`. Returns the file's id."""

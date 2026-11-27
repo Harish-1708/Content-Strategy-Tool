@@ -7,7 +7,6 @@ from pathlib import Path
 import yaml
 
 WORKFLOWS = sorted(Path(".github/workflows").glob("*.yml"))
-TRIAL = {"photo-trial.yml", "video-trial.yml"}                         # the developer's own files: not part of the shipped package
 SCRIPT = Path(".github/scripts/push-with-retry.sh").resolve()
 
 
@@ -19,24 +18,26 @@ def save_steps(path):
                 yield job, step
 
 
-def test_every_workflow_that_saves_data_saves_even_when_an_earlier_step_failed_and_retries_the_push():
-    checked = 0
-    for path in WORKFLOWS:
+def data_saving_workflows():
+    """Every workflow that commits data (it contains a git commit): found by looking, not by a number written into the test, so a workflow added tomorrow is counted and held to the rule."""
+    return [p for p in WORKFLOWS if "git commit" in p.read_text(encoding="utf-8")]
+
+
+def test_every_workflow_that_saves_data_uses_the_helper_and_saves_even_when_an_earlier_step_failed():
+    saving = data_saving_workflows()
+    on_helper = [p for p in WORKFLOWS if "push-with-retry.sh" in p.read_text(encoding="utf-8")]
+    assert saving and {p.name for p in saving} == {p.name for p in on_helper} and len(saving) == len(on_helper) >= 20                       # the live count of data-saving workflows equals the live count on the helper: 20 to 23 depending on which of the owner's own workflows (generation, photo-trial, video-trial) the checkout holds
+    for path in saving:
         text = path.read_text(encoding="utf-8")
-        if path.name in TRIAL or ("git push" not in text and "push-with-retry.sh" not in text):
-            continue
+        assert "git push" not in text, f"{path.name} still pushes by hand"
         steps = list(save_steps(path))
-        assert steps, f"{path.name} still pushes by hand"
+        assert steps, path.name
         for job, step in steps:
             assert "always()" in str(step.get("if", "")), f"{path.name}: the save step is skipped when an earlier step fails"
             assert "git push" not in step["run"] and "git pull" not in step["run"], path.name
             names = [s.get("name", "") for s in job["steps"]]
             keep = next(s for s in job["steps"] if s.get("name", "").startswith("Keep the unsaved data"))
             assert keep["if"] == "failure()" and keep["with"]["path"] == "unsaved-data/" and keep["with"]["if-no-files-found"] == "ignore" and names.index(keep["name"]) > names.index(step["name"])
-            checked += 1
-    assert checked == 20                                                                                                                       # 22 workflows save data; 2 are the developer's own trial files
-    for name in TRIAL:
-        assert (Path(".github/workflows") / name).read_text(encoding="utf-8").count("git push") <= 1                                         # untouched here: PLACEMENT gives their two-line change
 
 
 def test_the_save_conditions_keep_what_they_meant_and_add_always():

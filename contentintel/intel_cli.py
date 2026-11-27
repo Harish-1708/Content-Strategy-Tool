@@ -64,19 +64,13 @@ def _github_head(repo):
 
 
 def _default_finder(args, store):
-    import os
-    from . import assets_find as AF
+    """The still picker (stills.py): the product's own pictures, the brand site's pictures that match the shot, then a picture generated for the shot. No stock library, no competitor pictures."""
     from . import research_tools as RT
+    from . import stills as STL
     from .brands import load_brand
     brand = load_brand(args.brand, args.brands_dir)
-    rp = Path(args.brands_dir) / args.brand / "research.yaml"
-    research = yaml.safe_load(rp.read_text(encoding="utf-8")) if rp.is_file() else None
-    key = os.environ.get("PIXABAY_API_KEY", "")
-
-    def finder(query, kind="image"):
-        found, _report = AF.find_usable(RT.default_get, query, "images", brand=brand, store=store, research=research, limit=5, pixabay_key=key)
-        return found
-    return finder
+    latest = store.load_latest(args.brand) or {}
+    return STL.build_finder(brand, latest.get("products") or {}, aspect_of=lambda board: (board or {}).get("aspect", "9:16"), get=lambda url: RT.default_get(url, headers={"Accept": "text/html,application/xhtml+xml"}, timeout=30))
 
 
 def run_storyboard(args, store, now, finder=None):

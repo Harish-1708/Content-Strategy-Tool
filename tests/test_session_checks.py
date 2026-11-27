@@ -162,7 +162,7 @@ def test_the_deep_research_test_stops_at_the_login_wall_with_the_cookie_facts(cf
     creds = {"gemini": {"cookies": google_cookies(["NID"])}}
     out = C.run_deep_research_test(f, creds, cfg, C.load_collector_settings("does-not-exist.yaml"), Store(tmp_path / "data"),
                                    R.Ledger, NOW, None, tmp_path / "debug")
-    assert out["ok"] is False and "not logged in" in out["detail"] and "button to switch to Deep Research" not in out["detail"]
+    assert out["ok"] is False and "the site showed its login page" in out["detail"] and "button to switch to Deep Research" not in out["detail"]
     assert "Cookie facts (no values shown): 1 cookies loaded" in out["detail"] and SECRET not in out["detail"]
     assert "login-wall-gemini" in f.browsers["gemini"].shots
 
@@ -259,7 +259,7 @@ def test_a_login_wall_while_setting_up_a_session_names_the_cookies_that_were_loa
     ig = {**cfg["sites"]["instagram"], "home": "https://www.instagram.com/"}
     wall = FakeBrowser(present_always={ig["login_wall_any"][0]})
     cookies = google_cookies(["sessionid", "csrftoken"], ".instagram.com")
-    with pytest.raises(Exception, match=r"not logged in.*Cookie facts \(no values shown\): 2 cookies loaded \(.instagram.com x2\)") as err:
+    with pytest.raises(Exception, match=r"the site showed its login page.*Cookie facts \(no values shown\): 2 cookies loaded \(.instagram.com x2\)") as err:
         C.ensure_session(wall, "instagram", ig, {"cookies": cookies})
     assert SECRET not in str(err.value)
     with pytest.raises(Exception) as bare:

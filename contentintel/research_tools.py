@@ -245,7 +245,7 @@ def run_voice(args, store, now, *, get=default_get, runner=subprocess.run, envir
                 asks = [(topic, "")] if args.mode == "research" else [(p, p) for p in peers]                # competitors: each competitor, never the brand itself (research mode covers the brand)
                 for idx, (ask, entity) in enumerate(asks):
                     share = None if args.mode == "research" else max(2, apify_lane.room() // (len(asks) - idx))          # what is left is split between the competitors still to ask: nothing is stranded when one reads less
-                    extra, notes = apify_lane.run(ask, share=share, entity=entity, reddit_backup=status.get("reddit") in VOICE.FAILED)          # Reddit's Apify actor only when the public Reddit search failed
+                    extra, notes = apify_lane.run(ask, share=share, entity=entity, reddit_backup=VOICE.reddit_wanted(status))          # Reddit's Apify actor: research.yaml apify.reddit_lane (always by default; backup = only when the public search failed)
                     store.save_usage(ledger.usage)                                         # saved after every ask: spent is spent, whatever happens next
                     for note in notes:
                         print(f"{slug}: {note}")
