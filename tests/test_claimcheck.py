@@ -286,7 +286,7 @@ def test_a_bad_claim_rules_section_is_refused_with_a_plain_message(tmp_path, blo
 
 
 def test_the_digest_of_an_older_rules_file_is_unchanged_and_a_claim_rule_changes_it(tmp_path):
-    assert RU.load_ruleset(BRIEFS_DIR / "swoveralls-new-audience" / "rules.yaml").digest == "24c60588d10e"                                      # the older digest was 83ac74b2f988: the file changed on purpose (example allowed offer "30% off" added, Harish 2026-11-27), so the digest moves to the next number
+    assert RU.load_ruleset(BRIEFS_DIR / "swoveralls-new-audience" / "rules.yaml").digest == "83ac74b2f988"                                      # the older digest was 4ac493be2891: the file changed on purpose in Update 73 v5 (the hook rule), so every brand's rules version moves to the next number
     plain = RU.load_ruleset(write_rules(tmp_path, ""))
     assert "claim_rules" not in plain.rules and RU.load_ruleset(write_rules(tmp_path, "claim_rules:\n  allowed_offers: ['20% off']\n")).digest != plain.digest
 
@@ -388,7 +388,7 @@ def test_the_prompt_lists_the_facts_the_offers_and_the_claims_the_model_may_use(
     items = BR.approved_items(banked(store), decisions(**{"IB-0001": "use"}))
     prompt = BR.build_prompt(swov, "Father's Day", items, products, ruleset, 6)
     assert "Facts you may state (state NO other fact, price, number, offer, ingredient, dietary or health claim, endorsement or result):" in prompt
-    assert "- swoveralls-navy: " in prompt and "Allowed offers: 30% off" in prompt and "Approved claims you may use word for word: none" in prompt   # the Swoveralls rules now allow the example "30% off" offer
+    assert "- swoveralls-navy: " in prompt and "Allowed offers: none: state no offer, discount, code, free shipping or guarantee" in prompt and "Approved claims you may use word for word: none" in prompt
     allowed = replace(ruleset, rules={**ruleset.rules, "claim_rules": {"allowed_offers": ["30% off", "free shipping over $50"], "allowed_claims": ["machine washable"]}})
     text = BR.claim_lines(swov, allowed, products)
     assert "Allowed offers: 30% off; free shipping over $50" in text and "Other allowed wording: machine washable" in text
