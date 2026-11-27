@@ -4234,6 +4234,21 @@
    }
   },
   "2026-11-27": {
+   "aihorde": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 5213
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 1,
+    "latency_ms": 10177,
+    "requests": 1,
+    "tokens_in": 4710,
+    "tokens_out": 503
+   },
    "cloudflare": {
     "by_lane": {
      "general_json": {
@@ -4243,16 +4258,16 @@
      },
      "story_extract_json": {
       "cost_usd": 0.0,
-      "requests": 16,
-      "tokens": 35812
+      "requests": 28,
+      "tokens": 94310
      }
     },
     "cost_usd": 0.0,
     "failures": 0,
-    "latency_ms": 112157,
-    "requests": 19,
-    "tokens_in": 42278,
-    "tokens_out": 5578
+    "latency_ms": 188172,
+    "requests": 31,
+    "tokens_in": 98503,
+    "tokens_out": 7851
    },
    "cohere": {
     "by_lane": {
@@ -4263,19 +4278,24 @@
      },
      "story_review_json": {
       "cost_usd": 0.0,
-      "requests": 16,
-      "tokens": 6625
+      "requests": 27,
+      "tokens": 11304
      }
     },
     "cost_usd": 0.0,
     "failures": 1,
-    "latency_ms": 30760,
-    "requests": 19,
-    "tokens_in": 9202,
-    "tokens_out": 1929
+    "latency_ms": 44561,
+    "requests": 30,
+    "tokens_in": 12662,
+    "tokens_out": 3148
    },
    "groq": {
     "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 9782
+     },
      "general_json": {
       "cost_usd": 0.0,
       "requests": 6,
@@ -4284,25 +4304,30 @@
     },
     "cost_usd": 0.0,
     "failures": 2,
-    "latency_ms": 24945,
-    "requests": 6,
-    "tokens_in": 10020,
-    "tokens_out": 11144
+    "latency_ms": 30399,
+    "requests": 7,
+    "tokens_in": 14896,
+    "tokens_out": 16050
    },
    "kilo": {
     "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 2,
+      "tokens": 0
+     },
      "conflict_check_json": {
       "cost_usd": 0.0,
-      "requests": 6,
-      "tokens": 7197
+      "requests": 9,
+      "tokens": 10476
      }
     },
     "cost_usd": 0.0,
-    "failures": 0,
-    "latency_ms": 48519,
-    "requests": 6,
-    "tokens_in": 3268,
-    "tokens_out": 3929
+    "failures": 2,
+    "latency_ms": 136277,
+    "requests": 11,
+    "tokens_in": 4505,
+    "tokens_out": 5971
    },
    "openrouter": {
     "by_lane": {
@@ -4323,16 +4348,16 @@
     "by_lane": {
      "conflict_check_json": {
       "cost_usd": 0.0,
-      "requests": 9,
-      "tokens": 26985
+      "requests": 16,
+      "tokens": 53344
      }
     },
     "cost_usd": 0.0,
     "failures": 0,
-    "latency_ms": 99685,
-    "requests": 9,
-    "tokens_in": 4815,
-    "tokens_out": 22170
+    "latency_ms": 208413,
+    "requests": 16,
+    "tokens_in": 9645,
+    "tokens_out": 43699
    },
    "zhipu": {
     "by_lane": {

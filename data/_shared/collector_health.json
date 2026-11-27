@@ -438,6 +438,30 @@
    "source": "agent_reach_research",
    "state": "healthy"
   },
+  "ai:aihorde|gateway": {
+   "acceptance": null,
+   "consecutive_failures": 1,
+   "consecutive_successes": 0,
+   "history": [
+    {
+     "at": "2026-11-27T14:28:54Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    }
+   ],
+   "last_error": {
+    "at": "2026-11-27T14:28:54Z",
+    "code": "UPSTREAM_BROKEN",
+    "message": "unusable answer: the answer is not valid JSON"
+   },
+   "last_success": "",
+   "pause": null,
+   "route": "gateway",
+   "source": "ai:aihorde",
+   "state": "healthy"
+  },
   "ai:bazaarlink|gateway": {
    "acceptance": null,
    "consecutive_failures": 1,
@@ -569,7 +593,7 @@
   "ai:cloudflare|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 27,
+   "consecutive_successes": 39,
    "history": [
     {
      "at": "2026-11-10T09:20:48Z",
@@ -1039,6 +1063,90 @@
      "items": 1,
      "ms": 8366,
      "ok": true
+    },
+    {
+     "at": "2026-11-27T14:23:42Z",
+     "code": "",
+     "items": 1,
+     "ms": 16747,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:24:15Z",
+     "code": "",
+     "items": 1,
+     "ms": 2649,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:24:18Z",
+     "code": "",
+     "items": 1,
+     "ms": 4399,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:24:49Z",
+     "code": "",
+     "items": 1,
+     "ms": 8869,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:25:13Z",
+     "code": "",
+     "items": 1,
+     "ms": 4327,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:25:44Z",
+     "code": "",
+     "items": 1,
+     "ms": 12034,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:25:57Z",
+     "code": "",
+     "items": 1,
+     "ms": 3551,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:26:16Z",
+     "code": "",
+     "items": 1,
+     "ms": 4139,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:26:37Z",
+     "code": "",
+     "items": 1,
+     "ms": 3899,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:27:38Z",
+     "code": "",
+     "items": 1,
+     "ms": 4059,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:27:57Z",
+     "code": "",
+     "items": 1,
+     "ms": 6371,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:28:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 4971,
+     "ok": true
     }
    ],
    "last_error": {
@@ -1046,7 +1154,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast key1: timeout. Last error: The operation was aborted (cloud"
    },
-   "last_success": "2026-11-27T14:16:25Z",
+   "last_success": "2026-11-27T14:28:21Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:cloudflare",
@@ -1100,7 +1208,7 @@
   "ai:cohere|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 16,
+   "consecutive_successes": 27,
    "history": [
     {
      "at": "2026-11-14T05:00:40Z",
@@ -1528,6 +1636,83 @@
      "items": 1,
      "ms": 4759,
      "ok": true
+    },
+    {
+     "at": "2026-11-27T14:23:59Z",
+     "code": "",
+     "items": 1,
+     "ms": 862,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:24:23Z",
+     "code": "",
+     "items": 1,
+     "ms": 1223,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:24:58Z",
+     "code": "",
+     "items": 1,
+     "ms": 1242,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:25:17Z",
+     "code": "",
+     "items": 1,
+     "ms": 1291,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:25:56Z",
+     "code": "",
+     "items": 1,
+     "ms": 823,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:26:01Z",
+     "code": "",
+     "items": 1,
+     "ms": 1279,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:26:20Z",
+     "code": "",
+     "items": 1,
+     "ms": 1399,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:26:41Z",
+     "code": "",
+     "items": 1,
+     "ms": 1223,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:27:42Z",
+     "code": "",
+     "items": 1,
+     "ms": 831,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:28:04Z",
+     "code": "",
+     "items": 1,
+     "ms": 2864,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:28:26Z",
+     "code": "",
+     "items": 1,
+     "ms": 764,
+     "ok": true
     }
    ],
    "last_error": {
@@ -1535,7 +1720,7 @@
     "code": "UPSTREAM_BROKEN",
     "message": "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: cohere/command-r-08-2024 key1: timeout. Last error: The operation was aborted (cohere, chat, 15s). Failover sto"
    },
-   "last_success": "2026-11-27T14:16:33Z",
+   "last_success": "2026-11-27T14:28:26Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:cohere",
@@ -1885,8 +2070,8 @@
   },
   "ai:groq|gateway": {
    "acceptance": null,
-   "consecutive_failures": 1,
-   "consecutive_successes": 0,
+   "consecutive_failures": 0,
+   "consecutive_successes": 1,
    "history": [
     {
      "at": "2026-11-10T08:54:44Z",
@@ -2601,6 +2786,13 @@
      "items": 0,
      "ms": 0,
      "ok": false
+    },
+    {
+     "at": "2026-11-27T14:28:54Z",
+     "code": "",
+     "items": 1,
+     "ms": 5454,
+     "ok": true
     }
    ],
    "last_error": {
@@ -2608,7 +2800,7 @@
     "code": "RATE_LIMITED",
     "message": "All models exhausted: 1 route checked (1 rate-limited or on cooldown). Add more API keys or wait for rate limits to reset. Soonest reset ~82s."
    },
-   "last_success": "2026-11-27T13:39:19Z",
+   "last_success": "2026-11-27T14:28:54Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:groq",
@@ -2748,8 +2940,8 @@
   },
   "ai:kilo|gateway": {
    "acceptance": null,
-   "consecutive_failures": 0,
-   "consecutive_successes": 7,
+   "consecutive_failures": 2,
+   "consecutive_successes": 0,
    "history": [
     {
      "at": "2026-11-14T05:00:40Z",
@@ -2834,14 +3026,49 @@
      "items": 1,
      "ms": 8212,
      "ok": true
+    },
+    {
+     "at": "2026-11-27T14:25:18Z",
+     "code": "",
+     "items": 1,
+     "ms": 25309,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:26:42Z",
+     "code": "",
+     "items": 1,
+     "ms": 56032,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:28:27Z",
+     "code": "",
+     "items": 1,
+     "ms": 6417,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:28:54Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
+    },
+    {
+     "at": "2026-11-27T14:28:54Z",
+     "code": "UPSTREAM_BROKEN",
+     "items": 0,
+     "ms": 0,
+     "ok": false
     }
    ],
    "last_error": {
-    "at": "2026-11-26T04:47:17Z",
+    "at": "2026-11-27T14:28:54Z",
     "code": "UPSTREAM_BROKEN",
-    "message": "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: kilo/nvidia/nemotron-3.5-super-vl:free key1: timeout. Last error: The operation was aborted (kilo, chat, 60s)"
+    "message": "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: kilo/nvidia/nemotron-3.5-super-vl:free key1: timeout. Last error: The operation was aborted (kilo, chat, 60s). "
    },
-   "last_success": "2026-11-27T14:16:59Z",
+   "last_success": "2026-11-27T14:28:27Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:kilo",
@@ -3798,7 +4025,7 @@
   "ai:pollinations|gateway": {
    "acceptance": null,
    "consecutive_failures": 0,
-   "consecutive_successes": 15,
+   "consecutive_successes": 22,
    "history": [
     {
      "at": "2026-11-25T07:35:51Z",
@@ -3911,10 +4138,59 @@
      "items": 1,
      "ms": 21365,
      "ok": true
+    },
+    {
+     "at": "2026-11-27T14:23:59Z",
+     "code": "",
+     "items": 1,
+     "ms": 15426,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:24:24Z",
+     "code": "",
+     "items": 1,
+     "ms": 24353,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:24:59Z",
+     "code": "",
+     "items": 1,
+     "ms": 12772,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:26:02Z",
+     "code": "",
+     "items": 1,
+     "ms": 13113,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:26:21Z",
+     "code": "",
+     "items": 1,
+     "ms": 15015,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:27:43Z",
+     "code": "",
+     "items": 1,
+     "ms": 13780,
+     "ok": true
+    },
+    {
+     "at": "2026-11-27T14:28:07Z",
+     "code": "",
+     "items": 1,
+     "ms": 14269,
+     "ok": true
     }
    ],
    "last_error": null,
-   "last_success": "2026-11-27T14:16:38Z",
+   "last_success": "2026-11-27T14:28:07Z",
    "pause": null,
    "route": "gateway",
    "source": "ai:pollinations",

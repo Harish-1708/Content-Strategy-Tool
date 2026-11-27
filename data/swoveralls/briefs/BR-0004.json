@@ -1,0 +1,333 @@
+{
+ "ask": "Static ad concepts for Swoveralls for Meta ads",
+ "brief": "swoveralls-new-audience",
+ "built_by": "the pool (lane brief_json)",
+ "content": {
+  "audience": "Men aged 25-45, dads, casual wear seekers",
+  "concepts": [
+   {
+    "alt_hook": "Forest Green, Navy, or Midnight Black",
+    "angle": "Color decision",
+    "awareness": "Cold",
+    "clips": [],
+    "cta": "Shop now",
+    "format": "static image 4:5",
+    "hook": "Which shade will you pick",
+    "name": "Color Choice Dilemma",
+    "never": [
+     "price",
+     "discount",
+     "guarantee",
+     "claim of best",
+     "overalls word",
+     "exclamation"
+    ],
+    "product": "swoveralls-midnight-black",
+    "quote": {},
+    "reference_links": [
+     {
+      "id": "IB-0053",
+      "url": "https://www.facebook.com/ads/library/?id=1549823193850928"
+     }
+    ],
+    "references": [
+     "IB-0053"
+    ],
+    "script": "Which shade will you pick\nForest Green | Navy | Midnight Black\nSize chart inside for confidence\nShop now",
+    "size": "4:5 1080x1350",
+    "tests": "Which color resonates most with the audience",
+    "visual_direction": "Three color options displayed side by side with a translucent size chart overlay, neutral background, soft lighting"
+   },
+   {
+    "alt_hook": "Comfort that stays",
+    "angle": "Longevity",
+    "awareness": "Warm",
+    "clips": [],
+    "cta": "Learn more",
+    "format": "static image 4:5",
+    "hook": "Made to live in",
+    "name": "Made to Live In",
+    "never": [
+     "price",
+     "discount",
+     "guarantee",
+     "claim of best",
+     "overalls word",
+     "exclamation"
+    ],
+    "product": "swoveralls-navy",
+    "quote": {},
+    "reference_links": [
+     {
+      "id": "IB-0148",
+      "url": "https://www.facebook.com/ads/library/?id=2295672337557508"
+     }
+    ],
+    "references": [
+     "IB-0148"
+    ],
+    "script": "Made to live in\n6 pockets, adjustable straps, zipper fly\nComfort that stays\nLearn more",
+    "size": "4:5 1080x1350",
+    "tests": "Perceived durability and practicality",
+    "visual_direction": "A relaxed individual in a casual setting, wearing the garment, with a focus on the pockets and adjustable straps, muted background"
+   },
+   {
+    "alt_hook": "Wrap up comfort",
+    "angle": "Unique gift idea",
+    "awareness": "Cold",
+    "clips": [],
+    "cta": "Shop gift",
+    "format": "static image 4:5",
+    "hook": "A gift that rolls",
+    "name": "Gift That Rolls",
+    "never": [
+     "price",
+     "discount",
+     "guarantee",
+     "claim of best",
+     "overalls word",
+     "exclamation"
+    ],
+    "product": "swoveralls-navy",
+    "quote": {},
+    "reference_links": [
+     {
+      "id": "IB-0327",
+      "url": "https://www.instagram.com/reel/DZbfKHXquG4/"
+     }
+    ],
+    "references": [
+     "IB-0327"
+    ],
+    "script": "A gift that rolls\nForest Green, Navy, Midnight Black\nWrapped with ribbon\nShop gift",
+    "size": "4:5 1080x1350",
+    "tests": "Visual appeal of bouquet concept",
+    "visual_direction": "A bouquet of wrapped garments tied with ribbon, displayed on a neutral table, soft lighting"
+   },
+   {
+    "alt_hook": "Still fine after a long day",
+    "angle": "After-work comfort",
+    "awareness": "Warm",
+    "clips": [],
+    "cta": "Learn more",
+    "format": "static image 4:5",
+    "hook": "For the dad who says he's fine",
+    "name": "Dad Who Says He's Fine",
+    "never": [
+     "price",
+     "discount",
+     "guarantee",
+     "claim of best",
+     "overalls word",
+     "exclamation"
+    ],
+    "product": "swoveralls-dark-athletic-grey",
+    "quote": {},
+    "reference_links": [
+     {
+      "id": "IB-0389",
+      "url": "https://www.instagram.com/reel/De5AoLLPwlb/"
+     }
+    ],
+    "references": [
+     "IB-0389"
+    ],
+    "script": "For the dad who says he's fine\nBoots off, coffee in hand\nSettling into comfort\nLearn more",
+    "size": "4:5 1080x1350",
+    "tests": "Emotional resonance with dads",
+    "visual_direction": "A dad removing boots, holding coffee, settling into the garment in a cozy living room setting"
+   },
+   {
+    "alt_hook": "Avoid the usual",
+    "angle": "Pain point",
+    "awareness": "Cold",
+    "clips": [],
+    "cta": "Shop now",
+    "format": "static image 4:5",
+    "hook": "Gifts dads secretly hate",
+    "name": "Avoid the Usual",
+    "never": [
+     "price",
+     "discount",
+     "guarantee",
+     "claim of best",
+     "overalls word",
+     "exclamation"
+    ],
+    "product": "swoveralls-midnight-black",
+    "quote": {},
+    "reference_links": [
+     {
+      "id": "IB-0428",
+      "url": "https://www.instagram.com/p/DZa9CPdjjdO/"
+     }
+    ],
+    "references": [
+     "IB-0428"
+    ],
+    "script": "Gifts dads secretly hate\nNovelty socks, random gadgets\nMidnight Black comfort\nShop now",
+    "size": "4:5 1080x1350",
+    "tests": "Reaction to gift contrast",
+    "visual_direction": "Contrast of unwanted gifts (socks, gadgets) with the garment, placed side by side, neutral background"
+   }
+  ],
+  "deliverables": [
+   "5 static image concepts, each 4:5 1080x1350"
+  ],
+  "done_when": [
+   "All 5 concept(s) are made, each with its main hook and its alt hook as a separate version to test",
+   "Every concept is delivered at its own size: 4:5 1080x1350",
+   "Nothing is said or shown that a concept's own Never list rules out",
+   "Every on-screen text follows the rules: no banned character or word, nothing the claims gate flagged",
+   "Each image keeps its layout: headline, subline, call to action, offer in its place"
+  ],
+  "donts": [
+   "Avoid price, discount, guarantee, claim of best, overalls word, exclamation, em dash"
+  ],
+  "dos": [
+   "Use brand colors",
+   "Include size chart",
+   "Keep copy concise"
+  ],
+  "for": "Sam",
+  "held_back": [],
+  "key_message": "Comfort meets functionality in a versatile garment",
+  "kind": "static",
+  "notes_for_creators": "Ensure no overalls word, no exclamation, no em dash, keep copy minimal, use product handles in product field",
+  "objective": "Drive awareness and consideration for Swoveralls on Meta",
+  "offer": "",
+  "offer_placement": "",
+  "title": "Swoveralls Meta Static Ad Concepts",
+  "tone": "Friendly, relatable, understated"
+ },
+ "created": "2026-11-27T14:28:34Z",
+ "drive_link": "https://drive.google.com/file/d/1PKHqhBlSgOiTaaX8P9r19Ylh8A-G7Qi9/view",
+ "id": "BR-0004",
+ "items": [
+  "IB-0053",
+  "IB-0148",
+  "IB-0327",
+  "IB-0389",
+  "IB-0410",
+  "IB-0423",
+  "IB-0428",
+  "IB-0429"
+ ],
+ "models": [
+  "claude-sonnet-5-5"
+ ],
+ "notes": [
+  "writer: the pool (lane brief_json)",
+  "validator bank: 0 error(s) and 10 warning(s) (hook_no_formula)",
+  "independent review: revise; Concept 1 (Color Choice Dilemma): The hook does not match any known formula, so its performance is unknown.; Concept 2 (Made to Live In): The hook does not match any known formula, so its performance is unknown.; Concept 3 (Gift That Rolls): The hook does not match any known formula, so its performance is unknown.; Concept 4 (Dad Who Says He's Fine): The hook does not match any known formula, so its performance is unknown."
+ ],
+ "request_id": "",
+ "review": {
+  "checklist": {
+   "creator_can_shoot_it": true,
+   "hook_confirms_the_ask": true,
+   "no_unverifiable_claim": true,
+   "one_idea_per_concept": true,
+   "specific_not_vague": true
+  },
+  "problems": [
+   {
+    "issue": "The hook does not match any known formula, so its performance is unknown.",
+    "where": "Concept 1 (Color Choice Dilemma)"
+   },
+   {
+    "issue": "The hook does not match any known formula, so its performance is unknown.",
+    "where": "Concept 2 (Made to Live In)"
+   },
+   {
+    "issue": "The hook does not match any known formula, so its performance is unknown.",
+    "where": "Concept 3 (Gift That Rolls)"
+   },
+   {
+    "issue": "The hook does not match any known formula, so its performance is unknown.",
+    "where": "Concept 4 (Dad Who Says He's Fine)"
+   },
+   {
+    "issue": "The hook does not match any known formula, so its performance is unknown.",
+    "where": "Concept 5 (Avoid the Usual)"
+   }
+  ],
+  "verdict": "revise"
+ },
+ "revision": 0,
+ "revision_of": "",
+ "rules_digest": "83ac74b2f988",
+ "rules_version": 2,
+ "status": "needs review",
+ "title": "Swoveralls Meta Static Ad Concepts",
+ "used_items": [
+  "IB-0053",
+  "IB-0148",
+  "IB-0327",
+  "IB-0389",
+  "IB-0428"
+ ],
+ "validator_findings": [
+  {
+   "message": "the hook matches none of the 47 known hook formulas, so there is no evidence about how this shape performs",
+   "rule": "hook_no_formula",
+   "severity": "warning",
+   "where": "concept 1 (Color Choice Dilemma) hook"
+  },
+  {
+   "message": "the hook matches none of the 47 known hook formulas, so there is no evidence about how this shape performs",
+   "rule": "hook_no_formula",
+   "severity": "warning",
+   "where": "concept 1 (Color Choice Dilemma) alt hook"
+  },
+  {
+   "message": "the hook matches none of the 47 known hook formulas, so there is no evidence about how this shape performs",
+   "rule": "hook_no_formula",
+   "severity": "warning",
+   "where": "concept 2 (Made to Live In) hook"
+  },
+  {
+   "message": "the hook matches none of the 47 known hook formulas, so there is no evidence about how this shape performs",
+   "rule": "hook_no_formula",
+   "severity": "warning",
+   "where": "concept 2 (Made to Live In) alt hook"
+  },
+  {
+   "message": "the hook matches none of the 47 known hook formulas, so there is no evidence about how this shape performs",
+   "rule": "hook_no_formula",
+   "severity": "warning",
+   "where": "concept 3 (Gift That Rolls) hook"
+  },
+  {
+   "message": "the hook matches none of the 47 known hook formulas, so there is no evidence about how this shape performs",
+   "rule": "hook_no_formula",
+   "severity": "warning",
+   "where": "concept 3 (Gift That Rolls) alt hook"
+  },
+  {
+   "message": "the hook matches none of the 47 known hook formulas, so there is no evidence about how this shape performs",
+   "rule": "hook_no_formula",
+   "severity": "warning",
+   "where": "concept 4 (Dad Who Says He's Fine) hook"
+  },
+  {
+   "message": "the hook matches none of the 47 known hook formulas, so there is no evidence about how this shape performs",
+   "rule": "hook_no_formula",
+   "severity": "warning",
+   "where": "concept 4 (Dad Who Says He's Fine) alt hook"
+  },
+  {
+   "message": "the hook matches none of the 47 known hook formulas, so there is no evidence about how this shape performs",
+   "rule": "hook_no_formula",
+   "severity": "warning",
+   "where": "concept 5 (Avoid the Usual) hook"
+  },
+  {
+   "message": "the hook matches none of the 47 known hook formulas, so there is no evidence about how this shape performs",
+   "rule": "hook_no_formula",
+   "severity": "warning",
+   "where": "concept 5 (Avoid the Usual) alt hook"
+  }
+ ],
+ "violations": []
+}
