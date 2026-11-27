@@ -388,7 +388,7 @@ def test_the_prompt_lists_the_facts_the_offers_and_the_claims_the_model_may_use(
     items = BR.approved_items(banked(store), decisions(**{"IB-0001": "use"}))
     prompt = BR.build_prompt(swov, "Father's Day", items, products, ruleset, 6)
     assert "Facts you may state (state NO other fact, price, number, offer, ingredient, dietary or health claim, endorsement or result):" in prompt
-    assert "- swoveralls-navy: " in prompt and "Allowed offers: none: state no offer, discount, code, free shipping or guarantee" in prompt and "Approved claims you may use word for word: none" in prompt
+    assert "- swoveralls-navy: " in prompt and "Allowed offers: 30% off" in prompt and "Approved claims you may use word for word: none" in prompt   # the Swoveralls rules now allow the example "30% off" offer
     allowed = replace(ruleset, rules={**ruleset.rules, "claim_rules": {"allowed_offers": ["30% off", "free shipping over $50"], "allowed_claims": ["machine washable"]}})
     text = BR.claim_lines(swov, allowed, products)
     assert "Allowed offers: 30% off; free shipping over $50" in text and "Other allowed wording: machine washable" in text
