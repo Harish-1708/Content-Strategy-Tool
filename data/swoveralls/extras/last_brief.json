@@ -1,25 +1,18 @@
 {
  "brief": {
-  "audience": "Men aged 25-45, dads, casual wear seekers",
+  "audience": "Comfort‑seekers, functional‑fashion fans, and gift shoppers looking for practical Father’s Day ideas.",
   "concepts": [
    {
-    "alt_hook": "Forest Green, Navy, or Midnight Black",
-    "angle": "Color decision",
+    "alt_hook": "Stuck choosing the perfect shade?",
+    "angle": "Help shoppers overcome color indecision",
     "awareness": "Cold",
     "clips": [],
-    "cta": "Shop now",
-    "format": "static image 4:5",
-    "hook": "Which shade will you pick",
-    "name": "Color Choice Dilemma",
-    "never": [
-     "price",
-     "discount",
-     "guarantee",
-     "claim of best",
-     "overalls word",
-     "exclamation"
-    ],
-    "product": "swoveralls-midnight-black",
+    "cta": "Find your fit",
+    "format": "carousel 4:5",
+    "hook": "Can't decide between Forest Green, Navy or Midnight Black?",
+    "name": "Color Dilemma Solved",
+    "never": [],
+    "product": "swoveralls-navy",
     "quote": {},
     "reference_links": [
      {
@@ -30,29 +23,22 @@
     "references": [
      "IB-0053"
     ],
-    "script": "Which shade will you pick\nForest Green | Navy | Midnight Black\nSize chart inside for confidence\nShop now",
+    "script": "Slide 1: Can't decide between Forest Green, Navy or Midnight Black?\nSlide 2: Three colors side by side, each with a quick size‑chart callout.\nSlide 3: All three are made from 95% cotton, 5% spandex and have six handy pockets.\nSlide 4: Swipe up to see the full fit guide and find your confidence.",
     "size": "4:5 1080x1350",
-    "tests": "Which color resonates most with the audience",
-    "visual_direction": "Three color options displayed side by side with a translucent size chart overlay, neutral background, soft lighting"
+    "tests": "Whether a color‑choice hook increases swipe‑through.",
+    "visual_direction": "Clean product shots on neutral background, size‑chart overlay, minimal text, brand colors."
    },
    {
-    "alt_hook": "Comfort that stays",
-    "angle": "Longevity",
-    "awareness": "Warm",
+    "alt_hook": "Your new go‑to for every day.",
+    "angle": "Position Swoveralls as the ultimate daily wear",
+    "awareness": "Unaware",
     "clips": [],
-    "cta": "Learn more",
-    "format": "static image 4:5",
-    "hook": "Made to live in",
-    "name": "Made to Live In",
-    "never": [
-     "price",
-     "discount",
-     "guarantee",
-     "claim of best",
-     "overalls word",
-     "exclamation"
-    ],
-    "product": "swoveralls-navy",
+    "cta": "See the details",
+    "format": "carousel 4:5",
+    "hook": "A piece you can actually live in.",
+    "name": "Live‑In Comfort",
+    "never": [],
+    "product": "swoveralls-dark-athletic-grey",
     "quote": {},
     "reference_links": [
      {
@@ -63,29 +49,22 @@
     "references": [
      "IB-0148"
     ],
-    "script": "Made to live in\n6 pockets, adjustable straps, zipper fly\nComfort that stays\nLearn more",
+    "script": "Slide 1: A piece you can actually live in.\nSlide 2: Soft 95% cotton blend feels like sweatpants.\nSlide 3: Six pockets keep essentials close, no extra bulk.\nSlide 4: Swipe to see why people call it their everyday uniform.",
     "size": "4:5 1080x1350",
-    "tests": "Perceived durability and practicality",
-    "visual_direction": "A relaxed individual in a casual setting, wearing the garment, with a focus on the pockets and adjustable straps, muted background"
+    "tests": "Impact of lifestyle language on interest.",
+    "visual_direction": "Single‑take talking‑head style, natural light, creator holding the product, minimal cuts."
    },
    {
-    "alt_hook": "Wrap up comfort",
-    "angle": "Unique gift idea",
-    "awareness": "Cold",
+    "alt_hook": "Wrap comfort into a dad‑approved gift.",
+    "angle": "Creative gifting idea for dads",
+    "awareness": "Warm",
     "clips": [],
-    "cta": "Shop gift",
-    "format": "static image 4:5",
-    "hook": "A gift that rolls",
-    "name": "Gift That Rolls",
-    "never": [
-     "price",
-     "discount",
-     "guarantee",
-     "claim of best",
-     "overalls word",
-     "exclamation"
-    ],
-    "product": "swoveralls-navy",
+    "cta": "Shop the bouquet",
+    "format": "carousel 4:5",
+    "hook": "This Father's Day, give a bouquet that fits.",
+    "name": "Father’s Day Bouquet",
+    "never": [],
+    "product": "swoveralls-midnight-black",
     "quote": {},
     "reference_links": [
      {
@@ -96,29 +75,22 @@
     "references": [
      "IB-0327"
     ],
-    "script": "A gift that rolls\nForest Green, Navy, Midnight Black\nWrapped with ribbon\nShop gift",
+    "script": "Slide 1: This Father's Day, give a bouquet that fits.\nSlide 2: Rolled Swoveralls in Navy, Midnight Black and Dark Grey tied with a ribbon.\nSlide 3: Six pockets for tools, snacks, and love notes.\nSlide 4: Swipe to see the unboxing surprise.",
     "size": "4:5 1080x1350",
-    "tests": "Visual appeal of bouquet concept",
-    "visual_direction": "A bouquet of wrapped garments tied with ribbon, displayed on a neutral table, soft lighting"
+    "tests": "Visual novelty of rolled gift vs standard product shot.",
+    "visual_direction": "Stop‑motion of garments being rolled, bright ribbon, close‑up of fabric texture."
    },
    {
-    "alt_hook": "Still fine after a long day",
-    "angle": "After-work comfort",
+    "alt_hook": "After a long day, he reaches for comfort.",
+    "angle": "Emotional post‑work comfort moment",
     "awareness": "Warm",
     "clips": [],
-    "cta": "Learn more",
-    "format": "static image 4:5",
-    "hook": "For the dad who says he's fine",
-    "name": "Dad Who Says He's Fine",
-    "never": [
-     "price",
-     "discount",
-     "guarantee",
-     "claim of best",
-     "overalls word",
-     "exclamation"
-    ],
-    "product": "swoveralls-dark-athletic-grey",
+    "cta": "Discover comfort",
+    "format": "carousel 4:5",
+    "hook": "12 hours on his feet and he’s still saying I’m fine.",
+    "name": "After‑Work Relief",
+    "never": [],
+    "product": "swoveralls-navy",
     "quote": {},
     "reference_links": [
      {
@@ -129,29 +101,74 @@
     "references": [
      "IB-0389"
     ],
-    "script": "For the dad who says he's fine\nBoots off, coffee in hand\nSettling into comfort\nLearn more",
+    "script": "Slide 1: 12 hours on his feet and he’s still saying I’m fine.\nSlide 2: He kicks off his shoes, grabs a coffee, and slides into Swoveralls.\nSlide 3: Soft cotton, stretch, and six pockets make the unwind effortless.\nSlide 4: Swipe to see why dads choose this after work.",
     "size": "4:5 1080x1350",
-    "tests": "Emotional resonance with dads",
-    "visual_direction": "A dad removing boots, holding coffee, settling into the garment in a cozy living room setting"
+    "tests": "Emotional hook effectiveness.",
+    "visual_direction": "Lifestyle scene: dad at kitchen table, relaxed, product visible, warm lighting."
    },
    {
-    "alt_hook": "Avoid the usual",
-    "angle": "Pain point",
+    "alt_hook": "Dad’s puzzled look says it all.",
+    "angle": "Authentic surprise reaction for gifting",
     "awareness": "Cold",
     "clips": [],
-    "cta": "Shop now",
-    "format": "static image 4:5",
-    "hook": "Gifts dads secretly hate",
-    "name": "Avoid the Usual",
-    "never": [
-     "price",
-     "discount",
-     "guarantee",
-     "claim of best",
-     "overalls word",
-     "exclamation"
+    "cta": "Watch the reveal",
+    "format": "carousel 4:5",
+    "hook": "Three, two, one… what’s inside?",
+    "name": "Surprise Unwrap",
+    "never": [],
+    "product": "swoveralls-dark-athletic-grey",
+    "quote": {},
+    "reference_links": [
+     {
+      "id": "IB-0410",
+      "url": "https://www.tiktok.com/@why.do.i.try.555/video/7693108799103618317"
+     }
     ],
+    "references": [
+     "IB-0410"
+    ],
+    "script": "Slide 1: Three, two, one… what’s inside?\nSlide 2: Dad pulls the wrapping, eyes widen at the sleek Swoveralls.\nSlide 3: Close‑up of fabric, pockets, and stretch.\nSlide 4: Swipe to watch the full reaction video.",
+    "size": "4:5 1080x1350",
+    "tests": "UGC authenticity vs polished footage.",
+    "visual_direction": "UGC‑style clip of dad unwrapping, authentic reaction, no staged lines."
+   },
+   {
+    "alt_hook": "He’s thrilled every time the color changes.",
+    "angle": "Repeatable gifting tradition",
+    "awareness": "Warm",
+    "clips": [],
+    "cta": "Add to your calendar",
+    "format": "carousel 4:5",
+    "hook": "Another year, another Swoveralls surprise.",
+    "name": "Annual Tradition",
+    "never": [],
     "product": "swoveralls-midnight-black",
+    "quote": {},
+    "reference_links": [
+     {
+      "id": "IB-0423",
+      "url": "https://www.instagram.com/reel/DZ2iiO9h1ZS/"
+     }
+    ],
+    "references": [
+     "IB-0423"
+    ],
+    "script": "Slide 1: Another year, another Swoveralls surprise.\nSlide 2: Dad opens a box, finds a new colour – Midnight Black.\nSlide 3: Quick flash of past years’ colours, each with a smile.\nSlide 4: Swipe to add this year’s colour to your list.",
+    "size": "4:5 1080x1350",
+    "tests": "Whether recurring gift narrative drives repeat purchase intent.",
+    "visual_direction": "Series of short clips showing dad’s reaction over multiple years, consistent branding."
+   },
+   {
+    "alt_hook": "Skip the novelty, give him something useful.",
+    "angle": "Contrast humor to highlight usefulness",
+    "awareness": "Cold",
+    "clips": [],
+    "cta": "Shop practical",
+    "format": "carousel 4:5",
+    "hook": "Socks, gadgets… none of the stuff dads actually want.",
+    "name": "Gifts Dads Actually Want",
+    "never": [],
+    "product": "swoveralls-dark-athletic-grey",
     "quote": {},
     "reference_links": [
      {
@@ -162,44 +179,74 @@
     "references": [
      "IB-0428"
     ],
-    "script": "Gifts dads secretly hate\nNovelty socks, random gadgets\nMidnight Black comfort\nShop now",
+    "script": "Slide 1: Socks, gadgets… none of the stuff dads actually want.\nSlide 2: Instead, a sleek Swoveralls in Dark Athletic Grey.\nSlide 3: Six pockets, soft cotton, stretch – ready for any task.\nSlide 4: Swipe to shop the practical gift.",
     "size": "4:5 1080x1350",
-    "tests": "Reaction to gift contrast",
-    "visual_direction": "Contrast of unwanted gifts (socks, gadgets) with the garment, placed side by side, neutral background"
+    "tests": "Humorous contrast impact on click‑through.",
+    "visual_direction": "Split screen: left side shows unwanted gifts, right side shows Swoveralls, bright contrast."
+   },
+   {
+    "alt_hook": "He’ll say no, but you know he’ll love this.",
+    "angle": "Play on dad’s denial to reveal true desire",
+    "awareness": "Cold",
+    "clips": [],
+    "cta": "See why he loves it",
+    "format": "carousel 4:5",
+    "hook": "Dad says he doesn’t need anything for Father’s Day.",
+    "name": "Dad Says No",
+    "never": [],
+    "product": "swoveralls-navy",
+    "quote": {},
+    "reference_links": [
+     {
+      "id": "IB-0429",
+      "url": "https://www.instagram.com/reel/DZt09TSzoC2/"
+     }
+    ],
+    "references": [
+     "IB-0429"
+    ],
+    "script": "Slide 1: Dad says he doesn’t need anything for Father’s Day.\nSlide 2: He opens a box, finds a Swoveralls, smiles.\nSlide 3: Close‑up of fabric, pockets, and relaxed fit.\nSlide 4: Swipe to see why he’s secretly thrilled.",
+    "size": "4:5 1080x1350",
+    "tests": "Effectiveness of denial‑hook on engagement.",
+    "visual_direction": "POV style, natural lighting, authentic reaction, no scripted lines."
    }
   ],
   "deliverables": [
-   "5 static image concepts, each 4:5 1080x1350"
+   "8 carousel ads, each 4 slides, 4:5 ratio, 1080x1350 PNG or JPG.",
+   "Copy files in plain text.",
+   "Optional short video snippets for concepts 1 and 2 (yapper‑style)."
   ],
   "done_when": [
-   "All 5 concept(s) are made, each with its main hook and its alt hook as a separate version to test",
+   "All 8 concept(s) are made, each with its main hook and its alt hook as a separate version to test",
    "Every concept is delivered at its own size: 4:5 1080x1350",
    "Nothing is said or shown that a concept's own Never list rules out",
    "Every on-screen text follows the rules: no banned character or word, nothing the claims gate flagged",
-   "Each image keeps its layout: headline, subline, call to action, offer in its place"
+   "Each carousel has its cards in order, the hook on the first card and the call to action on the last"
   ],
   "donts": [
-   "Avoid price, discount, guarantee, claim of best, overalls word, exclamation, em dash"
+   "Mention price, discounts, or shipping offers.",
+   "Show denim‑style straps or classic overalls silhouette.",
+   "Use exclamation points or em dashes."
   ],
   "dos": [
-   "Use brand colors",
-   "Include size chart",
-   "Keep copy concise"
+   "Use authentic product photos and real‑life settings.",
+   "Highlight the six pockets and cotton‑spandex blend.",
+   "Keep copy concise and friendly."
   ],
   "for": "Sam",
   "held_back": [],
-  "key_message": "Comfort meets functionality in a versatile garment",
-  "kind": "static",
-  "notes_for_creators": "Ensure no overalls word, no exclamation, no em dash, keep copy minimal, use product handles in product field",
-  "objective": "Drive awareness and consideration for Swoveralls on Meta",
+  "key_message": "Swoveralls blend the feel of sweatpants with smart pockets and sustainable cotton, making them the go‑to piece for everyday comfort and thoughtful gifting.",
+  "kind": "carousel",
+  "notes_for_creators": "Concept 2 requires John’s sign‑off before any new footage is shot. Avoid any denim‑strap visuals in the first two seconds of any video. Use the brand name Swoveralls, not the word overalls alone. No price or discount language. Follow the size and never guidelines for each carousel.",
+  "objective": "Drive awareness and consideration for Swoveralls by highlighting comfort, functionality, color options and gifting moments on Meta platforms.",
   "offer": "",
   "offer_placement": "",
-  "title": "Swoveralls Meta Static Ad Concepts",
-  "tone": "Friendly, relatable, understated"
+  "title": "Swoveralls Carousel Ad Concepts for Meta",
+  "tone": "Friendly, authentic, and lightly humorous."
  },
- "created": "2026-11-27T14:28:34Z",
- "id": "BR-0004",
- "status": "needs review",
- "title": "Swoveralls Meta Static Ad Concepts",
+ "created": "2026-11-27T15:03:09Z",
+ "id": "BR-0005",
+ "status": "ready",
+ "title": "Swoveralls Carousel Ad Concepts for Meta",
  "violations": []
 }
