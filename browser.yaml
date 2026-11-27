@@ -75,7 +75,7 @@ sites:
     needs_login: true
     secrets: {cookies: INSTAGRAM_COOKIES, username: INSTAGRAM_USERNAME, password: INSTAGRAM_PASSWORD}
     home: https://www.instagram.com/
-    password_fallback: when_cookies_fail
+    password_fallback: when_cookies_fail   # applies ONLY when the stealth identity allows a login. With the stealth layer on (the default) the collectors are cookie-only and this never fires, by design; the one password login is the manual Sessions password backup (its own routine). A refused session says so in its message.
     settle_seconds: 20            # Instagram draws its grid slowly: wait this long after opening a page (the general default is 3; it was 10, and Acceptance #15 read the grid half drawn)
     scroll_pause_seconds: 10      # and this long after each scroll (it was 6), so more posts have loaded before the next read (Careful Mode's pacing, below, overrides it)
     # After the fixed waits above, also wait for the grid itself: until every image on the page has loaded and the loading spinner is gone (twice in a row), up to max_seconds, before anything is read.
@@ -127,7 +127,7 @@ sites:
   tiktok:
     needs_login: true
     secrets: {cookies: TIKTOK_COOKIES, username: TIKTOK_USERNAME, password: TIKTOK_PASSWORD}
-    password_fallback: when_cookies_fail
+    password_fallback: when_cookies_fail   # applies ONLY when the stealth identity allows a login. With the stealth layer on (the default) the collectors are cookie-only and this never fires, by design; the one password login is the manual Sessions password backup (its own routine). A refused session says so in its message.
     max_pages_per_run: 2             # careful mode, as for Instagram: pages opened in one run
     max_pages_per_day: 4             # and in a day
     min_hours_between_runs: 12       # and the gap between runs
