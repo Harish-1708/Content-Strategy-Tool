@@ -286,7 +286,7 @@ def test_a_bad_claim_rules_section_is_refused_with_a_plain_message(tmp_path, blo
 
 
 def test_the_digest_of_an_older_rules_file_is_unchanged_and_a_claim_rule_changes_it(tmp_path):
-    assert RU.load_ruleset(BRIEFS_DIR / "swoveralls-new-audience" / "rules.yaml").digest == "83ac74b2f988"                                      # the older digest was 4ac493be2891: the file changed on purpose in Update 73 v5 (the hook rule), so every brand's rules version moves to the next number
+    assert RU.load_ruleset(BRIEFS_DIR / "swoveralls-new-audience" / "rules.yaml").digest == "24c60588d10e"                                      # the older digest was 83ac74b2f988: the file changed on purpose (example allowed offer "30% off" added, Harish 2026-11-27), so the digest moves to the next number
     plain = RU.load_ruleset(write_rules(tmp_path, ""))
     assert "claim_rules" not in plain.rules and RU.load_ruleset(write_rules(tmp_path, "claim_rules:\n  allowed_offers: ['20% off']\n")).digest != plain.digest
 
