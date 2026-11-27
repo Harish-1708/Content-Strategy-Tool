@@ -12,6 +12,7 @@
 """
 import io
 import json
+import re
 
 from . import claimcheck
 from . import connections as CONN
@@ -20,7 +21,9 @@ from . import openverse as OPENVERSE
 from . import pace as PACE
 from . import videometa as VMETA
 from . import voice as VOICE
+from . import footage as FOOTAGE
 from . import formulas as FORMULAS
+from . import reviews as REVIEWS
 from . import story_refresh as SR
 from . import validators as VALIDATORS
 from . import rules as rules_mod
@@ -50,6 +53,21 @@ BRIEF_SYSTEM = (
 
 REVISE_ADDENDUM = (" You are REVISING a brief that was checked and sent back. Fix every listed problem in the concepts it names, keep what was not criticised word for word, "
                    "never restate a blocked claim (replace it with something approved), and return the full revised brief in the same JSON shape.")
+
+AWARENESS = ("Unaware", "Cold", "Warm")
+KINDS = ("video", "static", "carousel", "cuts")
+DEFAULT_SIZE = {"video": "9:16 1080x1920", "static": "4:5 1080x1350", "carousel": "4:5 1080x1350", "cuts": "9:16 1080x1920"}
+OFFER_PLACEMENT = {"video": "a sticker on the opening shot and again on the end card", "static": "an offer bar at the bottom of the image", "carousel": "the last card, with a small offer bar on the first", "cuts": "a sticker over the first cut and again on the end card"}
+FIELDS_ADDENDUM = (" Every concept ALSO carries these keys: \"alt_hook\" (a second, different hook to test against the first), \"angle\" (why someone would care, in a few words), \"awareness\" (exactly one of Unaware, Cold or Warm: how much "
+                   "the viewer already knows), \"tests\" (what this concept tests, in one short sentence), \"size\" (for example 9:16 1080x1920 or 4:5 1080x1350) and \"never\" (a short list of things this concept must never say or show, on top of the shared rules). "
+                   "Give each concept a different angle and a different hook shape.")
+KIND_ADDENDA = {"video": "",
+                "static": " This brief is for STATIC images, not videos: every concept is one still image for a designer. \"hook\" is the headline, \"script\" holds the exact on-image copy and the layout, one element per line (headline, subline, call to action, where the offer goes), "
+                          "there is no spoken line, and \"format\" is for example static image 4:5.",
+                "cuts": " This brief is for CUTS: every concept is an edit of the brand's EXISTING footage, not a new shoot. \"script\" holds the voiceover and on-screen lines, and every concept carries \"clips\": a list, in playing order, of {\"clip\": \"FT-xxxxxx\", \"start\": 0.0, \"end\": 4.0} "
+                        "taken only from the footage list below, each part inside its clip's own length; \"format\" names the total length, for example 30 second cut.",
+                "carousel": " This brief is for CAROUSELS: every concept is a set of cards. \"hook\" is the first card's headline, \"script\" holds the cards, one per line, numbered (Slide 1: ...), at least three, and \"format\" is for example carousel 4:5."}
+BRIEF_SYSTEM = BRIEF_SYSTEM + FIELDS_ADDENDUM
 
 REPAIR_SYSTEM = (
     "You fix a creative brief that broke some of its rules. Return the full corrected brief as JSON in exactly the same shape, changing "
@@ -166,6 +184,13 @@ def build_prompt(brand, ask, items, products, ruleset, max_concepts, extras=""):
             f"{claim_lines(brand, ruleset, products)}\n\nRules for this brief:\n{_rules_text(ruleset)}" + (f"\n\nEvidence for the concepts (not facts about our products):\n{extras}" if extras else ""))
 
 
+def _num(value):
+    try:
+        return round(float(value), 2)
+    except (TypeError, ValueError):
+        return 0.0
+
+
 def clean_brief(raw, item_ids, handles, max_concepts):
     """A brief the rest of the code can rely on, and notes on what was fixed or dropped. Raises BriefError if it has no concepts."""
     if not isinstance(raw, dict):
@@ -180,8 +205,11 @@ def clean_brief(raw, item_ids, handles, max_concepts):
             return "\n".join(" ".join(row.split()) for row in str(value or "").splitlines() if row.strip())[:limit]
         return " ".join(str(value or "").split())[:limit]
 
+    held_back = []
     for entry in raw.get("concepts") if isinstance(raw.get("concepts"), list) else []:
         if not isinstance(entry, dict) or not text(entry.get("hook")):
+            if isinstance(entry, dict):
+                held_back.append({"name": text(entry.get("name"), 80) or "a concept", "reason": "no hook was written, so there is nothing to shoot"})
             continue
         refs = [r for r in (entry.get("references") or []) if isinstance(r, str)]
         unknown = [r for r in refs if r not in item_ids]
@@ -192,7 +220,13 @@ def clean_brief(raw, item_ids, handles, max_concepts):
         if product and product not in handles:
             notes.append(f"concept '{text(entry.get('name'), 60)}': product '{product}' is not an allowed product and was removed")
             product = ""
+        awareness = text(entry.get("awareness"), 20).capitalize()
+        never = [text(n_, 160) for n_ in (entry.get("never") if isinstance(entry.get("never"), list) else [entry.get("never")]) if text(n_)][:6]
         concepts.append({"name": text(entry.get("name"), 80) or f"Concept {len(concepts) + 1}", "format": text(entry.get("format"), 120),
+                         "alt_hook": text(entry.get("alt_hook"), 400), "angle": text(entry.get("angle"), 200), "awareness": awareness if awareness in AWARENESS else "",
+                         "tests": text(entry.get("tests"), 240), "size": text(entry.get("size"), 60), "never": never,
+                         "clips": [{"clip": text(part.get("clip"), 20), "start": _num(part.get("start")), "end": _num(part.get("end"))} for part in (entry.get("clips") if isinstance(entry.get("clips"), list) else []) if isinstance(part, dict)][:30],
+                         "quote": ({"review_id": text((entry.get("quote") or {}).get("review_id"), 20), "text": text((entry.get("quote") or {}).get("text"), 500)} if isinstance(entry.get("quote"), dict) and text((entry.get("quote") or {}).get("text")) else {}),
                          "hook": text(entry.get("hook"), 400), "script": text(entry.get("script"), 1500, lines=True),
                          "visual_direction": text(entry.get("visual_direction"), 800), "cta": text(entry.get("cta"), 200),
                          "product": product, "references": refs})
@@ -200,13 +234,14 @@ def clean_brief(raw, item_ids, handles, max_concepts):
         raise BriefError("the brief has no usable concepts")
     if len(concepts) > max_concepts:
         notes.append(f"kept the first {max_concepts} of {len(concepts)} concepts")
+        held_back += [{"name": c["name"], "reason": f"over the limit of {max_concepts} concepts for one brief"} for c in concepts[max_concepts:]]
         concepts = concepts[:max_concepts]
     brief = {"title": text(raw.get("title"), 160) or "Creative brief", "objective": text(raw.get("objective")),
              "audience": text(raw.get("audience")), "key_message": text(raw.get("key_message")), "tone": text(raw.get("tone")),
              "concepts": concepts, "dos": [text(d, 240) for d in raw.get("dos") or [] if text(d)][:10],
              "donts": [text(d, 240) for d in raw.get("donts") or [] if text(d)][:10],
              "deliverables": [text(d, 240) for d in raw.get("deliverables") or [] if text(d)][:10],
-             "notes_for_creators": text(raw.get("notes_for_creators"), 1500)}
+             "notes_for_creators": text(raw.get("notes_for_creators"), 1500), "held_back": held_back}
     return brief, notes
 
 
@@ -224,6 +259,13 @@ def check_brief(brief, ruleset, products, claims=()):
         label = f"concept {n} ({concept['name']})"
         add(f"{label} name", rules_mod.check_text(ruleset, concept["name"], scope="copy"))
         add(f"{label} hook", rules_mod.check_text(ruleset, concept["hook"], scope="hook"))
+        if concept.get("alt_hook"):
+            add(f"{label} alt hook", rules_mod.check_text(ruleset, concept["alt_hook"], scope="hook"))                         # the second hook obeys the same hook rules (the 'overalls' rule included)
+        for field in ("angle", "tests"):
+            if concept.get(field):
+                add(f"{label} {field}", rules_mod.check_text(ruleset, concept[field], scope="copy"))
+        for line in concept.get("never") or []:
+            add(f"{label} never", rules_mod.check_text(ruleset, line, scope="copy"))
         for field in ("script", "visual_direction", "cta"):
             add(f"{label} {field.replace('_', ' ')}", rules_mod.check_text(ruleset, concept[field], scope="copy"))
         if concept["product"]:
@@ -337,21 +379,53 @@ def build_docx(brief, brand, meta, items, images, violations, ruleset, notes):
     doc.add_heading(brief["title"], 0)
     doc.add_paragraph(f"{brand.name}  |  {meta['brief']}  |  {meta['id']}  |  {meta['created'][:10]}")
     doc.add_paragraph(f"Request: {meta['ask']}")
+    if brief.get("for"):
+        doc.add_paragraph(f"For: {brief['for']}")
     for label, key in (("Objective", "objective"), ("Audience", "audience"), ("Key message", "key_message"), ("Tone", "tone")):
         if brief[key]:
             doc.add_heading(label, 1)
             doc.add_paragraph(brief[key])
+    if brief.get("offer"):
+        doc.add_heading("Offer", 1)
+        doc.add_paragraph(f"{brief['offer']}  (shown once, in this place: {brief['offer_placement']})")
     by_id = {i["id"]: i for i in items}
+    blocked = {int(m.group(1)) for v in violations if v.get("rule") == "claims-gate" and v.get("severity") == "error" for m in [re.match(r"concept (\d+) ", v.get("where", ""))] if m}          # a concept the claims gate blocked is HELD BACK below, not handed out to shoot
+    ready = [(n, c) for n, c in enumerate(brief["concepts"], start=1) if n not in blocked]
+    if ready and any(c.get("angle") or c.get("tests") for _n, c in ready):
+        doc.add_heading("At a glance", 1)
+        glance = doc.add_table(rows=1, cols=5)
+        glance.style = "Light Grid Accent 1"
+        for cell, head in zip(glance.rows[0].cells, ("#", "Concept and hook", "Angle", "Format and size", "What it tests")):
+            cell.text = head
+        for n, c in ready:
+            cells = glance.add_row().cells
+            cells[0].text, cells[1].text = str(n), f"{c['name']}: {c['hook']}"
+            cells[2].text = (c.get("angle") or "") + (f" ({c['awareness']})" if c.get("awareness") else "")
+            cells[3].text, cells[4].text = " ".join(x for x in (c["format"], c.get("size", "")) if x), c.get("tests", "")
     doc.add_heading("Concepts", 1)
-    for n, c in enumerate(brief["concepts"], start=1):
+    for n, c in ready:
         doc.add_heading(f"{n}. {c['name']}", 2)
         table = doc.add_table(rows=0, cols=2)
         table.style = "Light Grid Accent 1"
-        for label, value in (("Format", c["format"]), ("Hook", c["hook"]), ("Script", c["script"]), ("Visual direction", c["visual_direction"]),
-                             ("Call to action", c["cta"]), ("Product", c["product"]), ("Inspired by", ", ".join(c["references"]))):
+        links = "; ".join(f"{r['id']}" + (f" ({r['url']})" if r.get("url") else "") for r in c.get("reference_links") or []) or ", ".join(c["references"])
+        quote = c.get("quote") or {}
+        quote_line = (f"\"{quote['text']}\"  " + (quote.get("attribution") or quote.get("review_id", ""))) if quote.get("text") else ""
+        by_clip = brief.get("footage_used") or {}
+        cut_lines = "\n".join(f"{x['clip']}: {by_clip[x['clip']]['name'] if x['clip'] in by_clip else 'not in the inventory'}"
+                              + (f" ({by_clip[x['clip']]['path']})" if x['clip'] in by_clip and by_clip[x['clip']]['path'] else "") + f", {x['start']:g} to {x['end']:g} s" for x in c.get("clips") or [])
+        for label, value in (("Format", c["format"]), ("Size", c.get("size", "")), ("Angle", c.get("angle", "")), ("Awareness", c.get("awareness", "")), ("What it tests", c.get("tests", "")),
+                             ("Hook", c["hook"]), ("Alt hook", c.get("alt_hook", "")), ("Script", c["script"]), ("Visual direction", c["visual_direction"]),
+                             ("Call to action", c["cta"]), ("Cut from", cut_lines), ("Customer quote", quote_line), ("Never", "; ".join(c.get("never") or [])), ("Product", c["product"]), ("Reference", links)):
             if value:
                 row = table.add_row().cells
                 row[0].text, row[1].text = label, value
+    held = [{"name": brief["concepts"][n - 1]["name"], "reason": "the claims gate blocked a claim in it: " + "; ".join(v["message"][:140] for v in violations if v.get("rule") == "claims-gate" and v.get("severity") == "error" and v.get("where", "").startswith(f"concept {n} "))[:300]} for n in sorted(blocked)]
+    held += list(brief.get("held_back") or [])
+    if held:
+        doc.add_heading("Held back", 1)
+        doc.add_paragraph("Not ready to shoot. Each has the reason; a revision of this brief takes them on.")
+        for h in held:
+            doc.add_paragraph(f"{h['name']}: {h['reason']}", style="List Bullet")
     if brief["dos"] or brief["donts"]:
         doc.add_heading("Do and don't", 1)
         for label, key in (("Do", "dos"), ("Don't", "donts")):
@@ -364,6 +438,10 @@ def build_docx(brief, brand, meta, items, images, violations, ruleset, notes):
     if brief["notes_for_creators"]:
         doc.add_heading("Notes for creators", 1)
         doc.add_paragraph(brief["notes_for_creators"])
+    if brief.get("done_when"):
+        doc.add_heading("Done when", 1)
+        for line in brief["done_when"]:
+            doc.add_paragraph("[ ] " + line)
     used = [r for c in brief["concepts"] for r in c["references"]]
     shown = [by_id[i] for i in dict.fromkeys(used) if i in by_id]
     if shown:
@@ -455,7 +533,10 @@ def gate_violations(brief, reg):
     """The claims gate over every text of the brief: a BLOCKED sentence is an error (the brief needs review), a checkable statement nothing verifies is a warning. Returns [{where, rule, severity, message}]."""
     fields = [(f, brief.get(f, "")) for f in ("title", "objective", "audience", "key_message", "tone", "notes_for_creators")]
     for n, concept in enumerate(brief.get("concepts", []), start=1):
-        fields += [(f"concept {n} ({concept.get('name', '')}) {f}", concept.get(f, "")) for f in ("name", "hook", "script", "visual_direction", "cta")]
+        fields += [(f"concept {n} ({concept.get('name', '')}) {f.replace('_', ' ')}", concept.get(f, "")) for f in ("name", "hook", "alt_hook", "script", "visual_direction", "cta", "angle", "tests")]
+        fields += [(f"concept {n} ({concept.get('name', '')}) never", line) for line in concept.get("never") or []]
+    if brief.get("offer"):
+        fields.append(("offer", brief["offer"]))
     found = []
     for where, text in fields:
         if not str(text or "").strip():
@@ -463,6 +544,44 @@ def gate_violations(brief, reg):
         for f in reg.gate(str(text))["findings"]:
             found.append({"where": where, "rule": "claims-gate", "severity": "error" if f["result"] == "BLOCKED" else "warning", "message": f"{f['result']}: \"{f['sentence'][:120]}\": {f['why']}"})
     return found
+
+
+def allowed_offers(ruleset):
+    return [str(o) for o in ((ruleset.rules.get("claim_rules") or {}).get("allowed_offers") or []) if str(o).strip()]
+
+
+def finish_brief(brief, kind, for_person, offer, items, ruleset):
+    """What the model does not decide, filled in by code: the kind, who it is for, the ONE offer (only the one given to the brief, never a default and never written into the code) and where it goes, a size for every concept, a link for every reference and the
+    'done when' checklist. Returns the findings about the offer (an offer the rules do not allow is an error: the claims gate would flag it too)."""
+    kind = kind if kind in KINDS else "video"
+    allowed = allowed_offers(ruleset)
+    offer = " ".join(str(offer or "").split())                                          # the offer comes from the brief's input each time; allowed_offers in the rules is only the GUARD LIST it is checked against
+    brief.update({"kind": kind, "for": " ".join(str(for_person or "").split())[:80], "offer": offer, "offer_placement": OFFER_PLACEMENT[kind] if offer else ""})
+    by_id = {i["id"]: i for i in items}
+    for c in brief["concepts"]:
+        c["size"] = c.get("size") or DEFAULT_SIZE[kind]
+        c["reference_links"] = [{"id": r, "url": (by_id.get(r) or {}).get("url", "")} for r in c.get("references", [])]
+    brief["done_when"] = done_when(brief)
+    findings = []
+    if offer and offer.lower() not in {a.lower() for a in allowed}:
+        findings.append({"where": "offer", "rule": "offer_not_allowed", "severity": "error",
+                         "message": f"the offer '{offer}' is not one of this brief's allowed offers" + (f" ({'; '.join(allowed)})" if allowed else " (the rules allow no offer: add it to claim_rules.allowed_offers once the canon verifies it)")})
+    return findings
+
+
+def done_when(brief):
+    """The delivery checklist, built from the brief itself (never model-written): what must be true before the work goes out."""
+    n = len(brief["concepts"])
+    kind = brief.get("kind", "video")
+    out = [f"All {n} concept(s) are made, each with its main hook and its alt hook as a separate version to test",
+           "Every concept is delivered at its own size: " + ", ".join(dict.fromkeys(c.get("size") or DEFAULT_SIZE[kind] for c in brief["concepts"]))]
+    if brief.get("offer"):
+        out.append(f"The offer is stated exactly as written (\"{brief['offer']}\") and shown in one place only: {brief['offer_placement']}")
+    out += ["Nothing is said or shown that a concept's own Never list rules out", "Every on-screen text follows the rules: no banned character or word, nothing the claims gate flagged",
+            {"video": "Each video is cut to the length its format names, with the hook in the first two seconds", "static": "Each image keeps its layout: headline, subline, call to action, offer in its place",
+             "carousel": "Each carousel has its cards in order, the hook on the first card and the call to action on the last",
+             "cuts": "Each cut uses only the clips and the parts its shot list names, in that order, with the voiceover and on-screen lines over them"}[kind]]
+    return out
 
 
 def revision_problems(record):
@@ -475,7 +594,7 @@ def revision_problems(record):
 
 
 def make_brief(brand, store, *, brief_name, ask, ruleset, decisions, claude_for, settings, budget, now, drive=None,
-               include_maybe=False, request_id="", revise_of=None):
+               include_maybe=False, request_id="", revise_of=None, kind="", for_person="", offer=""):
     """Write, check and save one brief from the approved items. Returns the saved record. Raises BriefError with the fix if it cannot."""
     state = catalogue_state(brand.slug, store, now)
     if not state["usable"]:
@@ -493,6 +612,24 @@ def make_brief(brand, store, *, brief_name, ask, ruleset, decisions, claude_for,
     canon_reg, canon_block, canon_notes = canon_layer(store, brand.slug)
     candidates, notes, calls = [], [], 0
     extras = extras_text(store, brand, items, motion=_motion_for(ask, items), assets=_assets_of(store, brand)) + (("\n\n" + canon_block) if canon_block else "")
+    prior = (revise_of or {}).get("content") or {}
+    kind = kind or prior.get("kind") or "video"                                                             # a revision keeps the kind, the recipient and the offer of the brief it revises unless told otherwise
+    for_person = for_person or prior.get("for", "")
+    offer = offer or prior.get("offer", "")
+    allowed = allowed_offers(ruleset)
+    extras += KIND_ADDENDA.get(kind, "") and ("\n\n" + KIND_ADDENDA[kind].strip())
+    footage_clips = FOOTAGE.load(store, brand.slug).get("clips", []) if kind == "cuts" else []
+    if kind == "cuts":
+        block = FOOTAGE.prompt_block(footage_clips)
+        if not block:
+            raise BriefError("a cuts brief needs the footage inventory, and there is none with clip lengths yet: put the brand's clips in the Footage folder (Google Drive: <Idea Bank folder> / <brand> / Footage), run Actions > Footage > scan, then make the brief again")
+        extras += "\n\n" + block
+    stored_reviews = REVIEWS.load(store, brand.slug).get("reviews", [])
+    quote_block = REVIEWS.prompt_block(REVIEWS.pick_for_prompt(stored_reviews, list(products)))
+    if quote_block:
+        extras += "\n\n" + quote_block
+    if offer and " ".join(offer.split()).lower() in {a.lower() for a in allowed}:                  # only an offer the rules allow is ever put in front of the writer; any other is an error finding below
+        extras += f"\n\nThe ONE offer for this brief, stated exactly as written and placed once ({OFFER_PLACEMENT.get(kind, OFFER_PLACEMENT['video'])}): {' '.join(offer.split())}"
     revise = {"brief": revise_of["content"], "problems": revision_problems(revise_of)} if revise_of else None
     for model in settings.brief_models:
         client = claude_for(model)
@@ -502,6 +639,16 @@ def make_brief(brand, store, *, brief_name, ask, ruleset, decisions, claude_for,
         except BriefError as exc:
             notes.append(f"{model}: {exc}")
             continue
+        offer_findings = finish_brief(brief, kind, for_person, offer, items, ruleset)
+        by_review = {r["id"]: r for r in stored_reviews}
+        for c in brief["concepts"]:
+            if c.get("quote") and c["quote"].get("review_id") in by_review:
+                c["quote"]["attribution"] = REVIEWS.attribution(by_review[c["quote"]["review_id"]])
+        from . import storyboard as SBD
+        violations = list(violations) + offer_findings + REVIEWS.check_quotes(brief, stored_reviews) + (FOOTAGE.check_clips(brief, footage_clips, SBD.parse_seconds) if kind == "cuts" else [])
+        if kind == "cuts":
+            cut_ids = {part["clip"] for c in brief["concepts"] for part in c.get("clips") or []}
+            brief["footage_used"] = {x["id"]: {"name": x["name"], "path": x["path"], "seconds": x["seconds"], "url": x["url"]} for x in footage_clips if x["id"] in cut_ids}          # what the Word brief needs to show each cut, kept with the brief              # a customer quote is word for word from one stored review, or an error
         route = list(getattr(client, "calls", []))[seen_calls:]
         built_by = ("the pool (lane brief_json)" if route and set(route) == {"gateway"} else "Claude (the pool had no usable answer)" if route and "gateway" not in route else "the pool, then Claude" if route else model)
         model_notes = [f"writer: {built_by}"] + [n for n in list(getattr(client, "notes", []))[seen_notes:]] + model_notes          # why the pool did not write it is in the brief's notes, not only in the log
