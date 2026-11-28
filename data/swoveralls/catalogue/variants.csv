@@ -35,7 +35,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15347013517423,Comfyalls - Something 90s,53756008398959,3XL / Jammers,Size=3XL; Color=Jammers,SWCOMFY-ZOF-3XL,149.00,,true
 15347013517423,Comfyalls - Something 90s,53756008431727,4XL / Jammers,Size=4XL; Color=Jammers,SWCOMFY-ZOF-4XL,149.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991392367,S / Bordeaux,Size=S; Color=Bordeaux,SWPANTSCORD-781-S,129.00,,false
-15347005489263,Corduroy Swoveralls - Bordeaux,53755991425135,M / Bordeaux,Size=M; Color=Bordeaux,SWPANTSCORD-781-M,129.00,,true
+15347005489263,Corduroy Swoveralls - Bordeaux,53755991425135,M / Bordeaux,Size=M; Color=Bordeaux,SWPANTSCORD-781-M,129.00,,false
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991457903,L / Bordeaux,Size=L; Color=Bordeaux,SWPANTSCORD-781-L,129.00,,true
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991490671,XL / Bordeaux,Size=XL; Color=Bordeaux,SWPANTSCORD-781-XL,129.00,,false
 15347005489263,Corduroy Swoveralls - Bordeaux,53755991523439,2XL / Bordeaux,Size=2XL; Color=Bordeaux,SWPANTSCORD-781-2XL,129.00,,true
@@ -200,7 +200,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15023021490287,Swoveralls - Campfire Rust,53165462716527,S / Campfire,Size=S; Color=Campfire,SWPANTS-199-S,110.00,,false
 15023021490287,Swoveralls - Campfire Rust,53165462749295,M / Campfire,Size=M; Color=Campfire,SWPANTS-199-M,110.00,,true
 15023021490287,Swoveralls - Campfire Rust,53165462782063,L / Campfire,Size=L; Color=Campfire,SWPANTS-199-L,110.00,,true
-15023021490287,Swoveralls - Campfire Rust,53165462814831,XL / Campfire,Size=XL; Color=Campfire,SWPANTS-199-XL,110.00,,true
+15023021490287,Swoveralls - Campfire Rust,53165462814831,XL / Campfire,Size=XL; Color=Campfire,SWPANTS-199-XL,110.00,,false
 15023021490287,Swoveralls - Campfire Rust,53165462847599,2XL / Campfire,Size=2XL; Color=Campfire,SWPANTS-199-2XL,110.00,,true
 15023021490287,Swoveralls - Campfire Rust,53165462880367,3XL / Campfire,Size=3XL; Color=Campfire,SWPANTS-199-3XL,110.00,,true
 15023021490287,Swoveralls - Campfire Rust,53165462913135,4XL / Campfire,Size=4XL; Color=Campfire,SWPANTS-199-4XL,110.00,,true
@@ -212,7 +212,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15345983324271,Swoveralls - Cosmic,53753225576559,3XL / Cosmic,Size=3XL; Color=Cosmic,SWPANTS-BPR-3XL,110.00,,false
 15345983324271,Swoveralls - Cosmic,53753225609327,4XL / Cosmic,Size=4XL; Color=Cosmic,SWPANTS-BPR-4XL,110.00,,false
 15346022973551,Swoveralls - Dancing Skeletons,53753349013615,S / Dancing Skeletons,Size=S; Color=Dancing Skeletons,SWPANTS-BKX-S,110.00,,false
-15346022973551,Swoveralls - Dancing Skeletons,53753349046383,M / Dancing Skeletons,Size=M; Color=Dancing Skeletons,SWPANTS-BKX-M,110.00,,true
+15346022973551,Swoveralls - Dancing Skeletons,53753349046383,M / Dancing Skeletons,Size=M; Color=Dancing Skeletons,SWPANTS-BKX-M,110.00,,false
 15346022973551,Swoveralls - Dancing Skeletons,53753349079151,L / Dancing Skeletons,Size=L; Color=Dancing Skeletons,SWPANTS-BKX-L,110.00,,false
 15346022973551,Swoveralls - Dancing Skeletons,53753349111919,XL / Dancing Skeletons,Size=XL; Color=Dancing Skeletons,SWPANTS-BKX-XL,110.00,,false
 15346022973551,Swoveralls - Dancing Skeletons,53753349144687,2XL / Dancing Skeletons,Size=2XL; Color=Dancing Skeletons,SWPANTS-BKX-2XL,110.00,,false
@@ -281,7 +281,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15114935926895,Swoveralls - GooBle Search,53311680905327,M / GooBle Search,Size=M; Color=GooBle Search,SWPANTSYGG-377-M,89.99,110.00,true
 15114935926895,Swoveralls - GooBle Search,53311680938095,L / GooBle Search,Size=L; Color=GooBle Search,SWPANTSYGG-377-L,89.99,110.00,true
 15114935926895,Swoveralls - GooBle Search,53311680970863,XL / GooBle Search,Size=XL; Color=GooBle Search,SWPANTSYGG-377-XL,89.99,110.00,false
-15114935926895,Swoveralls - GooBle Search,53311681003631,2XL / GooBle Search,Size=2XL; Color=GooBle Search,SWPANTSYGG-377-2XL,89.99,110.00,true
+15114935926895,Swoveralls - GooBle Search,53311681003631,2XL / GooBle Search,Size=2XL; Color=GooBle Search,SWPANTSYGG-377-2XL,89.99,110.00,false
 15114935926895,Swoveralls - GooBle Search,53311681036399,3XL / GooBle Search,Size=3XL; Color=GooBle Search,SWPANTSYGG-377-3XL,89.99,110.00,true
 15114935926895,Swoveralls - GooBle Search,53311681069167,4XL / GooBle Search,Size=4XL; Color=GooBle Search,SWPANTSYGG-377-4XL,89.99,110.00,true
 15114929307759,Swoveralls - Kammy Kubes,53311672615023,S / Kammy Kubes,Size=S; Color=Kammy Kubes,SWPANTSYGG-010-S,89.99,110.00,true
@@ -331,9 +331,9 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15022560804975,Swoveralls - Nightshade Plum,53160030109807,XL / Nightshade Plum,Size=XL; Color=Nightshade Plum,SWPANTS-066-XL,110.00,,false
 15022560804975,Swoveralls - Nightshade Plum,53160030142575,2XL / Nightshade Plum,Size=2XL; Color=Nightshade Plum,SWPANTS-066-2XL,110.00,,false
 15022560804975,Swoveralls - Nightshade Plum,53160030175343,3XL / Nightshade Plum,Size=3XL; Color=Nightshade Plum,SWPANTS-066-3XL,110.00,,false
-15022560804975,Swoveralls - Nightshade Plum,53160030208111,4XL / Nightshade Plum,Size=4XL; Color=Nightshade Plum,SWPANTS-066-4XL,110.00,,true
+15022560804975,Swoveralls - Nightshade Plum,53160030208111,4XL / Nightshade Plum,Size=4XL; Color=Nightshade Plum,SWPANTS-066-4XL,110.00,,false
 15346083430511,Swoveralls - Otter Romp,53753483853935,S / Otter Romp,Size=S; Color=Otter Romp,SWPANTS-DHG-S,110.00,,false
-15346083430511,Swoveralls - Otter Romp,53753483886703,M / Otter Romp,Size=M; Color=Otter Romp,SWPANTS-DHG-M,110.00,,true
+15346083430511,Swoveralls - Otter Romp,53753483886703,M / Otter Romp,Size=M; Color=Otter Romp,SWPANTS-DHG-M,110.00,,false
 15346083430511,Swoveralls - Otter Romp,53753483919471,L / Otter Romp,Size=L; Color=Otter Romp,SWPANTS-DHG-L,110.00,,false
 15346083430511,Swoveralls - Otter Romp,53753483952239,XL / Otter Romp,Size=XL; Color=Otter Romp,SWPANTS-DHG-XL,110.00,,false
 15346083430511,Swoveralls - Otter Romp,53753483985007,2XL / Otter Romp,Size=2XL; Color=Otter Romp,SWPANTS-DHG-2XL,110.00,,false
@@ -350,7 +350,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 7969917927535,Swoveralls - Purr Parade - Coming Soon!,43949671219311,4XL / Purr Parade Navy,Size=4XL; Color=Purr Parade Navy,SWPANTS-BL4-4XL,110.00,,false
 15346061738095,Swoveralls - Something 90s,53753433030767,S / Jammers,Size=S; Color=Jammers,SWPANTS-ZOF-S,110.00,,false
 15346061738095,Swoveralls - Something 90s,53753433063535,M / Jammers,Size=M; Color=Jammers,SWPANTS-ZOF-M,110.00,,true
-15346061738095,Swoveralls - Something 90s,53753433096303,L / Jammers,Size=L; Color=Jammers,SWPANTS-ZOF-L,110.00,,true
+15346061738095,Swoveralls - Something 90s,53753433096303,L / Jammers,Size=L; Color=Jammers,SWPANTS-ZOF-L,110.00,,false
 15346061738095,Swoveralls - Something 90s,53753433129071,XL / Jammers,Size=XL; Color=Jammers,SWPANTS-ZOF-XL,110.00,,false
 15346061738095,Swoveralls - Something 90s,53753433161839,2XL / Jammers,Size=2XL; Color=Jammers,SWPANTS-ZOF-2XL,110.00,,false
 15346061738095,Swoveralls - Something 90s,53753433194607,3XL / Jammers,Size=3XL; Color=Jammers,SWPANTS-ZOF-3XL,110.00,,true
@@ -373,7 +373,7 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15346086379631,Swoveralls - Trash Pandas,53753487949935,M / Trash Pandas,Size=M; Color=Trash Pandas,SWPANTS-DHL-M,110.00,,false
 15346086379631,Swoveralls - Trash Pandas,53753487982703,L / Trash Pandas,Size=L; Color=Trash Pandas,SWPANTS-DHL-L,110.00,,false
 15346086379631,Swoveralls - Trash Pandas,53753488015471,XL / Trash Pandas,Size=XL; Color=Trash Pandas,SWPANTS-DHL-XL,110.00,,false
-15346086379631,Swoveralls - Trash Pandas,53753488048239,2XL / Trash Pandas,Size=2XL; Color=Trash Pandas,SWPANTS-DHL-2XL,110.00,,true
+15346086379631,Swoveralls - Trash Pandas,53753488048239,2XL / Trash Pandas,Size=2XL; Color=Trash Pandas,SWPANTS-DHL-2XL,110.00,,false
 15346086379631,Swoveralls - Trash Pandas,53753488081007,3XL / Trash Pandas,Size=3XL; Color=Trash Pandas,SWPANTS-DHL-3XL,110.00,,true
 15346086379631,Swoveralls - Trash Pandas,53753488113775,4XL / Trash Pandas,Size=4XL; Color=Trash Pandas,SWPANTS-DHL-4XL,110.00,,false
 3303528693860,Swoveralls Gift Card,40624410427503,$10,Title=$10,,10.00,,true
@@ -449,10 +449,10 @@ product_id,product_title,variant_id,variant_title,options,sku,price,compare_at_p
 15486915543151,The Free Your Waistband Beanie - Sunglow,54156342034543,Sunglow,Color=Sunglow,GB521-B00003-057,36.00,,true
 15486918590575,The Free Your Waistband Hat,54156349440111,Default Title,Title=Default Title,G217R-B00006,36.00,,true
 15486912757871,The Good At Naps Hat,54156332105839,Default Title,Title=Default Title,GB523-B00006,36.00,,true
-7934710153327,The Sidekick Tee - Fog Grey,43827118178415,S / Fog Grey,Size=S; Color=Fog Grey,23414SW-6AZ-SMALL,25.00,,true
+7934710153327,The Sidekick Tee - Fog Grey,43827118178415,S / Fog Grey,Size=S; Color=Fog Grey,23414SW-6AZ-SMALL,25.00,,false
 7934710153327,The Sidekick Tee - Fog Grey,43827118211183,M / Fog Grey,Size=M; Color=Fog Grey,23414SW-6AZ-MED,25.00,,false
-7934710153327,The Sidekick Tee - Fog Grey,43827118243951,L / Fog Grey,Size=L; Color=Fog Grey,23414SW-6AZ-LARGE,25.00,,true
-7934710153327,The Sidekick Tee - Fog Grey,43827118276719,XL / Fog Grey,Size=XL; Color=Fog Grey,23414SW-6AZ-XL,25.00,,true
+7934710153327,The Sidekick Tee - Fog Grey,43827118243951,L / Fog Grey,Size=L; Color=Fog Grey,23414SW-6AZ-LARGE,25.00,,false
+7934710153327,The Sidekick Tee - Fog Grey,43827118276719,XL / Fog Grey,Size=XL; Color=Fog Grey,23414SW-6AZ-XL,25.00,,false
 7934710153327,The Sidekick Tee - Fog Grey,43827118309487,2XL / Fog Grey,Size=2XL; Color=Fog Grey,23414SW-6AZ-XXL,25.00,,false
 7934710153327,The Sidekick Tee - Fog Grey,43827118342255,3XL / Fog Grey,Size=3XL; Color=Fog Grey,23414SW-6AZ-XXXL,25.00,,false
 14987685986415,The Sidekick Tee in Marble Heather - READ THE ROOM,53021367894127,S / Marble Heather,Size=S; Color=Marble Heather,21459-257-S,25.00,,true

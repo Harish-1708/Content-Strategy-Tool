@@ -1746,7 +1746,7 @@
      "title": "Black / Youth (5-9 Year Old)"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 47532988793118,
      "options": [
@@ -3376,7 +3376,7 @@
      "title": "Grey / 2XL-3XL"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 47315796820254,
      "options": [
@@ -3502,7 +3502,7 @@
      "title": "Sage Green / L-XL"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 59869788733726,
      "options": [
@@ -3921,7 +3921,7 @@
      "title": "Grey / L-XL"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 31947263901777,
      "options": [

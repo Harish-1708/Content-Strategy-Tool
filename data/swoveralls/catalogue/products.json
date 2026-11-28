@@ -1380,7 +1380,7 @@
      "title": "S / Bordeaux"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53755991425135,
      "options": [
@@ -7017,7 +7017,7 @@
      "title": "L / Campfire"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53165462814831,
      "options": [
@@ -7414,7 +7414,7 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/2025_Enhanced_PDP_PLP_Image_Size_Revisions_1.png?v=1770085764",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/Size_Guide_Chart.png?v=1778533325"
    ],
-   "in_stock": true,
+   "in_stock": false,
    "ingredients": "",
    "materials": "cotton 95%; spandex 5%",
    "missing_expected": [
@@ -7467,7 +7467,7 @@
      "title": "S / Dancing Skeletons"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753349046383,
      "options": [
@@ -9651,7 +9651,7 @@
      "title": "XL / GooBle Search"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": 110.0,
      "id": 53311681003631,
      "options": [
@@ -11102,7 +11102,7 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/FlatLayReplication.png?v=1781899722",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/SwovieSweatpantsUpdate.png?v=1781899722"
    ],
-   "in_stock": true,
+   "in_stock": false,
    "ingredients": "",
    "materials": "cotton 95%; spandex 5%",
    "missing_expected": [
@@ -11246,7 +11246,7 @@
      "title": "3XL / Nightshade Plum"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53160030208111,
      "options": [
@@ -11392,7 +11392,7 @@
      "title": "S / Otter Romp"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753483886703,
      "options": [
@@ -11921,7 +11921,7 @@
      "title": "M / Jammers"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753433096303,
      "options": [
@@ -12684,7 +12684,7 @@
      "title": "XL / Trash Pandas"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 53753488048239,
      "options": [
@@ -15262,7 +15262,7 @@
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/c_tee_fog.jpg?v=1793799472",
     "https://cdn.shopify.com/s/files/1/0047/6862/8836/files/5_0908fa0a-ca35-4566-bd98-2c39e9cd7249.png?v=1762960356"
    ],
-   "in_stock": true,
+   "in_stock": false,
    "ingredients": "",
    "materials": "cotton 100%",
    "missing_expected": [
@@ -15294,7 +15294,7 @@
    "variant_count": 6,
    "variants": [
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 43827118178415,
      "options": [
@@ -15330,7 +15330,7 @@
      "title": "M / Fog Grey"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 43827118243951,
      "options": [
@@ -15348,7 +15348,7 @@
      "title": "L / Fog Grey"
     },
     {
-     "available": true,
+     "available": false,
      "compare_at_price": null,
      "id": 43827118276719,
      "options": [
