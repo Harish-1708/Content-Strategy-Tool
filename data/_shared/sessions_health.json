@@ -1,7 +1,7 @@
 {
   "boss": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-27T09:15:58Z",
+    "checked_at": "2026-11-28T03:42:56Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",
@@ -13,12 +13,12 @@
   },
   "facebook": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-27T09:15:58Z",
+    "checked_at": "2026-11-28T03:42:56Z",
     "days_left": 349,
     "evidence": {
       "body_ids": [
         "splash-screen",
-        "mount_0_0_qW",
+        "mount_0_0_gw",
         "B:0",
         "B:1",
         "B:2",
@@ -68,7 +68,7 @@
       "login_word_in_address": "",
       "noscript": "",
       "password_field": false,
-      "scripts": 376,
+      "scripts": 359,
       "status": 200,
       "text_chars": 0,
       "title": "Facebook",
@@ -76,7 +76,7 @@
       "worker_error": ""
     },
     "expires_on": "2027-11-12",
-    "proved_on": "2026-11-27T09:15:58Z",
+    "proved_on": "2026-11-28T03:42:56Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
@@ -84,7 +84,7 @@
   },
   "instagram": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-27T09:15:58Z",
+    "checked_at": "2026-11-28T03:42:56Z",
     "days_left": 355,
     "evidence": {
       "fetched_with": "browser (rendered page, stored cookies)",
@@ -99,7 +99,7 @@
   },
   "linkedin": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-27T09:15:58Z",
+    "checked_at": "2026-11-28T03:42:56Z",
     "days_left": 349,
     "evidence": {
       "body_ids": [],
@@ -164,7 +164,7 @@
   },
   "reddit": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-27T09:15:58Z",
+    "checked_at": "2026-11-28T03:42:56Z",
     "days_left": 165,
     "evidence": {
       "body_ids": [
@@ -216,7 +216,7 @@
         "token_v2"
       ],
       "fetched_with": "browser",
-      "html_chars": 428038,
+      "html_chars": 428000,
       "html_truncated": false,
       "landed": "https://www.reddit.com/settings/",
       "logged_in_found": [
@@ -244,7 +244,7 @@
       "worker_error": ""
     },
     "expires_on": "2027-05-12",
-    "proved_on": "2026-11-27T09:15:58Z",
+    "proved_on": "2026-11-28T03:42:56Z",
     "proved_via": "browser",
     "reason": "the platform's own page showed a logged-in state",
     "state": "ACCEPTED",
@@ -252,8 +252,8 @@
   },
   "tiktok": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-27T09:15:58Z",
-    "days_left": 165,
+    "checked_at": "2026-11-28T03:42:56Z",
+    "days_left": 164,
     "evidence": {
       "fetched_with": "browser (rendered page, stored cookies)",
       "landed": "https://www.tiktok.com/"
@@ -267,7 +267,7 @@
   },
   "x": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-27T09:15:58Z",
+    "checked_at": "2026-11-28T03:42:56Z",
     "days_left": 349,
     "evidence": {
       "body_ids": [
@@ -338,7 +338,7 @@
   },
   "xiaohongshu": {
     "cannot_check_streak": 0,
-    "checked_at": "2026-11-27T09:15:58Z",
+    "checked_at": "2026-11-28T03:42:56Z",
     "days_left": "",
     "evidence": {},
     "expires_on": "",

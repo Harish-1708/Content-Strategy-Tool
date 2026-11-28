@@ -50,6 +50,10 @@
    "instagram": 1,
    "meta_ads": 7,
    "tiktok": 1
+  },
+  "2026-11-28": {
+   "instagram": 1,
+   "tiktok": 1
   }
  },
  "history": {
@@ -60,6 +64,13 @@
     "detail": "instagram: the site showed its login page, so the session in INSTAGRAM_COOKIES was not accepted from this runner. This cannot tell an expired session from one the site refuses from a datacenter address: when the cookies are not expired by d",
     "pages": 1,
     "state": "login_wall"
+   },
+   {
+    "at": "2026-11-28T03:34:40Z",
+    "by": "acceptance",
+    "detail": "login ok; 3 items (3 from the site's data, 0 only from page links) - stealth: 2 page(s) read as instagram through patchright with no proxy; human score 55/100: iamannasweet On Fridays We Wear Overalls! 🎨👭",
+    "pages": 1,
+    "state": "ok"
    }
   ],
   "meta_ads": [
@@ -78,21 +89,28 @@
     "detail": "login ok; 3 items (3 from the site's data, 0 only from page links) - #overalls was searched first (hashtag_via_search_first), instead of opening the tag page (typed into the search box, as a person would) - stealth: 1 page(s) read as tiktok",
     "pages": 1,
     "state": "ok"
+   },
+   {
+    "at": "2026-11-28T03:34:40Z",
+    "by": "acceptance",
+    "detail": "login ok; 3 items (3 from the site's data, 0 only from page links) - #overalls was searched first (hashtag_via_search_first), instead of opening the tag page (typed into the search box, as a person would) - stealth: 1 page(s) read as tiktok",
+    "pages": 1,
+    "state": "ok"
    }
   ]
  },
  "last": {
-  "instagram": "2026-11-27T09:09:14Z",
+  "instagram": "2026-11-28T03:34:40Z",
   "meta_ads": "2026-11-27T13:25:34Z",
-  "tiktok": "2026-11-27T09:09:14Z"
+  "tiktok": "2026-11-28T03:34:40Z"
  },
  "outcomes": {
   "instagram": {
-   "at": "2026-11-27T09:09:14Z",
+   "at": "2026-11-28T03:34:40Z",
    "by": "acceptance",
-   "detail": "instagram: the site showed its login page, so the session in INSTAGRAM_COOKIES was not accepted from this runner. This cannot tell an expired session from one the site refuses from a datacenter address: when the cookies are not expired by d",
+   "detail": "login ok; 3 items (3 from the site's data, 0 only from page links) - stealth: 2 page(s) read as instagram through patchright with no proxy; human score 55/100: iamannasweet On Fridays We Wear Overalls! 🎨👭",
    "pages": 1,
-   "state": "login_wall"
+   "state": "ok"
   },
   "meta_ads": {
    "at": "2026-11-27T13:25:34Z",
@@ -102,7 +120,7 @@
    "state": "ok"
   },
   "tiktok": {
-   "at": "2026-11-27T09:09:14Z",
+   "at": "2026-11-28T03:34:40Z",
    "by": "acceptance",
    "detail": "login ok; 3 items (3 from the site's data, 0 only from page links) - #overalls was searched first (hashtag_via_search_first), instead of opening the tag page (typed into the search box, as a person would) - stealth: 1 page(s) read as tiktok",
    "pages": 1,
