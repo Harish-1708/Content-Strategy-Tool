@@ -1,5 +1,5 @@
 {
- "health_at": "2026-11-27T15:27:10Z",
+ "health_at": "2026-11-28T14:26:16Z",
  "jobs": {
   "brief_json": {
    "excluded": [
@@ -21,14 +21,6 @@
     },
     {
      "failures": [
-      "The model `Qwen3-Embedding-8B` does not exist."
-     ],
-     "model": "Qwen3-Embedding-8B",
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "failures": [
       "[xkiro/mistralai/mistral-large-2512] [404]: Model \"mistralai/mistral-large-2512\" does not exist. (re"
      ],
      "model": "xkiro/mistralai/mistral-large-2512",
@@ -36,332 +28,348 @@
      "runs": 1
     }
    ],
-   "generated_at": "2026-11-27T15:27:10Z",
+   "generated_at": "2026-11-28T14:26:16Z",
    "generated_by": "health",
    "not_measured": [],
    "ranking": [
     {
-     "mean_score": 0.906,
-     "median_ms": 183,
+     "mean_score": 0.989,
+     "median_ms": 248,
      "model": "openai/gpt-oss-20b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.88,
-     "median_ms": 1667,
+     "mean_score": 0.968,
+     "median_ms": 985,
      "model": "kilo-auto/free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.876,
-     "median_ms": 594,
+     "mean_score": 0.935,
+     "median_ms": 3710,
      "model": "pollinations/openai-fast",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.871,
-     "median_ms": 61624,
+     "mean_score": 0.91,
+     "median_ms": 3582,
      "model": "aihorde/any",
      "passes": 1,
      "provider": "aihorde",
      "runs": 1
     },
     {
-     "mean_score": 0.85,
-     "median_ms": 440,
+     "mean_score": 0.877,
+     "median_ms": 437,
      "model": "openai/gpt-oss-120b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.826,
-     "median_ms": 803,
+     "mean_score": 0.857,
+     "median_ms": 658,
      "model": "nvidia/nemotron-3.5-super-vl:free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.784,
-     "median_ms": 13790,
+     "mean_score": 0.816,
+     "median_ms": 740,
      "model": "command-r-08-2024",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.777,
-     "median_ms": 1144,
+     "mean_score": 0.788,
+     "median_ms": 524,
      "model": "command-r-plus-08-2024",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.75,
-     "median_ms": 305,
+     "mean_score": 0.761,
+     "median_ms": 294,
      "model": "command-a-03-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.747,
-     "median_ms": 2158,
-     "model": "requesty/google/gemma-4-31b-it",
-     "passes": 1,
-     "provider": "requesty",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.746,
-     "median_ms": 3372,
-     "model": "bazaarlink/auto:free",
-     "passes": 1,
-     "provider": "bazaarlink",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.744,
-     "median_ms": 637,
-     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-     "passes": 1,
-     "provider": "cloudflare",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.743,
-     "median_ms": 487,
+     "mean_score": 0.752,
+     "median_ms": 495,
      "model": "pollinations/mistral",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.736,
-     "median_ms": 7944,
+     "mean_score": 0.75,
+     "median_ms": 524,
+     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+     "passes": 1,
+     "provider": "cloudflare",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.748,
+     "median_ms": 1949,
+     "model": "requesty/google/gemma-4-31b-it",
+     "passes": 1,
+     "provider": "requesty",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.747,
+     "median_ms": 1160,
      "model": "gemma-4-26b-a4b-it",
      "passes": 1,
      "provider": "google",
      "runs": 1
     },
     {
-     "mean_score": 0.728,
-     "median_ms": 635,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "mean_score": 0.747,
+     "median_ms": 3046,
+     "model": "bazaarlink/auto:free",
      "passes": 1,
-     "provider": "ovh",
+     "provider": "bazaarlink",
      "runs": 1
     },
     {
-     "mean_score": 0.728,
-     "median_ms": 835,
+     "mean_score": 0.743,
+     "median_ms": 786,
+     "model": "glm-4.6v-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 421,
      "model": "Qwen2.5-VL-72B-Instruct",
      "passes": 1,
      "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.728,
-     "median_ms": 911,
-     "model": "gpt-oss-20b",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 969,
+     "mean_score": 0.739,
+     "median_ms": 614,
      "model": "DeepSeek-V4.1-Flash-1017",
      "passes": 1,
      "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.727,
-     "median_ms": 1127,
-     "model": "Qwen3.8-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1243,
-     "model": "Olala-v1.0-summarise",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1257,
-     "model": "Olala-v1.0-mini-7A1B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1353,
-     "model": "Qwen3.6-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1461,
-     "model": "Qwen3.5-9B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1693,
-     "model": "Qwen3.5-397B-A17B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 1824,
+     "mean_score": 0.739,
+     "median_ms": 606,
      "model": "Meta-Llama-3_3-70B-Instruct",
      "passes": 1,
      "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.726,
-     "median_ms": 2181,
+     "mean_score": 0.739,
+     "median_ms": 694,
+     "model": "Qwen3.8-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 806,
+     "model": "gpt-oss-20b",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 1016,
      "model": "command-a-reasoning-08-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.672,
-     "median_ms": 307,
-     "model": "particle-ai/particle-1:free",
+     "mean_score": 0.739,
+     "median_ms": 1018,
+     "model": "Olala-v1.0-mini-7A1B",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 459,
-     "model": "liquid/lfm-3-1.7b:free",
+     "mean_score": 0.738,
+     "median_ms": 1050,
+     "model": "Olala-v1.0-summarise",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 648,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "mean_score": 0.738,
+     "median_ms": 1328,
+     "model": "Qwen3.6-27B",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 707,
-     "model": "google/gemma-4-31b-it:free",
+     "mean_score": 0.738,
+     "median_ms": 1418,
+     "model": "Qwen3.5-397B-A17B",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 885,
-     "model": "z-ai/glm-4.5-air:free",
+     "mean_score": 0.738,
+     "median_ms": 1494,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1068,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "mean_score": 0.738,
+     "median_ms": 1456,
+     "model": "Qwen3.5-9B",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1119,
-     "model": "google/gemma-4-26b-a4b-it:free",
+     "mean_score": 0.73,
+     "median_ms": 8525,
+     "model": "glm-4.7-flash",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "zhipu",
      "runs": 1
     },
     {
-     "mean_score": 0.669,
-     "median_ms": 1920,
-     "model": "baidu/ernie-5.5-flash-preview:free",
+     "mean_score": 0.728,
+     "median_ms": 10022,
+     "model": "glm-4.5-flash",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "zhipu",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 2239,
+     "mean_score": 0.703,
+     "median_ms": 305,
      "model": "qwen/qwen3-coder:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 48377,
-     "model": "gemini-3.5-flash",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.668,
-     "median_ms": 2800,
-     "model": "recursive/flint-v1.0:free",
+     "mean_score": 0.702,
+     "median_ms": 442,
+     "model": "google/gemma-4-26b-a4b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 2964,
-     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "mean_score": 0.702,
+     "median_ms": 531,
+     "model": "google/gemma-4-31b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 3063,
+     "mean_score": 0.702,
+     "median_ms": 551,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 692,
+     "model": "liquid/lfm-3-1.7b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 709,
      "model": "openrouter/free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.662,
-     "median_ms": 6032,
+     "mean_score": 0.702,
+     "median_ms": 761,
+     "model": "particle-ai/particle-1:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 799,
+     "model": "z-ai/glm-4.5-air:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 762,
+     "model": "baidu/ernie-5.5-flash-preview:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 845,
+     "model": "recursive/flint-v1.0:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 891,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.7,
+     "median_ms": 2072,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.699,
+     "median_ms": 2508,
      "model": "nvidia/nemotron-3.5-lightning:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     }
    ],
-   "routes_tried": 40
+   "routes_tried": 42
   },
   "brief_review_json": {
    "excluded": [
@@ -383,14 +391,6 @@
     },
     {
      "failures": [
-      "The model `Qwen3-Embedding-8B` does not exist."
-     ],
-     "model": "Qwen3-Embedding-8B",
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "failures": [
       "[xkiro/mistralai/mistral-large-2512] [404]: Model \"mistralai/mistral-large-2512\" does not exist. (re"
      ],
      "model": "xkiro/mistralai/mistral-large-2512",
@@ -398,332 +398,348 @@
      "runs": 1
     }
    ],
-   "generated_at": "2026-11-27T15:27:10Z",
+   "generated_at": "2026-11-28T14:26:16Z",
    "generated_by": "health",
    "not_measured": [],
    "ranking": [
     {
-     "mean_score": 0.945,
-     "median_ms": 1144,
+     "mean_score": 0.985,
+     "median_ms": 524,
      "model": "command-r-plus-08-2024",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.906,
-     "median_ms": 183,
+     "mean_score": 0.961,
+     "median_ms": 248,
      "model": "openai/gpt-oss-20b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.887,
-     "median_ms": 2181,
+     "mean_score": 0.928,
+     "median_ms": 1016,
      "model": "command-a-reasoning-08-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.876,
-     "median_ms": 594,
+     "mean_score": 0.907,
+     "median_ms": 3710,
      "model": "pollinations/openai-fast",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.85,
-     "median_ms": 440,
+     "mean_score": 0.877,
+     "median_ms": 437,
      "model": "openai/gpt-oss-120b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.824,
-     "median_ms": 1667,
+     "mean_score": 0.856,
+     "median_ms": 985,
      "model": "kilo-auto/free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.806,
-     "median_ms": 305,
+     "mean_score": 0.817,
+     "median_ms": 294,
      "model": "command-a-03-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.747,
-     "median_ms": 2158,
+     "mean_score": 0.797,
+     "median_ms": 1949,
      "model": "requesty/google/gemma-4-31b-it",
      "passes": 1,
      "provider": "requesty",
      "runs": 1
     },
     {
-     "mean_score": 0.746,
-     "median_ms": 3372,
+     "mean_score": 0.768,
+     "median_ms": 3046,
      "model": "bazaarlink/auto:free",
      "passes": 1,
      "provider": "bazaarlink",
      "runs": 1
     },
     {
-     "mean_score": 0.744,
-     "median_ms": 637,
-     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-     "passes": 1,
-     "provider": "cloudflare",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.743,
-     "median_ms": 487,
+     "mean_score": 0.752,
+     "median_ms": 495,
      "model": "pollinations/mistral",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.742,
-     "median_ms": 803,
+     "mean_score": 0.752,
+     "median_ms": 658,
      "model": "nvidia/nemotron-3.5-super-vl:free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.736,
-     "median_ms": 7944,
-     "model": "gemma-4-26b-a4b-it",
+     "mean_score": 0.75,
+     "median_ms": 524,
+     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
      "passes": 1,
-     "provider": "google",
+     "provider": "cloudflare",
      "runs": 1
     },
     {
-     "mean_score": 0.728,
-     "median_ms": 635,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 835,
-     "model": "Qwen2.5-VL-72B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 911,
-     "model": "gpt-oss-20b",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 969,
-     "model": "DeepSeek-V4.1-Flash-1017",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1127,
-     "model": "Qwen3.8-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1243,
-     "model": "Olala-v1.0-summarise",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1257,
-     "model": "Olala-v1.0-mini-7A1B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1353,
-     "model": "Qwen3.6-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1461,
-     "model": "Qwen3.5-9B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1693,
-     "model": "Qwen3.5-397B-A17B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 1824,
-     "model": "Meta-Llama-3_3-70B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.707,
-     "median_ms": 13790,
-     "model": "command-r-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.703,
-     "median_ms": 61624,
+     "mean_score": 0.749,
+     "median_ms": 3582,
      "model": "aihorde/any",
      "passes": 1,
      "provider": "aihorde",
      "runs": 1
     },
     {
-     "mean_score": 0.672,
-     "median_ms": 307,
-     "model": "particle-ai/particle-1:free",
+     "mean_score": 0.747,
+     "median_ms": 1160,
+     "model": "gemma-4-26b-a4b-it",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "google",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 459,
-     "model": "liquid/lfm-3-1.7b:free",
+     "mean_score": 0.743,
+     "median_ms": 786,
+     "model": "glm-4.6v-flash",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "zhipu",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 648,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "mean_score": 0.739,
+     "median_ms": 421,
+     "model": "Qwen2.5-VL-72B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 707,
-     "model": "google/gemma-4-31b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 740,
+     "model": "command-r-08-2024",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 885,
-     "model": "z-ai/glm-4.5-air:free",
+     "mean_score": 0.739,
+     "median_ms": 614,
+     "model": "DeepSeek-V4.1-Flash-1017",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1068,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "mean_score": 0.739,
+     "median_ms": 606,
+     "model": "Meta-Llama-3_3-70B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1119,
-     "model": "google/gemma-4-26b-a4b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 694,
+     "model": "Qwen3.8-27B",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.669,
-     "median_ms": 1920,
-     "model": "baidu/ernie-5.5-flash-preview:free",
+     "mean_score": 0.739,
+     "median_ms": 806,
+     "model": "gpt-oss-20b",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 2239,
+     "mean_score": 0.739,
+     "median_ms": 1018,
+     "model": "Olala-v1.0-mini-7A1B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1050,
+     "model": "Olala-v1.0-summarise",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1328,
+     "model": "Qwen3.6-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1418,
+     "model": "Qwen3.5-397B-A17B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1494,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1456,
+     "model": "Qwen3.5-9B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.73,
+     "median_ms": 8525,
+     "model": "glm-4.7-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.728,
+     "median_ms": 10022,
+     "model": "glm-4.5-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.703,
+     "median_ms": 305,
      "model": "qwen/qwen3-coder:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 48377,
-     "model": "gemini-3.5-flash",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.668,
-     "median_ms": 2800,
-     "model": "recursive/flint-v1.0:free",
+     "mean_score": 0.702,
+     "median_ms": 442,
+     "model": "google/gemma-4-26b-a4b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 2964,
-     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "mean_score": 0.702,
+     "median_ms": 531,
+     "model": "google/gemma-4-31b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 3063,
+     "mean_score": 0.702,
+     "median_ms": 551,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 692,
+     "model": "liquid/lfm-3-1.7b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 709,
      "model": "openrouter/free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.662,
-     "median_ms": 6032,
+     "mean_score": 0.702,
+     "median_ms": 761,
+     "model": "particle-ai/particle-1:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 799,
+     "model": "z-ai/glm-4.5-air:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 762,
+     "model": "baidu/ernie-5.5-flash-preview:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 845,
+     "model": "recursive/flint-v1.0:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 891,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.7,
+     "median_ms": 2072,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.699,
+     "median_ms": 2508,
      "model": "nvidia/nemotron-3.5-lightning:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     }
    ],
-   "routes_tried": 40
+   "routes_tried": 42
   },
   "claim_verify_json": {
    "excluded": [
@@ -745,14 +761,6 @@
     },
     {
      "failures": [
-      "The model `Qwen3-Embedding-8B` does not exist."
-     ],
-     "model": "Qwen3-Embedding-8B",
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "failures": [
       "[xkiro/mistralai/mistral-large-2512] [404]: Model \"mistralai/mistral-large-2512\" does not exist. (re"
      ],
      "model": "xkiro/mistralai/mistral-large-2512",
@@ -760,332 +768,348 @@
      "runs": 1
     }
    ],
-   "generated_at": "2026-11-27T15:27:10Z",
+   "generated_at": "2026-11-28T14:26:16Z",
    "generated_by": "health",
    "not_measured": [],
    "ranking": [
     {
-     "mean_score": 0.988,
-     "median_ms": 594,
+     "mean_score": 0.991,
+     "median_ms": 3710,
      "model": "pollinations/openai-fast",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.918,
-     "median_ms": 305,
+     "mean_score": 0.957,
+     "median_ms": 294,
      "model": "command-a-03-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.878,
-     "median_ms": 183,
+     "mean_score": 0.933,
+     "median_ms": 248,
      "model": "openai/gpt-oss-20b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.854,
-     "median_ms": 803,
+     "mean_score": 0.913,
+     "median_ms": 658,
      "model": "nvidia/nemotron-3.5-super-vl:free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.824,
-     "median_ms": 1667,
+     "mean_score": 0.884,
+     "median_ms": 985,
      "model": "kilo-auto/free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.823,
-     "median_ms": 3372,
+     "mean_score": 0.852,
+     "median_ms": 3046,
      "model": "bazaarlink/auto:free",
      "passes": 1,
      "provider": "bazaarlink",
      "runs": 1
     },
     {
-     "mean_score": 0.822,
-     "median_ms": 440,
+     "mean_score": 0.821,
+     "median_ms": 437,
      "model": "openai/gpt-oss-120b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.749,
-     "median_ms": 1144,
+     "mean_score": 0.788,
+     "median_ms": 524,
      "model": "command-r-plus-08-2024",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.747,
-     "median_ms": 2158,
+     "mean_score": 0.769,
+     "median_ms": 1949,
      "model": "requesty/google/gemma-4-31b-it",
      "passes": 1,
      "provider": "requesty",
      "runs": 1
     },
     {
-     "mean_score": 0.744,
-     "median_ms": 637,
-     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-     "passes": 1,
-     "provider": "cloudflare",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.743,
-     "median_ms": 487,
+     "mean_score": 0.752,
+     "median_ms": 495,
      "model": "pollinations/mistral",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.736,
-     "median_ms": 7944,
-     "model": "gemma-4-26b-a4b-it",
+     "mean_score": 0.75,
+     "median_ms": 524,
+     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
      "passes": 1,
-     "provider": "google",
+     "provider": "cloudflare",
      "runs": 1
     },
     {
-     "mean_score": 0.728,
-     "median_ms": 635,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 835,
-     "model": "Qwen2.5-VL-72B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 911,
-     "model": "gpt-oss-20b",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 969,
-     "model": "DeepSeek-V4.1-Flash-1017",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1127,
-     "model": "Qwen3.8-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1243,
-     "model": "Olala-v1.0-summarise",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1257,
-     "model": "Olala-v1.0-mini-7A1B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1353,
-     "model": "Qwen3.6-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1461,
-     "model": "Qwen3.5-9B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1693,
-     "model": "Qwen3.5-397B-A17B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 1824,
-     "model": "Meta-Llama-3_3-70B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 2181,
-     "model": "command-a-reasoning-08-2025",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.707,
-     "median_ms": 13790,
-     "model": "command-r-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.703,
-     "median_ms": 61624,
+     "mean_score": 0.749,
+     "median_ms": 3582,
      "model": "aihorde/any",
      "passes": 1,
      "provider": "aihorde",
      "runs": 1
     },
     {
-     "mean_score": 0.672,
-     "median_ms": 307,
-     "model": "particle-ai/particle-1:free",
+     "mean_score": 0.747,
+     "median_ms": 1160,
+     "model": "gemma-4-26b-a4b-it",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "google",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 459,
-     "model": "liquid/lfm-3-1.7b:free",
+     "mean_score": 0.743,
+     "median_ms": 786,
+     "model": "glm-4.6v-flash",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "zhipu",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 648,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "mean_score": 0.739,
+     "median_ms": 421,
+     "model": "Qwen2.5-VL-72B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 707,
-     "model": "google/gemma-4-31b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 740,
+     "model": "command-r-08-2024",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 885,
-     "model": "z-ai/glm-4.5-air:free",
+     "mean_score": 0.739,
+     "median_ms": 614,
+     "model": "DeepSeek-V4.1-Flash-1017",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1068,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "mean_score": 0.739,
+     "median_ms": 606,
+     "model": "Meta-Llama-3_3-70B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1119,
-     "model": "google/gemma-4-26b-a4b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 694,
+     "model": "Qwen3.8-27B",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.669,
-     "median_ms": 1920,
-     "model": "baidu/ernie-5.5-flash-preview:free",
+     "mean_score": 0.739,
+     "median_ms": 806,
+     "model": "gpt-oss-20b",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 2239,
+     "mean_score": 0.739,
+     "median_ms": 1016,
+     "model": "command-a-reasoning-08-2025",
+     "passes": 1,
+     "provider": "cohere",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 1018,
+     "model": "Olala-v1.0-mini-7A1B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1050,
+     "model": "Olala-v1.0-summarise",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1328,
+     "model": "Qwen3.6-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1418,
+     "model": "Qwen3.5-397B-A17B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1494,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1456,
+     "model": "Qwen3.5-9B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.73,
+     "median_ms": 8525,
+     "model": "glm-4.7-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.728,
+     "median_ms": 10022,
+     "model": "glm-4.5-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.703,
+     "median_ms": 305,
      "model": "qwen/qwen3-coder:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 48377,
-     "model": "gemini-3.5-flash",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.668,
-     "median_ms": 2800,
-     "model": "recursive/flint-v1.0:free",
+     "mean_score": 0.702,
+     "median_ms": 442,
+     "model": "google/gemma-4-26b-a4b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 2964,
-     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "mean_score": 0.702,
+     "median_ms": 531,
+     "model": "google/gemma-4-31b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 3063,
+     "mean_score": 0.702,
+     "median_ms": 551,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 692,
+     "model": "liquid/lfm-3-1.7b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 709,
      "model": "openrouter/free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.662,
-     "median_ms": 6032,
+     "mean_score": 0.702,
+     "median_ms": 761,
+     "model": "particle-ai/particle-1:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 799,
+     "model": "z-ai/glm-4.5-air:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 762,
+     "model": "baidu/ernie-5.5-flash-preview:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 845,
+     "model": "recursive/flint-v1.0:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 891,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.7,
+     "median_ms": 2072,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.699,
+     "median_ms": 2508,
      "model": "nvidia/nemotron-3.5-lightning:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     }
    ],
-   "routes_tried": 40
+   "routes_tried": 42
   },
   "competitor_ideas_json": {
    "excluded": [
@@ -1107,14 +1131,6 @@
     },
     {
      "failures": [
-      "The model `Qwen3-Embedding-8B` does not exist."
-     ],
-     "model": "Qwen3-Embedding-8B",
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "failures": [
       "[xkiro/mistralai/mistral-large-2512] [404]: Model \"mistralai/mistral-large-2512\" does not exist. (re"
      ],
      "model": "xkiro/mistralai/mistral-large-2512",
@@ -1122,332 +1138,348 @@
      "runs": 1
     }
    ],
-   "generated_at": "2026-11-27T15:27:10Z",
+   "generated_at": "2026-11-28T14:26:16Z",
    "generated_by": "health",
    "not_measured": [],
    "ranking": [
     {
-     "mean_score": 0.964,
-     "median_ms": 1667,
+     "mean_score": 0.996,
+     "median_ms": 985,
      "model": "kilo-auto/free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.96,
-     "median_ms": 594,
+     "mean_score": 0.963,
+     "median_ms": 3710,
      "model": "pollinations/openai-fast",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.915,
-     "median_ms": 2181,
+     "mean_score": 0.928,
+     "median_ms": 1016,
      "model": "command-a-reasoning-08-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.882,
-     "median_ms": 803,
+     "mean_score": 0.913,
+     "median_ms": 658,
      "model": "nvidia/nemotron-3.5-super-vl:free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.879,
-     "median_ms": 3372,
+     "mean_score": 0.88,
+     "median_ms": 3046,
      "model": "bazaarlink/auto:free",
      "passes": 1,
      "provider": "bazaarlink",
      "runs": 1
     },
     {
-     "mean_score": 0.765,
-     "median_ms": 440,
+     "mean_score": 0.849,
+     "median_ms": 437,
      "model": "openai/gpt-oss-120b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.764,
-     "median_ms": 637,
+     "mean_score": 0.827,
+     "median_ms": 524,
      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
      "passes": 1,
      "provider": "cloudflare",
      "runs": 1
     },
     {
-     "mean_score": 0.747,
-     "median_ms": 2158,
+     "mean_score": 0.797,
+     "median_ms": 1949,
      "model": "requesty/google/gemma-4-31b-it",
      "passes": 1,
      "provider": "requesty",
      "runs": 1
     },
     {
-     "mean_score": 0.743,
-     "median_ms": 487,
+     "mean_score": 0.773,
+     "median_ms": 495,
      "model": "pollinations/mistral",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.738,
-     "median_ms": 183,
-     "model": "openai/gpt-oss-20b",
-     "passes": 1,
-     "provider": "groq",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.736,
-     "median_ms": 7944,
-     "model": "gemma-4-26b-a4b-it",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.729,
-     "median_ms": 305,
-     "model": "command-a-03-2025",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 635,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 1144,
-     "model": "command-r-plus-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 835,
-     "model": "Qwen2.5-VL-72B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 911,
-     "model": "gpt-oss-20b",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 969,
-     "model": "DeepSeek-V4.1-Flash-1017",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1127,
-     "model": "Qwen3.8-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1243,
-     "model": "Olala-v1.0-summarise",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1257,
-     "model": "Olala-v1.0-mini-7A1B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1353,
-     "model": "Qwen3.6-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1461,
-     "model": "Qwen3.5-9B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1693,
-     "model": "Qwen3.5-397B-A17B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 1824,
-     "model": "Meta-Llama-3_3-70B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.707,
-     "median_ms": 13790,
-     "model": "command-r-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.703,
-     "median_ms": 61624,
+     "mean_score": 0.749,
+     "median_ms": 3582,
      "model": "aihorde/any",
      "passes": 1,
      "provider": "aihorde",
      "runs": 1
     },
     {
-     "mean_score": 0.672,
-     "median_ms": 307,
-     "model": "particle-ai/particle-1:free",
+     "mean_score": 0.747,
+     "median_ms": 1160,
+     "model": "gemma-4-26b-a4b-it",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "google",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 459,
-     "model": "liquid/lfm-3-1.7b:free",
+     "mean_score": 0.744,
+     "median_ms": 248,
+     "model": "openai/gpt-oss-20b",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 648,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "mean_score": 0.743,
+     "median_ms": 786,
+     "model": "glm-4.6v-flash",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "zhipu",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 707,
-     "model": "google/gemma-4-31b-it:free",
+     "mean_score": 0.74,
+     "median_ms": 294,
+     "model": "command-a-03-2025",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 885,
-     "model": "z-ai/glm-4.5-air:free",
+     "mean_score": 0.74,
+     "median_ms": 524,
+     "model": "command-r-plus-08-2024",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1068,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "mean_score": 0.739,
+     "median_ms": 421,
+     "model": "Qwen2.5-VL-72B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1119,
-     "model": "google/gemma-4-26b-a4b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 740,
+     "model": "command-r-08-2024",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.669,
-     "median_ms": 1920,
-     "model": "baidu/ernie-5.5-flash-preview:free",
+     "mean_score": 0.739,
+     "median_ms": 614,
+     "model": "DeepSeek-V4.1-Flash-1017",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 2239,
+     "mean_score": 0.739,
+     "median_ms": 606,
+     "model": "Meta-Llama-3_3-70B-Instruct",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 694,
+     "model": "Qwen3.8-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 806,
+     "model": "gpt-oss-20b",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 1018,
+     "model": "Olala-v1.0-mini-7A1B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1050,
+     "model": "Olala-v1.0-summarise",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1328,
+     "model": "Qwen3.6-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1418,
+     "model": "Qwen3.5-397B-A17B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1494,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1456,
+     "model": "Qwen3.5-9B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.73,
+     "median_ms": 8525,
+     "model": "glm-4.7-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.728,
+     "median_ms": 10022,
+     "model": "glm-4.5-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.703,
+     "median_ms": 305,
      "model": "qwen/qwen3-coder:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 48377,
-     "model": "gemini-3.5-flash",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.668,
-     "median_ms": 2800,
-     "model": "recursive/flint-v1.0:free",
+     "mean_score": 0.702,
+     "median_ms": 442,
+     "model": "google/gemma-4-26b-a4b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 2964,
-     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "mean_score": 0.702,
+     "median_ms": 531,
+     "model": "google/gemma-4-31b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 3063,
+     "mean_score": 0.702,
+     "median_ms": 551,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 692,
+     "model": "liquid/lfm-3-1.7b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 709,
      "model": "openrouter/free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.662,
-     "median_ms": 6032,
+     "mean_score": 0.702,
+     "median_ms": 761,
+     "model": "particle-ai/particle-1:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 799,
+     "model": "z-ai/glm-4.5-air:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 762,
+     "model": "baidu/ernie-5.5-flash-preview:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 845,
+     "model": "recursive/flint-v1.0:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 891,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.7,
+     "median_ms": 2072,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.699,
+     "median_ms": 2508,
      "model": "nvidia/nemotron-3.5-lightning:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     }
    ],
-   "routes_tried": 40
+   "routes_tried": 42
   },
   "conflict_check_json": {
    "excluded": [
@@ -1469,14 +1501,6 @@
     },
     {
      "failures": [
-      "The model `Qwen3-Embedding-8B` does not exist."
-     ],
-     "model": "Qwen3-Embedding-8B",
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "failures": [
       "[xkiro/mistralai/mistral-large-2512] [404]: Model \"mistralai/mistral-large-2512\" does not exist. (re"
      ],
      "model": "xkiro/mistralai/mistral-large-2512",
@@ -1484,332 +1508,348 @@
      "runs": 1
     }
    ],
-   "generated_at": "2026-11-27T15:27:10Z",
+   "generated_at": "2026-11-28T14:26:16Z",
    "generated_by": "health",
    "not_measured": [],
    "ranking": [
     {
-     "mean_score": 0.988,
-     "median_ms": 594,
+     "mean_score": 0.991,
+     "median_ms": 3710,
      "model": "pollinations/openai-fast",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.936,
-     "median_ms": 1667,
+     "mean_score": 0.968,
+     "median_ms": 985,
      "model": "kilo-auto/free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.918,
-     "median_ms": 305,
+     "mean_score": 0.929,
+     "median_ms": 294,
      "model": "command-a-03-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.831,
-     "median_ms": 2181,
+     "mean_score": 0.9,
+     "median_ms": 1016,
      "model": "command-a-reasoning-08-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.822,
-     "median_ms": 183,
+     "mean_score": 0.877,
+     "median_ms": 248,
      "model": "openai/gpt-oss-20b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.798,
-     "median_ms": 803,
+     "mean_score": 0.857,
+     "median_ms": 658,
      "model": "nvidia/nemotron-3.5-super-vl:free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.793,
-     "median_ms": 440,
+     "mean_score": 0.821,
+     "median_ms": 437,
      "model": "openai/gpt-oss-120b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.747,
-     "median_ms": 2158,
+     "mean_score": 0.797,
+     "median_ms": 1949,
      "model": "requesty/google/gemma-4-31b-it",
      "passes": 1,
      "provider": "requesty",
      "runs": 1
     },
     {
-     "mean_score": 0.746,
-     "median_ms": 3372,
+     "mean_score": 0.768,
+     "median_ms": 3046,
      "model": "bazaarlink/auto:free",
      "passes": 1,
      "provider": "bazaarlink",
      "runs": 1
     },
     {
-     "mean_score": 0.744,
-     "median_ms": 637,
-     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-     "passes": 1,
-     "provider": "cloudflare",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.743,
-     "median_ms": 487,
+     "mean_score": 0.752,
+     "median_ms": 495,
      "model": "pollinations/mistral",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.736,
-     "median_ms": 7944,
-     "model": "gemma-4-26b-a4b-it",
+     "mean_score": 0.75,
+     "median_ms": 524,
+     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
      "passes": 1,
-     "provider": "google",
+     "provider": "cloudflare",
      "runs": 1
     },
     {
-     "mean_score": 0.728,
-     "median_ms": 635,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 1144,
-     "model": "command-r-plus-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 835,
-     "model": "Qwen2.5-VL-72B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 13790,
-     "model": "command-r-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 911,
-     "model": "gpt-oss-20b",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 969,
-     "model": "DeepSeek-V4.1-Flash-1017",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1127,
-     "model": "Qwen3.8-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1243,
-     "model": "Olala-v1.0-summarise",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1257,
-     "model": "Olala-v1.0-mini-7A1B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1353,
-     "model": "Qwen3.6-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1461,
-     "model": "Qwen3.5-9B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1693,
-     "model": "Qwen3.5-397B-A17B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 1824,
-     "model": "Meta-Llama-3_3-70B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.703,
-     "median_ms": 61624,
+     "mean_score": 0.749,
+     "median_ms": 3582,
      "model": "aihorde/any",
      "passes": 1,
      "provider": "aihorde",
      "runs": 1
     },
     {
-     "mean_score": 0.672,
-     "median_ms": 307,
-     "model": "particle-ai/particle-1:free",
+     "mean_score": 0.747,
+     "median_ms": 1160,
+     "model": "gemma-4-26b-a4b-it",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "google",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 459,
-     "model": "liquid/lfm-3-1.7b:free",
+     "mean_score": 0.743,
+     "median_ms": 786,
+     "model": "glm-4.6v-flash",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "zhipu",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 648,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "mean_score": 0.74,
+     "median_ms": 524,
+     "model": "command-r-plus-08-2024",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 707,
-     "model": "google/gemma-4-31b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 421,
+     "model": "Qwen2.5-VL-72B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 885,
-     "model": "z-ai/glm-4.5-air:free",
+     "mean_score": 0.739,
+     "median_ms": 740,
+     "model": "command-r-08-2024",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1068,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "mean_score": 0.739,
+     "median_ms": 614,
+     "model": "DeepSeek-V4.1-Flash-1017",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1119,
-     "model": "google/gemma-4-26b-a4b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 606,
+     "model": "Meta-Llama-3_3-70B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.669,
-     "median_ms": 1920,
-     "model": "baidu/ernie-5.5-flash-preview:free",
+     "mean_score": 0.739,
+     "median_ms": 694,
+     "model": "Qwen3.8-27B",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 2239,
+     "mean_score": 0.739,
+     "median_ms": 806,
+     "model": "gpt-oss-20b",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 1018,
+     "model": "Olala-v1.0-mini-7A1B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1050,
+     "model": "Olala-v1.0-summarise",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1328,
+     "model": "Qwen3.6-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1418,
+     "model": "Qwen3.5-397B-A17B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1494,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1456,
+     "model": "Qwen3.5-9B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.73,
+     "median_ms": 8525,
+     "model": "glm-4.7-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.728,
+     "median_ms": 10022,
+     "model": "glm-4.5-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.703,
+     "median_ms": 305,
      "model": "qwen/qwen3-coder:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 48377,
-     "model": "gemini-3.5-flash",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.668,
-     "median_ms": 2800,
-     "model": "recursive/flint-v1.0:free",
+     "mean_score": 0.702,
+     "median_ms": 442,
+     "model": "google/gemma-4-26b-a4b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 2964,
-     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "mean_score": 0.702,
+     "median_ms": 531,
+     "model": "google/gemma-4-31b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 3063,
+     "mean_score": 0.702,
+     "median_ms": 551,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 692,
+     "model": "liquid/lfm-3-1.7b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 709,
      "model": "openrouter/free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.662,
-     "median_ms": 6032,
+     "mean_score": 0.702,
+     "median_ms": 761,
+     "model": "particle-ai/particle-1:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 799,
+     "model": "z-ai/glm-4.5-air:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 762,
+     "model": "baidu/ernie-5.5-flash-preview:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 845,
+     "model": "recursive/flint-v1.0:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 891,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.7,
+     "median_ms": 2072,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.699,
+     "median_ms": 2508,
      "model": "nvidia/nemotron-3.5-lightning:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     }
    ],
-   "routes_tried": 40
+   "routes_tried": 42
   },
   "creator_chain_json": {
    "excluded": [
@@ -1831,14 +1871,6 @@
     },
     {
      "failures": [
-      "The model `Qwen3-Embedding-8B` does not exist."
-     ],
-     "model": "Qwen3-Embedding-8B",
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "failures": [
       "[xkiro/mistralai/mistral-large-2512] [404]: Model \"mistralai/mistral-large-2512\" does not exist. (re"
      ],
      "model": "xkiro/mistralai/mistral-large-2512",
@@ -1846,332 +1878,348 @@
      "runs": 1
     }
    ],
-   "generated_at": "2026-11-27T15:27:10Z",
+   "generated_at": "2026-11-28T14:26:16Z",
    "generated_by": "health",
    "not_measured": [],
    "ranking": [
     {
-     "mean_score": 0.988,
-     "median_ms": 594,
+     "mean_score": 0.991,
+     "median_ms": 3710,
      "model": "pollinations/openai-fast",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.924,
-     "median_ms": 13790,
+     "mean_score": 0.956,
+     "median_ms": 740,
      "model": "command-r-08-2024",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.854,
-     "median_ms": 803,
+     "mean_score": 0.941,
+     "median_ms": 658,
      "model": "nvidia/nemotron-3.5-super-vl:free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.824,
-     "median_ms": 1667,
+     "mean_score": 0.912,
+     "median_ms": 985,
      "model": "kilo-auto/free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.822,
-     "median_ms": 440,
+     "mean_score": 0.877,
+     "median_ms": 437,
      "model": "openai/gpt-oss-120b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.792,
-     "median_ms": 637,
+     "mean_score": 0.855,
+     "median_ms": 524,
      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
      "passes": 1,
      "provider": "cloudflare",
      "runs": 1
     },
     {
-     "mean_score": 0.747,
-     "median_ms": 2158,
+     "mean_score": 0.825,
+     "median_ms": 1949,
      "model": "requesty/google/gemma-4-31b-it",
      "passes": 1,
      "provider": "requesty",
      "runs": 1
     },
     {
-     "mean_score": 0.746,
-     "median_ms": 3372,
+     "mean_score": 0.796,
+     "median_ms": 3046,
      "model": "bazaarlink/auto:free",
      "passes": 1,
      "provider": "bazaarlink",
      "runs": 1
     },
     {
-     "mean_score": 0.743,
-     "median_ms": 487,
+     "mean_score": 0.773,
+     "median_ms": 495,
      "model": "pollinations/mistral",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.738,
-     "median_ms": 183,
-     "model": "openai/gpt-oss-20b",
-     "passes": 1,
-     "provider": "groq",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.736,
-     "median_ms": 7944,
-     "model": "gemma-4-26b-a4b-it",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.729,
-     "median_ms": 305,
-     "model": "command-a-03-2025",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 635,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 1144,
-     "model": "command-r-plus-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 835,
-     "model": "Qwen2.5-VL-72B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 911,
-     "model": "gpt-oss-20b",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 969,
-     "model": "DeepSeek-V4.1-Flash-1017",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1127,
-     "model": "Qwen3.8-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1243,
-     "model": "Olala-v1.0-summarise",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1257,
-     "model": "Olala-v1.0-mini-7A1B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1353,
-     "model": "Qwen3.6-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1461,
-     "model": "Qwen3.5-9B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1693,
-     "model": "Qwen3.5-397B-A17B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 1824,
-     "model": "Meta-Llama-3_3-70B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 2181,
-     "model": "command-a-reasoning-08-2025",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.675,
-     "median_ms": 61624,
+     "mean_score": 0.749,
+     "median_ms": 3582,
      "model": "aihorde/any",
      "passes": 1,
      "provider": "aihorde",
      "runs": 1
     },
     {
-     "mean_score": 0.672,
-     "median_ms": 307,
-     "model": "particle-ai/particle-1:free",
+     "mean_score": 0.747,
+     "median_ms": 1160,
+     "model": "gemma-4-26b-a4b-it",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "google",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 459,
-     "model": "liquid/lfm-3-1.7b:free",
+     "mean_score": 0.744,
+     "median_ms": 248,
+     "model": "openai/gpt-oss-20b",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 648,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "mean_score": 0.743,
+     "median_ms": 786,
+     "model": "glm-4.6v-flash",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "zhipu",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 707,
-     "model": "google/gemma-4-31b-it:free",
+     "mean_score": 0.74,
+     "median_ms": 294,
+     "model": "command-a-03-2025",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 885,
-     "model": "z-ai/glm-4.5-air:free",
+     "mean_score": 0.74,
+     "median_ms": 524,
+     "model": "command-r-plus-08-2024",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1068,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "mean_score": 0.739,
+     "median_ms": 421,
+     "model": "Qwen2.5-VL-72B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1119,
-     "model": "google/gemma-4-26b-a4b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 614,
+     "model": "DeepSeek-V4.1-Flash-1017",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.669,
-     "median_ms": 1920,
-     "model": "baidu/ernie-5.5-flash-preview:free",
+     "mean_score": 0.739,
+     "median_ms": 606,
+     "model": "Meta-Llama-3_3-70B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 2239,
+     "mean_score": 0.739,
+     "median_ms": 694,
+     "model": "Qwen3.8-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 806,
+     "model": "gpt-oss-20b",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 1016,
+     "model": "command-a-reasoning-08-2025",
+     "passes": 1,
+     "provider": "cohere",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 1018,
+     "model": "Olala-v1.0-mini-7A1B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1050,
+     "model": "Olala-v1.0-summarise",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1328,
+     "model": "Qwen3.6-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1418,
+     "model": "Qwen3.5-397B-A17B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1494,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1456,
+     "model": "Qwen3.5-9B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.73,
+     "median_ms": 8525,
+     "model": "glm-4.7-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.728,
+     "median_ms": 10022,
+     "model": "glm-4.5-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.703,
+     "median_ms": 305,
      "model": "qwen/qwen3-coder:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 48377,
-     "model": "gemini-3.5-flash",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.668,
-     "median_ms": 2800,
-     "model": "recursive/flint-v1.0:free",
+     "mean_score": 0.702,
+     "median_ms": 442,
+     "model": "google/gemma-4-26b-a4b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 2964,
-     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "mean_score": 0.702,
+     "median_ms": 531,
+     "model": "google/gemma-4-31b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 3063,
+     "mean_score": 0.702,
+     "median_ms": 551,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 692,
+     "model": "liquid/lfm-3-1.7b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 709,
      "model": "openrouter/free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.662,
-     "median_ms": 6032,
+     "mean_score": 0.702,
+     "median_ms": 761,
+     "model": "particle-ai/particle-1:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 799,
+     "model": "z-ai/glm-4.5-air:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 762,
+     "model": "baidu/ernie-5.5-flash-preview:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 845,
+     "model": "recursive/flint-v1.0:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 891,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.7,
+     "median_ms": 2072,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.699,
+     "median_ms": 2508,
      "model": "nvidia/nemotron-3.5-lightning:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     }
    ],
-   "routes_tried": 40
+   "routes_tried": 42
   },
   "foundation_json": {
    "excluded": [
@@ -2193,14 +2241,6 @@
     },
     {
      "failures": [
-      "The model `Qwen3-Embedding-8B` does not exist."
-     ],
-     "model": "Qwen3-Embedding-8B",
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "failures": [
       "[xkiro/mistralai/mistral-large-2512] [404]: Model \"mistralai/mistral-large-2512\" does not exist. (re"
      ],
      "model": "xkiro/mistralai/mistral-large-2512",
@@ -2208,332 +2248,348 @@
      "runs": 1
     }
    ],
-   "generated_at": "2026-11-27T15:27:10Z",
+   "generated_at": "2026-11-28T14:26:16Z",
    "generated_by": "health",
    "not_measured": [],
    "ranking": [
     {
-     "mean_score": 0.989,
-     "median_ms": 637,
+     "mean_score": 0.995,
+     "median_ms": 524,
      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
      "passes": 1,
      "provider": "cloudflare",
      "runs": 1
     },
     {
-     "mean_score": 0.917,
-     "median_ms": 1144,
+     "mean_score": 0.957,
+     "median_ms": 524,
      "model": "command-r-plus-08-2024",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.887,
-     "median_ms": 2181,
+     "mean_score": 0.928,
+     "median_ms": 1016,
      "model": "command-a-reasoning-08-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.877,
-     "median_ms": 440,
+     "mean_score": 0.905,
+     "median_ms": 437,
      "model": "openai/gpt-oss-120b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.852,
-     "median_ms": 1667,
+     "mean_score": 0.884,
+     "median_ms": 985,
      "model": "kilo-auto/free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.826,
-     "median_ms": 803,
+     "mean_score": 0.857,
+     "median_ms": 658,
      "model": "nvidia/nemotron-3.5-super-vl:free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.747,
-     "median_ms": 2158,
+     "mean_score": 0.825,
+     "median_ms": 1949,
      "model": "requesty/google/gemma-4-31b-it",
      "passes": 1,
      "provider": "requesty",
      "runs": 1
     },
     {
-     "mean_score": 0.746,
-     "median_ms": 3372,
+     "mean_score": 0.796,
+     "median_ms": 3046,
      "model": "bazaarlink/auto:free",
      "passes": 1,
      "provider": "bazaarlink",
      "runs": 1
     },
     {
-     "mean_score": 0.743,
-     "median_ms": 487,
+     "mean_score": 0.773,
+     "median_ms": 495,
      "model": "pollinations/mistral",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.743,
-     "median_ms": 594,
-     "model": "pollinations/openai-fast",
-     "passes": 1,
-     "provider": "pollinations",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.736,
-     "median_ms": 7944,
-     "model": "gemma-4-26b-a4b-it",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.731,
-     "median_ms": 61624,
+     "mean_score": 0.749,
+     "median_ms": 3582,
      "model": "aihorde/any",
      "passes": 1,
      "provider": "aihorde",
      "runs": 1
     },
     {
-     "mean_score": 0.729,
-     "median_ms": 305,
-     "model": "command-a-03-2025",
+     "mean_score": 0.747,
+     "median_ms": 1160,
+     "model": "gemma-4-26b-a4b-it",
      "passes": 1,
-     "provider": "cohere",
+     "provider": "google",
      "runs": 1
     },
     {
-     "mean_score": 0.728,
-     "median_ms": 635,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "mean_score": 0.746,
+     "median_ms": 3710,
+     "model": "pollinations/openai-fast",
      "passes": 1,
-     "provider": "ovh",
+     "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.728,
-     "median_ms": 835,
-     "model": "Qwen2.5-VL-72B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 911,
-     "model": "gpt-oss-20b",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 969,
-     "model": "DeepSeek-V4.1-Flash-1017",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1127,
-     "model": "Qwen3.8-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1243,
-     "model": "Olala-v1.0-summarise",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1257,
-     "model": "Olala-v1.0-mini-7A1B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1353,
-     "model": "Qwen3.6-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1461,
-     "model": "Qwen3.5-9B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1693,
-     "model": "Qwen3.5-397B-A17B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 1824,
-     "model": "Meta-Llama-3_3-70B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.707,
-     "median_ms": 13790,
-     "model": "command-r-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.682,
-     "median_ms": 183,
+     "mean_score": 0.744,
+     "median_ms": 248,
      "model": "openai/gpt-oss-20b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.672,
-     "median_ms": 307,
-     "model": "particle-ai/particle-1:free",
+     "mean_score": 0.743,
+     "median_ms": 786,
+     "model": "glm-4.6v-flash",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "zhipu",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 459,
-     "model": "liquid/lfm-3-1.7b:free",
+     "mean_score": 0.74,
+     "median_ms": 294,
+     "model": "command-a-03-2025",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 648,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "mean_score": 0.739,
+     "median_ms": 421,
+     "model": "Qwen2.5-VL-72B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 707,
-     "model": "google/gemma-4-31b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 740,
+     "model": "command-r-08-2024",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 885,
-     "model": "z-ai/glm-4.5-air:free",
+     "mean_score": 0.739,
+     "median_ms": 614,
+     "model": "DeepSeek-V4.1-Flash-1017",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1068,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "mean_score": 0.739,
+     "median_ms": 606,
+     "model": "Meta-Llama-3_3-70B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1119,
-     "model": "google/gemma-4-26b-a4b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 694,
+     "model": "Qwen3.8-27B",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.669,
-     "median_ms": 1920,
-     "model": "baidu/ernie-5.5-flash-preview:free",
+     "mean_score": 0.739,
+     "median_ms": 806,
+     "model": "gpt-oss-20b",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 2239,
+     "mean_score": 0.739,
+     "median_ms": 1018,
+     "model": "Olala-v1.0-mini-7A1B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1050,
+     "model": "Olala-v1.0-summarise",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1328,
+     "model": "Qwen3.6-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1418,
+     "model": "Qwen3.5-397B-A17B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1494,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1456,
+     "model": "Qwen3.5-9B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.73,
+     "median_ms": 8525,
+     "model": "glm-4.7-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.728,
+     "median_ms": 10022,
+     "model": "glm-4.5-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.703,
+     "median_ms": 305,
      "model": "qwen/qwen3-coder:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 48377,
-     "model": "gemini-3.5-flash",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.668,
-     "median_ms": 2800,
-     "model": "recursive/flint-v1.0:free",
+     "mean_score": 0.702,
+     "median_ms": 442,
+     "model": "google/gemma-4-26b-a4b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 2964,
-     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "mean_score": 0.702,
+     "median_ms": 531,
+     "model": "google/gemma-4-31b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 3063,
+     "mean_score": 0.702,
+     "median_ms": 551,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 692,
+     "model": "liquid/lfm-3-1.7b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 709,
      "model": "openrouter/free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.662,
-     "median_ms": 6032,
+     "mean_score": 0.702,
+     "median_ms": 761,
+     "model": "particle-ai/particle-1:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 799,
+     "model": "z-ai/glm-4.5-air:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 762,
+     "model": "baidu/ernie-5.5-flash-preview:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 845,
+     "model": "recursive/flint-v1.0:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 891,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.7,
+     "median_ms": 2072,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.699,
+     "median_ms": 2508,
      "model": "nvidia/nemotron-3.5-lightning:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     }
    ],
-   "routes_tried": 40
+   "routes_tried": 42
   },
   "listen_learn_json": {
    "excluded": [
@@ -2555,14 +2611,6 @@
     },
     {
      "failures": [
-      "The model `Qwen3-Embedding-8B` does not exist."
-     ],
-     "model": "Qwen3-Embedding-8B",
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "failures": [
       "[xkiro/mistralai/mistral-large-2512] [404]: Model \"mistralai/mistral-large-2512\" does not exist. (re"
      ],
      "model": "xkiro/mistralai/mistral-large-2512",
@@ -2570,332 +2618,348 @@
      "runs": 1
     }
    ],
-   "generated_at": "2026-11-27T15:27:10Z",
+   "generated_at": "2026-11-28T14:26:16Z",
    "generated_by": "health",
    "not_measured": [],
    "ranking": [
     {
-     "mean_score": 0.988,
-     "median_ms": 594,
+     "mean_score": 0.991,
+     "median_ms": 3710,
      "model": "pollinations/openai-fast",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.936,
-     "median_ms": 1667,
+     "mean_score": 0.968,
+     "median_ms": 985,
      "model": "kilo-auto/free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.918,
-     "median_ms": 305,
+     "mean_score": 0.929,
+     "median_ms": 294,
      "model": "command-a-03-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.882,
-     "median_ms": 803,
+     "mean_score": 0.913,
+     "median_ms": 658,
      "model": "nvidia/nemotron-3.5-super-vl:free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.859,
-     "median_ms": 2181,
+     "mean_score": 0.872,
+     "median_ms": 1016,
      "model": "command-a-reasoning-08-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.759,
-     "median_ms": 61624,
+     "mean_score": 0.854,
+     "median_ms": 3582,
      "model": "aihorde/any",
      "passes": 1,
      "provider": "aihorde",
      "runs": 1
     },
     {
-     "mean_score": 0.747,
-     "median_ms": 2158,
+     "mean_score": 0.825,
+     "median_ms": 1949,
      "model": "requesty/google/gemma-4-31b-it",
      "passes": 1,
      "provider": "requesty",
      "runs": 1
     },
     {
-     "mean_score": 0.746,
-     "median_ms": 3372,
+     "mean_score": 0.796,
+     "median_ms": 3046,
      "model": "bazaarlink/auto:free",
      "passes": 1,
      "provider": "bazaarlink",
      "runs": 1
     },
     {
-     "mean_score": 0.744,
-     "median_ms": 637,
+     "mean_score": 0.771,
+     "median_ms": 524,
      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
      "passes": 1,
      "provider": "cloudflare",
      "runs": 1
     },
     {
-     "mean_score": 0.743,
-     "median_ms": 487,
+     "mean_score": 0.752,
+     "median_ms": 495,
      "model": "pollinations/mistral",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.738,
-     "median_ms": 440,
-     "model": "openai/gpt-oss-120b",
-     "passes": 1,
-     "provider": "groq",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.736,
-     "median_ms": 7944,
+     "mean_score": 0.747,
+     "median_ms": 1160,
      "model": "gemma-4-26b-a4b-it",
      "passes": 1,
      "provider": "google",
      "runs": 1
     },
     {
-     "mean_score": 0.728,
-     "median_ms": 635,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 1144,
-     "model": "command-r-plus-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 835,
-     "model": "Qwen2.5-VL-72B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 13790,
-     "model": "command-r-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 911,
-     "model": "gpt-oss-20b",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 969,
-     "model": "DeepSeek-V4.1-Flash-1017",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1127,
-     "model": "Qwen3.8-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1243,
-     "model": "Olala-v1.0-summarise",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1257,
-     "model": "Olala-v1.0-mini-7A1B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1353,
-     "model": "Qwen3.6-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1461,
-     "model": "Qwen3.5-9B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1693,
-     "model": "Qwen3.5-397B-A17B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 1824,
-     "model": "Meta-Llama-3_3-70B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.71,
-     "median_ms": 183,
+     "mean_score": 0.744,
+     "median_ms": 248,
      "model": "openai/gpt-oss-20b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.672,
-     "median_ms": 307,
-     "model": "particle-ai/particle-1:free",
+     "mean_score": 0.744,
+     "median_ms": 437,
+     "model": "openai/gpt-oss-120b",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 459,
-     "model": "liquid/lfm-3-1.7b:free",
+     "mean_score": 0.743,
+     "median_ms": 786,
+     "model": "glm-4.6v-flash",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "zhipu",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 648,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "mean_score": 0.74,
+     "median_ms": 524,
+     "model": "command-r-plus-08-2024",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 707,
-     "model": "google/gemma-4-31b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 421,
+     "model": "Qwen2.5-VL-72B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 885,
-     "model": "z-ai/glm-4.5-air:free",
+     "mean_score": 0.739,
+     "median_ms": 740,
+     "model": "command-r-08-2024",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1068,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "mean_score": 0.739,
+     "median_ms": 614,
+     "model": "DeepSeek-V4.1-Flash-1017",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1119,
-     "model": "google/gemma-4-26b-a4b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 606,
+     "model": "Meta-Llama-3_3-70B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.669,
-     "median_ms": 1920,
-     "model": "baidu/ernie-5.5-flash-preview:free",
+     "mean_score": 0.739,
+     "median_ms": 694,
+     "model": "Qwen3.8-27B",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 2239,
+     "mean_score": 0.739,
+     "median_ms": 806,
+     "model": "gpt-oss-20b",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 1018,
+     "model": "Olala-v1.0-mini-7A1B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1050,
+     "model": "Olala-v1.0-summarise",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1328,
+     "model": "Qwen3.6-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1418,
+     "model": "Qwen3.5-397B-A17B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1494,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1456,
+     "model": "Qwen3.5-9B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.73,
+     "median_ms": 8525,
+     "model": "glm-4.7-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.728,
+     "median_ms": 10022,
+     "model": "glm-4.5-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.703,
+     "median_ms": 305,
      "model": "qwen/qwen3-coder:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 48377,
-     "model": "gemini-3.5-flash",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.668,
-     "median_ms": 2800,
-     "model": "recursive/flint-v1.0:free",
+     "mean_score": 0.702,
+     "median_ms": 442,
+     "model": "google/gemma-4-26b-a4b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 2964,
-     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "mean_score": 0.702,
+     "median_ms": 531,
+     "model": "google/gemma-4-31b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 3063,
+     "mean_score": 0.702,
+     "median_ms": 551,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 692,
+     "model": "liquid/lfm-3-1.7b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 709,
      "model": "openrouter/free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.662,
-     "median_ms": 6032,
+     "mean_score": 0.702,
+     "median_ms": 761,
+     "model": "particle-ai/particle-1:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 799,
+     "model": "z-ai/glm-4.5-air:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 762,
+     "model": "baidu/ernie-5.5-flash-preview:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 845,
+     "model": "recursive/flint-v1.0:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 891,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.7,
+     "median_ms": 2072,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.699,
+     "median_ms": 2508,
      "model": "nvidia/nemotron-3.5-lightning:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     }
    ],
-   "routes_tried": 40
+   "routes_tried": 42
   },
   "seed_judge_json": {
    "excluded": [
@@ -2917,14 +2981,6 @@
     },
     {
      "failures": [
-      "The model `Qwen3-Embedding-8B` does not exist."
-     ],
-     "model": "Qwen3-Embedding-8B",
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "failures": [
       "[xkiro/mistralai/mistral-large-2512] [404]: Model \"mistralai/mistral-large-2512\" does not exist. (re"
      ],
      "model": "xkiro/mistralai/mistral-large-2512",
@@ -2932,332 +2988,348 @@
      "runs": 1
     }
    ],
-   "generated_at": "2026-11-27T15:27:10Z",
+   "generated_at": "2026-11-28T14:26:16Z",
    "generated_by": "health",
    "not_measured": [],
    "ranking": [
     {
-     "mean_score": 0.946,
-     "median_ms": 305,
+     "mean_score": 0.985,
+     "median_ms": 294,
      "model": "command-a-03-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.906,
-     "median_ms": 183,
+     "mean_score": 0.961,
+     "median_ms": 248,
      "model": "openai/gpt-oss-20b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.88,
-     "median_ms": 1667,
+     "mean_score": 0.94,
+     "median_ms": 985,
      "model": "kilo-auto/free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.861,
-     "median_ms": 1144,
+     "mean_score": 0.9,
+     "median_ms": 524,
      "model": "command-r-plus-08-2024",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.85,
-     "median_ms": 440,
+     "mean_score": 0.877,
+     "median_ms": 437,
      "model": "openai/gpt-oss-120b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.848,
-     "median_ms": 594,
+     "mean_score": 0.851,
+     "median_ms": 3710,
      "model": "pollinations/openai-fast",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.798,
-     "median_ms": 803,
+     "mean_score": 0.829,
+     "median_ms": 658,
      "model": "nvidia/nemotron-3.5-super-vl:free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.775,
-     "median_ms": 2181,
+     "mean_score": 0.788,
+     "median_ms": 1016,
      "model": "command-a-reasoning-08-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.747,
-     "median_ms": 2158,
+     "mean_score": 0.769,
+     "median_ms": 1949,
      "model": "requesty/google/gemma-4-31b-it",
      "passes": 1,
      "provider": "requesty",
      "runs": 1
     },
     {
-     "mean_score": 0.746,
-     "median_ms": 3372,
-     "model": "bazaarlink/auto:free",
-     "passes": 1,
-     "provider": "bazaarlink",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.744,
-     "median_ms": 637,
-     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-     "passes": 1,
-     "provider": "cloudflare",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.743,
-     "median_ms": 487,
+     "mean_score": 0.752,
+     "median_ms": 495,
      "model": "pollinations/mistral",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.736,
-     "median_ms": 7944,
-     "model": "gemma-4-26b-a4b-it",
+     "mean_score": 0.75,
+     "median_ms": 524,
+     "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
      "passes": 1,
-     "provider": "google",
+     "provider": "cloudflare",
      "runs": 1
     },
     {
-     "mean_score": 0.728,
-     "median_ms": 635,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 835,
-     "model": "Qwen2.5-VL-72B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 911,
-     "model": "gpt-oss-20b",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 969,
-     "model": "DeepSeek-V4.1-Flash-1017",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1127,
-     "model": "Qwen3.8-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1243,
-     "model": "Olala-v1.0-summarise",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1257,
-     "model": "Olala-v1.0-mini-7A1B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1353,
-     "model": "Qwen3.6-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1461,
-     "model": "Qwen3.5-9B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1693,
-     "model": "Qwen3.5-397B-A17B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 1824,
-     "model": "Meta-Llama-3_3-70B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.707,
-     "median_ms": 13790,
-     "model": "command-r-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.675,
-     "median_ms": 61624,
+     "mean_score": 0.749,
+     "median_ms": 3582,
      "model": "aihorde/any",
      "passes": 1,
      "provider": "aihorde",
      "runs": 1
     },
     {
-     "mean_score": 0.672,
-     "median_ms": 307,
-     "model": "particle-ai/particle-1:free",
+     "mean_score": 0.747,
+     "median_ms": 1160,
+     "model": "gemma-4-26b-a4b-it",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "google",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 459,
-     "model": "liquid/lfm-3-1.7b:free",
+     "mean_score": 0.747,
+     "median_ms": 3046,
+     "model": "bazaarlink/auto:free",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "bazaarlink",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 648,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "mean_score": 0.743,
+     "median_ms": 786,
+     "model": "glm-4.6v-flash",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "zhipu",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 707,
-     "model": "google/gemma-4-31b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 421,
+     "model": "Qwen2.5-VL-72B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 885,
-     "model": "z-ai/glm-4.5-air:free",
+     "mean_score": 0.739,
+     "median_ms": 740,
+     "model": "command-r-08-2024",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1068,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "mean_score": 0.739,
+     "median_ms": 614,
+     "model": "DeepSeek-V4.1-Flash-1017",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1119,
-     "model": "google/gemma-4-26b-a4b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 606,
+     "model": "Meta-Llama-3_3-70B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.669,
-     "median_ms": 1920,
-     "model": "baidu/ernie-5.5-flash-preview:free",
+     "mean_score": 0.739,
+     "median_ms": 694,
+     "model": "Qwen3.8-27B",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 2239,
+     "mean_score": 0.739,
+     "median_ms": 806,
+     "model": "gpt-oss-20b",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 1018,
+     "model": "Olala-v1.0-mini-7A1B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1050,
+     "model": "Olala-v1.0-summarise",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1328,
+     "model": "Qwen3.6-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1418,
+     "model": "Qwen3.5-397B-A17B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1494,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1456,
+     "model": "Qwen3.5-9B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.73,
+     "median_ms": 8525,
+     "model": "glm-4.7-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.728,
+     "median_ms": 10022,
+     "model": "glm-4.5-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.703,
+     "median_ms": 305,
      "model": "qwen/qwen3-coder:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 48377,
-     "model": "gemini-3.5-flash",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.668,
-     "median_ms": 2800,
-     "model": "recursive/flint-v1.0:free",
+     "mean_score": 0.702,
+     "median_ms": 442,
+     "model": "google/gemma-4-26b-a4b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 2964,
-     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "mean_score": 0.702,
+     "median_ms": 531,
+     "model": "google/gemma-4-31b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 3063,
+     "mean_score": 0.702,
+     "median_ms": 551,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 692,
+     "model": "liquid/lfm-3-1.7b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 709,
      "model": "openrouter/free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.662,
-     "median_ms": 6032,
+     "mean_score": 0.702,
+     "median_ms": 761,
+     "model": "particle-ai/particle-1:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 799,
+     "model": "z-ai/glm-4.5-air:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 762,
+     "model": "baidu/ernie-5.5-flash-preview:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 845,
+     "model": "recursive/flint-v1.0:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 891,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.7,
+     "median_ms": 2072,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.699,
+     "median_ms": 2508,
      "model": "nvidia/nemotron-3.5-lightning:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     }
    ],
-   "routes_tried": 40
+   "routes_tried": 42
   },
   "seo_lens_json": {
    "excluded": [
@@ -3279,14 +3351,6 @@
     },
     {
      "failures": [
-      "The model `Qwen3-Embedding-8B` does not exist."
-     ],
-     "model": "Qwen3-Embedding-8B",
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "failures": [
       "[xkiro/mistralai/mistral-large-2512] [404]: Model \"mistralai/mistral-large-2512\" does not exist. (re"
      ],
      "model": "xkiro/mistralai/mistral-large-2512",
@@ -3294,332 +3358,348 @@
      "runs": 1
     }
    ],
-   "generated_at": "2026-11-27T15:27:10Z",
+   "generated_at": "2026-11-28T14:26:16Z",
    "generated_by": "health",
    "not_measured": [],
    "ranking": [
     {
-     "mean_score": 0.988,
-     "median_ms": 594,
+     "mean_score": 0.991,
+     "median_ms": 3710,
      "model": "pollinations/openai-fast",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.938,
-     "median_ms": 803,
+     "mean_score": 0.969,
+     "median_ms": 658,
      "model": "nvidia/nemotron-3.5-super-vl:free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.88,
-     "median_ms": 1667,
+     "mean_score": 0.94,
+     "median_ms": 985,
      "model": "kilo-auto/free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.879,
-     "median_ms": 3372,
+     "mean_score": 0.908,
+     "median_ms": 3046,
      "model": "bazaarlink/auto:free",
      "passes": 1,
      "provider": "bazaarlink",
      "runs": 1
     },
     {
-     "mean_score": 0.85,
-     "median_ms": 440,
+     "mean_score": 0.877,
+     "median_ms": 437,
      "model": "openai/gpt-oss-120b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.812,
-     "median_ms": 13790,
+     "mean_score": 0.844,
+     "median_ms": 740,
      "model": "command-r-08-2024",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.747,
-     "median_ms": 2158,
+     "mean_score": 0.825,
+     "median_ms": 1949,
      "model": "requesty/google/gemma-4-31b-it",
      "passes": 1,
      "provider": "requesty",
      "runs": 1
     },
     {
-     "mean_score": 0.744,
-     "median_ms": 637,
+     "mean_score": 0.799,
+     "median_ms": 524,
      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
      "passes": 1,
      "provider": "cloudflare",
      "runs": 1
     },
     {
-     "mean_score": 0.743,
-     "median_ms": 487,
+     "mean_score": 0.773,
+     "median_ms": 495,
      "model": "pollinations/mistral",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.736,
-     "median_ms": 7944,
-     "model": "gemma-4-26b-a4b-it",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.729,
-     "median_ms": 305,
-     "model": "command-a-03-2025",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 635,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 1144,
-     "model": "command-r-plus-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 835,
-     "model": "Qwen2.5-VL-72B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 911,
-     "model": "gpt-oss-20b",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 969,
-     "model": "DeepSeek-V4.1-Flash-1017",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1127,
-     "model": "Qwen3.8-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1243,
-     "model": "Olala-v1.0-summarise",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1257,
-     "model": "Olala-v1.0-mini-7A1B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1353,
-     "model": "Qwen3.6-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1461,
-     "model": "Qwen3.5-9B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1693,
-     "model": "Qwen3.5-397B-A17B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 1824,
-     "model": "Meta-Llama-3_3-70B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 2181,
-     "model": "command-a-reasoning-08-2025",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.703,
-     "median_ms": 61624,
+     "mean_score": 0.749,
+     "median_ms": 3582,
      "model": "aihorde/any",
      "passes": 1,
      "provider": "aihorde",
      "runs": 1
     },
     {
-     "mean_score": 0.682,
-     "median_ms": 183,
+     "mean_score": 0.747,
+     "median_ms": 1160,
+     "model": "gemma-4-26b-a4b-it",
+     "passes": 1,
+     "provider": "google",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.744,
+     "median_ms": 248,
      "model": "openai/gpt-oss-20b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.672,
-     "median_ms": 307,
-     "model": "particle-ai/particle-1:free",
+     "mean_score": 0.743,
+     "median_ms": 786,
+     "model": "glm-4.6v-flash",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "zhipu",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 459,
-     "model": "liquid/lfm-3-1.7b:free",
+     "mean_score": 0.74,
+     "median_ms": 294,
+     "model": "command-a-03-2025",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 648,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "mean_score": 0.74,
+     "median_ms": 524,
+     "model": "command-r-plus-08-2024",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 707,
-     "model": "google/gemma-4-31b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 421,
+     "model": "Qwen2.5-VL-72B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 885,
-     "model": "z-ai/glm-4.5-air:free",
+     "mean_score": 0.739,
+     "median_ms": 614,
+     "model": "DeepSeek-V4.1-Flash-1017",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1068,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "mean_score": 0.739,
+     "median_ms": 606,
+     "model": "Meta-Llama-3_3-70B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1119,
-     "model": "google/gemma-4-26b-a4b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 694,
+     "model": "Qwen3.8-27B",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.669,
-     "median_ms": 1920,
-     "model": "baidu/ernie-5.5-flash-preview:free",
+     "mean_score": 0.739,
+     "median_ms": 806,
+     "model": "gpt-oss-20b",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 2239,
+     "mean_score": 0.739,
+     "median_ms": 1016,
+     "model": "command-a-reasoning-08-2025",
+     "passes": 1,
+     "provider": "cohere",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 1018,
+     "model": "Olala-v1.0-mini-7A1B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1050,
+     "model": "Olala-v1.0-summarise",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1328,
+     "model": "Qwen3.6-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1418,
+     "model": "Qwen3.5-397B-A17B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1494,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1456,
+     "model": "Qwen3.5-9B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.73,
+     "median_ms": 8525,
+     "model": "glm-4.7-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.728,
+     "median_ms": 10022,
+     "model": "glm-4.5-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.703,
+     "median_ms": 305,
      "model": "qwen/qwen3-coder:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 48377,
-     "model": "gemini-3.5-flash",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.668,
-     "median_ms": 2800,
-     "model": "recursive/flint-v1.0:free",
+     "mean_score": 0.702,
+     "median_ms": 442,
+     "model": "google/gemma-4-26b-a4b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 2964,
-     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "mean_score": 0.702,
+     "median_ms": 531,
+     "model": "google/gemma-4-31b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 3063,
+     "mean_score": 0.702,
+     "median_ms": 551,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 692,
+     "model": "liquid/lfm-3-1.7b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 709,
      "model": "openrouter/free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.662,
-     "median_ms": 6032,
+     "mean_score": 0.702,
+     "median_ms": 761,
+     "model": "particle-ai/particle-1:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 799,
+     "model": "z-ai/glm-4.5-air:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 762,
+     "model": "baidu/ernie-5.5-flash-preview:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 845,
+     "model": "recursive/flint-v1.0:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 891,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.7,
+     "median_ms": 2072,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.699,
+     "median_ms": 2508,
      "model": "nvidia/nemotron-3.5-lightning:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     }
    ],
-   "routes_tried": 40
+   "routes_tried": 42
   },
   "story_extract_json": {
    "excluded": [
@@ -3641,14 +3721,6 @@
     },
     {
      "failures": [
-      "The model `Qwen3-Embedding-8B` does not exist."
-     ],
-     "model": "Qwen3-Embedding-8B",
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "failures": [
       "[xkiro/mistralai/mistral-large-2512] [404]: Model \"mistralai/mistral-large-2512\" does not exist. (re"
      ],
      "model": "xkiro/mistralai/mistral-large-2512",
@@ -3656,332 +3728,348 @@
      "runs": 1
     }
    ],
-   "generated_at": "2026-11-27T15:27:10Z",
+   "generated_at": "2026-11-28T14:26:16Z",
    "generated_by": "health",
    "not_measured": [],
    "ranking": [
     {
-     "mean_score": 0.989,
-     "median_ms": 637,
+     "mean_score": 0.995,
+     "median_ms": 524,
      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
      "passes": 1,
      "provider": "cloudflare",
      "runs": 1
     },
     {
-     "mean_score": 0.924,
-     "median_ms": 13790,
+     "mean_score": 0.956,
+     "median_ms": 740,
      "model": "command-r-08-2024",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.918,
-     "median_ms": 305,
+     "mean_score": 0.929,
+     "median_ms": 294,
      "model": "command-a-03-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.887,
-     "median_ms": 2181,
+     "mean_score": 0.9,
+     "median_ms": 1016,
      "model": "command-a-reasoning-08-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.826,
-     "median_ms": 803,
+     "mean_score": 0.885,
+     "median_ms": 658,
      "model": "nvidia/nemotron-3.5-super-vl:free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.796,
-     "median_ms": 1667,
+     "mean_score": 0.856,
+     "median_ms": 985,
      "model": "kilo-auto/free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.787,
-     "median_ms": 61624,
+     "mean_score": 0.826,
+     "median_ms": 3582,
      "model": "aihorde/any",
      "passes": 1,
      "provider": "aihorde",
      "runs": 1
     },
     {
-     "mean_score": 0.768,
-     "median_ms": 2158,
+     "mean_score": 0.797,
+     "median_ms": 1949,
      "model": "requesty/google/gemma-4-31b-it",
      "passes": 1,
      "provider": "requesty",
      "runs": 1
     },
     {
-     "mean_score": 0.746,
-     "median_ms": 3372,
+     "mean_score": 0.768,
+     "median_ms": 3046,
      "model": "bazaarlink/auto:free",
      "passes": 1,
      "provider": "bazaarlink",
      "runs": 1
     },
     {
-     "mean_score": 0.743,
-     "median_ms": 487,
+     "mean_score": 0.752,
+     "median_ms": 495,
      "model": "pollinations/mistral",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.743,
-     "median_ms": 594,
-     "model": "pollinations/openai-fast",
-     "passes": 1,
-     "provider": "pollinations",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.736,
-     "median_ms": 7944,
+     "mean_score": 0.747,
+     "median_ms": 1160,
      "model": "gemma-4-26b-a4b-it",
      "passes": 1,
      "provider": "google",
      "runs": 1
     },
     {
-     "mean_score": 0.728,
-     "median_ms": 635,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "mean_score": 0.746,
+     "median_ms": 3710,
+     "model": "pollinations/openai-fast",
      "passes": 1,
-     "provider": "ovh",
+     "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.728,
-     "median_ms": 1144,
-     "model": "command-r-plus-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 835,
-     "model": "Qwen2.5-VL-72B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 911,
-     "model": "gpt-oss-20b",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 969,
-     "model": "DeepSeek-V4.1-Flash-1017",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1127,
-     "model": "Qwen3.8-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1243,
-     "model": "Olala-v1.0-summarise",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1257,
-     "model": "Olala-v1.0-mini-7A1B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1353,
-     "model": "Qwen3.6-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1461,
-     "model": "Qwen3.5-9B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1693,
-     "model": "Qwen3.5-397B-A17B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 1824,
-     "model": "Meta-Llama-3_3-70B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.719,
-     "median_ms": 1119,
-     "model": "google/gemma-4-26b-a4b-it:free",
-     "passes": 1,
-     "provider": "openrouter",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.672,
-     "median_ms": 307,
-     "model": "particle-ai/particle-1:free",
-     "passes": 1,
-     "provider": "openrouter",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.671,
-     "median_ms": 459,
-     "model": "liquid/lfm-3-1.7b:free",
-     "passes": 1,
-     "provider": "openrouter",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.671,
-     "median_ms": 648,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
-     "passes": 1,
-     "provider": "openrouter",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.671,
-     "median_ms": 707,
-     "model": "google/gemma-4-31b-it:free",
-     "passes": 1,
-     "provider": "openrouter",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.671,
-     "median_ms": 885,
-     "model": "z-ai/glm-4.5-air:free",
-     "passes": 1,
-     "provider": "openrouter",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.67,
-     "median_ms": 1068,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-     "passes": 1,
-     "provider": "openrouter",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.669,
-     "median_ms": 1920,
-     "model": "baidu/ernie-5.5-flash-preview:free",
-     "passes": 1,
-     "provider": "openrouter",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.668,
-     "median_ms": 2239,
-     "model": "qwen/qwen3-coder:free",
-     "passes": 1,
-     "provider": "openrouter",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.668,
-     "median_ms": 48377,
-     "model": "gemini-3.5-flash",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.668,
-     "median_ms": 2800,
-     "model": "recursive/flint-v1.0:free",
-     "passes": 1,
-     "provider": "openrouter",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.667,
-     "median_ms": 2964,
-     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
-     "passes": 1,
-     "provider": "openrouter",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.667,
-     "median_ms": 3063,
-     "model": "openrouter/free",
-     "passes": 1,
-     "provider": "openrouter",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.662,
-     "median_ms": 6032,
-     "model": "nvidia/nemotron-3.5-lightning:free",
-     "passes": 1,
-     "provider": "openrouter",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.661,
-     "median_ms": 183,
+     "mean_score": 0.744,
+     "median_ms": 248,
      "model": "openai/gpt-oss-20b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.66,
-     "median_ms": 440,
+     "mean_score": 0.744,
+     "median_ms": 437,
      "model": "openai/gpt-oss-120b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
+    },
+    {
+     "mean_score": 0.743,
+     "median_ms": 786,
+     "model": "glm-4.6v-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.74,
+     "median_ms": 524,
+     "model": "command-r-plus-08-2024",
+     "passes": 1,
+     "provider": "cohere",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 421,
+     "model": "Qwen2.5-VL-72B-Instruct",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 614,
+     "model": "DeepSeek-V4.1-Flash-1017",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 606,
+     "model": "Meta-Llama-3_3-70B-Instruct",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 694,
+     "model": "Qwen3.8-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 806,
+     "model": "gpt-oss-20b",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 1018,
+     "model": "Olala-v1.0-mini-7A1B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1050,
+     "model": "Olala-v1.0-summarise",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1328,
+     "model": "Qwen3.6-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1418,
+     "model": "Qwen3.5-397B-A17B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1494,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1456,
+     "model": "Qwen3.5-9B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.73,
+     "median_ms": 8525,
+     "model": "glm-4.7-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.728,
+     "median_ms": 10022,
+     "model": "glm-4.5-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.703,
+     "median_ms": 305,
+     "model": "qwen/qwen3-coder:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 442,
+     "model": "google/gemma-4-26b-a4b-it:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 531,
+     "model": "google/gemma-4-31b-it:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 551,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 692,
+     "model": "liquid/lfm-3-1.7b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 709,
+     "model": "openrouter/free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 761,
+     "model": "particle-ai/particle-1:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 799,
+     "model": "z-ai/glm-4.5-air:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 762,
+     "model": "baidu/ernie-5.5-flash-preview:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 845,
+     "model": "recursive/flint-v1.0:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 891,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.7,
+     "median_ms": 2072,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.699,
+     "median_ms": 2508,
+     "model": "nvidia/nemotron-3.5-lightning:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
     }
    ],
-   "routes_tried": 40
+   "routes_tried": 42
   },
   "story_review_json": {
    "excluded": [
@@ -4003,14 +4091,6 @@
     },
     {
      "failures": [
-      "The model `Qwen3-Embedding-8B` does not exist."
-     ],
-     "model": "Qwen3-Embedding-8B",
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "failures": [
       "[xkiro/mistralai/mistral-large-2512] [404]: Model \"mistralai/mistral-large-2512\" does not exist. (re"
      ],
      "model": "xkiro/mistralai/mistral-large-2512",
@@ -4018,332 +4098,348 @@
      "runs": 1
     }
    ],
-   "generated_at": "2026-11-27T15:27:10Z",
+   "generated_at": "2026-11-28T14:26:16Z",
    "generated_by": "health",
    "not_measured": [],
    "ranking": [
     {
-     "mean_score": 0.974,
-     "median_ms": 305,
+     "mean_score": 0.985,
+     "median_ms": 294,
      "model": "command-a-03-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.932,
-     "median_ms": 637,
+     "mean_score": 0.967,
+     "median_ms": 524,
      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
      "passes": 1,
      "provider": "cloudflare",
      "runs": 1
     },
     {
-     "mean_score": 0.878,
-     "median_ms": 183,
+     "mean_score": 0.933,
+     "median_ms": 248,
      "model": "openai/gpt-oss-20b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.859,
-     "median_ms": 2181,
+     "mean_score": 0.9,
+     "median_ms": 1016,
      "model": "command-a-reasoning-08-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.826,
-     "median_ms": 803,
+     "mean_score": 0.885,
+     "median_ms": 658,
      "model": "nvidia/nemotron-3.5-super-vl:free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.822,
-     "median_ms": 440,
+     "mean_score": 0.849,
+     "median_ms": 437,
      "model": "openai/gpt-oss-120b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.796,
-     "median_ms": 1667,
+     "mean_score": 0.828,
+     "median_ms": 985,
      "model": "kilo-auto/free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.749,
-     "median_ms": 1144,
+     "mean_score": 0.788,
+     "median_ms": 524,
      "model": "command-r-plus-08-2024",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.747,
-     "median_ms": 2158,
+     "mean_score": 0.769,
+     "median_ms": 1949,
      "model": "requesty/google/gemma-4-31b-it",
      "passes": 1,
      "provider": "requesty",
      "runs": 1
     },
     {
-     "mean_score": 0.746,
-     "median_ms": 3372,
-     "model": "bazaarlink/auto:free",
-     "passes": 1,
-     "provider": "bazaarlink",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.743,
-     "median_ms": 487,
+     "mean_score": 0.752,
+     "median_ms": 495,
      "model": "pollinations/mistral",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.743,
-     "median_ms": 594,
-     "model": "pollinations/openai-fast",
-     "passes": 1,
-     "provider": "pollinations",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.736,
-     "median_ms": 7944,
-     "model": "gemma-4-26b-a4b-it",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 635,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 835,
-     "model": "Qwen2.5-VL-72B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 911,
-     "model": "gpt-oss-20b",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 969,
-     "model": "DeepSeek-V4.1-Flash-1017",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1127,
-     "model": "Qwen3.8-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1243,
-     "model": "Olala-v1.0-summarise",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1257,
-     "model": "Olala-v1.0-mini-7A1B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1353,
-     "model": "Qwen3.6-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1461,
-     "model": "Qwen3.5-9B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1693,
-     "model": "Qwen3.5-397B-A17B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 1824,
-     "model": "Meta-Llama-3_3-70B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.707,
-     "median_ms": 13790,
-     "model": "command-r-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.703,
-     "median_ms": 61624,
+     "mean_score": 0.749,
+     "median_ms": 3582,
      "model": "aihorde/any",
      "passes": 1,
      "provider": "aihorde",
      "runs": 1
     },
     {
-     "mean_score": 0.672,
-     "median_ms": 307,
-     "model": "particle-ai/particle-1:free",
+     "mean_score": 0.747,
+     "median_ms": 1160,
+     "model": "gemma-4-26b-a4b-it",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "google",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 459,
-     "model": "liquid/lfm-3-1.7b:free",
+     "mean_score": 0.747,
+     "median_ms": 3046,
+     "model": "bazaarlink/auto:free",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "bazaarlink",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 648,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "mean_score": 0.746,
+     "median_ms": 3710,
+     "model": "pollinations/openai-fast",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 707,
-     "model": "google/gemma-4-31b-it:free",
+     "mean_score": 0.743,
+     "median_ms": 786,
+     "model": "glm-4.6v-flash",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "zhipu",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 885,
-     "model": "z-ai/glm-4.5-air:free",
+     "mean_score": 0.739,
+     "median_ms": 421,
+     "model": "Qwen2.5-VL-72B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1068,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "mean_score": 0.739,
+     "median_ms": 740,
+     "model": "command-r-08-2024",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1119,
-     "model": "google/gemma-4-26b-a4b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 614,
+     "model": "DeepSeek-V4.1-Flash-1017",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.669,
-     "median_ms": 1920,
-     "model": "baidu/ernie-5.5-flash-preview:free",
+     "mean_score": 0.739,
+     "median_ms": 606,
+     "model": "Meta-Llama-3_3-70B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 2239,
+     "mean_score": 0.739,
+     "median_ms": 694,
+     "model": "Qwen3.8-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 806,
+     "model": "gpt-oss-20b",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 1018,
+     "model": "Olala-v1.0-mini-7A1B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1050,
+     "model": "Olala-v1.0-summarise",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1328,
+     "model": "Qwen3.6-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1418,
+     "model": "Qwen3.5-397B-A17B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1494,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1456,
+     "model": "Qwen3.5-9B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.73,
+     "median_ms": 8525,
+     "model": "glm-4.7-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.728,
+     "median_ms": 10022,
+     "model": "glm-4.5-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.703,
+     "median_ms": 305,
      "model": "qwen/qwen3-coder:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 48377,
-     "model": "gemini-3.5-flash",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.668,
-     "median_ms": 2800,
-     "model": "recursive/flint-v1.0:free",
+     "mean_score": 0.702,
+     "median_ms": 442,
+     "model": "google/gemma-4-26b-a4b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 2964,
-     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "mean_score": 0.702,
+     "median_ms": 531,
+     "model": "google/gemma-4-31b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 3063,
+     "mean_score": 0.702,
+     "median_ms": 551,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 692,
+     "model": "liquid/lfm-3-1.7b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 709,
      "model": "openrouter/free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.662,
-     "median_ms": 6032,
+     "mean_score": 0.702,
+     "median_ms": 761,
+     "model": "particle-ai/particle-1:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 799,
+     "model": "z-ai/glm-4.5-air:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 762,
+     "model": "baidu/ernie-5.5-flash-preview:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 845,
+     "model": "recursive/flint-v1.0:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 891,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.7,
+     "median_ms": 2072,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.699,
+     "median_ms": 2508,
      "model": "nvidia/nemotron-3.5-lightning:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     }
    ],
-   "routes_tried": 40
+   "routes_tried": 42
   },
   "storyboard_json": {
    "excluded": [
@@ -4365,14 +4461,6 @@
     },
     {
      "failures": [
-      "The model `Qwen3-Embedding-8B` does not exist."
-     ],
-     "model": "Qwen3-Embedding-8B",
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "failures": [
       "[xkiro/mistralai/mistral-large-2512] [404]: Model \"mistralai/mistral-large-2512\" does not exist. (re"
      ],
      "model": "xkiro/mistralai/mistral-large-2512",
@@ -4380,332 +4468,348 @@
      "runs": 1
     }
    ],
-   "generated_at": "2026-11-27T15:27:10Z",
+   "generated_at": "2026-11-28T14:26:16Z",
    "generated_by": "health",
    "not_measured": [],
    "ranking": [
     {
-     "mean_score": 0.971,
-     "median_ms": 2181,
+     "mean_score": 0.984,
+     "median_ms": 1016,
      "model": "command-a-reasoning-08-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.882,
-     "median_ms": 803,
+     "mean_score": 0.969,
+     "median_ms": 658,
      "model": "nvidia/nemotron-3.5-super-vl:free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.871,
-     "median_ms": 61624,
+     "mean_score": 0.938,
+     "median_ms": 3582,
      "model": "aihorde/any",
      "passes": 1,
      "provider": "aihorde",
      "runs": 1
     },
     {
-     "mean_score": 0.852,
-     "median_ms": 1667,
+     "mean_score": 0.912,
+     "median_ms": 985,
      "model": "kilo-auto/free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.85,
-     "median_ms": 440,
+     "mean_score": 0.877,
+     "median_ms": 437,
      "model": "openai/gpt-oss-120b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.821,
-     "median_ms": 637,
+     "mean_score": 0.855,
+     "median_ms": 524,
      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
      "passes": 1,
      "provider": "cloudflare",
      "runs": 1
     },
     {
-     "mean_score": 0.778,
-     "median_ms": 305,
+     "mean_score": 0.817,
+     "median_ms": 294,
      "model": "command-a-03-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.766,
-     "median_ms": 183,
+     "mean_score": 0.793,
+     "median_ms": 248,
      "model": "openai/gpt-oss-20b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.749,
-     "median_ms": 1144,
+     "mean_score": 0.76,
+     "median_ms": 524,
      "model": "command-r-plus-08-2024",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.747,
-     "median_ms": 2158,
-     "model": "requesty/google/gemma-4-31b-it",
-     "passes": 1,
-     "provider": "requesty",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.746,
-     "median_ms": 3372,
-     "model": "bazaarlink/auto:free",
-     "passes": 1,
-     "provider": "bazaarlink",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.743,
-     "median_ms": 487,
+     "mean_score": 0.752,
+     "median_ms": 495,
      "model": "pollinations/mistral",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.743,
-     "median_ms": 594,
-     "model": "pollinations/openai-fast",
+     "mean_score": 0.748,
+     "median_ms": 1949,
+     "model": "requesty/google/gemma-4-31b-it",
      "passes": 1,
-     "provider": "pollinations",
+     "provider": "requesty",
      "runs": 1
     },
     {
-     "mean_score": 0.736,
-     "median_ms": 7944,
+     "mean_score": 0.747,
+     "median_ms": 1160,
      "model": "gemma-4-26b-a4b-it",
      "passes": 1,
      "provider": "google",
      "runs": 1
     },
     {
-     "mean_score": 0.728,
-     "median_ms": 635,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "mean_score": 0.747,
+     "median_ms": 3046,
+     "model": "bazaarlink/auto:free",
      "passes": 1,
-     "provider": "ovh",
+     "provider": "bazaarlink",
      "runs": 1
     },
     {
-     "mean_score": 0.728,
-     "median_ms": 835,
+     "mean_score": 0.746,
+     "median_ms": 3710,
+     "model": "pollinations/openai-fast",
+     "passes": 1,
+     "provider": "pollinations",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.743,
+     "median_ms": 786,
+     "model": "glm-4.6v-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 421,
      "model": "Qwen2.5-VL-72B-Instruct",
      "passes": 1,
      "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.728,
-     "median_ms": 911,
-     "model": "gpt-oss-20b",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 969,
-     "model": "DeepSeek-V4.1-Flash-1017",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1127,
-     "model": "Qwen3.8-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1243,
-     "model": "Olala-v1.0-summarise",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1257,
-     "model": "Olala-v1.0-mini-7A1B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1353,
-     "model": "Qwen3.6-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1461,
-     "model": "Qwen3.5-9B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1693,
-     "model": "Qwen3.5-397B-A17B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 1824,
-     "model": "Meta-Llama-3_3-70B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.707,
-     "median_ms": 13790,
+     "mean_score": 0.739,
+     "median_ms": 740,
      "model": "command-r-08-2024",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.672,
-     "median_ms": 307,
-     "model": "particle-ai/particle-1:free",
+     "mean_score": 0.739,
+     "median_ms": 614,
+     "model": "DeepSeek-V4.1-Flash-1017",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 459,
-     "model": "liquid/lfm-3-1.7b:free",
+     "mean_score": 0.739,
+     "median_ms": 606,
+     "model": "Meta-Llama-3_3-70B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 648,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "mean_score": 0.739,
+     "median_ms": 694,
+     "model": "Qwen3.8-27B",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 707,
-     "model": "google/gemma-4-31b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 806,
+     "model": "gpt-oss-20b",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 885,
-     "model": "z-ai/glm-4.5-air:free",
+     "mean_score": 0.739,
+     "median_ms": 1018,
+     "model": "Olala-v1.0-mini-7A1B",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1068,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "mean_score": 0.738,
+     "median_ms": 1050,
+     "model": "Olala-v1.0-summarise",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1119,
-     "model": "google/gemma-4-26b-a4b-it:free",
+     "mean_score": 0.738,
+     "median_ms": 1328,
+     "model": "Qwen3.6-27B",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.669,
-     "median_ms": 1920,
-     "model": "baidu/ernie-5.5-flash-preview:free",
+     "mean_score": 0.738,
+     "median_ms": 1418,
+     "model": "Qwen3.5-397B-A17B",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 2239,
+     "mean_score": 0.738,
+     "median_ms": 1494,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1456,
+     "model": "Qwen3.5-9B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.73,
+     "median_ms": 8525,
+     "model": "glm-4.7-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.728,
+     "median_ms": 10022,
+     "model": "glm-4.5-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.703,
+     "median_ms": 305,
      "model": "qwen/qwen3-coder:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 48377,
-     "model": "gemini-3.5-flash",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.668,
-     "median_ms": 2800,
-     "model": "recursive/flint-v1.0:free",
+     "mean_score": 0.702,
+     "median_ms": 442,
+     "model": "google/gemma-4-26b-a4b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 2964,
-     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "mean_score": 0.702,
+     "median_ms": 531,
+     "model": "google/gemma-4-31b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 3063,
+     "mean_score": 0.702,
+     "median_ms": 551,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 692,
+     "model": "liquid/lfm-3-1.7b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 709,
      "model": "openrouter/free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.662,
-     "median_ms": 6032,
+     "mean_score": 0.702,
+     "median_ms": 761,
+     "model": "particle-ai/particle-1:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 799,
+     "model": "z-ai/glm-4.5-air:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 762,
+     "model": "baidu/ernie-5.5-flash-preview:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 845,
+     "model": "recursive/flint-v1.0:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 891,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.7,
+     "median_ms": 2072,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.699,
+     "median_ms": 2508,
      "model": "nvidia/nemotron-3.5-lightning:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     }
    ],
-   "routes_tried": 40
+   "routes_tried": 42
   },
   "voice_creative_json": {
    "excluded": [
@@ -4727,14 +4831,6 @@
     },
     {
      "failures": [
-      "The model `Qwen3-Embedding-8B` does not exist."
-     ],
-     "model": "Qwen3-Embedding-8B",
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "failures": [
       "[xkiro/mistralai/mistral-large-2512] [404]: Model \"mistralai/mistral-large-2512\" does not exist. (re"
      ],
      "model": "xkiro/mistralai/mistral-large-2512",
@@ -4742,332 +4838,348 @@
      "runs": 1
     }
    ],
-   "generated_at": "2026-11-27T15:27:10Z",
+   "generated_at": "2026-11-28T14:26:16Z",
    "generated_by": "health",
    "not_measured": [],
    "ranking": [
     {
-     "mean_score": 0.988,
-     "median_ms": 594,
+     "mean_score": 0.991,
+     "median_ms": 3710,
      "model": "pollinations/openai-fast",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.943,
-     "median_ms": 2181,
+     "mean_score": 0.956,
+     "median_ms": 1016,
      "model": "command-a-reasoning-08-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.908,
-     "median_ms": 1667,
+     "mean_score": 0.94,
+     "median_ms": 985,
      "model": "kilo-auto/free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.882,
-     "median_ms": 803,
+     "mean_score": 0.913,
+     "median_ms": 658,
      "model": "nvidia/nemotron-3.5-super-vl:free",
      "passes": 1,
      "provider": "kilo",
      "runs": 1
     },
     {
-     "mean_score": 0.88,
-     "median_ms": 2158,
+     "mean_score": 0.881,
+     "median_ms": 1949,
      "model": "requesty/google/gemma-4-31b-it",
      "passes": 1,
      "provider": "requesty",
      "runs": 1
     },
     {
-     "mean_score": 0.806,
-     "median_ms": 305,
+     "mean_score": 0.845,
+     "median_ms": 294,
      "model": "command-a-03-2025",
      "passes": 1,
      "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.766,
-     "median_ms": 183,
+     "mean_score": 0.821,
+     "median_ms": 248,
      "model": "openai/gpt-oss-20b",
      "passes": 1,
      "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.746,
-     "median_ms": 3372,
+     "mean_score": 0.796,
+     "median_ms": 3046,
      "model": "bazaarlink/auto:free",
      "passes": 1,
      "provider": "bazaarlink",
      "runs": 1
     },
     {
-     "mean_score": 0.744,
-     "median_ms": 637,
+     "mean_score": 0.771,
+     "median_ms": 524,
      "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
      "passes": 1,
      "provider": "cloudflare",
      "runs": 1
     },
     {
-     "mean_score": 0.743,
-     "median_ms": 487,
+     "mean_score": 0.752,
+     "median_ms": 495,
      "model": "pollinations/mistral",
      "passes": 1,
      "provider": "pollinations",
      "runs": 1
     },
     {
-     "mean_score": 0.736,
-     "median_ms": 7944,
-     "model": "gemma-4-26b-a4b-it",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 635,
-     "model": "Mistral-Small-3.2-24B-Instruct-2506",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 1144,
-     "model": "command-r-plus-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 835,
-     "model": "Qwen2.5-VL-72B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 13790,
-     "model": "command-r-08-2024",
-     "passes": 1,
-     "provider": "cohere",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 911,
-     "model": "gpt-oss-20b",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.728,
-     "median_ms": 969,
-     "model": "DeepSeek-V4.1-Flash-1017",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1127,
-     "model": "Qwen3.8-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1243,
-     "model": "Olala-v1.0-summarise",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1257,
-     "model": "Olala-v1.0-mini-7A1B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1353,
-     "model": "Qwen3.6-27B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1461,
-     "model": "Qwen3.5-9B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.727,
-     "median_ms": 1693,
-     "model": "Qwen3.5-397B-A17B",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.726,
-     "median_ms": 1824,
-     "model": "Meta-Llama-3_3-70B-Instruct",
-     "passes": 1,
-     "provider": "ovh",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.703,
-     "median_ms": 61624,
+     "mean_score": 0.749,
+     "median_ms": 3582,
      "model": "aihorde/any",
      "passes": 1,
      "provider": "aihorde",
      "runs": 1
     },
     {
-     "mean_score": 0.672,
-     "median_ms": 307,
-     "model": "particle-ai/particle-1:free",
+     "mean_score": 0.747,
+     "median_ms": 1160,
+     "model": "gemma-4-26b-a4b-it",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "google",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 459,
-     "model": "liquid/lfm-3-1.7b:free",
+     "mean_score": 0.744,
+     "median_ms": 437,
+     "model": "openai/gpt-oss-120b",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "groq",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 648,
-     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "mean_score": 0.743,
+     "median_ms": 786,
+     "model": "glm-4.6v-flash",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "zhipu",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 707,
-     "model": "google/gemma-4-31b-it:free",
+     "mean_score": 0.74,
+     "median_ms": 524,
+     "model": "command-r-plus-08-2024",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.671,
-     "median_ms": 885,
-     "model": "z-ai/glm-4.5-air:free",
+     "mean_score": 0.739,
+     "median_ms": 421,
+     "model": "Qwen2.5-VL-72B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1068,
-     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "mean_score": 0.739,
+     "median_ms": 740,
+     "model": "command-r-08-2024",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "cohere",
      "runs": 1
     },
     {
-     "mean_score": 0.67,
-     "median_ms": 1119,
-     "model": "google/gemma-4-26b-a4b-it:free",
+     "mean_score": 0.739,
+     "median_ms": 614,
+     "model": "DeepSeek-V4.1-Flash-1017",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.669,
-     "median_ms": 1920,
-     "model": "baidu/ernie-5.5-flash-preview:free",
+     "mean_score": 0.739,
+     "median_ms": 606,
+     "model": "Meta-Llama-3_3-70B-Instruct",
      "passes": 1,
-     "provider": "openrouter",
+     "provider": "ovh",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 2239,
+     "mean_score": 0.739,
+     "median_ms": 694,
+     "model": "Qwen3.8-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 806,
+     "model": "gpt-oss-20b",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.739,
+     "median_ms": 1018,
+     "model": "Olala-v1.0-mini-7A1B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1050,
+     "model": "Olala-v1.0-summarise",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1328,
+     "model": "Qwen3.6-27B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1418,
+     "model": "Qwen3.5-397B-A17B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1494,
+     "model": "Mistral-Small-3.2-24B-Instruct-2506",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.738,
+     "median_ms": 1456,
+     "model": "Qwen3.5-9B",
+     "passes": 1,
+     "provider": "ovh",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.73,
+     "median_ms": 8525,
+     "model": "glm-4.7-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.728,
+     "median_ms": 10022,
+     "model": "glm-4.5-flash",
+     "passes": 1,
+     "provider": "zhipu",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.703,
+     "median_ms": 305,
      "model": "qwen/qwen3-coder:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.668,
-     "median_ms": 48377,
-     "model": "gemini-3.5-flash",
-     "passes": 1,
-     "provider": "google",
-     "runs": 1
-    },
-    {
-     "mean_score": 0.668,
-     "median_ms": 2800,
-     "model": "recursive/flint-v1.0:free",
+     "mean_score": 0.702,
+     "median_ms": 442,
+     "model": "google/gemma-4-26b-a4b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 2964,
-     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "mean_score": 0.702,
+     "median_ms": 531,
+     "model": "google/gemma-4-31b-it:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.667,
-     "median_ms": 3063,
+     "mean_score": 0.702,
+     "median_ms": 551,
+     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 692,
+     "model": "liquid/lfm-3-1.7b:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 709,
      "model": "openrouter/free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.662,
-     "median_ms": 6032,
-     "model": "nvidia/nemotron-3.5-lightning:free",
+     "mean_score": 0.702,
+     "median_ms": 761,
+     "model": "particle-ai/particle-1:free",
      "passes": 1,
      "provider": "openrouter",
      "runs": 1
     },
     {
-     "mean_score": 0.66,
-     "median_ms": 440,
-     "model": "openai/gpt-oss-120b",
+     "mean_score": 0.702,
+     "median_ms": 799,
+     "model": "z-ai/glm-4.5-air:free",
      "passes": 1,
-     "provider": "groq",
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 762,
+     "model": "baidu/ernie-5.5-flash-preview:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 845,
+     "model": "recursive/flint-v1.0:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.702,
+     "median_ms": 891,
+     "model": "nvidia/nemotron-3.5-super-vl:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.7,
+     "median_ms": 2072,
+     "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+     "passes": 1,
+     "provider": "openrouter",
+     "runs": 1
+    },
+    {
+     "mean_score": 0.699,
+     "median_ms": 2508,
+     "model": "nvidia/nemotron-3.5-lightning:free",
+     "passes": 1,
+     "provider": "openrouter",
      "runs": 1
     }
    ],
-   "routes_tried": 40
+   "routes_tried": 42
   }
  },
  "measured_at": "2026-11-26T05:02:41Z",

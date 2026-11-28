@@ -1,5 +1,5 @@
 {
- "at": "2026-11-27T15:27:10Z",
+ "at": "2026-11-28T14:26:16Z",
  "config": {
   "auto_update": true,
   "cost_guard_share": 0.1,
@@ -7,41 +7,23 @@
   "stale_days": 3
  },
  "discovered_passed": {
-  "openrouter": [
-   "baidu/ernie-5.5-flash-preview:free",
-   "liquid/lfm-3-1.7b:free",
-   "nvidia/nemotron-3.5-lightning:free",
-   "nvidia/nemotron-3.5-super-vl:free",
-   "particle-ai/particle-1:free",
-   "recursive/flint-v1.0:free"
-  ],
   "ovh": [
-   "Qwen3.5-397B-A17B",
-   "Qwen3.5-9B",
-   "Qwen3.6-27B",
-   "Qwen3.8-27B"
+   "DeepSeek-V4.1-Flash-1017",
+   "Meta-Llama-3_3-70B-Instruct",
+   "Olala-v1.0-mini-7A1B",
+   "Olala-v1.0-summarise",
+   "Qwen2.5-VL-72B-Instruct"
   ]
  },
  "flagged": [],
  "guards_left_out": {},
  "judge": {
-  "accepted": {
-   "competitor_ideas_json": [
-    "kilo/kilo-auto/free",
-    "pollinations/pollinations/openai-fast",
-    "cohere/command-a-reasoning-08-2025",
-    "kilo/nvidia/nemotron-3.5-super-vl:free",
-    "bazaarlink/bazaarlink/auto:free",
-    "groq/openai/gpt-oss-120b"
-   ]
-  },
-  "called": true,
-  "lanes": [
-   "competitor_ideas_json"
-  ],
-  "reasoning": "Ordered strictly by score, highest first. The top two are not actually tied (0.964 vs 0.960), so kilo/kilo-auto/free ranks first on its higher score.",
+  "accepted": {},
+  "called": false,
+  "lanes": [],
+  "reasoning": "",
   "rejected": {},
-  "reply": "{\"jobs\": {\"competitor_ideas_json\": [\"kilo/kilo-auto/free\", \"pollinations/pollinations/openai-fast\", \"cohere/command-a-reasoning-08-2025\", \"kilo/nvidia/nemotron-3.5-super-vl:free\", \"bazaarlink/bazaarlink/auto:free\", \"groq/openai/gpt-oss-120b\"]}, \"reason\": \"Ordered strictly by score, highest first. The top two are not actually tied (0.964 vs 0.960), so kilo/kilo-auto/free ranks first on its higher score.\"}"
+  "reply": ""
  },
  "judge_at": "2026-11-27",
  "lanes": {
@@ -185,7 +167,7 @@
   },
   "bazaarlink": {
    "added_free": 0,
-   "count": 628,
+   "count": 676,
    "kind": "gateway",
    "pinned_not_listed": []
   },
@@ -241,8 +223,8 @@
    ]
   },
   "openrouter": {
-   "added_free": 6,
-   "count": 441,
+   "added_free": 0,
+   "count": 440,
    "kind": "direct",
    "pinned_not_listed": [
     "qwen/qwen3-coder:free",
@@ -257,13 +239,13 @@
   },
   "pollinations": {
    "added_free": 0,
-   "count": 628,
+   "count": 676,
    "kind": "gateway",
    "pinned_not_listed": []
   },
   "requesty": {
    "added_free": 0,
-   "count": 628,
+   "count": 676,
    "kind": "gateway",
    "pinned_not_listed": [
     "requesty/google/gemma-4-31b-it"
@@ -271,7 +253,7 @@
   },
   "xkiro": {
    "added_free": 0,
-   "count": 628,
+   "count": 676,
    "kind": "gateway",
    "pinned_not_listed": []
   },
@@ -348,9 +330,9 @@
     "aihorde/any": {
      "class": "",
      "error": "",
-     "ms": 61624,
+     "ms": 3582,
      "ok": true,
-     "tokens": 620
+     "tokens": 8
     }
    }
   },
@@ -405,9 +387,9 @@
     "bazaarlink/auto:free": {
      "class": "",
      "error": "",
-     "ms": 3372,
+     "ms": 3046,
      "ok": true,
-     "tokens": 140
+     "tokens": 134
     }
    }
   },
@@ -416,7 +398,7 @@
     "@cf/meta/llama-3.3-70b-instruct-fp8-fast": {
      "class": "",
      "error": "",
-     "ms": 637,
+     "ms": 524,
      "not_in_live_list": true,
      "ok": true,
      "tokens": 44
@@ -428,7 +410,7 @@
     "command-a-03-2025": {
      "class": "",
      "error": "",
-     "ms": 305,
+     "ms": 294,
      "not_in_live_list": true,
      "ok": true,
      "tokens": 9
@@ -436,15 +418,15 @@
     "command-a-reasoning-08-2025": {
      "class": "",
      "error": "",
-     "ms": 2181,
+     "ms": 1016,
      "not_in_live_list": true,
      "ok": true,
-     "tokens": 102
+     "tokens": 105
     },
     "command-r-08-2024": {
      "class": "",
      "error": "",
-     "ms": 13790,
+     "ms": 740,
      "not_in_live_list": true,
      "ok": true,
      "tokens": 9
@@ -452,7 +434,7 @@
     "command-r-plus-08-2024": {
      "class": "",
      "error": "",
-     "ms": 1144,
+     "ms": 524,
      "not_in_live_list": true,
      "ok": true,
      "tokens": 9
@@ -462,16 +444,16 @@
   "google": {
    "models": {
     "gemini-3.5-flash": {
-     "class": "",
-     "error": "",
-     "ms": 48377,
-     "ok": true,
-     "tokens": 9
+     "class": "timeout",
+     "error": "All 1 routed attempt(s) failed with upstream provider errors (timeout ×1). This is a provider-side failure, not a problem with your request; retry, or check provider status. Attempt trail: google/gemi",
+     "ms": 0,
+     "ok": false,
+     "tokens": 0
     },
     "gemma-4-26b-a4b-it": {
      "class": "",
      "error": "",
-     "ms": 7944,
+     "ms": 1160,
      "ok": true,
      "tokens": 9
     },
@@ -489,7 +471,7 @@
     "openai/gpt-oss-120b": {
      "class": "",
      "error": "",
-     "ms": 440,
+     "ms": 437,
      "not_in_live_list": true,
      "ok": true,
      "tokens": 117
@@ -497,7 +479,7 @@
     "openai/gpt-oss-20b": {
      "class": "",
      "error": "",
-     "ms": 183,
+     "ms": 248,
      "not_in_live_list": true,
      "ok": true,
      "tokens": 109
@@ -509,7 +491,7 @@
     "kilo-auto/free": {
      "class": "",
      "error": "",
-     "ms": 1667,
+     "ms": 985,
      "not_in_live_list": true,
      "ok": true,
      "tokens": 66
@@ -517,10 +499,10 @@
     "nvidia/nemotron-3.5-super-vl:free": {
      "class": "",
      "error": "",
-     "ms": 803,
+     "ms": 658,
      "not_in_live_list": true,
      "ok": true,
-     "tokens": 50
+     "tokens": 62
     }
    }
   },
@@ -559,95 +541,95 @@
     "baidu/ernie-5.5-flash-preview:free": {
      "class": "",
      "error": "",
-     "ms": 1920,
+     "ms": 762,
      "ok": true,
-     "tokens": 198
+     "tokens": 80
     },
     "google/gemma-4-26b-a4b-it:free": {
      "class": "",
      "error": "",
-     "ms": 1119,
+     "ms": 442,
      "ok": true,
-     "tokens": 60
+     "tokens": 57
     },
     "google/gemma-4-31b-it:free": {
      "class": "",
      "error": "",
-     "ms": 707,
+     "ms": 531,
      "ok": true,
-     "tokens": 9
+     "tokens": 92
     },
     "liquid/lfm-3-1.7b:free": {
      "class": "",
      "error": "",
-     "ms": 459,
+     "ms": 692,
      "ok": true,
-     "tokens": 9
+     "tokens": 40
     },
     "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {
      "class": "",
      "error": "",
-     "ms": 2964,
+     "ms": 2072,
      "ok": true,
-     "tokens": 40
+     "tokens": 37
     },
     "nvidia/nemotron-3-ultra-550b-a55b:free": {
      "class": "",
      "error": "",
-     "ms": 1068,
+     "ms": 551,
      "ok": true,
-     "tokens": 146
+     "tokens": 57
     },
     "nvidia/nemotron-3.5-lightning:free": {
      "class": "",
      "error": "",
-     "ms": 6032,
+     "ms": 2508,
      "ok": true,
-     "tokens": 39
+     "tokens": 40
     },
     "nvidia/nemotron-3.5-super-vl:free": {
      "class": "",
      "error": "",
-     "ms": 648,
+     "ms": 891,
      "ok": true,
-     "tokens": 66
+     "tokens": 146
     },
     "openrouter/free": {
      "class": "",
      "error": "",
-     "ms": 3063,
+     "ms": 709,
      "ok": true,
-     "tokens": 37
+     "tokens": 80
     },
     "particle-ai/particle-1:free": {
      "class": "",
      "error": "",
-     "ms": 307,
+     "ms": 761,
      "ok": true,
-     "tokens": 92
+     "tokens": 40
     },
     "qwen/qwen3-coder:free": {
      "class": "",
      "error": "",
-     "ms": 2239,
+     "ms": 305,
      "not_in_live_list": true,
      "ok": true,
-     "tokens": 41
+     "tokens": 102
     },
     "recursive/flint-v1.0:free": {
      "class": "",
      "error": "",
-     "ms": 2800,
+     "ms": 845,
      "ok": true,
-     "tokens": 40
+     "tokens": 102
     },
     "z-ai/glm-4.5-air:free": {
      "class": "",
      "error": "",
-     "ms": 885,
+     "ms": 799,
      "not_in_live_list": true,
      "ok": true,
-     "tokens": 134
+     "tokens": 145
     }
    }
   },
@@ -656,35 +638,35 @@
     "DeepSeek-V4.1-Flash-1017": {
      "class": "",
      "error": "",
-     "ms": 969,
+     "ms": 614,
      "ok": true,
      "tokens": 50
     },
     "Meta-Llama-3_3-70B-Instruct": {
      "class": "",
      "error": "",
-     "ms": 1824,
+     "ms": 606,
      "ok": true,
      "tokens": 44
     },
     "Mistral-Small-3.2-24B-Instruct-2506": {
      "class": "",
      "error": "",
-     "ms": 635,
+     "ms": 1494,
      "ok": true,
      "tokens": 12
     },
     "Olala-v1.0-mini-7A1B": {
      "class": "",
      "error": "",
-     "ms": 1257,
+     "ms": 1018,
      "ok": true,
      "tokens": 355
     },
     "Olala-v1.0-summarise": {
      "class": "",
      "error": "",
-     "ms": 1243,
+     "ms": 1050,
      "ok": true,
      "tokens": 363
     },
@@ -698,49 +680,42 @@
     "Qwen2.5-VL-72B-Instruct": {
      "class": "",
      "error": "",
-     "ms": 835,
+     "ms": 421,
      "ok": true,
      "tokens": 28
-    },
-    "Qwen3-Embedding-8B": {
-     "class": "dead",
-     "error": "The model `Qwen3-Embedding-8B` does not exist.",
-     "ms": 0,
-     "ok": false,
-     "tokens": 0
     },
     "Qwen3.5-397B-A17B": {
      "class": "",
      "error": "",
-     "ms": 1693,
+     "ms": 1418,
      "ok": true,
-     "tokens": 187
+     "tokens": 161
     },
     "Qwen3.5-9B": {
      "class": "",
      "error": "",
-     "ms": 1461,
+     "ms": 1456,
      "ok": true,
      "tokens": 113
     },
     "Qwen3.6-27B": {
      "class": "",
      "error": "",
-     "ms": 1353,
+     "ms": 1328,
      "ok": true,
      "tokens": 131
     },
     "Qwen3.8-27B": {
      "class": "",
      "error": "",
-     "ms": 1127,
+     "ms": 694,
      "ok": true,
-     "tokens": 91
+     "tokens": 89
     },
     "gpt-oss-20b": {
      "class": "",
      "error": "",
-     "ms": 911,
+     "ms": 806,
      "ok": true,
      "tokens": 105
     }
@@ -751,16 +726,16 @@
     "pollinations/mistral": {
      "class": "",
      "error": "",
-     "ms": 487,
+     "ms": 495,
      "ok": true,
      "tokens": 75
     },
     "pollinations/openai-fast": {
      "class": "",
      "error": "",
-     "ms": 594,
+     "ms": 3710,
      "ok": true,
-     "tokens": 87
+     "tokens": 23
     }
    }
   },
@@ -769,7 +744,7 @@
     "requesty/google/gemma-4-31b-it": {
      "class": "",
      "error": "",
-     "ms": 2158,
+     "ms": 1949,
      "not_in_live_list": true,
      "ok": true,
      "tokens": 43
@@ -790,25 +765,25 @@
   "zhipu": {
    "models": {
     "glm-4.5-flash": {
-     "class": "rate_limited",
-     "error": "All models rate-limited after 1 attempt. Soonest cooldown reset ~17s. Attempt trail: zhipu/glm-4.5-flash key1: rate_limited. Last error: Zhipu AI API error 429: 该模型当前访问量过大，请您稍后再试. Failover stopped bec",
-     "ms": 0,
-     "ok": false,
-     "tokens": 0
+     "class": "",
+     "error": "",
+     "ms": 10022,
+     "ok": true,
+     "tokens": 183
     },
     "glm-4.6v-flash": {
-     "class": "rate_limited",
-     "error": "All models rate-limited after 1 attempt. Soonest cooldown reset ~71s. Attempt trail: zhipu/glm-4.6v-flash key1: rate_limited. Last error: Zhipu AI API error 429: 该模型当前访问量过大，请您稍后再试. Failover stopped be",
-     "ms": 0,
-     "ok": false,
-     "tokens": 0
+     "class": "",
+     "error": "",
+     "ms": 786,
+     "ok": true,
+     "tokens": 48
     },
     "glm-4.7-flash": {
-     "class": "rate_limited",
-     "error": "All models rate-limited after 1 attempt. Soonest cooldown reset ~72s. Attempt trail: zhipu/glm-4.7-flash key1: rate_limited. Last error: Zhipu AI API error 429: 该模型当前访问量过大，请您稍后再试. Failover stopped bec",
-     "ms": 0,
-     "ok": false,
-     "tokens": 0
+     "class": "",
+     "error": "",
+     "ms": 8525,
+     "ok": true,
+     "tokens": 124
     }
    }
   }
@@ -816,7 +791,6 @@
  "swaps": [
   "dropped dead anyapi/dots-studio/dots-3-note-preview:free (dead: Not Found)",
   "dropped dead nvidia/google/gemma-4-31b-it (dead: Every routed provider reports the model as not found or remo)",
-  "dropped dead ovh/Qwen3-Embedding-8B (dead: The model `Qwen3-Embedding-8B` does not exist.)",
   "dropped dead xkiro/xkiro/mistralai/mistral-large-2512 (dead: [xkiro/mistralai/mistral-large-2512] [404]: Model \"mistralai)"
  ]
 }
