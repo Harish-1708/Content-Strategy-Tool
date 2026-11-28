@@ -4385,61 +4385,81 @@
     "by_lane": {
      "story_extract_json": {
       "cost_usd": 0.0,
-      "requests": 10,
-      "tokens": 22811
+      "requests": 20,
+      "tokens": 44285
      }
     },
     "cost_usd": 0.0,
     "failures": 0,
-    "latency_ms": 37581,
-    "requests": 10,
-    "tokens_in": 20464,
-    "tokens_out": 2347
+    "latency_ms": 75571,
+    "requests": 20,
+    "tokens_in": 39528,
+    "tokens_out": 4757
    },
    "cohere": {
     "by_lane": {
      "story_review_json": {
       "cost_usd": 0.0,
-      "requests": 10,
-      "tokens": 4706
+      "requests": 19,
+      "tokens": 9327
      }
     },
     "cost_usd": 0.0,
     "failures": 0,
-    "latency_ms": 10935,
-    "requests": 10,
-    "tokens_in": 3658,
-    "tokens_out": 1048
+    "latency_ms": 22976,
+    "requests": 19,
+    "tokens_in": 7127,
+    "tokens_out": 2200
+   },
+   "groq": {
+    "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 10156
+     }
+    },
+    "cost_usd": 0.0,
+    "failures": 0,
+    "latency_ms": 6582,
+    "requests": 1,
+    "tokens_in": 4572,
+    "tokens_out": 5584
    },
    "kilo": {
     "by_lane": {
+     "brief_json": {
+      "cost_usd": 0.0,
+      "requests": 1,
+      "tokens": 4474
+     },
      "conflict_check_json": {
       "cost_usd": 0.0,
-      "requests": 4,
-      "tokens": 6313
+      "requests": 8,
+      "tokens": 15413
      }
     },
     "cost_usd": 0.0,
     "failures": 0,
-    "latency_ms": 48048,
-    "requests": 4,
-    "tokens_in": 3034,
-    "tokens_out": 3279
+    "latency_ms": 94359,
+    "requests": 9,
+    "tokens_in": 9197,
+    "tokens_out": 10690
    },
    "pollinations": {
     "by_lane": {
      "conflict_check_json": {
       "cost_usd": 0.0,
-      "requests": 5,
-      "tokens": 14434
+      "requests": 10,
+      "tokens": 32093
      }
     },
     "cost_usd": 0.0,
     "failures": 0,
-    "latency_ms": 47003,
-    "requests": 5,
-    "tokens_in": 2780,
-    "tokens_out": 11654
+    "latency_ms": 112660,
+    "requests": 10,
+    "tokens_in": 6041,
+    "tokens_out": 26052
    }
   }
  }

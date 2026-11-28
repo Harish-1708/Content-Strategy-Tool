@@ -1,0 +1,145 @@
+{
+ "brief": {
+  "audience": "Men who claim they want nothing and the women who buy gifts for them",
+  "concepts": [
+   {
+    "alt_hook": "The robe he keeps on",
+    "angle": "Gift that fits his style",
+    "awareness": "Cold",
+    "clips": [],
+    "cta": "Shop the DudeRobe",
+    "format": "static image 4:5",
+    "hook": "The gift he actually wears",
+    "name": "Gift He Actually Wears",
+    "never": [
+     "Use exclamation marks",
+     "Use em dash"
+    ],
+    "product": "best-seat-in-the-house-tee-ash-black",
+    "quote": {
+     "attribution": "Steven L, 2026-11-23 (judge.me widget on the product page, 5 stars, RV-e1616de3)",
+     "review_id": "RV-e1616de3",
+     "text": "Very comfortable. Same high quality as the robe."
+    },
+    "reference_links": [
+     {
+      "id": "IB-0341",
+      "url": "https://www.instagram.com/p/Dfm49Eegs8L/"
+     }
+    ],
+    "references": [
+     "IB-0341"
+    ],
+    "script": "The gift he actually wears\nBecause he says he wants nothing\nShop the DudeRobe\n30% off",
+    "size": "4:5 1080x1350",
+    "tests": "Does the hook drive clicks?",
+    "visual_direction": "Show a man in a relaxed setting wearing the best-seat-in-the-house-tee-ash-black, with a subtle halo of light to emphasize comfort. Use a warm, neutral background and a clear product focus. No pastel colors or gradients. Center the text at the top, product image in the middle, CTA and offer bar at the bottom."
+   },
+   {
+    "alt_hook": "The robe that matches his vibe",
+    "angle": "Gift that feels personal",
+    "awareness": "Cold",
+    "clips": [],
+    "cta": "Get the SheRobe",
+    "format": "static image 4:5",
+    "hook": "A robe that fits his style",
+    "name": "A Robe That Fits His Style",
+    "never": [
+     "Use exclamation marks",
+     "Use em dash"
+    ],
+    "product": "the-sherobe",
+    "quote": {
+     "attribution": "Shaunna Hood, 2026-11-27 (judge.me widget on the product page, 5 stars, RV-f3221016)",
+     "review_id": "RV-f3221016",
+     "text": "Love the hood, the large pockets and the soft fabric"
+    },
+    "reference_links": [
+     {
+      "id": "IB-0341",
+      "url": "https://www.instagram.com/p/Dfm49Eegs8L/"
+     }
+    ],
+    "references": [
+     "IB-0341"
+    ],
+    "script": "A robe that fits his style\nBecause he says he wants nothing\nGet the SheRobe\n30% off",
+    "size": "4:5 1080x1350",
+    "tests": "Does the SheRobe resonate with gift buyers?",
+    "visual_direction": "Feature a woman holding a SheRobe in a stylish living room. The robe should be visible on a mannequin or a model, showcasing its fit. Use a muted color palette with no pastel tones. Text placed at the top, product image in the center, CTA and offer bar at the bottom."
+   },
+   {
+    "alt_hook": "The indoor camo for fans",
+    "angle": "Licensed edition for fans",
+    "awareness": "Cold",
+    "clips": [],
+    "cta": "Grab the IndoorCamo",
+    "format": "static image 4:5",
+    "hook": "Camo that stays in the house",
+    "name": "Camo That Stays in the House",
+    "never": [
+     "Use exclamation marks",
+     "Use em dash"
+    ],
+    "product": "indoorcamo",
+    "quote": {
+     "attribution": "Rachel, 2026-11-11 (judge.me widget (all review pages), 5 stars, RV-708e7e4d)",
+     "review_id": "RV-708e7e4d",
+     "text": "Got this for my boyfriend for Christmas. The material seems moisture wicking and warm. I love the camo pattern a lot!"
+    },
+    "reference_links": [
+     {
+      "id": "IB-0341",
+      "url": "https://www.instagram.com/p/Dfm49Eegs8L/"
+     }
+    ],
+    "references": [
+     "IB-0341"
+    ],
+    "script": "Camo that stays in the house\nBecause he says he wants nothing\nGrab the IndoorCamo\n30% off",
+    "size": "4:5 1080x1350",
+    "tests": "Does the fan angle drive sales?",
+    "visual_direction": "Show a man in a living room wearing the indoorcamo, with a subtle UFC or team logo visible. Keep the background simple and avoid any bathroom interior. Text at the top, product image in the middle, CTA and offer bar at the bottom."
+   }
+  ],
+  "deliverables": [
+   "Static image 4:5"
+  ],
+  "done_when": [
+   "All 3 concept(s) are made, each with its main hook and its alt hook as a separate version to test",
+   "Every concept is delivered at its own size: 4:5 1080x1350",
+   "The offer is stated exactly as written (\"30% off\") and shown in one place only: an offer bar at the bottom of the image",
+   "Nothing is said or shown that a concept's own Never list rules out",
+   "Every on-screen text follows the rules: no banned character or word, nothing the claims gate flagged",
+   "Each image keeps its layout: headline, subline, call to action, offer in its place"
+  ],
+  "donts": [
+   "Use exclamation marks",
+   "Use em dash",
+   "Show bathroom interior as primary setting",
+   "Show floppy sleeves"
+  ],
+  "dos": [
+   "Use brand colors without pastels or gradients",
+   "Keep text left aligned",
+   "Avoid stock photo couples or group-of-bros poses",
+   "Show the product clearly",
+   "Use the offer bar at the bottom"
+  ],
+  "for": "Sam",
+  "held_back": [],
+  "key_message": "The DudeRobe and SheRobe are the practical, stylish robe that men actually wear",
+  "kind": "static",
+  "notes_for_creators": "Maintain brand consistency by using the approved color palette and avoiding pastel tones or gradients. Text should be left aligned and not center aligned. Do not use stock photo couples or group-of-bros poses. Avoid any bathroom interior or floppy sleeves. Keep the tone confident and friendly without exclamation marks or em dashes. Ensure the offer bar reads \"30% off\" at the bottom of each image.",
+  "objective": "Drive awareness and sales of DudeRobe and SheRobe as the perfect gift for men who say they want nothing during the holiday season",
+  "offer": "30% off",
+  "offer_placement": "an offer bar at the bottom of the image",
+  "title": "DudeRobe & SheRobe Holiday Gift Campaign",
+  "tone": "Straightforward, confident, and friendly"
+ },
+ "created": "2026-11-28T02:54:26Z",
+ "id": "BR-0001",
+ "status": "needs review",
+ "title": "DudeRobe & SheRobe Holiday Gift Campaign",
+ "violations": []
+}
